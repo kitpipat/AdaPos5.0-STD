@@ -1,0 +1,267 @@
+.container-fluid {
+    padding: 1rem 3rem 0 3rem;
+    vertical-align: auto;
+}
+
+a:link {
+    color: black;
+}
+
+a:visited {
+    color: black;
+}
+
+a:hover {
+    /* color:#0047AB; */
+    color:#02a598;
+}
+
+a:active {
+    color:#02a598;
+}
+
+.sl-nav {
+    display: inline;
+    margin: .7rem 1rem 0 0;
+    text-align: right;
+    /* float: right; */
+}
+
+.sl-nav ul {
+    margin:0;
+    padding:0;
+    list-style: none;
+    position: relative;
+    display: inline-block;
+}
+
+.sl-nav li {
+    cursor: pointer;
+    padding-bottom:10px;
+}
+
+.sl-nav li ul {
+    display: none;
+}
+
+.sl-nav li:hover ul {
+    position: absolute;
+    top:29px;
+    right:-15px;
+    display: block;
+    background: #fff;
+    width: 120px;
+    padding-top: 0px;
+    z-index: 1;
+    border-radius:5px;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+}
+
+.sl-nav li:hover .triangle {
+    position: absolute;
+    top: 15px;
+    right: -10px;
+    z-index:10;
+    height: 14px;
+    overflow:hidden;
+    width: 30px;
+    background: transparent;
+}
+
+.sl-nav li:hover .triangle:after {
+    content: '';
+    display: block;
+    z-index: 20;
+    width: 15px;
+    transform: rotate(45deg) translateY(0px) translatex(10px);
+    height: 15px;
+    background: #fff;
+    border-radius:2px 0px 0px 0px;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
+}
+
+.sl-nav li ul li {
+    position: relative;
+    text-align: left;
+    background: transparent;
+    padding: 15px 15px;
+    padding-bottom:0;
+    z-index: 2;
+    font-size: 15px;
+    /* color: #3c3c3c; */
+}
+
+.sl-nav li ul li:last-of-type {
+    padding-bottom: 15px;
+}
+
+.sl-nav li ul li span {
+    padding-left: 5px;
+}
+
+.sl-nav li ul li span:hover, .sl-nav li ul li span.active {
+    color: #02a598;
+}
+
+.xWBtnMain {
+    background-color: #02a598;
+    color: #ffffff !important;
+    border:none;
+    border-radius:50px;
+    width: 100%;
+    height: 40px;
+    margin-top: 2;
+}
+
+.xWBtnMain:link {
+    color: white !important;
+}
+
+.xWBtnMain:visited {
+    color: white !important;
+}
+
+.xWBtnMain:hover {
+    color: white !important;
+    background-color:#00a99b;
+}
+
+.xWBtnMain:active {
+    color: white !important;
+    background-color:#00a99b;
+}
+
+.xWBorder {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.xWBtnMoney {
+    background-color: #ffffff;
+    box-shadow: 0px 1px 2px #7a95bb;
+    border-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius:50px;
+    width: 100%;
+    height: 35px;
+    display: inline-block;
+    line-height: 0;
+}
+
+.xWBtnMoney:link{
+    color: white !important;
+    background-color:#02a598 !important;
+}
+
+.xWBtnMoney:visited{
+    color: white !important;
+    background-color:#02a598 !important; 
+}
+
+.xWBtnMoney:hover{
+    color: white !important;
+    background-color:#02a598 !important;
+}
+
+.xWBtnMoney:active{
+    color: white !important;
+    background-color:#02a598 !important;
+}
+
+.xWInput {
+    border-radius:50px;
+    min-height: 35px;
+    max-height: 40px;
+    margin-bottom: 3rem;
+}
+
+.xWTopup {
+    text-align: right;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.xWCard{
+    padding: 0.5rem;
+}
+
+.xWOTP {
+    font-weight: bold !important;
+    font-size: 20px !important;
+}
+
+.xWBtnDownload{
+    background-color: #02a598;
+    color: #ffffff !important;
+    box-shadow: 0px 0.5px 1px #7a95bb;
+    border-color: #ffffff;
+    border: none;
+    border-radius:100%;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    display: inline-block;
+    line-height: 0;
+    padding: 10 !important;
+    
+}
+
+.xWBtnDownload:link{
+    color: white !important;
+    background-color:#02a598;
+}
+
+.xWBtnDownload:visited{
+    color: white !important;
+    background-color:#02a598; 
+}
+
+.xWBtnDownload:hover{
+    color: white !important;
+    background-color:#02a598;
+}
+
+.xWBtnDownload:active{
+    color: white !important;
+    background-color:#02a598;
+}
+
+.xWBtnCancel {
+    background-color: #ffffff;
+    color: #000000 !important;
+    border: 1px solid #bd3333;
+    border-radius:50px;
+    border-color: #bd3333;
+    width: 100%;
+    height: 40px;
+    margin-top: 2;
+}
+
+.xWBtnCancel:hover {
+    background: #bd3333;
+    color: #ffffff !important;
+}
+
+.xWBtnCancelModal {
+    background-color: #c1bdbd;
+    color: #ffffff !important;
+    border-radius:50px;
+    height: 40px;
+    margin-top: 2;
+}
+
+.xWCheckbox input [type="checkbox"][class*='xWCheckbox']:checked+label:after {
+    background-color: #02a598;
+    border-color: #02a598;
+}
+
+.xWMenu {
+    font-size: 20px !important;
+}

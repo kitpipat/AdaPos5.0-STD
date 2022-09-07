@@ -1,0 +1,184 @@
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo language('adawallet/main/main', 'tRegis') . " " . language('adawallet/main/main', 'tAdw') ?></title>
+
+    <style>
+      #opictureUrl {
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container mt-3 mb-2">
+      <div class="row">
+        <div class="col align-self-center xWMenu">
+          <?php echo language('adawallet/main/main', 'tProgram') . " : " . language('adawallet/main/main', 'tRegis') . " " . language('adawallet/main/main', 'tAdw') ?>
+        </div>
+        <div class="col-auto mt-2">
+          <div class="sl-nav">
+            <ul>
+              <li><i class="bi bi-globe"></i>
+                <div class="triangle"></div>
+                <ul>
+                  <li>
+                    <a href="?lang=th"> <?php echo language('adawallet/main/main', 'tthai') ?> </a>
+                  </li>
+                  <li>
+                    <a href="?lang=en"> <?php echo language('adawallet/main/main', 'teng') ?> </a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12" id="odvGetProfile">
+
+          <img id="opictureUrl" width="25%">
+
+          <label for="oetName"><?php echo language('adawallet/main/main', 'tName') ?></label>
+          <input type="text" class="form-control mb-3 xWInput" name="oetName" id="oetName" disabled>
+
+          <label for="oetEmail"><?php echo language('adawallet/main/main', 'tEmail') ?></label>
+          <input type="text" class="form-control mb-3 xWInput" name="oetEmail" id="oetEmail" disabled>
+
+          <label for="onbTel"><?php echo language('adawallet/main/main', 'tTel') ?></label>
+          <input type="number" class="form-control mb-3 xWInput" name="onbTel" id="onbTel">
+
+          <input type="submit" name="osmRegis" id="osmRegis" value="<?php echo language('adawallet/main/main', 'tRegis') ?>" class="btn xWBtnMain" >
+        </div>
+      </div>
+
+      <div class="row" id="odvResult">
+        <div class="row justify-content-center mt-3">
+          <div class="col-md-12 text-center">
+            <h2 id="obhResult" class="mb-1"><?php echo language('adawallet/main/main', 'tRegisSuccess') ?></h2>
+            <p id="obpNoti"><?php echo language('adawallet/main/main', 'tNoti') ?></p>
+            <p id="obpCardno"><?php echo language('adawallet/main/main', 'tRefNo') ?> : </p>
+            <p id="obpCardtype"><?php echo language('adawallet/main/main', 'tCardTyp') ?></p>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-8">
+            <input type="submit" name="osmBack" id="osmBack" value="<?php echo language('adawallet/main/main', 'tBack') ?> " class="btn xWBtnMain" onclick="liff.closeWindow();">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      document.getElementById('odvGetProfile').style.display = "none";
+      document.getElementById('odvResult').style.display = "none";
+
+      var tUserid = '';
+      var tTel = '';
+
+      $(document).ready(function() {
+        $('#osmRegis').on('click', function(event) {
+          tTel = document.getElementById("onbTel").value;
+          event.preventDefault();
+
+          $.ajax({
+            url: "<?php echo base_url('adwADWRegister/') ?>",
+            type: "POST",
+            data: {
+              "ptCstLineID": tUserid,
+              "ptCstTel": tTel,
+            },
+            dataType: "json",
+            cache: false,
+            success: function(data) {
+
+              // console.log(data);
+              if(data['rtDesc'] == "Success") {
+                if(data['rtCode'] == "04") {
+                  JSaADWRegister("ptRegis")
+                }else {
+                  document.getElementById('odvResult').style.display = "inline";
+                  document.getElementById('obhResult').innerHTML = "<?php echo language('adawallet/main/main', 'tRegisSuccess') ?>"; 
+                  document.getElementById('obpCardno').innerHTML = "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " : " + data['roInfo']['rtCrdCode']; 
+                  document.getElementById('obpCardtype').innerHTML = "<?php echo language('adawallet/main/main', 'tCardTyp') ?>" + " : " +  data['roInfo']['rtCtyName'];      
+                  document.getElementById('obpNoti').style.display = "none";
+                }
+
+              }else{
+                document.getElementById('obhResult').innerHTML = "<?php echo language('adawallet/main/main', 'tRegisFail') ?>"; 
+                document.getElementById('obpCardno').style.display = "none";
+                document.getElementById('obpCardtype').style.display = "none";
+              }
+
+            }
+          });
+        });
+      });
+
+      async function JSaADWRegister(Regis) {
+        const profile = await liff.getProfile()
+        document.getElementById("opictureUrl").src = profile.pictureUrl;
+
+        document.getElementById("oetName").value = profile.displayName;
+        document.getElementById("oetEmail").value = liff.getDecodedIDToken().email;
+        tUserid = profile.userId;
+        
+        // tUserid = "Ua8123e6saaaqeen3ae4fc5f5sda8a";
+        $.ajax({
+          url: "<?php echo base_url('adwADWCheckBalance/') ?>",
+          type: "POST",
+          data: {
+            "ptCstLineID": tUserid,
+          },
+          dataType: "json",
+          cache: false,
+          success: function(data) {
+
+            if(data['rtDesc'] == "Success") {
+              if(data['rtCode'] == "04") {
+                document.getElementById('odvGetProfile').style.display = "inline";
+              } else if(Regis == "ptRegis") {
+                document.getElementById('odvGetProfile').style.display = "none";
+                document.getElementById('odvResult').style.display = "inline";
+                document.getElementById('obhResult').innerHTML = "<?php echo language('adawallet/main/main', 'tRegisSuccess') ?>"; 
+                document.getElementById('obpCardno').innerHTML = "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " : " + data['roInfo']['rtCrdCode']; 
+                document.getElementById('obpCardtype').innerHTML = "<?php echo language('adawallet/main/main', 'tCardTyp') ?>" + " : " +  data['roInfo']['rtCtyName'];      
+                document.getElementById('obpNoti').style.display = "none";
+              } else {
+                // console.log(data);
+                document.getElementById('odvResult').style.display = "inline";
+                document.getElementById('obhResult').innerHTML = "<?php echo language('adawallet/main/main', 'tRegisAlready') ?>"; 
+                document.getElementById('obpCardno').innerHTML = "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " : " + data['roInfo']['rtCrdCode']; 
+                document.getElementById('obpCardtype').innerHTML = "<?php echo language('adawallet/main/main', 'tCardTyp') ?>" + " : " +  data['roInfo']['rtCtyName'];      
+                document.getElementById('obpNoti').style.display = "none";
+              }
+
+            }else{
+              document.getElementById('odvGetProfile').style.display = "inline";
+            }
+
+          }
+        });
+      }
+
+      async function main() {
+        await liff.init({liffId: "1657332267-RQLWjEW6", withLoginOnExternalBrower: true})
+        if(liff.isLoggedIn()) {
+          JSaADWRegister()
+        }else {
+          liff.login();
+        }
+      }
+
+      main()
+    </script>
+  </body>
+
+</html>
