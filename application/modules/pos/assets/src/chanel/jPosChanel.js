@@ -136,7 +136,7 @@ function JSvChanelDataTable(pnPage) {
 function JSvCallPageChanelAdd() {
     try {
         JCNxOpenLoading();
-        JStCMMGetPanalLangSystemHTML('', '');
+        // JStCMMGetPanalLangSystemHTML('', '');
         $.ajax({
             type: "POST",
             url: "chanelPageAdd",
@@ -153,6 +153,7 @@ function JSvCallPageChanelAdd() {
                     $('#oliChnTitleAdd').show();
                     $('#odvBtnChnInfo').hide();
                     $('#odvBtnAddEdit').show();
+                    $('#odvChnBtnSave').show();
                 }
                 $('#odvContentPageChanel').html(tResult);
                 JCNxLayoutControll();
@@ -179,7 +180,7 @@ function JSvCallPageChanelEdit(ptChnCode, ptChnBchCode) {
     try {
 
         JCNxOpenLoading();
-        JStCMMGetPanalLangSystemHTML('JSvCallPageChanelEdit', ptChnCode);
+        // JStCMMGetPanalLangSystemHTML('JSvCallPageChanelEdit', ptChnCode);
 
         $.ajax({
             type: "POST",
@@ -193,6 +194,7 @@ function JSvCallPageChanelEdit(ptChnCode, ptChnBchCode) {
                     $('#oliChnTitleEdit').show();
                     $('#odvBtnChnInfo').hide();
                     $('#odvBtnAddEdit').show();
+                    $('#odvChnBtnSave').show();
                     $('#odvContentPageChanel').html(tResult);
                     $('#oetChnCode').addClass('xCNDisable');
                     $('.xCNDisable').attr('readonly', true);
@@ -291,32 +293,88 @@ function JSnAddEditChanel(ptRoute) {
             $(element).closest('.form-group').addClass("has-success").removeClass("has-error");
         },
         submitHandler: function(form) {
-            $.ajax({
-                type: "POST",
-                url: ptRoute,
-                data: $('#ofmAddChanel').serialize(),
-                cache: false,
-                timeout: 0,
-                success: function(tResult) {
-                    var aReturn = JSON.parse(tResult);
 
-                    if (aReturn['nStaEvent'] == 1) {
-                        if (aReturn['nStaCallBack'] == '1' || aReturn['nStaCallBack'] == null) {
-                            JSvCallPageChanelEdit(aReturn['tCodeReturn'], aReturn['tCodeBchReturn']);
-                        } else if (aReturn['nStaCallBack'] == '2') {
-                            JSvCallPageChanelAdd();
-                        } else if (aReturn['nStaCallBack'] == '3') {
-                            JSvCallPageChanel(pnPage);
+            if( ptRoute == "chanelEventAdd" ){
+                // บันทึก เคสเพิ่มข้อมูลใหม่
+                JSxCHNEventSaveData(ptRoute);
+            }else{
+                // ตรวจสอบว่ามี spc wah ที่ไม่อยู่ใน สาขา หรือตัวแทนขายที่กำหนด ไหม ?
+                // ถ้ามีก็ลบ spc wah ที่ไม่ตรงเงื่อนไข
+                $.ajax({
+                    type: "POST",
+                    url: 'chanelEventChkSpcWah',
+                    data: $('#ofmAddChanel').serialize(),
+                    cache: false,
+                    timeout: 0,
+                    success: function(oResult) {
+                        var aReturn = JSON.parse(oResult);
+
+                        if (aReturn['tCode'] == '1') {
+                            // ลบ spc wah ที่ไม่ตรงเงื่อนไข
+                            FSvCMNSetMsgWarningDialog('คุณต้องการเคลียร์ การกำหนดคลังที่ไม่ตรงเงื่อนไข ใช่หรือไม่ ?','JSxCHNEventClearSpcWah','',ptRoute);
+                        } else {
+                            // บันทึกข้อมูลปกติ
+                            JSxCHNEventSaveData(ptRoute);
                         }
-                    } else {
-                        alert(aReturn['tStaMessg']);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
                     }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
+                });
+            }
+
+            
         },
+    });
+}
+
+function JSxCHNEventClearSpcWah(ptRoute){
+    $.ajax({
+        type: "POST",
+        url: 'chanelEventClearSpcWah',
+        data: $('#ofmAddChanel').serialize(),
+        cache: false,
+        timeout: 0,
+        success: function(oResult) {
+            var aReturn = JSON.parse(oResult);
+            if ( aReturn['nStaEvent'] == 1 ) {
+                JSxCHNEventSaveData(ptRoute);
+            } else {
+                FSvCMNSetMsgWarningDialog(aReturn['tStaMessg']);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
+    });
+    
+}
+
+function JSxCHNEventSaveData(ptRoute){
+    $.ajax({
+        type: "POST",
+        url: ptRoute,
+        data: $('#ofmAddChanel').serialize(),
+        cache: false,
+        timeout: 0,
+        success: function(oResult) {
+            var aReturn = JSON.parse(oResult);
+
+            if (aReturn['nStaEvent'] == 1) {
+                if (aReturn['nStaCallBack'] == '1' || aReturn['nStaCallBack'] == null) {
+                    JSvCallPageChanelEdit(aReturn['tCodeReturn'], aReturn['tCodeBchReturn']);
+                } else if (aReturn['nStaCallBack'] == '2') {
+                    JSvCallPageChanelAdd();
+                } else if (aReturn['nStaCallBack'] == '3') {
+                    JSvCallPageChanel(pnPage);
+                }
+            } else {
+                alert(aReturn['tStaMessg']);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
     });
 }
 
@@ -363,8 +421,9 @@ function JSaChanelDelete(pnPage, ptBch, tCode, ptName) {
                 timeout: 0,
                 success: function(tResult) {
                     // tResult = tResult.trim();
+                    //console.log(tResult);
                     var aReturn = JSON.parse(tResult);
-                    if (aReturn['nStaEvent'] == 1) {
+                    if (tResult == 0) {
                         $('#odvModalDelChanel').modal('hide');
                         $('#ospConfirmDelete').text($('#oetTextComfirmDeleteSingle').val());
                         $('#ohdConfirmIDDelete').val('');
@@ -403,7 +462,7 @@ function JSaChanelDelete(pnPage, ptBch, tCode, ptName) {
 //Functionality : (event) Delete All
 //Parameters :
 //Creator : 29/12/2020 Worakorn
-//Return : 
+//Return :
 //Return Type :
 function JSnChanelDelChoose(pnPage) {
 
@@ -691,7 +750,7 @@ function JCNnChanelCountRow(ptReceiptPosition) {
 
 /**
  * Functionality : Display head of receipt and end of receipt row
- * Parameters : ptReceiptType is type for Head of receipt("head") End of receipt("end"), 
+ * Parameters : ptReceiptType is type for Head of receipt("head") End of receipt("end"),
  * pnRows is number for row item
  * Creator : 29/12/2020 Worakorn
  * Last Modified : -
@@ -799,7 +858,7 @@ function JSaChanelGetSortData(ptReceiptType) {
 
 /**
  * Functionality : Prepare sort number after move row
- * Parameters : ptReceiptType is type for sorting(head, end), 
+ * Parameters : ptReceiptType is type for sorting(head, end),
  * pbUseStringFormat is use string format? (set true return string format, set false return object format)
  * Creator : 29/12/2020 Worakorn
  * Last Modified : -
@@ -1063,5 +1122,226 @@ function JSxChnDeleteMutirecord(pnPage) {
         });
     } else {
         JCNxShowMsgSessionExpired();
+    }
+}
+
+// Create By: Napat(Jame) 10/06/2022
+function JSvCHNPageSpcWah(pnPage){
+    $('#odvChnSpcWahContentDataTable').html('');
+
+    var nPageCurrent = pnPage;
+    if (nPageCurrent == undefined || nPageCurrent == '') {
+        nPageCurrent = '1';
+    }
+
+    JCNxOpenLoading();
+    $.ajax({
+        type: "POST",
+        url: "chanelPageSpcWah",
+        data: { 
+            tChnCode        : $('#oetChnCode').val(),  
+            nPageCurrent    : nPageCurrent
+        },
+        cache: false,
+        timeout: 0,
+        success: function(tResult) {
+            if (tResult != '') {
+                $('#odvChnSpcWahContentDataTable').html(tResult);
+                $('.xWCSWPageEdit').hide();
+                $('.xWCSWPageAdd').hide();
+                $('.xWCSWPageAddEdit').hide();
+                $('#obtChnSpcWahAdd').show();
+            }
+            JCNxLayoutControll();
+            JCNxCloseLoading();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
+    });
+}
+
+// Create By: Napat(Jame) 10/06/2022
+function JSvCHNPageSpcWahAdd(){
+    JCNxOpenLoading();
+    $.ajax({
+        type: "POST",
+        url: "chanelPageSpcWahAdd",
+        data: {},
+        cache: false,
+        timeout: 0,
+        success: function(tResult) {
+            if (tResult != '') {
+                $('#odvChnSpcWahContentDataTable').html(tResult);
+                $('.xWCSWPageEdit').hide();
+                $('.xWCSWPageAdd').show();
+                $('.xWCSWPageAddEdit').show();
+                $('#obtChnSpcWahAdd').hide();
+            }
+            JCNxLayoutControll();
+            JCNxCloseLoading();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
+    });
+}
+
+// Create By: Napat(Jame) 13/06/2022
+function JSvCHNPageSpcWahEdit(ptBchCode,ptWahCode){
+    JCNxOpenLoading();
+    $.ajax({
+        type: "POST",
+        url: "chanelPageSpcWahEdit",
+        data: {
+            tChnCode : $('#oetChnCode').val(),
+            tBchCode : ptBchCode,
+            tWahCode : ptWahCode
+        },
+        cache: false,
+        timeout: 0,
+        success: function(tResult) {
+            if (tResult != '') {
+                $('#odvChnSpcWahContentDataTable').html(tResult);
+                $('.xWCSWPageEdit').show();
+                $('.xWCSWPageAdd').hide();
+                $('.xWCSWPageAddEdit').show();
+                $('#obtChnSpcWahAdd').hide();
+            }
+            JCNxLayoutControll();
+            JCNxCloseLoading();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
+    });
+}
+
+// Create By: Napat(Jame) 10/06/2022
+function JSxCHNSpcWahSaveAddEdit(ptRoute){
+    $('#ofmCSWAddEdit').validate().destroy();
+    $('#ofmCSWAddEdit').validate({
+        focusInvalid: false,
+        onclick: false,
+        onfocusout: false,
+        onkeyup: false,
+        rules: {
+            oetCSWBchName: { "required": {} },
+            oetCSWWahName: { "required": {} },
+            
+        },
+        messages: {
+            oetCSWBchName: { "required": $('#oetCSWBchName').attr('data-validate') },
+            oetCSWWahName: { "required": $('#oetCSWWahName').attr('data-validate') },
+        },
+        errorElement: "em",
+        errorPlacement: function(error, element) {
+            error.addClass("help-block");
+            if (element.prop("type") === "checkbox") {
+                error.appendTo(element.parent("label"));
+            } else {
+                var tCheck = $(element.closest('.form-group')).find('.help-block').length;
+                if (tCheck == 0) {
+                    error.appendTo(element.closest('.form-group')).trigger('change');
+                }
+            }
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error").removeClass("has-success");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-success").removeClass("has-error");
+        },
+        submitHandler: function(form) {
+            JCNxOpenLoading();
+            $.ajax({
+                type: "POST",
+                url: ptRoute,
+                data: $('#ofmCSWAddEdit').serialize()+'&oetCSWChnCode='+$('#oetChnCode').val(),
+                catch: false,
+                timeout: 0,
+                success: function(oResult) {
+                    var aResult = JSON.parse(oResult);
+                    if (aResult["nStaEvent"] == 1) {
+                        JSvCHNPageSpcWah();
+                    } else {
+                        FSvCMNSetMsgWarningDialog(aResult['tStaMessg']);
+                        JCNxCloseLoading();
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        },
+    });
+}
+
+// Create By: Napat(Jame) 13/06/2022
+function JSxCHNEventSpcWahDel(pbType,ptBchCode,ptBchName,ptWahCode,ptWahName){
+    if( pbType ){
+        JCNxOpenLoading();
+        $.ajax({
+            type: "POST",
+            url: "chanelEventSpcWahDel",
+            data: {
+                tChnCode : $('#oetChnCode').val(),
+                tBchCode : ptBchCode,
+                tWahCode : ptWahCode
+            },
+            cache: false,
+            timeout: 0,
+            success: function(oResult) {
+
+                $('#odvCSWModalDel').modal('hide');
+                $('#odvCSWModalDel #ospConfirmDelete').text($('#oetTextComfirmDeleteSingle').val());
+                $('.modal-backdrop').remove();
+
+                setTimeout(() => {
+                    var aResult = JSON.parse(oResult);
+                    if (aResult["nStaEvent"] == 1) {
+                        JSvCHNPageSpcWah();
+                    } else {
+                        FSvCMNSetMsgWarningDialog(aResult['tStaMessg']);
+                        JCNxCloseLoading();
+                    }
+                }, 1000);
+                
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }else{
+        $('#odvCSWModalDel').modal('show');
+        $('#odvCSWModalDel #ospConfirmDelete').html($('#oetTextComfirmDeleteSingle').val() + ' ' + ptBchName + ' ' + ptWahName + ' ');
+        $('#odvCSWModalDel #osmConfirm').off('click').on('click', function() {
+            JSxCHNEventSpcWahDel(true,ptBchCode,ptBchName,ptWahCode,ptWahName);
+        });
+    }
+}
+
+function JSxCSWClickPage(ptPage) {
+    try {
+        var nPageCurrent = '';
+        var nPageNew;
+        switch (ptPage) {
+            case 'next': //กดปุ่ม Next
+                $('#odvCSWPageContent .xWBtnNext').addClass('disabled');
+                nPageOld = $('#odvCSWPageContent .xWPageGrp .active').text(); // Get เลขก่อนหน้า
+                nPageNew = parseInt(nPageOld, 10) + 1; // +1 จำนวน
+                nPageCurrent = nPageNew;
+                break;
+            case 'previous': //กดปุ่ม Previous
+                nPageOld = $('#odvCSWPageContent .xWPageGrp .active').text(); // Get เลขก่อนหน้า
+                nPageNew = parseInt(nPageOld, 10) - 1; // -1 จำนวน
+                nPageCurrent = nPageNew;
+                break;
+            default:
+                nPageCurrent = ptPage;
+        }
+        JSvCHNPageSpcWah(nPageCurrent);
+    } catch (err) {
+        console.log('JSxCSWClickPage Error: ', err);
     }
 }

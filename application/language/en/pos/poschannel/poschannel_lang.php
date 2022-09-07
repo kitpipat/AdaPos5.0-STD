@@ -8,6 +8,7 @@ $lang['tCHNLabelAgency']                    = "Agency only";
 $lang['tCHNLabelBranch']                    = "Branch only";
 $lang['tCHNLabelSystem']                    = "System only";
 $lang['tCHNLabelWahouse']                   = "Sales Warehouse";
+$lang['tCHNLabelDeliveryWahouse']           = "Delivery Warehouse";
 $lang['tCHNLabelPriceGroup']                = "Effective price group";
 
 $lang['tCHNLabelChannelCode']               = "Channel Code";
@@ -21,12 +22,5 @@ $lang['tCHNValidCode']                      = 'Please enter your channel code.';
 $lang['tCHNValidCodeDup']                   = 'This channel code is already in the system, please check again.';
 $lang['tCHNValidName']                      = 'Please enter the name of the sales channel.';
 
-$lang['tRcvLabelTitle']                     = "Payment Type";
-$lang['tRcvLabelChannelCode']               = "Payment Type Code";
-$lang['tRcvLabelChannelName']               = "Payment Type Name";
-$lang['tRcvLabelRefCode']                   = "Ref Code";
-
-$lang['tCstLabelTitle']                     = "Customer Level";
-$lang['tCstLabelChannelCode']               = "Customer Level Code";
-$lang['tCstLabelChannelName']               = "Customer Level Name";
-$lang['tCstLabelRefCode']                   = "Ref Code";
+$lang['tCHNStaUseArrDoc']                   = 'Allow Use PL';
+$lang['tCHNStaUseTransDoc']                 = 'Allow Use DO';

@@ -244,19 +244,15 @@ class cPosChanel extends MX_Controller
                 'FTCreateBy'    => $this->session->userdata('tSesUsername'),
                 'FDCreateOn'    => date('Y-m-d H:i:s'),
                 'FNLngID'       => $this->session->userdata("tLangEdit"),
-
+                'FTChnStaUseDO'     => (!empty($this->input->post('ocbChnStaUseDO'))) ? 1 : 2,
+                'FTChnStaAlwSNPL'   => (!empty($this->input->post('ocbChnStaAlwSNPL'))) ? 1 : 2,
+                'FTChnWahDO'        => $this->input->post('oetDeliveryWahCode'),
 
                 'FTChnName'            => $this->input->post('oetChnName'),
                 'FTAgnCode' => $this->input->post('oetChnAgnCode'),
                 'FTBchCode'             => $this->input->post('oetWahBchCodeCreated'),
-                // 'FTBchCode'             => $tBchCodeCreate,
-                // 'FTBchCodeOld'             => $this->input->post('oetChnBchCodeOld'),       
-                // 'FTChnGroup' =>  $this->input->post('oetChnGroup'),
                 'tTypeInsertUpdate' => 'Insert'
             );
-            // print_r($aDataMaster); die();
-            // print_r($aDataMaster);
-            // exit();
 
 
             // $oCountDup  = $this->mPosChanel->FSoMCHNCheckDuplicate($aDataMaster['FTChnCode'], $aDataMaster['FTBchCode']);
@@ -310,18 +306,21 @@ class cPosChanel extends MX_Controller
 
 
             $aDataMaster = array(
-                'FTChnCode'             => $this->input->post('oetChnCode'),
-                'FTAppCode' => $this->input->post('oetChnAppCode'),
-                'FNChnSeq' => $this->input->post('oetChnSeq'),
-                'FTChnStaUse'   => (!empty($this->input->post('ocbChnStatusUse'))) ? 1 : 2,
-                'FTChnRefCode'  => $this->input->post('oetChnRefCode'),
-                'FTPplCode'     => $this->input->post('oetChnPplCode'),
-                'FTWahCode'     => $this->input->post('oetBchWahCode'),
-                'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
-                'FDLastUpdOn'   => date('Y-m-d H:i:s'),
-                'FTCreateBy'    => $this->session->userdata('tSesUsername'),
-                'FDCreateOn'    => date('Y-m-d H:i:s'),
-                'FNLngID'       => $this->session->userdata("tLangEdit"),
+                'FTChnCode'         => $this->input->post('oetChnCode'),
+                'FTAppCode'         => $this->input->post('oetChnAppCode'),
+                'FNChnSeq'          => $this->input->post('oetChnSeq'),
+                'FTChnStaUse'       => (!empty($this->input->post('ocbChnStatusUse'))) ? 1 : 2,
+                'FTChnRefCode'      => $this->input->post('oetChnRefCode'),
+                'FTPplCode'         => $this->input->post('oetChnPplCode'),
+                'FTWahCode'         => $this->input->post('oetBchWahCode'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FNLngID'           => $this->session->userdata("tLangEdit"),
+                'FTChnStaUseDO'     => (!empty($this->input->post('ocbChnStaUseDO'))) ? 1 : 2,
+                'FTChnStaAlwSNPL'     => (!empty($this->input->post('ocbChnStaAlwSNPL'))) ? 1 : 2,
+                'FTChnWahDO'        => $this->input->post('oetDeliveryWahCode'),
 
 
                 'FTChnName'            => $this->input->post('oetChnName'),
@@ -332,35 +331,8 @@ class cPosChanel extends MX_Controller
             );
 
             $this->db->trans_begin();
-            // Add or Update 
+            // Add or Update
             $this->mPosChanel->FSaMCHNAddUpdateHD($aDataMaster);
-
-            // Delete Detail
-            // $this->mPosChanel->FSnMCHNDelDT($aDataMaster);
-
-            // if (!(count($aDataMaster['FTHeadReceiptItems']) <= 0)) {
-            //     // Add or Update Head of receipt
-            //     $nIndex = 1;
-            //     foreach ($aDataMaster['FTHeadReceiptItems'] as $tHeadReceipt) {
-            //         $aDataMaster['FTChnType'] = '1'; // Type 1: head of receipt
-            //         $aDataMaster['FNChnSeq'] = $nIndex; // Seq: 1,2,3,4,...
-            //         $aDataMaster['FTChnName'] = $tHeadReceipt;
-            //         $this->mPosChanel->FSaMCHNAddUpdateDT($aDataMaster);
-            //         $nIndex++;
-            //     }
-            // }
-            // // Add or Update End of receipt
-            // if (!(count($aDataMaster['FTEndReceiptItems']) <= 0)) {
-            //     // Add or Update Head of receipt
-            //     $nIndex = 1;
-            //     foreach ($aDataMaster['FTEndReceiptItems'] as $tEndReceipt) {
-            //         $aDataMaster['FTChnType'] = '2'; // Type 1: head of receipt
-            //         $aDataMaster['FNChnSeq'] = $nIndex; // Seq: 1,2,3,4,...
-            //         $aDataMaster['FTChnName'] = $tEndReceipt;
-            //         $this->mPosChanel->FSaMCHNAddUpdateDT($aDataMaster);
-            //         $nIndex++;
-            //     }
-            // }
 
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
@@ -505,8 +477,8 @@ class cPosChanel extends MX_Controller
             'FTChnCode' => $tChnCode,
             'FTBchCode' => $tChnBchCode
         );
-        $nNumRowChnLoc = $this->mPosChanel->FSnMLOCGetAllNumRow();
         $aResDel    = $this->mPosChanel->FSnMCHNDelHD($aDataMaster);
+        $nNumRowChnLoc = $this->mPosChanel->FSnMLOCGetAllNumRow();
         if ($nNumRowChnLoc !== false) {
             $aReturn    = array(
                 'nStaEvent'     => $aResDel['rtCode'],
@@ -518,4 +490,214 @@ class cPosChanel extends MX_Controller
             echo "database error";
         }
     }
+
+    // Create By: Napat(Jame) 10/06/2022
+    public function FSvCCHNPageSpcWah(){
+        $nPage      = $this->input->post('nPageCurrent');
+        if ($nPage == '' || $nPage == null) {
+            $nPage = 1;
+        } else {
+            $nPage = $this->input->post('nPageCurrent');
+        }
+
+        $aDataSearch = array(
+            'tType'     => 'List',
+            'nPage'     => $nPage,
+            'nRow'      => 10,
+            'tChnCode'  => $this->input->post('tChnCode'),
+            'FNLngID'   => $this->session->userdata("tLangEdit")
+        );
+        $aGetDataSpcWah = $this->mPosChanel->FSaMCHNGetDataSpcWah($aDataSearch);
+        $aDataSpcWah = array(
+            'aDataList' => $aGetDataSpcWah,
+            'nPage'     => $nPage
+        );
+        $this->load->view('pos/chanel/wPosChanelSpcWah.php', $aDataSpcWah);
+    }
+
+    // Create By: Napat(Jame) 13/06/2022
+    public function FSvCCHNPageSpcWahAdd(){
+        $aDataSpcWahAdd = array(
+            'aDataList' => array(
+                'tCode' => '800',
+                'tDesc' => 'Call Page Add'
+            ),
+        );
+        $this->load->view('pos/chanel/wPosChanelSpcWahAdd.php', $aDataSpcWahAdd);
+    }
+
+    // Create By: Napat(Jame) 13/06/2022
+    public function FSaCCHNEventSpcWahAdd(){
+        $aDataAdd = array(
+            'FTAgnCode'     => $this->input->post('oetCSWAgnCode'),
+            'FTBchCode'     => $this->input->post('oetCSWBchCode'),
+            'FTWahCode'     => $this->input->post('oetCSWWahCode'),
+            'FTChnCode'     => $this->input->post('oetCSWChnCode'),
+            'FTChnStaDoc'   => $this->input->post('osbCSWType'),
+        );
+        $aSpcWahChkDup = $this->mPosChanel->FSaMCHNEventSpcWahChkDup($aDataAdd);
+        if( $aSpcWahChkDup['tCode'] != '1' ){
+            $this->db->trans_begin();
+            $this->mPosChanel->FSxMCHNEventSpcWahAdd($aDataAdd);
+            $this->mPosChanel->FSxMCHNEventUpdDate($aDataAdd);
+            if( $this->db->trans_status() === false ){
+                $this->db->trans_rollback();
+                $aReturn = array(
+                    'nStaEvent'    => '900',
+                    'tStaMessg'    => "Unsucess Add Event"
+                );
+            }else{
+                $this->db->trans_commit();
+                $aReturn = array(
+                    'nStaEvent'        => '1',
+                    'tStaMessg'        => 'Success Add Channel Spc Wah'
+                );
+            }
+        }else{
+            $aReturn = array(
+                'nStaEvent'        => '600',
+                'tStaMessg'        => 'มีข้อมูลนี้อยู่แล้วในระบบ'
+            );
+        }
+        echo json_encode($aReturn);
+    }
+
+    // Create By: Napat(Jame) 13/06/2022
+    public function FSvCCHNPageSpcWahEdit(){
+        $aDataSearch = array(
+            'tType'        => 'Edit',
+            'tChnCode'     => $this->input->post('tChnCode'),
+            'tBchCode'     => $this->input->post('tBchCode'),
+            'tWahCode'     => $this->input->post('tWahCode'),
+            'FNLngID'      => $this->session->userdata("tLangEdit")
+        );
+        $aDataSpcWah     = $this->mPosChanel->FSaMCHNGetDataSpcWah($aDataSearch);
+        $aDataSpcWahEdit = array(
+            'aDataList' => $aDataSpcWah,
+        );
+        $this->load->view('pos/chanel/wPosChanelSpcWahAdd.php', $aDataSpcWahEdit);
+    }
+
+    
+    // Create By: Napat(Jame) 13/06/2022
+    public function FSaCCHNEventSpcWahEdit(){
+        $aDataSearch = array(
+            'FTAgnCode'     => $this->input->post('oetCSWAgnCodeOld'),
+            'FTBchCode'     => $this->input->post('oetCSWBchCodeOld'),
+            'FTWahCode'     => $this->input->post('oetCSWWahCodeOld'),
+            'FTChnCode'     => $this->input->post('oetCSWChnCode'),
+        );
+        $aDataEdit = array(
+            'FTAgnCode'     => $this->input->post('oetCSWAgnCode'),
+            'FTBchCode'     => $this->input->post('oetCSWBchCode'),
+            'FTWahCode'     => $this->input->post('oetCSWWahCode'),
+            'FTChnCode'     => $this->input->post('oetCSWChnCode'),
+            'FTChnStaDoc'   => $this->input->post('osbCSWType'),
+        );
+        // echo "<pre>";print_r($aDataSearch);print_r($aDataEdit);
+
+        // ถ้าแก้ไขข้อมูล ให้เช็คว่าซ้ำไหม
+        // แต่ถ้าไม่ได้แก้ไข แค่กดบันทึกเฉยๆ ข้ามการเช็คข้อมูลซ้ำ
+        if( $aDataSearch['FTAgnCode'] != $aDataEdit['FTAgnCode'] || $aDataSearch['FTBchCode'] != $aDataEdit['FTBchCode'] || $aDataSearch['FTWahCode'] != $aDataEdit['FTWahCode'] ){
+            $aSpcWahChkDup = $this->mPosChanel->FSaMCHNEventSpcWahChkDup($aDataEdit);
+            if( $aSpcWahChkDup['tCode'] == '1' ){
+                $aReturn = array(
+                    'nStaEvent'        => '600',
+                    'tStaMessg'        => 'มีข้อมูลนี้อยู่แล้วในระบบ'
+                );
+                echo json_encode($aReturn);
+                return;
+            }
+        }
+
+        $this->db->trans_begin();
+        $this->mPosChanel->FSxMCHNEventSpcWahEdit($aDataSearch,$aDataEdit);
+        $this->mPosChanel->FSxMCHNEventUpdDate($aDataEdit);
+        if( $this->db->trans_status() === false ){
+            $this->db->trans_rollback();
+            $aReturn = array(
+                'nStaEvent'    => '900',
+                'tStaMessg'    => "Unsucess Edit Event"
+            );
+        }else{
+            $this->db->trans_commit();
+            $aReturn = array(
+                'nStaEvent'        => '1',
+                'tStaMessg'        => 'Success Edit Channel Spc Wah'
+            );
+        }
+        echo json_encode($aReturn);
+    }
+
+    
+    // Create By: Napat(Jame) 13/06/2022
+    public function FSaCCHNEventSpcWahDel(){
+        $aDataDel = array(
+            'FTBchCode'     => $this->input->post('tBchCode'),
+            'FTWahCode'     => $this->input->post('tWahCode'),
+            'FTChnCode'     => $this->input->post('tChnCode')
+        );
+        $this->db->trans_begin();
+        $this->mPosChanel->FSxMCHNEventSpcWahDel($aDataDel);
+        if( $this->db->trans_status() === false ){
+            $this->db->trans_rollback();
+            $aReturn = array(
+                'nStaEvent'    => '900',
+                'tStaMessg'    => "Unsucess Delete Event"
+            );
+        }else{
+            $this->db->trans_commit();
+            $aReturn = array(
+                'nStaEvent'        => '1',
+                'tStaMessg'        => 'Success Delete Channel Spc Wah'
+            );
+        } 
+        echo json_encode($aReturn);
+    }
+
+    // Create By: Napat(Jame) 14/06/2022
+    public function FSaCHNEventChkSpcWah(){
+        $aParamsData = array(
+            'FTChnCode'     => $this->input->post('oetChnCode'),
+            'FTAgnCode'     => $this->input->post('oetChnAgnCode'),
+            'FTBchCode'     => $this->input->post('oetWahBchCodeCreated'),
+        );
+
+        if( $aParamsData['FTBchCode'] == "" && $aParamsData['FTAgnCode'] == "" ){
+            $aChkSpcWah = array(
+                'tCode' => '800',
+                'tDesc' => 'not found data',
+            );
+        }else{
+            $aChkSpcWah = $this->mPosChanel->FSaMCHNEventChkSpcWah($aParamsData);
+        }
+        echo json_encode($aChkSpcWah);
+    }
+
+    // Create By: Napat(Jame) 14/06/2022
+    public function FSaCHNEventClearSpcWah(){
+        $aParamsData = array(
+            'FTChnCode'     => $this->input->post('oetChnCode'),
+            'FTAgnCode'     => $this->input->post('oetChnAgnCode'),
+            'FTBchCode'     => $this->input->post('oetWahBchCodeCreated'),
+        );
+        $this->mPosChanel->FSxMCHNEventClearSpcWah($aParamsData);
+        if( $this->db->trans_status() === false ){
+            $this->db->trans_rollback();
+            $aReturn = array(
+                'nStaEvent'    => '900',
+                'tStaMessg'    => $this->db->error()['message']
+            );
+        }else{
+            $this->db->trans_commit();
+            $aReturn = array(
+                'nStaEvent'        => '1',
+                'tStaMessg'        => 'Success Clear Spc Wah'
+            );
+        } 
+        echo json_encode($aReturn);
+    }
+
+    
+    
 }
