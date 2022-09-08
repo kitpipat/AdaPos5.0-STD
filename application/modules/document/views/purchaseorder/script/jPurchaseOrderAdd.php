@@ -461,38 +461,38 @@
             var tNextFuncName       = poDataFnc.tNextFuncName;
             var aArgReturn          = poDataFnc.aArgReturn;
             var tParamsAgnCode      = poDataFnc.tParamsAgnCode;
-            var nPODecimalShow   = $('#ohdPOODecimalShow').val();
-            
+
+            var tWhereAgency = '';
             if( tParamsAgnCode != "" ){
                 tWhereAgency = " AND ( TCNMSpl.FTAgnCode = '"+tParamsAgnCode+"' OR ISNULL(TCNMSpl.FTAgnCode,'') = '' ) ";
-            }else{
-                tWhereAgency = "";
+            }else {
+                tWhereAgency ="";
             }
 
             var oOptionReturn       = {
                 Title: ['supplier/supplier/supplier', 'tSPLTitle'],
                 Table: {Master:'TCNMSpl', PK:'FTSplCode'},
                 Join: {
-                    Table: ['TCNMSpl_L', 'TCNMSplCredit', 'TCNMVatRate'],
+                    Table: ['TCNMSpl_L', 'TCNMSplCredit' , 'VCN_VatActive'],
                     On: [
                         'TCNMSpl_L.FTSplCode = TCNMSpl.FTSplCode AND TCNMSpl_L.FNLngID = '+nLangEdits,
                         'TCNMSpl_L.FTSplCode = TCNMSplCredit.FTSplCode',
-                        'TCNMSpl.FTVatCode = TCNMVatRate.FTVatCode'
+                        'TCNMSpl.FTVatCode = VCN_VatActive.FTVatCode'
                     ]
                 },
                 Where:{
-                    Condition : ["AND TCNMSpl.FTSplStaActive = '1' " + tWhereAgency]
+                    Condition : [ " AND TCNMSpl.FTSplStaActive = '1' " + tWhereAgency ]
                 },
                 GrideView:{
                     ColumnPathLang: 'supplier/supplier/supplier',
                     ColumnKeyLang: ['tSPLTBCode', 'tSPLTBName'],
                     ColumnsSize: ['15%', '75%'],
                     WidthModal: 50,
-                    DataColumns: ['TCNMSpl.FTSplCode', 'TCNMSpl_L.FTSplName', 'TCNMSplCredit.FNSplCrTerm', 'CAST(TCNMSplCredit.FCSplCrLimit AS NUMERIC(18,'+nPODecimalShow+')) AS FCSplCrLimit', 'TCNMSpl.FTSplStaVATInOrEx', 'TCNMSplCredit.FTSplTspPaid','TCNMVatRate.FTVatCode','TCNMVatRate.FCVatRate'],
+                    DataColumns: ['TCNMSpl.FTSplCode', 'TCNMSpl_L.FTSplName', 'TCNMSplCredit.FNSplCrTerm', 'TCNMSplCredit.FCSplCrLimit', 'TCNMSpl.FTSplStaVATInOrEx', 'TCNMSplCredit.FTSplTspPaid','VCN_VatActive.FTVatCode','VCN_VatActive.FCVatRate'],
                     DataColumnsFormat: ['',''],
                     DisabledColumns: [2, 3, 4, 5 , 6 , 7],
-                    Perpage: 5,
-                    OrderBy: ['TCNMSpl_L.FTSplName ASC']
+                    Perpage: 10,
+                    OrderBy: ['TCNMSpl.FDCreateOn DESC']
                 },
                 CallBack:{
                     ReturnType: 'S',
