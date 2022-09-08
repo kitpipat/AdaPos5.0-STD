@@ -1,12 +1,12 @@
 <script>
-    var nLangEdit = '<?php echo $nLangEdit; ?>';
-    var tUsrApv = '<?php echo $tUsrApv; ?>';
+    var nLangEdit       = '<?php echo $nLangEdit; ?>';
+    var tUsrApv         = '<?php echo $tUsrApv; ?>';
     var tUserLoginLevel = '<?php echo $tUserLoginLevel; ?>';
-    var bIsAddPage = <?php echo ($bIsAddPage) ? 'true' : 'false'; ?>;
-    var bIsApv = <?php echo ($bIsApv) ? 'true' : 'false'; ?>;
-    var bIsCancel = <?php echo ($bIsCanCel) ? 'true' : 'false'; ?>;
-    var bIsApvOrCancel = <?php echo ($bIsApvOrCanCel) ? 'true' : 'false'; ?>;
-
+    var bIsAddPage      = <?php echo ($bIsAddPage) ? 'true' : 'false'; ?>;
+    var bIsApv          = <?php echo ($bIsApv) ? 'true' : 'false'; ?>;
+    var bIsCancel       = <?php echo ($bIsCanCel) ? 'true' : 'false'; ?>;
+    var bIsApvOrCancel  = <?php echo ($bIsApvOrCanCel) ? 'true' : 'false'; ?>;
+    // console.log(tUserLoginLevel);
     $(document).ready(function() {
 
         $('#ocmTUVStaShwPdt , #ocbTUVStaShwPdtInStk').change(function(){
@@ -74,23 +74,21 @@
             }
         });
 
-        if (tUserLoginLevel == 'HQ') {
-            // $('#obtBrowseTopUpVendingShp').attr('disabled', true);
-            // $('#obtBrowseTopUpVendingPos').attr('disabled', true);
 
+        if (tUserLoginLevel == 'HQ') {
             if (bIsAddPage) {
-                $('#obtBrowseTopUpVendingWah').attr('disabled', true);
-                $('#obtBrowseTopUpVendingShp').attr('disabled', true);
+                $('#obtBrowseTopUpVendingShp').attr('disabled', false);
+
                 $('#obtBrowseTopUpVendingPos').attr('disabled', true);
+                $('#obtBrowseTopUpVendingWah').attr('disabled', true);
             } else {
                 $('#obtBrowseTopUpVendingWah').attr('disabled', false);
             }
         }
 
         if (tUserLoginLevel == 'BCH') {
-            $('#obtBrowseTopUpVendingShp').attr('disabled', true);
+            $('#obtBrowseTopUpVendingShp').attr('disabled', false);
             $('#obtBrowseTopUpVendingPos').attr('disabled', true);
-
             if (bIsAddPage) {
                 $('#obtBrowseTopUpVendingWah').attr('disabled', true);
             } else {
@@ -100,12 +98,10 @@
 
         if (tUserLoginLevel == 'SHP') {
             $('#obtBrowseTopUpVendingMER').attr('disabled', true);
-
-            var tShpcount = '<?=$this->session->userdata("nSesUsrShpCount");?>';
+            var tShpcount   = '<?=$this->session->userdata("nSesUsrShpCount");?>';
             if(tShpcount < 2){
-                $('#obtBrowseTopUpVendingShp').attr('disabled',true);
+                $('#obtBrowseTopUpVendingShp').attr('disabled',false);
             }
-                    
             if (bIsAddPage) {
                 $('#obtBrowseTopUpVendingWah').attr('disabled', true);
             } else {
@@ -128,13 +124,11 @@
         if(bIsApvOrCancel && !bIsAddPage){
             $('#obtTFWApprove').hide();
             $('#obtTFWCancel').hide();
-            // $('#obtTFWVDPrint').hide();
             $('#odvBtnAddEdit .btn-group').hide();
             $('form .xCNApvOrCanCelDisabled').attr('disabled', true);
             $('.xCNBTNMngTable').attr('disabled', true);
         }else{
             $('#odvBtnAddEdit .btn-group').show();
-            // $('#obtTFWVDPrint').hide();
         }
 
         $(document).on('keyup keypress', 'form input[type="text"]', function(e) {
@@ -143,297 +137,306 @@
                 return false;
             }
         });
-        
-        // $('#obtBrowseTopUpVendingPos').attr('disabled', true);
-
         JSxTopUpVendingDsiabledInput();
-
     });
 
     /*===== Begin Event Browse =========================================================*/
     // เลือกสาขา
-    $("#obtBrowseTopUpVendingBCH").click(function() {
-        tUsrLevel = "<?=$this->session->userdata('tSesUsrLevel')?>";
-        tBchMulti = "<?=$this->session->userdata("tSesUsrBchCodeMulti"); ?>";
-        tSQLWhere = "";
-        if(tUsrLevel != "HQ"){
-            tSQLWhere = " AND TCNMBranch.FTBchCode IN ("+tBchMulti+") ";
+    $("#obtBrowseTopUpVendingBCH").click(function(){
+        var nStaChkDataDT   = $('#otbDOCPdtTable #odvTBodyTUVPdtAdvTableList .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            tUsrLevel   = "<?=$this->session->userdata('tSesUsrLevel')?>";
+            tBchMulti   = "<?=$this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+            tSQLWhere   = "";
+            if(tUsrLevel != "HQ"){
+                tSQLWhere = " AND TCNMBranch.FTBchCode IN ("+tBchMulti+") ";
+            }
+            window.oBrowseTopUpVendingBranch = {
+                Title   : ['authen/user/user', 'tBrowseBCHTitle'],
+                Table   : {
+                    Master: 'TCNMBranch',
+                    PK: 'FTBchCode'
+                },
+                Join: {
+                    Table: ['TCNMBranch_L'],
+                    On: ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits]
+                },
+                Where: {
+                    Condition: [tSQLWhere]
+                },
+                GrideView: {
+                    ColumnPathLang: 'authen/user/user',
+                    ColumnKeyLang: ['tBrowseBCHCode', 'tBrowseBCHName'],
+                    ColumnsSize: ['10%', '75%'],
+                    DataColumns: ['TCNMBranch.FTBchCode', 'TCNMBranch_L.FTBchName'],
+                    DataColumnsFormat: ['', ''],
+                    WidthModal: 50,
+                    Perpage: 10,
+                    OrderBy: ['TCNMBranch.FTBchCode'],
+                    SourceOrder: "ASC"
+                },
+                CallBack: {
+                    ReturnType: 'S',
+                    Value: ["oetTopUpVendingBCHCode", "TCNMBranch.FTBchCode"],
+                    Text: ["oetTopUpVendingBCHName", "TCNMBranch_L.FTBchName"]
+                },
+                NextFunc: {
+                    FuncName: 'JSxTopUpVendingCallbackBch',
+                    ArgReturn: ['FTBchCode']
+                },
+                RouteAddNew: 'branch',
+                BrowseLev: 1
+            };
+            JCNxBrowseData('oBrowseTopUpVendingBranch');
+        }else{
+            $('#odvTopUpVendingPopupFoundDataInTblDT #ohdTopUpVendingTypeClick').val('Bch');
+            $('#odvTopUpVendingPopupFoundDataInTblDT').modal('show');
         }
-
-        window.oBrowseTopUpVendingBranch = {
-            Title: ['authen/user/user', 'tBrowseBCHTitle'],
-            Table: {
-                Master: 'TCNMBranch',
-                PK: 'FTBchCode'
-            },
-            Join: {
-                Table: ['TCNMBranch_L'],
-                On: ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits]
-            },
-            Where: {
-                Condition: [tSQLWhere]
-            },
-            GrideView: {
-                ColumnPathLang: 'authen/user/user',
-                ColumnKeyLang: ['tBrowseBCHCode', 'tBrowseBCHName'],
-                ColumnsSize: ['10%', '75%'],
-                DataColumns: ['TCNMBranch.FTBchCode', 'TCNMBranch_L.FTBchName'],
-                DataColumnsFormat: ['', ''],
-                WidthModal: 50,
-                Perpage: 10,
-                OrderBy: ['TCNMBranch.FTBchCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetTopUpVendingBCHCode", "TCNMBranch.FTBchCode"],
-                Text: ["oetTopUpVendingBCHName", "TCNMBranch_L.FTBchName"]
-            },
-            NextFunc: {
-                FuncName: 'JSxTopUpVendingCallbackBch',
-                ArgReturn: ['FTBchCode']
-            },
-            RouteAddNew: 'branch',
-            BrowseLev: 1
-        };
-        JCNxBrowseData('oBrowseTopUpVendingBranch');
     });
 
     // เลือกกลุ่มธุรกิจ
     $("#obtBrowseTopUpVendingMER").click(function() {
-        window.oBrowseTopUpVendingMch = {
-            Title: ['company/warehouse/warehouse', 'tWAHBwsMchTitle'],
-            Table: {
-                Master: 'TCNMMerchant',
-                PK: 'FTMerCode'
-            },
-            Join: {
-                Table: ['TCNMMerchant_L'],
-                On: ['TCNMMerchant.FTMerCode = TCNMMerchant_L.FTMerCode AND TCNMMerchant_L.FNLngID = ' + nLangEdits]
-            },
-            Where: {
-                Condition: ["AND (SELECT COUNT(FTShpCode) FROM TCNMShop WHERE TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTMerCode = TCNMMerchant.FTMerCode AND TCNMShop.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "') != 0"]
-            },
-            GrideView: {
-                ColumnPathLang: 'company/warehouse/warehouse',
-                ColumnKeyLang: ['tWAHBwsMchCode', 'tWAHBwsMchNme'],
-                ColumnsSize: ['15%', '75%'],
-                WidthModal: 50,
-                DataColumns: ['TCNMMerchant.FTMerCode', 'TCNMMerchant_L.FTMerName'],
-                DataColumnsFormat: ['', ''],
-                Perpage: 10,
-                OrderBy: ['TCNMMerchant.FTMerCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetTopUpVendingMchCode", "TCNMMerchant.FTMerCode"],
-                Text: ["oetTopUpVendingMchName", "TCNMMerchant_L.FTMerName"],
-            },
-            NextFunc: {
-                FuncName: 'JSxTopUpVendingCallbackMer',
-                ArgReturn: ['FTMerCode', 'FTMerName']
-            },
-            BrowseLev: 1,
-            //DebugSQL : true
-        };
-        JCNxBrowseData('oBrowseTopUpVendingMch');
+        var nStaChkDataDT   = $('#otbDOCPdtTable #odvTBodyTUVPdtAdvTableList .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            window.oBrowseTopUpVendingMch = {
+                Title: ['company/warehouse/warehouse', 'tWAHBwsMchTitle'],
+                Table: {
+                    Master: 'TCNMMerchant',
+                    PK: 'FTMerCode'
+                },
+                Join: {
+                    Table: ['TCNMMerchant_L'],
+                    On: ['TCNMMerchant.FTMerCode = TCNMMerchant_L.FTMerCode AND TCNMMerchant_L.FNLngID = ' + nLangEdits]
+                },
+                Where: {
+                    Condition: ["AND (SELECT COUNT(FTShpCode) FROM TCNMShop WHERE TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTMerCode = TCNMMerchant.FTMerCode AND TCNMShop.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "') != 0"]
+                },
+                GrideView: {
+                    ColumnPathLang: 'company/warehouse/warehouse',
+                    ColumnKeyLang: ['tWAHBwsMchCode', 'tWAHBwsMchNme'],
+                    ColumnsSize: ['15%', '75%'],
+                    WidthModal: 50,
+                    DataColumns: ['TCNMMerchant.FTMerCode', 'TCNMMerchant_L.FTMerName'],
+                    DataColumnsFormat: ['', ''],
+                    Perpage: 10,
+                    OrderBy: ['TCNMMerchant.FTMerCode'],
+                    SourceOrder: "ASC"
+                },
+                CallBack: {
+                    ReturnType: 'S',
+                    Value: ["oetTopUpVendingMchCode", "TCNMMerchant.FTMerCode"],
+                    Text: ["oetTopUpVendingMchName", "TCNMMerchant_L.FTMerName"],
+                },
+                NextFunc: {
+                    FuncName: 'JSxTopUpVendingCallbackMer',
+                    ArgReturn: ['FTMerCode', 'FTMerName']
+                },
+                BrowseLev: 1,
+                //DebugSQL : true
+            };
+            JCNxBrowseData('oBrowseTopUpVendingMch');
+        }else{
+            $('#odvTopUpVendingPopupFoundDataInTblDT #ohdTopUpVendingTypeClick').val('Mer');
+            $('#odvTopUpVendingPopupFoundDataInTblDT').modal('show');
+        }
     });
 
-    // เลือกร้านค้า
+    // เลือกร้านค้า / รูปแบบการจัดสินค้า
     $("#obtBrowseTopUpVendingShp").click(function() {
-        window.oBrowseTopUpVendingShp = {
-            Title: ['company/shop/shop', 'tSHPTitle'],
-            Table: {
-                Master: 'TCNMShop',
-                PK: 'FTShpCode'
-            },
-            Join: {
-                Table: ['TCNMShop_L', 'TCNMWaHouse_L'],
-                On: ['TCNMShop_L.FTShpCode = TCNMShop.FTShpCode AND TCNMShop.FTBchCode = TCNMShop_L.FTBchCode AND TCNMShop_L.FNLngID = ' + nLangEdits,
-                    'TCNMShop.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMShop.FTBchCode = TCNMWaHouse_L.FTBchCode AND TCNMWaHouse_L.FNLngID= ' + nLangEdits
-                ]
-            },
-            Where: {
-                Condition: [
-                    function() {
-                        var tSQL = "AND TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "' AND TCNMShop.FTMerCode = '" + $("#oetTopUpVendingMchCode").val() + "'";
-                        return tSQL;
-                    }
-                ]
-            },
-            GrideView: {
-                ColumnPathLang: 'company/branch/branch',
-                ColumnKeyLang: ['tBCHCode', 'tBCHName'],
-                ColumnsSize: ['25%', '75%'],
-                WidthModal: 50,
-                DataColumns: ['TCNMShop.FTShpCode', 'TCNMShop_L.FTShpName', 'TCNMShop.FTWahCode', 'TCNMWaHouse_L.FTWahName', 'TCNMShop.FTShpType', 'TCNMShop.FTBchCode'],
-                DataColumnsFormat: ['', '', '', '', '', ''],
-                DisabledColumns: [2, 3, 4, 5],
-                Perpage: 10,
-                OrderBy: ['TCNMShop_L.FTShpCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetTopUpVendingShpCode", "TCNMShop.FTShpCode"],
-                Text: ["oetTopUpVendingShpName", "TCNMShop_L.FTShpName"],
-            },
-            NextFunc: {
-                FuncName: 'JSxTopUpVendingCallbackShp',
-                ArgReturn: ['FTBchCode', 'FTShpCode', 'FTShpType', 'FTWahCode', 'FTWahName']
-            },
-            BrowseLev: 1
+        var nStaChkDataDT   = $('#otbDOCPdtTable #odvTBodyTUVPdtAdvTableList .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            window.oBrowseTopUpVendingShp = {
+                Title: ['company/shop/shop', 'tSHPTitle_LAYOUT'],
+                Table: {
+                    Master: 'TCNMShop',
+                    PK: 'FTShpCode'
+                },
+                Join: {
+                    Table: ['TCNMShop_L', 'TCNMWaHouse_L'],
+                    On: ['TCNMShop_L.FTShpCode = TCNMShop.FTShpCode AND TCNMShop.FTBchCode = TCNMShop_L.FTBchCode AND TCNMShop_L.FNLngID = ' + nLangEdits,
+                        'TCNMShop.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMShop.FTBchCode = TCNMWaHouse_L.FTBchCode AND TCNMWaHouse_L.FNLngID= ' + nLangEdits
+                    ]
+                },
+                Where: {
+                    Condition: [
+                        function() {
+                            // Where Branch Shop
+                            var tBchCode        = $("#oetTopUpVendingBCHCode").val();
+                            var tWhereBchCode   = "";
+                            if(tBchCode != ""){
+                                tWhereBchCode   = " AND TCNMShop.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "' ";
+                            }
 
+                            // Where Merchant
+                            var tMerCode        = $('#oetTopUpVendingMchCode').val();
+                            var tWhereMerCode   = "";
+                            if(tMerCode != ""){
+                                tWhereMerCode   = " AND TCNMShop.FTMerCode = '" + $("#oetTopUpVendingMchCode").val() + "'";
+                            }
 
+                            var tSQL = "AND TCNMShop.FTShpStaActive = 1"+tWhereBchCode+tWhereMerCode;
+                            return tSQL;
+                        }
+                    ]
+                },
+                GrideView: {
+                    ColumnPathLang: 'company/shop/shop',
+                    ColumnKeyLang: ['tShopCode_LAYOUT', 'tShopName_LAYOUT'],
+                    ColumnsSize: ['25%', '75%'],
+                    WidthModal: 50,
+                    DataColumns: ['TCNMShop.FTShpCode', 'TCNMShop_L.FTShpName', 'TCNMShop.FTWahCode', 'TCNMWaHouse_L.FTWahName', 'TCNMShop.FTShpType', 'TCNMShop.FTBchCode'],
+                    DataColumnsFormat: ['', '', '', '', '', ''],
+                    DisabledColumns: [2, 3, 4, 5],
+                    Perpage: 10,
+                    OrderBy: ['TCNMShop_L.FTShpCode'],
+                    SourceOrder: "ASC"
+                },
+                CallBack: {
+                    ReturnType: 'S',
+                    Value: ["oetTopUpVendingShpCode", "TCNMShop.FTShpCode"],
+                    Text: ["oetTopUpVendingShpName", "TCNMShop_L.FTShpName"],
+                },
+                NextFunc: {
+                    FuncName: 'JSxTopUpVendingCallbackShp',
+                    ArgReturn: ['FTBchCode', 'FTShpCode', 'FTShpType', 'FTWahCode', 'FTWahName']
+                },
+                BrowseLev: 1
+
+            }
+            JCNxBrowseData('oBrowseTopUpVendingShp');
+        }else{
+            $('#odvTopUpVendingPopupFoundDataInTblDT #ohdTopUpVendingTypeClick').val('Shp');
+            $('#odvTopUpVendingPopupFoundDataInTblDT').modal('show');
         }
-        JCNxBrowseData('oBrowseTopUpVendingShp');
     });
 
     // เลือกตู้
     $("#obtBrowseTopUpVendingPos").click(function() {
-        var bIsShopEnabled  = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
-        var tWahMasterTable = 'TVDMPosShop';
-        var tPK             = "FTPosCode"; 
-        var oJoinCondition  = {
-                Table: ['TCNMPos', 'TCNMPos_L', 'TCNMWaHouse', 'TCNMWaHouse_L'],
-                On: ['TVDMPosShop.FTPosCode = TCNMPos.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos.FTBchCode',
-                    'TVDMPosShop.FTPosCode = TCNMPos_L.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos_L.FTBchCode',
-                    'TVDMPosShop.FTPosCode = TCNMWaHouse.FTWahRefCode AND TCNMWaHouse.FTWahStaType = 6 AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
-                    'TCNMWaHouse.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits
-                ]
-            };
-        var aCondition = [
-                            function() {
-                                var tSQL = "AND TCNMPos.FTPosStaUse = 1 AND TVDMPosShop.FTShpCode = '" + $("#oetTopUpVendingShpCode").val() + "' AND TVDMPosShop.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "'";
-                                tSQL += " AND TCNMPos.FTPosType = '4'";
-                                return tSQL;
-                            }
-                        ];
-        var aDataColumns        = ['TVDMPosShop.FTPosCode', 'TCNMPos_L.FTPosName', 'TVDMPosShop.FTShpCode', 'TVDMPosShop.FTBchCode', 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'];
-        var aDataColumnsFormat  = ['', '', '', '', '', ''];
-        var aDisabledColumns    = [2, 3, 4, 5];
-        var aArgReturn          = ['FTBchCode', 'FTShpCode', 'FTPosCode', 'FTWahCode', 'FTWahName'];
-
-
-        /*if(bIsShopEnabled == 0){
-            tWahMasterTable = 'TCNMPos';
-            tPK = "FTPosCode"; 
-            oJoinCondition = {
-                Table: ['TCNMWaHouse', 'TCNMWaHouse_L'],
-                On: [   '   TCNMPos.FTPosCode = TCNMWaHouse.FTWahRefCode \
-                            AND TCNMWaHouse.FTWahStaType = 6 \
-                            AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
+        var nStaChkDataDT   = $('#otbDOCPdtTable #odvTBodyTUVPdtAdvTableList .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            var bIsShopEnabled  = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
+            var tWahMasterTable = 'TVDMPosShop';
+            var tPK             = "FTPosCode"; 
+            var oJoinCondition  = {
+                    Table: ['TCNMPos', 'TCNMPos_L', 'TCNMWaHouse', 'TCNMWaHouse_L'],
+                    On: ['TVDMPosShop.FTPosCode = TCNMPos.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos.FTBchCode',
+                        'TVDMPosShop.FTPosCode = TCNMPos_L.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos_L.FTBchCode',
+                        'TVDMPosShop.FTPosCode = TCNMWaHouse.FTWahRefCode AND TCNMWaHouse.FTWahStaType = 6 AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
                         'TCNMWaHouse.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits
-                ]
-            };
-            aCondition = [
-                            function() {
-                                var tSQL = "AND TCNMPos.FTPosStaUse = 1 \
-                                            AND TCNMPos.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "'";
-                                tSQL += " AND TCNMPos.FTPosType = '4'";
-                                return tSQL;
-                            }
-                        ];
-            aDataColumns = ['TCNMPos.FTPosCode', 'TCNMPos.FTBchCode', 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'];
-            aDataColumnsFormat = ['', '', '', ''];
-            aDisabledColumns = [1, 2, 3, 4];
-            aArgReturn= ['FTBchCode', 'FTPosCode', 'FTWahCode', 'FTWahName'];
-        }*/
+                    ]
+                };
+            var aCondition  = [
+                function() {
+                    var tSQL = "AND TCNMPos.FTPosStaUse = 1 AND TVDMPosShop.FTShpCode = '" + $("#oetTopUpVendingShpCode").val() + "' AND TVDMPosShop.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "'";
+                    tSQL += " AND TCNMPos.FTPosType = '4'";
+                    return tSQL;
+                }
+            ];
+            var aDataColumns        = ['TVDMPosShop.FTPosCode', 'TCNMPos_L.FTPosName', 'TVDMPosShop.FTShpCode', 'TVDMPosShop.FTBchCode', 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'];
+            var aDataColumnsFormat  = ['', '', '', '', '', ''];
+            var aDisabledColumns    = [2, 3, 4, 5];
+            var aArgReturn          = ['FTBchCode', 'FTShpCode', 'FTPosCode', 'FTWahCode', 'FTWahName'];
+            window.oBrowseTopUpVendingPos = {
+                Title   : ['pos/posshop/posshop', 'tPshTBPosCode'],
+                Table   : {
+                    Master  : tWahMasterTable,
+                    PK      : tPK
+                },
+                Join    : oJoinCondition,
+                Where   : {
+                    Condition       : aCondition
+                },
+                GrideView: {
+                    ColumnPathLang  : 'pos/posshop/posshop',
+                    ColumnKeyLang   : ['tPshBRWShopTBCode', 'tPshBRWPosTBName'],
+                    ColumnsSize     : ['25%', '75%'],
+                    WidthModal      : 50,
+                    DataColumns     : aDataColumns,
+                    DataColumnsFormat: aDataColumnsFormat,
+                    DisabledColumns : aDisabledColumns,
+                    Perpage         : 10,
+                    OrderBy         : [tWahMasterTable + '.FTPosCode'],
+                    SourceOrder     : "ASC"
+                },
+                CallBack: {
+                    ReturnType  : 'S',
+                    Value       : ["oetTopUpVendingPosCode", tWahMasterTable + ".FTPosCode"],
+                    Text        : ["oetTopUpVendingPosName", "TCNMPos_L.FTPosName"],
+                },
+                NextFunc: {
+                    FuncName    : 'JSxTopUpVendingCallbackPos',
+                    ArgReturn   : aArgReturn
+                },
+                /*BrowseLev: 1*/
 
-        window.oBrowseTopUpVendingPos = {
-            Title   : ['pos/posshop/posshop', 'tPshTBPosCode'],
-            Table   : {
-                Master  : tWahMasterTable,
-                PK      : tPK
-            },
-            Join    : oJoinCondition,
-            Where   : {
-                Condition       : aCondition
-            },
-            GrideView: {
-                ColumnPathLang  : 'pos/posshop/posshop',
-                ColumnKeyLang   : ['tPshBRWShopTBCode', 'tPshBRWPosTBName'],
-                ColumnsSize     : ['25%', '75%'],
-                WidthModal      : 50,
-                DataColumns     : aDataColumns,
-                DataColumnsFormat: aDataColumnsFormat,
-                DisabledColumns : aDisabledColumns,
-                Perpage         : 10,
-                OrderBy         : [tWahMasterTable + '.FTPosCode'],
-                SourceOrder     : "ASC"
-            },
-            CallBack: {
-                ReturnType  : 'S',
-                Value       : ["oetTopUpVendingPosCode", tWahMasterTable + ".FTPosCode"],
-                Text        : ["oetTopUpVendingPosName", "TCNMPos_L.FTPosName"],
-            },
-            NextFunc: {
-                FuncName    : 'JSxTopUpVendingCallbackPos',
-                ArgReturn   : aArgReturn
-            },
-            /*BrowseLev: 1*/
-
+            }
+            JCNxBrowseData('oBrowseTopUpVendingPos');
+        }else{
+            $('#odvTopUpVendingPopupFoundDataInTblDT #ohdTopUpVendingTypeClick').val('Pos');
+            $('#odvTopUpVendingPopupFoundDataInTblDT').modal('show');
         }
-        JCNxBrowseData('oBrowseTopUpVendingPos');
     });
 
     // เลือกคลังสินค้า
     $("#obtBrowseTopUpVendingWah").click(function() {
-        var bIsShopEnabled = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
-        window.oBrowseTopUpVendingWah = {
-            Title   : ['company/warehouse/warehouse', 'tWAHTitle'],
-            Table   : {
-                Master  : 'TVDMPdtLayout',
-                PK      : 'FTWahCode'
-            },
-            Join: {
-                Table   : ["TCNMWaHouse_L"],
-                On      : ["TCNMWaHouse_L.FTWahCode = TVDMPdtLayout.FTWahCode AND TCNMWaHouse_L.FTBchCode = TVDMPdtLayout.FTBchCode AND TCNMWaHouse_L.FNLngID = " + nLangEdits, ]
-            },
-            Where: {
-                Condition: [
-                    function() {
-                        var tSQL = "";
-                        if(bIsShopEnabled == 1){
-                            tSQL = " AND TVDMPdtLayout.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "'";
-                            tSQL += " AND TVDMPdtLayout.FTShpCode = '" + $('#oetTopUpVendingShpCode').val() + "'";
-                            tSQL += " AND TVDMPdtLayout.FTWahCode != '' ";
-                        } else {
-                            tSQL = " AND TCNMWaHouse.FTWahRefCode = '" + $("#oetTopUpVendingBCHCode").val() + "'";
+        var nStaChkDataDT   = $('#otbDOCPdtTable #odvTBodyTUVPdtAdvTableList .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            var bIsShopEnabled = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
+            window.oBrowseTopUpVendingWah = {
+                Title   : ['company/warehouse/warehouse', 'tWAHTitle'],
+                Table   : {
+                    Master  : 'TVDMPdtLayout',
+                    PK      : 'FTWahCode'
+                },
+                Join: {
+                    Table   : ["TCNMWaHouse_L"],
+                    On      : ["TCNMWaHouse_L.FTWahCode = TVDMPdtLayout.FTWahCode AND TCNMWaHouse_L.FTBchCode = TVDMPdtLayout.FTBchCode AND TCNMWaHouse_L.FNLngID = " + nLangEdits, ]
+                },
+                Where: {
+                    Condition: [
+                        function() {
+                            var tSQL = "";
+                            if(bIsShopEnabled == 1){
+                                tSQL = " AND TVDMPdtLayout.FTBchCode = '" + $("#oetTopUpVendingBCHCode").val() + "'";
+                                tSQL += " AND TVDMPdtLayout.FTShpCode = '" + $('#oetTopUpVendingShpCode').val() + "'";
+                                tSQL += " AND TVDMPdtLayout.FTWahCode != '' ";
+                            } else {
+                                tSQL = " AND TCNMWaHouse.FTWahRefCode = '" + $("#oetTopUpVendingBCHCode").val() + "'";
+                            }
+                            return tSQL;
                         }
-                        return tSQL;
-                    }
-                ]
-            },
-            GrideView: {
-                ColumnPathLang      : 'company/warehouse/warehouse',
-                ColumnKeyLang       : ['tWahCode', 'tWahName'],
-                DataColumns         : ['TVDMPdtLayout.FTWahCode', 'TCNMWaHouse_L.FTWahName'],
-                DataColumnsFormat   : ['', ''],
-                DistinctField       : [0],
-                ColumnsSize         : ['15%', '75%'],
-                Perpage             : 10,
-                WidthModal          : 50,
-                OrderBy             : ['TCNMWaHouse_L.FTWahCode'],
-                SourceOrder         : "ASC"
-            },
-            CallBack: {
-                ReturnType  : 'M',
-                Value       : ["oetTopUpVendingWahCode", "TVDMPdtLayout.FTWahCode"],
-                Text        : ["oetTopUpVendingWahName", "TCNMWaHouse_L.FTWahName"],
-            },
-            NextFunc: {
-                FuncName    : 'JSxTopUpVendingCallbackWah',
-                ArgReturn   : []
-            },
-            RouteAddNew     : 'warehouse',
-            BrowseLev       : 1,
-            // DebugSQL        : true
+                    ]
+                },
+                GrideView: {
+                    ColumnPathLang      : 'company/warehouse/warehouse',
+                    ColumnKeyLang       : ['tWahCode', 'tWahName'],
+                    DataColumns         : ['TVDMPdtLayout.FTWahCode', 'TCNMWaHouse_L.FTWahName'],
+                    DataColumnsFormat   : ['', ''],
+                    DistinctField       : [0],
+                    ColumnsSize         : ['15%', '75%'],
+                    Perpage             : 10,
+                    WidthModal          : 50,
+                    OrderBy             : ['TCNMWaHouse_L.FTWahCode'],
+                    SourceOrder         : "ASC"
+                },
+                CallBack: {
+                    ReturnType  : 'M',
+                    Value       : ["oetTopUpVendingWahCode", "TVDMPdtLayout.FTWahCode"],
+                    Text        : ["oetTopUpVendingWahName", "TCNMWaHouse_L.FTWahName"],
+                },
+                NextFunc: {
+                    FuncName    : 'JSxTopUpVendingCallbackWah',
+                    ArgReturn   : []
+                },
+                RouteAddNew     : 'warehouse',
+                BrowseLev       : 1,
+                // DebugSQL        : true
+            }
+            JCNxBrowseData('oBrowseTopUpVendingWah');
+        }else{
+            $('#odvTopUpVendingPopupFoundDataInTblDT #ohdTopUpVendingTypeClick').val('Wah');
+            $('#odvTopUpVendingPopupFoundDataInTblDT').modal('show');
         }
-        JCNxBrowseData('oBrowseTopUpVendingWah');
-
-
     });
 
     // เลือกขนส่งโดย
@@ -471,13 +474,13 @@
         }
         JCNxBrowseData('oTFWBrowseShipVia');
     });
+
     /*===== End Event Browse ===========================================================*/
 
     /*===== Begin Callback Browse ======================================================*/
     // Browse Bch Callback
     function JSxTopUpVendingCallbackBch(params) {
-        var tBchCode = $('#oetTopUpVendingBCHCode').val();
-
+        var tBchCode    = $('#oetTopUpVendingBCHCode').val();
         $('#oetTopUpVendingMchCode').val("");
         $('#oetTopUpVendingMchName').val("");
 
@@ -494,9 +497,9 @@
         $('#obtBrowseTopUpVendingShp').attr('disabled', true);
         $('#obtBrowseTopUpVendingPos').attr('disabled', true);
         $('#obtBrowseTopUpVendingWah').attr('disabled', true);
-
         if (tBchCode != "") {
             $('#obtBrowseTopUpVendingMER').attr('disabled', false);
+            $('#obtBrowseTopUpVendingShp').attr('disabled', false);
         }
     }
 
@@ -506,7 +509,7 @@
         var tMerCode = $('#oetTopUpVendingMchCode').val();
 
         $('#obtBrowseTopUpVendingMER').attr('disabled', true);
-        $('#obtBrowseTopUpVendingShp').attr('disabled', true);
+        $('#obtBrowseTopUpVendingShp').attr('disabled', false);
         $('#obtBrowseTopUpVendingPos').attr('disabled', true);
         $('#obtBrowseTopUpVendingWah').attr('disabled', true);
 
@@ -555,7 +558,9 @@
         $('#oetTopUpVendingWahCode').val("");
         $('#oetTopUpVendingWahName').val("");
 
-        if (tBchCode != "" && tMerCode != "" && tShpCode != "") {
+
+        if (tBchCode != "" && tShpCode != "") {
+
             if (tUserLoginLevel == "HQ") {
                 $('#obtBrowseTopUpVendingMER').attr('disabled', false);
                 $('#obtBrowseTopUpVendingShp').attr('disabled', false);
@@ -570,6 +575,7 @@
                 $('#obtBrowseTopUpVendingShp').attr('disabled', false);
                 $('#obtBrowseTopUpVendingPos').attr('disabled', false);
             }
+
         } else {
             if (tUserLoginLevel == "HQ") {
                 $('#obtBrowseTopUpVendingMER').attr('disabled', false);
@@ -590,18 +596,13 @@
         var tShpCode = $('#oetTopUpVendingShpCode').val();
         var tPosCode = $('#oetTopUpVendingPosCode').val();
         var tWahCode = $('#oetTopUpVendingWahCode').val();
-
         $('#obtBrowseTopUpVendingMER').attr('disabled', true);
         $('#obtBrowseTopUpVendingShp').attr('disabled', true);
         $('#obtBrowseTopUpVendingPos').attr('disabled', true);
         $('#obtBrowseTopUpVendingWah').attr('disabled', true);
-
         $('#oetTopUpVendingWahCode').val("");
         $('#oetTopUpVendingWahName').val("");
-
-        // JSxTopUpVendingSetWahByShop()
-
-        if (tBchCode != "" && tMerCode != "" && tShpCode != "" && tPosCode != "") {
+        if (tBchCode != "" && tShpCode != "" && tPosCode != "") {
             if (tUserLoginLevel == "HQ") {
                 $('#obtBrowseTopUpVendingMER').attr('disabled', false);
                 $('#obtBrowseTopUpVendingShp').attr('disabled', false);
@@ -652,7 +653,7 @@
         var tPosCode = $('#oetTopUpVendingPosCode').val();
         var tWahCode = $('#oetTopUpVendingWahCode').val();
 
-        if (tBchCode != "" && tMerCode != "" && tShpCode != "" && tPosCode != "" && tWahCode != "") {
+        if (tBchCode != "" && tShpCode != "" && tPosCode != "" && tWahCode != "") {
             $('#obtTopUpVendingControlForm').attr('disabled', false);
         } else {
             $('#obtTopUpVendingControlForm').attr('disabled', true);
@@ -843,9 +844,9 @@
                 oetTopUpVendingDocTime: {
                     required: true
                 },
-                oetTopUpVendingMchName: {
-                    required: true
-                },
+                // oetTopUpVendingMchName: {
+                //     required: true
+                // },
                 oetTopUpVendingShpName: {
                     required: true
                 },
@@ -1261,5 +1262,78 @@
             $('.otdShowChkbox').css('display','none');
         }
     }
+
+
+
+    // Create by : 17/02/2022 Wasin(Yoshi)
+    // เช็ค Data Tr In Table Behide Change Condition
+    function JSxTopUpVDEvnConfirmDelDTTemp(){
+        var tTypeClickEvent = $('#ohdTopUpVendingTypeClick').val();
+        var tDocCode        = $('#oetTopUpVendingDocNo').val();
+        var tBchCode        = $('#oetTopUpVendingBCHCode').val();
+        var tMerCode        = $('#oetTopUpVendingMchCode').val();
+        var tShpCode        = $('#oetTopUpVendingShpCode').val();
+        var tPosCode        = $('#oetTopUpVendingPosCode').val();
+        var tWahCode        = $('#oetTopUpVendingWahCode').val();
+        $.ajax({
+            type    : "POST",
+            url     : "TopupVendingDeleteDataDTTemp",
+            data    : {
+                'tDocCode'  : tDocCode,
+                'tBchCode'  : tBchCode,
+                'tMerCode'  : tMerCode,
+                'tShpCode'  : tShpCode,
+                'tPosCode'  : tPosCode,
+                'tWahCode'  : tWahCode,
+            },
+            success: function(tResult) {
+                var aDataReturn = JSON.parse(tResult);
+                if(aDataReturn['rtCode'] == '1'){
+                    $('#odvTopUpVendingPopupFoundDataInTblDT').modal('hide');
+                    $('.modal-backdrop').remove();
+                    JSxTopUpVendingGetPdtLayoutDataTableInTmp();
+                    // Check Case Click Event
+                    switch(tTypeClickEvent){
+                        case 'Bch':
+                            JSxTopUpVendingCallbackBch(null);
+                            setTimeout(function(){
+                                $( "#obtBrowseTopUpVendingBCH" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'Mer':
+                            JSxTopUpVendingCallbackMer(null);
+                            setTimeout(function(){
+                                $( "#obtBrowseTopUpVendingMER" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'Shp':
+                            JSxTopUpVendingCallbackShp(null);
+                            setTimeout(function(){
+                                $( "#obtBrowseTopUpVendingShp" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'Pos':
+                            JSxTopUpVendingCallbackPos(null);
+                            setTimeout(function(){
+                                $( "#obtBrowseTopUpVendingPos" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'Wah':
+                            JSxTopUpVendingCallbackWah(null);
+                            setTimeout(function(){
+                                $( "#obtBrowseTopUpVendingWah" ).trigger( "click" );
+                            },1000);
+                        break;
+                    }
+                    $('#obtTopUpVendingControlForm').attr('disabled', true);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxCloseLoading();
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+    }
+
 
 </script>

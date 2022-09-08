@@ -176,7 +176,6 @@ $bIsCanCel = ($tXthStaDoc == "3") ? true : false;
 $bIsApvOrCanCel = ($bIsApv || $bIsCanCel);
 ?>
 
-
 <form class="contact100-form validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmTopUpVendingForm">
 	<input type="hidden" id="ohdBaseUrl" name="ohdBaseUrl" value="<?php echo base_url(); ?>">
 	<input type="hidden" id="ohdTFWAutStaEdit" name="ohdTFWAutStaEdit" value="<?php echo $nAutStaEdit; ?>">
@@ -366,9 +365,17 @@ $bIsApvOrCanCel = ($bIsApv || $bIsCanCel);
 
 						<!--ร้านค้า-->
 						<div class="form-group <?= !FCNbGetIsShpEnabled() ? 'xCNHide' : '' ?>">
-							<label class="xCNLabelFrm"><?= language('document/topupVending/topupVending', 'tShop'); ?></label>
+							<label class="xCNLabelFrm"><?= language('document/topupVending/topupVending', 'tShopVD'); ?></label>
 							<div class="input-group">
-								<input name="oetTopUpVendingShpName" id="oetTopUpVendingShpName" class="form-control" value="<?php echo $tUserShpName; ?>" type="text" readonly="" placeholder="<?= language('document/topupVending/topupVending', 'tTFWShop') ?>" data-validate-required="<?= language('document/topupvending/topupvending', 'tTopUpVendingShpValidate') ?>">
+								<input 
+									name="oetTopUpVendingShpName"
+									id="oetTopUpVendingShpName"
+									class="form-control"
+									value="<?php echo $tUserShpName; ?>"
+									type="text" 
+									readonly="" 
+									placeholder="<?= language('document/topupVending/topupVending', 'tShopVD') ?>" 
+									data-validate-required="<?= language('document/topupvending/topupvending', 'tTopUpVendingShpValidate') ?>">
 								<input name="oetTopUpVendingShpCode" id="oetTopUpVendingShpCode" value="<?php echo $tUserShpCode; ?>" class="form-control xCNHide" type="text">
 								<span class="input-group-btn">
 									<button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTopUpVendingShp" type="button">
@@ -612,7 +619,7 @@ $bIsApvOrCanCel = ($bIsApv || $bIsCanCel);
 									type="text"
 									class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled"
 									maxlength="50"
-									id="oetTopUpVendingXthRefVehID"
+									id="oetTopUpVendingXthRefVehID" 
 									name="oetTopUpVendingXthRefVehID"
 									value="<?php echo $tXthRefVehID ?>">
 								</div>
@@ -661,7 +668,7 @@ $bIsApvOrCanCel = ($bIsApv || $bIsCanCel);
 
 						<div class="form-group">
 							<label class="xCNLabelFrm"><?php echo language('document/topupVending/topupVending', 'tNote'); ?></label>
-							<textarea class="form-control xCNApvOrCanCelDisabled" id="otaTopUpVendingRmk" name="otaTopUpVendingRmk" rows="10" maxlength="200" style="resize: none;height:86px;"><?php echo $tXthRmk; ?></textarea>
+							<textarea class="form-control xCNApvOrCanCelDisabled" id="otaTopUpVendingRmk" name="otaTopUpVendingRmk" maxlength="200"><?php echo $tXthRmk; ?></textarea>
 						</div>
 						<div class="form-group">
 							<label class="fancy-checkbox">
@@ -854,6 +861,28 @@ $bIsApvOrCanCel = ($bIsApv || $bIsCanCel);
 			</div>
 			<div class="modal-footer">
                 <button type="button" id="obtTopUpVendingConfirm" class="btn xCNBTNPrimery">
+					<?=language('common/main/main', 'tModalConfirm'); ?>
+				</button>
+				<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
+					<?=language('common/main/main', 'tModalCancel'); ?>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="odvTopUpVendingPopupFoundDataInTblDT">
+	<input type="hidden" id="ohdTopUpVendingTypeClick" name="ohdTopUpVendingTypeClick">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header xCNModalHead">
+				<label class="xCNTextModalHeard"><?=language('document/document/document','tDocStawarning'); ?></label>
+			</div>
+			<div class="modal-body">
+				<p id="obpMsgApv"><?=language('document/adjuststockvd/adjuststockvd','มีข้อมูลรายการสินค้าเดิมในระบบ ท่านต้องการที่จะลบข้อมูลรายการสินค้า ใช่ หรือ ไม่ ?'); ?>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn xCNBTNPrimery"	onclick="JSxTopUpVDEvnConfirmDelDTTemp()">
 					<?=language('common/main/main', 'tModalConfirm'); ?>
 				</button>
 				<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">

@@ -575,10 +575,10 @@ class mTransferVendingOut extends CI_Model
         $tSQLGetSeq = " SELECT FNXtdSeqNo 
                         FROM TCNTDocDTTmp WITH(NOLOCK) 
                         WHERE FTSessionID = '$tUserSessionID' 
-                          AND FTXthDocNo  = '$tDocNo'
-                          AND FTXthDocKey = '$tDocKey'
+                        AND FTXthDocNo  = '$tDocNo'
+                        AND FTXthDocKey = '$tDocKey'
                         ORDER BY FNXtdSeqNo DESC
-                      ";
+        ";
         $oQuery = $this->db->query($tSQLGetSeq);
         if ($oQuery->num_rows() > 0) {
             $aResult = $oQuery->result_array();
@@ -595,14 +595,14 @@ class mTransferVendingOut extends CI_Model
         ";
         $tSQL .= "  
             SELECT 
-                '$tBchCode' AS FTBchCode,
-                '$tDocNo' AS FTXthDocNo,
+                '$tBchCode'         AS FTBchCode,
+                '$tDocNo'           AS FTXthDocNo,
                 $nLastSeq + ROW_NUMBER() OVER(ORDER BY PDTLAY.FTPdtCode ASC)  AS FNXtdSeqNo,
-                '$tDocKey' AS FTXthDocKey,
+                '$tDocKey'          AS FTXthDocKey,
                 PDT.FTPdtCode,
-                PDTL.FTPdtName AS FTXtdPdtName,
-                PDTLAY.FNCabSeq AS FNCabSeqForTWXVD,
-                SHPCABL.FTCabName AS FTCabNameForTWXVD,
+                PDTL.FTPdtName      AS FTXtdPdtName,
+                PDTLAY.FNCabSeq     AS FNCabSeqForTWXVD,
+                SHPCABL.FTCabName   AS FTCabNameForTWXVD,
                 PDTLAY.FNLayRow AS FNLayRowForTWXVD,
                 PDTLAY.FNLayCol AS FNLayColForTWXVD,
                 ISNULL(
@@ -626,13 +626,27 @@ class mTransferVendingOut extends CI_Model
             LEFT JOIN TVDMShopCabinet_L SHPCABL WITH(NOLOCK) ON SHPCABL.FTBchCode = PDTLAY.FTBchCode AND SHPCABL.FNCabSeq = PDTLAY.FNCabSeq AND SHPCABL.FTShpCode = PDTLAY.FTShpCode AND SHPCABL.FNLngID = $nLngID
             LEFT JOIN TCNMPdt PDT WITH(NOLOCK) ON PDTLAY.FTPdtCode = PDT.FTPdtCode
             LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK) ON PDT.FTPdtCode = PDTL.FTPdtCode AND PDTL.FNLngID = $nLngID
-            WHERE PDTLAY.FTBchCode = '$tBchCode'
-                AND PDTLAY.FTMerCode = '$tMerCode'
-                AND PDTLAY.FTShpCode = '$tShpCode'
-                AND PDTLAY.FTPdtCode IN ($tPackDataPdt)
-            ORDER BY PDTLAY.FNCabSeq ASC, PDTLAY.FNLayRow ASC, PDTLAY.FNLayCol ASC
+            WHERE PDTLAY.FDCreateOn <> '' AND PDTLAY.FTPdtCode <> ''
         ";
-        // echo $tSQL;exit;
+
+        if(isset($tBchCode) && !empty($tBCHCode)){
+            $tSQL   .= " AND PDTLAY.FTBchCode   = ".$this->db->escape($tBchCode)." ";
+        }
+
+        if(isset($tMerCode) && !empty($tMerCode)){
+            $tSQL   .= "AND PDTLAY.FTMerCode    = ".$this->db->escape($tMerCode)." ";
+        }
+
+        if(isset($tShpCode) && !empty($tShpCode)){
+            $tSQL   .= " AND PDTLAY.FTShpCode   = ".$this->db->escape($tShpCode)." "; 
+        }
+            
+        if(isset($tPackDataPdt) && !empty($tPackDataPdt)){
+            $tSQL   .= " AND PDTLAY.FTPdtCode IN ($tPackDataPdt) ";
+        }
+
+        $tSQL   .= " ORDER BY PDTLAY.FNCabSeq ASC, PDTLAY.FNLayRow ASC, PDTLAY.FNLayCol ASC ";
+
         $this->db->query($tSQL);
 
         if ($this->db->trans_status() === FALSE) {
@@ -649,64 +663,6 @@ class mTransferVendingOut extends CI_Model
             );
         }
         return $aReturn;
-
-        // Update Qty
-        // $tTempSQL = "
-        //     SELECT
-        //         TMP.FTBchCode,
-        //         TMP.FTXthDocNo,
-        //         TMP.FNXtdSeqNo,
-        //         TMP.FTXthDocKey,
-        //         TMP.FTPdtCode,
-        //         TMP.FTXtdPdtName,
-        //         TMP.FNCabSeqForTWXVD,
-        //         TMP.FTCabNameForTWXVD,
-        //         TMP.FNLayRowForTWXVD,
-        //         TMP.FNLayColForTWXVD,
-        //         TMP.FCStkQty,
-        //         TMP.FCLayColQtyMaxForTWXVD,
-        //         TMP.FTXthWhFrmForTWXVD,
-        //         TMP.FTXthWhToForTWXVD,
-        //         TMP.FCXtdQty,
-        //         TMP.FTSessionID
-        //     FROM TCNTDocDTTmp TMP WITH(NOLOCK)
-        //     WHERE TMP.FTSessionID = '$tUserSessionID'
-        //     ORDER BY TMP.FNCabSeqForTWXVD ASC, TMP.FNLayRowForTWXVD ASC, TMP.FNLayColForTWXVD ASC
-        // ";
-
-        // $oTemp = $this->db->query($tTempSQL);
-        // $aTemp = $oTemp->result_array();
-
-        // foreach ($aTemp as $aItem) {
-        //     $aGetPdtStkBalWithCheckInTmp = [
-        //         'tBchCode' => $aItem['FTBchCode'],
-        //         'tWahCode' => $tWahCodeInShop, // คลังสินค้าต้นทาง เพื่อใช้ในการเติมให้กับ คลังตู้สินค้า
-        //         'tPdtCode' => $aItem['FTPdtCode'],
-        //         'tUserSessionID' => $aItem['FTSessionID'],
-        //     ];
-        //     $nStkBal = $this->FSnGetPdtStkBalWithCheckInTmp($aGetPdtStkBalWithCheckInTmp);
-
-        //     $nBal = $aItem['FCLayColQtyMaxForTWXVD'] - $aItem['FCStkQty'];
-
-        //     if ($nBal <= $nStkBal) {
-
-        //         $aUpdateQtyInTmpBySeqParams = [
-        //             'cQty' => $nBal,
-        //             'tUserLoginCode' => $tUserLoginCode,
-        //             'tUserSessionID' => $aItem['FTSessionID'],
-        //             'nSeqNo' => $aItem['FNXtdSeqNo'],
-        //         ];
-        //         $this->FSbUpdateQtyInTmpBySeq($aUpdateQtyInTmpBySeqParams);
-        //     } else {
-        //         $aUpdateQtyInTmpBySeqParams = [
-        //             'cQty' => ($nStkBal < 0) ? 0 : $nStkBal,
-        //             'tUserLoginCode' => $tUserLoginCode,
-        //             'tUserSessionID' => $aItem['FTSessionID'],
-        //             'nSeqNo' => $aItem['FNXtdSeqNo'],
-        //         ];
-        //         $this->FSbUpdateQtyInTmpBySeq($aUpdateQtyInTmpBySeqParams);
-        //     }
-        // }
     }
 
     /**
@@ -1362,15 +1318,15 @@ class mTransferVendingOut extends CI_Model
                             ISNULL((SELECT 
                                         FCStkQty 
                                     FROM TVDTPdtStkBal WITH(NOLOCK) 
-                                    WHERE FTWahCode = DT.FTXthWhFrm
+                                    WHERE FTWahCode = DT.FTXthWhTo
                                     AND FTBchCode = '$tBchCode'
                                     AND FNLayRow = DT.FNLayRow
                                     AND FNLayCol = DT.FNLayCol
                                     AND FNCabSeq = DT.FNCabSeq
                                     AND FTPdtCode = DT.FTPdtCode)
                             ,0) AS FCStkQty,
-                            DT.FTXthWhFrm,
-                            DT.FTXthWhTo,
+                            DT.FTXthWhTo AS FTXthWhFrmForTWXVD,
+	                        DT.FTXthWhFrm AS FTXthWhToForTWXVD,
                             '$tSessionID'   AS FTSessionID,
                             '$tDocKey'      AS FTXthDocKey
                         FROM TVDTPdtTwxDT DT
@@ -1381,6 +1337,7 @@ class mTransferVendingOut extends CI_Model
                         WHERE DT.FTXthDocNo = '$tDocNoRefInt'
                     ";
             $this->db->query($tSQL);
+            // echo $this->db->last_query();exit;
 
             if ($this->db->trans_status() === FALSE) {
                 $aReturn = array(
@@ -1450,4 +1407,30 @@ class mTransferVendingOut extends CI_Model
             return $Error;
         }
     }
+
+
+    // ลบข้อมูลรายการสินค้า DTTemp
+    public function FSxMTVDDelDTTempAll($paParams){
+        $this->db->where('FTSessionID', $paParams['FTSessionID']);
+        $this->db->where('FTXthDocKey', $paParams['FTXthDocKey']);
+        $this->db->where('FTXthDocNo', $paParams['FTXthDocNo']);
+        $this->db->delete('TCNTDocDTTmp');
+        if($this->db->affected_rows() > 0) {
+            $aStatus = array(
+                'rtCode'    => '1',
+                'rtDesc'    => 'Delete DT Success',
+            );
+        }else{
+            $aStatus = array(
+                'rtCode'    => '905',
+                'rtDesc'    => 'Error Cannot Delete DT.',
+            );
+        }
+        return $aStatus;
+    }
+
+
+
+
+
 }

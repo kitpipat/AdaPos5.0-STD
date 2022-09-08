@@ -1,10 +1,8 @@
 <script type="text/javascript">
-
-	var nLangEdits 		= '<?php echo $this->session->userdata("tLangEdit"); ?>';
+	var nLangEdits		= '<?php echo $this->session->userdata("tLangEdit"); ?>';
 	var tUsrApv    		= '<?php echo $this->session->userdata("tSesUsername"); ?>';
 	var tSesUsrLevel    = '<?php echo $this->session->userdata('tSesUsrLevel');?>';
 	var tRoute          =  $('#ohdADJVDRoute').val();
-	 
 	$(document).keypress(
 		function(event) {
 			if (event.which == '13') {
@@ -57,9 +55,9 @@
 		};
 
 		// Callback Page Control(function)
-		var poCallback = {
-		    tCallPageEdit	: "JSvCallPageADJVDEdit",
-    		tCallPageList	: "JSvCallPageADJVDList"
+		var poCallback	= {
+			tCallPageEdit	: "JSvCallPageADJVDEdit",
+			tCallPageList	: "JSvCallPageADJVDList"
 		};
 
 		//Check Show Progress %
@@ -191,13 +189,58 @@
 		}
 	}
 
+	function JSxADJVDClearPdtInTmp(){
+		$.ajax({
+			type : "POST",
+			url  : "ADJSTKVDRemoveItemAllInTemp",
+			data : {
+				'tBchCode' : $('#oetBchCode').val(),
+				'tDocNo'   : $('#oetXthDocNo').val(),
+			},
+			catch 	: false,
+			timeout	: 0,
+			success	: function (tResult){
+				JSxLoadPdtDtFromTem(1);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				JCNxResponseError(jqXHR, textStatus, errorThrown);
+			}
+		});
+	}
+
+	function JSbADJVDHavePdtInTmp(ptNextFunc){
+		var nCountPdtInTmp = $('.xCNADJVendingPdtLayoutRow').length;
+		if( nCountPdtInTmp > 0 ){
+			FSvCMNSetMsgWarningDialog("มีข้อมูลรายการสินค้าตรวจนับสต็อคในระบบ ท่านต้องการที่จะลบข้อมูลรายการสินค้า ใช่ หรือ ไม่ ?", ptNextFunc, '', '1');
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	//เลือกสาขา
 	$('#obtBrowseBCH_ADJVending').click(function() {
-        var nLangEdits = <?php echo $this->session->userdata("tLangEdit"); ?>;
+		if(JSbADJVDHavePdtInTmp('JSxADJVDCallBrowseBranch')){
+			return false;
+		}else{
+			JSxADJVDCallBrowseBranch('2');
+			return true;
+		}
+	});
+
+	// ptType : 1 = delete pdt in temp before browse , 2 = default browse
+	function JSxADJVDCallBrowseBranch(ptType){
+
+		if( ptType == '1' ){
+			JSxADJVDClearPdtInTmp();
+		}
+
+		var nLangEdits = <?php echo $this->session->userdata("tLangEdit"); ?>;
         var tUsrLevel = "<?=$this->session->userdata('tSesUsrLevel')?>";
         var tBchMulti = "<?=$this->session->userdata("tSesUsrBchCodeMulti"); ?>";
         var tSQLWhere = "";
-        if(tUsrLevel != "HQ"){
+
+        if( tUsrLevel != "HQ" ){
             tSQLWhere = " AND TCNMBranch.FTBchCode IN ("+tBchMulti+") ";
         }
 
@@ -235,28 +278,43 @@
             BrowseLev   			: 1
         };
         JCNxBrowseData('oBrowse_Branch');
-	});
+	}
 
 	//หลังจากเลือกสาขา
 	function JSxAfterChooseBCH(){
 		//ล้างค่าแบบเป็นระดับ
-		var nReturn = JSxChangeValue();
-		if(nReturn == true){
+		// var nReturn = JSxChangeValue();
+		// if(nReturn == true){
 			$('#oetMchName , #oetMchCode').val('');
 
 			$('#oetShpNameStart , #oetShpCodeStart').val('');
-			$('#obtADJ_VendingBrowseShp').addClass('xCNClassBlockEventClick');
+			// $('#obtADJ_VendingBrowseShp').addClass('xCNClassBlockEventClick');
 
 			$('#oetPosNameStart , #oetPosCodeStart').val('');
 			$('#obtADJVDBrowsePosStart').addClass('xCNClassBlockEventClick');
 
 			$('#oetWahNameStart , #ohdWahCodeStart').val('');
 			$('#obtADJVDBrowseWah').addClass('xCNClassBlockEventClick');
-		}
+		// }
 	}
 
 	//เลือกกลุ่มร้านค้า
-	$('#obtADJVDBrowseMch').click(function() {		
+	$('#obtADJVDBrowseMch').click(function() {
+		if(JSbADJVDHavePdtInTmp('JSxADJVDCallBrowseMerchant')){
+			return false;
+		}else{
+			JSxADJVDCallBrowseMerchant('2');
+			return true;
+		}
+	});
+
+	// ptType : 1 = delete pdt in temp before browse , 2 = default browse
+	function JSxADJVDCallBrowseMerchant(ptType){
+
+		if( ptType == '1' ){
+			JSxADJVDClearPdtInTmp();
+		}
+
 		window.oBrowseADJMch = {
             Title: ['company/warehouse/warehouse', 'tWAHBwsMchTitle'],
             Table: {
@@ -293,17 +351,17 @@
             BrowseLev: 1
         };
 		JCNxBrowseData('oBrowseADJMch');
-		
 		// Hide Pin Menu
 		JSxCheckPinMenuClose();
-	});
+
+	}
 
 	//หลังจากเลือกกลุ่มร้านค้า
 	function JSxAfterChooseMER(paData){
 		//ถ้าไม่เลือกข้อมูลต้อง เคีลยร์ค่าเก่า
 		if(paData == 'NULL' || paData == null){
 			$('#oetShpNameStart , #oetShpCodeStart').val('');
-			$('#obtADJ_VendingBrowseShp').addClass('xCNClassBlockEventClick');
+			// $('#obtADJ_VendingBrowseShp').addClass('xCNClassBlockEventClick');
 
 			$('#oetPosNameStart , #oetPosCodeStart').val('');
 			$('#obtADJVDBrowsePosStart').addClass('xCNClassBlockEventClick');
@@ -313,8 +371,8 @@
 
 			$('#obtADJVDControlFormSearchPDT').attr('disabled',true);
 		}else{
-			var nReturn = JSxChangeValue();
-			if(nReturn == true){
+			// var nReturn = JSxChangeValue();
+			// if(nReturn == true){
 				$('#oetShpNameStart , #oetShpCodeStart').val('');
 				$('#oetPosNameStart , #oetPosCodeStart').val('');
 				$('#oetWahNameStart , #ohdWahCodeStart').val('');
@@ -323,14 +381,29 @@
 				$('#obtADJ_VendingBrowseShp').removeClass('xCNClassBlockEventClick');
 				$('#obtADJ_VendingBrowseShp').removeClass('disabled');
 				$('#obtADJ_VendingBrowseShp').attr('disabled',false);
-			}
+			// }
 		}
 	}
 
-	//เลือกร้านค้า
+	//เลือก ร้านค้า / รูปแบบการจัดสินค้า
 	$('#obtADJ_VendingBrowseShp').click(function() {
+		if(JSbADJVDHavePdtInTmp('JSxADJVDCallBrowseShopVD')){
+			return false;
+		}else{
+			JSxADJVDCallBrowseShopVD('2');
+			return true;
+		}
+	});
+
+	// ptType : 1 = delete pdt in temp before browse , 2 = default browse
+	function JSxADJVDCallBrowseShopVD(ptType){
+
+		if( ptType == '1' ){
+			JSxADJVDClearPdtInTmp();
+		}
+
 		window.oBrowseADJShp = {
-            Title: ['company/shop/shop', 'tSHPTitle'],
+            Title: ['company/shop/shop', 'tSHPTitle_LAYOUT'],
             Table: {
                 Master	: 'TCNMShop',
                 PK		: 'FTShpCode'
@@ -344,14 +417,26 @@
             Where: {
                 Condition: [
                     function() {
-                        var tSQL = "AND TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTBchCode = '" + $("#oetBchCode").val() + "' AND TCNMShop.FTMerCode = '" + $("#oetMchCode").val() + "'";
+						// Where Branch Shop
+						var tBchCode		= $("#oetBchCode").val();
+						var tWhereBchCode	= "";
+						if(tBchCode != ""){
+							tWhereBchCode   = " AND TCNMShop.FTBchCode = '" + $("#oetBchCode").val() + "' ";
+						}
+						// Where Merchant
+						var tMerCode		= $('#oetMchCode').val();
+						var tWhereMerCode   = "";
+						if(tMerCode != ""){
+							tWhereMerCode   = " AND TCNMShop.FTMerCode = '" + $("#oetMchCode").val() + "'";
+						}
+                        var tSQL = "AND TCNMShop.FTShpStaActive = 1 "+tWhereBchCode+tWhereMerCode;
                         return tSQL;
                     }
                 ]
             },
             GrideView: {
-                ColumnPathLang		: 'company/branch/branch',
-                ColumnKeyLang		: ['tBCHCode', 'tBCHName'],
+                ColumnPathLang		: 'company/shop/shop',
+                ColumnKeyLang		: ['tShopCode_LAYOUT', 'tShopName_LAYOUT'],
                 ColumnsSize			: ['25%', '75%'],
                 WidthModal			: 50,
                 DataColumns			: ['TCNMShop.FTShpCode', 'TCNMShop_L.FTShpName', 'TCNMShop.FTWahCode', 'TCNMWaHouse_L.FTWahName', 'TCNMShop.FTShpType', 'TCNMShop.FTBchCode'],
@@ -371,10 +456,9 @@
                 ArgReturn			: ['FTBchCode', 'FTShpCode', 'FTShpType', 'FTWahCode', 'FTWahName']
             },
             BrowseLev: 1
-
         }
         JCNxBrowseData('oBrowseADJShp');
-	});
+	}
 
 	//หลังจากเลือกร้านค้า
 	function JSxAfterChooseSHP(paData){
@@ -388,36 +472,51 @@
 
 			$('#obtADJVDControlFormSearchPDT').attr('disabled',true);
 		}else{
-			var nReturn = JSxChangeValue();
-			var tJSON = JSON.parse(paData);
-			if(nReturn == true){
+			// var nReturn = JSxChangeValue();
+			// var tJSON = JSON.parse(paData);
+			// if(nReturn == true){
 				$('#oetPosNameStart , #oetPosCodeStart').val('');
 				$('#oetWahNameStart , #ohdWahCodeStart').val('');
 				$('#obtADJVDBrowsePosStart').removeClass('xCNClassBlockEventClick');
 				$('#obtADJVDBrowsePosStart').removeClass('disabled');
 				$('#obtADJVDBrowsePosStart').attr('disabled',false);
-			}
+			// }
 		}
 	}
 
-	//เครื่องจุดขายเริ่ม
-	$('#obtADJVDBrowsePosStart').click(function() {		
+	// ตูุ้ขายสินค้า
+	$('#obtADJVDBrowsePosStart').click(function() {
+		if(JSbADJVDHavePdtInTmp('JSxADJVDCallBrowsePosVD')){
+			return false;
+		}else{
+			JSxADJVDCallBrowsePosVD('2');
+			return true;
+		}
+	});
+
+	// ptType : 1 = delete pdt in temp before browse , 2 = default browse
+	function JSxADJVDCallBrowsePosVD(ptType){
+
+		if( ptType == '1' ){
+			JSxADJVDClearPdtInTmp();
+		}
+		
 		var oJoinCondition  = {
-                Table: ['TCNMPos', 'TCNMPosLastNo', 'TCNMWaHouse', 'TCNMWaHouse_L','TCNMPos_L'],
-                On: ['TVDMPosShop.FTPosCode = TCNMPos.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos.FTBchCode',
-                    'TVDMPosShop.FTPosCode = TCNMPosLastNo.FTPosCode',
-                    'TVDMPosShop.FTPosCode = TCNMWaHouse.FTWahRefCode AND TCNMWaHouse.FTWahStaType = 6 AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
-                    'TCNMWaHouse.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits ,
-					'TVDMPosShop.FTPosCode = TCNMPos_L.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos_L.FTBchCode AND TCNMPos_L.FNLngID = ' + nLangEdits
-                ]
-            };
+			Table: ['TCNMPos', 'TCNMPosLastNo', 'TCNMWaHouse', 'TCNMWaHouse_L','TCNMPos_L'],
+			On: ['TVDMPosShop.FTPosCode = TCNMPos.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos.FTBchCode',
+				'TVDMPosShop.FTPosCode = TCNMPosLastNo.FTPosCode',
+				'TVDMPosShop.FTPosCode = TCNMWaHouse.FTWahRefCode AND TCNMWaHouse.FTWahStaType = 6 AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
+				'TCNMWaHouse.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits ,
+				'TVDMPosShop.FTPosCode = TCNMPos_L.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos_L.FTBchCode AND TCNMPos_L.FNLngID = ' + nLangEdits
+			]
+		};
         var aCondition = [
-                            function() {
-                                var tSQL = "AND TCNMPos.FTPosStaUse = 1 AND TVDMPosShop.FTShpCode = '" + $("#oetShpCodeStart").val() + "' AND TVDMPosShop.FTBchCode = '" + $("#oetBchCode").val() + "'";
-                                tSQL += " AND TCNMPos.FTPosType = '4'";
-                                return tSQL;
-                            }
-                        ];
+			function() {
+				var tSQL = "AND TCNMPos.FTPosStaUse = 1 AND TVDMPosShop.FTShpCode = '" + $("#oetShpCodeStart").val() + "' AND TVDMPosShop.FTBchCode = '" + $("#oetBchCode").val() + "'";
+				tSQL += " AND TCNMPos.FTPosType = '4'";
+				return tSQL;
+			}
+		];
         var aDataColumns        = ['TVDMPosShop.FTPosCode', 'TCNMPos_L.FTPosName', 'TCNMPosLastNo.FTPosComName', 'TVDMPosShop.FTShpCode', 'TVDMPosShop.FTBchCode', 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'];
         var aDataColumnsFormat  = ['', '', '', '', '', ''];
         var aDisabledColumns    = [2, 3, 4, 5, 6];
@@ -459,7 +558,7 @@
 		// Hide Pin Menu
 		JSxCheckPinMenuClose();
 		JCNxBrowseData('oADJVDBrowsePos');
-	});
+	}
 
 	//หลังจากเลือกเครื่องจุดขาย
 	function JSxAfterChoosePOS(paData){
@@ -470,9 +569,9 @@
 
 			$('#obtADJVDControlFormSearchPDT').attr('disabled',true);
 		}else{
-			var nReturn = JSxChangeValue();
+			// var nReturn = JSxChangeValue();
 			var tJSON = JSON.parse(paData);
-			if(nReturn == true){
+			// if(nReturn == true){
 				$('#obtADJVDBrowseWah').removeClass('xCNClassBlockEventClick');
 				$('#obtADJVDBrowseWah').removeClass('disabled');
 				$('#obtADJVDBrowseWah').attr('disabled',false);
@@ -481,7 +580,7 @@
 				$('#oetWahNameStart').val(tJSON[4]);
 
 				$('#obtADJVDControlFormSearchPDT').attr('disabled',false);
-			}
+			// }
 		}
 	}
 
@@ -581,17 +680,32 @@
 		if(paData == 'NULL' || paData == null){
 			$('#obtADJVDControlFormSearchPDT').attr('disabled',true);
 		}else{
-			var nReturn = JSxChangeValue();
-			if(nReturn == true){
+			// var nReturn = JSxChangeValue();
+			// if(nReturn == true){
 				$('#obtADJVDControlFormSearchPDT').attr('disabled',false);
-			}else{
+			// }else{
 
-			}
+			// }
 		}
 	}
 
 	//เหตุผล
 	$('#obtASTBrowseRsn').click(function() {
+		if(JSbADJVDHavePdtInTmp('JSxADJVDCallBrowseReason')){
+			return false;
+		}else{
+			JSxADJVDCallBrowseReason('2');
+			return true;
+		}
+	});
+
+	// ptType : 1 = delete pdt in temp before browse , 2 = default browse
+	function JSxADJVDCallBrowseReason(ptType){
+
+		if( ptType == '1' ){
+			JSxADJVDClearPdtInTmp();
+		}
+	
 		// Option Modal เหตุผล
 		oOptionReturn = {
 			Title: ["other/reason/reason","tRSNTitle"],
@@ -629,7 +743,7 @@
 		// Hide Pin Menu
 		JSxCheckPinMenuClose();
 		JCNxBrowseData('oOptionReturn');
-	});
+	}
 
 	//เคลียร์ข้อมูลทั้งหมด
 	$("#obtADJVDControlFormClear").click(function(){
@@ -677,7 +791,7 @@
 			$('#odvADJVDReasonIsNull').modal('show');
 			$('#oetASTRsnName').focus();
 		}else{
-
+			JCNxOpenLoading();
 			if(tRoute == 'ADJSTKVDEventEdit'){
 				JSvADJVDLoadPdtDataTableHtml(1,'ProcessInPageEdit');
 			}else{
@@ -687,42 +801,42 @@
 	});
 
 	//ถ้ามีการเปลี่ยนค่า จะต้องขึ้นเเจ้งเตือน
-	function JSxChangeValue(){
-		var nLen = $("#odvTBodyADJVDPdtAdvTableList tr").length;
-		if(nLen >= 1){
-			var tCheckClass = $("#odvTBodyADJVDPdtAdvTableList tr td").hasClass('xCNNotfound');
-			if(tCheckClass == true){ //พบว่า "ไม่เจอข้อมูล"
-				return true;
-			}else{ //มีข้อมูล
-				$('#odvADJVDChangeData').modal("show");
+	// function JSxChangeValue(){
+	// 	var nLen = $("#odvTBodyADJVDPdtAdvTableList tr").length;
+	// 	if(nLen >= 1){
+	// 		var tCheckClass = $("#odvTBodyADJVDPdtAdvTableList tr td").hasClass('xCNNotfound');
+	// 		if(tCheckClass == true){ //พบว่า "ไม่เจอข้อมูล"
+	// 			return true;
+	// 		}else{ //มีข้อมูล
+	// 			$('#odvADJVDChangeData').modal("show");
 
-				//กดยืนยันข้อมูล
-				$('.xCNConfrimChangeData').click(function(){
-					$.ajax({
-						type : "POST",
-						url  : "ADJSTKVDRemoveItemAllInTemp",
-						data : {
-							'tBchCode' : $('#oetBchCode').val(),
-							'tDocNo'   : $('#oetXthDocNo').val(),
-						},
-						catch 	: false,
-						timeout	: 0,
-						success	: function (tResult){
-							console.log(tResult);
-							$('#odvADJVDChangeData').modal("hide");
-							$("#odvTBodyADJVDPdtAdvTableList").html('');
-							$("#odvTBodyADJVDPdtAdvTableList").append('<tr><td colspan="100%" class="text-center xCNNotfound"><span><?=language('common/main/main','tCMNNotFoundData')?></span></td></tr>');
-							$('#odvPaginationBtn p').text('');
-						},
-						error: function (jqXHR, textStatus, errorThrown) {
-							JCNxResponseError(jqXHR, textStatus, errorThrown);
-						}
-					});
-				});
-				return true;
-			}
-		}
-	}
+	// 			//กดยืนยันข้อมูล
+	// 			$('.xCNConfrimChangeData').click(function(){
+	// 				$.ajax({
+	// 					type : "POST",
+	// 					url  : "ADJSTKVDRemoveItemAllInTemp",
+	// 					data : {
+	// 						'tBchCode' : $('#oetBchCode').val(),
+	// 						'tDocNo'   : $('#oetXthDocNo').val(),
+	// 					},
+	// 					catch 	: false,
+	// 					timeout	: 0,
+	// 					success	: function (tResult){
+	// 						// console.log(tResult);
+	// 						$('#odvADJVDChangeData').modal("hide");
+	// 						$("#odvTBodyADJVDPdtAdvTableList").html('');
+	// 						$("#odvTBodyADJVDPdtAdvTableList").append('<tr><td colspan="100%" class="text-center xCNNotfound"><span><?=language('common/main/main','tCMNNotFoundData')?></span></td></tr>');
+	// 						$('#odvPaginationBtn p').text('');
+	// 					},
+	// 					error: function (jqXHR, textStatus, errorThrown) {
+	// 						JCNxResponseError(jqXHR, textStatus, errorThrown);
+	// 					}
+	// 				});
+	// 			});
+	// 			return true;
+	// 		}
+	// 	}
+	// }
 
 	//พิมพ์
 	function JSxADJVDPrint(){
@@ -734,4 +848,9 @@
 		];
 		window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillChkStkVD?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
 	}
+
+
+
+
+
 </script>

@@ -54,10 +54,11 @@ $lang['tTBType']      = "ประเภท";
 $lang['tTBValue']     = "มูลค่า";
 
 //Form Search
-$lang['tAllBranch']   = "สาขาทั้งหมด";
-$lang['tShop']        = "ร้านค้า";
-$lang['tBranch']      = "สาขา";
-$lang['tPos']         = "เครื่องจุดขาย";
+$lang['tAllBranch']     = "สาขาทั้งหมด";
+$lang['tShop']          = "ร้านค้า";
+$lang['tBranch']        = "สาขา";
+$lang['tPos']           = "เครื่องจุดขาย";
+$lang['tShopVD']        = "รูปแบบการจัดสินค้า";
 
 //$lang Modal Browse Address
 $lang['tBrowseADDTitle']        = "ข้อมูลที่อยู่";
@@ -216,7 +217,7 @@ $lang['tTFXVDPdtName']    = "ชื่อสินค้า";
 $lang['tTFXVDPdtRow']    = "แถว";
 $lang['tTFXVDPdtCol']    = "คอลัมน์";
 $lang['tTFXVDPdtMaxTransfer']    = "คืนไปยังคลัง";
-$lang['tTFXVDPdtBalance']    = "คงเหลือล่าสุด";
+$lang['tTFXVDPdtBalance']    = "คงเหลือ<br>ล่าสุด";
 $lang['tTFXVDPdtNumInCrease']    = "จำนวนเคิม";
 $lang['tTFXVDPdtNumTransfer']    = "จำนวนโอน";
 

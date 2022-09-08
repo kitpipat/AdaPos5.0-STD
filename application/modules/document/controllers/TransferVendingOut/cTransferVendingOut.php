@@ -747,4 +747,21 @@ class cTransferVendingOut extends MX_Controller
         }
         echo json_encode($aCancel);
     }
+
+
+    // Functionality : ลบข้อมูล Table DT Temp ALL
+    // Creator : 17/02/2022 Wasin (Yoshi)
+    public function FSaCTVOEventDelDTTempAll(){
+        $tSessionID = $this->session->userdata("tSesSessionID");
+        $aDataDelDT = array(
+            'FTBchCode'     => $this->input->post('tBchCode'),
+            'FTXthDocKey'   => 'TVDTPdtTwxHD',
+            'FTXthDocNo'    => 'TVODocTemp',
+            'FTSessionID'   => $tSessionID,
+        );
+        $aStaDelete = $this->mTransferVendingOut->FSxMTVDDelDTTempAll($aDataDelDT);
+        echo json_encode($aStaDelete);
+    }
+
+
 }

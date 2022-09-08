@@ -130,7 +130,7 @@ $route['ADJSTKVDFormSearchList']         = 'document/adjuststockvd/cAdjstockvd/F
 $route['ADJSTKVDPageAdd']                = 'document/adjuststockvd/cAdjstockvd/FSxCADJVDAddPage';
 $route['ADJSTKVDPageEdit']               = 'document/adjuststockvd/cAdjstockvd/FSvCADJVDEditPage';
 $route['ADJSTKVDPdtDtLoadToTem']         = 'document/adjuststockvd/cAdjstockvd/FSxCADJVDPdtDtLoadToTem';
-$route['ADJSTKVDPdtAdvanceTableLoadData']= 'document/adjuststockvd/cAdjstockvd/FSvCADJVDPdtAdvTblLoadData';
+$route['ADJSTKVDPdtAdvanceTableLoadData'] = 'document/adjuststockvd/cAdjstockvd/FSvCADJVDPdtAdvTblLoadData';
 $route['ADJSTKVDEventAdd']               = 'document/adjuststockvd/cAdjstockvd/FSaCADJVDAddEvent';
 $route['ADJSTKVDEditPdtIntoTableDT']     = 'document/adjuststockvd/cAdjstockvd/FSvCADJVDEditPdtIntoTableDT';
 $route['ADJSTKVDCheckPdtInTmp']          = 'document/adjuststockvd/cAdjstockvd/FSbCADJVDheckHaveProductInTemp';
@@ -621,25 +621,26 @@ $route['dcmCouponSetupEvenCancel']          = 'document/couponsetup/cCouponSetup
 $route['dcmCouponSetupChangStatusAfApv']    = 'document/couponsetup/cCouponSetup/FSaCCPHChangStatusAfApv';
 
 //ใบเติมสินค้า
-$route['TWXVD/(:any)/(:any)']                      = 'document/topupVending/cTopupVending/index/$1/$2';
-$route['TopupVendingList']                         = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingList';
-$route['TopupVendingDataTable']                    = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDataTable';
-$route['TopupVendingCallPageAdd']                  = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingAddPage';
-$route['TopupVendingEventAdd']                     = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingAddEvent';
-$route['TopupVendingCallPageEdit']                 = 'document/topupVending/cTopupVending/FSvCTUVTopupVendingEditPage';
-$route['TopupVendingEventEdit']                    = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingEditEvent';
-$route['TopupVendingDocApprove']                   = 'document/topupVending/cTopupVending/FStCTopUpVendingDocApprove';
-$route['TopupVendingDocCancel']                    = 'document/topupVending/cTopupVending/FStCTopUpVendingDocCancel';
-$route['TopupVendingDelDoc']                       = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteDoc';
-$route['TopupVendingDelDocMulti']                  = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteMultiDoc';
-$route['TopupVendingGetWahByShop']                 = 'document/topupVending/cTopupVending/FStGetWahByShop';
-$route['TopupVendingUniqueValidate']               = 'document/topupVending/cTopupVending/FStCTopUpVendingUniqueValidate/$1';
-$route['TopupVendingInsertPdtLayoutToTmp']         = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingInsertPdtLayoutToTmp';
-$route['TopupVendingGetPdtLayoutDataTableInTmp']   = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingGetPdtLayoutDataTableInTmp';
-$route['TopupVendingUpdatePdtLayoutInTmp']         = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingUpdatePdtLayoutInTmp';
-$route['TopupVendingDeletePdtLayoutInTmp']         = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeletePdtLayoutInTmp';
-$route['TopupVendingDeleteMultiPdtLayoutInTmp']    = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeleteMultiPdtLayoutInTmp';
-$route['dcmTVDEventDelPdtValueZero']               = 'document/topupVending/cTopupVending/FSxCTVDDelPdtValueZero';
+$route['TWXVD/(:any)/(:any)']                       = 'document/topupVending/cTopupVending/index/$1/$2';
+$route['TopupVendingList']                          = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingList';
+$route['TopupVendingDataTable']                     = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDataTable';
+$route['TopupVendingCallPageAdd']                   = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingAddPage';
+$route['TopupVendingEventAdd']                      = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingAddEvent';
+$route['TopupVendingCallPageEdit']                  = 'document/topupVending/cTopupVending/FSvCTUVTopupVendingEditPage';
+$route['TopupVendingEventEdit']                     = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingEditEvent';
+$route['TopupVendingDocApprove']                    = 'document/topupVending/cTopupVending/FStCTopUpVendingDocApprove';
+$route['TopupVendingDocCancel']                     = 'document/topupVending/cTopupVending/FStCTopUpVendingDocCancel';
+$route['TopupVendingDelDoc']                        = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteDoc';
+$route['TopupVendingDelDocMulti']                   = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteMultiDoc';
+$route['TopupVendingGetWahByShop']                  = 'document/topupVending/cTopupVending/FStGetWahByShop';
+$route['TopupVendingUniqueValidate']                = 'document/topupVending/cTopupVending/FStCTopUpVendingUniqueValidate/$1';
+$route['TopupVendingInsertPdtLayoutToTmp']          = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingInsertPdtLayoutToTmp';
+$route['TopupVendingGetPdtLayoutDataTableInTmp']    = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingGetPdtLayoutDataTableInTmp';
+$route['TopupVendingUpdatePdtLayoutInTmp']          = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingUpdatePdtLayoutInTmp';
+$route['TopupVendingDeletePdtLayoutInTmp']          = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeletePdtLayoutInTmp';
+$route['TopupVendingDeleteMultiPdtLayoutInTmp']     = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeleteMultiPdtLayoutInTmp';
+$route['dcmTVDEventDelPdtValueZero']                = 'document/topupVending/cTopupVending/FSxCTVDDelPdtValueZero';
+$route['TopupVendingDeleteDataDTTemp']              = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeleteDelDTTemp';
 
 //ใบนำฝาก
 $route['deposit/(:any)/(:any)']            = 'document/deposit/cDeposit/index/$1/$2';
@@ -949,20 +950,23 @@ $route['docSMEventCancel']                              = 'document/adjuststocks
 $route['docSMEEventEditProductsFashion']                = 'document/adjuststocksum/cAdjustStockSum/FSaCSMEventEditProductsFashion';
 
 //ใบคืนสินค้า - ตู้สินค้า : Napat(Jame) 03/09/2020
-$route['docTVO/(:any)/(:any)']                         = 'document/TransferVendingOut/cTransferVendingOut/index/$1/$2';
-$route['docTVOPageList']                               = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageList';
-$route['docTVOPageDataTable']                          = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageDataTable';
-$route['docTVOPageAdd']                                = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageAdd';
-$route['docTVOPageEdit']                               = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageEdit';
-$route['docTVOEventAdd']                               = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventAdd';
-$route['docTVOEventEdit']                              = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventEdit';
-$route['docTVOEventMoveDTFromRefInt']                  = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventMoveDTFromRefInt';
-$route['docTVOEventInsertPdtLayoutToTmp']              = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventInsertPdtLayoutToTmp';
-$route['dcmTVOEventEditInline']                        = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOEventEditInline';
-$route['docTVOEventApprove']                           = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventApprove';
-$route['docTVOPageDataTablePdtLayout']                 = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOPageDataTablePdtLayout';
-$route['docTVOEventDeletePdtLayoutInTmp']              = 'document/TransferVendingOut/cTransferVendingOut/FSxCTVOEventDeletePdtLayoutInTmp';
-$route['docTVOEventCancleDoc']                         = 'document/TransferVendingOut/cTransferVendingOut/FStCTVOEventDocCancel';
+$route['docTVO/(:any)/(:any)']                          = 'document/TransferVendingOut/cTransferVendingOut/index/$1/$2';
+$route['docTVOPageList']                                = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageList';
+$route['docTVOPageDataTable']                           = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageDataTable';
+$route['docTVOPageAdd']                                 = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageAdd';
+$route['docTVOPageEdit']                                = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageEdit';
+$route['docTVOEventAdd']                                = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventAdd';
+$route['docTVOEventEdit']                               = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventEdit';
+$route['docTVOEventMoveDTFromRefInt']                   = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventMoveDTFromRefInt';
+$route['docTVOEventInsertPdtLayoutToTmp']               = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventInsertPdtLayoutToTmp';
+$route['dcmTVOEventEditInline']                         = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOEventEditInline';
+$route['docTVOEventApprove']                            = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventApprove';
+$route['docTVOPageDataTablePdtLayout']                  = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOPageDataTablePdtLayout';
+$route['docTVOEventDeletePdtLayoutInTmp']               = 'document/TransferVendingOut/cTransferVendingOut/FSxCTVOEventDeletePdtLayoutInTmp';
+$route['docTVOEventCancleDoc']                          = 'document/TransferVendingOut/cTransferVendingOut/FStCTVOEventDocCancel';
+$route['docTVOEventDelDTTempAll']                       = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventDelDTTempAll';
+
+
 /* ยังไม่ได้ตรวจสอบ อาจเป็น route ขยะ Napat(Jame) */
 $route['TopupVendingDelDoc']                           = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteDoc';
 $route['TopupVendingDelDocMulti']                      = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteMultiDoc';

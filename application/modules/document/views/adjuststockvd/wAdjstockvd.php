@@ -25,15 +25,9 @@
 							<div class="demo-button xCNBtngroup" style="width:100%;">
 								<button onclick="JSvCallPageADJVDList()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?=language('common/main/main', 'tBack')?></button>
 								<?php if($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)) : ?>
-							        <?php if($aAlwEvent['tAutStaPrint'] == 1 ) : ?>
 									<button id="obtADJVDPrint" onclick="JSxADJVDPrint()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?=language('common/main/main', 'tCMNPrint')?></button>
-									<?php endif; ?>
-									<?php if($aAlwEvent['tAutStaCancel'] == 1 ) : ?>
 									<button id="obtADJVDCancel" onclick="JSxADJVDCancel(false)" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?=language('common/main/main', 'tCancel')?></button>
-									<?php endif; ?>
-									<?php if($aAlwEvent['tAutStaAppv'] == 1 ) : ?>
 									<button id="obtADJVDApprove" onclick="JSxADJVDApprove(false)" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?=language('common/main/main', 'tCMNApprove')?></button>
-									<?php endif; ?>
 									<div id="obtADJVDSaveEdit" class="btn-group">
 										<button type="button" class="btn xWBtnGrpSaveLeft" onclick="$('#obtSubmitADJVD').click()"> <?=language('common/main/main', 'tSave')?></button>
 										<?php echo $vBtnSave?>

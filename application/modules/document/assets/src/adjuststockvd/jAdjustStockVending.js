@@ -176,8 +176,9 @@ function JSvADJVDLoadPdtDataTableHtml(pnPage,ptEvent) {
             cache   : false,
             Timeout : 0,
             success : function (tResult) {
-                console.log(tResult);
+                // console.log(tResult);
                 JSxLoadPdtDtFromTem(nPageCurrent);
+                $(window).scrollTop(0);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 JCNxResponseError(jqXHR, textStatus, errorThrown);

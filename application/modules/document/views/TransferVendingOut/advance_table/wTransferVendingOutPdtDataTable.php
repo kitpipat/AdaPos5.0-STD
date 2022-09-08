@@ -22,24 +22,31 @@
     <table class="table table-striped xWPdtTableFont" id="otbDOCPdtTable">
         <thead>
             <tr>
-                <th style="min-width: 50px;width: 50px;" class="text-center xCNCheckboxWhenDelete"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTBChoose'); ?></th>
-                <th style="min-width: 50px;width: 50px;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTBNo'); ?></th>
-                <th class="text-left"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTFXVDPdtCodeName'); ?></th>
-                <th class="text-left"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTFXVDPdtName'); ?></th>
-                <th class="text-left"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tChannelGroup'); ?></th>
-                <th style="min-width: 50px;width: 50px;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tRow'); ?></th>
-                <th style="min-width: 50px;width: 50px;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tColumn'); ?></th>
-                <th style="min-width: 85px;width: 85px;" class="text-right"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTFXVDPdtBalance'); ?></th>
-                <th class="text-left"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTFXVDPdtMaxTransfer'); ?></th>
-                <th style="min-width: 110px;width: 110px;" class="text-right"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tRefillQty'); ?></th>
-                <th style="min-width: 50px;width: 50px;" class="xCNCheckboxWhenDelete"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTBDelete'); ?></th>
+                <th style="min-width: 50px;width: 50px;" class="text-center xCNCheckboxWhenDelete">
+                    <label class="fancy-checkbox">
+                        <input type="checkbox" class="ocbHeadCheckBox xCNApvOrCanCelDisabled" name="oetAllCheck" id="oetAllCheck">
+                        <span style="font-family: THSarabunNew-Bold; font-weight: 500;">
+                            <!-- <?=language('document/TopupVending/TopupVending', 'tTBChoose');?> -->
+                        </span>
+                    </label>
+                    <!-- <?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTBChoose'); ?> -->
+                </th>
+                <th style="min-width: 50px;width: 50px;vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTBNo'); ?></th>
+                <th style="vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTFXVDPdtCodeName'); ?></th>
+                <th style="vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTFXVDPdtName'); ?></th>
+                <th style="vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tChannelGroup'); ?></th>
+                <th style="min-width: 50px;width: 50px;vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tRow'); ?></th>
+                <th style="min-width: 50px;width: 50px;vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tColumn'); ?></th>
+                <th style="min-width: 65px;width: 65px;vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTFXVDPdtBalance'); ?></th>
+                <th style="vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTFXVDPdtMaxTransfer'); ?></th>
+                <th style="vertical-align: middle;" class="text-center"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tRefillQty'); ?></th>
+                <th style="min-width: 50px;width: 50px;vertical-align: middle;" class="text-center xCNCheckboxWhenDelete"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tTBDelete'); ?></th>
             </tr>
         </thead>
         <tbody>
             <?php if ($aDataList['rtCode'] == 1) { ?>
                 <?php foreach ($aDataList['raItems'] as $key => $aValue) { ?>
                     <tr class="xCNTextDetail2 xCNTopUpVendingPdtLayoutRow" data-pdtcode="<?php echo $aValue['FTPdtCode']; ?>" data-pdtname="<?php echo $aValue['FTXtdPdtName']; ?>" data-seq-no="<?php echo $aValue['FNXtdSeqNo']; ?>" data-max-qty="<?=number_format($aValue['FCLayColQtyMaxForTWXVD']);?>" data-stk-qty="<?=number_format($aValue['FCStkQty']);?>" >
-                        
                         <td class="text-center xCNCheckboxWhenDelete">
                             <label class="fancy-checkbox">
                                 <input id="ocbListItem<?php echo $aValue['FNXtdSeqNo']?>" type="checkbox" class="ocbListItem xCNApvOrCanCelDisabledQty" name="ocbListItem[]">
@@ -66,7 +73,8 @@
                                         border-top: 0px !important;
                                         border-left: 0px !important;
                                         border-right: 0px !important;
-                                        padding: 0px !important; "
+                                        padding: 0px !important; 
+                                        max-width: 50px; "
                             >
                         </td>
                         <td class="text-center xCNCheckboxWhenDelete">
