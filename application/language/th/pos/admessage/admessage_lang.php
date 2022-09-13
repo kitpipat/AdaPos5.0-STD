@@ -45,4 +45,4 @@ $lang['tRCVValidCode']                      = "กรุณากรอกรห
 $lang['tRCVValidName']                      = "กรุณากรอกชื่อ";
 $lang['tRCVValidCodeDup']                   = "รหัสนี้มีในระบบแล้วกรุณาครวจสอบอีกครั้ง";
 
-$lang['tADVAgency']         = "ตัวแทนขาย";
+$lang['tADVAgency']                         = "ตัวแทนขาย";

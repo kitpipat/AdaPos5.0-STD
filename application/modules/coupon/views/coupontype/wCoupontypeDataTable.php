@@ -11,9 +11,18 @@
         cursor: default;
         font-size: 10px;
     }
+
+    .xWTdDisable {
+        cursor: not-allowed !important;
+        opacity: 0.4 !important;
+    }
+
+    .xWImgDisable {
+        pointer-events: none;
+    }
 </style>
 
-<?php 
+<?php
     if($aDataList['rtCode'] == '1'){
         $nCurrentPage = $aDataList['rnCurrentPage'];
     }else{
@@ -28,7 +37,12 @@
                 <thead>
 					<tr>
                         <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
-                            <th nowrap class="text-center xCNTextBold" style="width:5%;"><?= language('coupon/coupontype/coupontype','tCPTTBChoose')?></th>
+                            <th nowrap class="xCNTextBold text-center" style="width:5%;">
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" class="ocmCENCheckDeleteAll" id="ocmCENCheckDeleteAll" >
+                                    <span class="ospListItem">&nbsp;</span>
+                                </label>
+                            </th>
 						<?php endif; ?>
                         <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('coupon/coupontype/coupontype','tCPTTBCode')?></th>
                         <th nowrap class="text-center xCNTextBold" style="width:30%;"><?php echo language('coupon/coupontype/coupontype','tCPTTBName')?></th>
@@ -48,19 +62,42 @@
 				<?php if($aDataList['rtCode'] == 1 ):?>
                     <?php foreach($aDataList['raItems'] AS $key=>$aValue){ ?>
                         <tr class="text-center xCNTextDetail2 otrVoucher" id="otrVoucher<?=$key?>" data-code="<?=$aValue['FTCptCode']?>" data-name="<?=$aValue['FTCptName']?>">
-							<?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
+
+                <?php
+                    if(!FCNbIsHaveCoupInCouponHD($aValue['FTCptCode'])) {
+                      $tStatusDel = true;
+                    }else {
+                      $tStatusDel = false;
+                    }
+                    if($tStatusDel == false){
+                        $tDisableTD     = "xWTdDisable";
+                        $tDisableImg    = "xWImgDisable";
+                        $tDisabledItem  = "disabled";
+                        $tDisabledItem2  = "xCNDisabled ";
+                        $tDisabledcheckrow  = "true";
+                    }else{
+                        $tDisableTD     = "";
+                        $tDisableImg    = "";
+                        $tDisabledItem  = "";
+                        $tDisabledItem2  = "";
+                        $tDisabledcheckrow  = "false";
+                    }
+                ?>
 								<td class="text-center">
 									<label class="fancy-checkbox">
-										<input id="ocbListItem<?=$key?>" type="checkbox" class="ocbListItem" name="ocbListItem[]">
-										<span>&nbsp;</span>
+										<input id="ocbListItem<?=$key?>"
+                    data-checkrow="<?php echo $tDisabledcheckrow; ?>"
+                    data-checkrowid="<?php echo $aValue['FTCptCode']?>"
+                    <?php echo $tDisabledItem; ?>
+                    checked="false" type="checkbox" class="ocbListItem" name="ocbListItem[]">
+                    <span class="<?php echo $tDisabledItem2; ?>" >&nbsp;</span>
 									</label>
 								</td>
-							<?php endif; ?>
 							<td nowrap class="text-left"><?=$aValue['FTCptCode']?></td>
                             <td nowrap class="text-left"><?=$aValue['FTCptName']?></td>
 
                             <!-- ประเภทคูปอง  1: คูปองเงินสด 2: คูปองส่วนลด -->
-                            <?php 
+                            <?php
                                 switch ($aValue['FTCptType']){
                                     case 1:
                                         $tCouponType   = language('coupon/coupontype/coupontype','tCPTCouponType1');
@@ -76,7 +113,7 @@
                             <td nowrap class="text-left"><?php echo $tCouponType;?></td>
 
                             <!-- สถานะตรวจสอบคูปอง  1 : ไม่ตรวจสอบ 2: ตรวจสอบ -->
-                            <?php 
+                            <?php
                                 switch ($aValue['FTCptStaChk']){
                                     case 1:
                                         $tCouponChk   = language('coupon/coupontype/coupontype','tCPTCouponChk1');
@@ -91,18 +128,18 @@
                             <td nowrap class="text-left"><?php echo $tCouponChk;?></td>
 
                             <!-- ใช้ตรวจสอบคูปอง ของสาขา 1: HQ 2: Branch Defualt:Branch -->
-                            <?php 
+                            <?php
                                     switch ($aValue['FTCptStaChkHQ']){
                                         case 1:
                                             $tStaChkCoupon  = language('coupon/coupontype/coupontype','tCPTStaChkHQ1');
                                         break;
-                                        case 2: 
+                                        case 2:
                                             $tStaChkCoupon  = language('coupon/coupontype/coupontype','tCPTStBranch');
                                         break;
                                         default:
-                                            $tStaChkCoupon  = language('coupon/coupontype/coupontype','tCPTStaChkHQ1');
+                                            $tStaChkCoupon  = language('coupon/coupontype/coupontype','tCPTCouponCm');
                                     }
-                            
+
                             ?>
                             <td nowrap class="text-left"><?php echo $tStaChkCoupon;?></td>
 
@@ -122,20 +159,23 @@
                                         $tClassStaAtv  = 'xWCptActive';
                                 }
                             ?>
-                    
+
                             <td nowrap class="text-left"><a class="<?php echo $tClassStaAtv?>"><?php echo $tStaCptUse;?></a></td>
 
 							<?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
-                                <td>
-                                    <?php if(!FCNbIsHaveCoupInCouponHD($aValue['FTCptCode'])) : // No have user in role ?>
-                                        <img class="xCNIconTable xCNIconDel" src="<?= base_url().'/application/modules/common/assets/images/icons/delete.png'?>" onClick="JSnCoupontypeDel('<?=$nCurrentPage?>','<?=$aValue['FTCptName']?>','<?=$aValue['FTCptCode']?>')">
+                                <td class="<?=$tDisableTD?>" id="otdDel<?php echo $aValue['FTCptCode']?>">
+                                    <?php if($tStatusDel == true) : // No have user in role ?>
+                                        <img class="xCNIconTable xCNIconDel" src="<?= base_url().'/application/modules/common/assets/images/icons/delete.png'?>"
+                                        id="oimDel<?php echo $aValue['FTCptCode']; ?>"
+                                        onClick="JSnCoupontypeDel('<?=$nCurrentPage?>','<?=$aValue['FTCptName']?>','<?=$aValue['FTCptCode']?>')">
                                     <?php else : // have user in role?>
-                                        <img class="xCNIconTable" src="<?php echo base_url().'/application/modules/common/assets/images/icons/delete.png'?>" style="opacity: 0.2;">
+                                        <img class="xCNIconTable xWImgDisable" src="<?php echo base_url().'/application/modules/common/assets/images/icons/delete.png'?>" >
                                     <?php endif; ?>
                                 </td>
 							<?php endif; ?>
 							<?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaRead'] == 1) : ?>
-								<td><img class="xCNIconTable" src="<?= base_url().'/application/modules/common/assets/images/icons/edit.png'?>" onClick="JSvCallPageCoupontypeTypeEdit('<?=$aValue['FTCptCode']?>')"></td>
+								<td><img class="xCNIconTable" src="<?= base_url().'/application/modules/common/assets/images/icons/edit.png'?>"
+                   onClick="JSvCallPageCoupontypeTypeEdit('<?=$aValue['FTCptCode']?>')"></td>
 							<?php endif; ?>
                             </tr>
                             <?php } ?>
@@ -158,11 +198,11 @@
             <button onclick="JSvVOCClickPage('previous')" class="btn btn-white btn-sm" <?php echo $tDisabled?>><i class="fa fa-chevron-left f-s-14 t-plus-1"></i></button>
 
 			<?php for($i=max($nPage-2, 1); $i<=max(0, min($aDataList['rnAllPage'],$nPage+2)); $i++){?>
-				<?php 
-                    if($nPage == $i){ 
-                        $tActive = 'active'; 
+				<?php
+                    if($nPage == $i){
+                        $tActive = 'active';
                         $tDisPageNumber = 'disabled';
-                    }else{ 
+                    }else{
                         $tActive = '';
                         $tDisPageNumber = '';
                     }
@@ -200,6 +240,7 @@
 <script type="text/javascript">
 $('ducument').ready(function(){
     JSxShowButtonChoose();
+    $('.ocbListItem').prop('checked',false);
 	var aArrayConvert = [JSON.parse(localStorage.getItem("LocalItemData"))];
 	var nlength = $('#odvRGPList').children('tr').length;
 	for($i=0; $i < nlength; $i++){
@@ -207,13 +248,14 @@ $('ducument').ready(function(){
 		if(aArrayConvert == null || aArrayConvert == ''){
 		}else{
 			var aReturnRepeat = findObjectByKey(aArrayConvert[0],'nCode',tDataCode);
-			if(aReturnRepeat == 'Dupilcate'){
-				$('#ocbListItem'+$i).prop('checked', true);
-			}else{ }
+			// if(aReturnRepeat == 'Dupilcate'){
+			// 	$('#ocbListItem'+$i).prop('checked', true);
+			// }else{ }
 		}
 	}
 
 	$('.ocbListItem').click(function(){
+        //$("#ocmCENCheckDeleteAll").prop("checked",false);
         var nCode = $(this).parent().parent().parent().data('code');  //code
         var tName = $(this).parent().parent().parent().data('name');  //code
         $(this).prop('checked', true);

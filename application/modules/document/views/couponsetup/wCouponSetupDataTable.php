@@ -12,7 +12,12 @@ if ($aDataList['rtCode'] == '1') {
                 <thead>
                     <tr class="xCNCenter">
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
-                            <th nowrap class="xCNTextBold" style="width:5%;"><?php echo language('document/couponsetup/couponsetup', 'tCPHTBChoose') ?></th>
+                            <th nowrap class="xCNTextBold text-center" style="width:5%;">
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" class="ocmCENCheckDeleteAll" id="ocmCENCheckDeleteAll" >
+                                    <span class="ospListItem">&nbsp;</span>
+                                </label>
+                            </th>     
                         <?php endif; ?>
                         <th nowrap class="xCNTextBold"><?php echo language('document/couponsetup/couponsetup','tCPHTBBchCreate')?></th>
 						<th nowrap class="xCNTextBold"><?php echo language('document/couponsetup/couponsetup','tCPHTBDocNo')?></th>
@@ -102,7 +107,7 @@ if ($aDataList['rtCode'] == '1') {
                                     }
                                 }
                                 ?>
-                                <td nowrap class="text-center">
+                                <td nowrap class="text-left">
                                     <label class="xCNTDTextStatus <?php echo $tClassStaDoc?>">
                                     <?php echo $tStaCurlogAct ?>
                                     </label>
@@ -125,7 +130,7 @@ if ($aDataList['rtCode'] == '1') {
                                         <?php } ?>
                                     </td>
                                 <?php endif; ?>
-                            <tr>
+                             </tr>
                             <?php endforeach; ?>
                         <?php else : ?>
                             <tr>
@@ -217,9 +222,11 @@ if ($aDataList['rtCode'] == '1') {
 
 <script type="text/javascript">
     $(document).ready(function() {
+        localStorage.removeItem("LocalItemData");
+
         $('.ocbListItem').unbind().click(function() {
-            var nCode = $(this).parents('xWCPHDocItems').data('code'); //code
-            var tName = $(this).parents('xWCPHDocItems').data('name'); //code
+            var nCode = $(this).parents('.xWCPHDocItems').data('code'); //code
+            var tName = $(this).parents('.xWCPHDocItems').data('name'); //code
             $(this).prop('checked', true);
             var LocalItemData = localStorage.getItem("LocalItemData");
             var obj = [];

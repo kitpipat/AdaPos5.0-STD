@@ -7,22 +7,40 @@
     var tUsrApvName     = '<?php echo $this->session->userdata("tSesUsername");?>';
     var tSesUsrLevel    = '<?php echo $this->session->userdata('tSesUsrLevel');?>';
 
-   let  CPHFrmCphDisType=  $('#ostCPHFrmCphDisType').val();
-   if(CPHFrmCphDisType==3){
-                $('#obtCPHBrowseHDCstPri').attr('disabled',false);
-              }else{
-                  $('#obtCPHBrowseHDCstPri').attr('disabled',true);
-                 $('#oetCPHHDCstPriCode').val('');
-                 $('#oetCPHHDCstPriName').val('');
-              }
+    var tCPHFrmCphDisType   = '';
+    var tCPHFrmCphDisType   = $('#ostCPHFrmCphDisType').val();
+    $("#oetCPHHDDocrefCode").parent().parent().hide();
+    if(tCPHFrmCphDisType==3){
+        $('#obtCPHBrowseHDCstPri').attr('disabled',false);
+    }else{
+        $('#obtCPHBrowseHDCstPri').attr('disabled',true);
+        $('#oetCPHHDCstPriCode').val('');
+        $('#oetCPHHDCstPriName').val('');
+    }
+
+    if(tCPHFrmCphDisType==4){
+        $("#oetCPHHDDocrefCode").parent().parent().show();
+    }
+
     $('#ostCPHFrmCphDisType').unbind().change(function(){
               var nValue = $(this).val();
               if(nValue==3){
                 $('#obtCPHBrowseHDCstPri').attr('disabled',false);
+                $('#oetCPHFrmCphDisValue').parent().show();
+                $("#oetCPHHDDocrefCode").parent().parent().hide();
+                $('#oetCPHHDDocrefName').val('');
+                $('#oetCPHHDDocrefCode').val('');
+              }else if(nValue==4){
+                $('#oetCPHFrmCphDisValue').parent().hide();
+                $("#oetCPHHDDocrefCode").parent().parent().show();
               }else{
                   $('#obtCPHBrowseHDCstPri').attr('disabled',true);
                  $('#oetCPHHDCstPriCode').val('');
                  $('#oetCPHHDCstPriName').val('');
+                 $('#oetCPHFrmCphDisValue').parent().show();
+                 $("#oetCPHHDDocrefCode").parent().parent().hide();
+                 $('#oetCPHHDDocrefName').val('');
+                $('#oetCPHHDDocrefCode').val('');
               }
         });
 
@@ -138,6 +156,41 @@
         return oOptionReturnHDCstPri;
     };
 
+    var oCHDPriceAdOption = function(poReturnInputCstPri){
+        let tNextFuncNameCstPri    = poReturnInputCstPri.tNextFuncName;
+        let aArgReturnCstPri       = poReturnInputCstPri.aArgReturn;
+        let tInputReturnCodeCstPri = poReturnInputCstPri.tReturnInputCode;
+        let tInputReturnNameCstPri = poReturnInputCstPri.tReturnInputName;
+        let oOptionReturnHDCstPri    = {
+            Title: ['coupon/coupontype/coupontype','tCPTPriTitle'],
+            Table:{Master:'TCNTPdtAdjPriHD',PK:'FTXphDocNo'},
+            Where : {
+                Condition : [' AND TCNTPdtAdjPriHD.FTXphDocType = 4 AND TCNTPdtAdjPriHD.FTXphStaApv = 1 ORDER BY TCNTPdtAdjPriHD.FDCreateOn DESC']
+            },
+            GrideView:{
+                ColumnPathLang	: 'coupon/coupontype/coupontype',
+                ColumnKeyLang	: ['tCPTPriDocno','tCPTPriRmk','tCPTPriDate','tCPTPriTime'],
+                ColumnsSize     : ['40%','40%','10%','10%'],
+                WidthModal      : 50,
+                DataColumns		: ['TCNTPdtAdjPriHD.FTXphDocNo','TCNTPdtAdjPriHD.FTXphRmk','TCNTPdtAdjPriHD.FDXphDocDate','TCNTPdtAdjPriHD.FTXphDocTime'],
+                DataColumnsFormat : ['','','Date:YYYY-MM-DD','Time:'],
+                Perpage			: 10,
+                OrderBy			: [''],
+            },
+            CallBack:{
+                ReturnType	: 'S',
+                Value		: [tInputReturnCodeCstPri,"TCNTPdtAdjPriHD.FTXphDocNo"],
+                Text		: [tInputReturnNameCstPri,"TCNTPdtAdjPriHD.FTXphDocNo"]
+            },
+
+            // DebugSQL: true,
+       
+            RouteAddNew: 'pdtadjust',
+            BrowseLev: 1
+        };
+        return oOptionReturnHDCstPri;
+    };
+
     $('#obtCPHBrowseHDCstPri').unbind().click(function(){
         var nStaSession = JCNxFuncChkSessionExpired();
         if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
@@ -147,7 +200,24 @@
                 'tReturnInputCode'  : 'oetCPHHDCstPriCode',
                 'tReturnInputName'  : 'oetCPHHDCstPriName',
                 'tNextFuncName'     : '',
-                'aArgReturn'        : ['FTPplCode','FTPplName']
+                'aArgReturn'        : ['FTPplCode','FTPplName','FTCptStaChk']
+            });
+            JCNxBrowseData('oCPHHDCstPriOptionFrom');
+        }else{
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    $('#obtCPHBrowseDocref').unbind().click(function(){
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            JSxCheckPinMenuClose(); // Hidden Pin Menu
+            window.oCPHHDCstPriOptionFrom = undefined;
+            oCPHHDCstPriOptionFrom        = oCHDPriceAdOption({
+                'tReturnInputCode'  : 'oetCPHHDDocrefCode',
+                'tReturnInputName'  : 'oetCPHHDDocrefName',
+                'tNextFuncName'     : '',
+                'aArgReturn'        : ['FTPplCode','FTPplName','FTCptStaChk']
             });
             JCNxBrowseData('oCPHHDCstPriOptionFrom');
         }else{
@@ -181,9 +251,10 @@
                 ColumnKeyLang	    : ['tCPTCode','tCPTName'],
                 ColumnsSize         : ['15%','75%'],
                 WidthModal          : 50,
-                DataColumns         : ['TFNMCouponType.FTCptCode','TFNMCouponType_L.FTCptName'],
+                DataColumns         : ['TFNMCouponType.FTCptCode','TFNMCouponType_L.FTCptName','TFNMCouponType.FTCptStaChk','TFNMCouponType.FTCptStaChkHQ'],
                 DataColumnsFormat   : ['',''],
-                Perpage			    : 5,
+                DisabledColumns     : [2,3],
+                Perpage			    : 10,
                 OrderBy			    : ['TFNMCouponType.FTCptCode ASC'],
             },
             CallBack : {
@@ -191,10 +262,74 @@
                 Value		: [tInputCPTReturnCode,"TFNMCouponType.FTCptCode"],
                 Text		: [tInputCPTReturnName,"TFNMCouponType_L.FTCptName"],
             },
-            RouteAddNew : 'coupontype',
-            BrowseLev   : nCPHStaBrowseType,
+            NextFunc: {
+                FuncName    : 'JSxCOUNextFuncSelectedCoupon',
+                ArgReturn   : ['FTCptStaChk','FTCptStaChkHQ']
+            },
+            RouteAddNew     : 'coupontype',
+            BrowseLev       : nCPHStaBrowseType,
         };
         return oCPTOptionReturn;
+    }
+
+    function JSxCOUNextFuncSelectedCoupon(ptDataNextFunc){
+        if(typeof(ptDataNextFunc) != undefined && ptDataNextFunc != "NULL"){
+            aDataNextFunc   = JSON.parse(ptDataNextFunc);
+            if(aDataNextFunc[0] == 2){
+                $('.xCNSpcFormatCoupon').show();
+                $('#otbCPHDataDetailDT tbody').empty();
+                $.ajax({
+                    type: "POST",
+                    url: "dcmCouponSetupEventAddCouponToDTDef",
+                    success: function (oDataReturn) {
+                        // สร้าง แบบ Custom
+                        let aDataReturn         = JSON.parse(oDataReturn);
+                        let tImgCPHCouponOld    = aDataReturn.ptImgCPHCouponOld;
+                        let tImgCPHCouponNew    = aDataReturn.ptImgCPHCouponNew;
+                        let tTextCpdAlwMaxUse   = aDataReturn.ptInputBarHisQtyUse;
+                        let aDataCouponBar      = aDataReturn.paDataCouponBar;
+                        console.log(oDataReturn);
+                        let nCountDataInTableDT = $('#odvCPHDataPanelDetail #otbCPHDataDetailDT tbody .xWCPHDataDetailItems').length;
+                        $('#odvCPHDataPanelDetail #otbCPHDataDetailDT tbody').find('.xWCPHTextNotfoundData').parent().remove();
+                        $.each(aDataCouponBar,function(nKey,tTextCpdBarCpn){
+                            nCountDataInTableDT++;
+                            let tTemplate   = $("#oscCPHTemplateDataDetailDT").html();
+                            let oData       = {
+                                'tImgCPHCouponOld'  : tImgCPHCouponOld,
+                                'tImgCPHCouponNew'  : tImgCPHCouponNew,
+                                'tTextCpdAlwMaxUse' : tTextCpdAlwMaxUse,
+                                'tTextCpdBarCpn'    : tTextCpdBarCpn,
+                                'nKeyNumber'        : nCountDataInTableDT,
+                            };
+                            let tRenderAppend   = JStCPHRenderTemplateDetailDT(tTemplate,oData);
+                            $('#odvCPHDataPanelDetail #otbCPHDataDetailDT tbody').append(tRenderAppend);
+                        });
+                        setTimeout(function(){
+                            $('#odvCPHFormAddCoupon').modal('hide');
+                            $('body').removeClass('modal-open');
+                            $('.modal-backdrop').remove();
+                            JCNxCloseLoading();
+                        },500);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    }
+                });
+
+            }else{
+                $('#oetCPHFrmCpnFirstChar').val('');
+                $('#oetCPHFrmCpnLengChar').val('');
+                $('.xCNSpcFormatCoupon').hide();
+            }
+            //กำหนดค่า
+            $('#ohdCPHStaChk').val(aDataNextFunc[0]);
+            $('#ohdCPHStaChkHQ').val(aDataNextFunc[1]);
+        }else{
+            $('#oetCPHFrmCpnFirstChar').val('');
+            $('#oetCPHFrmCpnLengChar').val('');
+            $('#ohdCPHStaChk').val('');
+            $('#ohdCPHStaChkHQ').val('');
+        }
     }
  
     var oCPHBrowsePdtPriListTo  = function(poDataPplTo){
@@ -214,7 +349,7 @@
                 WidthModal          : 50,
                 DataColumns		    : ['TCNMPdtPriList.FTPplCode','TCNMPdtPriList_L.FTPplName'],
                 DataColumnsFormat   : ['','',''],
-                Perpage			    : 5,
+                Perpage			    : 10,
                 OrderBy			    : ['TCNMPdtPriList.FTPplCode ASC'],
             },
             CallBack : {
@@ -750,7 +885,7 @@
             DataColumnsFormat : ['',''],
             DisabledColumns   : [2,3],
             Perpage           : 10,
-            OrderBy           : ['TCNMBranch.FDCreateOn DESC'],
+            OrderBy           : ['TCNMBranch.FTBchCode DESC'],
         },
         CallBack:{
             ReturnType        : 'S',

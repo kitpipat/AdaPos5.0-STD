@@ -647,6 +647,7 @@ class mTransferVendingOut extends CI_Model
 
         $tSQL   .= " ORDER BY PDTLAY.FNCabSeq ASC, PDTLAY.FNLayRow ASC, PDTLAY.FNLayCol ASC ";
 
+        // print_r($tSQL);
         $this->db->query($tSQL);
 
         if ($this->db->trans_status() === FALSE) {

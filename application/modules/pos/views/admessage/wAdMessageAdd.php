@@ -181,7 +181,7 @@ $aStaUseItems = [
 						<input
 							type="text"
 							class="form-control"
-							maxlength="250"
+							maxlength="200"
 							id="oetAdvName"
 							name="oetAdvName"
                             placeholder="<?= language('pos/admessage/admessage','tADVTBName')?>"
@@ -281,7 +281,7 @@ $aStaUseItems = [
 					<select class="selectpicker form-control" id="ocmAdvStatus" name="ocmAdvStatus" maxlength="1">
                         <?php foreach($aStaUseItems as $aStaUseItem) : ?>
                             <?php if($tAdvStaUse == $aStaUseItem['value']) : ?>
-                                <option value="<?=$aStaUseItem['value']?>" checked><?=$aStaUseItem['text']?></option>
+                                <option value="<?=$aStaUseItem['value']?>" selected><?=$aStaUseItem['text']?></option>
                             <?php else : ?>
                                 <option value="<?=$aStaUseItem['value']?>"><?=$aStaUseItem['text']?></option>
                             <?php endif; ?>
@@ -291,7 +291,7 @@ $aStaUseItems = [
 
                 <div class="form-group">
                     <label class="xCNLabelFrm"><?= language('pos/admessage/admessage','tADVRemark')?></label>
-                    <textarea class="form-control" maxlength="250" rows="4" id="otaAdvRemark" name="otaAdvRemark"><?= $tAdvRmk?></textarea>
+                    <textarea class="form-control" maxlength="100" rows="4" id="otaAdvRemark" name="otaAdvRemark"><?= $tAdvRmk?></textarea>
                 </div>
 
             </div>
@@ -302,7 +302,7 @@ $aStaUseItems = [
                 <div id="odvTextTypeContainer">
                     <div class="form-group">
                         <label class="xCNLabelFrm"><span class="text-danger">*</span> <?= language('pos/admessage/admessage','tADVMessage')?></label>
-                        <input type="text" class="form-control" maxlength="250" id="oetAdvMsg" name="oetAdvMsg" value="<?= $tAdvMsg?>" data-validate="<?= language('pos/admessage/admessage','tRCVValidName')?>">
+                        <input type="text" class="form-control" maxlength="100" id="oetAdvMsg" name="oetAdvMsg" value="<?= $tAdvMsg?>" data-validate="<?= language('pos/admessage/admessage','tRCVValidName')?>">
                     </div>
                 </div>
 

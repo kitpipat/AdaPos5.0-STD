@@ -29,7 +29,7 @@ $lang['tCPHTUserAppove']    = "ผู้อนุมัติ";
 $lang['tCPHStaApv']     = "รอการอนุมัติ";
 $lang['tCPHStaApv1']    = "อนุมัติแล้ว";
 $lang['tCPHStaApv2']    = "กำลังประมวลผล";
-$lang['tCPHStaDoc']     = "รออนมุติ";
+$lang['tCPHStaDoc']     = "รออนุมัติ";
 $lang['tCPHStaDoc1']    = "อนุมัติแล้ว";
 $lang['tCPHStaDoc3']    = "ยกเลิก";
 
@@ -68,6 +68,7 @@ $lang['tCPHLabelFrmCouponMsg2']         = "กรอกข้อความแ�
 $lang['tCPHLabelFrmCouponDisType1']     = "ลดบาท";
 $lang['tCPHLabelFrmCouponDisType2']     = "ลดเปอร์เซ็นต์";
 $lang['tCPHLabelFrmCouponDisType3']     = "ใช้กลุ่มราคา";
+$lang['tCPHLabelFrmCouponDisType4']     = "ใช้ใบปรับราคา";
 $lang['tCPHLabelFrmCouponDisValue']     = "กรอกมูลค่าคูปอง";
 $lang['tCPHLabelFrmCouponDateStart']    = "วันที่เริ่มใช้งาน";
 $lang['tCPHLabelFrmCouponDateStop']     = "วันที่สิ้นสุด";
@@ -123,7 +124,7 @@ $lang['tCPHLabelModalCouponMaxUse']     = "จำนวนครั้งที�
 $lang['tCPHModalCouponMaxUse']          = "กรอกจำนวนครั้งที่ใช้งานได้";
 
 // Browse Agency Group
-$lang['tCPHAggTitle']   = "กลุ่มตัวแทนขาย";
+$lang['tCPHAggTitle']   = "กลุ่มตัวแทนขาย/แฟรนไชส์";
 $lang['tCPHAggCode']    = "รหัส";
 $lang['tCPHAggName']    = "ชื่อ";
 // Browse Product Price List
@@ -158,10 +159,12 @@ $lang['tCPHTabCouponHDBchCode'] = "รหัสสาขา";
 $lang['tCPHTabCouponHDBchName'] = "ชื่อสาขา";
 
 $lang['tCPHTabCouponHDCstPriTitle'] = "กลุ่มราคา";
+$lang['tCPHTabCouponHDDocref'] = "เอกสารใบปรับราคา";
 $lang['tCPHTabCouponHDCstPriInclude'] = "เฉพาะกลุ่มราคา";
 $lang['tCPHTabCouponHDCstPriExclude'] = "ยกเว้นกลุ่มราคา";
 $lang['tCPHTabCouponHDCstPriCode'] = "รหัสกลุ่มราคา";
 $lang['tCPHTabCouponHDCstPriName'] = "ชื่อกลุ่มราคา";
+$lang['tCPHTabCouponHDCopy'] = "คัดลอกเอกสาร";
 
 $lang['tCPHTabCouponHDPdtTitle'] = "สินค้า";
 $lang['tCPHTabCouponHDPdtInclude'] = "เฉพาะสินค้า";
@@ -172,6 +175,7 @@ $lang['tCPHTabCouponHDPdtPunCode'] = "หน่วย";
 $lang['tCPHTabCouponHDPdtName'] = "ชื่อสินค้า";
 
 $lang['tCPHTabCouponHDCstPriSelect'] = "กรุณาเลือกกลุ่มราคา";
+$lang['tCPHTabCouponHDDocRef'] = "กรุณาเลือกเอกสารใบปรับราคา";
 $lang['tCPHTabCouponHDBchSelect'] = "เลือกสาขา";
 $lang['tCPHTabCouponHDPdtSelect'] = "เลือกสินค้า";
 
@@ -190,11 +194,15 @@ $lang['tCPHStaDocCancel'] = "ยกเลิก";
 $lang['tCPHStaDocProcessor'] = "ประมวลผลแล้ว";
 $lang['tCPHStaDocNotProcessed'] = "กำลังประมวลผล";
 
-$lang['tCPHAgnCode'] = "รหัสตัวแทนขาย";
-$lang['tCPHAgnName'] = "ชื่อตัวแทนขาย";
-$lang['tCPHAgency'] = "ตัวแทนขาย";
+$lang['tCPHAgnCode'] = "รหัสตัวแทนขาย/แฟรนไชส์";
+$lang['tCPHAgnName'] = "ชื่อตัวแทนขาย/แฟรนไชส์";
+$lang['tCPHAgency'] = "ตัวแทนขาย/แฟรนไชส์";
 
 $lang['tCPHStaDocUse']              = "ใช้งาน";
 $lang['tCPHStaDocStop']             = "หยุดใช้งาน";
 $lang['tDetailStopCoupon']          = "คุณแน่ใจที่จะหยุดใช้งานคูปอง ? ";
 $lang['tDetailChangeStartCoupon']   = "คุณแน่ใจที่จะเปลี่ยนสถานะคูปองกลับมาใช้งาน ? ";
+
+//Copy Doc
+$lang['tCPHSCopyDocTitle']              = "คัดลอกเอกสาร";
+$lang['tCPHSCopyDocStatus6']              = "คุณต้องการยืนยัน การคัดลอกเอกสารหรือไม่?";

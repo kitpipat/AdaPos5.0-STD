@@ -322,7 +322,6 @@ function JSxAddEditADJVD(){
       }
   });
 }
-
 //กดบันทึกข้อมูล
 function JSxSubmitEventByButton() {
 
@@ -393,6 +392,7 @@ function JSxADJVDSave(pbOption){
             pbOption = false;
             $('#odvADJVDCheckItemHaveAdjZero').modal('hide');
             var oResult = JSON.parse(tResult);
+            // console.log(oResult);
             if (oResult["nStaEvent"] == "900") {
               FSvCMNSetMsgWarningDialog(oResult["tStaMessg"]);
             }else if(oResult["nStaEvent"] == "80"){

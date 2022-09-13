@@ -611,14 +611,15 @@ $route['dcmCouponSetupGetDataTable']        = 'document/couponsetup/cCouponSetup
 $route['dcmCouponSetupPageAdd']             = 'document/couponsetup/cCouponSetup/FSoCCPHCallPageAdd';
 $route['dcmCouponSetupPageEdit']            = 'document/couponsetup/cCouponSetup/FSoCCPHCallPageEdit';
 $route['dcmCouponSetupPageDetailDT']        = 'document/couponsetup/cCouponSetup/FSoCCPHCallPageDetailDT';
-$route['dcmCouponSetupPageDetailDT']        = 'document/couponsetup/cCouponSetup/FSoCCPHCallPageDetailDT';
 $route['dcmCouponSetupEventAddCouponToDT']  = 'document/couponsetup/cCouponSetup/FSoCCPHCallEventAddCouponToDT';
+$route['dcmCouponSetupEventAddCouponToDTDef']  = 'document/couponsetup/cCouponSetup/FSoCCPHCallEventAddCouponDefault';
 $route['dcmCouponSetupEventAdd']            = 'document/couponsetup/cCouponSetup/FSoCCPHEventAdd';
 $route['dcmCouponSetupEventEdit']           = 'document/couponsetup/cCouponSetup/FSoCCPHEventEdit';
 $route['dcmCouponSetupEventDelete']         = 'document/couponsetup/cCouponSetup/FSoCCPHEventDelete';
 $route['dcmCouponSetupEvenApprove']         = 'document/couponsetup/cCouponSetup/FSaCCPHEventAppove';
 $route['dcmCouponSetupEvenCancel']          = 'document/couponsetup/cCouponSetup/FSaCCPHEventCancel';
 $route['dcmCouponSetupChangStatusAfApv']    = 'document/couponsetup/cCouponSetup/FSaCCPHChangStatusAfApv';
+$route['dcmCouponSetupEvenCopy']            = 'document/couponsetup/cCouponSetup/FSaCCPHCopyDoc';
 
 //ใบเติมสินค้า
 $route['TWXVD/(:any)/(:any)']                       = 'document/topupVending/cTopupVending/index/$1/$2';

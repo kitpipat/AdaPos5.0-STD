@@ -8,6 +8,12 @@ class cCouponSetup extends MX_Controller {
         $this->load->model('company/company/mCompany');
         $this->load->model('document/couponsetup/mCouponSetup');
         parent::__construct();
+
+        // Clean XSS Filtering Security
+		$this->load->helper("security");
+		if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
+            echo "ERROR XSS Filter";
+        }
     }
 
     public function index($pnBrowseType,$ptBrowseOption){
@@ -264,6 +270,7 @@ class cCouponSetup extends MX_Controller {
     // Return Type : object 
     public function FSoCCPHCallEventAddCouponToDT(){
         $aDatatFormSerialize    = $this->input->post();
+        // print_r($aDatatFormSerialize);
         $tCPHCouponTypeCreate   = @$aDatatFormSerialize['ostCPHModalCouponTypeCreate'];
         // Image Coupon
         $tImgCPHCouponOld       = @$aDatatFormSerialize['oetImgInputCouponOld'];
@@ -319,6 +326,34 @@ class cCouponSetup extends MX_Controller {
             echo json_encode($aDataReturn);
         }
     }
+
+    // Functionality : Function Event Create Coupon Def
+    // Parameters : Ajax and Function Parameter
+    // Creator : 14/03/2022 Off
+    // Return : Object View Page Add
+    // Return Type : object 
+    public function FSoCCPHCallEventAddCouponDefault(){
+        // Image Coupon
+        // Data Input Condition Create
+        $tImgCPHCouponOld       = '';
+        $tImgCPHCouponNew       = '';
+        $tInputBarWidth         = '15';
+        $tInputBarQty           = '0';
+        $tInputBarHisQtyUse     = '0';
+        $tInputCouponCode       = 'Limit';
+
+        $aDataCouponBar = [];
+        array_push($aDataCouponBar,$tInputCouponCode);
+
+            $aDataReturn    = [
+                'ptImgCPHCouponOld'     => $tImgCPHCouponOld,
+                'ptImgCPHCouponNew'     => $tImgCPHCouponNew,
+                'ptInputBarHisQtyUse'   => $tInputBarHisQtyUse,
+                'paDataCouponBar'       => $aDataCouponBar
+            ];
+            echo json_encode($aDataReturn);
+        }
+    
 
     // Functionality : Function Add  Coupon Data
     // Parameters : Ajax and Function Parameter
@@ -403,6 +438,7 @@ class cCouponSetup extends MX_Controller {
                 'FDCphDateStop'     => $this->input->post('oetCPHFrmCphDateStop'),//
                 'FTCphTimeStart'    => $this->input->post('oetCPHFrmCphTimeStart'),//
                 'FTCphTimeStop'     => $this->input->post('oetCPHFrmCphTimeStop'),//
+                'FTCphRefInt'       => $this->input->post('oetCPHHDDocrefCode'),//
                 'FTCphStaClosed'    => $tCCPStaClosed,//
                 'FTStaChkMember'    => $tCCPStaChkMember,
                 'FTUsrCode'         => $this->session->userdata('tSesUsername'),//
@@ -414,6 +450,9 @@ class cCouponSetup extends MX_Controller {
                 'FTCphStaApv'       => $this->input->post('ohdCPHStaApv'),//
                 'FTCphStaPrcDoc'    => $this->input->post('ohdCPHStaPrcDoc'),//
                 'FTCphStaDelMQ'     => $this->input->post('ohdCPHStaDelMQ'),//
+
+                'FTCphFmtPrefix'    => $this->input->post('oetCPHFrmCpnFirstChar'),
+                'FNCphFmtLen'       => $this->input->post('oetCPHFrmCpnLengChar'),
             ];
 
             $aDataCouponHD_L = [
@@ -479,35 +518,24 @@ class cCouponSetup extends MX_Controller {
                     );
             }else{
                 $this->db->trans_commit();
-                // Loop Delet Insert Image
-                // foreach($aDetailItems AS $nKey => $aValue){
-                    // Delete Image
-                    // $aDeleteImage = array(
-                    //     'tModuleName'   => 'document',
-                    //     'tImgFolder'    => 'couponsetup',
-                    //     'tImgRefID'     => $tCPHDocNo,
-                    //     'tTableDel'     => 'TCNMImgObj',
-                    //     'tImgTable'     => 'TFNTCouponHD'
-                    // );
-                    // $nStaDelImgInDB =   FSnHDelectImageInDB($aDeleteImage);
-                    // if($nStaDelImgInDB == 1){
-                    //     FSnHDeleteImageFiles($aDeleteImage);
-                    // }
-                if( $aDetailItems[0]['FTImgObjNew'] != $aDetailItems[0]['FTImgObjOld '] ){
-                    // Insert Image
-                    $aImageUplode   = array(
-                        'tModuleName'       => 'document',
-                        'tImgFolder'        => 'couponsetup',
-                        'tImgRefID'         => $tCPHDocNo,
-                        'tImgObj'           => $aDetailItems[0]['FTImgObjNew'],
-                        'tImgTable'         => 'TFNTCouponHD',
-                        'tTableInsert'      => 'TCNMImgObj',
-                        'tImgKey'           => 'coupon',
-                        'dDateTimeOn'       => date('Y-m-d H:i:s'),
-                        'tWhoBy'            => $this->session->userdata('tSesUsername'),
-                        'nStaDelBeforeEdit' => 1
-                    );
-                    $aImgReturn = FCNnHAddImgObj($aImageUplode);
+
+                if(!empty($aDetailItems)){
+                    if( $aDetailItems[0]['FTImgObjNew'] != $aDetailItems[0]['FTImgObjOld '] ){
+                        // Insert Image
+                        $aImageUplode   = array(
+                            'tModuleName'       => 'document',
+                            'tImgFolder'        => 'couponsetup',
+                            'tImgRefID'         => $tCPHDocNo,
+                            'tImgObj'           => $aDetailItems[0]['FTImgObjNew'],
+                            'tImgTable'         => 'TFNTCouponHD',
+                            'tTableInsert'      => 'TCNMImgObj',
+                            'tImgKey'           => 'coupon',
+                            'dDateTimeOn'       => date('Y-m-d H:i:s'),
+                            'tWhoBy'            => $this->session->userdata('tSesUsername'),
+                            'nStaDelBeforeEdit' => 1
+                        );
+                        $aImgReturn = FCNnHAddImgObj($aImageUplode);
+                    }
                 }
 
                 $aDataStaReturn = array(
@@ -592,12 +620,16 @@ class cCouponSetup extends MX_Controller {
                 'FCCphMinValue'     => str_replace(',','',$this->input->post('oetCphMinValue')),
                 'FTCphStaOnTopPmt'  => $tCphStaOnTopPmt,
                 'FNCphLimitUsePerBill' => str_replace(',','',$this->input->post('oetCphLimitUsePerBill')),//
+                'FTCphRefInt'       => $this->input->post('oetCPHHDDocrefCode'),//
             
                 /// Status Document
                 'FTCphStaDoc'       => $this->input->post('ohdCPHStaDoc'),
                 'FTCphStaApv'       => $this->input->post('ohdCPHStaApv'),
                 'FTCphStaPrcDoc'    => $this->input->post('ohdCPHStaPrcDoc'),
                 'FTCphStaDelMQ'     => $this->input->post('ohdCPHStaDelMQ'),
+
+                'FTCphFmtPrefix'    => $this->input->post('oetCPHFrmCpnFirstChar'),
+                'FNCphFmtLen'       => $this->input->post('oetCPHFrmCpnLengChar'),
             ];
 
             $aDataCouponHD_L = [
@@ -674,21 +706,23 @@ class cCouponSetup extends MX_Controller {
                     // if($nStaDelImgInDB == 1){
                     //     FSnHDeleteImageFiles($aDeleteImage);
                     // }
-                if( $aDetailItems[0]['FTImgObjNew'] != $aDetailItems[0]['FTImgObjOld '] ){
-                    // Insert Image
-                    $aImageUplode   = array(
-                        'tModuleName'       => 'document',
-                        'tImgFolder'        => 'couponsetup',
-                        'tImgRefID'         => $tCPHDocNo,
-                        'tImgObj'           => $aDetailItems[0]['FTImgObjNew'],
-                        'tImgTable'         => 'TFNTCouponHD',
-                        'tTableInsert'      => 'TCNMImgObj',
-                        'tImgKey'           => 'coupon',
-                        'dDateTimeOn'       => date('Y-m-d H:i:s'),
-                        'tWhoBy'            => $this->session->userdata('tSesUsername'),
-                        'nStaDelBeforeEdit' => 1
-                    );
-                    $aImgReturn = FCNnHAddImgObj($aImageUplode);
+                if(!empty($aDetailItems)){
+                    if( $aDetailItems[0]['FTImgObjNew'] != $aDetailItems[0]['FTImgObjOld '] ){
+                        // Insert Image
+                        $aImageUplode   = array(
+                            'tModuleName'       => 'document',
+                            'tImgFolder'        => 'couponsetup',
+                            'tImgRefID'         => $tCPHDocNo,
+                            'tImgObj'           => $aDetailItems[0]['FTImgObjNew'],
+                            'tImgTable'         => 'TFNTCouponHD',
+                            'tTableInsert'      => 'TCNMImgObj',
+                            'tImgKey'           => 'coupon',
+                            'dDateTimeOn'       => date('Y-m-d H:i:s'),
+                            'tWhoBy'            => $this->session->userdata('tSesUsername'),
+                            'nStaDelBeforeEdit' => 1
+                        );
+                        $aImgReturn = FCNnHAddImgObj($aImageUplode);
+                    }
                 }
 
                 $aDataStaReturn = array(
@@ -740,35 +774,32 @@ class cCouponSetup extends MX_Controller {
         $this->mCouponSetup->FSaMCPHAppoveStatus($aData);
     }
 
-    //Functionality : แก้ไขเอกสารหลังอนุมัติ
+    //Functionality : คัดลอกเอกสาร
     //Parameters : nStaClosed tCPHDocNo
     //Creator : 10/07/2020 Nale
     //Return : status
     //Return Type : json
-    public function FSaCCPHChangStatusAfApv(){
+    public function FSaCCPHCopyDoc(){
         try {
-            $nStaClosed      = $this->input->post('nStaClosed');
-            $tCPHDocNo       = $this->input->post('tCPHDocNo');
-            $tBchCode        = $this->input->post('tBchCode');
+            $tBchCode = $this->input->post('tBchCode');
+            $tDocumentNumber = $this->input->post('tDocumentNumber');
             
-            $aDataPdtParams = array(
-                'tCPHDocNo'     => $tCPHDocNo,
-                'tBchCode'      => $tBchCode ,
-                'nStaClosed'    => $nStaClosed,
-                'tSessionID'    => $this->session->userdata('tSesSessionID'),
+            $aStoreParam = array(
+                "tTblName"    => 'TFNTCouponHD',                           
+                "tDocType"    => 0,                                          
+                "tBchCode"    => $tBchCode,                                 
+                "tShpCode"    => "",                               
+                "tPosCode"    => "",                     
+                "dDocDate"    => date("Y-m-d H:i:s")       
             );
-            $aResult = $this->mCouponSetup->FSaMCPHChangStatusAfApv($aDataPdtParams);
-            if($aResult['rtCode']=="1"){
-                $aReturnData = array(
-                    'nStaEvent' => '1',
-                    'tStaMessg' => "Fucntion Success"
-                );
-            }else{
-                $aReturnData = array(
-                    'nStaEvent' => '500',
-                    'tStaMessg' => "Fucntion Error"
-                );
-            }
+            $aAutogen   = FCNaHAUTGenDocNo($aStoreParam);
+            $tCPHDocNo   = $aAutogen[0]["FTXxhDocNo"];
+            $this->mCouponSetup->FSaMCCPCopyCouponHD($tDocumentNumber,$tCPHDocNo);
+
+            $aReturnData = array(
+                'nStaEvent' => '1',
+                'tStaMessg' => "Fucntion Success"
+            );
 
         } catch (Exception $Error) {
             $aReturnData = array(

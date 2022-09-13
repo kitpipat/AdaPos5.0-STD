@@ -167,7 +167,7 @@ class mPosChanel extends CI_Model
 
         $tFullQuery  = $tSQL1.$tSQL2.$tSQL3;
         $tCountQuery = $tSQL2;
-        // print_r($tSQL);
+        // print_r($tFullQuery);
 
         $oQuery = $this->db->query($tFullQuery);
         // echo $this->db->last_query();exit;

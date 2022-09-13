@@ -25,7 +25,7 @@ class mCouponSetup extends CI_Model {
 
         $tSQL   =   "   SELECT c.* FROM (
                          SELECT
-                            ROW_NUMBER() OVER(ORDER BY A.FDCreateOn DESC) AS FNRowID,
+                            ROW_NUMBER() OVER(ORDER BY A.FDCreateOn DESC , A.FTCphDocNo DESC) AS FNRowID,
                             BCH.FTAgnCode,
                             A.*
                             FROM
@@ -35,7 +35,7 @@ class mCouponSetup extends CI_Model {
                                     CPHD.FTBchCode,
                                     BCHL.FTBchName,
                                     CPHD.FTCphDocNo,
-                                    CONVERT(VARCHAR(10),CPHD.FDCreateOn,121) AS FDCphDocDate,
+                                    CONVERT(VARCHAR(10),CPHD.FDCreateOn,103) AS FDCphDocDate,
                                     CPHD.FTCphStaDoc,
                                     CPHD.FTCphStaApv,
                                     CPHD.FTCphStaPrcDoc,
@@ -73,7 +73,6 @@ class mCouponSetup extends CI_Model {
         // Check User Login Shop
         if($this->session->userdata('nSesUsrShpCount')>0){
             $tUserLoginShpCode  = $this->session->userdata('tSesUsrShpCodeMulti');
-            // $tSQL   .=  "   AND CPHD.FTShpCode IN($tUserLoginShpCode) ";
         }
 
         // ต้นหารหัสเอกสาร,ชือสาขา,วันที่เอกสาร
@@ -82,12 +81,13 @@ class mCouponSetup extends CI_Model {
                   (CPHD.FTCphDocNo LIKE '%$tSearchList%') 
                  OR (BCHL.FTBchName LIKE '%$tSearchList%') 
                  OR (CONVERT(VARCHAR(10),CPHD.FDCphDocDate,103) LIKE '%$tSearchList%')
+                 OR (CPHDL.FTCpnName LIKE '%$tSearchList%') 
             )";
         }
 
         // ค้นหาจากสาขา - ถึงสาขา
         if(!empty($tSearchBchCodeFrom) && !empty($tSearchBchCodeTo)){
-            $tSQL   .= "    AND ((CPHD.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (CPHD.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
+            $tSQL   .= "    AND ((CPHD.FTBchCode BETWEEN '$tSearchBchCodeFrom' AND '$tSearchBchCodeTo') OR (CPHD.FTBchCode BETWEEN '$tSearchBchCodeTo' AND '$tSearchBchCodeFrom'))";
         }
 
         // ค้นหาจากวันที่ - ถึงวันที่
@@ -136,7 +136,7 @@ class mCouponSetup extends CI_Model {
 
         $tSQL   .=" ) ";
         // if(isset($aDatSessionUserLogIn['FTBchCode']) && !empty($aDatSessionUserLogIn['FTBchCode'])){
-            if($this->session->userdata('tSesUsrLevel')!='HQ'){
+        if($this->session->userdata('tSesUsrLevel')!='HQ'){
                 // $tUserLoginBchCode  = $aDatSessionUserLogIn['FTBchCode'];
                 $tUserLoginBchCode  = $this->session->userdata('tSesUsrBchCodeMulti');
                 $tSesUsrAgnCode  = $this->session->userdata('tSesUsrAgnCode');
@@ -153,12 +153,13 @@ class mCouponSetup extends CI_Model {
                                         AND TARBCH.FTCphStaType = 2
                                     )
                                     )  ";
-                                         // ต้นหารหัสเอกสาร,ชือสาขา,วันที่เอกสาร
+                        // ต้นหารหัสเอกสาร,ชือสาขา,วันที่เอกสาร
                         if(isset($tSearchList) && !empty($tSearchList)){
                             $tSQL   .=  "   AND (
                                     (CPHD.FTCphDocNo LIKE '%$tSearchList%') 
                                     OR (BCHL.FTBchName LIKE '%$tSearchList%') 
                                     OR (CONVERT(VARCHAR(10),CPHD.FDCphDocDate,103) LIKE '%$tSearchList%')
+                                    OR (CPHDL.FTCpnName LIKE '%$tSearchList%') 
                             )";
                         }
 
@@ -166,22 +167,22 @@ class mCouponSetup extends CI_Model {
                             $tSQL   .= "    AND ((CPHD.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (CPHD.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
                         }
                             $tSQL  .=")";
-            if(!empty($tSesUsrAgnCode)){
+                        
                 $tSQL  .="	OR (
                               CPHD.FTCphStaApv = 1
                                 AND (
                                     (ISNULL(TARBCH.FTCphAgnTo,'') ='')
                                     OR (
-                                        TARBCH.FTCphAgnTo IN($tSesUsrAgnCode)
-                                        AND TARBCH.FTCphStaType = 1
+                                        --TARBCH.FTCphAgnTo IN($tSesUsrAgnCode) AND 
+                                        TARBCH.FTCphStaType = 1
                                     )
                                 OR (
-                                        TARBCH.FTCphAgnTo NOT IN($tSesUsrAgnCode)
-                                        AND TARBCH.FTCphStaType = 2
+                                        --TARBCH.FTCphAgnTo NOT IN($tSesUsrAgnCode) AND 
+                                        TARBCH.FTCphStaType = 2
                                     )
-                                )  ";                      
+                                )  ";                        
+                        
                 $tSQL  .=")";          
-                                }
         }
 
 
@@ -189,13 +190,10 @@ class mCouponSetup extends CI_Model {
         $tSQL   .=  ") Base"; 
         $tSQL   .=  ") A  LEFT JOIN TCNMBranch BCH WITH (NOLOCK) ON A.FTBchCode = BCH.FTBchCode";
         if($this->session->userdata('tSesUsrLevel')!='HQ'){
-        $tSQL   .= " WHERE BCH.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(BCH.FTAgnCode,'') = '' ";
+        //$tSQL   .= " WHERE BCH.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(BCH.FTAgnCode,'') = '' ";
         }
         $tSQL   .= ") AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
         
-        // echo $tSQL;
-        // exit();
-
         $oQuery = $this->db->query($tSQL);
         if($oQuery->num_rows() > 0){
             $oDataList          = $oQuery->result_array();
@@ -264,6 +262,7 @@ class mCouponSetup extends CI_Model {
                         (
                             SELECT BCH.FTAgnCode ,CPHD.FTCphDocNo
                         FROM TFNTCouponHD CPHD WITH(NOLOCK)
+                        LEFT JOIN TFNTCouponHD_L CPHDL WITH(NOLOCK) ON CPHD.FTCphDocNo = CPHDL.FTCphDocNo
                         LEFT JOIN TCNMBranch BCH WITH(NOLOCK) ON BCH.FTBchCode = CPHD.FTBchCode
                         LEFT JOIN TCNMBranch_L BCHL WITH(NOLOCK) ON CPHD.FTBchCode = BCHL.FTBchCode AND BCHL.FNLngID = $nLngID
                         LEFT JOIN TCNMUser_L USRINS WITH(NOLOCK) ON CPHD.FTUsrCode = USRINS.FTUsrCode AND USRINS.FNLngID = $nLngID
@@ -298,12 +297,17 @@ class mCouponSetup extends CI_Model {
 
         // ต้นหารหัสเอกสาร,ชือสาขา,วันที่เอกสาร,ผู้สร้าง,ผู้อนุมัตื
         if(isset($tSearchList) && !empty($tSearchList)){
-            $tSQL   .=  "   AND ((CPHD.FTCphDocNo LIKE '%$tSearchList%') OR (BCHL.FTBchName LIKE '%$tSearchList%') OR (CONVERT(VARCHAR(10),CPHD.FDCphDocDate,103) LIKE '%$tSearchList%') OR (USRINS.FTUsrName LIKE '%$tSearchList%') OR (USRAPV.FTUsrName LIKE '%$tSearchList%'))";
+            $tSQL   .=  "   AND (
+                                (CPHD.FTCphDocNo LIKE '%$tSearchList%') OR (BCHL.FTBchName LIKE '%$tSearchList%') 
+                                OR (CONVERT(VARCHAR(10),CPHD.FDCphDocDate,103) LIKE '%$tSearchList%') 
+                                OR (USRINS.FTUsrName LIKE '%$tSearchList%') OR (USRAPV.FTUsrName LIKE '%$tSearchList%')
+                                OR (CPHDL.FTCpnName LIKE '%$tSearchList%') 
+                            )";
         }
 
         // ค้นหาจากสาขา - ถึงสาขา
         if(!empty($tSearchBchCodeFrom) && !empty($tSearchBchCodeTo)){
-            $tSQL   .= "    AND ((CPHD.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (CPHD.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
+            $tSQL   .= "    AND ((CPHD.FTBchCode BETWEEN '$tSearchBchCodeFrom' AND '$tSearchBchCodeTo') OR (CPHD.FTBchCode BETWEEN '$tSearchBchCodeTo' AND '$tSearchBchCodeFrom'))";
         }
 
         // ค้นหาจากวันที่ - ถึงวันที่
@@ -375,6 +379,7 @@ class mCouponSetup extends CI_Model {
                                     (CPHD.FTCphDocNo LIKE '%$tSearchList%') 
                                     OR (BCHL.FTBchName LIKE '%$tSearchList%') 
                                     OR (CONVERT(VARCHAR(10),CPHD.FDCphDocDate,103) LIKE '%$tSearchList%')
+                                    OR (CPHDL.FTCpnName LIKE '%$tSearchList%') 
                             )";
                         }
 
@@ -382,29 +387,27 @@ class mCouponSetup extends CI_Model {
                             $tSQL   .= "    AND ((CPHD.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (CPHD.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
                         }
                                 $tSQL  .=")";
-            if(!empty($tSesUsrAgnCode)){
                 $tSQL  .="	OR (
                               CPHD.FTCphStaApv = 1
                                 AND (
                                     (ISNULL(TARBCH.FTCphAgnTo,'') ='')
                                     OR (
-                                        TARBCH.FTCphAgnTo IN($tSesUsrAgnCode)
-                                        AND TARBCH.FTCphStaType = 1
+                                        --TARBCH.FTCphAgnTo IN($tSesUsrAgnCode) AND 
+                                        TARBCH.FTCphStaType = 1
                                     )
                                 OR (
-                                        TARBCH.FTCphAgnTo NOT IN($tSesUsrAgnCode)
-                                        AND TARBCH.FTCphStaType = 2
+                                        --TARBCH.FTCphAgnTo NOT IN($tSesUsrAgnCode) AND 
+                                        TARBCH.FTCphStaType = 2
                                     )
                                 )  ";                        
-                              
-                  $tSQL  .=")";
-                                }
+                        
+                $tSQL  .=")";
         }
         
         $tSesUsrAgnCode  = $this->session->userdata('tSesUsrAgnCode');
         $tSQL   .=  ") A  ";
         if($this->session->userdata('tSesUsrLevel')!='HQ'){
-        $tSQL   .= " WHERE A.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(A.FTAgnCode,'') = ''";
+        //$tSQL   .= " WHERE A.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(A.FTAgnCode,'') = ''";
         }
         
         $oQuery = $this->db->query($tSQL);
@@ -579,6 +582,8 @@ class mCouponSetup extends CI_Model {
         if($nCount==0){
         //Add TFNTCouponHD
         $tSQLInsert = " INSERT INTO TFNTCouponHD (
+                            FTCphFmtPrefix,
+                            FNCphFmtLen,
                             FTBchCode,
                             FTCphDocNo,
                             FTCptCode,
@@ -601,11 +606,14 @@ class mCouponSetup extends CI_Model {
                             FTCphStaApv,
                             FTCphStaPrcDoc,
                             FTCphStaDelMQ,
+                            FTCphRefInt,
                             FDLastUpdOn,
                             FTLastUpdBy,
                             FDCreateOn,
                             FTCreateBy
                         )VALUES(
+                            '".$paDataMaster['FTCphFmtPrefix']."',
+                            '".$paDataMaster['FNCphFmtLen']."',
                             '".$paDataMaster['FTBchCode']."',
                             '".$paDataMaster['FTCphDocNo']."',
                             '".$paDataMaster['FTCptCode']."',
@@ -628,6 +636,7 @@ class mCouponSetup extends CI_Model {
                             '".$paDataMaster['FTCphStaApv']."',
                             '".$paDataMaster['FTCphStaPrcDoc']."',
                             '".$paDataMaster['FTCphStaDelMQ']."',
+                            '".$paDataMaster['FTCphRefInt']."',
                             GETDATE(),
                             '".$paDataWhere['FTLastUpdBy']."',
                             GETDATE(),
@@ -637,6 +646,9 @@ class mCouponSetup extends CI_Model {
                }else{
                 $tSQLInsert = " UPDATE TFNTCouponHD SET 
                                     FTCphDisType  =  '".$paDataMaster['FTCphDisType']."',
+                                    FTCptCode = '".$paDataMaster['FTCptCode']."',
+                                    FTCphFmtPrefix = '".$paDataMaster['FTCphFmtPrefix']."',
+                                    FNCphFmtLen = '".$paDataMaster['FNCphFmtLen']."',
                                     FCCphDisValue = CONVERT(FLOAT,'".$paDataMaster['FCCphDisValue']."'),
                                     FTPplCode = '".$paDataMaster['FTPplCode']."',
                                     FDCphDateStart = CONVERT(DATETIME,'".$paDataMaster['FDCphDateStart']."'),
@@ -649,6 +661,7 @@ class mCouponSetup extends CI_Model {
                                     FTCphStaOnTopPmt = '".$paDataMaster['FTCphStaOnTopPmt']."',
                                     FNCphLimitUsePerBill = CONVERT(FLOAT,'".$paDataMaster['FNCphLimitUsePerBill']."'),
                                     FTCphRefAccCode = '".$paDataMaster['FTCphRefAccCode']."',
+                                    FTCphRefInt = '".$paDataMaster['FTCphRefInt']."',
                                     FDLastUpdOn =  GETDATE(),
                                     FTLastUpdBy = '".$paDataWhere['FTLastUpdBy']."' 
                                 WHERE TFNTCouponHD.FTBchCode = '".$paDataMaster['FTBchCode']."' AND TFNTCouponHD.FTCphDocNo = '".$paDataMaster['FTCphDocNo']."'
@@ -909,6 +922,7 @@ class mCouponSetup extends CI_Model {
                             TCH.FTCphStaApv,
                             TCH.FTCphStaPrcDoc,
                             TCH.FTCphStaDelMQ,
+                            TCH.FTCphRefInt,
 
                             TCHL.FTCpnName,
                             TCHL.FTCpnMsg1,
@@ -916,10 +930,13 @@ class mCouponSetup extends CI_Model {
                             TCHL.FTCpnCond,
                             BCHL.FTBchName,
 
-                            TPL.FTPplName
-
+                            TPL.FTPplName,
+                            TCH.FTCphFmtPrefix,
+                            TCH.FNCphFmtLen,
+                            CL.FTCptStaChk,
+                            CL.FTCptStaChkHQ
                         FROM TFNTCouponHD TCH 
-                        
+                        LEFT JOIN TFNMCouponType CL ON TCH.FTCptCode = CL.FTCptCode
                         LEFT JOIN TFNMCouponType_L CTL  ON TCH.FTCptCode = CTL.FTCptCode AND CTL.FNLngID   =  $nLngID
                         LEFT JOIN TFNTCouponHD_L   TCHL ON TCH.FTCphDocNo   = TCHL.FTCphDocNo AND TCHL.FNLngID  =  $nLngID
                         LEFT JOIN TCNMUser_L USRINS ON TCH.FTUsrCode = USRINS.FTUsrCode AND USRINS.FNLngID = $nLngID
@@ -1105,6 +1122,164 @@ class mCouponSetup extends CI_Model {
             );
         }
         return $aStatus;
+    }
+
+    //Functionality : Insert Coupon HD
+    //Parameters : function parameters
+    //Creator : 26/12/2019 saharat(Golf)
+    //Last Modified : -
+    //Return : Array
+    //Return Type : Array
+    public function FSaMCCPCopyCouponHD($ptDocumentNumber,$ptCPHDocNo){
+        //Copy TFNTCouponHD
+        $tSQLInsert = " INSERT INTO TFNTCouponHD (
+                            FTCphFmtPrefix,
+                            FNCphFmtLen,
+                            FTBchCode,
+                            FTCphDocNo,
+                            FTCptCode,
+                            FDCphDocDate,
+                            FTCphDisType,
+                            FCCphDisValue,
+                            FTPplCode,
+                            FDCphDateStart,
+                            FDCphDateStop,
+                            FTCphTimeStart,
+                            FTCphTimeStop,
+                            FTCphStaClosed,
+                            FTCphRefAccCode,
+                            FCCphMinValue,
+                            FTCphStaOnTopPmt,
+                            FNCphLimitUsePerBill,
+                            FTStaChkMember,
+                            FTUsrCode,
+                            FTCphStaDoc,
+                            FTCphRefInt,
+                            FDLastUpdOn,
+                            FTLastUpdBy,
+                            FDCreateOn,
+                            FTCreateBy
+                        )SELECT 
+                            FTCphFmtPrefix,
+                            FNCphFmtLen,
+                            FTBchCode,
+                            ".$this->db->escape($ptCPHDocNo).",
+                            FTCptCode,
+                            FDCphDocDate,
+                            FTCphDisType,
+                            FCCphDisValue,
+                            FTPplCode,
+                            FDCphDateStart,
+                            FDCphDateStop,
+                            FTCphTimeStart,
+                            FTCphTimeStop,
+                            FTCphStaClosed,
+                            FTCphRefAccCode,
+                            FCCphMinValue,
+                            FTCphStaOnTopPmt,
+                            FNCphLimitUsePerBill,
+                            FTStaChkMember,
+                            FTUsrCode,
+                            '1',
+                            FTCphRefInt,
+                            GETDATE(),
+                            FTLastUpdBy,
+                            GETDATE(),
+                            FTCreateBy
+                    FROM TFNTCouponHD WHERE FTCphDocNo = ".$this->db->escape($ptDocumentNumber)."
+        ";
+        $oQuery = $this->db->query($tSQLInsert);
+
+        ////Copy TFNTCouponHD_L
+        $tSQLInsert = " INSERT INTO TFNTCouponHD_L(
+            FTBchCode,
+            FTCphDocNo,
+            FNLngID,
+            FTCpnName,
+            FTCpnMsg1,
+            FTCpnMsg2,
+            FTCpnCond 
+                )SELECT
+            FTBchCode,
+            ".$this->db->escape($ptCPHDocNo).",
+            FNLngID,
+            FTCpnName,
+            FTCpnMsg1,
+            FTCpnMsg2,
+            FTCpnCond 
+            FROM TFNTCouponHD_L WHERE FTCphDocNo = ".$this->db->escape($ptDocumentNumber)."
+        ";
+        $oQuery = $this->db->query($tSQLInsert);
+
+        ////Copy TFNTCouponDT
+        $tSQLInsert = " INSERT INTO TFNTCouponDT ( 
+            FTBchCode,
+            FTCphDocNo,
+            FTCpdBarCpn,
+            FNCpdSeqNo,
+            FNCpdAlwMaxUse 
+            ) SELECT
+            FTBchCode,
+            ".$this->db->escape($ptCPHDocNo).",
+            FTCpdBarCpn,
+            FNCpdSeqNo,
+            FNCpdAlwMaxUse
+            FROM TFNTCouponDT WHERE FTCphDocNo = ".$this->db->escape($ptDocumentNumber)." 
+        ";
+        $oQuery = $this->db->query($tSQLInsert);
+
+        ////Copy TFNTCouponHDCstPri
+        // $tSQLInsert = " INSERT INTO TFNTCouponHDCstPri ( 
+        //     FTBchCode,
+        //     FTCphDocNo,
+        //     FTPplCode,
+        //     FTCphStaType ) SELECT
+        //     FTBchCode,
+        //     ".$this->db->escape($ptCPHDocNo).",
+        //     FTPplCode,
+        //     FTCphStaType 
+        //     FROM TFNTCouponHDCstPri WHERE FTCphDocNo = ".$this->db->escape($ptDocumentNumber)."
+        //     ";
+        // $oQuery = $this->db->query($tSQLInsert);
+
+        ////Copy TFNTCouponHDPdt
+        // $tSQLInsert = " INSERT INTO TFNTCouponHDPdt ( 
+        //     FTBchCode,
+        //     FTCphDocNo,
+        //     FTPdtCode,
+        //     FTPunCode,
+        //     FTCphStaType ) SELECT
+        //     FTBchCode,
+        //     ".$this->db->escape($ptCPHDocNo).",
+        //     FTPdtCode,
+        //     FTPunCode,
+        //     FTCphStaType 
+        //     FROM TFNTCouponHDPdt WHERE FTCphDocNo = ".$this->db->escape($ptDocumentNumber)."
+        //     ";
+        // $oQuery = $this->db->query($tSQLInsert);
+
+        ////Copy TFNTCouponHDBch
+        // $tSQLInsert = " INSERT INTO TFNTCouponHDBch ( 
+        //     FTCphAgnTo,
+        //     FTBchCode,
+        //     FTCphDocNo,
+        //     FTCphBchTo,
+        //     FTCphMerTo,
+        //     FTCphShpTo,
+        //     FTCphStaType ) SELECT
+        //     FTCphAgnTo,
+        //     FTBchCode,
+        //     ".$this->db->escape($ptCPHDocNo).",
+        //     FTCphBchTo,
+        //     FTCphMerTo,
+        //     FTCphShpTo,
+        //     FTCphStaType 
+        //     FROM TFNTCouponHDBch WHERE FTCphDocNo = ".$this->db->escape($ptDocumentNumber)."
+        //     ";
+        // $oQuery = $this->db->query($tSQLInsert);
+
+
+        return;
     }
 
 
