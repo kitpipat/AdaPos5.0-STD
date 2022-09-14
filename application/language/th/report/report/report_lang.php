@@ -2475,3 +2475,12 @@ $lang['tRptPurchaseorderCat5']        = "หมวดหมู่ 5";
 $lang['tRptPurchaseorderOrdQty']        = "จำนวนสั่ง";
 $lang['tRptPurchaseorderSalQty']        = "จำนวนขาย";
 $lang['tRptPurchaseorderLossQty']        = "ยอดต่าง";
+
+// รายงาน - โอนสินค้าระหว่างคลัง
+$lang['tRptinventorytranfer']       = "รายงาน - โอนสินค้าระหว่างคลัง";
+$lang['tRptinventorytranferOut']    = "โอนจากคลัง";
+$lang['tRptinventorytranferIn']     = "ไปยังคลัง";
+$lang['tRptinventorytranferQTY']    = "จำนวนที่โอน";
+$lang['tRptinventoryTotalAVG']      = "ทุนรวมเฉลี่ย";
+$lang['tRptinventoryCostSTD']       = "ต้นทุนมาตรฐาน";
+$lang['tRptinventoryCostSTDTotal']  = "ทุนรวมมาตรฐาน";

@@ -2021,3 +2021,12 @@ $lang['tRptPurchaseorderCat5']        = "Category 5";
 $lang['tRptPurchaseorderOrdQty']        = "Order Qty";
 $lang['tRptPurchaseorderSalQty']        = "Pos Qty";
 $lang['tRptPurchaseorderLossQty']        = "Diff Qty";
+
+// รายงาน - โอนสินค้าระหว่างคลัง
+$lang['tRptinventorytranfer'] = "Report - Transfer Between Warehouses";
+$lang['tRptinventorytranferOut'] = "Warehouses Out";
+$lang['tRptinventorytranferIn'] = "Warehouses In";
+$lang['tRptinventorytranferQTY'] = "QTY";
+$lang['tRptinventoryTotalAVG']      = "Average Total Capital";
+$lang['tRptinventoryCostSTD']       = "Standard cost";
+$lang['tRptinventoryCostSTDTotal']  = "Standard Total Capital";

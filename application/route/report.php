@@ -839,3 +839,7 @@ $route['rptSalAnlsByBchByPdtCallExportFile']   = "report/reportspcbigc/Rptsalanl
 $route['rptPurchaseorder']                  = 'report/reportspcbigc/Rptpurchaseorder_controller/index';
 $route['rptPurchaseorderClickPage']         = 'report/reportspcbigc/Rptpurchaseorder_controller/FSvCCallRptViewBeforePrintClickPage';
 $route['rptPurchaseorderCallExportFile']    = 'report/reportspcbigc/Rptpurchaseorder_controller/FSvCCallRptExportFile';
+
+// รายงาน - โอนสินค้าระหว่างคลัง
+$route['rptRptInventoryTranfer']                    = 'report/reportFitauto/Rptinventorytranfer_controller/index';
+$route['rptRptInventoryTranferClickPage']           = 'report/reportFitauto/Rptinventorytranfer_controller/FSvCCallRptViewBeforePrintClickPage';
