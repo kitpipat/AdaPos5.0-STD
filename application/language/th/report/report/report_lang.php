@@ -1927,10 +1927,13 @@ $lang['tRptMnyShowOverMonthlyTotalMO2']  = "รวม ขาด/เกิน";
 $lang['tRptMnyShowOverMonthlySign2']     = "ลงลายมือชื่อแคชเชียร์";
 
 // Create by Witsarut 19-11-2020
-$lang['tRptQtyWah']   = "จำนวนคลัง";
-$lang['tRptPointPurchase']  = "จุดสั่งซื้อ";
-$lang['tRptShouldOrder']    = "จำนวนแนะนำ";
-$lang['tRptPdtPointWahTitle'] = "รายงาน - สินค้าถึงจุดสั่งซื้อตามคลัง";
+$lang['tRptQtyWah']             = "จำนวนคลัง";
+$lang['tRptPointPurchase']      = "จุดสั่งซื้อ";
+$lang['tRptShouldOrder']        = "จำนวนแนะนำ";
+$lang['tRptPdtPointWahTitle']   = "รายงาน - สินค้าถึงจุดสั่งซื้อตามคลัง";
+$lang['tRptPdtWahQty']          = "สินค้าคงคลัง";
+$lang['tRptPdtDailyUseAvg']     = "จำนวนขายเฉลี่ย 7 วัน";
+$lang['tRptPdtWahAmt']          = "มูลค่าคงเหลือ";
 
 
 //Create By Nattakit   20/11/2020
@@ -2078,8 +2081,8 @@ $lang['tRptPdtModelCode']       = "รหัสรุ่น";
 $lang['tRptPdtModelName']       = "ชื่อรุ่น";
 $lang['tRptPdtSplCode']         = 'รหัสผู้จำหน่าย';
 $lang['tRptPdtSplName']         = 'ชื่อผู้จำหน่าย';
-$lang['tRptProductCode']           = "รหัสินค้า";
-$lang['tRptProductName']           = "ชื่อสินค้า";
+$lang['tRptProductCode']        = "รหัสสินค้า";
+$lang['tRptProductName']        = "ชื่อสินค้า";
 
 $lang['tRptQty']         = "Qty";
 $lang['tRptCompareLastYear']       = "Last year";
@@ -2374,7 +2377,101 @@ $lang['tRptMasCstAddress']  = 'ที่อยู่';
 
 $lang['tRptTotalAfterCost']  = 'ยอดสุทธิหลังหักทุน';
 
-$lang['tRptStaBalQtyTitle']  = 'สถานะจำนวนคงคลัง';
-$lang['tRptStaBalQty']  = 'ทั้งหมด';
-$lang['tRptStaBalQty1']  = 'คงคลังมากกว่าศูนย์';
-$lang['tRptStaBalQty2']  = 'คงคลังน้อยกว่าศูนย์';
+
+
+
+
+// Lang หัวตาราง รายงาน - เปรียบเทียบยอดขายกับราคากลาง
+$lang['tRptComparePriceTitle']          = "รายงาน - เปรียบเทียบยอดขายกับราคากลาง";
+$lang['tRptBranch']                     = "สาขา";
+$lang['tRptQtySaleUnit']                = "จำนวนขาย หน่วย";
+$lang['tRpRecommendedPrice']            = "ราคาแนะนำ";
+$lang['tRptSalePrice']                  = "ราคาขาย";
+$lang['tRptMidPrice']                   = "ราคากลาง";
+$lang['tRptSumDiff']                    = "ผลต่างรวม";
+$lang['tRptCostLast']                   = "ต้นทุนสุดท้าย";
+$lang['tRptProfit']                     = "กำไร";
+$lang['tRptPerProfitRecPri']            = 'กำไรต่อ<br>ราคาแนะนำ';
+$lang['tRptPerProfitSalePri']           = 'กำไรต่อ<br>ราคาขาย';
+
+
+
+$lang['tRptpursplbypdtTitle']  = 'รายงาน - ยอดซื้อตามผู้จำหน่าย ตามสินค้า';
+$lang['tRptPurByPdtTitle']  = 'รายงาน - ยอดซื้อตาม ตามสินค้า';
+
+
+$lang['tRptPhStaApv0'] ="ยังไม่ทำ";
+$lang['tRptPhStaApv1'] ="อนุมัติแล้ว";
+$lang['tRptPhStaPaid1'] ="ยังไม่จ่าย";
+$lang['tRptPhStaPaid2'] ="บางส่วน";
+$lang['tRptPhStaPaid3'] ="ครบ";
+
+
+$lang['tRptpurvatTitle']  = 'รายงาน - ภาษีซื้อ';
+$lang['tRptPurVatTaxNo']                   = "เลขที่ประจำตัวผู้เสียภาษีอากรของผู้ขายสินค้า";
+$lang['tRptPurVatTaxNoDoc']                   = "ใบกำกับภาษี";
+
+$lang['tRptPdtCreateTitle']                   = "รายงาน - การสร้างสินค้าใหม่";
+$lang['tRptPdtCreateDate']                   = "วันที่สร้าง";
+$lang['tRptPdtCreatteBranch']                   = "สาขาที่สร้าง";
+$lang['tRptPdtCreatteAgency']                   = "ตัวแทนขายที่สร้าง";
+
+$lang['tRptComparePriceTitle']          = "รายงาน - เปรียบเทียบยอดขายกับราคากลาง";
+$lang['tRptMidPrice']                   = "ราคากลาง";
+$lang['tRptSumDiff']                   = "ผลต่างรวม";
+
+$lang['tRptSumQty']                     = "จำนวนขายรวม";
+
+
+$lang['tRptBarCodeFrom'] = "จากบาร์โค้ด";
+$lang['tRptBarCodeTo'] = "ถึงบาร์โค้ด";
+
+$lang['tRptStaShwBarCode'] = "แสดงบาร์โค้ด";
+$lang['tRptStaShwBarCode1'] = "ใช้งาน";
+$lang['tRptStaShwBarCode2'] = "ไม่ใช้งาน";
+
+
+
+// Lang หัวตาราง รายงาน - วิเคราะห์การขายตามประเภทสินค้า
+$lang['tRptSalAnlsByBchTitle']          = "รายงาน - วิเคราะห์การขายตามร้านค้า";
+$lang['tRptSalAnlsByBchSalePos']        = "การขาย (จุดขาย)";
+$lang['tRptSalAnlsByBchPurchase']       = "การซื้อ (BigC)";
+$lang['tRptSalAnlsByBchName']           = "สาขา";
+$lang['tRptSalAnlsByBchDiff']           = "ผลต่าง";
+$lang['tRptSalAnlsByBchSKU']            = "จำนวน(ชิ้น)";
+$lang['tRptSalAnlsByBchSKUUnit']        = "จำนวน(หน่วย)";
+$lang['tRptSalAnlsByBchAmout']          = "มูลค่า";
+$lang['tRptSalAnlsByBchPer']            = "อัตราส่วน %";
+$lang['tRptSalAnlsByBchPdtType']        = "ประเภทสินค้า";
+$lang['tRptSalAnlsByBchPdtTypeToal']    = "รวม";
+$lang['tRptSalAnlsByBchPdtNonDjItem']   = 'NON-DJ';
+$lang['tRptSalAnlsByBchPdtNonDjItemNegative']   = 'Negative Inventory';
+$lang['tRptSalAnlsByBchTotalDj']   = 'รวมสินค้าโดนใจ';
+$lang['tRptSalAnlsByBchPurSalDj']   = '(ซื้อ-ขาย)';
+$lang['tRptSalAnlsByBchRemark']   = 'หมายเหตุ : มูลค่าผลต่าง คือ มูลค่าเฉลี่ยการซื้อคูณจำนวนผลต่าง';
+
+$lang['tRptSalAnlsByBchByPdtTitle']          = "รายงาน - วิเคราะห์การขายตามร้านค้าตามสินค้า";
+$lang['tRptSalAnlsByPdtCode']           = "รหัสสินค้า";
+$lang['tRptSalAnlsByPdtName']           = "ชื่อสินค้า";
+$lang['tRptSalAnlsByBarCode']           = "บาร์โค้ด";
+$lang['tRptSalAnlsByUnitName']          = "หน่วย";
+$lang['tRptSalAnlsByPackSize']          = "ขนาดบรรจุ";
+$lang['tRptSalAnlsByCategory']          = "โครงสร้างสินค้า";
+
+
+$lang['tRPAPleaseSelectReportFrom']      = "กรุณาเลือกรูปแบบฟอร์ม";
+
+
+$lang['tRptPurchaseorderTitle']          = "รายงาน - การสั่งซื้อสินค้า";
+
+$lang['tRptPurchaseorderOrdDate']        = "วันที่สั่งซื้อ";
+$lang['tRptPurchaseorderPosDate']        = "วันที่ขาย";
+$lang['tRptPurchaseorderCat1']        = "หมวดหมู่ 1";
+$lang['tRptPurchaseorderCat2']        = "หมวดหมู่ 2";
+$lang['tRptPurchaseorderCat3']        = "หมวดหมู่ 3";
+$lang['tRptPurchaseorderCat4']        = "หมวดหมู่ 4";
+$lang['tRptPurchaseorderCat5']        = "หมวดหมู่ 5";
+
+$lang['tRptPurchaseorderOrdQty']        = "จำนวนสั่ง";
+$lang['tRptPurchaseorderSalQty']        = "จำนวนขาย";
+$lang['tRptPurchaseorderLossQty']        = "ยอดต่าง";
