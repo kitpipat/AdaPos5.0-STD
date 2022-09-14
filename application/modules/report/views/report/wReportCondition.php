@@ -2678,6 +2678,117 @@ if (FCNnHSizeOf($aCheckFltGroup) == 0) {
                                         $tCoditionReportTo   .= '';
                                         break;
                                     }
+                                    case '67': { // กลุ่มผู้จำหน่าย
+                                        /*===== Begin แบบช่วง ===========================================*/
+                                        if ($aRptFilValue['FTRptFltStaFrm'] == '1') {
+                                            $tCoditionReportFrom .= "
+                                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                                    <div class='xCNInputNewUIBrowse'>
+                                                        <div class='input-group' style='width: 100%;'>
+                                                            <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptSgpCodeFrom' name='oetRptSgpCodeFrom' maxlength='5'>
+                                                            <input type='text' class='form-control xWPointerEventNone xWRptAllInput xCNInputNewUI' id='oetRptSgpNameFrom' name='oetRptSgpNameFrom' readonly>
+                                                            <span class='input-group-btn'>
+                                                                <button id='obtRptBrowseSgpFrom' type='button' class='btn xCNButtonNewUI'> <img class='xCNIconFind'></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ";
+                                        }
+                                        if ($aRptFilValue['FTRptFltStaTo'] == '1') {
+                                            $tCoditionReportTo .= "
+                                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                                    <div class='xCNInputNewUIBrowse'>
+                                                        <div class='input-group' style='width: 100%;'>
+                                                            <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptSgpCodeTo' name='oetRptSgpCodeTo' maxlength='5'>
+                                                            <input type='text' class='form-control xWPointerEventNone xWRptAllInput xCNInputNewUI' id='oetRptSgpNameTo' name='oetRptSgpNameTo' readonly>
+                                                            <span class='input-group-btn'>
+                                                                <button id='obtRptBrowseSgpTo' type='button' class='btn xCNButtonNewUI'> <img class='xCNIconFind'></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ";
+                                        }
+                                        /*===== End แบบช่วง =============================================*/
+                                        break;
+                                    }
+                                    case '68': { // ประเภทผู้จำหน่าย
+                                        /*===== Begin แบบช่วง ===========================================*/
+                                        if ($aRptFilValue['FTRptFltStaFrm'] == '1') {
+                                            $tCoditionReportFrom .= "
+                                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                                    <div class='xCNInputNewUIBrowse'>
+                                                        <div class='input-group' style='width: 100%;'>
+                                                            <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptStyCodeFrom' name='oetRptStyCodeFrom' maxlength='5'>
+                                                            <input type='text' class='form-control xWPointerEventNone xWRptAllInput xCNInputNewUI' id='oetRptStyNameFrom' name='oetRptStyNameFrom' readonly>
+                                                            <span class='input-group-btn'>
+                                                                <button id='obtRptBrowseStyFrom' type='button' class='btn xCNButtonNewUI'> <img class='xCNIconFind'></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ";
+                                        }
+                                        if ($aRptFilValue['FTRptFltStaTo'] == '1') {
+                                            $tCoditionReportTo .= "
+                                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                                    <div class='xCNInputNewUIBrowse'>
+                                                        <div class='input-group' style='width: 100%;'>
+                                                            <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptStyCodeTo' name='oetRptStyCodeTo' maxlength='5'>
+                                                            <input type='text' class='form-control xWPointerEventNone xWRptAllInput xCNInputNewUI' id='oetRptStyNameTo' name='oetRptStyNameTo' readonly>
+                                                            <span class='input-group-btn'>
+                                                                <button id='obtRptBrowseStyTo' type='button' class='btn xCNButtonNewUI'> <img class='xCNIconFind'></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ";
+                                        }
+                                        /*===== End แบบช่วง =============================================*/
+                                        break;
+                                    }
+                                    // สถานะเอกสาร
+                                    // 1 รออนุมัติ 2 อนุมัติแล้ว 3ยกเลิก
+                                    case '69': {
+                                        if ($aRptFilValue['FTRptFltStaFrm'] == '1' || $aRptFilValue['FTRptFltStaTo'] == '1') {
+                                            $tCoditionReportFrom    .= "
+                                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                                    <div class=''>
+                                                        <div class='input-group xWInputGrpMonthFilter xCNNewUISelect' style='width:100%'>
+                                                            <select class='selectpicker xCNNewUISelectoption' id='ocmRptPhStaApv' name='ocmRptPhStaApv'>
+                                                                <option value=''>" . language('report/report/report', 'tRptAll') . "</option>
+                                                                <option value='1'>" . language('report/report/report', 'tRptPhStaApv0') . "</option>
+                                                                <option value='2'>" . language('report/report/report', 'tRptPhStaApv1') . "</option>
+                                                                <option value='3'>" . language('report/report/report', 'tRptStaCrd3') . "</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ";
+                                        }
+                                        break;
+                                    }
+                                    // สถานะ รับ/จ่ายเงิน
+                                    // 1  ยังไม่จ่าย 2 บางส่วน 3 ครบ
+                                    case '70': {
+                                        if ($aRptFilValue['FTRptFltStaFrm'] == '1' || $aRptFilValue['FTRptFltStaTo'] == '1') {
+                                            $tCoditionReportFrom    .= "
+                                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                                    <div class=''>
+                                                        <div class='input-group xWInputGrpMonthFilter xCNNewUISelect' style='width:100%'>
+                                                            <select class='selectpicker xCNNewUISelectoption' id='ocmRptPhStaPaid' name='ocmRptPhStaPaid'>
+                                                                <option value='1'>" . language('report/report/report', 'tRptPhStaPaid1') . "</option>
+                                                                <option value='2'>" . language('report/report/report', 'tRptPhStaPaid2') . "</option>
+                                                                <option value='3'>" . language('report/report/report', 'tRptPhStaPaid3') . "</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ";
+                                        }
+                                        break;
+                                    }
 
                             }
                             ?>
@@ -2710,6 +2821,12 @@ if (FCNnHSizeOf($aCheckFltGroup) == 0) {
                                             break;
                                         case 'G8':
                                             $tTextGroup = language('report/report/report', 'tRptFilterGroup8');
+                                            break;
+                                        case 'G9':
+                                            $tTextGroup = language('report/report/report', 'tRptFilterGroup9');
+                                            break;
+                                        case 'G10':
+                                            $tTextGroup = language('report/report/report', 'tRptFilterGroup10');
                                             break;
                                         default: {
                                                 $tTextGroup = '-';

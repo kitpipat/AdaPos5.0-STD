@@ -2444,6 +2444,76 @@
         }
     });
 
+    // จาก กลุ่มผู้จำหน่าย
+    $('#obtRptBrowseSgpFrom').unbind().click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose(); // Hidden Pin Menu
+            window.oRptSupplierGroupOptionFrom = undefined;
+            oRptSupplierGroupOptionFrom = oRptSupplierGroupOption({
+                'tReturnInputCode': 'oetRptSgpCodeFrom',
+                'tReturnInputName': 'oetRptSgpNameFrom',
+                // 'tNextFuncName': 'JSxRptConsNextFuncBrowseSgp',
+                // 'aArgReturn': ['FTSgpCode', 'FTSgpName']
+            });
+            JCNxBrowseData('oRptSupplierGroupOptionFrom');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+    // ถึง กลุ่มผู้จำหน่าย
+    $('#obtRptBrowseSgpTo').unbind().click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose(); // Hidden Pin Menu
+            window.oRptSupplierGroupOptionTo = undefined;
+            oRptSupplierGroupOptionTo = oRptSupplierGroupOption({
+                'tReturnInputCode': 'oetRptSgpCodeTo',
+                'tReturnInputName': 'oetRptSgpNameTo',
+                // 'tNextFuncName': 'JSxRptConsNextFuncBrowseSgp',
+                // 'aArgReturn': ['FTSgpCode', 'FTSgpName']
+            });
+            JCNxBrowseData('oRptSupplierGroupOptionTo');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    // จาก ประเภทผู้จำหน่าย
+    $('#obtRptBrowseStyFrom').unbind().click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose(); // Hidden Pin Menu
+            window.oRptSupplierStyOptionFrom = undefined;
+            oRptSupplierStyOptionFrom = oRptSupplierStyOption({
+                'tReturnInputCode': 'oetRptStyCodeFrom',
+                'tReturnInputName': 'oetRptStyNameFrom',
+                'tNextFuncName': 'JSxRptConsNextFuncBrowseSty',
+                'aArgReturn': ['FTStyCode', 'FTStyName']
+            });
+            JCNxBrowseData('oRptSupplierStyOptionFrom');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+    // ถึง ประเภทผู้จำหน่าย
+    $('#obtRptBrowseStyTo').unbind().click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose(); // Hidden Pin Menu
+            window.oRptSupplierStyOptionTo = undefined;
+            oRptSupplierStyOptionTo = oRptSupplierStyOption({
+                'tReturnInputCode': 'oetRptStyCodeTo',
+                'tReturnInputName': 'oetRptStyNameTo',
+                'tNextFuncName': 'JSxRptConsNextFuncBrowseSty',
+                'aArgReturn': ['FTStyCode', 'FTStyName']
+            });
+            JCNxBrowseData('oRptSupplierStyOptionTo');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
     // Clck Button Warehouse From-To
     $('#obtRptBrowseWahFrom').unbind().click(function() {
         var nStaSession = JCNxFuncChkSessionExpired();
@@ -6108,5 +6178,100 @@ var oRptClvBrows = function(poReturnInput) {
 
         //uncheckbox parameter[1] : id - by wat
         JSxUncheckinCheckbox('oetRptPdtUnitCodeTo');
+    }
+
+    var oRptSupplierGroupOption = function(poReturnInputSpl) {
+        let tSplNextFuncName = poReturnInputSpl.tNextFuncName;
+        let aSplArgReturn = poReturnInputSpl.aArgReturn;
+        let tSplInputReturnCode = poReturnInputSpl.tReturnInputCode;
+        let tSplInputReturnName = poReturnInputSpl.tReturnInputName;
+        let tCondition = '';
+        // let tAgnCode            = $('#oetSpcAgncyCode').val();
+        // if( tAgnCode != ''  && tAgnCode != undefined){
+        //     tCondition += " AND TCNMSpl.FTAgnCode = '"+tAgnCode+"' OR ISNULL(TCNMSpl.FTAgnCode,'') ='' ";
+        // }
+        let oSplOptionReturn = {
+            Title: ['supplier/supplier/supplier', 'tSPLTitle'],
+            Table: {
+                Master: 'TCNMSplGrp',
+                PK: 'FTSgpCode'
+            },
+            Join: {
+                Table: ['TCNMSplGrp_L'],
+                On: [
+                    'TCNMSplGrp.FTSgpCode  = TCNMSplGrp_L.FTSgpCode  AND TCNMSplGrp_L.FNLngID = ' + nLangEdits
+                ]
+            },
+            Where: {
+                Condition: [tCondition]
+            },
+            GrideView: {
+                ColumnPathLang: 'supplier/groupsupplier/groupsupplier',
+                ColumnKeyLang: ['tSGPCode', 'tSGPName'],
+                ColumnsSize: ['15%', '90%'],
+                WidthModal: 50,
+                DataColumns: ['TCNMSplGrp.FTSgpCode', 'TCNMSplGrp_L.FTSgpName'],
+                DataColumnsFormat: ['', ''],
+                Perpage: 10,
+                OrderBy: ['TCNMSplGrp.FDCreateOn DESC'],
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: [tSplInputReturnCode, "TCNMSplGrp.FTSgpCode"],
+                Text: [tSplInputReturnName, "TCNMSplGrp_L.FTSgpName"]
+            },
+            NextFunc: {
+                FuncName: tSplNextFuncName,
+                ArgReturn: aSplArgReturn
+            },
+        };
+        return oSplOptionReturn;
+    }
+    var oRptSupplierStyOption = function(poReturnInputSpl) {
+        let tSplNextFuncName = poReturnInputSpl.tNextFuncName;
+        let aSplArgReturn = poReturnInputSpl.aArgReturn;
+        let tSplInputReturnCode = poReturnInputSpl.tReturnInputCode;
+        let tSplInputReturnName = poReturnInputSpl.tReturnInputName;
+        let tCondition = '';
+        // let tAgnCode            = $('#oetSpcAgncyCode').val();
+        // if( tAgnCode != ''  && tAgnCode != undefined){
+        //     tCondition += " AND TCNMSpl.FTAgnCode = '"+tAgnCode+"' OR ISNULL(TCNMSpl.FTAgnCode,'') ='' ";
+        // }
+        let oSplOptionReturn = {
+            Title: ['supplier/supplier/supplier', 'tSPLTitle'],
+            Table: {
+                Master: 'TCNMSplType',
+                PK: 'FTStyCode'
+            },
+            Join: {
+                Table: ['TCNMSplType_L'],
+                On: [
+                    'TCNMSplType.FTStyCode  = TCNMSplType_L.FTStyCode  AND TCNMSplType_L.FNLngID = ' + nLangEdits
+                ]
+            },
+            Where: {
+                Condition: [tCondition]
+            },
+            GrideView: {
+                ColumnPathLang: 'supplier/suppliertype/suppliertype',
+                ColumnKeyLang: ['tSTYCode', 'tSTYName'],
+                ColumnsSize: ['15%', '90%'],
+                WidthModal: 50,
+                DataColumns: ['TCNMSplType.FTStyCode', 'TCNMSplType_L.FTStyName'],
+                DataColumnsFormat: ['', ''],
+                Perpage: 10,
+                OrderBy: ['TCNMSplType.FDCreateOn DESC'],
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: [tSplInputReturnCode, "TCNMSplType.FTStyCode"],
+                Text: [tSplInputReturnName, "TCNMSplType_L.FTStyName"]
+            },
+            NextFunc: {
+                FuncName: tSplNextFuncName,
+                ArgReturn: aSplArgReturn
+            },
+        };
+        return oSplOptionReturn;
     }
 </script>

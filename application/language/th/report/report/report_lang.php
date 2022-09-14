@@ -1230,6 +1230,9 @@ $lang['tRptFilterGroup5']   = "กลุ่มการขนส่ง";
 $lang['tRptFilterGroup6']   = "กลุ่มตู้";
 $lang['tRptFilterGroup7']   = "กลุ่มบัตร";
 $lang['tRptFilterGroup8']   = "กลุ่มพนักงาน";
+$lang['tRptFilterGroup9']   = "กลุ่มซื้อ";
+$lang['tRptFilterGroup10']  = "กลุ่มสถานะ";
+
 
 
 
