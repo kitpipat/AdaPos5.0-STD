@@ -561,9 +561,9 @@ $bIsApvOrCancel = !empty($tStaApv) || $tStaDoc == 3 ? true : false;
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?php echo language('document/creditnote/creditnote', 'tCreditNoteCreditTerm'); ?></label>
                             <input
-                                class="form-control text-right"
+                                class="form-control text-right xCNInputNumericWithoutDecimal"
                                 type="text"
-                                id="oetCreditNoteHDPcSplXphCrTerm"
+                                id="oetCreditNoteHDPcSplXphCrTerm "
                                 name="oetCreditNoteHDPcSplXphCrTerm"
                                 value="<?php echo $tHDPcSplXphCrTerm; ?>"
                                 <?php echo $bIsApvOrCancel ? 'disabled' : '' ?>>
@@ -574,7 +574,7 @@ $bIsApvOrCancel = !empty($tStaApv) || $tStaDoc == 3 ? true : false;
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?php echo language('document/creditnote/creditnote', 'tCreditNoteCreditLimit'); ?></label>
                             <input
-                                class="form-control text-right"
+                                class="form-control text-right xCNInputNumericWithoutDecimal"
                                 type="text"
                                 id="oetCreditNoteHDPcSplCreditLimit"
                                 name="oetCreditNoteHDPcSplCreditLimit"

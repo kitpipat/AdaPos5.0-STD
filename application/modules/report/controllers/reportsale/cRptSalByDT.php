@@ -1152,7 +1152,7 @@ class cRptSalByDT extends MX_Controller{
 
           if ((isset($this->aRptFilter['tPtyCodeFrom']) && !empty($this->aRptFilter['tPtyCodeFrom'])) && (isset($this->aRptFilter['tPtyCodeTo']) && !empty($this->aRptFilter['tPtyCodeTo']))) {
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tPdtTypeFrom'].' : '.$this->aRptFilter['tPtyCodeFrom'].' '.$this->aText['tRptCstTo'].' : '.$this->aRptFilter['tPtyCodeTo']),
+                WriterEntityFactory::createCell($this->aText['tPdtTypeFrom'].' : '.$this->aRptFilter['tPtyCodeFrom'].' '.$this->aText['tPdtTypeTo'].' : '.$this->aRptFilter['tPtyCodeTo']),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),

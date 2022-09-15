@@ -234,6 +234,9 @@ class cRptSaleByProduct extends MX_Controller
             'tRptTotalAllSale' => language('report/report/report', 'tRptTotalAllSale'),
             'tRptTaxPointByCstDocDateFrom' => language('report/report/report', 'tRptTaxPointByCstDocDateFrom'),
             'tRptTaxPointByCstDocDateTo' => language('report/report/report', 'tRptTaxPointByCstDocDateTo'),
+
+            'tRptBrandFrom'               => language('report/report/report', 'tRptBrandFrom'),
+            'tRptBrandTo'                 => language('report/report/report', 'tRptBrandTo'),
         ];
 
         $this->tSysBchCode = SYS_BCH_CODE;
@@ -314,6 +317,12 @@ class cRptSaleByProduct extends MX_Controller
             'tPdtTypeNameFrom' => !empty($this->input->post('oetRptPdtTypeNameFrom')) ? $this->input->post('oetRptPdtTypeNameFrom') : "",
             'tPdtTypeCodeTo' => !empty($this->input->post('oetRptPdtTypeCodeTo')) ? $this->input->post('oetRptPdtTypeCodeTo') : "",
             'tPdtTypeNameTo' => !empty($this->input->post('oetRptPdtTypeNameTo')) ? $this->input->post('oetRptPdtTypeNameTo') : "",
+
+            // ยี่ห้อสินค้า
+            'tPbnCodeFrom'      => !empty($this->input->post('oetRptBrandCodeFrom')) ? $this->input->post('oetRptBrandCodeFrom') : "",
+            'tPbnNameFrom'      => !empty($this->input->post('oetRptBrandNameFrom')) ? $this->input->post('oetRptBrandNameFrom') : "",
+            'tPbnCodeTo'        => !empty($this->input->post('oetRptBrandCodeTo')) ? $this->input->post('oetRptBrandCodeTo') : "",
+            'tPbnNameTo'        => !empty($this->input->post('oetRptBrandNameTo')) ? $this->input->post('oetRptBrandNameTo') : "",
 
             // วันที่เอกสาร(DocNo)
             'tDocDateFrom' => !empty($this->input->post('oetRptDocDateFrom')) ? $this->input->post('oetRptDocDateFrom') : "",
@@ -1594,6 +1603,22 @@ class cRptSaleByProduct extends MX_Controller
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
+
+          if ((isset($this->aRptFilter['tPbnCodeFrom']) && !empty($this->aRptFilter['tPbnCodeFrom'])) && (isset($this->aRptFilter['tPbnCodeTo']) && !empty($this->aRptFilter['tPbnCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptBrandFrom'].' : '.$this->aRptFilter['tPbnCodeFrom'].' '.$this->aText['tRptBrandTo'].' : '.$this->aRptFilter['tPbnCodeTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                ];
+                $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+          }
+          
         if(isset($this->aRptFilter['tPosType'])){
             $aCells = [
                 WriterEntityFactory::createCell($this->aText['tRptPosTypeName'].' : '.$this->aText['tRptPosType'.$this->aRptFilter['tPosType']]),

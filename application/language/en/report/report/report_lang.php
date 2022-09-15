@@ -1930,3 +1930,18 @@ $lang['tRptStaBalQtyTitle']  = 'Inventory status';
 $lang['tRptStaBalQty']  = 'All';
 $lang['tRptStaBalQty1']  = 'greater than zero';
 $lang['tRptStaBalQty2']  = 'less than zero';
+
+
+//รายงานภาษีขายประจำเดือน รายงานพิเศษ Anime Pos+
+$lang['tRptPssVayMonthTitle'] = 'Report - Monthly Sales Tax';
+$lang['tRptPssVayMonthNo'] = 'No';
+$lang['tRptPssVayMonthTax'] = 'Taxinvoice';
+$lang['tRptPssVayMonthDate'] = 'Date';
+$lang['tRptPssVayMonthDocno'] = 'DocumentNo';
+$lang['tRptPssVayMonthCstName'] = 'CompanyName';
+$lang['tRptPssVayMonthTaxID'] = 'TaxID';
+$lang['tRptPssVayMonthBranch'] = 'Branch';
+$lang['tRptPssVayMonthB4Vat1'] = 'Before Vat (0%)';
+$lang['tRptPssVayMonthB4Vat2'] = 'Before Vat';
+$lang['tRptPssVayMonthVatVal'] = 'Vat';
+$lang['tRptPssVayMonthAmtVal'] = 'Total';

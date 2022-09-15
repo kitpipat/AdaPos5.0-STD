@@ -21,7 +21,7 @@ class mRptMovePosVd extends CI_Model
         // ประเภทเครื่องจุดขาย
         $tPosCodeSelect = ($paDataFilter['bPosStaSelectAll']) ? '' : FCNtAddSingleQuote($paDataFilter['tPosCodeSelect']);
 
-        $tCallStore = "{ CALL SP_RPTxStockMovent1002002(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }";
+        $tCallStore = "{ CALL SP_RPTxStockMovent1002002(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }";
         $aDataStore = array(
             'pnLngID'           => $paDataFilter['nLangID'],
             'pnComName'         => $paDataFilter['tCompName'],
@@ -38,6 +38,10 @@ class mRptMovePosVd extends CI_Model
             'ptMonth'           => ltrim($paDataFilter['tMonth'],0),
             'ptYear'            => $paDataFilter['tYear'],
             'ptPdtStaActive'    => $paDataFilter['tPdtStaActive'],
+            'ptPtyCodeF'        => $paDataFilter['tPtyCodeFrom'],
+            'ptPtyCodeT'        => $paDataFilter['tPtyCodeTo'],
+            'ptPbnCodeF'        => $paDataFilter['tPbnCodeFrom'],
+            'ptPbnCodeT'        => $paDataFilter['tPbnCodeTo'],
             'FNResult'          => 0,
         );
 

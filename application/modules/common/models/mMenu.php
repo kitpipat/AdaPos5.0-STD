@@ -92,7 +92,7 @@ class mMenu extends CI_Model {
         $oQueryChkRptSpc = $this->db->query($tSQLChkRptSpc);
         if ( $oQueryChkRptSpc->num_rows() > 0 ){
             // ตรวจสอบวันหมดอายุของแพ็คเพจหลัก
-            $bStaRptSpc  = false;
+            $bStaRptSpc  = true;
             $tSQLChkExpPkg  = $tOpenKey;
             $tSQLChkExpPkg .= "  SELECT 
                                     PARSENAME( REPLACE(CONVERT(VARCHAR(MAX), DecryptByKey(FTKeyByPdt)),';','.'),1) AS FTLicStartFinish
@@ -109,8 +109,7 @@ class mMenu extends CI_Model {
                 $dDateExpPkg = date('Y-m-d');
             }
         }
-        // echo $this->db->last_query();
-        // die();
+ 
         $tRoleCode = $this->session->userdata("tSesUsrRoleCodeMulti");
         $tSQL  = "";
         $tSQL .= $tOpenKey;

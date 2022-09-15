@@ -56,7 +56,7 @@
                     <label class="xCNLabelFrm"><?php echo language('document/conditionredeem/conditionredeem','tRdhGroupConditionRedeemName')?></label>
                     </div>
                     <div class='col-lg-10'>                    
-                    <input type='text' class='form-control' id='oetRDDGrpName' name='oetRDDGrpName' >
+                    <input type='text' class='form-control' id='oetRDDGrpName' name='oetRDDGrpName'    maxlength="50" >
                     <input type='hidden' class='form-control' id='oetRDDGrpCode' name='oetRDDGrpCode' >
                 </div>
             </div>

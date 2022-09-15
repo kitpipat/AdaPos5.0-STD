@@ -2378,3 +2378,20 @@ $lang['tRptStaBalQtyTitle']  = 'สถานะจำนวนคงคลัง
 $lang['tRptStaBalQty']  = 'ทั้งหมด';
 $lang['tRptStaBalQty1']  = 'คงคลังมากกว่าศูนย์';
 $lang['tRptStaBalQty2']  = 'คงคลังน้อยกว่าศูนย์';
+
+
+
+
+//รายงานภาษีขายประจำเดือน รายงานพิเศษ Anime Pos+
+$lang['tRptPssVayMonthTitle'] = 'รายงาน - ภาษีขายประจำเดือน';
+$lang['tRptPssVayMonthNo'] = 'ลำดับ';
+$lang['tRptPssVayMonthTax'] = 'ใบกำกับภาษี';
+$lang['tRptPssVayMonthDate'] = 'วันที่';
+$lang['tRptPssVayMonthDocno'] = 'เลขที่';
+$lang['tRptPssVayMonthCstName'] = 'ชื่อผู้ซื้อสินค้า/ผู้บริการ';
+$lang['tRptPssVayMonthTaxID'] = 'เลขประจำตัวผู้เสีย';
+$lang['tRptPssVayMonthBranch'] = 'สาขา';
+$lang['tRptPssVayMonthB4Vat1'] = 'Before Vat';
+$lang['tRptPssVayMonthB4Vat2'] = 'Before Vat';
+$lang['tRptPssVayMonthVatVal'] = 'จำนวนเงินภาษี';
+$lang['tRptPssVayMonthAmtVal'] = 'จำนวนเงินรวม';

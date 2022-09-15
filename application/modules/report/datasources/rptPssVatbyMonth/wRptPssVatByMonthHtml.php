@@ -99,190 +99,55 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptPdtCode');?></th>
-                            <th nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptPdtName');?></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" rowspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthNo']?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" colspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthTax']?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" rowspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthCstName']?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" rowspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthTaxID']?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" rowspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthBranch']?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" rowspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthB4Vat1']?> (0%)</th>
+                            <th nowrap class="text-center xCNRptColumnHeader" rowspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthB4Vat2']?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" rowspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthVatVal']?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" rowspan="2" ><?php echo $aDataTextRef['tRptPssVayMonthAmtVal']?></th>
                         </tr>
                         <tr style="border-bottom: 1px solid black !important">
-                            <th nowrap class="text-center xCNRptColumnHeader" style="width:10%;"><?php echo language('report/report/report','tRptDoc');?></th>
-                            <th nowrap class="text-center xCNRptColumnHeader" style="width:30%;"><?php echo language('report/report/report','tRptDate');?></th>
-                            <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo language('report/report/report','tRptBringF');?></th>
-                            <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo language('report/report/report','tRptIn');?></th>
-                            <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo language('report/report/report','tRptEx');?></th>
-                            <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo language('report/report/report','tRptSale');?></th>
-                            <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo language('report/report/report','tRptAdjud');?></th>
-                            <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo language('report/report/report','tRptInven');?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" ><?php echo $aDataTextRef['tRptPssVayMonthDate']?></th>
+                            <th nowrap class="text-center xCNRptColumnHeader" ><?php echo $aDataTextRef['tRptPssVayMonthDocno']?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if(isset($aDataReport['aRptData']) && !empty($aDataReport['aRptData'])):?>
-                            <?php
-                                // Set ตัวแปร SumSubFooter และ ตัวแปร SumFooter
-                                $tRptGtpBchCode = "";
-                                $tRptGtpWahCode = "";
-                                $nCountBchCode  = 0;
-                                $nCountWahCode  = 0;
-                            ?>
+                   
                             <?php foreach ($aDataReport['aRptData'] as $nKey=>$aValue): ?>
-                                <?php
-                                    // Step 1 เตรียม Parameter สำหรับการ Groupping
-                                    $tBchCode       = $aValue["FTBchCode"];
-                                    $tBchName       = $aValue["FTBchName"];
-                                    $tWahCode       = $aValue["FTWahCode"];
-                                    $tWahName       = $aValue["FTWahName"];
-                                    $tPdtCode       = $aValue["FTPdtCode"];
-                                    $tPdtName       = $aValue["FTPdtName"];
-                                    $nRowPartID     = $aValue["FNRowPartID"];
-                                    $nGroupMember   = $aValue["FNRptGroupMember_SUBPDT"];
-
-                                    //Step 2 Groupping  Data
-                                    // Grouping Branch
-                                    if($aValue['FNRowPartIDBch'] == 1){
-                                        if(isset($tBchCode) && !empty($tBchCode)){
-                                            $tTextBrachName = language('report/report/report','tRptAddrBranch').'('.@$tBchCode.') '.@$tBchName;
-                                        }else{
-                                            $tTextBrachName = language('report/report/report','tRptNotFoundBranch');
-                                        }
-                                        $aGrouppingDataBch  = array($tTextBrachName);
-                                        echo "<tr>";
-                                        for($i = 0;$i < FCNnHSizeOf($aGrouppingDataBch); $i++) {
-                                            if(strval($aGrouppingDataBch[$i]) != "N") {
-                                                echo "<td class='xCNRptGrouPing text-left' style='padding: 5px;' colspan='8'>" . $aGrouppingDataBch[$i] . "</td>";
-                                            }else{
-                                                echo "<td></td>";
-                                            }
-                                        }
-                                        echo "<tr>";
-                                        $tRptGtpBchCode = $tBchCode;
-                                        $nCountBchCode+1;
-                                    }
-
-                                    // Grouping Warehouse
-                                    if($aValue['FNRowPartIDWah'] == 1){
-                                        if(isset($tWahCode) && !empty($tWahCode)){
-                                            $tTextWarehouseName = language('report/report/report','tRptWarehouse').' ('.$tWahCode.') '.$tWahName;
-                                        }else{
-                                            $tTextWarehouseName = language('report/report/report','tRptNotFoundWarehouse');
-                                        }
-                                        $aGrouppingDataWah  = array($tTextWarehouseName);
-                                        echo "<tr>";
-                                        for($i = 0;$i < FCNnHSizeOf($aGrouppingDataWah); $i++) {
-                                            if(strval($aGrouppingDataWah[$i]) != "N") {
-                                                echo "<td class='xCNRptGrouPing  text-left' style='padding: 5px;' colspan='8'>" . $aGrouppingDataWah[$i] . "</td>";
-                                            }else{
-                                                echo "<td></td>";
-                                            }
-                                        }
-                                        echo "<tr>";
-                                        $tRptGtpWahCode = $tWahCode;
-                                        $nCountWahCode+1;
-                                    }
-
-                                    $aGrouppingDataPdt  = array($tPdtCode,$tPdtName);
-                                    FCNtHRPTHeadGroupping($nRowPartID,$aGrouppingDataPdt);
-                                ?>
-                                <!--  Step 2 แสดงข้อมูลใน TD  -->
-                                <?php
-                                    $nStkQtySale    = $aValue["FCStkQtySaleDN"];
-                                    $nStkQtyCN      = $aValue["FCStkQtyCN"];
-                                    $nStkQtyMonEnd  = $aValue["FCStkQtyMonEnd"];
-                                    $nStkQtyIn      = $aValue["FCStkQtyIn"];
-                                    $nStkQtyOut     = $aValue["FCStkQtyOut"];
-                                    $nStkQtySale    = $nStkQtySale - $nStkQtyCN;
-                                    $nStkQtyAdj     = $aValue["FCStkQtyAdj"];
-                                ?>
-                                <tr class="xWRptMovePosVDData">
-                                    <td class="text-left xCNRptDetail"><?php echo $aValue['FTStkDocNo'];?></td>
-                                    <td class="text-center xCNRptDetail"><?php echo date("Y-m-d H:i:s", strtotime($aValue["FDStkDate"])); ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCStkQtyMonEnd"], $nOptDecimalShow); ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCStkQtyIn"], $nOptDecimalShow); ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCStkQtyOut"], $nOptDecimalShow); ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($nStkQtySale, $nOptDecimalShow) ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue['FCStkQtyAdj'], $nOptDecimalShow) ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue['FCStkQtyBal'], $nOptDecimalShow) ?> </td>
+                         
+                                <tr class="">
+                                    <td class="text-center xCNRptDetail" ><?php echo $aValue['RowID'];?></td>
+                                    <td class="text-center xCNRptDetail" ><?php echo $aValue["FTXshDocDate"]; ?></td>
+                                    <td class="text-left xCNRptDetail" ><?php echo $aValue['FTXshDocLegth'];?></td>
+                                    <td class="text-left xCNRptDetail" ><?php echo $aValue['FTCstName'];?></td>
+                                    <td class="text-left xCNRptDetail" ><?php echo $aValue['FTXshAddrTax'];?></td>
+                                    <td class="text-left xCNRptDetail" ><?php echo $aValue['FTBchCode'];?></td>
+                                    <td class="text-right xCNRptDetail" ><?php echo number_format($aValue["FCXshAmtNV"], $nOptDecimalShow); ?></td>
+                                    <td class="text-right xCNRptDetail" ><?php echo number_format($aValue["FCXshVatable"], $nOptDecimalShow); ?></td>
+                                    <td class="text-right xCNRptDetail" ><?php echo number_format($aValue["FCXshVat"], $nOptDecimalShow); ?></td>
+                                    <td class="text-right xCNRptDetail" ><?php echo number_format($aValue['FCXshGrandAmt'], $nOptDecimalShow) ?> </td>
                                 </tr>
-                                <?php
-                                    if($nRowPartID == $nGroupMember){
-                                        echo "<tr><td class='xCNRptGrouPing' colspan='8' style='border-top: dashed 1px #333 !important;'></td></tr>";
-                                    }
-
-                                    // Check Sum Footer WareHouse
-                                    if($aValue['FNRowPartIDBch'] == $aValue['FNRptGroupMember_SUBBCH'] || $aValue['FNRowPartIDWah'] == $aValue['FNRptGroupMember_SUBWAH']){
-                                        // Text WareHouse Sum Footer Total
-                                        $tTextSumFootWah    = $aDataTextRef['tRptTotalWah']."(".$tWahCode.") ".$tWahName;
-                                        $nStkQtyMonEnd_FWAH = $aValue['FCStkQtyMonEnd_SUBWAH'];
-                                        $nStkQtyIn_FWAH     = $aValue['FCStkQtyIn_SUBWAH'];
-                                        $nStkQtyOut_FWAH    = $aValue['FCStkQtyOut_SUBWAH'];
-                                        $nStkQtySale_FWAH   = $aValue['FCStkQtySale_SUBWAH'];
-                                        $nStkQtyAdj_FWAH    = $aValue['FCStkQtyAdj_SUBWAH'];
-                                        $nStkQtyBal_FWAH    = $aValue['FCStkQtyBal_SUBWAH'];
-                                        $aGrouppingFootDataWah  = [
-                                            $tTextSumFootWah,
-                                            number_format($nStkQtyMonEnd_FWAH, $nOptDecimalShow),
-                                            number_format($nStkQtyIn_FWAH, $nOptDecimalShow),
-                                            number_format($nStkQtyOut_FWAH, $nOptDecimalShow),
-                                            number_format($nStkQtySale_FWAH, $nOptDecimalShow),
-                                            number_format($nStkQtyAdj_FWAH, $nOptDecimalShow),
-                                            number_format($nStkQtyBal_FWAH, $nOptDecimalShow)
-                                        ];
-                                        echo "<tr style='border-bottom:1px solid black !important'>";
-                                            for($i = 0; $i < FCNnHSizeOf($aGrouppingFootDataWah); $i++){
-                                                if(strval($aGrouppingFootDataWah[$i]) != "N"){
-                                                    $tFooterVal = $aGrouppingFootDataWah[$i];
-                                                }else{
-                                                    $tFooterVal = '';
-                                                }
-                                                if($i == 0){
-                                                    echo "<td class='xCNRptSumFooter text-left' colspan='2'>".$tFooterVal ."</td>";
-                                                }else{
-                                                    echo "<td class='xCNRptSumFooter text-right'>".$tFooterVal."</td>";
-                                                }
-                                            }
-                                        echo "</tr>";
-                                    }
-
-                                    // Check Sum Footer Branch
-                                    if($aValue['FNRowPartIDBch'] == $aValue['FNRptGroupMember_SUBBCH']){
-                                        // Text Branch Sum Footer Total
-                                        $tTextSumFootBch    = $aDataTextRef['tRptTotalBch'].'('.@$tBchCode.') '.@$tBchName;
-                                        $nStkQtyMonEnd_FBch = $aValue['FCStkQtyMonEnd_SUBBCH'];
-                                        $nStkQtyIn_FBch     = $aValue['FCStkQtyIn_SUBBCH'];
-                                        $nStkQtyOut_FBch    = $aValue['FCStkQtyOut_SUBBCH'];
-                                        $nStkQtySale_FBch   = $aValue['FCStkQtySale_SUBBCH'];
-                                        $nStkQtyAdj_FBch    = $aValue['FCStkQtyAdj_SUBBCH'];
-                                        $nStkQtyBal_FBch    = $aValue['FCStkQtyBal_SUBBCH'];
-                                        $aGrouppingFootDataBch  = [
-                                            $tTextSumFootBch,
-                                            number_format($nStkQtyMonEnd_FBch, $nOptDecimalShow),
-                                            number_format($nStkQtyIn_FBch, $nOptDecimalShow),
-                                            number_format($nStkQtyOut_FBch, $nOptDecimalShow),
-                                            number_format($nStkQtySale_FBch, $nOptDecimalShow),
-                                            number_format($nStkQtyAdj_FBch, $nOptDecimalShow),
-                                            number_format($nStkQtyBal_FBch, $nOptDecimalShow)
-                                        ];
-                                        echo "<tr style='border-bottom:1px solid black !important'>";
-                                        for($i = 0; $i < FCNnHSizeOf($aGrouppingFootDataBch); $i++){
-                                            if(strval($aGrouppingFootDataBch[$i]) != "N"){
-                                                $tFooterVal = $aGrouppingFootDataBch[$i];
-                                            }else{
-                                                $tFooterVal = '';
-                                            }
-                                            if($i == 0){
-                                                echo "<td class='xCNRptSumFooter text-left' colspan='2'>".$tFooterVal ."</td>";
-                                            }else{
-                                                echo "<td class='xCNRptSumFooter text-right'>".$tFooterVal."</td>";
-                                            }
-                                        }
-                                        echo "</tr>";
-                                    }
-
+                              
+                            <?php 
+                              //เตรียม Parameter สำหรับ SumFooter
+                                $cXshAmtNV_Footer             = number_format($aValue["FCXshAmtNV_Footer"], $nOptDecimalShow);
+                                $cXshVatable_Footer     = number_format($aValue["FCXshVatable_Footer"], $nOptDecimalShow);
+                                $cXshVat_Footer             = number_format($aValue["FCXshVat_Footer"], $nOptDecimalShow);
+                                $cXshGrandAmt_Footer             = number_format($aValue["FCXshGrandAmt_Footer"], $nOptDecimalShow);
+                                $paFooterSumData            = array($aDataTextRef['tRptTotalFooter'],'N','N','N','N','N',$cXshAmtNV_Footer,$cXshVatable_Footer,$cXshVat_Footer,$cXshGrandAmt_Footer);
+                                endforeach;
                                 ?>
-                            <?php endforeach;?>
+                            <?php
+                                //Summary Footer
+                                $nPageNo    = $aDataReport["aPagination"]["nDisplayPage"];
+                                $nTotalPage = $aDataReport["aPagination"]["nTotalPage"];
+                                FCNtHRPTSumFooter($nPageNo,$nTotalPage,$paFooterSumData);
+                            ?>
+
                         <?php else:?>
                             <tr><td class='text-center xCNTextDetail2' colspan='100%'><?php echo $aDataTextRef['tRptAdjStkNoData'];?></td></tr>
                         <?php endif;?>

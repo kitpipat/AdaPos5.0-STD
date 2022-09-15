@@ -333,6 +333,16 @@
 
             <?php endif;?>
 
+        <!-- ============================ ฟิวเตอร์ข้อมูล ยี่ห้อ ============================ -->
+        <?php if ((isset($aDataFilter['tPbnCodeFrom']) && !empty($aDataFilter['tPbnCodeFrom'])) && (isset($aDataFilter['tPbnCodeTo']) && !empty($aDataFilter['tPbnCodeTo']))) : ?>
+            <div class="xCNRptFilterBox">
+                <div class="text-left xCNRptFilter">
+                    <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptBrandFrom'].' : </span>'.$aDataFilter['tPbnCodeFrom'];?></label>
+                    <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptBrandTo'].' : </span>'.$aDataFilter['tPbnCodeTo'];?></label>
+                </div>
+            </div>
+            <?php endif; ?>
+
             <!-- ============================ ฟิวเตอร์ข้อมูล ประเภทจุดขาย ============================ -->
             <?php if(isset($aDataFilter['tPosType'])){ ?>
 

@@ -17,7 +17,7 @@ use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 
 date_default_timezone_set("Asia/Bangkok");
 
-class Pssvatbymonth_controller extends MX_Controller
+class Rptpssvatbymonth_controller extends MX_Controller
 {
 
     /**
@@ -125,7 +125,7 @@ class Pssvatbymonth_controller extends MX_Controller
     public function __construct()
     {
         $this->load->model('company/company/mCompany');
-        $this->load->model('report/reportMovePosVD/mRptMovePosVd');
+        $this->load->model('report/reportPSSVatByMonth/Rptpssvatbymonth_model');
         $this->load->model('report/report/mReport');
 
         // Init Report
@@ -138,7 +138,7 @@ class Pssvatbymonth_controller extends MX_Controller
     {
         $this->aText = [
             // Title
-            'tTitleReport' => language('report/report/report', 'tRptTitleMoveVD'),
+            'tTitleReport' => language('report/report/report', 'tRptPssVayMonthTitle'),
             'tDatePrint' => language('report/report/report', 'tRptAdjStkVDDatePrint'),
             'tTimePrint' => language('report/report/report', 'tRptAdjStkVDTimePrint'),
 
@@ -243,7 +243,20 @@ class Pssvatbymonth_controller extends MX_Controller
             'tRptTitlePdtMoving'    => language('report/report/report', 'tRptTitlePdtMoving'),
             'tRptPdtMoving1'        => language('report/report/report', 'tRptPdtMoving1'),
             'tRptPdtMoving2'        => language('report/report/report', 'tRptPdtMoving2'),
+            //ภาษีขายประจำเดือน
+            'tRptPssVayMonthNo'        => language('report/report/report', 'tRptPssVayMonthNo'),
+            'tRptPssVayMonthTax'        => language('report/report/report', 'tRptPssVayMonthTax'),
+            'tRptPssVayMonthDate'        => language('report/report/report', 'tRptPssVayMonthDate'),
+            'tRptPssVayMonthDocno'        => language('report/report/report', 'tRptPssVayMonthDocno'),
+            'tRptPssVayMonthCstName'        => language('report/report/report', 'tRptPssVayMonthCstName'),
+            'tRptPssVayMonthTaxID'        => language('report/report/report', 'tRptPssVayMonthTaxID'),
+            'tRptPssVayMonthBranch'        => language('report/report/report', 'tRptPssVayMonthBranch'),
+            'tRptPssVayMonthB4Vat1'        => language('report/report/report', 'tRptPssVayMonthB4Vat1'),
+            'tRptPssVayMonthB4Vat2'        => language('report/report/report', 'tRptPssVayMonthB4Vat2'),
+            'tRptPssVayMonthVatVal'        => language('report/report/report', 'tRptPssVayMonthVatVal'),
+            'tRptPssVayMonthAmtVal'        => language('report/report/report', 'tRptPssVayMonthAmtVal'),
         ];
+
 
         $this->tSysBchCode = SYS_BCH_CODE;
         $this->tBchCodeLogin = (!empty($this->session->userdata('tSesUsrBchCom')) ? $this->session->userdata('tSesUsrBchCom') : $this->session->userdata('tSesUsrBchCom'));
@@ -359,7 +372,7 @@ class Pssvatbymonth_controller extends MX_Controller
 
         if (!empty($this->tRptExportType) && !empty($this->tRptCode)) {
             // Execute Stored Procedure
-            $this->mRptMovePosVd->FSnMExecStoreReport($this->aRptFilter);
+            $this->Rptpssvatbymonth_model->FSnMExecStoreReport($this->aRptFilter);
 
             $aDataSwitchCase = array(
                 'ptRptRoute' => $this->tRptRoute,
@@ -402,8 +415,7 @@ class Pssvatbymonth_controller extends MX_Controller
             'tUsrSessionID' => $this->tUserSessionID,
         );
 
-        $aDataReport = $this->mRptMovePosVd->FSaMGetDataReport($aDataWhereRpt);
-
+        $aDataReport = $this->Rptpssvatbymonth_model->FSaMGetDataReport($aDataWhereRpt);
         // ข้อมูล Render Report
         $aDataViewPdt = array(
             'aDataReport' => $aDataReport,
@@ -414,7 +426,7 @@ class Pssvatbymonth_controller extends MX_Controller
         );
 
         // Load View Advance Table
-        $tRptView = JCNoHLoadViewAdvanceTable('report/datasources/rptMovePosVD', 'wRptMovePosVDHtml', $aDataViewPdt);
+        $tRptView = JCNoHLoadViewAdvanceTable('report/datasources/rptPssVatbyMonth', 'wRptPssVatByMonthHtml', $aDataViewPdt);
 
         // Data Viewer Center Report
         $aDataViewer = array(
@@ -459,7 +471,7 @@ class Pssvatbymonth_controller extends MX_Controller
             'tRptCode' => $this->tRptCode,
             'tUsrSessionID' => $this->tUserSessionID,
         );
-        $aDataReport = $this->mRptMovePosVd->FSaMGetDataReport($aDataWhereRpt);
+        $aDataReport = $this->Rptpssvatbymonth_model->FSaMGetDataReport($aDataWhereRpt);
 
         // ข้อมูล Render Report
         $aDataViewPdt = array(
@@ -470,7 +482,7 @@ class Pssvatbymonth_controller extends MX_Controller
             'aDataFilter' => $aDataFilter,
         );
         // Load View Advance Table
-        $tRptView = JCNoHLoadViewAdvanceTable('report/datasources/rptMovePosVD', 'wRptMovePosVDHtml', $aDataViewPdt);
+        $tRptView = JCNoHLoadViewAdvanceTable('report/datasources/rptPssVatbyMonth', 'wRptPssVatByMonthHtml', $aDataViewPdt);
 
         // Data Viewer Center Report
         $aDataViewer = array(
@@ -509,7 +521,7 @@ class Pssvatbymonth_controller extends MX_Controller
                 'tUserSession' => $paDataSwitchCase['paDataFilter']['tUserSession'],
             ];
 
-            $nDataCountPage = $this->mRptMovePosVd->FSnMCountDataReportAll($aDataCountData);
+            $nDataCountPage = $this->Rptpssvatbymonth_model->FSnMCountDataReportAll($aDataCountData);
 
             $aResponse = array(
                 'nCountPageAll' => $nDataCountPage,
@@ -619,34 +631,16 @@ class Pssvatbymonth_controller extends MX_Controller
             ->build();
 
         $aCells = [
-            WriterEntityFactory::createCell(language('report/report/report', 'tRPC15TBBchCode')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRPC15TBBchName')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptPDTWahCode')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptPDTWahName')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptPdtCode')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptPdtName')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptDocument')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptDateDocument')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptBringF')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptIn')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptEx')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptSale')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptAdjud')),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(language('report/report/report', 'tRptInven'))
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthNo']),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthDate'].' '.$this->aText['tRptPssVayMonthTax']),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthDocno'].' '.$this->aText['tRptPssVayMonthTax']),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthCstName']),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthTaxID']),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthBranch']),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthB4Vat1'].' (0%)'),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthB4Vat2']),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthVatVal']),
+            WriterEntityFactory::createCell($this->aText['tRptPssVayMonthAmtVal'])
         ];
 
         /** add a row at a time */
@@ -660,7 +654,7 @@ class Pssvatbymonth_controller extends MX_Controller
             'tRptCode' => $this->tRptCode,
             'tUsrSessionID' => $this->tUserSessionID,
         );
-        $aDataReport = $this->mRptMovePosVd->FSaMGetDataReport($aDataWhereRpt);
+        $aDataReport = $this->Rptpssvatbymonth_model->FSaMGetDataReport($aDataWhereRpt);
 
         /** Create a style with the StyleBuilder */
         $oStyle = (new StyleBuilder())
@@ -669,81 +663,39 @@ class Pssvatbymonth_controller extends MX_Controller
 
         if (isset($aDataReport['aRptData']) && !empty($aDataReport['aRptData'])) {
             foreach ($aDataReport['aRptData'] as $nKey => $aValue) {
-                $nStkQtySale = $aValue["FCStkQtySaleDN"];
-                $nStkQtyCN = $aValue["FCStkQtyCN"];
-                $nStkQtySale = $nStkQtySale - $nStkQtyCN;
 
                 $values = [
+                    WriterEntityFactory::createCell($aValue['RowID']),
+                    WriterEntityFactory::createCell($aValue['FTXshDocDate']),
+                    WriterEntityFactory::createCell($aValue['FTXshDocLegth']),
+                    WriterEntityFactory::createCell($aValue['FTCstName']),
+                    WriterEntityFactory::createCell($aValue['FTXshAddrTax']),
                     WriterEntityFactory::createCell($aValue['FTBchCode']),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell($aValue['FTBchName']),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell($aValue['FTWahCode']),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell($aValue['FTWahName']),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell($aValue['FTPdtCode']),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell($aValue['FTPdtName']),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell($aValue['FTStkDocNo']),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(date("d/m/Y h:i:s", strtotime($aValue['FDStkDate']))),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCStkQtyMonEnd"])),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCStkQtyIn"])),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCStkQtyOut"])),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($nStkQtySale * -1)),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCStkQtyAdj'])),
-                    WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCStkQtyBal'])),
-                    WriterEntityFactory::createCell(null),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXshAmtNV"])),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXshVatable"])),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXshVat"])),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCXshGrandAmt']))
                 ];
                 $aRow = WriterEntityFactory::createRow($values);
                 $oWriter->addRow($aRow);
 
                 if (($nKey + 1) == FCNnHSizeOf($aDataReport['aRptData'])) { //SumFooter
 
-                    $nFCStkQtyMonEnd = $aValue["FCStkQtyMonEnd_Footer"];
-                    $nFCStkQtyIn = $aValue["FCStkQtyIn_Footer"];
-                    $nFCStkQtyOut = $aValue["FCStkQtyOut_Footer"];
-                    $nFCStkQtySale = $aValue["FCStkQtySale_Footer"];
-                    $nFCStkQtyAdj = $aValue["FCStkQtyAdj_Footer"];
-                    $nFCStkQtyBal = $aValue["FCStkQtyBal_SUBBCH"];
+                    $cXshAmtNV_Footer    = $aValue["FCXshAmtNV_Footer"];
+                    $cXshVatable_Footer  = $aValue["FCXshVatable_Footer"];
+                    $cXshVat_Footer      = $aValue["FCXshVat_Footer"];
+                    $cXshGrandAmt_Footer = $aValue["FCXshGrandAmt_Footer"];
                     $values = [
-                        WriterEntityFactory::createCell(language('report/report/report', 'tRptTotalSub')),
+                        WriterEntityFactory::createCell($this->aText['tRptTotalFooter']),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCStkQtyMonEnd)),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCStkQtyIn)),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCStkQtyOut)),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCStkQtySale)),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCStkQtyAdj)),
-                        WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCStkQtyBal)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($cXshAmtNV_Footer)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($cXshVatable_Footer)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($cXshVat_Footer)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($cXshGrandAmt_Footer))
                     ];
                     $aRow = WriterEntityFactory::createRow($values, $oStyleColums);
                     $oWriter->addRow($aRow);
@@ -811,16 +763,9 @@ class Pssvatbymonth_controller extends MX_Controller
             WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell($this->aText['tTitleReport']),
+            WriterEntityFactory::createCell(null),
+            WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell(null),
@@ -902,16 +847,6 @@ class Pssvatbymonth_controller extends MX_Controller
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell($tRptTextLeftRightFilter),
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
@@ -928,16 +863,6 @@ class Pssvatbymonth_controller extends MX_Controller
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell($this->aText['tRptYear'] . '' . $this->aRptFilter['tYear']),
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
@@ -950,12 +875,6 @@ class Pssvatbymonth_controller extends MX_Controller
         // Fillter DocDate (วันที่สร้างเอกสาร)
         if ((isset($this->aRptFilter['tDocDateFrom']) && !empty($this->aRptFilter['tDocDateFrom'])) && (isset($this->aRptFilter['tDocDateTo']) && !empty($this->aRptFilter['tDocDateTo']))) {
             $aCells = [
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
@@ -994,22 +913,7 @@ class Pssvatbymonth_controller extends MX_Controller
             WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
+
             WriterEntityFactory::createCell($this->aText['tDatePrint'] . ' ' . date('d/m/Y') . ' ' . $this->aText['tTimePrint'] . ' ' . date('H:i:s')),
         ];
 

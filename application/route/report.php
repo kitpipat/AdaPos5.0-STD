@@ -763,3 +763,10 @@ $route['rptRptInventoryPosFhnCallExportFile'] = 'report/reportInventoryPosFhn/cR
 $route['rtpMovePosVDFhn'] = 'report/reportMovePosVDFhn/cRptMovePosVDFhn/index';
 $route['rtpMovePosVDFhnClickPage'] = 'report/reportMovePosVDFhn/cRptMovePosVDFhn/FSvCCallRptViewBeforePrintClickPage';
 $route['rtpMovePosVDFhnCallExportFile'] = "report/reportMovePosVDFhn/cRptMovePosVDFhn/FSvCCallRptExportFile";
+
+
+
+//รายงานภาษีขายประจำเดือน รายงานพิเศษ Anime Pos+
+$route['rtpPssVatByMonth'] = 'report/reportPSSVatByMonth/Rptpssvatbymonth_controller/index';
+$route['rtpPssVatByMonthClickPage'] = 'report/reportPSSVatByMonth/Rptpssvatbymonth_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rtpPssVatByMonthCallExportFile'] = "report/reportPSSVatByMonth/Rptpssvatbymonth_controller/FSvCCallRptExportFile";

@@ -45,7 +45,7 @@ class mRptSaleByProduct extends CI_Model {
         //     'ptDocDateT'    => $paDataFilter['tDocDateTo'],
         //     'FNResult'      => 0
         // );
-        $tCallStore = "{CALL SP_RPTxDailySaleByPdt1001002(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+        $tCallStore = "{CALL SP_RPTxDailySaleByPdt1001002(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
         $aDataStore = array(
             'pnLngID'       => $nLangID,
             'pnComName'     => $tComName,
@@ -70,6 +70,8 @@ class mRptSaleByProduct extends CI_Model {
             'ptPdtChanT'    => $paDataFilter['tPdtGrpCodeTo'],
             'ptPdtTypeF'    => $paDataFilter['tPdtTypeCodeFrom'],
             'ptPdtTypeT'    => $paDataFilter['tPdtTypeCodeTo'],
+            'ptPbnCodeF'   => $paDataFilter['tPbnCodeFrom'],
+            'ptPbnCodeT'   => $paDataFilter['tPbnCodeTo'],
             'ptDocDateF'    => $paDataFilter['tDocDateFrom'],
             'ptDocDateT'    => $paDataFilter['tDocDateTo'],
             'FNResult'      => 0

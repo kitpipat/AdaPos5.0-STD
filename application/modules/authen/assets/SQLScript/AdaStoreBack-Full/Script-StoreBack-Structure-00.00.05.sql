@@ -1039,120 +1039,554 @@ IF NOT EXISTS(SELECT name FROM sys.indexes WHERE name = 'IND_TCNTPdtPrice4PDT_FT
 	CREATE NONCLUSTERED INDEX IND_TCNTPdtPrice4PDT_FTPunCode ON TCNTPdtPrice4PDT (FTPunCode)
 END
 GO
-IF EXISTS
-(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_DOCxPricePrc')and OBJECTPROPERTY(id, N'IsProcedure') = 1)
-DROP PROCEDURE [dbo].STP_DOCxPricePrc
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNMPrnLabel]') AND type in (N'U')) BEGIN
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TCNMPrnLabel' AND COLUMN_NAME = 'FTAgnCode') BEGIN
+	DROP TABLE TCNMPrnLabel;
+	DROP TABLE TCNMPrnLabel_L;
+END
+END
 GO
-CREATE PROCEDURE [dbo].STP_DOCxPricePrc
- @ptBchCode varchar(5)
-,@ptDocNo varchar(30)
-,@ptWho varchar(100) ,@FNResult INT OUTPUT AS
-DECLARE @tHQCode varchar(5)
-DECLARE @tBchTo varchar(5)	--2.--
-DECLARE @tZneTo varchar(30)	--2.--
-DECLARE @tAggCode  varchar(5)	--2.--
-DECLARE @tPplCode  varchar(5)	--2.--
-DECLARE @TTmpPrcPri TABLE 
-   ( 
-   --FTAggCode  varchar(5), /*Arm 63-06-08 Comment Code */
-   --FTPghZneTo varchar(30), /*Arm 63-06-08 Comment Code */
-   --FTPghBchTo varchar(5), /*Arm 63-06-08 Comment Code */
-   FTPghDocNo varchar(20), 
-   FTPplCode varchar(20), 
-   FTPdtCode varchar(20),
-   FTPunCode varchar(5),
-   FDPghDStart datetime,
-   FTPghTStart varchar(10),
-   FDPghDStop datetime,
-   FTPghTStop varchar(10),
-   FTPghDocType varchar(1),
-   FTPghStaAdj varchar(1),
-   FCPgdPriceRet numeric(18, 4),
-   --FCPgdPriceWhs numeric(18, 4), /*Arm 63-06-08 Comment Code */
-   --FCPgdPriceNet numeric(18, 4), /*Arm 63-06-08 Comment Code */
-   FTPdtBchCode varchar(5)
-   ) 
-DECLARE @tStaPrc varchar(1)		-- 6. --
-/*---------------------------------------------------------------------
-Document History
-version		Date			User	Remark
-02.01.00	23/03/2020		Em		create  
-02.02.00	08/06/2020		Arm     แก้ไข ยกเลิกฟิวด์
-04.01.00	08/10/2020		Em		แก้ไขกรณีข้อมูลซ้ำกัน
-05.01.00	11/05/2021		Em		แก้ไขเรื่อง Group ตาม PplCode ด้วย
-21.07.01	08/10/2021		Em		ปรับ PK Price4PDT
-21.07.02	11/04/2022		Zen		ปรับ DELETE ออก
-----------------------------------------------------------------------*/
-BEGIN TRY
-	--SET @tHQCode = ISNULL((SELECT TOP 1 FTBchCode FROM TCNMBranch with(nolock) WHERE ISNULL(FTBchStaHQ,'') = '1' ),'')
-
-	/*Arm 63-06-08 Comment Code */
-	--SELECT TOP 1 @tAggCode = ISNULL(FTAggCode,'') ,@tZneTo = ISNULL(FTXphZneTo,''),@tBchTo = ISNULL(FTXphBchTo,'') 
-	--,@tPplCode = ISNULL(FTPplCode,'') 
-	--,@tStaPrc = ISNULL(FTXphStaPrcDoc,'')	-- 6. --
-	--FROM TCNTPdtAdjPriHD with(nolock) WHERE FTXphDocNo = @ptDocNo	--4.--
-	
-	/*Arm 63-06-08 Edit Code */
-	SELECT TOP 1 @tPplCode = ISNULL(FTPplCode,'') 
-	,@tStaPrc = ISNULL(FTXphStaPrcDoc,'')	-- 6. --
-	FROM TCNTPdtAdjPriHD with(nolock) WHERE FTXphDocNo = @ptDocNo	--4.--
-	/*Arm 63-06-08 End Edit Code */
-	 
-	 --select 4/0
-
-	IF @tStaPrc <> '1'	-- 6. --
-	BEGIN
-		--INSERT INTO @TTmpPrcPri(FTAggCode, FTPghZneTo, FTPghBchTo, FTPplCode, FTPdtCode, FTPunCode, FDPghDStart, FTPghTStart, /*Arm 63-06-08 Comment Code */
-		--FDPghDStop, FTPghTStop, FTPghDocNo, FTPghDocType, FTPghStaAdj, FCPgdPriceRet, FCPgdPriceWhs, FCPgdPriceNet, FTPdtBchCode) /*Arm 63-06-08 Comment Code */
-		INSERT INTO @TTmpPrcPri(FTPplCode, FTPdtCode, FTPunCode, FDPghDStart, FTPghTStart,
-		FDPghDStop, FTPghTStop, FTPghDocNo, FTPghDocType, FTPghStaAdj, FCPgdPriceRet, FTPdtBchCode)
-		-- SELECT DISTINCT ISNULL(HD.FTAggCode,'') AS FTAggCode, ISNULL(HD.FTXphZneTo,'') AS FTPghZneTo, ISNULL(HD.FTXphBchTo,'') AS FTPghBchTo, ISNULL(HD.FTPplCode,'') AS FTPplCode, /*Arm 63-06-08 Comment Code */
-		SELECT DISTINCT ISNULL(HD.FTPplCode,'') AS FTPplCode, 
-				DT.FTPdtCode, DT.FTPunCode, HD.FDXphDStart, HD.FTXphTStart,
-				HD.FDXphDStop, HD.FTXphTStop , HD.FTXphDocNo, HD.FTXphDocType, HD.FTXphStaAdj, 
-				--DT.FCXpdPriceRet, DT.FCXpdPriceWhs, DT.FCXpdPriceNet, DT.FTXpdBchTo		--2.-- /*Arm 63-06-08 Comment Code */
-				DT.FCXpdPriceRet, DT.FTXpdBchTo		--2.--
-		FROM TCNTPdtAdjPriDT DT with(nolock)		--4.--
-		INNER JOIN TCNTPdtAdjPriHD HD with(nolock) ON DT.FTBchCode = HD.FTBchCode AND DT.FTXphDocNo = HD.FTXphDocNo	--4.--
-		WHERE HD.FTXphDocNo = @ptDocNo	-- 7. --
-
-		-- 04.01.00 --
-		-- 21.07.02 --
-		--DELETE TMP
-		--FROM @TTmpPrcPri TMP
-		--INNER JOIN TCNTPdtPrice4PDT PDT with(nolock) ON TMP.FTPdtCode = PDT.FTPdtCode AND TMP.FTPunCode = PDT.FTPunCode
-		--		AND TMP.FDPghDStart = PDT.FDPghDStart AND TMP.FTPghTStart = PDT.FTPghTStart
-		--		AND TMP.FTPplCode = PDT.FTPplCode	-- 05.01.00 --
-		--		AND TMP.FTPghDocType = PDT.FTPghDocType	-- 21.07.01 --
-		--		AND TMP.FTPghDocNo <= PDT.FTPghDocNo
-
-		--DELETE PDT
-		--FROM TCNTPdtPrice4PDT PDT
-		--INNER JOIN @TTmpPrcPri TMP ON TMP.FTPdtCode = PDT.FTPdtCode AND TMP.FTPunCode = PDT.FTPunCode
-		--		AND TMP.FDPghDStart = PDT.FDPghDStart AND TMP.FTPghTStart = PDT.FTPghTStart
-		--		AND TMP.FTPplCode = PDT.FTPplCode	-- 05.01.00 --
-		--		AND TMP.FTPghDocType = PDT.FTPghDocType	-- 21.07.01 --
-		--		AND TMP.FTPghDocNo >= PDT.FTPghDocNo
-		-- 21.07.02 --
-		-- 04.01.00 --
-
-		INSERT INTO TCNTPdtPrice4PDT
-			(FTPdtCode, FTPunCode, FDPghDStart, FTPghTStart,FDPghDStop, FTPghTStop, 
-			FTPghDocNo, FTPghDocType, FTPghStaAdj, FCPgdPriceRet, --FCPgdPriceWhs, FCPgdPriceNet, /*Arm 63-06-08 Comment Code */
-			FTPplCode,
-			FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)	-- 5.--
-		SELECT FTPdtCode, FTPunCode, FDPghDStart, FTPghTStart,FDPghDStop, FTPghTStop, 
-			FTPghDocNo, FTPghDocType, FTPghStaAdj, FCPgdPriceRet, --FCPgdPriceWhs, FCPgdPriceNet,
-			FTPplCode,
-			GETDATE(),@ptWho,GETDATE(),@ptWho	-- 5. --
-		FROM @TTmpPrcPri
-
-	END	-- 6. --
-	SET @FNResult= 0
-END TRY
-BEGIN CATCH
-    --EXEC STP_MSGxWriteTSysPrcLog @ptComName,@ptWho,@ptDocNo ,@tDate ,@tTime
-    SET @FNResult= -1
-	select ERROR_MESSAGE()
-END CATCH
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNMPrnServer]') AND type in (N'U')) BEGIN
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TCNMPrnServer' AND COLUMN_NAME = 'FTAgnCode') BEGIN
+	DROP TABLE TCNMPrnServer;
+	DROP TABLE TCNMPrnServer_L;
+END
+END
 GO
+
+/****** Object:  Table [dbo].[TCNMPrnLabel]    Script Date: 15/7/2565 12:08:47 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNMPrnLabel]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNMPrnLabel](
+	[FTAgnCode] [varchar](10) NOT NULL,
+	[FTPlbCode] [varchar](10) NOT NULL,
+	[FTLblCode] [varchar](10) NULL,
+	[FTSppCode] [varchar](50) NULL,
+	[FTPlbStaUse] [varchar](1) NULL,
+	[FDLastUpdOn] [datetime] NULL,
+	[FTLastUpdBy] [varchar](20) NULL,
+	[FDCreateOn] [datetime] NULL,
+	[FTCreateBy] [varchar](20) NULL,
+ CONSTRAINT [PK_TCNMPrnLabel] PRIMARY KEY CLUSTERED 
+(
+	[FTAgnCode] ASC,
+	[FTPlbCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+
+/****** Object:  Table [dbo].[TCNMPrnLabel_L]    Script Date: 15/7/2565 12:08:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNMPrnLabel_L]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNMPrnLabel_L](
+	[FTAgnCode] [varchar](10) NOT NULL,
+	[FTPlbCode] [varchar](10) NOT NULL,
+	[FNLngID] [bigint] NOT NULL,
+	[FTPblName] [varchar](200) NULL,
+	[FTPblRmk] [varchar](200) NULL,
+ CONSTRAINT [PK_TCNMPrnLabel_L] PRIMARY KEY CLUSTERED 
+(
+	[FTAgnCode] ASC,
+	[FTPlbCode] ASC,
+	[FNLngID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+/****** Object:  Table [dbo].[TCNMPrnServer]    Script Date: 15/7/2565 12:08:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNMPrnServer]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNMPrnServer](
+	[FTAgnCode] [varchar](10) NOT NULL,
+	[FTSrvCode] [varchar](10) NOT NULL,
+	[FTSrvStaUse] [varchar](1) NULL,
+	[FDLastUpdOn] [datetime] NULL,
+	[FTLastUpdBy] [varchar](20) NULL,
+	[FDCreateOn] [datetime] NULL,
+	[FTCreateBy] [varchar](20) NULL,
+ CONSTRAINT [PK_TCNMPrnServer] PRIMARY KEY CLUSTERED 
+(
+	[FTAgnCode] ASC,
+	[FTSrvCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+/****** Object:  Table [dbo].[TCNMPrnServer_L]    Script Date: 15/7/2565 12:08:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNMPrnServer_L]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNMPrnServer_L](
+	[FTAgnCode] [varchar](10) NOT NULL,
+	[FTSrvCode] [varchar](10) NOT NULL,
+	[FNLngID] [bigint] NOT NULL,
+	[FTSrvName] [varchar](200) NULL,
+	[FTSrvRmk] [varchar](200) NULL,
+ CONSTRAINT [PK_TCNMPrnServer_L] PRIMARY KEY CLUSTERED 
+(
+	[FTAgnCode] ASC,
+	[FTSrvCode] ASC,
+	[FNLngID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+/****** Object:  Table [dbo].[TCNSLabelFmt]    Script Date: 15/7/2565 12:08:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNSLabelFmt]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNSLabelFmt](
+	[FTLblCode] [varchar](10) NOT NULL,
+	[FTLblRptNormal] [varchar](100) NULL,
+	[FTLblRptPmt] [varchar](100) NULL,
+	[FTLblStaUse] [varchar](1) NULL,
+	[FDLastUpdOn] [datetime] NULL,
+	[FTLastUpdBy] [varchar](20) NULL,
+	[FDCreateOn] [datetime] NULL,
+	[FTCreateBy] [varchar](20) NULL,
+	[FNLblQtyPerPageNml] [bigint] NULL,
+	[FNLblQtyPerPagePmt] [bigint] NULL,
+	[FTLblVerGroup] [varchar](20) NULL,
+	[FTLblSizeWH] [varchar](30) NULL,
+ CONSTRAINT [PK_TCNSLabelFmt] PRIMARY KEY CLUSTERED 
+(
+	[FTLblCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TCNSLabelFmt' AND COLUMN_NAME = 'FNLblQtyPerPageNml') BEGIN
+	ALTER TABLE TCNSLabelFmt ADD FNLblQtyPerPageNml [bigint]
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TCNSLabelFmt' AND COLUMN_NAME = 'FNLblQtyPerPagePmt') BEGIN
+	ALTER TABLE TCNSLabelFmt ADD FNLblQtyPerPagePmt [bigint]
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TCNSLabelFmt' AND COLUMN_NAME = 'FTLblVerGroup') BEGIN
+	ALTER TABLE TCNSLabelFmt ADD FTLblVerGroup [varchar](20)
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TCNSLabelFmt' AND COLUMN_NAME = 'FTLblSizeWH') BEGIN
+	ALTER TABLE TCNSLabelFmt ADD FTLblSizeWH [varchar](20)
+END
+GO
+/****** Object:  Table [dbo].[TCNSLabelFmt_L]    Script Date: 15/7/2565 12:08:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNSLabelFmt_L]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNSLabelFmt_L](
+	[FTLblCode] [varchar](10) NOT NULL,
+	[FNLngID] [bigint] NOT NULL,
+	[FTLblName] [varchar](200) NULL,
+	[FTLblRmk] [varchar](200) NULL,
+ CONSTRAINT [PK_TCNSLabelFmt_L] PRIMARY KEY CLUSTERED 
+(
+	[FTLblCode] ASC,
+	[FNLngID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+/****** Object:  Table [dbo].[TCNTPrnLabelTmp]    Script Date: 15/7/2565 12:08:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNTPrnLabelTmp]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNTPrnLabelTmp](
+	[FTComName] [varchar](50) NULL,
+	[FTPdtCode] [varchar](20) NULL,
+	[FTPdtName] [varchar](100) NULL,
+	[FTBarCode] [varchar](25) NULL,
+	[FCPdtPrice] [numeric](18, 4) NULL,
+	[FTPlcCode] [varchar](10) NULL,
+	[FDPrnDate] [datetime] NULL,
+	[FTPdtContentUnit] [varchar](100) NULL,
+	[FTPlbCode] [varchar](255) NULL,
+	[FNPlbQty] [bigint] NULL,
+	[FTPdtTime] [varchar](20) NULL,
+	[FTPdtMfg] [varchar](20) NULL,
+	[FTPdtImporter] [varchar](100) NULL,
+	[FTPdtRefNo] [varchar](30) NULL,
+	[FTPdtValue] [varchar](100) NULL,
+	[FTPbnDesc] [varchar](100) NULL,
+	[FTPlbStaSelect] [varchar](255) NULL,
+	[FTPdtNameOth] [varchar](100) NULL,
+	[FTPlbSubDept] [varchar](100) NULL,
+	[FTPlbRepleType] [varchar](2) NULL,
+	[FTPlbPriStatus] [varchar](50) NULL,
+	[FTPlbSellingUnit] [varchar](100) NULL,
+	[FCPdtSetPrice] [numeric](18, 4) NULL,
+	[FTPlbPhasing] [varchar](5) NULL,
+	[FTPlbPriPerUnit] [varchar](100) NULL,
+	[FTPlbCapFree] [varchar](25) NULL,
+	[FTPlbPdtChain] [varchar](30) NULL,
+	[FTPlbCapNamePmt] [varchar](200) NULL,
+	[FTPlbPmtInterval] [varchar](50) NULL,
+	[FCPlbPmtGetCond] [numeric](18, 4) NULL,
+	[FCPlbPmtGetValue] [numeric](18, 4) NULL,
+	[FDPlbPmtDStart] [datetime] NULL,
+	[FDPlbPmtDStop] [datetime] NULL,
+	[FTPlbPmtCode] [varchar](20) NULL,
+	[FCPlbPmtBuyQty] [numeric](18, 4) NULL,
+	[FTPlbClrName] [varchar](100) NULL,
+	[FTPlbPszName] [varchar](100) NULL,
+	[FTPlbType] [varchar](50) NULL,
+	[FTPlbStaImport] [varchar](1) NULL,
+	[FTPlbImpDesc] [varchar](255) NULL
+) ON [AdaPos5_SKU_Filegroups]
+END
+GO
+/****** Object:  Table [dbo].[TSysPortPrn]    Script Date: 15/7/2565 12:08:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TSysPortPrn]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TSysPortPrn](
+	[FTSppCode] [varchar](50) NOT NULL,
+	[FTSppValue] [varchar](100) NULL,
+	[FTSppRef] [varchar](100) NULL,
+	[FTSppType] [varchar](3) NULL,
+	[FTSppStaUse] [varchar](1) NULL,
+	[FDLastUpdOn] [datetime] NULL,
+	[FTLastUpdBy] [varchar](20) NULL,
+	[FDCreateOn] [datetime] NULL,
+	[FTCreateBy] [varchar](20) NULL,
+ CONSTRAINT [PK_TSysPortPrn] PRIMARY KEY CLUSTERED 
+(
+	[FTSppCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+/****** Object:  Table [dbo].[TSysPortPrn_L]    Script Date: 15/7/2565 12:08:49 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TSysPortPrn_L]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TSysPortPrn_L](
+	[FTSppCode] [varchar](50) NOT NULL,
+	[FNLngID] [bigint] NOT NULL,
+	[FTSppName] [varchar](200) NULL,
+ CONSTRAINT [PK_TSysPortPrn_L] PRIMARY KEY CLUSTERED 
+(
+	[FTSppCode] ASC,
+	[FNLngID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FTRcvRefID') BEGIN
+	ALTER TABLE TFNMRcv ADD FTRcvRefID varchar(30)
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FTRcvRefEdc') BEGIN
+	ALTER TABLE TFNMRcv ADD FTRcvRefEdc varchar(5)
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FTRcvRefDoc') BEGIN
+	ALTER TABLE TFNMRcv ADD FTRcvRefDoc varchar(20)
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FNRcvQtySlip') BEGIN
+	ALTER TABLE TFNMRcv ADD FNRcvQtySlip bigint NULL
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FTRcvStaCshOrCrd') BEGIN
+	ALTER TABLE TFNMRcv ADD FTRcvStaCshOrCrd varchar(1)
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FTRcvStaAlwAccPoint') BEGIN
+	ALTER TABLE TFNMRcv ADD FTRcvStaAlwAccPoint varchar(1)
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FTRcvStaAlwDrawer') BEGIN
+	ALTER TABLE TFNMRcv ADD FTRcvStaAlwDrawer varchar(1)
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FTRcvStaReason') BEGIN
+	ALTER TABLE TFNMRcv ADD FTRcvStaReason varchar(1)
+END
+GO
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMRcv' AND COLUMN_NAME = 'FTRcvStaShwSum') BEGIN
+	ALTER TABLE TFNMRcv ADD FTRcvStaShwSum varchar(1)
+END
+GO
+
+
+
+
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNMPdtScale]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNMPdtScale](
+	[FTAgnCode] [varchar](10) NOT NULL,
+	[FTPdsCode] [varchar](5) NOT NULL,
+	[FTPdsMatchStr] [varchar](2) NULL,
+	[FNPdsLenBar] [bigint] NULL,
+	[FNPdsLenPdt] [bigint] NULL,
+	[FNPdsPdtStart] [bigint] NULL,
+	[FNPdsLenPri] [bigint] NULL,
+	[FNPdsPriStart] [bigint] NULL,
+	[FNPdsPriDec] [bigint] NULL,
+	[FNPdsLenWeight] [bigint] NULL,
+	[FNPdsWeightStart] [bigint] NULL,
+	[FNPdsWeightDec] [bigint] NULL,
+	[FTPdsStaChkDigit] [varchar](1) NULL,
+	[FTPdsStaUse] [varchar](1) NULL,
+	[FDLastUpdOn] [datetime] NULL,
+	[FTLastUpdBy] [varchar](20) NULL,
+	[FDCreateOn] [datetime] NULL,
+	[FTCreateBy] [varchar](20) NULL,
+ CONSTRAINT [PK_TCNMPdtScale] PRIMARY KEY CLUSTERED 
+(
+	[FTAgnCode] ASC,
+	[FTPdsCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+
+
+/****** Object:  Table [dbo].[TCNTPrnLabelTmp]    Script Date: 5/8/2565 13:05:03 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNTPrnLabelTmp]') AND type in (N'U'))
+	DROP TABLE [dbo].[TCNTPrnLabelTmp]
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNTPrnLabelTmp]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNTPrnLabelTmp](
+	[FTComName] [varchar](50) NULL,
+	[FTPdtCode] [varchar](20) NULL,
+	[FTPdtName] [varchar](100) NULL,
+	[FTBarCode] [varchar](25) NULL,
+	[FTPlcCode] [varchar](10) NULL,
+	[FDPrnDate] [datetime] NULL,
+	[FTPdtContentUnit] [varchar](100) NULL,
+	[FTPlbCode] [varchar](255) NULL,
+	[FNPlbQty] [bigint] NULL,
+	[FTPdtTime] [varchar](20) NULL,
+	[FTPdtMfg] [varchar](20) NULL,
+	[FTPdtImporter] [varchar](100) NULL,
+	[FTPdtRefNo] [varchar](30) NULL,
+	[FTPdtValue] [varchar](100) NULL,
+	[FTPbnDesc] [varchar](100) NULL,
+	[FTPdtNameOth] [varchar](100) NULL,
+	[FTPlbSubDept] [varchar](100) NULL,
+	[FTPlbRepleType] [varchar](2) NULL,
+	[FTPlbPriStatus] [varchar](50) NULL,
+	[FTPlbSellingUnit] [varchar](100) NULL,
+	[FCPdtPrice] [float] NULL,
+	[FCPdtOldPrice] [float] NULL,
+	[FTPlbPhasing] [varchar](5) NULL,
+	[FTPlbPriPerUnit] [varchar](100) NULL,
+	[FTPlbCapFree] [varchar](25) NULL,
+	[FTPlbPdtChain] [varchar](30) NULL,
+	[FTPlbCapNamePmt] [varchar](200) NULL,
+	[FTPlbPmtInterval] [varchar](50) NULL,
+	[FCPlbPmtGetCond] [float] NULL,
+	[FCPlbPmtGetValue] [float] NULL,
+	[FDPlbPmtDStart] [datetime] NULL,
+	[FDPlbPmtDStop] [datetime] NULL,
+	[FTPlbPmtCode] [varchar](20) NULL,
+	[FCPlbPmtBuyQty] [float] NULL,
+	[FTPlbClrName] [varchar](100) NULL,
+	[FTPlbPszName] [varchar](100) NULL,
+	[FTPlbPriType] [varchar](1) NULL,
+	[FTPlbStaImport] [varchar](1) NULL,
+	[FTPlbImpDesc] [varchar](255) NULL,
+	[FTPlbUrl] [varchar](255) NULL,
+	[FTPlbStaSelect] [varchar](1) NULL
+) ON [PRIMARY]
+END
+GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNTPrnLabelHDTmp]') AND type in (N'U'))
+	DROP TABLE [dbo].[TCNTPrnLabelHDTmp]
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TCNTPrnLabelHDTmp]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TCNTPrnLabelHDTmp](
+	[FTComName] [varchar](50) NULL,
+	[FTPlbPriType] [varchar](1) NULL,
+	[FNPage] [int] NOT NULL,
+	[FNSeq] [int] NOT NULL,
+	[FTBarCode] [varchar](25) NULL,
+	[FTPdtName] [varchar](100) NULL,
+	[FTPdtContentUnit] [varchar](100) NULL,
+	[FNPlbQty] [bigint] NULL,
+	[FTPlbStaSelect] [varchar](1) NULL
+) ON [PRIMARY]
+END
+GO
+
+
+
+
+
+
+/****** Object:  Table [dbo].[TRPTSalDTTmp]    Script Date: 05/09/2022 18:36:43 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].TRPTSalDTTmp')) --and OBJECTPROPERTY(id, U'IsView') = 1)
+drop TABLE TRPTSalDTTmp
+GO
+CREATE TABLE [dbo].[TRPTSalDTTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FNAppType] [int] NULL,
+	[FTBchCode] [varchar](5) NULL,
+	[FTBchName] [varchar](100) NULL,
+	[FTXshDocNo] [varchar](20) NULL,
+	[FNXsdSeqNo] [int] NULL,
+	[FTPdtCode] [varchar](20) NULL,
+	[FTXsdPdtName] [varchar](100) NULL,
+	[FTPgpChainName] [varchar](255) NULL,
+	[FTPunCode] [varchar](5) NULL,
+	[FTPunName] [varchar](50) NULL,
+	[FCXsdFactor] [numeric](18, 4) NULL,
+	[FTXsdBarCode] [varchar](25) NULL,
+	[FTSrnCode] [varchar](50) NULL,
+	[FTXsdVatType] [varchar](1) NULL,
+	[FTVatCode] [varchar](5) NULL,
+	[FCXsdVatRate] [numeric](18, 4) NULL,
+	[FTXsdSaleType] [varchar](1) NULL,
+	[FCXsdSalePrice] [numeric](18, 4) NULL,
+	[FCXsdQty] [numeric](18, 4) NULL,
+	[FCXsdQtyAll] [numeric](18, 4) NULL,
+	[FCXsdSetPrice] [numeric](18, 4) NULL,
+	[FCXsdAmtB4DisChg] [numeric](18, 4) NULL,
+	[FTXsdDisChgTxt] [varchar](50) NULL,
+	[FCXsdDis] [numeric](18, 4) NULL,
+	[FCXsdChg] [numeric](18, 4) NULL,
+	[FCXsdNet] [numeric](18, 4) NULL,
+	[FCXsdNetAfHD] [numeric](18, 4) NULL,
+	[FCXsdVat] [numeric](18, 4) NULL,
+	[FCXsdVatable] [numeric](18, 4) NULL,
+	[FCXsdWhtAmt] [numeric](18, 4) NULL,
+	[FTXsdWhtCode] [varchar](5) NULL,
+	[FCXsdWhtRate] [numeric](18, 4) NULL,
+	[FCXsdCostIn] [numeric](18, 4) NULL,
+	[FCXsdCostEx] [numeric](18, 4) NULL,
+	[FTXsdStaPdt] [varchar](1) NULL,
+	[FCXsdQtyLef] [numeric](18, 4) NULL,
+	[FCXsdQtyRfn] [numeric](18, 4) NULL,
+	[FTXsdStaPrcStk] [varchar](1) NULL,
+	[FTXsdStaAlwDis] [varchar](1) NULL,
+	[FNXsdPdtLevel] [int] NULL,
+	[FTXsdPdtParent] [varchar](20) NULL,
+	[FCXsdQtySet] [numeric](18, 4) NULL,
+	[FTPdtStaSet] [varchar](1) NULL,
+	[FTXsdRmk] [varchar](200) NULL,
+	[FDLastUpdOn] [datetime] NULL,
+	[FTLastUpdBy] [varchar](20) NULL,
+	[FDCreateOn] [datetime] NULL,
+	[FTCreateBy] [varchar](20) NULL,
+	[FTComName] [varchar](50) NULL,
+	[FTRptCode] [varchar](50) NULL,
+	[FTUsrSession] [varchar](255) NULL,
+	[FDTmpTxnDate] [datetime] NOT NULL,
+	[FTPbnCode] [varchar](5) NULL,
+	[FTPbnName] [varchar](200) NULL,
+	[FTPtyCode] [varchar](5) NULL,
+	[FTPtyName] [varchar](200) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 70, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[TRPTSalDTTmp] ADD  DEFAULT (getdate()) FOR [FDTmpTxnDate]
+GO
+
+
+
+
+/****** Object:  Table [dbo].[TRPTPSTaxMonthTmp_Animate]    Script Date: 11/09/2022 11:21:27 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].TRPTPSTaxMonthTmp_Animate')) --and OBJECTPROPERTY(id, U'IsView') = 1)
+drop TABLE TRPTPSTaxMonthTmp_Animate
+GO
+CREATE TABLE [dbo].[TRPTPSTaxMonthTmp_Animate](
+--CREATE TABLE [dbo].[TRPTPSTaxHDDateTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+
+	[FNAppType] [int] NULL, -- 1 : Pos, 2 : Vending
+	[FTBchCode] [varchar](5) NULL, -- สาขา
+	--[FTBchName] [varchar](100) NULL,
+
+	[FTXshDocLegth] [varchar](100) NULL, -- ใบกำกับภาษี (เลขที่)
+	[FTXshDocDate] [varchar](30) NULL, -- ใบกำกับภาษี  (วันที่)
+
+	[FTCstCode] [varchar](20) NULL, 
+	[FTCstName] [varchar](255) NULL, --ผู้ซื้อสินค้า/ผู้รับบริการ
+	[FTXshMonthTH] [varchar](30) NULL, -- รายงานภาษีขายประจำเดือน ไทย
+	[FTXshMonthEN] [varchar](30) NULL, -- รายงานภาษีขายประจำเดือน Eng
+
+	[FTXshAddrTax] [varchar](30) NULL, --เลขประจำตัวผู้เสียภาษี
+	[FCXshAmtNV] [numeric](18, 4) NULL, -- Before Vat(0%)
+	[FCXshVatable] [numeric](18, 4) NULL, --Before Vat
+	[FCXshVat] [numeric](18, 4) NULL, --จำนวนเงินภาษี
+	[FCXshGrandAmt] [numeric](18, 4) NULL, --จำนวนเงินรวม
+
+	[FTComName] [varchar](50) NULL,
+	[FTRptCode] [varchar](50) NULL,
+	[FDTmpTxnDate] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 70, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[TRPTPSTaxMonthTmp_Animate] ADD  DEFAULT (getdate()) FOR [FDTmpTxnDate]
+GO
+
+
+ALTER TABLE TCNMPdtBarTmp ALTER COLUMN FTFhnRefCode VARCHAR (50) NULL;

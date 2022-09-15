@@ -5,77 +5,179 @@ require_once 'adapters/mssql.php';
 require_once 'adapters/firebird.php';
 require_once 'adapters/postgresql.php';
 require_once 'adapters/oracle.php';
-require_once 'email/class.phpmailer.php';
-require_once 'email/class.pop3.php';
-require_once 'email/class.smtp.php';
-require_once 'email/PHPMailerAutoload.php';
+require_once 'adapters/odbc.php';
 
+if (substr(PHP_VERSION, 0, 1) == '5') {
+	require_once 'phpmailer/v5/class.phpmailer.php';
+	require_once 'phpmailer/v5/class.pop3.php';
+	require_once 'phpmailer/v5/class.smtp.php';
+	require_once 'phpmailer/v5/PHPMailerAutoload.php';
+}
+else {
+	require_once 'phpmailer/v6/PHPMailer.php';
+	require_once 'phpmailer/v6/SMTP.php';
+	require_once 'phpmailer/v6/POP3.php';
+	require_once 'phpmailer/v6/Exception.php';
+}
 
 function stiErrorHandler($errNo, $errStr, $errFile, $errLine) {
-	$result = StiResult::error("[".$errNo."] ".$errStr." (".$errFile.", Line ".$errLine.")");
+	$result = StiResult::error("[$errNo] $errStr ($errFile, Line $errLine)");
 	StiResponse::json($result);
 }
 
 function stiShutdownFunction() {
 	$err = error_get_last();
-	if (($err["type"] & E_COMPILE_ERROR) || ($err["type"] & E_ERROR) || ($err["type"] & E_CORE_ERROR) || ($err["type"] & E_RECOVERABLE_ERROR)) {
-		$result = StiResult::error("[".$err["type"]."] ".$err["message"]." (".$err["file"].", Line ".$err["line"].")");
+	if ($err != null && (($err['type'] & E_COMPILE_ERROR) || ($err['type'] & E_ERROR) || ($err['type'] & E_CORE_ERROR) || ($err['type'] & E_RECOVERABLE_ERROR))) {
+		$result = StiResult::error("[{$err['type']}] {$err['message']} ({$err['file']}, Line {$err['line']})");
 		StiResponse::json($result);
 	}
 }
 
 class StiHandler {
+	private $version = '2022.1.4';
 	
 	private function checkEventResult($event, $args) {
 		if (isset($event)) $result = $event($args);
 		if (!isset($result)) $result = StiResult::success();
 		if ($result === true) return StiResult::success();
 		if ($result === false) return StiResult::error();
-		if (gettype($result) == "string") return StiResult::error($result);
+		if (gettype($result) == 'string') return StiResult::error($result);
 		if (isset($args)) $result->object = $args;
 		return $result;
 	}
 	
-	private function getQueryParameters($query) {
-		$result = array();
-		while (strpos($query, "{") !== false) {
-			$query = substr($query, strpos($query, "{") + 1);
-			$parameterName = substr($query, 0, strpos($query, "}"));
-			$result[$parameterName] = null;
-		}
+	private function applyQueryParameters($query, $parameters, $escape) {
+		$result = '';
 		
-		return $result;
-	}
-	
-	private function applyQueryParameters($query, $values) {
-		$result = "";
-		while (strpos($query, "{") !== false) {
-			$result .= substr($query, 0, strpos($query, "{"));
-			$query = substr($query, strpos($query, "{") + 1);
-			$parameterName = substr($query, 0, strpos($query, "}"));
-			if (isset($values) && isset($values[$parameterName]) && !is_null($values[$parameterName])) $result .= strval($values[$parameterName]);
-			else $result .= "{".$parameterName."}";
-			$query = substr($query, strpos($query, "}") + 1);
+		while (mb_strpos($query, '@') !== false) {
+			$result .= mb_substr($query, 0, mb_strpos($query, '@'));
+			$query = mb_substr($query, mb_strpos($query, '@') + 1);
+			
+			$parameterName = '';
+			while (strlen($query) > 0) {
+				$char = mb_substr($query, 0, 1);
+				if (!preg_match('/[a-zA-Z0-9_-]/', $char)) break;
+				
+				$parameterName .= $char;
+				$query = mb_substr($query, 1);
+			}
+			
+			$replaced = false;
+			foreach ($parameters as $key => $item) {
+				if (strtolower($key) == strtolower($parameterName)) {
+					switch ($item->typeGroup) {
+						case 'number':
+							$result .= $item->value;
+							break;
+							
+						case 'datetime':
+							$result .= "'".$item->value."'";
+							break;
+							
+						default:
+							$result .= "'".($escape ? addcslashes($item->value, "\\\"'") : $item->value)."'";
+							break;
+					}
+					
+					$replaced = true;
+				}
+			}
+			
+			if (!$replaced) $result .= '@'.$parameterName;
 		}
 		
 		return $result.$query;
 	}
 	
-//--- Events
+	private function addAddress($param, $settings, $mail) {
+		$arr = $settings->$param;
+		
+		if ($arr != null && count($arr) > 0) {
+			if ($param == 'cc') $mail->clearCCs();
+			else $mail->clearBCCs();
+			
+			foreach ($arr as $value) {
+				$name = mb_strpos($value, ' ') > 0 ? mb_substr($value, mb_strpos($value, ' ')) : '';
+				$address = strlen($name) > 0 ? mb_substr($value, 0, mb_strpos($value, ' ')) : $value;
+				
+				if ($param == 'cc') $mail->addCC($address, $name);
+				else $mail->addBCC($address, $name);
+			}
+		}
+	}
+	
+	
+// Events
+
+	public $onPrepareVariables = null;
+	private function invokePrepareVariables($request) {
+		$args = new stdClass();
+		$args->sender = $request->sender;
+		
+		$args->variables = array();
+		if (isset($request->variables)) {
+			foreach ($request->variables as $item) {
+				$request->variables[$item->name] = $item;
+				$variableObject = new stdClass();
+				$variableObject->value = $item->value;
+				$variableObject->type = $item->type;
+				
+				if (substr($item->type, -5) === 'Range') {
+					$variableObject->value = new stdClass();
+					$variableObject->value->from = $item->value->from;
+					$variableObject->value->to = $item->value->to;
+				}
+				
+				$args->variables[$item->name] = $variableObject;
+			}
+		}
+		
+		$result = $this->checkEventResult($this->onPrepareVariables, $args);
+		
+		if (isset($result->object)) {
+			$variables = array();
+			foreach ($result->object->variables as $key => $item) {
+				// Send only changed or new values
+				if (!array_key_exists($key, $request->variables) || 
+					$item->value != $request->variables[$key]->value || 
+					substr($item->type, -5) === 'Range' && (
+						$item->value->from != $request->variables[$key]->value->from || 
+						$item->value->to != $request->variables[$key]->value->to)
+				) {
+					if (!is_object($item)) $item = (object)$item;
+					$item->name = $key;
+					array_push($variables, $item);
+				}
+			}
+			
+			$result->variables = $variables;
+		}
+		
+		return $result;
+	}
 
 	public $onBeginProcessData = null;
 	private function invokeBeginProcessData($request) {
 		$args = new stdClass();
 		$args->sender = $request->sender;
+		$args->command = $request->command;
 		$args->database = $request->database;
 		$args->connectionString = isset($request->connectionString) ? $request->connectionString : null;
 		$args->queryString = isset($request->queryString) ? $request->queryString : null;
 		$args->dataSource = isset($request->dataSource) ? $request->dataSource : null;
 		$args->connection = isset($request->connection) ? $request->connection : null;
-		if (isset($request->queryString)) $args->parameters = $this->getQueryParameters($request->queryString);
+		if (isset($request->queryString) && isset($request->parameters)) {
+			$args->parameters = array();
+			foreach ($request->parameters as $item) {
+				$args->parameters[$item->name] = $item;
+				unset($item->name);
+			}
+		}
 		
 		$result = $this->checkEventResult($this->onBeginProcessData, $args);
-		if (isset($result->object->queryString) && isset($args->parameters)) $result->object->queryString = $this->applyQueryParameters($result->object->queryString, $args->parameters);
+		if (isset($result->object->queryString) && isset($args->parameters) && count($args->parameters) > 0)
+			$result->object->queryString = $this->applyQueryParameters($result->object->queryString, $args->parameters, $request->escapeQueryParameters);
+		
 		return $result;
 	}
 	
@@ -83,6 +185,10 @@ class StiHandler {
 	private function invokeEndProcessData($request, $result) {
 		$args = new stdClass();
 		$args->sender = $request->sender;
+		$args->command = $request->command;
+		$args->database = $request->database;
+		$args->dataSource = isset($request->dataSource) ? $request->dataSource : null;
+		$args->connection = isset($request->connection) ? $request->connection : null;
 		$args->result = $result;
 		return $this->checkEventResult($this->onEndProcessData, $args);
 	}
@@ -91,7 +197,13 @@ class StiHandler {
 	private function invokeCreateReport($request) {
 		$args = new stdClass();
 		$args->sender = $request->sender;
-		return $this->checkEventResult($this->onCreateReport, $args);
+		$args->report = $request->report;
+		$args->isWizardUsed = $request->isWizardUsed;
+		
+		$result = $this->checkEventResult($this->onCreateReport, $args);
+		$result->report = $args->report;
+		
+		return $result;
 	}
 	
 	public $onOpenReport = null;
@@ -126,6 +238,7 @@ class StiHandler {
 		$args = new stdClass();
 		$args->sender = $request->sender;
 		$args->fileName = $request->fileName;
+		$args->printAction = $request->printAction;
 		return $this->checkEventResult($this->onPrintReport, $args);
 	}
 	
@@ -133,10 +246,17 @@ class StiHandler {
 	private function invokeBeginExportReport($request) {
 		$args = new stdClass();
 		$args->sender = $request->sender;
-		$args->settings = $request->settings;
+		$args->action = $request->action;
 		$args->format = $request->format;
+		$args->formatName = $request->formatName;
+		$args->settings = $request->settings;
 		$args->fileName = $request->fileName;
-		return $this->checkEventResult($this->onBeginExportReport, $args);
+		
+		$result = $this->checkEventResult($this->onBeginExportReport, $args);
+		$result->fileName = $args->fileName;
+		$result->settings = $args->settings;
+		
+		return $result;
 	}
 	
 	public $onEndExportReport = null;
@@ -144,7 +264,9 @@ class StiHandler {
 		$args = new stdClass();
 		$args->sender = $request->sender;
 		$args->format = $request->format;
+		$args->formatName = $request->formatName;
 		$args->fileName = $request->fileName;
+		$args->fileExtension = $this->getFileExtension($request->format);
 		$args->data = $request->data;
 		return $this->checkEventResult($this->onEndExportReport, $args);
 	}
@@ -161,6 +283,7 @@ class StiHandler {
 		$args->sender = $request->sender;
 		$args->settings = $settings;
 		$args->format = $request->format;
+		$args->formatName = $request->formatName;
 		$args->fileName = $request->fileName;
 		$args->data = base64_decode($request->data);
 		
@@ -173,8 +296,8 @@ class StiHandler {
 		
 		// Detect auth mode
 		$auth = $settings->host != null && $settings->login != null && $settings->password != null;
-
-		$mail = new PHPMailer(true);
+		
+		$mail = substr(PHP_VERSION, 0, 1) == '5' ? new PHPMailer(true) : new PHPMailer\PHPMailer\PHPMailer(true);
 		if ($auth) $mail->IsSMTP();
 		try {
 			$mail->CharSet = $settings->charset;
@@ -203,6 +326,10 @@ class StiHandler {
 				$mail->Password = $settings->password;
 			}
 			
+			// Fill CC and BCC
+			$this->addAddress('cc', $settings, $mail);
+			$this->addAddress('bcc', $settings, $mail);
+			
 			$mail->Send();
 		}
 		catch (phpmailerException $e) {
@@ -219,19 +346,13 @@ class StiHandler {
 		return $result;
 	}
 	
-	public $onDesignReport = null;
-	private function invokeDesignReport($request) {
-		$args = new stdClass();
-		$args->sender = $request->sender;
-		$args->fileName = $request->fileName;
-		return $this->checkEventResult($this->onDesignReport, $args);
-	}
 	
-//--- Methods
+// Methods
 	
 	public function registerErrorHandlers() {
-		set_error_handler("stiErrorHandler");
-		register_shutdown_function("stiShutdownFunction");
+		error_reporting(0);
+		set_error_handler('stiErrorHandler');
+		register_shutdown_function('stiShutdownFunction');
 	}
 	
 	public function process($response = true) {
@@ -241,20 +362,21 @@ class StiHandler {
 	}
 	
 	
-//--- Private methods
+// Private methods
 	
-	private function createConnection($args) {
+	private function getDataAdapter($args) {
 		switch ($args->database) {
-			case StiDatabaseType::MySQL: $connection = new StiMySqlAdapter(); break;
-			case StiDatabaseType::MSSQL: $connection = new StiMsSqlAdapter(); break;
-			case StiDatabaseType::Firebird: $connection = new StiFirebirdAdapter(); break;
-			case StiDatabaseType::PostgreSQL: $connection = new StiPostgreSqlAdapter(); break;
-			case StiDatabaseType::Oracle: $connection = new StiOracleAdapter(); break;
+			case StiDatabaseType::MySQL: $dataAdapter = new StiMySqlAdapter(); break;
+			case StiDatabaseType::MSSQL: $dataAdapter = new StiMsSqlAdapter(); break;
+			case StiDatabaseType::Firebird: $dataAdapter = new StiFirebirdAdapter(); break;
+			case StiDatabaseType::PostgreSQL: $dataAdapter = new StiPostgreSqlAdapter(); break;
+			case StiDatabaseType::Oracle: $dataAdapter = new StiOracleAdapter(); break;
+			case StiDatabaseType::ODBC: $dataAdapter = new StiOdbcAdapter(); break;
 		}
 		
-		if (isset($connection)) {
-			$connection->parse($args->connectionString);
-			return StiResult::success(null, $connection);
+		if (isset($dataAdapter)) {
+			$dataAdapter->parse($args->connectionString);
+			return StiResult::success(null, $dataAdapter);
 		}
 		
 		return StiResult::error("Unknown database type [".$args->database."]");
@@ -266,19 +388,41 @@ class StiHandler {
 		if ($result->success) {
 			switch ($request->event) {
 				case StiEventType::BeginProcessData:
-				case StiEventType::ExecuteQuery:
 					$result = $this->invokeBeginProcessData($request);
 					if (!$result->success) return $result;
 					$queryString = $result->object->queryString;
-					$result = $this->createConnection($result->object);
+					$result = $this->getDataAdapter($result->object);
+					$result->handlerVersion = $this->version;
 					if (!$result->success) return $result;
-					$connection = $result->object;
-					if (isset($queryString)) $result = $connection->execute($queryString);
-					else $result = $connection->test();
+					
+					$dataAdapter = $result->object;
+					switch ($request->command) {
+						case StiCommand::TestConnection:
+							$result = $dataAdapter->test();
+							break;
+							
+						case StiCommand::ExecuteQuery:
+							$result = $dataAdapter->execute($queryString);
+							break;
+					}
+					
 					$result = $this->invokeEndProcessData($request, $result);
+					$result->handlerVersion = $this->version;
+					$result->adapterVersion = $dataAdapter->version;
+					$result->checkVersion = $dataAdapter->checkVersion;
 					if (!$result->success) return $result;
-					if (isset($result->object) && isset($result->object->result)) return $result->object->result;
+					
+					if (isset($result->object) && isset($result->object->result)) {
+						$result = $result->object->result;
+						$result->handlerVersion = $this->version;
+						$result->adapterVersion = $dataAdapter->version;
+						$result->checkVersion = $dataAdapter->checkVersion;
+					}
+					
 					return $result;
+					
+				case StiEventType::PrepareVariables:
+					return $this->invokePrepareVariables($request);
 					
 				case StiEventType::CreateReport:
 					return $this->invokeCreateReport($request);
@@ -303,9 +447,6 @@ class StiHandler {
 						
 				case StiEventType::EmailReport:
 					return $this->invokeEmailReport($request);
-					
-				case StiEventType::DesignReport;
-					return $this->invokeDesignReport($request);
 			}
 			
 			$result = StiResult::error("Unknown event [".$request->event."]");
@@ -316,12 +457,11 @@ class StiHandler {
 	
 	private function getFileExtension($format) {
 		switch ($format) {
-			case StiExportFormat::Html:
-			case StiExportFormat::Html5:
-				return "html";
-				
 			case StiExportFormat::Pdf:
 				return "pdf";
+				
+			case StiExportFormat::Text:
+				return "txt";
 				
 			case StiExportFormat::Excel2007:
 				return "xlsx";
@@ -331,14 +471,33 @@ class StiHandler {
 				
 			case StiExportFormat::Csv:
 				return "csv";
+				
+			case StiExportFormat::ImageSvg:
+				return "svg";
+				
+			case StiExportFormat::Html:
+			case StiExportFormat::Html5:
+				return "html";
+				
+			case StiExportFormat::Ods:
+				return "ods";
+				
+			case StiExportFormat::Odt:
+				return "odt";
+				
+			case StiExportFormat::Ppt2007:
+				return "pptx";
+				
+			case StiExportFormat::Document:
+				return "mdc";
 		}
-		return "";
+		
+		return $format;
 	}
 }
 
 
-//---------- Helper ----------//
-
+// JavaScript helper
 
 class StiHelper {
 	public static function createOptions() {
@@ -351,106 +510,127 @@ class StiHelper {
 	
 	public static function initialize($options) {
 		if (!isset($options)) $options = StiHelper::createOptions();
-?>
-	<script type="text/javascript">
-		StiHelper.prototype.process = function (args, callback) {
-			if (args) {
-				if (args.event == "BeginProcessData") {
-					args.preventDefault = true;
-					if (args.database == "XML" || args.database == "JSON" || args.database == "Excel") return callback(null);
-				}
-				var command = {};
-				for (var p in args) {
-					if (p == "report" && args.report != null) command.report = JSON.parse(args.report.saveToJsonString());
-					else if (p == "settings" && args.settings != null) command.settings = args.settings;
-					else if (p == "data") command.data = Stimulsoft.System.Convert.toBase64String(args.data);
-					else command[p] = args[p];
-				}
-				
-				var json = JSON.stringify(command);
-				if (!callback) callback = function (message) {
-					if (Stimulsoft.System.StiError.errorMessageForm && !String.isNullOrEmpty(message)) {
-						var obj = JSON.parse(message);
-						if (!obj.success || !String.isNullOrEmpty(obj.notice)) {
-							var message = String.isNullOrEmpty(obj.notice) ? "There was some error" : obj.notice;
-							Stimulsoft.System.StiError.errorMessageForm.show(message, obj.success);
-						}
-					}
-				}
-				jsHelper.send(json, callback);
+		StiHelper::init($options->handler, $options->timeout);
+	}
+	
+	public static function init($handler, $timeout) {?>
+<script type="text/javascript">
+	StiHelper.prototype.process = function (args, callback) {
+		if (args) {
+			if (callback)
+				args.preventDefault = true;
+			
+			if (args.event == 'BeginProcessData') {
+				if (args.database == 'XML' || args.database == 'JSON' || args.database == 'Excel')
+					return callback(null);
+				if (args.database == 'Data from DataSet, DataTables')
+					return callback(args);
 			}
+			
+			var command = {};
+			for (var p in args) {
+				if (p == 'report') {
+					if (args.report && (args.event == 'CreateReport' || args.event == 'SaveReport' || args.event == 'SaveAsReport'))
+						command.report = JSON.parse(args.report.saveToJsonString());
+				}
+				else if (p == 'settings' && args.settings) command.settings = args.settings;
+				else if (p == 'data') command.data = Stimulsoft.System.Convert.toBase64String(args.data);
+				else if (p == 'variables') command[p] = this.getVariables(args[p]);
+				else command[p] = args[p];
+			}
+			
+			var sendText = Stimulsoft.Report.Dictionary.StiSqlAdapterService.getStringCommand(command);
+			if (!callback) callback = function (args) {
+				if (!args.success || !Stimulsoft.System.StiString.isNullOrEmpty(args.notice)) {
+					var message = Stimulsoft.System.StiString.isNullOrEmpty(args.notice) ? 'There was some error' : args.notice;
+					Stimulsoft.System.StiError.showError(message, true, args.success);
+				}
+			}
+			Stimulsoft.Helper.send(sendText, callback);
 		}
-		
-		StiHelper.prototype.send = function (json, callback) {
-			try {
-				var request = new XMLHttpRequest();
-				request.open("post", this.url, true);
-				request.timeout = this.timeout * 1000;
-				request.onload = function () {
-					if (request.status == 200) {
-						var responseText = request.responseText;
-						request.abort();
-						callback(responseText);
-					}
-					else {
-						Stimulsoft.System.StiError.showError("[" + request.status + "] " + request.statusText, false);
-					}
-				};
-				request.onerror = function (e) {
-					var errorMessage = "Connect to remote error: [" + request.status + "] " + request.statusText;
-					Stimulsoft.System.StiError.showError(errorMessage, false);
-				};
-				request.send(json);
-			}
-			catch (e) {
-				var errorMessage = "Connect to remote error: " + e.message;
-				Stimulsoft.System.StiError.showError(errorMessage, false);
-				request.abort();
-			}
-		};
-		
-		StiHelper.prototype.getUrlVars = function (json, callback) {
-			var vars = {};
-			var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
-				function (m, key, value) {
-					vars[key] = value;
-			});
-			return vars;
-		}
-		
-		StiHelper.prototype.getLicense = function () {
+	}
+	
+	StiHelper.prototype.send = function (json, callback) {
+		try {
 			var request = new XMLHttpRequest();
-			request.open("get", "stimulsoft/license.php", true);
+			request.open('post', this.url, true);
+			request.setRequestHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+			request.setRequestHeader('Cache-Control', 'max-age=0');
+			request.setRequestHeader('Pragma', 'no-cache');
 			request.timeout = this.timeout * 1000;
 			request.onload = function () {
 				if (request.status == 200) {
-					var license = request.responseText;
-					if (typeof license == "string" && license != "") Stimulsoft.Base.StiLicense.key = license;
+					var responseText = request.responseText;
+					request.abort();
+					
+					try {
+						var args = JSON.parse(responseText);
+						if (args.report) {
+							var json = args.report;
+							args.report = new Stimulsoft.Report.StiReport();
+							args.report.load(json);
+						}
+						
+						callback(args);
+					}
+					catch (e) {
+						Stimulsoft.System.StiError.showError(e.message);
+					}
 				}
 				else {
-					Stimulsoft.System.StiError.showError("[" + request.status + "] " + request.statusText, false);
+					Stimulsoft.System.StiError.showError('Server response error: [' + request.status + '] ' + request.statusText);
 				}
 			};
 			request.onerror = function (e) {
-				var errorMessage = "Connect to remote error: [" + request.status + "] " + request.statusText;
-				Stimulsoft.System.StiError.showError(errorMessage, false);
+				var errorMessage = 'Connect to remote error: [' + request.status + '] ' + request.statusText;
+				Stimulsoft.System.StiError.showError(errorMessage);
 			};
-			request.send();
+			request.send(json);
+		}
+		catch (e) {
+			var errorMessage = 'Connect to remote error: ' + e.message;
+			Stimulsoft.System.StiError.showError(errorMessage);
+			request.abort();
+		}
+	};
+	
+	StiHelper.prototype.isNullOrEmpty = function (value) {
+		return value == null || value === '' || value === undefined;
+	}
+	
+	StiHelper.prototype.getVariables = function (variables) {
+		if (variables) {
+			for (var variable of variables) {
+				if (variable.type == 'DateTime' && variable.value != null)
+					variable.value = variable.value.toString('YYYY-MM-DD HH:mm:SS');
+			}
 		}
 		
-		function StiHelper(url, timeout) {
-			this.url = url;
-			this.timeout = timeout;
-			this.getLicense();
+		return variables;
+	}
+	
+	function StiHelper(url, timeout) {
+		this.url = url;
+		this.timeout = timeout;
+		
+		if (Stimulsoft && Stimulsoft.StiOptions) {
+			Stimulsoft.StiOptions.WebServer.url = url;
+			Stimulsoft.StiOptions.WebServer.timeout = timeout;
 		}
 		
-		jsHelper = new StiHelper("<?php echo $options->handler; ?>", <?php echo $options->timeout; ?>);
+		if (Stimulsoft && Stimulsoft.Base) {
+			Stimulsoft.Base.StiLicense.loadFromFile("stimulsoft/license.php");
+		}
+	}
+
+	Stimulsoft = Stimulsoft || {};
+	Stimulsoft.Helper = new StiHelper('<?php echo $handler; ?>', <?php echo $timeout; ?>);
+	jsHelper = typeof jsHelper !== 'undefined' ? jsHelper : Stimulsoft.Helper;
 </script>
 <?php
 	}
 	
 	public static function createHandler() {
-?>jsHelper.process(arguments[0], arguments[1]);
-<?php
+		?>Stimulsoft.Helper.process(arguments[0], arguments[1]);<?php
 	}
 }

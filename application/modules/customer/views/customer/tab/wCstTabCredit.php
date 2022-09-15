@@ -28,8 +28,8 @@ $tCstStaApv = empty($aResult['raCredit']['rtCstStaApv']) ? "" : $aResult['raCred
                 <div class="form-group">
                     <label class="xCNLabelFrm"><?php echo language('customer/customer/customer', 'tCSTCreditTerm')?></label>
                     <input 
-                        type="text" 
-                        class="form-control" 
+                        type="number" 
+                        class="form-control xCNInputNumericWithoutDecimal" 
                         maxlength="100" 
                         id="oetCstCreditTerm" 
                         name="oetCstCreditTerm" 
@@ -41,6 +41,7 @@ $tCstStaApv = empty($aResult['raCredit']['rtCstStaApv']) ? "" : $aResult['raCred
                 <div class="form-group">
                     <label class="xCNLabelFrm"><?php echo language('customer/customer/customer', 'tCSTCreditLimit')?></label>
                     <input 
+                        class="form-control xCNInputNumericWithoutDecimal text-right"
                         type="text" 
                         maxlength="100" 
                         id="oetCstCreditLimit" 
@@ -125,8 +126,8 @@ $tCstStaApv = empty($aResult['raCredit']['rtCstStaApv']) ? "" : $aResult['raCred
                 <div class="form-group">
                     <label class="xCNLabelFrm"><?=language('customer/customer/customer','tCSTViaTime')?></label>
                     <input 
-                        type="text" 
-                        class="form-control" 
+                        type="number" 
+                        class="form-control xCNInputNumericWithoutDecimal" 
                         maxlength="100" 
                         id="oetCstViaTime" 
                         name="oetCstViaTime" 

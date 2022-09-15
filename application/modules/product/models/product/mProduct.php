@@ -51,7 +51,7 @@ class mProduct extends CI_Model
             }
 
             if(!empty($tDefaultBchCode)){ //กรณีผู้ใช้ผูก Bch จะเห็นสินค้าภายใต้ Bch
-                $tWHEREPermission_BCH .= " AND PDLSPC.FTBchCode IN ($tSessionBchCode) OR ISNULL(PDLSPC.FTBchCode,'') = ''  ";
+                $tWHEREPermission_BCH .= " AND PDLSPC.FTBchCode IN ($tSessionBchCode) ";
             }
 
             if(!empty($tSessionShopCode)){ //กรณีผู้ใช้ผูก Shp จะเห็นสินค้าภายใต้ Shp
@@ -178,7 +178,7 @@ class mProduct extends CI_Model
                                 COUNT (PDT.FTPdtCode)
                             FROM
                             TCNMPdt PDT WITH (NOLOCK)
-                            LEFT JOIN TCNMPdtSpcBch PDLSPC WITH (NOLOCK) ON PDT.FTPdtCode = PDLSPC.FTPdtCode";
+                            LEFT JOIN TCNMPdtSpcBch PDLSPC WITH (NOLOCK) ON PDT.FTPdtCode = PDLSPC.FTPdtCode ";
             if (!empty($tSearch)) {
                 $tQueryCountRow .= $aSpcJoinTableMaster[$nSearchProductType];
             }
