@@ -218,6 +218,126 @@
                 </div>
             <?php endif; ?>
 
+            <!-- ============================ ฟิวเตอร์ข้อมูล สถานะเอกสาร ============================ -->
+            <?php if (isset($aDataFilter['tPdtRptPhStaApv'])) : ?>
+                <div class="xCNRptFilterBox">
+                    <div class="xCNRptFilter">
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptTitleStaApv']; ?> : </span> <?=$aDataTextRef['tRptPhStaApv'.$aDataFilter['tPdtRptPhStaApv']]?></label>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล สถานะเคลื่อนไหว ============================ -->
+            <?php if ((isset($aDataFilter['tPdtStaActive']) && !empty($aDataFilter['tPdtStaActive'])) && (isset($aDataFilter['tPdtStaActive']) && !empty($aDataFilter['tPdtStaActive']))) : ?>
+                <?php $aPdtStaActive = array(
+                '1' => $aDataTextRef['tRptPdtMoving1'],
+                '2' => $aDataTextRef['tRptPdtMoving2']
+                ); ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptTitlePdtMoving'] . ' : </span>' . $aPdtStaActive[$aDataFilter['tPdtStaActive']]; ?></label>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล ใช้ราคาขาย ============================ -->
+            <?php if (isset($aDataFilter['tPdtRptPdtType'])) : ?>
+                <?php if( $aDataFilter['tPdtRptPdtType'] == "" ){ $aDataFilter['tPdtRptPdtType'] = "0"; } ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtSaleType'] . ' : </span>' . $aDataTextRef['tRptPdtType'.$aDataFilter['tPdtRptPdtType']]; ?></label>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล ภาษี ============================ -->
+            <?php if ((isset($aDataFilter['tPdtRptStaVat']) && !empty($aDataFilter['tPdtRptStaVat'])) && (isset($aDataFilter['tPdtRptStaVat']) && !empty($aDataFilter['tPdtRptStaVat']))) : ?>
+            <?php $aPdtRptStaVat = array(
+                '1' => $aDataTextRef['tRptStaVa1'],
+                '2' => $aDataTextRef['tRptStaVa2']
+            ); ?>
+            <div class="xCNRptFilterBox">
+                <div class="text-left xCNRptFilter">
+                <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptStaVat'] . ' : </span>' . $aPdtRptStaVat[$aDataFilter['tPdtRptStaVat']]; ?></label>
+                </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล สถานะ รับ/จ่ายเงิน ============================ -->
+            <?php if((isset($aDataFilter['tPdtRptPhStaPaid']) && !empty($aDataFilter['tPdtRptPhStaPaid']))){ ?>
+                
+                <?php 
+                    $tStaPaid = '';
+                    if ($aDataFilter['tPdtRptPhStaPaid'] == 1) {
+                        $tStaPaid = $aDataTextRef['tRptPhStaPaid1'];
+                    }elseif ($aDataFilter['tPdtRptPhStaPaid'] == 2) {
+                        $tStaPaid = $aDataTextRef['tRptPhStaPaid2'];
+                    }elseif ($aDataFilter['tPdtRptPhStaPaid'] == 3) {
+                        $tStaPaid = $aDataTextRef['tRptPhStaPaid3'];
+                    }
+                ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tStaPaid'].' : </span>'.$tStaPaid;?></label>
+                    </div>
+                </div>
+            <?php } ;?>
+
+            <div style="clear: both;"></div>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล สินค้า ============================ -->
+            <?php if( (isset($aDataFilter['tRptPdtCodeFrom']) && !empty($aDataFilter['tRptPdtCodeFrom'])) && (isset($aDataFilter['tRptPdtCodeTo']) && !empty($aDataFilter['tRptPdtCodeTo']))) { ?>
+                
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtCodeFrom'].' : </span>'.$aDataFilter['tRptPdtNameFrom'];?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtCodeTo'].' : </span>'.$aDataFilter['tRptPdtNameTo'];?></label>
+                    </div>
+                </div>
+            <?php } ;?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล กลุ่มสินค้า ============================ -->
+            <?php if( (isset($aDataFilter['tPdtGrpCodeFrom']) && !empty($aDataFilter['tPdtGrpCodeFrom'])) && (isset($aDataFilter['tPdtGrpCodeTo']) && !empty($aDataFilter['tPdtGrpCodeTo']))) { ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtGrpFrom'].' : </span>'.$aDataFilter['tPdtGrpNameFrom'];?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtGrpTo'].' : </span>'.$aDataFilter['tPdtGrpNameTo'];?></label>
+                    </div>
+                </div>
+            <?php } ;?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล ประเภทสินค้า ============================ -->
+            <?php if( (isset($aDataFilter['tPdtTypeCodeFrom']) && !empty($aDataFilter['tPdtTypeCodeFrom'])) && (isset($aDataFilter['tPdtTypeCodeTo']) && !empty($aDataFilter['tPdtTypeCodeTo']))) { ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtTypeFrom'].' : </span>'.$aDataFilter['tPdtTypeNameFrom'];?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtTypeTo'].' : </span>'.$aDataFilter['tPdtTypeNameTo'];?></label>
+                    </div>
+                </div>
+            <?php } ;?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล ยี่ห้อ ============================ -->
+            <?php if ((isset($aDataFilter['tPdtBrandCodeFrom']) && !empty($aDataFilter['tPdtBrandCodeFrom'])) && (isset($aDataFilter['tPdtBrandCodeTo']) && !empty($aDataFilter['tPdtBrandCodeTo']))) : ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptBrandFrom'] . ' : </span>' . $aDataFilter['tPdtBrandNameFrom']; ?></label>
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptBrandTo'] . ' : </span>' . $aDataFilter['tPdtBrandNameTo']; ?></label>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล รุ่น ============================ -->
+            <?php if ((isset($aDataFilter['tPdtModelCodeFrom']) && !empty($aDataFilter['tPdtModelCodeFrom'])) && (isset($aDataFilter['tPdtModelCodeTo']) && !empty($aDataFilter['tPdtModelCodeTo']))) : ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptModelFrom'] . ' : </span>' . $aDataFilter['tPdtModelNameFrom']; ?></label>
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptModelTo'] . ' : </span>' . $aDataFilter['tPdtModelNameTo']; ?></label>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <div style="clear: both;"></div>
+
             <!-- ============================ ฟิวเตอร์ข้อมูล ผู้จำหน่าย ============================ -->
             <?php if ((isset($aDataFilter['tPdtSupplierCodeFrom']) && !empty($aDataFilter['tPdtSupplierCodeFrom'])) && (isset($aDataFilter['tPdtSupplierCodeTo']) && !empty($aDataFilter['tPdtSupplierCodeTo']))) : ?>
                 <div class="xCNRptFilterBox">
@@ -228,47 +348,25 @@
                 </div>
             <?php endif; ?>
 
-            <?php if((isset($aDataFilter['tEffectiveDateFrom']) && !empty($aDataFilter['tEffectiveDateFrom'])) && (isset($aDataFilter['tEffectiveDateTo']) && !empty($aDataFilter['tEffectiveDateTo']))): ?>
-                <!-- ===== ฟิวเตอร์ข้อมูล วันที่มีผล ========================== -->
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <div class="text-left">
-                            <label class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptEffectiveDateFrom']?></label>   <label><?=date('d/m/Y',strtotime($aDataFilter['tEffectiveDateFrom']));?>  </label>&nbsp;
-                            <label class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptEffectiveDateTo']?></label>     <label><?=date('d/m/Y',strtotime($aDataFilter['tEffectiveDateTo']));?>    </label>
-                        </div>
-                    </div>
-                </div>
-            <?php endif;?>
-
-            <?php if( (isset($aDataFilter['tRptPdtCodeFrom']) && !empty($aDataFilter['tRptPdtCodeFrom'])) && (isset($aDataFilter['tRptPdtCodeTo']) && !empty($aDataFilter['tRptPdtCodeTo']))) { ?>
-                <!-- ===== ฟิวเตอร์ข้อมูล สินค้า =========================================== -->
+            <!-- ============================ ฟิวเตอร์ข้อมูล กลุ่มผู้จำหน่าย ============================ -->
+            <?php if ((isset($aDataFilter['tPdtSgpCodeFrom']) && !empty($aDataFilter['tPdtSgpCodeFrom'])) && (isset($aDataFilter['tPdtSgpCodeTo']) && !empty($aDataFilter['tPdtSgpCodeTo']))) : ?>
                 <div class="xCNRptFilterBox">
                     <div class="text-left xCNRptFilter">
-                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtCodeFrom'].' : </span>'.$aDataFilter['tRptPdtNameFrom'];?></label>
-                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtCodeTo'].' : </span>'.$aDataFilter['tRptPdtNameTo'];?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptSgpFrom'] . ' : </span>' . $aDataFilter['tPdtSgpNameFrom']; ?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptSgpTo'] . ' : </span>' . $aDataFilter['tPdtSgpNameTo']; ?></label>
                     </div>
                 </div>
-            <?php } ;?>
+            <?php endif; ?>
 
-            <?php if( (isset($aDataFilter['tRptPdtUnitCodeFrom']) && !empty($aDataFilter['tRptPdtUnitCodeFrom'])) && (isset($aDataFilter['tRptPdtUnitCodeTo']) && !empty($aDataFilter['tRptPdtUnitCodeTo']))) { ?>
-                <!-- ===== ฟิวเตอร์ข้อมูล หน่วยสินค้า ======================================= -->
+            <!-- ============================ ฟิวเตอร์ข้อมูล ประเภทผู้จำหน่าย ============================ -->
+            <?php if ((isset($aDataFilter['tPdtStyCodeFrom']) && !empty($aDataFilter['tPdtStyCodeFrom'])) && (isset($aDataFilter['tPdtStyCodeTo']) && !empty($aDataFilter['tPdtStyCodeTo']))) : ?>
                 <div class="xCNRptFilterBox">
                     <div class="text-left xCNRptFilter">
-                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptPdtUnitFrom'].' : </span>'.$aDataFilter['tRptPdtUnitNameFrom'];?></label>
-                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptPdtUnitTo'].' : </span>'.$aDataFilter['tRptPdtUnitNameTo'];?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptStyFrom'] . ' : </span>' . $aDataFilter['tPdtStyNameFrom']; ?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptStyTo'] . ' : </span>' . $aDataFilter['tPdtStyNameTo']; ?></label>
                     </div>
                 </div>
-            <?php } ;?>
-
-            <?php if( (isset($aDataFilter['tRptEffectivePriceGroupCodeFrom']) && !empty($aDataFilter['tRptEffectivePriceGroupCodeFrom'])) && (isset($aDataFilter['tRptEffectivePriceGroupCodeTo']) && !empty($aDataFilter['tRptEffectivePriceGroupCodeTo']))) { ?>
-                <!-- ===== ฟิวเตอร์ข้อมูล กลุ่มราคาที่มีผล =================================== -->
-                <div class="xCNRptFilterBox">
-                    <div class="text-left xCNRptFilter">
-                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptEffectivePriceGroupFrom'].' : </span>'.$aDataFilter['tRptEffectivePriceGroupNameFrom'];?></label>
-                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptEffectivePriceGroupTo'].' : </span>'.$aDataFilter['tRptEffectivePriceGroupNameTo'];?></label>
-                    </div>
-                </div>
-            <?php } ;?>
+            <?php endif; ?>
 
         </div>
         <div class="xCNFooterPageRpt">

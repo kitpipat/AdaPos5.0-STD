@@ -19,18 +19,19 @@ class Rptpursplbypdt_model extends CI_Model {
         $tShpCodeSelect = ($paDataFilter['bShpStaSelectAll']) ? '' : FCNtAddSingleQuote($paDataFilter['tShpCodeSelect']);
         // สาขา
         $tBchCodeSelect = ($paDataFilter['bBchStaSelectAll']) ? '' : FCNtAddSingleQuote($paDataFilter['tBchCodeSelect']);
-        if ($paDataFilter['tPdtRptPdtType']=="0") {
-          $tPdtRptPdtType = NULL;
+        // if ($paDataFilter['tPdtRptPdtType']=="0") {
+        //   $tPdtRptPdtType = NULL;
+        // }else {
+        //   $tPdtRptPdtType = $paDataFilter['tPdtRptPdtType'];
+        // }
+        if ($paDataFilter['tPdtRptPdtType'] == "0") {
+          $tPdtRptPdtType = "";
         }else {
           $tPdtRptPdtType = $paDataFilter['tPdtRptPdtType'];
         }
-        if ($paDataFilter['tPdtRptPdtType']=="0") {
-          $tPdtRptPdtType = NULL;
-        }else {
-          $tPdtRptPdtType = $paDataFilter['tPdtRptPdtType'];
-        }
-        if ($paDataFilter['tPdtRptStaVat']=="0") {
-          $tPdtRptStaVat = NULL;
+
+        if ($paDataFilter['tPdtRptStaVat'] == "0") {
+          $tPdtRptStaVat = "";
         }else {
           $tPdtRptStaVat = $paDataFilter['tPdtRptStaVat'];
         }
@@ -52,8 +53,8 @@ class Rptpursplbypdt_model extends CI_Model {
           'ptSgpT' => $paDataFilter['tPdtSgpCodeTo'],
           'ptStyF' => $paDataFilter['tPdtStyCodeFrom'],
           'ptStyT' => $paDataFilter['tPdtStyCodeTo'],
-          'ptPdtF' => $paDataFilter['tPdtCodeFrom'],
-          'ptPdtT' => $paDataFilter['tPdtCodeTo'],
+          'ptPdtF' => $paDataFilter['tRptPdtCodeFrom'],
+          'ptPdtT' => $paDataFilter['tRptPdtCodeTo'],
           'ptPgpF' => $paDataFilter['tPdtGrpCodeFrom'],
           'ptPgpT' => $paDataFilter['tPdtGrpCodeTo'],
           'ptPtyF' => $paDataFilter['tPdtTypeCodeFrom'],
@@ -62,7 +63,7 @@ class Rptpursplbypdt_model extends CI_Model {
           'ptPbnT' => $paDataFilter['tPdtBrandCodeTo'],
           'ptPmoF' => $paDataFilter['tPdtModelCodeFrom'],
           'ptPmoT' => $paDataFilter['tPdtModelCodeTo'],
-          'ptSaleType' => $paDataFilter['tPdtType'],
+          'ptSaleType' => $paDataFilter['tPdtRptPdtType'],
           'ptPdtActive' => $paDataFilter['tPdtStaActive'],
           'PdtStaVat' => $paDataFilter['tPdtRptStaVat'],
           'ptDocDateF' => $paDataFilter['tRptDocDateFrom'],

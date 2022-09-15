@@ -2757,10 +2757,10 @@ if (FCNnHSizeOf($aCheckFltGroup) == 0) {
                                                     <div class=''>
                                                         <div class='input-group xWInputGrpMonthFilter xCNNewUISelect' style='width:100%'>
                                                             <select class='selectpicker xCNNewUISelectoption' id='ocmRptPhStaApv' name='ocmRptPhStaApv'>
-                                                                <option value=''>" . language('report/report/report', 'tRptAll') . "</option>
-                                                                <option value='1'>" . language('report/report/report', 'tRptPhStaApv0') . "</option>
-                                                                <option value='2'>" . language('report/report/report', 'tRptPhStaApv1') . "</option>
-                                                                <option value='3'>" . language('report/report/report', 'tRptStaCrd3') . "</option>
+                                                                <option value=''>" . language('report/report/report', 'tRptPhStaApv') . "</option>
+                                                                <option value='1'>" . language('report/report/report', 'tRptPhStaApv1') . "</option>
+                                                                <option value='2'>" . language('report/report/report', 'tRptPhStaApv2') . "</option>
+                                                                <option value='3'>" . language('report/report/report', 'tRptPhStaApv3') . "</option>
                                                             </select>
                                                         </div>
                                                     </div>

@@ -2453,8 +2453,8 @@
             oRptSupplierGroupOptionFrom = oRptSupplierGroupOption({
                 'tReturnInputCode': 'oetRptSgpCodeFrom',
                 'tReturnInputName': 'oetRptSgpNameFrom',
-                // 'tNextFuncName': 'JSxRptConsNextFuncBrowseSgp',
-                // 'aArgReturn': ['FTSgpCode', 'FTSgpName']
+                'tNextFuncName': 'JSxRptConsNextFuncBrowseSplGrp',
+                'aArgReturn': ['FTSgpCode', 'FTSgpName']
             });
             JCNxBrowseData('oRptSupplierGroupOptionFrom');
         } else {
@@ -2470,8 +2470,8 @@
             oRptSupplierGroupOptionTo = oRptSupplierGroupOption({
                 'tReturnInputCode': 'oetRptSgpCodeTo',
                 'tReturnInputName': 'oetRptSgpNameTo',
-                // 'tNextFuncName': 'JSxRptConsNextFuncBrowseSgp',
-                // 'aArgReturn': ['FTSgpCode', 'FTSgpName']
+                'tNextFuncName': 'JSxRptConsNextFuncBrowseSplGrp',
+                'aArgReturn': ['FTSgpCode', 'FTSgpName']
             });
             JCNxBrowseData('oRptSupplierGroupOptionTo');
         } else {
@@ -2488,7 +2488,7 @@
             oRptSupplierStyOptionFrom = oRptSupplierStyOption({
                 'tReturnInputCode': 'oetRptStyCodeFrom',
                 'tReturnInputName': 'oetRptStyNameFrom',
-                'tNextFuncName': 'JSxRptConsNextFuncBrowseSty',
+                'tNextFuncName': 'JSxRptConsNextFuncBrowseSplType',
                 'aArgReturn': ['FTStyCode', 'FTStyName']
             });
             JCNxBrowseData('oRptSupplierStyOptionFrom');
@@ -2505,7 +2505,7 @@
             oRptSupplierStyOptionTo = oRptSupplierStyOption({
                 'tReturnInputCode': 'oetRptStyCodeTo',
                 'tReturnInputName': 'oetRptStyNameTo',
-                'tNextFuncName': 'JSxRptConsNextFuncBrowseSty',
+                'tNextFuncName': 'JSxRptConsNextFuncBrowseSplType',
                 'aArgReturn': ['FTStyCode', 'FTStyName']
             });
             JCNxBrowseData('oRptSupplierStyOptionTo');
@@ -5420,7 +5420,7 @@ var oRptClvBrows = function(poReturnInput) {
 
 
 
-     //Function Name : Next Function Cashier
+    //Function Name : Next Function Cashier
     //Create by     : Witsarut(Bell)
     //Date Create   : 19012021
     function JSxRptConsNextFuncBrowseSpl(poDataNextFunc) {
@@ -6273,5 +6273,61 @@ var oRptClvBrows = function(poReturnInput) {
             },
         };
         return oSplOptionReturn;
+    }
+
+    //Create by     : Napat(Jame)
+    //Date Create   : 15092022
+    function JSxRptConsNextFuncBrowseSplGrp(poDataNextFunc) {
+        if (typeof(poDataNextFunc) != 'undefined' && poDataNextFunc != "NULL") {
+            var aDataNextFunc = JSON.parse(poDataNextFunc);
+            var tSplCode = aDataNextFunc[0];
+            var tSplName = aDataNextFunc[1];
+
+            var tSplCodeFrom = $('#oetRptSgpCodeFrom').val();
+            var tSplCodeTo = $('#oetRptSgpCodeTo').val();
+
+            //ถ้า input from ว่างให้เอาค่าที่เลือกมาใส่
+            if (tSplCodeFrom == "" || tSplCodeFrom === undefined) {
+                $('#oetRptSgpCodeFrom').val(tSplCode);
+                $('#oetRptSgpNameFrom').val(tSplName);
+            }
+
+            //ถ้า input to ว่างให้เอาค่าที่เลือกมาใส่
+            if (tSplCodeTo == "" || tSplCodeTo === undefined) {
+                $('#oetRptSgpCodeTo').val(tSplCode);
+                $('#oetRptSgpNameTo').val(tSplName);
+            }
+
+            JSxUncheckinCheckbox('oetRptSgpCodeTo');
+
+        }
+    }
+
+    //Create by     : Napat(Jame)
+    //Date Create   : 15092022
+    function JSxRptConsNextFuncBrowseSplType(poDataNextFunc) {
+        if (typeof(poDataNextFunc) != 'undefined' && poDataNextFunc != "NULL") {
+            var aDataNextFunc = JSON.parse(poDataNextFunc);
+            var tSplCode = aDataNextFunc[0];
+            var tSplName = aDataNextFunc[1];
+
+            var tSplCodeFrom = $('#oetRptStyCodeFrom').val();
+            var tSplCodeTo = $('#oetRptStyCodeTo').val();
+
+            //ถ้า input from ว่างให้เอาค่าที่เลือกมาใส่
+            if (tSplCodeFrom == "" || tSplCodeFrom === undefined) {
+                $('#oetRptStyCodeFrom').val(tSplCode);
+                $('#oetRptStyNameFrom').val(tSplName);
+            }
+
+            //ถ้า input to ว่างให้เอาค่าที่เลือกมาใส่
+            if (tSplCodeTo == "" || tSplCodeTo === undefined) {
+                $('#oetRptStyCodeTo').val(tSplCode);
+                $('#oetRptStyNameTo').val(tSplName);
+            }
+
+            JSxUncheckinCheckbox('oetRptStyCodeTo');
+
+        }
     }
 </script>

@@ -2400,14 +2400,20 @@ $lang['tRptPerProfitSalePri']           = 'กำไรต่อ<br>ราคา
 
 
 $lang['tRptpursplbypdtTitle']  = 'รายงาน - ยอดซื้อตามผู้จำหน่าย ตามสินค้า';
-$lang['tRptPurByPdtTitle']  = 'รายงาน - ยอดซื้อตาม ตามสินค้า';
+$lang['tRptPurByPdtTitle']  = 'รายงาน - สรุปยอดซื้อตามสินค้า';
 
+// สถานะเอกสาร
+$lang['tRptTitleStaApv'] = "สถานะเอกสาร";
+$lang['tRptPhStaApv'] ="ทั้งหมด";
+$lang['tRptPhStaApv1'] ="ยังไม่ทำ";
+$lang['tRptPhStaApv2'] ="อนุมัติแล้ว";
+$lang['tRptPhStaApv3'] ="ยกเลิก";
 
-$lang['tRptPhStaApv0'] ="ยังไม่ทำ";
-$lang['tRptPhStaApv1'] ="อนุมัติแล้ว";
-$lang['tRptPhStaPaid1'] ="ยังไม่จ่าย";
-$lang['tRptPhStaPaid2'] ="บางส่วน";
-$lang['tRptPhStaPaid3'] ="ครบ";
+// สถานะ รับ/จ่ายเงิน
+$lang['tStapaid']       = "สถานะ รับ/จ่ายเงิน";
+$lang['tRptPhStaPaid1'] = "ยังไม่จ่าย";
+$lang['tRptPhStaPaid2'] = "บางส่วน";
+$lang['tRptPhStaPaid3'] = "ครบ";
 
 
 $lang['tRptpurvatTitle']  = 'รายงาน - ภาษีซื้อ';
@@ -2487,3 +2493,11 @@ $lang['tRptinventorytranferQTY']    = "จำนวนที่โอน";
 $lang['tRptinventoryTotalAVG']      = "ทุนรวมเฉลี่ย";
 $lang['tRptinventoryCostSTD']       = "ต้นทุนมาตรฐาน";
 $lang['tRptinventoryCostSTDTotal']  = "ทุนรวมมาตรฐาน";
+
+// ฟิวเตอร์ กลุ่มผู้จำหน่าย
+$lang['tRptSgpFrom'] = "จากกลุ่มผู้จำหน่าย";
+$lang['tRptSgpTo'] = "ถึงกลุ่มผู้จำหน่าย";
+
+// ฟิวเตอร์ ประเภทผู้จำหน่าย
+$lang['tRptStyFrom'] = "จากประเภทผู้จำหน่าย";
+$lang['tRptStyTo'] = "ถึงประเภทผู้จำหน่าย";

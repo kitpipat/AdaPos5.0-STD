@@ -207,6 +207,7 @@ class Rptpursplbypdt_controller extends MX_Controller
             'tRptAdjWahFrom' => language('report/report/report', 'tRptAdjWahFrom'),
             'tRptAdjWahTo' => language('report/report/report', 'tRptAdjWahTo'),
             'tRptAll' => language('report/report/report', 'tRptAll'),
+            'tRptPdtType0' => language('report/report/report', 'tRptPdtType0'),
             'tRptPdtType1' => language('report/report/report', 'tRptPdtType1'),
             'tRptPdtType2' => language('report/report/report', 'tRptPdtType2'),
             'tRptPdtType3' => language('report/report/report', 'tRptPdtType3'),
@@ -227,7 +228,22 @@ class Rptpursplbypdt_controller extends MX_Controller
             'tRptSplFrom' => language('report/report/report', 'tRptSplFrom'),
             'tRptSplTo' => language('report/report/report', 'tRptSplTo'),
 
+            'tRptTitleStaApv' => language('report/report/report', 'tRptTitleStaApv'),
+            'tRptPhStaApv' => language('report/report/report', 'tRptPhStaApv'),
+            'tRptPhStaApv1' => language('report/report/report', 'tRptPhStaApv1'),
+            'tRptPhStaApv2' => language('report/report/report', 'tRptPhStaApv2'),
+            'tRptPhStaApv3' => language('report/report/report', 'tRptPhStaApv3'),
 
+            'tRptSgpFrom' => language('report/report/report', 'tRptSgpFrom'),
+            'tRptSgpTo' => language('report/report/report', 'tRptSgpTo'),
+
+            'tRptStyFrom' => language('report/report/report', 'tRptStyFrom'),
+            'tRptStyTo' => language('report/report/report', 'tRptStyTo'),
+
+            'tRptPhStaPaid1'            => language('report/report/report', 'tRptPhStaPaid1'),
+            'tRptPhStaPaid2'            => language('report/report/report', 'tRptPhStaPaid2'),
+            'tRptPhStaPaid3'            => language('report/report/report', 'tRptPhStaPaid3'),
+            'tStaPaid'                  => language('report/report/report', 'tStapaid'),
 
 
         ];
@@ -259,6 +275,7 @@ class Rptpursplbypdt_controller extends MX_Controller
 
             'tTypeSelect' => !empty($this->input->post('ohdTypeDataCondition')) ? $this->input->post('ohdTypeDataCondition') : "",
             'tAgnCode'          => !empty($this->input->post('oetSpcAgncyCode')) ? $this->input->post('oetSpcAgncyCode') : '',
+
             // สาขา
             'tBchCodeFrom' => !empty($this->input->post('oetRptBchCodeFrom')) ? $this->input->post('oetRptBchCodeFrom') : "",
             'tBchNameFrom' => !empty($this->input->post('oetRptBchNameFrom')) ? $this->input->post('oetRptBchNameFrom') : "",
@@ -286,7 +303,6 @@ class Rptpursplbypdt_controller extends MX_Controller
             'tRptDocDateFrom'    => (!empty($this->input->post('oetRptDocDateFrom'))) ? $this->input->post('oetRptDocDateFrom') : "",
             'tRptDocDateTo'    => (!empty($this->input->post('oetRptDocDateTo'))) ? $this->input->post('oetRptDocDateTo') : "",
 
-
             // กลุ่มสินค้า
             'tPdtGrpCodeFrom'   => !empty($this->input->post('oetRptPdtGrpCodeFrom')) ? $this->input->post('oetRptPdtGrpCodeFrom') : "",
             'tPdtGrpNameFrom'   => !empty($this->input->post('oetRptPdtGrpNameFrom')) ? $this->input->post('oetRptPdtGrpNameFrom') : "",
@@ -300,10 +316,10 @@ class Rptpursplbypdt_controller extends MX_Controller
             'tPdtTypeNameTo'    => !empty($this->input->post('oetRptPdtTypeNameTo')) ? $this->input->post('oetRptPdtTypeNameTo') : "",
 
             // สินค้า
-            'tPdtCodeFrom'      => !empty($this->input->post('oetRptPdtCodeFrom')) ? $this->input->post('oetRptPdtCodeFrom') : "",
-            'tPdtNameFrom'      => !empty($this->input->post('oetRptPdtNameFrom')) ? $this->input->post('oetRptPdtNameFrom') : "",
-            'tPdtCodeTo'        => !empty($this->input->post('oetRptPdtCodeTo')) ? $this->input->post('oetRptPdtCodeTo') : "",
-            'tPdtNameTo'        => !empty($this->input->post('oetRptPdtNameTo')) ? $this->input->post('oetRptPdtNameTo') : "",
+            'tRptPdtCodeFrom' => !empty($this->input->post('oetRptPdtCodeFrom')) ? $this->input->post('oetRptPdtCodeFrom') : "",
+            'tRptPdtNameFrom' => !empty($this->input->post('oetRptPdtNameFrom')) ? $this->input->post('oetRptPdtNameFrom') : "",
+            'tRptPdtCodeTo' => !empty($this->input->post('oetRptPdtCodeTo')) ? $this->input->post('oetRptPdtCodeTo') : "",
+            'tRptPdtNameTo' => !empty($this->input->post('oetRptPdtNameTo')) ? $this->input->post('oetRptPdtNameTo') : "",
 
             // ยี่ห้อ
             'tPdtBrandCodeFrom'  => !empty($this->input->post('oetRptBrandCodeFrom')) ? $this->input->post('oetRptBrandCodeFrom') : "",
@@ -319,8 +335,6 @@ class Rptpursplbypdt_controller extends MX_Controller
 
             //สถานะเคลื่อนไหว
             'tPdtStaActive' => !empty($this->input->post('ocmRptPdtStaActive')) ? $this->input->post('ocmRptPdtStaActive') : "",
-            //ใช้ราคาขาย
-            'tPdtType' => !empty($this->input->post('ocmRptPdtType')) ? $this->input->post('ocmRptPdtType') : "",
 
             //วันที่เอกสาร
             'tPdtDateFrom' => !empty($this->input->post('oetRptOneDateFrom')) ? $this->input->post('oetRptOneDateFrom') : "",
@@ -333,12 +347,17 @@ class Rptpursplbypdt_controller extends MX_Controller
 
              //กลุ่มผู้จำหน่าย
             'tPdtSgpCodeFrom' => !empty($this->input->post('oetRptSgpCodeFrom')) ? $this->input->post('oetRptSgpCodeFrom') : "",
+            'tPdtSgpNameFrom' => !empty($this->input->post('oetRptSgpNameFrom')) ? $this->input->post('oetRptSgpNameFrom') : "",
             'tPdtSgpCodeTo' => !empty($this->input->post('oetRptSgpCodeTo')) ? $this->input->post('oetRptSgpCodeTo') : "",
+            'tPdtSgpNameTo' => !empty($this->input->post('oetRptSgpNameTo')) ? $this->input->post('oetRptSgpNameTo') : "",
+
             //ประเภทผู้จำหน่าย
-           'tPdtStyCodeFrom' => !empty($this->input->post('oetRptStyCodeFrom')) ? $this->input->post('oetRptStyCodeFrom') : "",
-           'tPdtStyCodeTo' => !empty($this->input->post('oetRptStyCodeTo')) ? $this->input->post('oetRptStyCodeTo') : "",
+            'tPdtStyCodeFrom' => !empty($this->input->post('oetRptStyCodeFrom')) ? $this->input->post('oetRptStyCodeFrom') : "",
+            'tPdtStyNameFrom' => !empty($this->input->post('oetRptStyNameFrom')) ? $this->input->post('oetRptStyNameFrom') : "",
+            'tPdtStyCodeTo' => !empty($this->input->post('oetRptStyCodeTo')) ? $this->input->post('oetRptStyCodeTo') : "",
+            'tPdtStyNameTo' => !empty($this->input->post('oetRptStyNameTo')) ? $this->input->post('oetRptStyNameTo') : "",
 
-
+            //ใช้ราคาขาย
             'tPdtRptPdtType' => !empty($this->input->post('ocmRptPdtType')) ? $this->input->post('ocmRptPdtType') : "",
 
             //สถานะเอกสาร
@@ -832,11 +851,11 @@ class Rptpursplbypdt_controller extends MX_Controller
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
-            WriterEntityFactory::createCell(NULL),
-            WriterEntityFactory::createCell(NULL),
-            WriterEntityFactory::createCell(NULL),
-            WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell($this->aText['tTitleReport']),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
@@ -938,11 +957,11 @@ class Rptpursplbypdt_controller extends MX_Controller
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
-                WriterEntityFactory::createCell(NULL),
-                WriterEntityFactory::createCell(NULL),
-                WriterEntityFactory::createCell(NULL),
-                WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell($this->aText['tRptDateFrom'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tRptDocDateFrom'])) . ' ' . $this->aText['tRptDateTo'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tRptDocDateTo']))),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
             ];
@@ -962,9 +981,9 @@ class Rptpursplbypdt_controller extends MX_Controller
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
-            WriterEntityFactory::createCell(NULL),
-            WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell($this->aText['tDatePrint'] . ' ' . date('d/m/Y') . ' ' . $this->aText['tTimePrint'] . ' ' . date('H:i:s')),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
@@ -991,6 +1010,12 @@ class Rptpursplbypdt_controller extends MX_Controller
         $oStyleFilter = (new StyleBuilder())
             ->setFontBold()
             ->build();
+
+        $aCells = [
+            WriterEntityFactory::createCell(NULL),
+        ];
+        $aMulltiRow[] = WriterEntityFactory::createRow($aCells, $oStyleFilter);
+
         $aCells = [
             WriterEntityFactory::createCell($this->aText['tRptConditionInReport']),
             WriterEntityFactory::createCell(NULL),
@@ -1038,10 +1063,10 @@ class Rptpursplbypdt_controller extends MX_Controller
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
-        // ผู้จำหน่าย แบบช่วง
-        if (!empty($this->aRptFilter['tPdtSupplierCodeFrom']) && !empty($this->aRptFilter['tPdtSupplierCodeTo'])) {
+        // สถานะเอกสาร
+        if (isset($this->aRptFilter['tPdtRptPhStaApv'])) {
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tRptSplFrom'] . ' ' . $this->aRptFilter['tPdtSupplierNameFrom'] . '     ' . $this->aText['tRptSplTo'] . ' ' . $this->aRptFilter['tPdtSupplierNameTo']),
+                WriterEntityFactory::createCell($this->aText['tRptTitleStaApv'] . ' : ' . $this->aText['tRptPhStaApv'.$this->aRptFilter['tPdtRptPhStaApv']]),
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
                 WriterEntityFactory::createCell(null),
@@ -1054,9 +1079,31 @@ class Rptpursplbypdt_controller extends MX_Controller
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
-        if ((isset($this->aRptFilter['tCstCodeFrom']) && !empty($this->aRptFilter['tCstCodeFrom'])) && (isset($this->aRptFilter['tCstCodeTo']) && !empty($this->aRptFilter['tCstCodeTo']))) {
+        // สถานะเคลื่อนไหว
+        if ((isset($this->aRptFilter['tPdtStaActive']) && !empty($this->aRptFilter['tPdtStaActive'])) && (isset($this->aRptFilter['tPdtStaActive']) && !empty($this->aRptFilter['tPdtStaActive']))) {
+            $aPdtStaActive = array(
+                '1' => $this->aText['tRptPdtMoving1'],
+                '2' => $this->aText['tRptPdtMoving2']
+            );
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tRptCstFrom'] . ' : ' . $this->aRptFilter['tCstCodeFrom'] . ' ' . $this->aText['tRptCstTo'] . ' : ' . $this->aRptFilter['tCstCodeTo']),
+                WriterEntityFactory::createCell($this->aText['tRptTitlePdtMoving'] . ' : ' . $aPdtStaActive[$this->aRptFilter['tPdtStaActive']]),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+        
+        // ฟิวเตอร์ข้อมูล ใช้ราคาขาย
+        if ( isset($this->aRptFilter['tPdtRptPdtType'])  ) {
+            if( $this->aRptFilter['tPdtRptPdtType'] == "" ){ $this->aRptFilter['tPdtRptPdtType'] = "0"; }
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tPdtSaleType'] . ' : ' . $this->aText['tRptPdtType'.$this->aRptFilter['tPdtRptPdtType']] ),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -1068,10 +1115,55 @@ class Rptpursplbypdt_controller extends MX_Controller
             ];
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
-        // ฟิวเตอร์ข้อมูล สินค้า =========================================== -->
-        if ((isset($this->aRptFilter['tPdtCodeFrom']) && !empty($this->aRptFilter['tPdtCodeFrom'])) && (isset($this->aRptFilter['tPdtCodeTo']) && !empty($this->aRptFilter['tPdtCodeTo']))) {
+        
+        // ฟิวเตอร์ข้อมูล ภาษี
+        if ((isset($this->aRptFilter['tPdtRptStaVat']) && !empty($this->aRptFilter['tPdtRptStaVat'])) && (isset($this->aRptFilter['tPdtRptStaVat']) && !empty($this->aRptFilter['tPdtRptStaVat']))) {
+            $aPdtRptStaVat = array(
+                '1' => $this->aText['tRptStaVa1'],
+                '2' => $this->aText['tRptStaVa2']
+            );
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tPdtCodeFrom'] . ' : ' . $this->aRptFilter['tPdtNameFrom'] . ' ' . $this->aText['tPdtCodeTo'] . ' : ' . $this->aRptFilter['tPdtNameTo']),
+                WriterEntityFactory::createCell($this->aText['tRptStaVat'] . ' : ' . $aPdtRptStaVat[$this->aRptFilter['tPdtRptStaVat']] ),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        // ฟิวเตอร์ข้อมูล สถานะ รับ/จ่ายเงิน
+        if ((isset($this->aRptFilter['tPdtRptPhStaPaid']) && !empty($this->aRptFilter['tPdtRptPhStaPaid'])) ) {
+            $tStaPaid = '';
+            if ($this->aRptFilter['tPdtRptPhStaPaid'] == 1) {
+                $tStaPaid = $this->aText['tRptPhStaPaid1'];
+            }elseif ($this->aRptFilter['tPdtRptPhStaPaid'] == 2) {
+                $tStaPaid = $this->aText['tRptPhStaPaid2'];
+            }elseif ($this->aRptFilter['tPdtRptPhStaPaid'] == 3) {
+                $tStaPaid = $this->aText['tRptPhStaPaid3'];
+            }
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tStaPaid'] . ' : ' . $tStaPaid),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        // ฟิวเตอร์ข้อมูล สินค้า =========================================== -->
+        if ((isset($this->aRptFilter['tRptPdtCodeFrom']) && !empty($this->aRptFilter['tRptPdtCodeFrom'])) && (isset($this->aRptFilter['tRptPdtCodeTo']) && !empty($this->aRptFilter['tRptPdtCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tPdtCodeFrom'] . ' : ' . $this->aRptFilter['tRptPdtNameFrom'] . '     ' . $this->aText['tPdtCodeTo'] . ' : ' . $this->aRptFilter['tRptPdtNameTo']),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -1087,7 +1179,7 @@ class Rptpursplbypdt_controller extends MX_Controller
         // ฟิวเตอร์ข้อมูล กลุ่มสินค้า =========================================== -->
         if ((isset($this->aRptFilter['tPdtGrpCodeFrom']) && !empty($this->aRptFilter['tPdtGrpCodeFrom'])) && (isset($this->aRptFilter['tPdtGrpCodeTo']) && !empty($this->aRptFilter['tPdtGrpCodeTo']))) {
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tPdtGrpFrom'] . ' : ' . $this->aRptFilter['tPdtGrpNameFrom'] . ' ' . $this->aText['tPdtGrpTo'] . ' : ' . $this->aRptFilter['tPdtGrpNameTo']),
+                WriterEntityFactory::createCell($this->aText['tPdtGrpFrom'] . ' : ' . $this->aRptFilter['tPdtGrpNameFrom'] . '     ' . $this->aText['tPdtGrpTo'] . ' : ' . $this->aRptFilter['tPdtGrpNameTo']),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -1103,7 +1195,7 @@ class Rptpursplbypdt_controller extends MX_Controller
         // ฟิวเตอร์ข้อมูล ประเภทสินค้า =========================================== -->
         if ((isset($this->aRptFilter['tPdtTypeCodeFrom']) && !empty($this->aRptFilter['tPdtTypeCodeFrom'])) && (isset($this->aRptFilter['tPdtTypeCodeTo']) && !empty($this->aRptFilter['tPdtTypeCodeTo']))) {
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tPdtTypeFrom'] . ' : ' . $this->aRptFilter['tPdtTypeNameFrom'] . ' ' . $this->aText['tPdtTypeTo'] . ' : ' . $this->aRptFilter['tPdtTypeNameTo']),
+                WriterEntityFactory::createCell($this->aText['tPdtTypeFrom'] . ' : ' . $this->aRptFilter['tPdtTypeNameFrom'] . '     ' . $this->aText['tPdtTypeTo'] . ' : ' . $this->aRptFilter['tPdtTypeNameTo']),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -1119,7 +1211,7 @@ class Rptpursplbypdt_controller extends MX_Controller
         // ฟิวเตอร์ข้อมูล ยี่ห้อ =========================================== -->
         if ((isset($this->aRptFilter['tPdtBrandCodeFrom']) && !empty($this->aRptFilter['tPdtBrandCodeFrom'])) && (isset($this->aRptFilter['tPdtBrandCodeTo']) && !empty($this->aRptFilter['tPdtBrandCodeTo']))) {
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tRptBrandFrom'] . ' : ' . $this->aRptFilter['tPdtBrandNameFrom'] . ' ' . $this->aText['tRptBrandTo'] . ' : ' . $this->aRptFilter['tPdtBrandNameTo']),
+                WriterEntityFactory::createCell($this->aText['tRptBrandFrom'] . ' : ' . $this->aRptFilter['tPdtBrandNameFrom'] . '     ' . $this->aText['tRptBrandTo'] . ' : ' . $this->aRptFilter['tPdtBrandNameTo']),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -1135,7 +1227,7 @@ class Rptpursplbypdt_controller extends MX_Controller
         // ฟิวเตอร์ข้อมูล รุ่น =========================================== -->
         if ((isset($this->aRptFilter['tPdtModelCodeFrom']) && !empty($this->aRptFilter['tPdtModelCodeFrom'])) && (isset($this->aRptFilter['tPdtModelCodeTo']) && !empty($this->aRptFilter['tPdtModelCodeTo']))) {
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tRptModelFrom'] . ' : ' . $this->aRptFilter['tPdtModelNameFrom'] . ' ' . $this->aText['tRptModelTo'] . ' : ' . $this->aRptFilter['tPdtModelNameTo']),
+                WriterEntityFactory::createCell($this->aText['tRptModelFrom'] . ' : ' . $this->aRptFilter['tPdtModelNameFrom'] . '     ' . $this->aText['tRptModelTo'] . ' : ' . $this->aRptFilter['tPdtModelNameTo']),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -1148,69 +1240,54 @@ class Rptpursplbypdt_controller extends MX_Controller
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
-        // ฟิวเตอร์ข้อมูล สถานะเคลื่อนไหว =========================================== -->
-        // if ((isset($this->aRptFilter['tPdtStaActive']) && !empty($this->aRptFilter['tPdtStaActive'])) && (isset($this->aRptFilter['tPdtStaActive']) && !empty($this->aRptFilter['tPdtStaActive']))) {
-        //   $aPdtStaActive = array(
-        //     '1' => $aDataTextRef['tRptPdtMoving1'],
-        //     '2' => $aDataTextRef['tRptPdtMoving2']
-        //   );
-        //     $aCells = [
-        //         WriterEntityFactory::createCell($this->aText['tRptTitlePdtMoving'] . ' : ' . $aPdtStaActive[$this->aRptFilter['tPdtStaActive']] ),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //     ];
-        //     $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
-        // }
-        //
-        //
-        // // ฟิวเตอร์ข้อมูล ใช้ราคาขาย =========================================== -->
-        // if ((isset($this->aRptFilter['tPdtRptPdtType']) && !empty($this->aRptFilter['tPdtRptPdtType'])) && (isset($this->aRptFilter['tPdtRptPdtType']) && !empty($this->aRptFilter['tPdtRptPdtType']))) {
-        //   $aPdtRptPdtType = array(
-        //     '1' => $aDataTextRef['tRptPdtType1'],
-        //     '2' => $aDataTextRef['tRptPdtType2'],
-        //     '3' => $aDataTextRef['tRptPdtType3'],
-        //     '4' => $aDataTextRef['tRptPdtType4'],
-        //     '6' => $aDataTextRef['tRptPdtType6']
-        //   );
-        //     $aCells = [
-        //         WriterEntityFactory::createCell($this->aText['tPdtSaleType'] . ' : ' . $aPdtRptPdtType[$this->aRptFilter['tPdtRptPdtType']] ),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //     ];
-        //     $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
-        // }
-        //
-        // // ฟิวเตอร์ข้อมูล ภาษี =========================================== -->
-        // if ((isset($this->aRptFilter['tPdtRptStaVat']) && !empty($this->aRptFilter['tPdtRptStaVat'])) && (isset($this->aRptFilter['tPdtRptStaVat']) && !empty($this->aRptFilter['tPdtRptStaVat']))) {
-        //   $aPdtRptStaVat = array(
-        //    '1' => $aDataTextRef['tRptStaVa1'],
-        //    '2' => $aDataTextRef['tRptStaVa2']
-        //  );
-        //     $aCells = [
-        //         WriterEntityFactory::createCell($this->aText['tRptStaVat'] . ' : ' . $aPdtRptStaVat[$this->aRptFilter['tPdtRptStaVat']] ),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //         WriterEntityFactory::createCell(NULL),
-        //     ];
-        //     $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
-        // }
+        // ผู้จำหน่าย แบบช่วง
+        if (!empty($this->aRptFilter['tPdtSupplierCodeFrom']) && !empty($this->aRptFilter['tPdtSupplierCodeTo'])) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptSplFrom'] . ' : ' . $this->aRptFilter['tPdtSupplierNameFrom'] . '     ' . $this->aText['tRptSplTo'] . ' : ' . $this->aRptFilter['tPdtSupplierNameTo']),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        // ฟิวเตอร์ข้อมูล กลุ่มผู้จำหน่าย
+        if ((isset($this->aRptFilter['tPdtSgpCodeFrom']) && !empty($this->aRptFilter['tPdtSgpCodeFrom'])) && (isset($this->aRptFilter['tPdtSgpCodeTo']) && !empty($this->aRptFilter['tPdtSgpCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptSgpFrom'] . ' : ' . $this->aRptFilter['tPdtSgpNameFrom'] . '     ' . $this->aText['tRptSgpTo'] . ' : ' . $this->aRptFilter['tPdtSgpNameTo']),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        // ฟิวเตอร์ข้อมูล ประเภทผู้จำหน่าย
+        if ((isset($this->aRptFilter['tPdtStyCodeFrom']) && !empty($this->aRptFilter['tPdtStyCodeFrom'])) && (isset($this->aRptFilter['tPdtStyCodeTo']) && !empty($this->aRptFilter['tPdtStyCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptStyFrom'] . ' : ' . $this->aRptFilter['tPdtStyNameFrom'] . '     ' . $this->aText['tRptStyTo'] . ' : ' . $this->aRptFilter['tPdtStyNameTo']),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
         return $aMulltiRow;
     }
 }

@@ -1951,6 +1951,8 @@ $lang['tRptPurByPdtTitle']  = 'รายงาน - ยอดซื้อตา�
 
 $lang['tRptPhStaApv0'] ="ยังไม่ทำ";
 $lang['tRptPhStaApv1'] ="อนุมัติแล้ว";
+
+$lang['tStapaid']       = "สถานะ รับ/จ่ายเงิน";
 $lang['tRptPhStaPaid1'] ="ยังไม่จ่าย";
 $lang['tRptPhStaPaid2'] ="บางส่วน";
 $lang['tRptPhStaPaid3'] ="ครบ";
@@ -2032,3 +2034,11 @@ $lang['tRptinventorytranferQTY'] = "QTY";
 $lang['tRptinventoryTotalAVG']      = "Average Total Capital";
 $lang['tRptinventoryCostSTD']       = "Standard cost";
 $lang['tRptinventoryCostSTDTotal']  = "Standard Total Capital";
+
+// ฟิวเตอร์ กลุ่มผู้จำหน่าย
+$lang['tRptSgpFrom'] = "จากกลุ่มผู้จำหน่าย";
+$lang['tRptSgpTo'] = "ถึงกลุ่มผู้จำหน่าย";
+
+// ฟิวเตอร์ ประเภทผู้จำหน่าย
+$lang['tRptStyFrom'] = "จากประเภทผู้จำหน่าย";
+$lang['tRptStyTo'] = "ถึงประเภทผู้จำหน่าย";
