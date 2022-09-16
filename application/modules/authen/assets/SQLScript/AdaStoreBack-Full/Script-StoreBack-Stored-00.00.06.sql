@@ -365,7 +365,7 @@ SET @nLngID = @pnLngID
 												END
 
 												IF (SELECT ISNULL(FTBchCode,'') FROM TCNTUsrGroup WHERE FTUsrCode= @tUsrCode)<>'' BEGIN
-														SET @tSQLMaster += ' AND PDLSPC.FTBchCode IN ('+@tSesBchCodeMulti+') OR ISNULL(PDLSPC.FTBchCode,'''') = '''' '
+														SET @tSQLMaster += ' AND PDLSPC.FTBchCode IN ('+@tSesBchCodeMulti+') '
 												END
 															
 												IF @tSesShopCodeMulti != '' BEGIN 
