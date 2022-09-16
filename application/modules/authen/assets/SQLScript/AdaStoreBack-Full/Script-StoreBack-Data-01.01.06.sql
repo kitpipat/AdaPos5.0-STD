@@ -467,3 +467,96 @@ INSERT INTO [TCNSRptSpc] ([FTAgnCode], [FTBchCode], [FTMerCode], [FTShpCode], [F
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.06', getdate() , 'ปรับ Config ตาราง TCNSLimitHD', 'Nattakit K.');
 END
 GO
+
+
+
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.07') BEGIN
+
+INSERT INTO TSysMenuList (FTGmnCode,FTMnuParent,FTMnuCode,FTLicPdtCode,FNMnuSeq,FTMnuCtlName,FNMnuLevel,FTMnuStaPosHpm,FTMnuStaPosFhn,FTMnuStaSmartHpm,FTMnuStaSmartFhn,FTMnuStaMoreHpm,FTMnuStaMoreFhn,FTMnuType,FTMnuStaAPIPos,FTMnuStaAPISmart,FTMnuStaUse,FTMnuPath,FTGmnModCode,FTMnuImgPath)
+VALUES('RPT','RPT','RPT007','SB-GRPRPT007','8','rptReport/007/0/0','0','Y','Y','Y','Y','Y','Y','1','Y','Y','1','','RPT','')
+
+INSERT INTO TSysMenuList_L (FTMnuCode,FNLngID,FTMnuName,FTMnuRmk)
+VALUES ('RPT007','1','รายงานการซื้อ','NULL')
+
+INSERT INTO TSysReport (FTRptCode,FTGrpRptModCode,FTGrpRptCode,FTRptRoute,FTRptStaUseFrm,FTRptTblView,FTRptFilterCol,FTRptFileName,FTRptStaShwBch,FTRptStaShwYear,FTRptSeqNo,FTRptStaUse,FTLicPdtCode)
+VALUES ('007001001','007','007001','rptPurSplByPdt','NULL','NULL','1,2,4,8,9,13,49,50,53,54,56,57,63,64,65,66','NULL','1','1','1','1','SB-RPT007001001')
+INSERT INTO TSysReport (FTRptCode,FTGrpRptModCode,FTGrpRptCode,FTRptRoute,FTRptStaUseFrm,FTRptTblView,FTRptFilterCol,FTRptFileName,FTRptStaShwBch,FTRptStaShwYear,FTRptSeqNo,FTRptStaUse,FTLicPdtCode)
+VALUES ('007001002','007','007001','rptxPurByPdt','NULL','NULL','1,2,4,8,9,13,49,50,53,54,56,57,63,64,65,66','NULL','1','1','4','1','SB-RPT007001002')
+INSERT INTO TSysReport (FTRptCode,FTGrpRptModCode,FTGrpRptCode,FTRptRoute,FTRptStaUseFrm,FTRptTblView,FTRptFilterCol,FTRptFileName,FTRptStaShwBch,FTRptStaShwYear,FTRptSeqNo,FTRptStaUse,FTLicPdtCode)
+VALUES ('007001003','007','007001','rptPurVat','NULL','NULL','1,2,4,50','NULL','1','1','1','1','SB-RPT007001003')
+
+INSERT INTO TSysReportGrp (FTGrpRptCode,FNGrpRptShwSeq,FTGrpRptStaUse,FTGrpRptModCode)
+VALUES ('007001','1','1','007')
+
+INSERT INTO TSysReportModule (FTGrpRptModCode,FNGrpRptModShwSeq,FTGrpRptModStaUse,FTGrpRptModRoute)
+VALUES ('007','8','1','rptReport/007/0/0')
+
+INSERT INTO TSysReport_L (FTRptCode,FNLngID,FTRptName,FTRptDes)
+VALUES ('007001001','1','รายงาน - ยอดซื้อตามผู้จำหน่าย ตามสินค้า','NULL')
+INSERT INTO TSysReport_L (FTRptCode,FNLngID,FTRptName,FTRptDes)
+VALUES ('007001001','2','Report - Purchase Amount By Vendor By Product','NULL')
+INSERT INTO TSysReport_L (FTRptCode,FNLngID,FTRptName,FTRptDes)
+VALUES ('007001002','1','รายงาน - สรุปยอดซื้อตามสินค้า','')
+INSERT INTO TSysReport_L (FTRptCode,FNLngID,FTRptName,FTRptDes)
+VALUES ('007001002','2','Report - Purchase summary by item','')
+INSERT INTO TSysReport_L (FTRptCode,FNLngID,FTRptName,FTRptDes)
+VALUES ('007001003','1','รายงาน - ภาษีซื้อ','NULL')
+INSERT INTO TSysReport_L (FTRptCode,FNLngID,FTRptName,FTRptDes)
+VALUES ('007001003','2','Report - Pur Vat','NULL')
+
+INSERT INTO TSysReportGrp_L (FTGrpRptCode,FNLngID,FTGrpRptName)
+VALUES ('007001','1','รายงานการซื้อ')
+INSERT INTO TSysReportGrp_L (FTGrpRptCode,FNLngID,FTGrpRptName)
+VALUES ('007001','2','Report Buy')
+
+INSERT INTO TSysReportModule_L (FTGrpRptModCode,FNGrpRptModName,FNLngID)
+VALUES ('007','รายงานการซื้อ','1')
+INSERT INTO TSysReportModule_L (FTGrpRptModCode,FNGrpRptModName,FNLngID)
+VALUES ('007','รายงานการซื้อ','2')
+
+INSERT INTO TSysReport ([FTRptCode], [FTGrpRptModCode], [FTGrpRptCode], [FTRptRoute], [FTRptStaUseFrm], [FTRptTblView], [FTRptFilterCol], [FTRptFileName], [FTRptStaShwBch], [FTRptStaShwYear], [FTRptSeqNo], [FTRptStaUse], [FTLicPdtCode]) VALUES ('009001013', '009', '009001', 'rptRptInventoryTranfer', NULL, NULL, '1,4,13,78,79', NULL, '1', '1', 13, '1', 'SB-RPT001002038')
+
+INSERT INTO TSysReport_L ([FTRptCode], [FNLngID], [FTRptName], [FTRptDes]) VALUES ('009001013', 1, 'รายงาน - โอนสินค้าระหว่างคลัง', NULL)
+
+INSERT INTO TSysReportGrp ([FTGrpRptCode], [FNGrpRptShwSeq], [FTGrpRptStaUse], [FTGrpRptModCode]) VALUES ('009001', 1, '1', '009')
+
+INSERT INTO TSysReportGrp_L ([FTGrpRptCode], [FNLngID], [FTGrpRptName]) VALUES ('009001', 1, 'รายงานคลังสินค้า')
+INSERT INTO TSysReportGrp_L ([FTGrpRptCode], [FNLngID], [FTGrpRptName]) VALUES ('009001', 2, 'Report Wahouse')
+
+INSERT INTO TSysReportModule ([FTGrpRptModCode], [FNGrpRptModShwSeq], [FTGrpRptModStaUse], [FTGrpRptModRoute]) VALUES ('009', 4, '1', 'rptReport/009/0/0')
+
+INSERT INTO TSysReportModule_L ([FTGrpRptModCode], [FNGrpRptModName], [FNLngID]) VALUES ('009', 'รายงานคลังสินค้า', '1')
+INSERT INTO TSysReportModule_L ([FTGrpRptModCode], [FNGrpRptModName], [FNLngID]) VALUES ('009', 'Wahouse', '2')
+
+INSERT INTO TSysMenuList ([FTGmnCode], [FTMnuParent], [FTMnuCode], [FTLicPdtCode], [FNMnuSeq], [FTMnuCtlName], [FNMnuLevel], [FTMnuStaPosHpm], [FTMnuStaPosFhn], [FTMnuStaSmartHpm], [FTMnuStaSmartFhn], [FTMnuStaMoreHpm], [FTMnuStaMoreFhn], [FTMnuType], [FTMnuStaAPIPos], [FTMnuStaAPISmart], [FTMnuStaUse], [FTMnuPath], [FTGmnModCode], [FTMnuImgPath]) VALUES ('RPT', 'RPT', 'RPT009', 'SB-GRPRPT009', 4, 'rptReport/009/0/0', 0, 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '1', 'Y', 'Y', '1', '', 'RPT', '')
+
+INSERT INTO TSysMenuList_L ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) VALUES ('RPT009', 1, 'รายงานคลังสินค้า', NULL)
+INSERT INTO TSysMenuList_L ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) VALUES ('RPT009', 2, 'Report Wahouse', NULL)
+
+INSERT INTO TSysReportFilter ([FTRptFltCode], [FTRptFltStaFrm], [FTRptFltStaTo], [FTRptGrpFlt]) VALUES (67, 1, 1, 'G9')
+INSERT INTO TSysReportFilter ([FTRptFltCode], [FTRptFltStaFrm], [FTRptFltStaTo], [FTRptGrpFlt]) VALUES (68, 1, 1, 'G9')
+
+
+INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUES (67, '1', 'กลุ่มผู้จำหน่าย')
+INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUES (67, '2', 'Supplier Group')
+INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUES (68, '1', 'ประเภทผู้จำหน่าย')
+INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUES (68, '2', 'Supplier Type')
+
+update TSysReport set FTRptFilterCol = '1,2,4,8,9,13,49,50,53,54,56,57,67,68,69,70' where FTRptCode IN ('007001001','007001002')
+update TSysReportFilter set FTRptGrpFlt = 'G9' where FTRptFltCode = '50'
+
+INSERT INTO TSysReportFilter ([FTRptFltCode], [FTRptFltStaFrm], [FTRptFltStaTo], [FTRptGrpFlt]) VALUES (69, 1, 0, 'G10')
+INSERT INTO TSysReportFilter ([FTRptFltCode], [FTRptFltStaFrm], [FTRptFltStaTo], [FTRptGrpFlt]) VALUES (70, 1, 0, 'G4')
+
+INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUES (69, '1', 'สถานะเอกสาร')
+INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUES (69, '2', 'Doc Status')
+INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUES (70, '1', 'สถานะ รับ/จ่ายเงิน')
+INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUES (70, '2', 'Status Get Money / Pay')
+
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.07', getdate() , 'เพิ่มรายงานการซื้อและคลัง', 'Nattakit K.');
+END
+GO

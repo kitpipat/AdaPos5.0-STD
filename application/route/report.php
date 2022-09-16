@@ -800,6 +800,51 @@ $route['rtpMovePosVDFhnClickPage'] = 'report/reportMovePosVDFhn/cRptMovePosVDFhn
 $route['rtpMovePosVDFhnCallExportFile'] = "report/reportMovePosVDFhn/cRptMovePosVDFhn/FSvCCallRptExportFile";
 
 
+// รายงานยอดขายตามสินค้า-บาร์โค้ด
+$route['rptRptSaleByProductBar'] = "report/reportsale/cRptSaleByProductBar/index";
+$route['rptRptSaleByProductBarClickPage'] = "report/reportsale/cRptSaleByProductBar/FSvCCallRptViewBeforePrintClickPage";
+$route['rptRptSaleByProductBarCallExportFile'] = "report/reportsale/cRptSaleByProductBar/FSvCCallRptExportFile";
+
+//Create By Nattakit 08/12/2021
+//รายงาน - ยอดขายตามบิลตามสินค้า (บาร์โค้ด)
+$route['rptSalByBillPdtBar']               = "report/reportsalespecial/cRptSalByBillPdtBar/index";
+$route['rptSalByBillPdtBarClickPage']      = "report/reportsalespecial/cRptSalByBillPdtBar/FSvCCallRptViewBeforePrintClickPage";
+$route['rptSalByBillPdtBarCallExportFile'] = "report/reportsalespecial/cRptSalByBillPdtBar/FSvCCallRptExportFile";
+
+/** ========================================= รายงานวิเคราะห์กำไรขาดทุนตามสินค้า (Pos) ======================================================================== */
+$route['rptRptAnalysisProfitLossProductPosBar'] = 'report/reportAnalysisProfitLossProductPos/cRptAnalysisProfitLossProductPosBar/index';
+$route['rptRptAnalysisProfitLossProductPosBarClickPage'] = 'report/reportAnalysisProfitLossProductPos/cRptAnalysisProfitLossProductPosBar/FSvCCallRptViewBeforePrintClickPage';
+$route['rptRptAnalysisProfitLossProductPosBarCallExportFile'] = 'report/reportAnalysisProfitLossProductPos/cRptAnalysisProfitLossProductPosBar/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */
+
+
+// - รายงาน วิเคราะห์กำไรขาดทุนตามสินค้า
+$route['rptSalByProfitByLossbar']                  = 'report/reportspcbigc/Rptsalbyprofitbylossbar_controller/index';
+$route['rptSalByProfitByLossbarClickPage']         = 'report/reportspcbigc/Rptsalbyprofitbylossbar_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptSalByProfitByLossbarCallExportFile']    = 'report/reportspcbigc/Rptsalbyprofitbyloss_controller/FSvCCallRptExportFile';
+
+
+//รายงาน - รายงานวิเคราะห์การขายตามประเภทสินค้า (Big C)
+$route['rptSalAnlsByBch']                 = "report/reportspcbigc/Rptsalanlsbybch_controller/index";
+$route['rptSalAnlsByBchClickPage']        = "report/reportspcbigc/Rptsalanlsbybch_controller/FSvCCallRptViewBeforePrintClickPage";
+$route['rptSalAnlsByBchCallExportFile']   = "report/reportspcbigc/Rptsalanlsbybch_controller/FSvCCallRptExportFile";
+
+//รายงาน - รายงานวิเคราะห์การขายตามประเภทสินค้าตามสินค้า (Big C)
+$route['rptSalAnlsByBchByPdt']                 = "report/reportspcbigc/Rptsalanlsbybchbypdt_controller/index";
+$route['rptSalAnlsByBchByPdtClickPage']        = "report/reportspcbigc/Rptsalanlsbybchbypdt_controller/FSvCCallRptViewBeforePrintClickPage";
+$route['rptSalAnlsByBchByPdtCallExportFile']   = "report/reportspcbigc/Rptsalanlsbybchbypdt_controller/FSvCCallRptExportFile";
+
+
+// - รายงาน การสั่งซื้อสินค้า
+$route['rptPurchaseorder']                  = 'report/reportspcbigc/Rptpurchaseorder_controller/index';
+$route['rptPurchaseorderClickPage']         = 'report/reportspcbigc/Rptpurchaseorder_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptPurchaseorderCallExportFile']    = 'report/reportspcbigc/Rptpurchaseorder_controller/FSvCCallRptExportFile';
+
+// รายงาน - โอนสินค้าระหว่างคลัง
+$route['rptRptInventoryTranfer']                    = 'report/reportFitauto/Rptinventorytranfer_controller/index';
+$route['rptRptInventoryTranferClickPage']           = 'report/reportFitauto/Rptinventorytranfer_controller/FSvCCallRptViewBeforePrintClickPage';
+
+
 
 //รายงานภาษีขายประจำเดือน รายงานพิเศษ Anime Pos+
 $route['rtpPssVatByMonth'] = 'report/reportPSSVatByMonth/Rptpssvatbymonth_controller/index';

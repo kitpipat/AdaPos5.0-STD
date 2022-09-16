@@ -1590,3 +1590,138 @@ GO
 
 
 ALTER TABLE TCNMPdtBarTmp ALTER COLUMN FTFhnRefCode VARCHAR (50) NULL;
+
+
+
+/****** Object:  Table [dbo].[TRPTPurVatTmp]    Script Date: 14/9/2565 13:39:58 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TRPTPurVatTmp]') AND type in (N'U'))
+DROP TABLE [dbo].[TRPTPurVatTmp]
+GO
+/****** Object:  Table [dbo].[TRPTPurSplByPdtTmp]    Script Date: 14/9/2565 13:39:58 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TRPTPurSplByPdtTmp]') AND type in (N'U'))
+DROP TABLE [dbo].[TRPTPurSplByPdtTmp]
+GO
+/****** Object:  Table [dbo].[TRPTPurByPdtTmp]    Script Date: 14/9/2565 13:39:58 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TRPTPurByPdtTmp]') AND type in (N'U'))
+DROP TABLE [dbo].[TRPTPurByPdtTmp]
+GO
+/****** Object:  Table [dbo].[TRPTPurByPdtTmp]    Script Date: 14/9/2565 13:39:58 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRPTPurByPdtTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FTUsrSession] [varchar](255) NOT NULL,
+	[FTComName] [varchar](50) NOT NULL,
+	[FTRptCode] [varchar](50) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTPdtCode] [varchar](20) NULL,
+	[FTPdtName] [varchar](255) NULL,
+	[FTPunName] [varchar](200) NULL,
+	[FCXpdQty] [numeric](18, 4) NULL,
+	[FCXpdDis] [numeric](18, 4) NULL,
+	[FCXpdValue] [numeric](18, 4) NULL,
+	[FCXpdVat] [numeric](18, 4) NULL,
+	[FCXpdNetAmt] [numeric](18, 4) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TRPTPurSplByPdtTmp]    Script Date: 14/9/2565 13:39:58 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRPTPurSplByPdtTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FTUsrSession] [varchar](255) NOT NULL,
+	[FTComName] [varchar](50) NOT NULL,
+	[FTRptCode] [varchar](50) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTSplCode] [varchar](20) NULL,
+	[FTSplName] [varchar](200) NULL,
+	[FTPdtCode] [varchar](20) NULL,
+	[FTPdtName] [varchar](255) NULL,
+	[FTPunName] [varchar](200) NULL,
+	[FCXpdQty] [numeric](18, 4) NULL,
+	[FCXpdDis] [numeric](18, 4) NULL,
+	[FCXpdValue] [numeric](18, 4) NULL,
+	[FCXpdVat] [numeric](18, 4) NULL,
+	[FCXpdNetAmt] [numeric](18, 4) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TRPTPurVatTmp]    Script Date: 14/9/2565 13:39:58 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRPTPurVatTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+	[FNAppType] [int] NULL,
+	[FTBchCode] [varchar](5) NULL,
+	[FTBchName] [varchar](50) NULL,
+	[FTAgnCode] [varchar](5) NULL,
+	[FTAgnName] [varchar](200) NULL,
+	[FTShpCode] [varchar](5) NULL,
+	[FTXphDocNo] [varchar](20) NULL,
+	[FDXphDocDate] [datetime] NULL,
+	[FTXphDocRef] [varchar](20) NULL,
+	[FTSplCode] [varchar](50) NULL,
+	[FTSplBusiness] [varchar](1) NULL,
+	[FTSplName] [varchar](255) NULL,
+	[FTSplBchCode] [varchar](50) NULL,
+	[FTSplTaxNo] [varchar](50) NULL,
+	[FTCmpCode] [varchar](20) NULL,
+	[FTCmpName] [varchar](255) NULL,
+	[FCXphAmt] [numeric](18, 4) NULL,
+	[FCXphAmtV] [numeric](18, 4) NULL,
+	[FCXphAmtNV] [numeric](18, 4) NULL,
+	[FCXphGrandTotal] [numeric](18, 4) NULL,
+	[FCXphVat] [numeric](18, 4) NULL,
+	[FTEstablishment] [varchar](100) NULL,
+	[FDTmpTxnDate] [datetime] NULL,
+	[FTXphRefExt] [varchar](20) NULL,
+	[FDXphRefExtDate] [datetime] NULL,
+	[FTComName] [varchar](100) NULL,
+	[FTRptCode] [varchar](50) NULL
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table [dbo].[TRPTPdtHisTnfWahTmp]    Script Date: 14/9/2565 18:36:51 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TRPTPdtHisTnfWahTmp]') AND type in (N'U'))
+DROP TABLE [dbo].[TRPTPdtHisTnfWahTmp]
+GO
+/****** Object:  Table [dbo].[TRPTPdtHisTnfWahTmp]    Script Date: 14/9/2565 18:36:51 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRPTPdtHisTnfWahTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+	[FTComName] [varchar](100) NULL,
+	[FTRptCode] [varchar](100) NULL,
+	[FTBchCode] [varchar](5) NULL,
+	[FTBchName] [varchar](200) NULL,
+	[FTXthDocNo] [varchar](20) NULL,
+	[FDXthDocDate] [datetime] NULL,
+	[FTXthWhFrm] [varchar](5) NULL,
+	[FTWahNameFrm] [varchar](200) NULL,
+	[FTXthWhTo] [varchar](5) NULL,
+	[FTWahNameTo] [varchar](200) NULL,
+	[FTXthApvCode] [varchar](5) NULL,
+	[FTUsrName] [varchar](200) NULL,
+	[FTPdtCode] [varchar](20) NULL,
+	[FTXtdPdtName] [varchar](200) NULL,
+	[FTPunName] [varchar](50) NULL,
+	[FTXtdBarCode] [nchar](50) NULL,
+	[FCXtdQty] [numeric](18, 4) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
