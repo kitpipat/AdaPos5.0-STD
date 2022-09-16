@@ -1230,6 +1230,9 @@ $lang['tRptFilterGroup5']   = "กลุ่มการขนส่ง";
 $lang['tRptFilterGroup6']   = "กลุ่มตู้";
 $lang['tRptFilterGroup7']   = "กลุ่มบัตร";
 $lang['tRptFilterGroup8']   = "กลุ่มพนักงาน";
+$lang['tRptFilterGroup9']   = "กลุ่มซื้อ";
+$lang['tRptFilterGroup10']  = "กลุ่มสถานะ";
+
 
 
 
@@ -1927,10 +1930,13 @@ $lang['tRptMnyShowOverMonthlyTotalMO2']  = "รวม ขาด/เกิน";
 $lang['tRptMnyShowOverMonthlySign2']     = "ลงลายมือชื่อแคชเชียร์";
 
 // Create by Witsarut 19-11-2020
-$lang['tRptQtyWah']   = "จำนวนคลัง";
-$lang['tRptPointPurchase']  = "จุดสั่งซื้อ";
-$lang['tRptShouldOrder']    = "จำนวนแนะนำ";
-$lang['tRptPdtPointWahTitle'] = "รายงาน - สินค้าถึงจุดสั่งซื้อตามคลัง";
+$lang['tRptQtyWah']             = "จำนวนคลัง";
+$lang['tRptPointPurchase']      = "จุดสั่งซื้อ";
+$lang['tRptShouldOrder']        = "จำนวนแนะนำ";
+$lang['tRptPdtPointWahTitle']   = "รายงาน - สินค้าถึงจุดสั่งซื้อตามคลัง";
+$lang['tRptPdtWahQty']          = "สินค้าคงคลัง";
+$lang['tRptPdtDailyUseAvg']     = "จำนวนขายเฉลี่ย 7 วัน";
+$lang['tRptPdtWahAmt']          = "มูลค่าคงเหลือ";
 
 
 //Create By Nattakit   20/11/2020
@@ -2078,8 +2084,8 @@ $lang['tRptPdtModelCode']       = "รหัสรุ่น";
 $lang['tRptPdtModelName']       = "ชื่อรุ่น";
 $lang['tRptPdtSplCode']         = 'รหัสผู้จำหน่าย';
 $lang['tRptPdtSplName']         = 'ชื่อผู้จำหน่าย';
-$lang['tRptProductCode']           = "รหัสินค้า";
-$lang['tRptProductName']           = "ชื่อสินค้า";
+$lang['tRptProductCode']        = "รหัสสินค้า";
+$lang['tRptProductName']        = "ชื่อสินค้า";
 
 $lang['tRptQty']         = "Qty";
 $lang['tRptCompareLastYear']       = "Last year";

@@ -10,6 +10,7 @@ $route['rptReportChkDataInTSysHisExport']   = 'report/report/cReport/FCNoCRPTChk
 $route['rptReportConfirmDownloadFile']      = 'report/report/cReport/FCNoCRPTConfirmDownloadFile';
 $route['rptReportCancelDownloadFile']       = 'report/report/cReport/FCNoCRPTCancelDownloadFile';
 $route['rptReportGetBchByAgenCode']       = 'report/report/cReport/FCNtGetBchByAgenCode';
+$route['rptLoadProgressExport']             = 'report/report/cReport/FCNoCRPTLoadProgressExport';
 
 // รายงานยอดขายตามการชำระเงิน
 $route['rptRptSaleToPayment'] = 'report/reportsale/cRptSalePayment/index';
@@ -738,6 +739,40 @@ $route['rptEntryProductClickPage']  = 'report/reportentryproduct/Rptentryproduct
 // รายงาน หน่วยสินค้า
 $route['rptEntryProductUnit'] = 'report/reportentryproduct/Rptentryproductunit_controller/index';
 $route['rptEntryProductUnitClickPage']  = 'report/reportentryproduct/Rptentryproductunit_controller/FSvCCallRptViewBeforePrintClickPage';
+
+
+//รายงาน - ยอดซื้อตามผู้จำหน่าย ตามสินค้า
+$route['rptPurSplByPdt'] = 'report/reportbuy/Rptpursplbypdt_controller/index';
+$route['rptPurSplByPdtClickPage']  = 'report/reportbuy/Rptpursplbypdt_controller/FSvCCallRptViewBeforePrintClickPage';
+
+// รายงาน - สรุปยอดซื้อตามสินค้า
+$route['rptxPurByPdt'] = 'report/reportbuy/Rptpurbypdt_controller/index';
+$route['rptxPurByPdtClickPage']  = 'report/reportbuy/Rptpurbypdt_controller/FSvCCallRptViewBeforePrintClickPage';
+
+
+//รายงาน - ภาษีซื้อ
+$route['rptPurVat'] = 'report/reportbuy/Rptpurvat_controller/index';
+$route['rptPurVatClickPage']  = 'report/reportbuy/Rptpurvat_controller/FSvCCallRptViewBeforePrintClickPage';
+
+// รายงาน การสร้างสินค้าใหม่
+$route['rptCreateProduct'] = 'report/reportcreateproduct/Rptcreateproduct_controller/index';
+$route['rptCreateProductClickPage']  = 'report/reportcreateproduct/Rptcreateproduct_controller/FSvCCallRptViewBeforePrintClickPage';
+
+// รายงาน เปรียบเทียบยอดขายกับราคากลาง
+$route['rptComPairPricePdt'] = 'report/reportsale/Rptcompairpricepdt_controller/index';
+$route['rptComPairPricePdtClickPage']  = 'report/reportsale/Rptcompairpricepdt_controller/FSvCCallRptViewBeforePrintClickPage';
+
+// รายงานพิเศษ Big c
+// - รายงาน การปรับราคาสินค้า
+$route['rptPdtAdjPriBigC']                      = 'report/reportspcbigc/Rptpdtadjpribigc_controller/index';
+$route['rptPdtAdjPriBigCClickPage']             = 'report/reportspcbigc/Rptpdtadjpribigc_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptPdtAdjPriBigCCallExportFile']        = 'report/reportspcbigc/Rptpdtadjpribigc_controller/FSvCCallRptExportFile';
+
+// - รายงาน วิเคราะห์กำไรขาดทุนตามสินค้า
+$route['rptSalByProfitByLoss']                  = 'report/reportspcbigc/Rptsalbyprofitbyloss_controller/index';
+$route['rptSalByProfitByLossClickPage']         = 'report/reportspcbigc/Rptsalbyprofitbyloss_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptSalByProfitByLossCallExportFile']    = 'report/reportspcbigc/Rptsalbyprofitbyloss_controller/FSvCCallRptExportFile';
+
 // รายงาน เซลล์ทู
 $route['rptRptSellThrough'] = 'report/reporsellto/Rptsellto_controller/index';
 $route['rptRptSellThroughClickPage']  = 'report/reporsellto/Rptsellto_controller/FSvCCallRptViewBeforePrintClickPage';

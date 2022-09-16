@@ -1065,6 +1065,8 @@ $lang['tRptFilterGroup5']   = "Transport group";
 $lang['tRptFilterGroup6']   = "Locker group";
 $lang['tRptFilterGroup7']   = "Card group";
 $lang['tRptFilterGroup8']   = "Employees group";
+$lang['tRptFilterGroup9']   = "Buy group";
+$lang['tRptFilterGroup10']  = "Status group";
 
 
 
