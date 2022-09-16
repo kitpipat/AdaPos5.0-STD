@@ -2684,6 +2684,10 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPdtHisTnfWah]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPdtHisTnfWah
+GO
+
 CREATE PROCEDURE [dbo].[SP_RPTxPdtHisTnfWah]
         @pnLngID int , 
         @pnComName Varchar(100),
@@ -2891,6 +2895,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPurByPdt]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPurByPdt
 GO
 CREATE PROCEDURE [dbo].[SP_RPTxPurByPdt]
 --ALTER PROCEDURE [dbo].[SP_RPTxSalDailyByCashierTmp]
@@ -3307,6 +3314,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPurSplByPdt]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPurSplByPdt
 GO
 CREATE PROCEDURE [dbo].[SP_RPTxPurSplByPdt]
 --ALTER PROCEDURE [dbo].[SP_RPTxSalDailyByCashierTmp]
@@ -3767,6 +3777,9 @@ GO
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPurVat]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPurVat
 GO
 CREATE PROCEDURE [dbo].[SP_RPTxPurVat] 
 --ALTER PROCEDURE [dbo].[SP_RPTxSalDailyByCashierTmp]

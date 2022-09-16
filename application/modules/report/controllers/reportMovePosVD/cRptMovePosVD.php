@@ -17,7 +17,7 @@ use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
 
 date_default_timezone_set("Asia/Bangkok");
 
-class Pssvatbymonth_controller extends MX_Controller
+class cRptMovePosVD extends MX_Controller
 {
 
     /**
