@@ -112,6 +112,7 @@
                                     <!-- <option value='1'><?php echo language('document/promotion/promotion', 'tIndeterminate'); ?></option> -->
                                     <option value='2'><?php echo language('document/promotion/promotion', 'tGrantCoupon'); ?></option>
                                     <option value='3'><?php echo language('document/promotion/promotion', 'tTheMessage'); ?></option>
+                                    <option value='4'><?php echo language('document/promotion/promotion', 'tFreebiesOutOfStock'); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -210,6 +211,61 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <input disabled onchange="JSvPromotionStep3InsertOrUpdatePointToTemp()" name="oetPromotionStep3PgtPntGet" id="oetPromotionStep3PgtPntGet" class="form-control text-right xCNInputLength xCNInputNumericWithoutDecimal" data-length="15" maxlength="15" value="" type="text" placeholder="<?= language('document/promotion/promotion', 'tNumber') ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- ยกมาจาก KPC 19/09/2022 -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input 
+                                    onchange="JSvPromotionStep3InsertOrUpdatePointToTemp()"
+                                    type="text" 
+                                    class="input100 xCNHide" 
+                                    id="oetPromotionSplCode" 
+                                    name="oetPromotionSplCode" 
+                                    maxlength="5" value="">
+
+                                    <input class="form-control xWPointerEventNone" 
+                                    type="text" 
+                                    id="oetPromotionSplName" 
+                                    name="oetPromotionSplName" 
+                                    value="" 
+                                    readonly="" style="height:41px;" placeholder="<?= language('supplier/supplier/supplier', 'tSPLTitle') ?>">
+
+                                    <span class="input-group-btn xWConditionSearchPdt">
+                                        <button id="obtPromotionBrowseSpl" type="button" class="btn xCNBtnBrowseAddOn" style="height:41px;">
+                                            <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input onchange="JSvPromotionStep3InsertOrUpdatePointToTemp()" type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" id="oetPromotionStep3DateStart" name="oetPromotionStep3DateStart" value="<?//= $tDocDate; ?>" placeholder="<?= language('document/promotion/promotion', 'tPMTDateStart')?>" style="height:41px;">
+                                    <span class="input-group-btn">
+                                        <button id="obtPmtDateStart" type="button" class="btn xCNBtnDateTime xCNApvOrCanCelDisabled" style="height:41px;">
+                                            <img src="<?= base_url() . '/application/modules/common/assets/images/icons/icons8-Calendar-100.png' ?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input onchange="JSvPromotionStep3InsertOrUpdatePointToTemp()" type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" id="oetPromotionStep3DateEnd" name="oetPromotionStep3DateEnd" value="<?//= $tDocDate; ?>" placeholder="<?= language('document/promotion/promotion', 'tPMTDateEnd')?>" style="height:41px;">
+                                    <span class="input-group-btn">
+                                        <button id="obtPmtDateEnd" type="button" class="btn xCNBtnDateTime xCNApvOrCanCelDisabled" style="height:41px;">
+                                            <img src="<?= base_url() . '/application/modules/common/assets/images/icons/icons8-Calendar-100.png' ?>">
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

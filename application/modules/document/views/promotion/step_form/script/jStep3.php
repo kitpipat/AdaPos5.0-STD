@@ -13,6 +13,40 @@
         $('.xCNPromotionStep3PgtCpnTextContainer').hide();
     });
 
+    $('#obtPmtDateStart').click(function() {
+        $('#oetPromotionStep3DateStart').datepicker('show');
+    });
+
+    $('#obtPmtDateEnd').click(function() {
+        $('#oetPromotionStep3DateEnd').datepicker('show');
+    });
+
+    var dStart = new Date($('#oetPromotionPmhDStart').val());
+    var dEnd = new Date(new Date($('#oetPromotionPmhDStart').val()).setYear(dStart.getFullYear() + 1));
+
+    $('#oetPromotionStep3DateStart').datepicker({
+        startDate: dStart,
+        endDate: dEnd,
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true,
+
+    }).on('changeDate', function() {
+        $('#oetPromotionStep3DateEnd').datepicker('setStartDate', new Date($('#oetPromotionStep3DateStart').val()));
+    });
+
+    $('#oetPromotionStep3DateEnd').datepicker({
+        startDate: dStart,
+        endDate: dEnd,
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true,
+
+    }).on('changeDate', function() {
+        $('#oetPromotionStep3DateStart').datepicker('setStartDate', new Date($('#oetPromotionPmhDStart').val()));
+    });
+
+
     /*===== Begin Check Control All ====================================================*/
     /* $('#ocbPromotionStep3CouponControl, #ocbPromotionStep3PointControl, #ocbPromotionStep3GroupGetControl').bind('change', function(){
         // console.log('checked');
@@ -108,18 +142,23 @@
         /*===== End ocbPromotionStep3CouponControl เงื่อนไข - สิทธิประโยชน์คูปอง =============*/
 
         /*===== Begin ocbPromotionStep3PointControl เงื่อนไข - สิทธิประโยชน์แต้ม =============*/
-        $('#ocbPromotionStep3PointControl').parents(".fancy-checkbox").find("span").unbind().bind('click', function() {
+        /* $('#ocbPromotionStep3PointControl').parents(".fancy-checkbox").find("span").unbind().bind('click', function() {
             if (JSbPromotionPmhStaLimitCstIsAll()) {
                 var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg7'); ?>'; // ใช้งานได้เฉพาะ คิดทั้งหมด/คิดต่อสมาชิก เป็นต่อสมาชิกเท่านั้น
                 FSvCMNSetMsgWarningDialog(tWarningMessage);
             }
-        });
+        }); */
 
         $('#ocbPromotionStep3PointControl').unbind().bind('change', function() {
             if (JSbPromotionStep3GetCouponPointEmptyChecked()) {
                 $(this).prop('checked', true);
                 $(this).trigger("change");
                 var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
+                FSvCMNSetMsgWarningDialog(tWarningMessage);
+            } else if (JSbPromotionPmhStaLimitCstIsAll()) {
+                $(this).prop('checked', false);
+                // setTimeout(function() { $(this).trigger("change"); }, 500);
+                var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg7'); ?>'; // ใช้งานได้เฉพาะ คิดทั้งหมด/คิดต่อสมาชิก เป็นต่อสมาชิกเท่านั้น
                 FSvCMNSetMsgWarningDialog(tWarningMessage);
             } else {
                 var bIsChecked = $(this).is(':checked');
@@ -130,6 +169,12 @@
                     $('#ocmPromotionStep3PgtStaPntCalType').selectpicker("refresh");
                     $('#oetPromotionStep3PgtPntBuy').prop('disabled', false);
                     $('#oetPromotionStep3PgtPntGet').prop('disabled', false);
+
+                    $('#obtPromotionBrowseSpl').prop('disabled', false);
+                    $('#oetPromotionStep3DateStart').prop('disabled', false);
+                    $('#obtPmtDateStart').prop('disabled', false);
+                    $('#oetPromotionStep3DateEnd').prop('disabled', false);
+                    $('#obtPmtDateEnd').prop('disabled', false);
                     // ให้ไปเพิ่มรายใหม่
                     JSvPromotionStep3InsertOrUpdatePointToTemp();
                 } else {
@@ -139,6 +184,15 @@
                     $('#ocmPromotionStep3PgtStaPntCalType').val('1').selectpicker("refresh");
                     $('#oetPromotionStep3PgtPntBuy').val("").prop('disabled', true);
                     $('#oetPromotionStep3PgtPntGet').val("").prop('disabled', true);
+                    
+                    //ยกมาจาก KPC 19/09/2022
+                    $('#oetPromotionSplCode').val("")
+                    $('#oetPromotionSplName').val("")
+                    $('#obtPromotionBrowseSpl').prop('disabled', true);
+                    $('#oetPromotionStep3DateStart').val("").prop('disabled', true);
+                    $('#obtPmtDateStart').prop('disabled', true);
+                    $('#oetPromotionStep3DateEnd').val("").prop('disabled', true);
+                    $('#obtPmtDateEnd').prop('disabled', true);
                     // Remove CG Table Tmp
                     JSvPromotionStep3DeletePointInTemp();
                 }
@@ -1045,6 +1099,17 @@
                         $('#oetPromotionStep3PgtPntGet').prop('disabled', false);
                         $('#oetPromotionStep3PgtPntBuy').val(oResult.FNPgtPntBuy);
                         $('#oetPromotionStep3PgtPntGet').val(oResult.FNPgtPntGet);
+
+                        //ยกมาจาก KPC 19/09/2022
+                        $('#oetPromotionSplCode').val(oResult.FTSplCode)
+                        $('#oetPromotionSplName').val(oResult.FTSplName)
+                        $('#obtPromotionBrowseSpl').prop('disabled', false);
+                        $('#oetPromotionStep3DateStart').val(oResult.FDPgtPntStart).prop('disabled', false);
+                        $('#obtPmtDateStart').prop('disabled', false);
+                        $('#oetPromotionStep3DateEnd').val(oResult.FDPgtPntExpired).prop('disabled', false);
+                        $('#obtPmtDateEnd').prop('disabled', false);
+
+                        JSvPromotionStep3InsertOrUpdatePointToTemp();
                     } else {
                         $('#ocbPromotionStep3PointControl').prop('checked', false);
                         $('#ocmPromotionStep3PgtStaPoint').prop('disabled', true);
@@ -1057,8 +1122,19 @@
                         $('#oetPromotionStep3PgtPntGet').prop('disabled', true);
                         $('#oetPromotionStep3PgtPntBuy').val("");
                         $('#oetPromotionStep3PgtPntGet').val("");
-                    }
 
+                        //ยกมาจาก KPC 19/09/2022                        
+                        $('#oetPromotionSplCode').val("")
+                        $('#oetPromotionSplName').val("")
+                        $('#obtPromotionBrowseSpl').prop('disabled', true);
+                        $('#oetPromotionStep3DateStart').val("").prop('disabled', true);
+                        $('#obtPmtDateStart').prop('disabled', true);
+                        $('#oetPromotionStep3DateEnd').val("").prop('disabled', true);
+                        $('#obtPmtDateEnd').prop('disabled', true);
+                        
+                        JSvPromotionStep3DeletePointInTemp();
+                    }
+                    
                     if (bIsApvOrCancel) {
                         $('#ocmPromotionStep3PgtStaPoint').prop('disabled', true);
                         $('#ocmPromotionStep3PgtStaPoint').selectpicker("refresh");
@@ -1066,6 +1142,15 @@
                         $('#ocmPromotionStep3PgtStaPntCalType').selectpicker("refresh");
                         $('#oetPromotionStep3PgtPntGet').prop('disabled', true);
                         $('#oetPromotionStep3PgtPntBuy').prop('disabled', true);
+                        
+                        //ยกมาจาก KPC 19/09/2022 
+                        $('#oetPromotionSplCode').val("")
+                        $('#oetPromotionSplName').val("")
+                        $('#obtPromotionBrowseSpl').prop('disabled', true);
+                        $('#oetPromotionStep3DateStart').val("").prop('disabled', true);
+                        $('#obtPmtDateStart').prop('disabled', true);
+                        $('#oetPromotionStep3DateEnd').val("").prop('disabled', true);
+                        $('#obtPmtDateEnd').prop('disabled', true);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -1096,6 +1181,10 @@
             var tPgtStaPntCalType = $('#ocmPromotionStep3PgtStaPntCalType').val();
             var tPgtPntBuy = $('#oetPromotionStep3PgtPntBuy').val();
             var tPgtPntGet = $('#oetPromotionStep3PgtPntGet').val();
+            
+            var tPgtSplCode = $('#oetPromotionSplCode').val();
+            var tPgtDateStart = $('#oetPromotionStep3DateStart').val();
+            var tPgtDateEnd = $('#oetPromotionStep3DateEnd').val();
 
             // JCNxOpenLoading();
 
@@ -1310,4 +1399,39 @@
         }
         return bStatus;
     }
+
+    $("#obtPromotionBrowseSpl").click(function() {
+        // option
+        window.oPromotionBrowseBch = {
+            Title: ['supplier/supplier/supplier', 'tSPLTitle'],
+            Table: {
+                Master: 'TCNMSpl',
+                PK: 'FTSplCode'
+            },
+            Join: {
+                Table: ['TCNMSpl_L'],
+                On: ['TCNMSpl_L.FTSplCode = TCNMSpl.FTSplCode AND TCNMSpl_L.FNLngID = ' + nLangEdits]
+            },
+            Where: {
+                Condition: []
+            },
+            GrideView: {
+                ColumnPathLang: 'supplier/supplier/supplier',
+                ColumnKeyLang: ['tCode', 'tName'],
+                ColumnsSize: ['10%', '75%'],
+                DataColumns: ['TCNMSpl.FTSplCode', 'TCNMSpl_L.FTSplName'],
+                DataColumnsFormat: ['', ''],
+                WidthModal: 50,
+                Perpage: 10,
+                OrderBy: ['TCNMSpl.FTSplCode'],
+                SourceOrder: "ASC"
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: ["oetPromotionSplCode", "TCNMSpl.FTSplCode"],
+                Text: ["oetPromotionSplName", "TCNMSpl_L.FTSplName"]
+            },
+        };
+        JCNxBrowseData('oPromotionBrowseBch');
+    });
 </script>

@@ -24,3 +24,18 @@ $lang['tCHNValidName']                      = 'Please enter the name of the sale
 
 $lang['tCHNStaUseArrDoc']                   = 'Allow Use PL';
 $lang['tCHNStaUseTransDoc']                 = 'Allow Use DO';
+
+$lang['tRcvLabelTitle']                     = "Payment Type";
+$lang['tRcvLabelChannelCode']               = "Payment Type Code";
+$lang['tRcvLabelChannelName']               = "Payment Type Name";
+$lang['tRcvLabelRefCode']                   = "Ref Code";
+
+$lang['tCstLabelTitle']                     = "Customer Level";
+$lang['tCstLabelChannelCode']               = "Customer Level Code";
+$lang['tCstLabelChannelName']               = "Customer Level Name";
+$lang['tCstLabelRefCode']                   = "Ref Code";
+
+$lang['tPnpLabelTitle']                     = "Promotion On Promotion";
+$lang['tPnpLabelChannelCode']               = "Promotion Code";
+$lang['tPnpLabelChannelName']               = "Promotion Name";
+$lang['tPnpLabelRefCode']                   = "Ref Code";

@@ -105,6 +105,7 @@ $lang['tPerYear'] = "Per Year";
 $lang['tPerBranch'] = "Per Branch";
 $lang['tPerCompany'] = "Per Company";
 $lang['tPerCustomer'] = "Per Member";
+$lang['tPerBill'] = "Per Bill";
 $lang['tCheckCustomerConditions'] = "Check Customer Conditions(Membership Duration + Member Month Birth)";
 $lang['tLessThan'] = "Less Than";
 $lang['tLessThanOrEqualTo'] = "Less Than Or Equal To";
@@ -481,6 +482,7 @@ $lang['tLabel59'] = "Effective for all Sales";
 $lang['tLabel60'] = "Effective for all Payment";
 $lang['tLabel61'] = "Effective for all Customer";
 $lang['tLabel62'] = "Effective for all Promotion";
+$lang['tLabel63'] = "Effective in all fields";
 
 
 // Warning Message
@@ -531,3 +533,11 @@ $lang['tPMTLotNo']   = 'LotNo';
 $lang['tPMTLotName'] = 'LotName';
 $lang['tPMTLotEffective'] = 'Effective lot : ';
 $lang['tPMTLotChange'] = 'Change Lot';
+
+$lang['tFreebiesOutOfStock'] = 'Get coupons in case of all freebies are out of stock.';
+
+$lang['tPMTDateStart'] = 'Start Date';
+$lang['tPMTDateEnd'] = 'Expire Date';
+
+$lang['tSpecialConditions_CstLev'] = "Special Conditions - Customer Level";
+$lang['tCstLevName'] = "Customer Leve";

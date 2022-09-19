@@ -252,6 +252,7 @@
                         JSxPromotionStep4GetHDChnInTmp(1, false);
                         JSxPromotionStep4GetHDRcvInTmp(1, false);
                         JSxPromotionStep4GetHDCstInTmp(1, false);
+                        JSxPromotionStep4GetPdtPmtHDCstLevInTmp(1, false);
                         JSxPromotionStep4GetHDPnpInTmp(1, false);
 
                         $('.xCNPromotionStep1').css( "background","#000" );

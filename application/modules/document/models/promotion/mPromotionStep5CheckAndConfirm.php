@@ -387,6 +387,36 @@ class mPromotionStep5CheckAndConfirm extends CI_Model
         return $oQuery->result_array();
     }
 
+    /**
+     * Functionality : Get CstLev in Temp
+     * Parameters : -
+     * Creator : ยกมาจาก KPC
+     * Last Modified : 19/09/2022 By : IcePHP
+     * Return : Data List 
+     * Return Type : Array
+     */
+    public function FSaMGetPdtPmtHDCstLevInTmp($paParams = [])
+    {
+        $tUserSessionID = $paParams['tUserSessionID'];
+
+        $tSQL = "
+            SELECT
+                TMP.FTBchCode,
+                TMP.FTPmhDocNo,
+                TMP.FTClvCode,
+                TMP.FTClvName,
+                TMP.FTPmhStaType,
+                TMP.FTSessionID
+            FROM TCNTPdtPmtHDCstLev_Tmp TMP WITH(NOLOCK)
+            WHERE TMP.FTSessionID = '$tUserSessionID'
+            ORDER BY TMP.FTPmhStaType ASC, TMP.FTClvName ASC
+        ";
+
+
+        $oQuery = $this->db->query($tSQL);
+
+        return $oQuery->result_array();
+    }
 
 
     /**

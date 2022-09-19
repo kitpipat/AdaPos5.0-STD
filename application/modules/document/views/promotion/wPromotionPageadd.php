@@ -758,7 +758,7 @@ $bIsAlwPmtDisAvg = $tAlwPmtDisAvgConfig == "1";
 									<select class="selectpicker form-control" id="ocmPromotionPmhStaRcvFree" name="ocmPromotionPmhStaRcvFree" <?php echo ($bIsApvOrCancel) ? 'disabled' : ''; ?>>
 										<option value='1' <?php echo ($tPmhStaRcvFree == "1") ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tPointOfSaleAutomaticCalculation'); ?></option>
 										<option value='2' <?php echo ($tPmhStaRcvFree == "2") ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tOptionalSellingPoint'); ?></option>
-										<!-- <option value='3' <?php echo ($tPmhStaRcvFree == "3") ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tServicePoint'); ?></option> -->
+										<option value='3' <?php echo ($tPmhStaRcvFree == "3") ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tServicePoint'); ?></option>
 									</select>
 								</div>
 							</div>
@@ -826,6 +826,7 @@ $bIsAlwPmtDisAvg = $tAlwPmtDisAvgConfig == "1";
 										<option value='1' <?php echo ($tPmhStaChkLimit == "1") ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tPerBranch'); ?></option>
 										<option value='2' <?php echo ($tPmhStaChkLimit == "2") ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tPerCompany'); ?></option>
 										<option value='3' <?php echo ($tPmhStaChkLimit == "3") ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tPerCustomer'); ?></option>
+										<option value='4' <?php echo ($tPmhStaChkLimit == "4") ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tPerBill'); ?></option>
 									</select>
 								</div>
 							</div>

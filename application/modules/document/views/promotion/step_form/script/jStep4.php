@@ -1310,4 +1310,190 @@
             JCNxShowMsgSessionExpired();
         }
     }
+
+    /*===== Begin PdtPmtHDCstLev Table Process =========================================*/
+    /**
+     * Functionality : Get PdtPmtHDCstLev in Temp
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSxPromotionStep4GetPdtPmtHDCstLevInTmp(pnPage, pbUseLoading) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+
+            var tBchCode = $('#oetPromotionBchCode').val();
+
+            var tSearchAll = $('#oetPromotionPdtLayoutSearchAll').val();
+
+            if (pbUseLoading) {
+                JCNxOpenLoading();
+            }
+
+            (pnPage == '' || (typeof pnPage) == 'undefined') ? pnPage = 1: pnPage = pnPage;
+
+            $.ajax({
+                type: "POST",
+                url: "promotionStep4GetCstLevConditionInTmp",
+                data: {
+                    tBchCode: tBchCode,
+                    nPageCurrent: pnPage,
+                    tSearchAll: tSearchAll
+                },
+                cache: false,
+                timeout: 0,
+                success: function(oResult) {
+                    $('.xCNPromotionStep4TableCstLevCondition').html(oResult.html);
+
+                    JCNxCloseLoading();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxCloseLoading();
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    /**
+     * Functionality : Insert PdtPmtHDCstLev to Temp
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSvPromotionStep4InsertPdtPmtHDCstLevToTemp(ptParams) {
+        $('#ohdPromotionStep4CstLevCodeTmp').val("");
+        $('#ohdPromotionStep4CstLevNameTmp').val("");
+
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+
+            var tBchCode = $('#oetPromotionBchCode').val();
+
+            JCNxOpenLoading();
+
+            $.ajax({
+                type: "POST",
+                url: "promotionStep4InsertCstLevConditionToTmp",
+                data: {
+                    tBchCode: tBchCode,
+                    tPplList: ptParams
+                },
+                cache: false,
+                timeout: 0,
+                success: function(tResult) {
+                    JSxPromotionStep4GetPdtPmtHDCstLevInTmp(1, true);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxCloseLoading();
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    /**
+     * Functionality : Clear PdtPmtHDCstLev in Temp
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSvPromotionStep4ClearPdtPmtHDCstLevInTemp(pbUseLoading) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+
+            var bLoadingGet = false;
+
+            if (pbUseLoading) {
+                JCNxOpenLoading();
+                bLoadingGet = true;
+            }
+
+            var tPmtGroupNameTmp = $('#oetPromotionGroupNameTmp').val();
+            var tPmtGroupNameTmpOld = $('#ohdPromotionGroupNameTmpOld').val();
+
+            $.ajax({
+                type: "POST",
+                url: "promotionStep1ClearPmtDtInTmp",
+                cache: false,
+                data: {
+                    tPmtGroupNameTmp: tPmtGroupNameTmp,
+                    tPmtGroupNameTmpOld: tPmtGroupNameTmpOld
+                },
+                timeout: 0,
+                success: function(tResult) {
+                    JSxPromotionStep1GetPdtPmtHDCstLevInTmp(1, bLoadingGet);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxCloseLoading();
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+        /**
+     * Functionality : Browse Price Group
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSxPromotionStep4BrowseCstLev() {
+        // option Brand
+        window.oPromotionBrowseBrand = {
+            Title: ['customer/customerlevel/customerlevel', 'tCstLevTitle'],
+            Table: {
+                Master: 'TCNMCstLev',
+                PK: 'FTClvCode',
+                PKName: 'FTClvName'
+            },
+            Join: {
+                Table: ['TCNMCstLev_L'],
+                On: ['TCNMCstLev.FTClvCode = TCNMCstLev_L.FTClvCode AND TCNMCstLev_L.FNLngID = ' + nLangEdits]
+            },
+            Where: {
+                Condition: [
+                    function() {
+                        return " AND TCNMCstLev.FTClvCode NOT IN (SELECT FTClvCode FROM TCNTPdtPmtHDCstLev_Tmp WHERE FTSessionID = '<?php echo $this->session->userdata("tSesSessionID"); ?>')";
+                    }
+                ]
+            },
+            GrideView: {
+                ColumnPathLang: 'customer/customerlevel/customerlevel',
+                ColumnKeyLang: ['tCstLevTBCode', 'tCstLevTBName'],
+                ColumnsSize: ['15%', '75%'],
+                WidthModal: 50,
+                DataColumns: ['TCNMCstLev.FTClvCode', 'TCNMCstLev_L.FTClvName'],
+                DataColumnsFormat: ['', ''],
+                Perpage: 5,
+                OrderBy: ['TCNMCstLev.FTClvCode'],
+                SourceOrder: "ASC"
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: ["ohdPromotionStep4CstLevCodeTmp", "TCNMCstLev.FTClvCode"],
+                Text: ["ohdPromotionStep4CstLevNameTmp", "TCNMCstLev_L.FTClvName"],
+            },
+            NextFunc: {
+                FuncName: 'JSvPromotionStep4InsertPdtPmtHDCstLevToTemp',
+                ArgReturn: ['FTClvCode', 'FTClvName']
+            },
+            BrowseLev: 1,
+            // DebugSQL : true
+        }
+        JCNxBrowseData('oPromotionBrowseBrand');
+    }
 </script>

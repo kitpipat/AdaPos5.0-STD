@@ -407,6 +407,30 @@
                                 </tr>
 
                                 <tr>
+                                    <td class="text-center"><?php echo language('pos/poschannel/poschannel', 'ระดับลูกค้า'); ?></td>
+                                    <td class="text-left">
+                                        <?php if (empty($aPdtPmtHDCstLevInTmp)) { ?>
+                                            <label><?php echo language('document/promotion/promotion', 'tLabel63'); ?></label>
+                                        <?php } ?>
+
+                                        <?php foreach ($aPdtPmtHDCstLevInTmp as $aCstLev) { ?>
+                                            <?php if ($aCstLev['FTPmhStaType'] != "1") {
+                                                continue;
+                                            } ?>
+                                            <label><?php echo $aCstLev['FTClvName']; ?></label><br>
+                                        <?php } ?>
+                                    </td>
+                                    <td class="text-left">
+                                        <?php foreach ($aPdtPmtHDCstLevInTmp as $aCstLev) { ?>
+                                            <?php if ($aCstLev['FTPmhStaType'] != "2") {
+                                                continue;
+                                            } ?>
+                                            <label><?php echo $aCstLev['FTClvName']; ?></label><br>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+
+                                <tr>
                                     <td class="text-center"><?php echo language('pos/poschannel/poschannel', 'tPnpLabelTitle'); ?></td>
                                     <td class="text-left">
                                         <?php if (empty($aPdtPmtHDPnpInTmp)) { ?>

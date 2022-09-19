@@ -104,6 +104,7 @@ $lang['tPerYear'] = "ต่อปี";
 $lang['tPerBranch'] = "ต่อสาขา";
 $lang['tPerCompany'] = "ต่อบริษัท";
 $lang['tPerCustomer'] = "ต่อสมาชิก";
+$lang['tPerBill'] = "ต่อบิล";
 $lang['tCheckCustomerConditions'] = "ตรวจสอบเงื่อนไขลูกค้า (อายุการสมาชิก + เงื่อนไขวันเกิด)";
 $lang['tLessThan'] = "น้อยกว่า";
 $lang['tLessThanOrEqualTo'] = "น้อยกว่าหรือเท่ากับ";
@@ -482,6 +483,7 @@ $lang['tLabel59'] = "มีผลทุกช่องทางขาย";
 $lang['tLabel60'] = "มีผลทุกประเภทการชำระเงิน";
 $lang['tLabel61'] = "มีผลทุกประเภทลูกค้า";
 $lang['tLabel62'] = "มีผลทุกโปรโมชั่น";
+$lang['tLabel63'] = "มีผลทุกระดับลูกค้า";
 
 
 // Warning Message
@@ -529,3 +531,11 @@ $lang['tPMTLotNo']   = 'รหัส Dot ยาง ';
 $lang['tPMTLotName'] = 'Dot ยาง';
 $lang['tPMTLotEffective'] = ' Dot ยาง ที่มีผล : ';
 $lang['tPMTLotChange'] = 'เปลี่ยนแปลง Dot ยาง ';
+
+$lang['tFreebiesOutOfStock'] = 'รับสิทธิ์คูปองกรณีของแถมหมด';
+
+$lang['tPMTDateStart'] = 'วันที่มีผล';
+$lang['tPMTDateEnd'] = 'วันที่หมดอายุ';
+
+$lang['tSpecialConditions_CstLev'] = "เงื่อนไขพิเศษ - ระดับลูกค้า";
+$lang['tCstLevName'] = "ระดับลูกค้า";

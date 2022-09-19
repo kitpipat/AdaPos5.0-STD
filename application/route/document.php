@@ -784,11 +784,18 @@ $route ['promotionStep4GetRcvConditionInTmp'] = 'document/promotion/cPromotionSt
 $route ['promotionStep4InsertRcvConditionToTmp'] = 'document/promotion/cPromotionStep4RcvCondition/FSaCPromotionInsertRcvToTmp';
 $route ['promotionStepeUpdateRcvConditionInTmp'] = 'document/promotion/cPromotionStep4RcvCondition/FSxCPromotionUpdateRcvInTmp';
 $route ['promotionStep4DeleteRcvConditionInTmp'] = 'document/promotion/cPromotionStep4RcvCondition/FSxCPromotionDeleteRcvInTmp';
-// Step4 Customer Level Condition
+// Step4 Customer Type Condition
 $route ['promotionStep4GetCstConditionInTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSxCPromotionGetHDCstInTmp';
 $route ['promotionStep4InsertCstConditionToTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSaCPromotionInsertCstToTmp';
 $route ['promotionStepeUpdateCstConditionInTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSxCPromotionUpdateCstInTmp';
 $route ['promotionStep4DeleteCstConditionInTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSxCPromotionDeleteCstInTmp';
+
+// Step4 Customer Level Condition
+$route ['promotionStep4GetCstLevConditionInTmp'] = 'document/promotion/cPromotionStep4CstLevCondition/FSxCPromotionGetPdtPmtHDCstLevInTmp';
+$route ['promotionStep4InsertCstLevConditionToTmp'] = 'document/promotion/cPromotionStep4CstLevCondition/FSaCPromotionInsertCstLevToTmp';
+$route ['promotionStepeUpdateCstLevConditionInTmp'] = 'document/promotion/cPromotionStep4CstLevCondition/FSxCPromotionUpdateCstLevInTmp';
+$route ['promotionStep4DeleteCstLevConditionInTmp'] = 'document/promotion/cPromotionStep4CstLevCondition/FSxCPromotionDeleteCstLevInTmp';
+
 // Step4 Promotion On Promotion Condition
 $route ['promotionStep4GetPnpConditionInTmp']           = 'document/promotion/cPromotionStep4PnpCondition/FSxCPromotionGetHDPnpInTmp';
 $route ['promotionStep4InsertPnpConditionToTmp']        = 'document/promotion/cPromotionStep4PnpCondition/FSaCPromotionInsertPnpToTmp';

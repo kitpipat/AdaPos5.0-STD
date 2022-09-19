@@ -25,13 +25,31 @@ $lang['tCHNStaUseArrDoc']                   = 'อนุญาตใช้ใบ
 $lang['tCHNStaUseTransDoc']                 = 'อนุญาตใช้ใบส่ง';
 
 
-$lang['tCSWAgency'] = "ตัวแทนขาย";
-$lang['tCSWBranch'] = "สาขา";
-$lang['tCSWWahouse'] = "คลัง";
-$lang['tCSWTypeWahouse'] = "ประเภทคลัง";
+$lang['tCSWAgency']                         = "ตัวแทนขาย";
+$lang['tCSWBranch']                         = "สาขา";
+$lang['tCSWWahouse']                        = "คลัง";
+$lang['tCSWTypeWahouse']                    = "ประเภทคลัง";
 
-$lang['tCSWTypeWahouse1'] = "คลังขาย";
-$lang['tCSWTypeWahouse2'] = "คลังส่งของ";
+$lang['tCSWTypeWahouse1']                   = "คลังขาย";
+$lang['tCSWTypeWahouse2']                   = "คลังส่งของ";
 
-$lang['tCSWValidateBranch'] = "กรุณาเลือกสาขา";
-$lang['tCSWValidateWahouse'] = "กรุณาเลือกคลัง";
+$lang['tCSWValidateBranch']                 = "กรุณาเลือกสาขา";
+$lang['tCSWValidateWahouse']                = "กรุณาเลือกคลัง";
+
+
+$lang['tRcvLabelTitle']                     = "ประเภทการชำระเงิน";
+$lang['tRcvLabelChannelCode']               = "รหัสประเภทการชำระเงิน";
+$lang['tRcvLabelChannelName']               = "ชื่อประเภทการชำระเงิน";
+$lang['tRcvLabelRefCode']                   = "รหัสอ้างอิง";
+
+
+$lang['tCstLabelTitle']                     = "ประเภทลูกค้า";
+$lang['tCstLabelChannelCode']               = "รหัสประเภทลูกค้า";
+$lang['tCstLabelChannelName']               = "ชื่อประเภทลูกค้า";
+$lang['tCstLabelRefCode']                   = "รหัสอ้างอิง";
+
+
+$lang['tPnpLabelTitle']                     = "โปรโมชั่น";
+$lang['tPnpLabelChannelCode']               = "รหัสโปรโมชั่น";
+$lang['tPnpLabelChannelName']               = "ชื่อโปรโมชั่น";
+$lang['tPnpLabelRefCode']                   = "รหัสอ้างอิง";

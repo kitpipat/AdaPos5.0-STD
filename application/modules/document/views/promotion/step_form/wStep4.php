@@ -147,7 +147,29 @@ if ($this->session->userdata('tSesUsrLevel') == 'SHP') {
         </div>
     </div>
 
+    <div class="col-md-12 xCNPromotionStep4TableCstLevConditionContainer">
+        <!--Section : เงื่อนไขพิเศษ - ระดับลูกค้า-->
+        <div class="panel panel-default" style="margin-bottom: 10px;">
+            <div id="odvHeadAllow" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
+                <label class="xCNTextDetail1"><?php echo language('document/promotion/promotion', 'tSpecialConditions_CstLev'); ?></label>
+            </div>
 
+            <div class="panel-collapse collapse in" role="tabpanel">
+                <div class="panel-body xCNPDModlue">
+                    <?php if (!$bIsApvOrCancel) { ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="xCNBTNPrimeryPlus pull-right" id="obtPromotionStep4AddCstLevConditionBtn" onclick="JSxPromotionStep4BrowseCstLev()" style="margin-bottom: 10px;">+</button>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <div class="xCNPromotionStep4TableCstLevCondition"></div>
+                    <input type="hidden" id="ohdPromotionStep4CstLevCodeTmp" name="ohdPromotionStep4CstLevCodeTmp">
+                    <input type="hidden" id="ohdPromotionStep4CstLevNameTmp" name="ohdPromotionStep4CstLevNameTmp">
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div class="col-md-12 xCNPromotionStep4TableGroupBuyWithPromotionOnPromotionConditionContainer">

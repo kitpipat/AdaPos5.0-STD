@@ -23,7 +23,7 @@
                 JCNxOpenLoading();
             }
 
-            (pnPage == '' || (typeof pnPage) == 'undefined') ? pnPage = 1: pnPage = pnPage;
+            (pnPage == '' || (typeof pnPage) == 'undefined') ? pnPage = 1 : pnPage = pnPage;
 
             $.ajax({
                 type: "POST",
