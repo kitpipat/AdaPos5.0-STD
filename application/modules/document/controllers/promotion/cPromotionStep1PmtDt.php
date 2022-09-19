@@ -224,6 +224,44 @@ class cPromotionStep1PmtDt extends MX_Controller
         $this->output->set_content_type('application/json')->set_output(json_encode($aReturn));
     }
 
+        /**
+     * Functionality : Delete PmtDt by SeqNo in Temp
+     * Parameters : -
+     * Creator : 04/02/2020 piya
+     * Last Modified : -
+     * Return : -
+     * Return Type : -
+     */
+    public function FSxCPromotionDeletePmtDtInTmpLot()
+    {
+        $nSeqNo = $this->input->post('nSeqNo');
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
+
+        $this->db->trans_begin();
+
+        $aDeleteInTmpBySeqParams = [
+            'tUserSessionID' => $tUserSessionID,
+            'nSeqNo' => $nSeqNo,
+        ];
+        $this->mPromotionStep1PmtDt->FSbDeletePmtDtInTmpBySeqLot($aDeleteInTmpBySeqParams);
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            $aReturn = array(
+                'nStaEvent'    => '900',
+                'tStaMessg'    => "Unsucess DeletePmtDtInTmp"
+            );
+        } else {
+            $this->db->trans_commit();
+            $aReturn = array(
+                'nStaEvent'    => '1',
+                'tStaMessg' => 'Success DeletePmtDtInTmp'
+            );
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($aReturn));
+    }
+
     /**
      * Functionality : Delete More PmtDt by SeqNo in Temp
      * Parameters : -

@@ -1,10 +1,10 @@
 <div class="table-responsive">
-    <table class="table table-striped xWPdtTableFont" id="otbPromotionStep4PriceGroupConditionTable">
+    <table class="table table-striped xWPdtTableFont" id="otbPromotionStep4PnpConditionTable">
         <thead>
             <tr class="xCNPanelHeadColorWhite">
                 <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
                 <th width="30%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tGroup'); ?></th>
-                <th width="60%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tPriceGroupName'); ?></th>
+                <th width="60%" class="text-left" style="color: #232C3D !important;"><?php echo language('pos/poschannel/poschannel', 'tPnpLabelChannelName'); ?></th>
                 <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
             </tr>
         </thead>
@@ -12,19 +12,19 @@
             <?php if ($aDataList['rtCode'] == 1) { ?>
                 <?php foreach ($aDataList['raItems'] as $key => $aValue) { ?>
                     <tr 
-                    class="xCNTextDetail2 xCNPromotionPdtPmtHDCstPriRow" 
+                    class="xCNTextDetail2 xCNPromotionPdtPmtHDPnpRow" 
                     data-bch-code="<?php echo $aValue['FTBchCode']; ?>" 
                     data-doc-no="<?php echo $aValue['FTPmhDocNo']; ?>" 
-                    data-ppl-code="<?php echo $aValue['FTPplCode']; ?>">
+                    data-pnp-code="<?php echo $aValue['FTPmhDocRef']; ?>">
                     
                         <td class="text-center"><?php echo $key+1; ?></td>
                         <td class="text-left">
-                            <select class="xCNApvOrCanCelDisabledPdtPmtHDCstPri form-control xCNPromotionStep3PgtStaGetType" onchange="JSxPromotionStep4PriceGroupConditionDataTableEditInline(this)">
-                                <option value='1' <?php echo ($aValue['FTPmhStaType'] == '1') ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tJoining'); ?></option>
+                            <select class="xCNApvOrCanCelDisabledPdtPmtHDPnp form-control xCNPromotionStep3PgtStaGetType" onchange="JSxPromotionStep4PnpConditionDataTableEditInline(this)">
+                                <!-- <option value='1' <?php echo ($aValue['FTPmhStaType'] == '1') ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tJoining'); ?></option> -->
                                 <option value='2' <?php echo ($aValue['FTPmhStaType'] == '2') ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tExclude'); ?></option>
                             </select>
                         </td>
-                        <td class="text-left"><?php echo $aValue['FTPplName']; ?></td>
+                        <td class="text-left"><?php echo $aValue['FTPmhName']; ?></td>
                         <td class="text-center">
                             <img class="xCNIconTable xCNIconDel" src="<?= base_url('application/modules/common/assets/images/icons/delete.png') ?>">
                         </td>
@@ -40,7 +40,7 @@
 </div>
 
 <?php if($aDataList['rnAllPage'] > 1) { ?>
-    <div class="row xCNPromotionPdtPmtHDCstPriPage">
+    <div class="row xCNPromotionPdtPmtHDPnpPage">
         <div class="col-md-6">
             <p><?= language('common/main/main','tResultTotalRecord')?> <?=$aDataList['rnAllRow']?> <?= language('common/main/main','tRecord')?> <?= language('common/main/main','tCurrentPage')?> <?=$aDataList['rnCurrentPage']?> / <?=$aDataList['rnAllPage']?></p>
         </div>
@@ -71,4 +71,4 @@
     </div>
 <?php } ?>
 
-<?php include('script/jStep4PriceGroupConditionTableTmp.php'); ?>
+<?php include('script/jStep4PnpConditionTableTmp.php'); ?>

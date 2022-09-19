@@ -1768,3 +1768,26 @@ $(document).on('click', '.ocbListItem', function(e) {
     // var LocalItemData = localStorage.getItem("LocalItemData");
     // console.log(LocalItemData);
 });
+
+//Ajax ส่งค่าทั้งหมดไปรวบรวมเพื่อส่ง MQ ที่ Helper
+function JCNxPackDataToMQLog(ptMsgErrorBody,ptErrorStatus,ptDisplayEvent,ptLogFunction,ptDocNo) 
+{
+    $.ajax({
+        type: "POST",
+        url: "PackDataToLogMQ",
+        data: {
+            tLogFunction  : ptLogFunction,
+            tMessageError : ptMsgErrorBody,
+            tErrorStatus  : ptErrorStatus,
+            tDisplayEvent : ptDisplayEvent,
+            tDocNo        : ptDocNo,
+        },
+        cache: false,
+        success: function (response) {
+        },
+        timeout: 3000,
+        error: function(data) {
+            console.log(data);
+        }
+    });
+}

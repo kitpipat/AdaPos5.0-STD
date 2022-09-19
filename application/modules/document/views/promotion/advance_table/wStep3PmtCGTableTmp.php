@@ -13,17 +13,20 @@
         min-width: 200px;
     }
 </style>
+<?php
+// print_r($aDataList);
+?>
 <div class="table-responsive">
     <table class="table table-striped xWPdtTableFont" id="otbPromotionStep3PmtCGTable">
         <thead>
-            <tr>
-                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
-                <th nowrap width="27%" class="text-left"><?php echo language('document/promotion/promotion', 'tGroupName'); ?></th>
-                <th width="17%" class="text-center"><?php echo language('document/promotion/promotion', 'tGetConditions'); ?></th>
-                <th width="17%" class="text-right"><?php echo language('document/promotion/promotion', 'tValue_Number'); ?></th>
-                <th width="17%" class="text-right"><?php echo language('document/promotion/promotion', 'tAmountToReceive'); ?></th>
+            <tr class="xCNPanelHeadColorWhite">
+                <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
+                <th nowrap width="27%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tGroupName'); ?></th>
+                <th width="17%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tGetConditions'); ?></th>
+                <th width="17%" class="text-right" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tValue_Number'); ?></th>
+                <th width="17%" class="text-right" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tAmountToReceive'); ?></th>
                 <?php if ($bIsAlwPmtDisAvg) { ?>
-                    <th width="17%" class="text-right"><?php echo language('document/promotion/promotion', 'tAveragePercentDiscount'); ?></th>
+                    <th width="17%" class="text-right" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tAveragePercentDiscount'); ?></th>
                 <?php } ?>
             </tr>
         </thead>
@@ -33,6 +36,15 @@
                     <tr class="xCNTextDetail2 xCNPromotionStep3PmtCGRow" data-seq-no="<?php echo $aValue['FNPgtSeq']; ?>">
                         <td class="text-center"><?php echo $key + 1; ?></td>
                         <td nowrap class="text-left"><?php echo $aValue['FTPmdGrpName']; ?></td>
+                        <?php if($aValue['FTPgtStaPdtDT'] == '8') {
+                            $tDisabled = 'readonly';?>
+                            <td class="text-left">
+                                <select class="selectpicker_ form-control xCNApvOrCanCelDisabledPmtCG xCNPromotionStep3PgtStaGetType">
+                                    <option class="3" value='3' selected ><?php echo language('document/promotion/promotion', 'tAdjustThePrice'); ?></option>
+                                </select>
+                            </td>
+                        <?php }else{
+                            $tDisabled = '';?>
                         <td class="text-left">
                             <select class="selectpicker_ form-control xCNApvOrCanCelDisabledPmtCG xCNPromotionStep3PgtStaGetType">
                                 <option class="1" value='1' <?php echo ($aValue['FTPgtStaGetType'] == '1') ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tBahtDiscount'); ?></option>
@@ -43,6 +55,7 @@
                                 <!-- <option class="6" value='6' <?php echo ($aValue['FTPgtStaGetType'] == '6') ? 'selected' : ''; ?>><?php echo language('document/promotion/promotion', 'tIndeterminate'); ?></option> -->
                             </select>
                         </td>
+                        <?php }?>
                         <td class="text-left">
                             <?php $tPgtStaGetType = $aValue['FTPgtStaGetType']; ?>
                             <?php $tDisabledPgtGetQtyInput = ""; ?>
@@ -155,12 +168,16 @@
                                         }
                                 }
                                 ?>
+                                <?php if($aValue['FTPgtStaPdtDT'] == '8') {?>
+                                        <?php echo $aValue['tRefdoc']; ?>
+                                <?php }else{ ?>
                                 <input <?php echo $tDisabledPgtGetvalueInput; ?> type="text" class="text-right form-control xCNApvOrCanCelDisabledPmtCG xCNPromotionStep3PgtGetvalue xCNInputMaxValue xCNInputLength <?php echo $tNumberFormatControl; ?>" data-length="14" maxlength="14" data-field-name="FCPgtGetvalue" data-format-type="C" data-max="<?php echo $tMaxValue; ?>" value="<?php echo number_format($aValue['FCPgtGetvalue'], $nOptDecimalShow); ?>">
+                                <?php } ?>
                             <?php } ?>
                         </td>
                         <td>
                             <!-- <input <?php echo $tDisabledPgtGetQtyInput; ?> type="text" class="form-control text-right xCNPromotionPgtGetQty xCNInputNumeric xCNApvOrCanCelDisabledPmtCG xCNInputLength" maxlength="14" data-length="14" data-field-name="FCPgtGetQty" data-format-type="C" value="<?php echo number_format($aValue['FCPgtGetQty'], $nOptDecimalShow); ?>"> -->
-                            <input id="oetPgtGetQtyInput" name="oetPgtGetQtyInput" type="text" class="form-control text-right xCNPromotionPgtGetQty xCNInputNumeric xCNApvOrCanCelDisabledPmtCG xCNInputLength" maxlength="14" data-length="14" data-field-name="FCPgtGetQty" data-format-type="C" value="<?php echo number_format($aValue['FCPgtGetQty'], $nOptDecimalShow); ?>">
+                            <input id="oetPgtGetQtyInput" name="oetPgtGetQtyInput" type="text" class="form-control text-right xCNPromotionPgtGetQty xCNInputNumeric xCNApvOrCanCelDisabledPmtCG xCNInputLength" <?php echo $tDisabled; ?> maxlength="14" data-length="14" data-field-name="FCPgtGetQty" data-format-type="C" value="<?php echo number_format($aValue['FCPgtGetQty'], $nOptDecimalShow); ?>">
                         </td>
                         <?php if ($bIsAlwPmtDisAvg) { ?>
                             <td>

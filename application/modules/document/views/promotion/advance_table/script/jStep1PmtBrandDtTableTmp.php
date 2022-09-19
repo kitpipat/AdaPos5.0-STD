@@ -12,6 +12,7 @@
             $('form .xCNApvOrCanCelDisabledPmtBrandDt').attr('disabled', true);
             $('#otbPromotionStep1PmtBrandDtTable .xCNIconDel').addClass('xCNDocDisabled');
             $('#otbPromotionStep1PmtBrandDtTable .xCNIconDel').removeAttr('onclick', true);
+            $('.xWChangeLot').removeAttr('onclick', true);
         }else{
             $('form .xCNApvOrCanCelDisabledPmtBrandDt').attr('disabled', false);
             $('#otbPromotionStep1PmtBrandDtTable .xCNIconDel').removeClass('xCNDocDisabled');
@@ -144,10 +145,53 @@
             JCNxOpenLoading();
 
             var nSeqNo = $(poElm).parents('.xCNPromotionPmtBrandDtRow').data('seq-no');
+            var nType = $("#ocmPromotionListTypeTmp").val();
 
             $.ajax({
                 type: "POST",
                 url: "promotionStep1DeletePmtDtInTmp",
+                data: {
+                    nSeqNo: nSeqNo
+                },
+                cache: false,
+                timeout: 0,
+                success: function(tResult) {
+                    $nCurrentPage = $('#odvPromotionPmtBrandDtDataTable').find('.btn.xCNBTNNumPagenation.active').text();
+                    if(nType == '8'){
+                        JSxPromotionStep1GetPmtPriDtInTmp(1, true);
+                    }else{
+                        JSxPromotionStep1GetPmtBrandDtInTmp($nCurrentPage, true);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    JCNxCloseLoading();
+                }
+            });
+
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    /**
+     * Functionality : Delete PmtBrandDt in Temp by SeqNo
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSxPromotionStep1PmtBrandDtDataLotDeleteBySeq(poElm) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+
+            JCNxOpenLoading();
+
+            var nSeqNo = poElm;
+
+            $.ajax({
+                type: "POST",
+                url: "promotionStep1DeletePmtDtInTmpLot",
                 data: {
                     nSeqNo: nSeqNo
                 },

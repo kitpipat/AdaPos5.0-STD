@@ -1,22 +1,25 @@
 <style>
     #otbPromotionStep3PmtCBTable .xCNPromotionPbyMinValue, 
     #otbPromotionStep3PmtCBTable .xCNPromotionPbyMaxValue, 
-    #otbPromotionStep3PmtCBTable .xCNPromotionPbyMinSetPri
+    #otbPromotionStep3PmtCBTable .xCNPromotionPbyMinSetPri{
         min-width: 100px;
     }
 </style>
+<?php 
+// print_r($aDataList['raItems']) 
+?>
 <div class="table-responsive">
     <table class="table table-striped xWPdtTableFont" id="otbPromotionStep3PmtCBTable">
         <thead>
-            <tr>
-                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
-                <th nowrap width="17%" class="text-left"><?php echo language('document/promotion/promotion', 'tListGroupName'); ?></th>
-                <th nowrap width="10%" class="text-center"><?php echo language('document/promotion/promotion', 'tConditions'); ?></th>
-                <th width="17%" class="text-right"><?php echo language('document/promotion/promotion', 'tBuyConditionCol'.$tPbyStaBuyCond); ?></th>
-                <th width="17%" class="text-right"><?php echo language('document/promotion/promotion', 'tNotOver'); ?></th>
-                <th width="17%" class="text-right"><?php echo language('document/promotion/promotion', 'tMinimumPrice_Unit'); ?></th>
+            <tr class="xCNPanelHeadColorWhite">
+                <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
+                <th nowrap width="17%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tListGroupName'); ?></th>
+                <th nowrap width="10%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tConditions'); ?></th>
+                <th width="17%" class="text-right" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tBuyConditionCol'.$tPbyStaBuyCond); ?></th>
+                <th width="17%" class="text-right" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tNotOver'); ?></th>
+                <th width="17%" class="text-right" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tMinimumPrice_Unit'); ?></th>
                 <?php if($bIsAlwPmtDisAvg) { ?>
-                <th width="17%" class="text-right"><?php echo language('document/promotion/promotion', 'tAveragePercentDiscount'); ?></th>
+                <th width="17%" class="text-right" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tAveragePercentDiscount'); ?></th>
                 <?php } ?>
             </tr>
         </thead>

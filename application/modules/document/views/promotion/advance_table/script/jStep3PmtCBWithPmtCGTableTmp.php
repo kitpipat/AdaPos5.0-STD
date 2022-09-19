@@ -432,7 +432,9 @@
         });
 
         $.each(aGrpName, function(nIndex, tValue){
+            tValue = tValue.toString();
             var tName = tValue.replace(" ", "");
+            tName = tName.replaceAll('%','');
             var nRowLength = $("#otbPromotionStep3PmtCBWithPmtCGTable .xCNPromotionStep3PmtCBWithPmtCGRow." + tName).length;
             if(nRowLength == 1){
                 $('#otbPromotionStep3PmtCBWithPmtCGTable .xCNPromotionStep3PmtCBWithPmtCGRow.' + tName + ' .xCNIconDel').addClass('xCNDocDisabled');
@@ -464,7 +466,9 @@
         });
 
         $.each(aGrpName, function(nIndex, tValue){
+            tValue = tValue.toString();
             var tName = tValue.replace(" ", "");
+            tName = tName.replaceAll('%','');
             var oRow = $("#otbPromotionStep3PmtCBWithPmtCGTable .xCNPromotionStep3PmtCBWithPmtCGRow." + tName);
             var nRowLength = $(oRow).length;
             $.each(oRow, function(nIndex, oValue){

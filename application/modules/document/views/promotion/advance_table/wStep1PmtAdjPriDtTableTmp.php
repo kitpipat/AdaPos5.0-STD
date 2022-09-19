@@ -1,19 +1,9 @@
 <div class="table-responsive">
-    <table class="table table-striped xWPdtTableFont" id="otbPromotionStep1PmtPdtDtTable">
+    <table class="table table-striped xWPdtTableFont" id="otbPromotionStep1PmtBrandDtTable">
         <thead>
             <tr>
-                <th width="2%" class="text-center">
-                    <label class="fancy-checkbox">
-                        <input type="checkbox" class="xCNListItemAll xCNApvOrCanCelDisabledPmtPdtDt">
-                        <span>&nbsp;</span>
-                    </label>
-                </th>
-                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
-                <th width="18%" class="text-left"><?php echo language('document/promotion/promotion', 'tPdtCodeName'); ?></th>
-                <th width="40%" class="text-left"><?php echo language('document/promotion/promotion', 'tPdtName'); ?></th>
-                <th width="15%" class="text-left"><?php echo language('document/promotion/promotion', 'tProductUnit'); ?></th>
-                <th width="15%" class="text-left"><?php echo language('document/promotion/promotion', 'tBarCode'); ?></th>
-                <th width="15%" class="text-left"><?php echo language('document/promotion/promotion', 'tNote'); ?></th>
+                <th width="18%" class="text-left"><?php echo language('document/promotion/promotion', 'tTBDocNo'); ?></th>
+                <th width="40%" class="text-left"><?php echo language('document/promotion/promotion', 'tTBDocDate'); ?></th>
                 <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
             </tr>
         </thead>
@@ -22,14 +12,7 @@
                 <?php foreach ($aDataList['raItems'] as $key => $aValue) { ?>
                     <?php $bIsShopAll = (empty($aValue['FTPmdRefCode']) && empty($aValue['FTPmdRefName']) && empty($aValue['FTPmdSubRefName']) && empty($aValue['FTPmdBarCode'])); ?>
                     <?php if(!$bIsShopAll) { ?>
-                        <tr class="xCNTextDetail2 xCNPromotionPmtPdtDtRow" data-seq-no="<?php echo $aValue['FNPmdSeq']; ?>">
-                            <td class="text-center">
-                                <label class="fancy-checkbox">
-                                    <input type="checkbox" class="xCNListItem xCNApvOrCanCelDisabledPmtPdtDt" name="ocbListItem[]">
-                                    <span>&nbsp;</span>
-                                </label>
-                            </td>
-                            <td class="text-center"><?php echo $key+1; ?></td>
+                        <tr class="xCNTextDetail2 xCNPromotionPmtBrandDtRow" data-seq-no="<?php echo $aValue['FNPmdSeq']; ?>">
                             <td class="text-left xCNPromotionStep1PmtDtPmdRefCode"><?php echo $aValue['FTPmdRefCode']; ?></td>
                             
                                 <td class="text-left xCNPromotionStep1PmtDtPmdRefName">
@@ -50,11 +33,8 @@
                                 <?php } ?>
                                 </div>
                                 </td>
-                            <td class="text-left xCNPromotionStep1PmtDtPmdSubRefName"><?php echo $aValue['FTPmdSubRefName']; ?></td>
-                            <td class="text-left xCNPromotionStep1PmtDtPmdBarCode"><?php echo $aValue['FTPmdBarCode']; ?></td>
-                            <td class="text-left xCNPromotionStep1PmtDtPmdRemark text-danger" style="color: red !important;"><?php echo $aValue['FTXtdRmk']; ?></td>
                             <td class="text-center">
-                                <img class="xCNIconTable xCNIconDel" src="<?= base_url('application/modules/common/assets/images/icons/delete.png') ?>">
+                                <img class="xCNIconTable xCNIconDel" onclick="JSxPromotionStep1PmtPridDtDataTableDeleteBySeq(this)" src="<?= base_url('application/modules/common/assets/images/icons/delete.png') ?>">
                             </td>
                         </tr>
                     <?php }else{ ?>
@@ -118,4 +98,7 @@ function JSxPromotionLotChange(evn){
 }
 </script>
 
-<?php include('script/jStep1PmtPdtDtTableTmp.php'); ?>
+<?php
+//  include('script/jStep1PmtPdtDtTableTmp.php'); 
+?>
+<?php include('script/jStep1PmtBrandDtTableTmp.php'); ?>

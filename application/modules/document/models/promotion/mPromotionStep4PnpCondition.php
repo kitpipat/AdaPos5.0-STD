@@ -1,45 +1,47 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class mPromotionStep4RcvCondition extends CI_Model
+class mPromotionStep4PnpCondition extends CI_Model
 {
     /**
-     * Functionality : Get Pay Type in Temp
+     * Functionality : Get Channel in Temp
      * Parameters : -
      * Creator : 17/09/2021 Worakorn
      * Last Modified : -
      * Return : Data List PdtPmtHDChn
      * Return Type : Array
      */
-    public function FSaMGetPdtPmtHDRcvInTmp($paParams = [])
+    public function FSaMGetPdtPmtHDPnpInTmp($paParams = [])
     {
         $tUserSessionID = $paParams['tUserSessionID'];
         $aRowLen = FCNaHCallLenData($paParams['nRow'], $paParams['nPage']);
         // $nLngID = $paParams['FNLngID'];
-
+        
         $tSQL = "
             SELECT c.* FROM(
-                SELECT  ROW_NUMBER() OVER(ORDER BY FTRcvName ASC) AS FNRowID,* FROM
+                SELECT  ROW_NUMBER() OVER(ORDER BY FTPmhName ASC) AS FNRowID,* FROM
                     (SELECT DISTINCT
                         TMP.FTBchCode,
                         TMP.FTPmhDocNo,
-                        TMP.FTRcvCode,
-                        RCVL.FTRcvName,
+                        PnpL.FTPmhName,
                         TMP.FTPmhStaType,
-                        TMP.FTSessionID
-                    FROM TCNTPdtPmtHDPay_Tmp TMP WITH(NOLOCK)
-                    INNER JOIN  TFNMRcv_L RCVL ON  RCVL.FTRcvCode = TMP.FTRcvCode
+                        TMP.FTSessionID,
+                        TMP.FTPmhDocRef
+                    FROM TCNTPdtPmtHDSeq_Tmp TMP WITH(NOLOCK)
+                    INNER JOIN  TCNTPdtPmtHD_L PnpL ON  PnpL.FTPmhDocNo = TMP.FTPmhDocRef
                     WHERE TMP.FTSessionID = '$tUserSessionID'
         ";
 
         $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
+
+
 
         
         $oQuery = $this->db->query($tSQL);
 
         if ($oQuery->num_rows() > 0) {
             $oList = $oQuery->result();
-            $nFoundRow = $this->FSnMTFWGetPdtPmtHDCstPriInTmpPageAll($paParams);
+            $nFoundRow = $this->FSnMTFWGetPdtPmtHDPnpPriInTmpPageAll($paParams);
             $nPageAll = ceil($nFoundRow / $paParams['nRow']); // หา Page All จำนวน Rec หาร จำนวนต่อหน้า
             $aResult = array(
                 'raItems'       => $oList,
@@ -65,14 +67,14 @@ class mPromotionStep4RcvCondition extends CI_Model
     }
 
     /**
-     * Functionality : Count PdtPmtHDRcv in Temp
+     * Functionality : Count PdtPmtHDPnp in Temp
      * Parameters : -
      * Creator : 17/09/2021 Worakorn
      * Last Modified : -
-     * Return : Count PdtPmtHDRcv
+     * Return : Count PdtPmtHDPnp
      * Return Type : Number
      */
-    public function FSnMTFWGetPdtPmtHDCstPriInTmpPageAll($paParams = [])
+    public function FSnMTFWGetPdtPmtHDPnpPriInTmpPageAll($paParams = [])
     {
         $tUserSessionID = $paParams['tUserSessionID'];
         $nLngID = $paParams['FNLngID'];
@@ -80,7 +82,7 @@ class mPromotionStep4RcvCondition extends CI_Model
         $tSQL = "
             SELECT 
                 FTSessionID
-            FROM TCNTPdtPmtHDPay_Tmp TMP WITH(NOLOCK) 
+            FROM TCNTPdtPmtHDSeq_Tmp TMP WITH(NOLOCK) 
             WHERE TMP.FTSessionID = '$tUserSessionID'
         ";
 
@@ -89,14 +91,14 @@ class mPromotionStep4RcvCondition extends CI_Model
     }
 
     /**
-     * Functionality : Insert PdtPmtHDRcv to Temp
+     * Functionality : Insert PdtPmtHDPnp to Temp
      * Parameters : -
      * Creator : 17/09/2021 Worakorn
      * Last Modified : -
      * Return : Status
      * Return Type : Array
      */
-    public function FSaMPdtPmtHDRcvToTemp($paParams = [])
+    public function FSaMPdtPmtHDPnpToTemp($paParams = [])
     {
        
         $tBchCodeLogin = $paParams['tBchCodeLogin'];
@@ -105,22 +107,22 @@ class mPromotionStep4RcvCondition extends CI_Model
 
         $this->db->set('FTBchCode', $tBchCodeLogin);
         $this->db->set('FTPmhDocNo', $paParams['tDocNo']);
-        $this->db->set('FTRcvCode', $paParams['tRcvCode']);
-        // $this->db->set('FTRcvName', $paParams['tRcvName']);
-        $this->db->set('FTPmhStaType', '1'); // ประเภทกลุ่ม 1:กลุ่มร่วมรายการ 2:กลุ่มยกเว้น
+        $this->db->set('FTPmhDocRef', $paParams['tPnpCode']);
+        // $this->db->set('FTPnpName', $paParams['tPnpName']);
+        $this->db->set('FTPmhStaType', '2'); // ประเภทกลุ่ม 1:กลุ่มร่วมรายการ 2:กลุ่มยกเว้น
 
         $this->db->set('FDCreateOn', $tUserSessionDate);
         $this->db->set('FTSessionID', $tUserSessionID);
-        $this->db->insert('TCNTPdtPmtHDPay_Tmp');
+        $this->db->insert('TCNTPdtPmtHDSeq_Tmp');
 
         $aStatus = [
             'rtCode' => '905',
-            'rtDesc' => 'Insert TCNTPdtPmtHDPay_Tmp Fail.',
+            'rtDesc' => 'Insert TCNTPdtPmtHDSeq_Tmp Fail.',
         ];
 
         if ($this->db->affected_rows() > 0) {
             $aStatus['rtCode'] = '1';
-            $aStatus['rtDesc'] = 'Insert TCNTPdtPmtHDPay_Tmp Success';
+            $aStatus['rtDesc'] = 'Insert TCNTPdtPmtHDSeq_Tmp Success';
         }
         return $aStatus;
     }
@@ -133,14 +135,15 @@ class mPromotionStep4RcvCondition extends CI_Model
      * Return : Status Update
      * Return Type : Boolean
      */
-    public function FSbUpdateRcvInTmpByKey($paParams = [])
+    public function FSbUpdatePnpInTmpByKey($paParams = [])
     {
         $this->db->set('FTPmhStaType', $paParams['tPmhStaType']);
         $this->db->where('FTSessionID', $paParams['tUserSessionID']);
         $this->db->where('FTBchCode', $paParams['tBchCode']);
         $this->db->where('FTPmhDocNo', $paParams['tDocNo']);
-        $this->db->where('FTRcvCode', $paParams['tRcvCode']);
-        $this->db->update('TCNTPdtPmtHDPay_Tmp');
+        $this->db->where('FTPmhDocRef', $paParams['tPnpCode']);
+        // $this->db->where('FTClvCode', $paParams['tPnpCode']);
+        $this->db->update('TCNTPdtPmtHDSeq_Tmp');
 
         $bStatus = false;
 
@@ -152,20 +155,21 @@ class mPromotionStep4RcvCondition extends CI_Model
     }
 
     /**
-     * Functionality : Delete PdtPmtHDRcv in Temp by Primary Key
+     * Functionality : Delete PdtPmtHDPnp in Temp by Primary Key
      * Parameters : -
      * Creator :  17/09/2021 Worakorn
      * Last Modified : -
      * Return : Status Delete
      * Return Type : Boolean
      */
-    public function FSbDeletePdtPmtHDRcvInTmpByKey($paParams = [])
+    public function FSbDeletePdtPmtHDPnpInTmpByKey($paParams = [])
     {
         $this->db->where('FTBchCode', $paParams['tBchCode']);
         $this->db->where('FTPmhDocNo', $paParams['tDocNo']);
-        $this->db->where('FTRcvCode', $paParams['tRcvCode']);
+        $this->db->where('FTPmhDocRef', $paParams['tPnpCode']);
+        // $this->db->where('FTClvCode', $paParams['tPnpCode']);
         $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->delete('TCNTPdtPmtHDPay_Tmp');
+        $this->db->delete('TCNTPdtPmtHDSeq_Tmp');
 
         $bStatus = false;
 
@@ -177,17 +181,17 @@ class mPromotionStep4RcvCondition extends CI_Model
     }
 
     /**
-     * Functionality : Clear PdtPmtHDRcv in Temp
+     * Functionality : Clear PdtPmtHDPnp in Temp
      * Parameters : -
      * Creator : 17/09/2021 Worakorn
      * Last Modified : -
      * Return : Status Delete
      * Return Type : Boolean
      */
-    public function FSbClearPdtPmtHDCstPriInTmp($paParams = [])
+    public function FSbClearPdtPmtHDPnpPriInTmp($paParams = [])
     {
         $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->delete('TCNTPdtPmtHDPay_Tmp');
+        $this->db->delete('TCNTPdtPmtHDSeq_Tmp');
 
         $bStatus = false;
 

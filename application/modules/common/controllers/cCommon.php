@@ -210,5 +210,56 @@ class cCommon extends MX_Controller {
 		// echo '555';
 	}
 
+    //ฟังก์ชั่นรวบรวม ERROR จากการทำงานของ USER ส่งเข้า MQ_LOG
+    public function FCNoCCMMPackDataToLogMQ()
+    {
+        $tFuncName = $this->input->post('tLogFunction');
+        $tDocNo = $this->input->post('tDocNo');
+
+        if (!empty($tFuncName) && $tFuncName != '') {
+            $aDataCookie = array(
+                'tAgnCode' => json_decode(get_cookie('tAgnCode')),
+                'tBchCode' => json_decode(get_cookie('tBchCode')),
+                'tMenuCode' => json_decode(get_cookie('tMenuCode')),
+                'tMenuName' => json_decode(get_cookie('tMenuName')),
+                'tUsrCode' => json_decode(get_cookie('tUsrCode')),
+            );
+            
+            $tLogLev = 'Critical';
+            if ($tFuncName != 'ERROR') {
+                $tLogLev = '';
+            }
+
+            $aPackData = array();
+            $aMQParams = array(
+                'ptFunction' => $tFuncName,
+                'ptAgnCode' => $aDataCookie['tAgnCode'],//ตัวแทนขาย
+                'ptBchCode' => $aDataCookie['tBchCode'],//รหัสสาขา
+                'ptPosCode' => '',//รหัสเครื่องจุดขาย
+                'ptShfCode' => '',//รหัสรอบการขาย
+                'ptAppCode' => 'SB',//ต้นทาง (Application) SB,PS,FC,VD,VS
+                'ptMnuCode' => $aDataCookie['tMenuCode'],//รหัสเมนู
+                'ptMnuName' => $aDataCookie['tMenuName'],//ชื่อเมนู
+                'ptObjCode' => $tDocNo,//รหัสเอกสาร
+                'ptObjName' => $this->input->post('tDisplayEvent'),//ชื่อหน้าจอ/ฟังก์ชั่น
+                'pnLogLevel' => $tLogLev,//ระดับ 0:Info 1:Low 2:Medium 3:High 4:Critical
+                'ptLogCode'  => $this->input->post('tErrorStatus'),//รหัสอ้างอิง 001:Ok  800:Not Found  900:Fail ....
+                'ptLogDesc' => $this->input->post('tMessageError'),//รายเอียด 
+                'ptLogDate' => date("Y-m-d H:i:s") ,//วันที่ yyyy-MM-dd HH:mm:ss
+                'ptUsrCode' => $aDataCookie['tUsrCode'],//รหัสผู้ใช้
+                'ptApvCode' => '',//รหัสผู้อนุมัติ
+            );
+            array_push($aPackData,$aMQParams);
+
+            if ($tFuncName != 'ERROR' && $tFuncName != 'INFO') {
+                FCNaInsertLogClient($aPackData);
+            }else{
+                FCNaRabbitMQLog($aPackData);
+            }
+        }else{
+            return;
+        }
+    }
+
 }
 

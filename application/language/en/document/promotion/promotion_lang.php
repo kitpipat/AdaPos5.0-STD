@@ -51,6 +51,8 @@ $lang['tBuyCondition4'] = "By Value Range";
 // $lang['tBuyCondition5'] = "By Time Range";
 $lang['tBuyCondition5'] = "By Time Range(Number)";
 $lang['tBuyCondition6'] = "By Time Range(Value)";
+$lang['tBuyCondition8'] = "Use Adjust";
+
 
 $lang['tBuyConditionCol1'] = "Number";
 $lang['tBuyConditionCol3'] = "Number";
@@ -83,6 +85,7 @@ $lang['tToDate'] = "To Date";
 $lang['tFromTime'] = "From Time";
 $lang['tToTime'] = "To Time";
 $lang['tPausedTemporarily'] = "Paused Temporarily";
+$lang['tOnTopStatus'] = "Permission status Calculation of products Promotion";
 $lang['tConditionsCustomers'] = "Conditions - Customers";
 $lang['tAllowedToCalculatePromotionsThatHaveAlreadyBeenReceived'] = "Allowed To Calculate Promotions That Have Already Been Received";
 $lang['tAllowToCalculateTheAmount'] = "Allow To Calculate The Amount";
@@ -161,6 +164,7 @@ $lang['tUsePriceGroup'] = "Use Price Group";
 $lang['tFree'] = "Free";
 $lang['tValue_Number'] = "Value / Number";
 $lang['tGroup'] = "Group";
+$lang['tStaApvnotyet'] = "Not Used";
 $lang['tPriceGroupName'] = "Price Group Name";
 $lang['tJoining'] = "Joining";
 $lang['tExclude'] = "Exclude";
@@ -194,6 +198,7 @@ $lang['tMembershipDuration'] = "Membership Duration";
 $lang['tMemberMonthBirth'] = "Member Month Birth";
 $lang['tSpecialConditions_PaymentType'] = "Special Conditions - Payment type";
 $lang['tSpecialConditions_CustomerLevel'] = "Special Conditions - Customer Level";
+$lang['tSpecialConditions_PromotionOnPromotion'] = "เงื่อนไขพิเศษ - Promotion On Promotion";
 
 // Nav Menu
 $lang['tTitleAdd'] = "Add";
@@ -378,6 +383,8 @@ $lang['tNotFound'] = "No Data";
 
 // validate form
 $lang['tDocNoRequired'] = "Please input doc no or check auto genarate code.";
+$lang['tPromoNameRequired']    = "Please Fill Promotion Name.";
+$lang['tPromoNameOtherRequired']    = "Please Fill Another Promotion Name.";
 $lang['tDocNoDuplicate'] = "Cannot use this doc no.";
 $lang['tDocDateRequired'] = "Please input doc date.";
 $lang['tDocTimeRequired'] = "Please input doc time.";
@@ -388,9 +395,13 @@ $lang['tViaNameRequired'] = "Please input transported by.";
 // other
 $lang['tValidConditionTrans'] = "Please input complete for condition transfer.";
 $lang['tNotfoundConditionTrans'] = "Not found data from comdition.";
+$lang['tConfirmCancelLot'] = "Once confirmed lots will not be saved. Confirm to continue? ";
+
 
 $lang['tPdtCodeName'] = "Product Code";
 $lang['tPdtName'] = "Product Name";
+$lang['tPdtNameBrand'] = "Brand Product";
+$lang['tPdtNameModel'] = "Model Product";
 $lang['tPdtRow'] = "Row";
 $lang['tPdtCol'] = "Column";
 $lang['tPdtMaxTransfer'] = "Max Product";
@@ -466,6 +477,10 @@ $lang['tLabel55'] = "Not exceeding amount / value";
 $lang['tLabel56'] = "Low price per unit";
 $lang['tLabel57'] = "Please import files";
 $lang['tLabel58'] = "Importing files ...";
+$lang['tLabel59'] = "Effective for all Sales";
+$lang['tLabel60'] = "Effective for all Payment";
+$lang['tLabel61'] = "Effective for all Customer";
+$lang['tLabel62'] = "Effective for all Promotion";
 
 
 // Warning Message
@@ -499,7 +514,20 @@ $lang['tWarMsg27'] = "The field is not more than valid (must be equal to or grea
 $lang['tWarMsg28'] = "Summary HD is invalid. Please check the imported file.";
 $lang['tWarMsg29'] = "The document format is not correct. Please try again.";
 $lang['tWarMsg30'] = "Please select a agency before saving.";
+$lang['tWarMsg31'] = "Please select the complete lot before saving.";
+$lang['tWarMsg32'] = "Please select lot";
+$lang['tWarMsg33'] = "Some Product Can't submit.";
+
+
+
 
 $lang['tPMTChnSpc'] = "Special Conditions - Channels";
 
 $lang['tPMTImportForExcel'] = 'Import product for excel';
+$lang['tPMTHeadLotTitle'] = 'Specify the lot of the product';
+$lang['tPMTHeadLotTitleFRM'] = 'Product list';
+$lang['tPMTHeadLotTitleTo'] = 'From list';
+$lang['tPMTLotNo']   = 'LotNo';
+$lang['tPMTLotName'] = 'LotName';
+$lang['tPMTLotEffective'] = 'Effective lot : ';
+$lang['tPMTLotChange'] = 'Change Lot';

@@ -249,6 +249,7 @@ $route['dcmSPAOriginalPrice']              = 'document/salepriceadj/cSalePriceAd
 $route['dcmSPAPdtPriAdjust']               = 'document/salepriceadj/cSalePriceAdj/FSoCSPAPdtPriAdjustEvent';
 $route['dcmSPAEventApprove']               = 'document/salepriceadj/cSalePriceAdj/FSoCSPAApproveEvent';
 $route['dcmSPAUpdateStaDocCancel']         = 'document/salepriceadj/cSalePriceAdj/FSoCSPAUpdateStaDocCancel';
+$route['dcmSPAPdtPriEventUpdPriPunTmp']    = 'document/salepriceadj/cSalePriceAdj/FSoCSPAUpdatePunTemp';
 
 // จ่ายโอนสินค้า
 // $route['TWO/(:any)/(:any)']            = 'document/transferwarehouseout/cTransferwarehouseout/index/$1/$2';
@@ -690,7 +691,7 @@ $route['dcmRDHSetPdtGrpDTTemp']             = 'document/conditionredeem/cConditi
 $route['dcmRDHDelGroupInDTTemp']            = 'document/conditionredeem/cConditionRedeem/FSaCRDHDelGroupInDTTemp';
 $route['dcmRDHChangStatusAfApv']            = 'document/conditionredeem/cConditionRedeem/FSaCRDHChangStatusAfApv';
 
-/*===== Begin โปรโมชั่น ==================================================================*/
+/*===== Begin โปรโมชั่น ยกมาจาก fit Auto 16/09/2565 By: IcePHP ===================================================================*/
 // Master
 $route['promotion/(:any)/(:any)']           = 'document/promotion/cPromotion/index/$1/$2';
 $route['promotionList']                     = 'document/promotion/cPromotion/FSxCPromotionList';
@@ -704,12 +705,14 @@ $route['promotionDocApprove']               = 'document/promotion/cPromotion/FSt
 $route['promotionDocCancel']                = 'document/promotion/cPromotion/FStCPromotionDocCancel';
 $route['promotionDelDoc']                   = 'document/promotion/cPromotion/FStPromotionDeleteDoc';
 $route['promotionDelDocMulti']              = 'document/promotion/cPromotion/FStPromotionDeleteMultiDoc';
+$route['promotionEvenCopy']                 = 'document/promotion/cPromotion/FStPromotionCopyDoc';
 
 // Step1 PMTDT Tmp
 $route['promotionStep1ConfirmPmtDtInTmp']               = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionConfirmPmtDtInTmp';
 $route['promotionStep1CancelPmtDtInTmp']                = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionCancelPmtDtInTmp';
 $route['promotionStep1PmtDtInTmpToBin']                 = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionPmtDtInTmpToBin';
 $route['promotionStep1DeletePmtDtInTmp']                = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionDeletePmtDtInTmp';
+$route['promotionStep1DeletePmtDtInTmpLot']             = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionDeletePmtDtInTmpLot';
 $route['promotionStep1DeleteMorePmtDtInTmp']            = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionDeleteMorePmtDtInTmp';
 $route['promotionStep1ClearPmtDtInTmp']                 = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionClearPmtDtInTmp';
 // Step1 Group Name
@@ -719,11 +722,16 @@ $route['promotionStep1UniqueValidateGroupName']         = 'document/promotion/cP
 // Step1 PDT Tmp
 $route['promotionStep1InsertPmtPdtDtToTmp']             = 'document/promotion/cPromotionStep1PmtPdtDt/FSaCPromotionInsertPmtPdtDtToTmp';
 $route['promotionStep1GetPmtPdtDtInTmp']                = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionGetPmtPdtDtInTmp';
+$route['promotionStep1GetPmtPriDtInTmp']                = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionGetPmtPriDtInTmp';
 $route['promotionStep1UpdatePmtPdtDtInTmp']             = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionUpdatePmtPdtDtInTmp';
+$route['promotionStep1GetLotDetail']                    = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionGetLotDetail';
+$route['docPromotionLotInsertTmp']                      = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionInsertLotTmp';
 // Step1 Brand Tmp
 $route['promotionStep1InsertPmtBrandDtToTmp']           = 'document/promotion/cPromotionStep1PmtBrandDt/FSaCPromotionInsertPmtBrandDtToTmp';
+$route['promotionStep1InsertPmtPriDtToTmp']             = 'document/promotion/cPromotionStep1PmtBrandDt/FSaCPromotionInsertPmtPriDtToTmp';
 $route['promotionStep1GetPmtBrandDtInTmp']              = 'document/promotion/cPromotionStep1PmtBrandDt/FSxCPromotionGetPmtBrandDtInTmp';
 $route['promotionStep1UpdatePmtBrandDtInTmp']           = 'document/promotion/cPromotionStep1PmtBrandDt/FSxCPromotionUpdatePmtBrandDtInTmp';
+$route['promotionStep1GetLotBrandDetail']               = 'document/promotion/cPromotionStep1PmtBrandDt/FSxCPromotionGetLotBrandDetail';
 // Step1 Import PmtDt from Excel
 $route['promotionStep1ImportExcelPmtDtToTmp']           = 'document/promotion/cPromotionStep1ImportPmtExcel/FStPromotionImportFromExcel';
 // Step2 Group Name
@@ -767,8 +775,7 @@ $route['promotionStep4InsertBchConditionToTmp']         = 'document/promotion/cP
 $route['promotionStepeUpdateBchConditionInTmp']         = 'document/promotion/cPromotionStep4BchCondition/FSxCPromotionUpdateBchConditionInTmp';
 $route['promotionStep4DeleteBchConditionInTmp']         = 'document/promotion/cPromotionStep4BchCondition/FSxCPromotionDeleteBchConditionInTmp';
 // Step4 Channel Condition
-
-$route ['promotionStep4GetChnConditionInTmp'] = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionGetHDChnInTmp';
+$route ['promotionStep4GetChnConditionInTmp']    = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionGetHDChnInTmp';
 $route ['promotionStep4InsertChnConditionToTmp'] = 'document/promotion/cPromotionStep4ChnCondition/FSaCPromotionInsertChnToTmp';
 $route ['promotionStepeUpdateChnConditionInTmp'] = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionUpdateChnInTmp';
 $route ['promotionStep4DeleteChnConditionInTmp'] = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionDeleteChnInTmp';
@@ -782,11 +789,11 @@ $route ['promotionStep4GetCstConditionInTmp'] = 'document/promotion/cPromotionSt
 $route ['promotionStep4InsertCstConditionToTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSaCPromotionInsertCstToTmp';
 $route ['promotionStepeUpdateCstConditionInTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSxCPromotionUpdateCstInTmp';
 $route ['promotionStep4DeleteCstConditionInTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSxCPromotionDeleteCstInTmp';
-
-$route ['promotionStep4GetChnConditionInTmp']           = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionGetHDChnInTmp';
-$route ['promotionStep4InsertChnConditionToTmp']        = 'document/promotion/cPromotionStep4ChnCondition/FSaCPromotionInsertChnToTmp';
-$route ['promotionStepeUpdateChnConditionInTmp']        = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionUpdateChnInTmp';
-$route ['promotionStep4DeleteChnConditionInTmp']        = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionDeleteChnInTmp';
+// Step4 Promotion On Promotion Condition
+$route ['promotionStep4GetPnpConditionInTmp']           = 'document/promotion/cPromotionStep4PnpCondition/FSxCPromotionGetHDPnpInTmp';
+$route ['promotionStep4InsertPnpConditionToTmp']        = 'document/promotion/cPromotionStep4PnpCondition/FSaCPromotionInsertPnpToTmp';
+$route ['promotionStepeUpdatePnpConditionInTmp']        = 'document/promotion/cPromotionStep4PnpCondition/FSxCPromotionUpdatePnpInTmp';
+$route ['promotionStep4DeletePnpConditionInTmp']        = 'document/promotion/cPromotionStep4PnpCondition/FSxCPromotionDeletePnpInTmp';
 
 // Step5 Check and Confirm
 $route['promotionStep5GetCheckAndConfirmPage']          = 'document/promotion/cPromotionStep5CheckAndConfirm/FSxCPromotionGetCheckAndConfirmPage';

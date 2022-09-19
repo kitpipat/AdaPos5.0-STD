@@ -39,21 +39,6 @@
 					</div>
 				</div>
 			</div>
-			<?php if($aAlwEventSalePriceAdj['tAutStaFull'] == 1 || $aAlwEventSalePriceAdj['tAutStaDelete'] == 1 ) : ?>
-			<div class="col-xs-12 col-md-3 col-lg-3 text-right" style="margin-top:25px;">
-				<div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
-					<button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
-						<?php echo language('common/main/main','tCMNOption')?>
-						<span class="caret"></span>
-					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li id="oliBtnDeleteAll" class="disabled">
-							<a data-toggle="modal" data-target="#odvModalDelSpa"><?php echo language('common/main/main','tDelAll')?></a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<?php endif; ?>
 		</div>
 
 		<div class="row fadeIn" id="odvSPAAdvanceSearchContainer" style="margin-bottom:20px;">
@@ -189,6 +174,28 @@
 		</div>
 
 	</div>
+
+	<div class="panel-heading">
+		<?php if($aAlwEventSalePriceAdj['tAutStaFull'] == 1 || $aAlwEventSalePriceAdj['tAutStaDelete'] == 1 ) : ?>
+			<div class="row">
+				<div class="col-xs-8 col-sm-4 col-md-4 col-lg-4">
+				</div>
+				<div class="col-xs-4 col-md-8 col-lg-8 text-right" style="margin-top:-35px;">
+					<div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
+						<button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
+							<?php echo language('common/main/main','tCMNOption')?>
+							<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu" role="menu">
+							<li id="oliBtnDeleteAll" class="disabled">
+								<a data-toggle="modal" data-target="#odvModalDelSpa"><?php echo language('common/main/main','tDelAll')?></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		<?php endif; ?>
+    </div>
 	<div class="panel-body">
 		<section id="ostDataSpa"></section>
 	</div>
@@ -210,7 +217,14 @@
 	$('.selectpicker').selectpicker();
 	$('#odvSPAAdvanceSearchContainer').hide();
 	$('#oahTWOAdvanceSearch').click(function(){
-		$('#odvSPAAdvanceSearchContainer').toggle();
+
+		if($('#odvSPAAdvanceSearchContainer').hasClass('hidden')){
+			$('#odvSPAAdvanceSearchContainer').removeClass('hidden').hide().slideDown(500);
+		}else{
+			$("#odvSPAAdvanceSearchContainer").slideUp(500,function() {
+				$(this).addClass('hidden');
+			});
+		}
 	});
 	$('#ocmUsedStatus').change(function(){
 		JCNxOpenLoading();
@@ -336,7 +350,7 @@
 			DataColumns		: ['TCNMBranch.FTBchCode','TCNMBranch_L.FTBchName'],
 			DataColumnsFormat : ['',''],
 			Perpage			: 5,
-			OrderBy			: ['TCNMBranch_L.FTBchName'],
+			OrderBy			: ['TCNMBranch_L.FTBchCode DESC'],
 			SourceOrder		: "ASC"
 		},
 		CallBack:{
@@ -385,7 +399,7 @@
 			DataColumns		: ['TCNMBranch.FTBchCode','TCNMBranch_L.FTBchName'],
 			DataColumnsFormat : ['',''],
 			Perpage			: 5,
-			OrderBy			: ['TCNMBranch_L.FTBchName'],
+			OrderBy			: ['TCNMBranch_L.FTBchCode DESC'],
 			SourceOrder		: "ASC"
 		},
 		CallBack:{

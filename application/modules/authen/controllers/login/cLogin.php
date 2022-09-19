@@ -303,6 +303,50 @@ class cLogin extends MX_Controller {
 							unlink($tPathFile); // delete file
 						}
 					}
+
+					//เก็บค่าทศนิยมในการแสดงในรูปของ Cookie ทุกครั้งที่มีการ Login เข้ามา เพื่อใช้แสดงในเอกสารและรายงาน
+					// Parameters: Ajax and Function Parameter
+					// Creator: 23/04/2022 Sittikorn(Off)
+					// ยกมาจาก Fit Auto 14/09/2022
+					$tOptCookie = get_cookie('tOptDecimalShow');
+					if($tOptCookie != NULL || $tOptCookie != ''){
+						$nOptDecimalShow = $tOptCookie;
+					}else{
+						$nOptDecimalShow = FCNxHGetOptionDecimalShow();
+						$aCookieMenuCode = array(
+							'name' => 'tOptDecimalShow',
+							'value' => $nOptDecimalShow,
+							'expire' => 0
+						);
+						$this->input->set_cookie($aCookieMenuCode);
+					}
+					//เก็บค่าทศนิยมในการแสดงในรูปของ Cookie ทุกครั้งที่มีการ Login เข้ามา เพื่อใช้แสดงในเอกสารและรายงาน
+					// Creator: 04/03/2022 Sittikorn(Off)
+					// ยกมาจาก Fit Auto 14/09/2022
+					$tOptCookieSave = get_cookie('tOptDecimalSave');
+					if($tOptCookieSave != NULL || $tOptCookieSave != ''){
+						$nOptDecimalSave = $tOptCookieSave;
+					}else{
+						$nOptDecimalSave = FCNxHGetOptionDecimalSave();
+						$aCookieMenuCodeSave = array(
+							'name' => 'tOptDecimalSave',
+							'value' => $nOptDecimalSave,
+							'expire' => 0
+						);
+						set_cookie($aCookieMenuCodeSave);
+					}
+
+					// จำนวนเเสดงข้อมูลรายการสูงสุดของหน้า List 
+					// Parameters: Ajax and Function Parameter
+					// Creator: 23/04/2022 Supawat
+					// ยกมาจาก Fit Auto 14/09/2022
+					$nShowRecordInPageList = $this->mLogin->FStMFindConfigShowRecord();
+					$aPackData 	= array(
+						'name' 		=> 'nShowRecordInPageList',
+						'value' 	=> $nShowRecordInPageList,
+						'expire' 	=> 0
+					);
+					$this->input->set_cookie($aPackData);
 					
 					$aReturn = array(
 						'aItems'		=> $aDataUsr,

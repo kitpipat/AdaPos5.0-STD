@@ -97,7 +97,7 @@
                     <div class="col-md-6">
                         <!-- Import Excel -->
                         <label class="xCNLabelFrm"><?php echo language('document/promotion/promotion', 'tPMTImportForExcel'); ?></label> 
-                        <a href="<?php echo base_url('application/modules/document/assets/src/promotion/Promotion_Import_Template.xlsx'); ?>"><u><?php echo language('document/promotion/promotion', 'Template download.'); ?></u></a>
+                        <a href="<?php echo base_url('application/modules/document/assets/src/promotion/Promotion_Import_Template2.xlsx'); ?>"><u><?php echo language('document/promotion/promotion', 'Template download.'); ?></u></a>
                         <div class="form-group pull-left">
                             <div class="input-group">
                                 <input 
@@ -156,7 +156,7 @@
                         <div class="clear-fix"></div>
                         
                         <!-- Add Btn -->
-                        <button class="xCNBTNPrimeryPlus pull-right xCNPromotionStep1BtnBrowse xCNAddPmtGroupModalCanCelDisabled" onclick="JCNvPromotionStep1Browse()" type="button" style="margin-bottom: 10px;">+</button>
+                        <button class="xCNBTNPrimeryPlus pull-right xCNPromotionStep1BtnBrowse xCNAddPmtGroupModalCanCelDisabled" id="btnAddPmt" onclick="JCNvPromotionStep1Browse()" type="button" style="margin-bottom: 10px;">+</button>
                         <!-- Add Btn -->
 
                         <!-- Options -->

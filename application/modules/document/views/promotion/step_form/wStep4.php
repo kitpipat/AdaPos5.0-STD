@@ -124,7 +124,7 @@ if ($this->session->userdata('tSesUsrLevel') == 'SHP') {
     </div>
 
     <div class="col-md-12 xCNPromotionStep4TableGroupBuyWithCustomerLevelConditionContainer">
-        <!--Section : เงื่อนไขพิเศษ - ระดับลูกค้า-->
+        <!--Section : เงื่อนไขพิเศษ - ประเภทลูกค้า-->
         <div class="panel panel-default" style="margin-bottom: 10px;">
             <div id="odvHeadAllow" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
                 <label class="xCNTextDetail1"><?php echo language('document/promotion/promotion', 'tSpecialConditions_CustomerLevel'); ?></label>
@@ -142,6 +142,33 @@ if ($this->session->userdata('tSesUsrLevel') == 'SHP') {
                     <div class="xCNPromotionStep4TableCustomerLevelCondition"></div>
                     <input type="hidden" id="oetPromotionStep4CstCode" name="oetPromotionStep4CstCode">
                     <input type="hidden" id="oetPromotionStep4CstName" name="oetPromotionStep4CstName">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="col-md-12 xCNPromotionStep4TableGroupBuyWithPromotionOnPromotionConditionContainer">
+        <!--Section : เงื่อนไขพิเศษ - โปรโมชั่นซ้อน-->
+        <div class="panel panel-default" style="margin-bottom: 10px;">
+            <div id="odvHeadAllow" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
+                <label class="xCNTextDetail1"><?php echo language('document/promotion/promotion', 'tSpecialConditions_PromotionOnPromotion'); ?></label>
+            </div>
+
+            <div class="panel-collapse collapse in" role="tabpanel">
+                <div class="panel-body xCNPDModlue">
+                    <?php if(!$bIsApvOrCancel) { ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="xCNBTNPrimeryPlus pull-right" id="obtPromotionStep4AddPromotionOnPromotionConditionBtn" onclick="JSxPromotionStep4AddPnpConditionPanel()" style="margin-bottom: 10px;">+</button>
+                            </div>
+                        </div>
+                    <?php } ?>    
+                    <div class="xCNPromotionStep4TablePromotionOnPromotionCondition"></div>
+                    <input type="hidden" id="oetPromotionStep4PnpCode" name="oetPromotionStep4PnpCode">
+                    <input type="hidden" id="oetPromotionStep4PnpName" name="oetPromotionStep4PnpName">
                 </div>
             </div>
         </div>

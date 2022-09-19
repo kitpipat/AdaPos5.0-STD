@@ -8,16 +8,26 @@
 
         JSxPromotionStep1GetPmtDtGroupNameInTmp(1, false);
 
+        var tConditBuy = $("#ocmPromotionPbyStaBuyCond").val();
+        if(tConditBuy == '3' || tConditBuy == '4'){
+            $("#ocmPromotionListTypeTmp option[value='8']").hide();
+        }else{
+            $("#ocmPromotionListTypeTmp option[value='8']").show();
+        }
+
+
         $('#ocmPromotionListTypeTmp').on('change', function(){
             JSvPromotionStep1ClearPmtPdtDtInTemp(false);
             $("#ohdPromotionBrandCodeTmp").val("");
             $("#ohdPromotionBrandNameTmp").val("");
             
-            var tListType = $(this).val(); // 1: สินค้า, 2: ยี่ห้อ, 3: กลุ่มสินค้า, 4: รุ่น, 5: ประเภท, 6: ผู้จำหน่าย, 7: สี
+            var tListType = $(this).val(); // 1: สินค้า, 2: ยี่ห้อ, 3: กลุ่มสินค้า, 4: รุ่น, 5: ประเภท, 6: ผู้จำหน่าย, 7: สี, 8: ใบปรับราคา
             if(tListType == "1"){
                 JSxPromotionStep1GetPmtPdtDtInTmp(1, true);
             }
-
+            if(tListType == "8"){
+                JSxPromotionStep1GetPmtPriDtInTmp(1, true);
+            }
             var aPdtCond = ["2","3","4","5","6","7"] 
             if(aPdtCond.includes(tListType)){
                 JSxPromotionStep1GetPmtBrandDtInTmp(1, true);
@@ -99,11 +109,12 @@
     function JSxPromotionStep1GetPmtPdtDtInTmp(pnPage, pbUseLoading) {
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
-
+            $("#btnAddPmt").show();
             var tBchCode = $('#oetPromotionBchCode').val();
             var tPmtGroupNameTmpOld = $('#ohdPromotionGroupNameTmpOld').val();
             var tPmtGroupTypeTmp = $('#ocmPromotionGroupTypeTmp').val();
             var tPmtGroupListTypeTmp = $('#ocmPromotionListTypeTmp').val();
+            $("#ocbPromotionPmtPdtDtShopAll").attr('disabled',false);
 
             var tPmtGroupNameTmp = "";
             if(tPmtGroupNameTmpOld != ""){
@@ -134,8 +145,75 @@
                 timeout: 0,
                 success: function(oResult) {
                     window.aPromotionStep1PmtPdtDtNotIn = oResult.notIn;
-                    console.log('aPromotionStep1PmtPdtDtNotIn: ', window.aPromotionStep1PmtPdtDtNotIn);
                     $('#odvPromotionPmtDtTableTmp').html(oResult.html);
+                    // Check Hide Check All Shop
+                    if(oResult.nChkTmpCmpPdtSpcCtl > 0){
+                        $('#ocbPromotionPmtPdtDtShopAll').parents('.input-group-btn').hide();
+                    } else {
+                        $('#ocbPromotionPmtPdtDtShopAll').parents('.input-group-btn').show();
+                    }
+                    JCNxCloseLoading();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxCloseLoading();
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    function JSxPromotionStep1GetPmtPriDtInTmp(pnPage, pbUseLoading) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+
+            var tBchCode = $('#oetPromotionBchCode').val();
+            var tPmtGroupNameTmpOld = $('#ohdPromotionGroupNameTmpOld').val();
+            var tPmtGroupTypeTmp = $('#ocmPromotionGroupTypeTmp').val();
+            var tPmtGroupListTypeTmp = $('#ocmPromotionListTypeTmp').val();
+            $("#ocbPromotionPmtPdtDtShopAll").attr('disabled',true);
+            
+            var tPmtGroupNameTmp = "";
+            if(tPmtGroupNameTmpOld != ""){
+                tPmtGroupNameTmp = tPmtGroupNameTmpOld;
+            }
+
+            var tSearchAll = $('#oetPromotionPdtLayoutSearchAll').val();
+
+            if (pbUseLoading) {
+                JCNxOpenLoading();
+            }
+
+            (pnPage == '' || (typeof pnPage) == 'undefined') ? pnPage = 1: pnPage = pnPage;
+
+            $.ajax({
+                type: "POST",
+                url: "promotionStep1GetPmtPriDtInTmp",
+                data: {
+                    tBchCode: tBchCode,
+                    tPmtGroupNameTmp: tPmtGroupNameTmp,
+                    tPmtGroupNameTmpOld: tPmtGroupNameTmpOld,
+                    tPmtGroupTypeTmp: tPmtGroupTypeTmp,
+                    tPmtGroupListTypeTmp: tPmtGroupListTypeTmp,
+                    nPageCurrent: pnPage,
+                    tSearchAll: tSearchAll
+                },
+                cache: false,
+                timeout: 0,
+                success: function(oResult) {
+                    window.aPromotionStep1PmtPdtDtNotIn = oResult.notIn;
+                    // console.log('aPromotionStep1PmtPdtDtNotIn: ', window.aPromotionStep1PmtPdtDtNotIn);
+                    $('#odvPromotionPmtDtTableTmp').html(oResult.html);
+
+                    nRowLength = $('#otbPromotionStep1PmtBrandDtTable .xCNPromotionPmtBrandDtRow').length;
+
+                    if(nRowLength > 0){
+                        $("#btnAddPmt").hide();
+                    }else{
+                        $("#btnAddPmt").show();
+                    }
 
                     /* if(JCNbPromotionStep1PmtDtTableIsEmpty()) {
                         $('#ocmPromotionGroupTypeTmp').attr('disabled', false).selectpicker('refresh');
@@ -156,6 +234,7 @@
         }
     }
 
+
     /**
      * Functionality : Insert PMT_PDT_DT to Temp
      * Parameters : -
@@ -164,7 +243,6 @@
      * Return Type : -
      */
     function JSvPromotionStep1InsertPmtPdtDtToTemp(ptParams) {
-        // console.log((ptParams);
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
@@ -190,8 +268,22 @@
                 cache: false,
                 timeout: 0,
                 success: function(tResult) {
-                    JSxPromotionStep1GetPmtPdtDtInTmp(1, true);
-                    $('#odvPromotionPopupChequeAdd').modal('hide');
+                    // var aReturn = JSON.parse(tResult);
+                    var aLot = new Array();
+                    var aLotSeq = new Array();
+                    $.each(tResult.aStalot, function( index, value ) {
+                        if(value.nStaLot == '1'){
+                            $('#odvPromotionAddPmtGroupModal').modal('hide');
+                            aLot.push(value.tPdtCode);
+                            aLotSeq.push(value.nSeqno);
+                        }else{
+                            JSxPromotionStep1GetPmtPdtDtInTmp(1, true);
+                        }
+                        // JSxPromotionStep1GetPmtPdtDtInTmp(1, true);
+                        $('#odvPromotionPopupChequeAdd').modal('hide');
+                    });
+                    JSvPromotionLoadModalShowPdtLotDT(aLot,aLotSeq,0);
+                    // JSxPromotionStep1GetPmtPdtDtInTmp(1, true);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxCloseLoading();
@@ -201,6 +293,48 @@
 
         } else {
             JCNxShowMsgSessionExpired();
+        }
+    }
+
+    // แสดงหน้าจอสินค้าที่มี Lot
+    function JSvPromotionLoadModalShowPdtLotDT(ptPdtCode,pnSeqno,pnRound,pnMaxrount = ''){
+        if(ptPdtCode == '' || ptPdtCode == 'NULL'){
+        }else{
+            ///pdt 000001,000002
+            // let aDataPdtBrowse  = JSON.parse(poParam);
+            var tPdtCode            = ptPdtCode;
+            var nSeqno              = pnSeqno;
+            
+            if(pnMaxrount == ''){
+                var nMaxRound           = tPdtCode.length-1;
+            }else{
+                var nMaxRound           = pnMaxrount;
+            }
+
+            $.ajax({
+                type    : "POST",
+                url     : "promotionStep1GetLotDetail",
+                data    : {
+                    "tPdtCode"            : ptPdtCode,//ptPdtCode ,
+                    "nSeqno"              : pnSeqno, 
+                    'nRound'              : pnRound,
+                    'nMaxRound'           : nMaxRound
+                },
+                ache   : false,
+                timeout : 0,
+                success : function (tResult) {
+                    if(tResult != ""){
+                        JCNxCloseLoading();
+                        $('#odvPromotionHtmlPopUpDTLot').empty();
+                        $('#odvPromotionHtmlPopUpDTLot').html(tResult);
+                        $('#odvPromotionHtmlPopUpDTLot #odvPromotionModalPopUpLot').modal('show');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
         }
     }
 
@@ -264,10 +398,12 @@
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
+            $("#btnAddPmt").show();
             var tBchCode = $('#oetPromotionBchCode').val();
             var tPmtGroupNameTmpOld = $('#ohdPromotionGroupNameTmpOld').val();
             var tPmtGroupTypeTmp = $('#ocmPromotionGroupTypeTmp').val();
             var tPmtGroupListTypeTmp = $('#ocmPromotionListTypeTmp').val();
+            $("#ocbPromotionPmtPdtDtShopAll").attr('disabled',false);
             var oPdtCondInfo = JCNoGetPdtCondInfo();
 
             var tPmtGroupNameTmp = "";
@@ -329,7 +465,6 @@
      * Return Type : -
      */
     function JSvPromotionStep1InsertPmtBrandDtToTemp(ptParams) {
-        // console.log((ptParams);
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
@@ -339,6 +474,7 @@
             var tPmtGroupTypeTmp = $('#ocmPromotionGroupTypeTmp').val();
             var tPmtGroupListTypeTmp = $('#ocmPromotionListTypeTmp').val();
             var oPdtCondInfo = JCNoGetPdtCondInfo();
+            var tTable = oPdtCondInfo.tTable;
 
             JCNxOpenLoading();
 
@@ -347,6 +483,7 @@
                 url: "promotionStep1InsertPmtBrandDtToTmp",
                 data: {
                     tBchCode: tBchCode,
+                    tTable : tTable,
                     tPmtGroupNameTmp: tPmtGroupNameTmp,
                     tPmtGroupNameTmpOld: tPmtGroupNameTmpOld,
                     tPmtGroupTypeTmp: tPmtGroupTypeTmp,
@@ -357,7 +494,133 @@
                 cache: false,
                 timeout: 0,
                 success: function(tResult) {
-                    JSxPromotionStep1GetPmtBrandDtInTmp(1, true);
+                    var aLot = new Array();
+                    var aLotSeq = new Array();
+                    $.each(tResult.aStalot, function( index, value ) {
+                        if(value.nStaLot == '1'){
+                            $('#odvPromotionAddPmtGroupModal').modal('hide');
+                            aLot.push(value.tPdtCode);
+                            aLotSeq.push(value.nSeqno);
+                        }else{
+                            JSxPromotionStep1GetPmtBrandDtInTmp(1, true);
+                        }
+                        $('#odvPromotionPopupChequeAdd').modal('hide');
+                    });
+                    JSvPromotionLoadModalShowBrandLotDT(tTable,aLot,aLotSeq,0);
+
+                    // JSxPromotionStep1GetPmtBrandDtInTmp(1, true);
+                    $('#odvPromotionPopupChequeAdd').modal('hide');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxCloseLoading();
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    // แสดงหน้าจอแบรนที่มี Lot
+    function JSvPromotionLoadModalShowBrandLotDT(ptTable,ptPdtCode,pnSeqno,pnRound,pnMaxrount = '',ptSubref = ''){
+        if(ptPdtCode == '' || ptPdtCode == 'NULL'){
+        }else{
+            ///pdt 000001,000002
+            // let aDataPdtBrowse  = JSON.parse(poParam);
+            var tPdtCode            = ptPdtCode;
+            var nSeqno              = pnSeqno;
+            var tSubref              = ptSubref;
+            
+            if(pnMaxrount == ''){
+                var nMaxRound           = tPdtCode.length-1;
+            }else{
+                var nMaxRound           = pnMaxrount;
+            }
+
+            $.ajax({
+                type    : "POST",
+                url     : "promotionStep1GetLotBrandDetail",
+                data    : {
+                    "tPdtCode"            : ptPdtCode,//ptPdtCode ,
+                    "nSeqno"              : pnSeqno, 
+                    'nRound'              : pnRound,
+                    'tTable'              : ptTable,
+                    'tSubref'             : tSubref,
+                    'nMaxRound'           : nMaxRound
+                },
+                ache   : false,
+                timeout : 0,
+                success : function (tResult) {
+                    if(tResult != ""){
+                        JCNxCloseLoading();
+                        $('#odvPromotionHtmlPopUpDTLot').empty();
+                        $('#odvPromotionHtmlPopUpDTLot').html(tResult);
+                        $('#odvPromotionHtmlPopUpDTLot #odvPromotionModalPopUpLot').modal('show');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
+        }
+    }
+
+    /**
+     * Functionality : Insert PMT_PRI_DT to Temp
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSvPromotionStep1InsertPmtPriDtToTemp(ptParams) {
+        var aReturn = $.parseJSON(ptParams);
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+
+            var tBchCode = $('#oetPromotionBchCode').val();
+            var tPmtGroupNameTmp = $('#oetPromotionGroupNameTmp').val();
+            var tPmtGroupNameTmpOld = $('#ohdPromotionGroupNameTmpOld').val();
+            var tPmtGroupTypeTmp = $('#ocmPromotionGroupTypeTmp').val();
+            var tPmtGroupListTypeTmp = $('#ocmPromotionListTypeTmp').val();
+            var oPdtCondInfo = JCNoGetPdtCondInfo();
+            var tTable = oPdtCondInfo.tTable;
+            console.log(aReturn);
+
+            JCNxOpenLoading();
+
+            $.ajax({
+                type: "POST",
+                url: "promotionStep1InsertPmtPriDtToTmp",
+                data: {
+                    tBchCode: tBchCode,
+                    tTable : tTable,
+                    tPmtGroupNameTmp: tPmtGroupNameTmp,
+                    tPmtGroupNameTmpOld: tPmtGroupNameTmpOld,
+                    tPmtGroupTypeTmp: tPmtGroupTypeTmp,
+                    tPmtGroupListTypeTmp: tPmtGroupListTypeTmp,
+                    tBrandList: aReturn,
+                    tPdtCond: JSON.stringify(oPdtCondInfo)
+                },
+                cache: false,
+                timeout: 0,
+                success: function(tResult) {
+                    var aLot = new Array();
+                    var aLotSeq = new Array();
+                    $.each(tResult.aStalot, function( index, value ) {
+                        if(value.nStaLot == '1'){
+                            $('#odvPromotionAddPmtGroupModal').modal('hide');
+                            aLot.push(value.tPdtCode);
+                            aLotSeq.push(value.nSeqno);
+                        }else{
+                            JSxPromotionStep1GetPmtPriDtInTmp(1, true);
+                        }
+                        $('#odvPromotionPopupChequeAdd').modal('hide');
+                    });
+                    JSvPromotionLoadModalShowBrandLotDT(tTable,aLot,aLotSeq,0);
+
+                    // JSxPromotionStep1GetPmtBrandDtInTmp(1, true);
                     $('#odvPromotionPopupChequeAdd').modal('hide');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -379,7 +642,7 @@
      * Return Type : -
      */
     function JSxPromotionStep1PmtBrandDtBrowseBrand(){
-        console.log('JCNoGetPdtCondInfo: ', JCNoGetPdtCondInfo());
+        // console.log('JCNoGetPdtCondInfo: ', JCNoGetPdtCondInfo());
         var oPdtCondInfo = JCNoGetPdtCondInfo();
         var tSqlView = oPdtCondInfo.tRefCode;
         var tTable = oPdtCondInfo.tTable;
@@ -479,6 +742,74 @@
         } */
         JCNxBrowseData('oPromotionBrowseBrand');
     }
+
+        /**
+     * Functionality : Browse PRI Doc
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSxPromotionStep1PmtPriDtBrowse(){
+        // console.log('JCNoGetPdtCondInfo: ', JCNoGetPdtCondInfo());
+        var oPdtCondInfo = JCNoGetPdtCondInfo();
+        var tSqlView = oPdtCondInfo.tRefCode;
+        var tTable = oPdtCondInfo.tTable;
+        var tTableL = oPdtCondInfo.tTableL;
+        var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
+        var tWhereHQ = '';
+        var tBchCodeMulti 	= "<?=$this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+        if (tUsrLevel != 'HQ') {
+                tWhereHQ = " AND TCNTPdtAdjPriHD.FTBchCode IN ("+tBchCodeMulti+") ";
+        }
+
+        if(tTable == "TCNMPdtSpl"){
+            tTableL = "TCNMSpl_L";
+        }
+        var tFieldCode = oPdtCondInfo.tFieldCode;
+        var tFieldDate = 'FDXphDocDate';
+        var tTitle = oPdtCondInfo.tDropName;
+        var tFieldCodeLabel = oPdtCondInfo.tFieldCodeLabel;
+        var tFieldNameLabel = oPdtCondInfo.tFieldNameLabel;
+
+        window.oPromotionBrowseBrand = {
+            // Option
+            Title: ['', tTitle],
+            Table: {
+                Master: tSqlView,
+                PK: tFieldCode
+            },
+            Where: {
+                Condition : [' AND TCNTPdtAdjPriHD.FTXphDocType = 3 AND TCNTPdtAdjPriHD.FTXphStaApv = 1 ' + tWhereHQ +' ORDER BY TCNTPdtAdjPriHD.FDCreateOn DESC']
+            },
+            GrideView: {
+                ColumnPathLang: '',
+                ColumnKeyLang: [tFieldCodeLabel,'หมายเหตุ', tFieldNameLabel,'เวลาเอกสาร'],
+                ColumnLang: ['','' ,''],
+                ColumnsSize: ['40%','40', '10%','10%'],
+                WidthModal: 50,
+                DataColumns: [tSqlView+"."+tFieldCode,tSqlView+".FTXphRmk", tSqlView+"."+tFieldDate,tSqlView+".FTXphDocTime"],
+                DataColumnsFormat: ['','', 'Date:YYYY-MM-DD','Time:'],
+                Perpage: 10,
+                OrderBy: [tSqlView+"."+tFieldCode],
+                SourceOrder: ""
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: ["ohdPromotionBrandCodeTmp", tSqlView+"."+tFieldCode],
+                Text: ["ohdPromotionBrandNameTmp", tSqlView+"."+tFieldDate],
+            },
+            NextFunc: {
+                FuncName: 'JSvPromotionStep1InsertPmtPriDtToTemp',
+                ArgReturn: [tFieldCode, tFieldDate]
+            },
+            BrowseLev: 1,
+            // DebugSQL : true
+        }
+
+        JCNxBrowseData('oPromotionBrowseBrand');
+    }
+
     /*===== End PMT Brand DT Table Process =============================================*/
 
     /*===== Begin PMT PDT DT Group Name Table Process ==================================*/
@@ -551,8 +882,7 @@
     Return Type : view
     */
     function JCNvPromotionStep1Browse() {
-        var tListTypeTmp = $('#ocmPromotionListTypeTmp').val(); // 1: สินค้า, 2: ยี่ห้อ, 3: กลุ่มสินค้า, 4: รุ่น, 5: ประเภท, 6: ผู้จำหน่าย, 7: สี
-
+        var tListTypeTmp = $('#ocmPromotionListTypeTmp').val(); // 1: สินค้า, 2: ยี่ห้อ, 3: กลุ่มสินค้า, 4: รุ่น, 5: ประเภท, 6: ผู้จำหน่าย, 7: สี, 8: ใบปรับราคา
         if(tListTypeTmp == "1"){
             JCNxPromotionStep1BrowsePdt();    
         }
@@ -562,6 +892,12 @@
             $("#ohdPromotionBrandCodeTmp").val("");
             $("#ohdPromotionBrandNameTmp").val("");
             JSxPromotionStep1PmtBrandDtBrowseBrand();    
+        }
+
+        if(tListTypeTmp == "8"){
+            $("#ohdPromotionBrandCodeTmp").val("");
+            $("#ohdPromotionBrandNameTmp").val("");
+            JSxPromotionStep1PmtPriDtBrowse();   
         }
     }
 
@@ -581,42 +917,18 @@
                 type: "POST",
                 url: "BrowseDataPDT",
                 data: {
-                    Qualitysearch: [
-                        /*"CODEPDT",
-                        "NAMEPDT",
-                        "BARCODE",
-                        "SUP",
-                        "PurchasingManager",
-                        "NAMEPDT",
-                        "CODEPDT",
-                        "BARCODE",
-                        'LOC',
-                        "FromToBCH",
-                        "Merchant",
-                        "FromToSHP",
-                        "FromToPGP",
-                        "FromToPTY",
-                        "PDTLOGSEQ"
-                        "PDTLOGSEQ"*/
-                    ],
-                    // PriceType: ["Cost", "tCN_Cost", "Company", "1"],
-                    PriceType: ['Pricesell'],
-                    // 'SelectTier': ['PDT'],
-                    SelectTier: ["Barcode"],
-                    // 'Elementreturn': ['oetInputTestValue','oetInputTestName'],
-                    ShowCountRecord: 10,
-                    NextFunc: "JSvPromotionStep1InsertPmtPdtDtToTemp",
-                    ReturnType: "M",
-                    BCH: [$("#oetPromotionchCodeMulti").val(),''],
-                    SHP: ["", ""],
-                    MER: ["", ""],
-                    SPL: ["", ""],
-                    /* SPL: [$('#oetCreditNoteSplCode').val(), $('#oetCreditNoteSplName').val()],
-                    // BCH: [$("#oetBchCode").val(), $("#oetBchCode").val()],
-                    SHP: [$("#oetShpCodeStart").val(), $("#oetShpCodeStart").val()], */
-                    // NOTINITEM: [["00002", "1155109050238"]],
-                    NOTINITEM: window.aPromotionStep1PmtPdtDtNotIn,
-                    Where : [' AND PPCZ.FTPdtStaAlwSale = 1  AND PBAR.FTBarStaUse= 1 AND PBAR.FTBarStaAlwSale = 1 AND ( CONVERT(VARCHAR(10),GETDATE(),121) BETWEEN CONVERT(VARCHAR(10), Products.FDPdtSaleStart, 121) AND CONVERT(VARCHAR(10), Products.FDPdtSaleStop, 121) )']
+                    'PageName'          : 'Promotion',
+                    'PriceType'         : ['Pricesell'],
+                    'SelectTier'        : ["Barcode"],
+                    'ShowCountRecord'   : 10,
+                    'NextFunc'          : "JSvPromotionStep1InsertPmtPdtDtToTemp",
+                    'ReturnType'        : "M",
+                    'BCH'               : [$("#oetPromotionchCodeMulti").val(),''],
+                    'SHP'               : ["", ""],
+                    'MER'               : ["", ""],
+                    'SPL'               : ["", ""],
+                    'NOTINITEM'         : window.aPromotionStep1PmtPdtDtNotIn,
+                    'tPdtSpcCtl'        : 'TCNTPdtPmtHD'
                 },
                 cache: false,
                 timeout: 5000,
@@ -647,7 +959,32 @@
     function JCNvPromotionStep1ConfirmToSave(bLoadingGet) {
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+            var blotflag = '0';
+            $(".xWCheckEffectLot").each(function (indexInArray, valueOfElement) { 
+                var tChecklot = $(this).data("effectlot");
+                if(tChecklot == '0'){
+                    blotflag = '1';
+                    return;
+                }
+            });
+            $(".xCNPromotionStep1PmtDtPmdRemark").each(function (indexInArray, valueOfElement) { 
+                if($(this).text() != ''){
+                    blotflag = '2';
+                    return;
+                }
+            });
 
+            if(blotflag == '1'){
+                var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg31'); ?>'; // กรุณาเพิ่มล็อตให้ครบก่อน
+                FSvCMNSetMsgWarningDialog(tWarningMessage);
+                return;
+            }
+
+            if(blotflag == '2'){
+                var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg33'); ?>'; // กรุณาเพิ่มล็อตให้ครบก่อน
+                FSvCMNSetMsgWarningDialog(tWarningMessage);
+                return;
+            }
             var tIsShopAll = ""; 
             if(!JCNbPromotionStep1PmtDtIsShopAll()){
                 // เช็ครายการในตาราง ห้ามว่าง
@@ -667,6 +1004,8 @@
                 FSvCMNSetMsgWarningDialog(tWarningMessage);
                 return;
             }
+
+
 
             /*===== Begin Group Name Duplicate Check ===================================*/
             var tPmtGroupNameTmp = $('#oetPromotionGroupNameTmp').val();
@@ -804,7 +1143,7 @@
             nRowLength = $('#otbPromotionStep1PmtPdtDtTable .xCNPromotionPmtPdtDtRow').length;
         }
 
-        var aPdtCond = ["2","3","4","5","6","7"]
+        var aPdtCond = ["2","3","4","5","6","7","8"]
         if(aPdtCond.includes(tListType)){
             nRowLength = $('#otbPromotionStep1PmtBrandDtTable .xCNPromotionPmtBrandDtRow').length;
         }
@@ -1085,11 +1424,13 @@
             var nStaSession = JCNxFuncChkSessionExpired();
             if (typeof (nStaSession) !== 'undefined' && nStaSession == 1) {
                 JCNxOpenLoading();
-                // console.log("ptStaShift: ", ptStaShift);
+                
                 var tPmtGroupNameTmp = $('#oetPromotionGroupNameTmp').val();
                 var tPmtGroupNameTmpOld = $('#ohdPromotionGroupNameTmpOld').val();
                 var tPmtGroupTypeTmp = $('#ocmPromotionGroupTypeTmp').val();
                 var tPmtGroupListTypeTmp = $('#ocmPromotionListTypeTmp').val();
+                var tDocno = $('#oetPromotionDocNo').val();
+                var tBchCode = $('#ohdPromotionBchCode').val();
 
                 var oFormData = new FormData();
                 var oFile = $('#oefPromotionStep1PmtFileExcel')[0].files[0];
@@ -1098,8 +1439,19 @@
                 oFormData.append('tPmtGroupNameTmpOld', tPmtGroupNameTmpOld);
                 oFormData.append('tPmtGroupTypeTmp', tPmtGroupTypeTmp);
                 oFormData.append('tPmtGroupListTypeTmp', tPmtGroupListTypeTmp);
+                oFormData.append('tDocno', tDocno);
+                oFormData.append('tBchCode', tBchCode);
                 oFormData.append('oefPromotionStep1PmtFileExcel', oFile);
                 oFormData.append('aFile', oFile);
+                
+                let tCSRFTokenName  = $('#csrf_token').attr("name");
+                let tCSRFTokenValue = "";
+                let value           = "; " + document.cookie;
+                let parts           = value.split("; csrf_cookie_name=");
+                if(parts.length == 2){  
+                    tCSRFTokenValue = parts.pop().split(";").shift();
+                }
+                oFormData.append(tCSRFTokenName,tCSRFTokenValue);
                 
                 $.ajax({
                     type: "POST",
@@ -1115,6 +1467,8 @@
                                 JSxPromotionStep1GetPmtPdtDtInTmp(1, false);
                             }
                             if(tPmtGroupListTypeTmp == "2"){ // Brand
+                                JSxPromotionStep1GetPmtBrandDtInTmp(1, false)    
+                            }if(tPmtGroupListTypeTmp == "4"){ // Model
                                 JSxPromotionStep1GetPmtBrandDtInTmp(1, false)    
                             }
                         }else{

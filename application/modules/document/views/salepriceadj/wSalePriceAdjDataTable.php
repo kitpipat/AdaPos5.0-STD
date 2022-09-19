@@ -1,9 +1,5 @@
 <?php 
-    if($aSpaDataList['rtCode'] == '1'){
-        $nCurrentPage = $aSpaDataList['rnCurrentPage'];
-    }else{
-        $nCurrentPage = '1';
-    }
+    $nCurrentPage = '1';
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -13,12 +9,16 @@
                 <thead>
                     <tr>
                         <?php if($aAlwEventSalePriceAdj['tAutStaFull'] == 1 || $aAlwEventSalePriceAdj['tAutStaDelete'] == 1) : ?>
-                        <th nowrap class="text-center xCNTextBold" style="width:5%;"><?php echo  language('document/salepriceadj/salepriceadj','tTBSpaChoose')?></th>
+                            <th nowrap class="xCNTextBold text-center" style="width:5%;">
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" class="ocmCENCheckDeleteAll" id="ocmCENCheckDeleteAll" >
+                                    <span class="ospListItem">&nbsp;</span>
+                                </label>
+                            </th>                        
                         <?php endif; ?>
                         <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo  language('document/salepriceadj/salepriceadj','tTBSpaBchCode')?></th>
                         <th nowrap class="text-center xCNTextBold" ><?php echo  language('document/salepriceadj/salepriceadj','tTBSpaDocNo')?></th>
                         <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo  language('document/salepriceadj/salepriceadj','tTBSpaDocDate')?></th>
-                        <!-- <th nowrap class="text-center xCNTextBold" style="width:8%;"><?php echo  language('document/salepriceadj/salepriceadj','tTBSpaStaDoc')?></th> -->
                         <th nowrap class="text-center xCNTextBold" style="width:8%;"><?php echo  language('document/salepriceadj/salepriceadj','tTBSpaStaDoc')?></th>
                         <th nowrap class="text-center xCNTextBold" style="width:8%;"><?php echo  language('document/salepriceadj/salepriceadj','tTBSpaStaPrcDoc')?></th>
                         <th nowrap class="text-center xCNTextBold" style="width:10%;"><?= language('document/salepriceadj/salepriceadj', 'tLabel1') ?></th>
@@ -35,7 +35,7 @@
                 <tbody>
                     <?php if($aSpaDataList['rtCode'] == 1 ):?>
                         <?php foreach($aSpaDataList['raItems'] AS $nKey => $aValue):
-                            if($aValue['FTXphStaApv']==""){
+                            if($aValue['FTXphStaApv']=="" || $aValue['FTXphStaDoc'] == 3){
                                 $tXphUsrApv = language('document/salepriceadj/salepriceadj','tSpaStaEmtpy');
                             }else{
                                 $tXphUsrApv = $aValue['FTXphUsrApv'];
@@ -135,37 +135,11 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6">
-        <p><?php echo  language('common/main/main','tResultTotalRecord')?> <?php echo $aSpaDataList['rnAllRow']?> <?php echo  language('common/main/main','tRecord')?> <?php echo  language('common/main/main','tCurrentPage')?> <?php echo $aSpaDataList['rnCurrentPage']?> / <?php echo $aSpaDataList['rnAllPage']?></p>
-    </div>
-    <div class="col-md-6">
-        <div class="xWPageSpa btn-toolbar pull-right">
-            <?php if($nPage == 1){ $tDisabledLeft = 'disabled'; }else{ $tDisabledLeft = '-';} ?>
-            <button onclick="JSvSpaClickPage('previous')" class="btn btn-white btn-sm" <?php echo $tDisabledLeft ?>> 
-                <i class="fa fa-chevron-left f-s-14 t-plus-1"></i>
-            </button>
-            <?php for($i=max($nPage-2, 1); $i<=max(0, min($aSpaDataList['rnAllPage'],$nPage+2)); $i++){?> 
-                <?php 
-                    if($nPage == $i){ 
-                        $tActive = 'active'; 
-                        $tDisPageNumber = 'disabled';
-                    }else{ 
-                        $tActive = '';
-                        $tDisPageNumber = '';
-                    }
-                ?>
-                 
-                <button onclick="JSvSpaClickPage('<?php echo $i?>')" type="button" class="btn xCNBTNNumPagenation <?php echo $tActive ?>" <?php echo $tDisPageNumber ?>><?php echo $i?></button>
-            <?php } ?>
-            <?php if($nPage >= $aSpaDataList['rnAllPage']){  $tDisabledRight = 'disabled'; }else{  $tDisabledRight = '-';  } ?>
-            <button onclick="JSvSpaClickPage('next')" class="btn btn-white btn-sm" <?php echo $tDisabledRight ?>> 
-                <i class="fa fa-chevron-right f-s-14 t-plus-1"></i>
-            </button>
-        </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+        <?php $nShowRecord = get_cookie('nShowRecordInPageList'); ?>
+        <p>แสดงข้อมูลรายการล่าสุด <?=$nShowRecord?> รายการ</p>
     </div>
 </div>
-
-
 <div class="modal fade" id="odvModalDelSpa">
 	<div class="modal-dialog">
 		<div class="modal-content">

@@ -192,6 +192,92 @@ function JSxCloseModalBrowsePDT(){
   $("#odvModalDOCPDT").modal("hide");
 }
 
+/////////////////////////////////////////////////// สินค้าล็อต ////////////////////////////////////////////////////
+
+//สินค้าล็อต
+function JSxCheckProductLot(elem,poOptionForLot,ptEventType){
+
+  var aData     = elem;
+  var aPDTSpc   = [];
+
+  if(ptEventType == 'insert'){ //ขาเพิ่มข้อมูล
+    for (var i=0; i < aData.length; i++){
+        if (aData[i].packData.nStaLot == '1'){ //เอาสินค้าทุกตัวที่เลือกมา วนหา เฉพาะสินค้าล็อต
+          aPDTSpc.push(aData[i].packData);
+        }
+    }
+  }else if(ptEventType == 'update'){ //แก้ไขข้อมูล
+    aPDTSpc = elem; //ขาแก้ไขข้อมูลจะส่งข้อมูลมาให้เเล้ว
+  }else{
+    alert('Something is wrong !')
+  }
+
+  //ถ้ามีข้อมูลมากกว่าหนึ่ง
+  if(aPDTSpc.length > 0){
+      $.ajax({
+          type    : "POST",
+          url     : 'LoadViewProductLot',
+          data    : {
+                      'aData'             : JSON.stringify(aPDTSpc) , 
+                      'tPDTType'          : 'LOT' , 
+                      'tEventType'        : ptEventType ,
+                      'nNumber'           : 0 , 
+                      'tNameNextFunc'     : poOptionForLot.tNextFunc + '_PDTLot' ,
+                      'oOptionForLot'     : poOptionForLot
+                  },
+          cache   : false,
+          timeout : 0,
+          success: function(tResult) {
+              var aDataReturn     = JSON.parse(tResult);
+
+              //option ว่าจะแสดง popup ที่ละตัว หรือ เอาเฉพาะค่ากลับไป
+              bListItemAll = poOptionForLot['bListItemAll'];
+              if(bListItemAll == false){ //[false : แสดงสินค้าที่ละตัว]
+                if(aDataReturn['nAll'] == 0){ //ถ้าไม่มีสินค้า LOT เลย ให้ปิดหน้าจอ
+                  JSxCloseModalBrowsePDT();
+                  var nStaLastSeq = "1"; //สินค้าตัวสุดท้าย 1:ตัวสุดท้าย 0:ไม่ใช่ตัวสุดท้าย
+                }else{
+                  setTimeout(function(){ 
+                    $("#odvModalDOCPDTLot").modal({ backdrop: "static", keyboard: false });
+                    $("#odvModalDOCPDTLot").modal({ show: true });
+                    $('#odvModalLotBodyPDT').html(aDataReturn['tHTML']); 
+                  }, 500);
+                  var nStaLastSeq = "0"; //สินค้าตัวสุดท้าย 1:ตัวสุดท้าย 0:ไม่ใช่ตัวสุดท้าย
+                }
+              }else{ //[true : เอาลิสต์สินค้าทั้งหมด]
+                  var aNewResult  = JSON.stringify({
+                    'tType'       : 'confirm' , 
+                    'nStaLastSeq' : nStaLastSeq,
+                    'aResult'     :  { 'tPDTCode' : aDataReturn['aItemReturn'] } ,
+                    'tRemark'     : '[dev] สินค้าล็อต เอาไป insert TCNTDocDTTmp และใน Grid' 
+                  });
+
+                  var tNameNextFunc = aDataReturn['tNameNextFunc'];
+                  return window[tNameNextFunc](aNewResult);
+              }
+          },
+          error: function(jqXHR, textStatus, errorThrown) {
+              console.log(jqXHR + textStatus)
+              JCNxResponseError(jqXHR, textStatus, errorThrown);
+              JCNxCloseLoading();
+          }
+      });
+  }else{
+    JSxCloseModalBrowsePDT();
+  }
+}
+
+//Close
+function JSxCloseModalBrowse_lot(){
+  $("div").remove("odvModalBackdropPDT");
+  $("#odvModalDOCPDTLot").modal("hide");
+}
+
+//next funct is ready : หลังจากกดยืนยันสินค้าล็อต
+function JSxNextFunction_PDTLot(elem){
+  var aData = JSON.parse(elem);
+  console.log(aData);
+}
 
 ///////////////////////////////////////////// สินค้าแฟชั่น + สินค้าซีเรียล /////////////////////////////////////////////
 

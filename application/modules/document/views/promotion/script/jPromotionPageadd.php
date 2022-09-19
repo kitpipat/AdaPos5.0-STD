@@ -1,6 +1,7 @@
 <script>
     $(document).ready(function() {
 
+
         $('.selectpicker').selectpicker();
 
         $('.xCNDatePicker').datepicker({
@@ -11,7 +12,7 @@
         });
 
         $('.xCNTimePicker').datetimepicker({
-            format: 'HH:mm:ss'
+            format: 'HH:mm'
         });
 
         $('#obtPmtDocDate').click(function() {
@@ -120,195 +121,212 @@
             $('.xCNPromotionNextStep').prop('disabled', false);
             $('.xCNPromotionBackStep').prop('disabled', false);
 
-            switch(tTab){
-                case "odvPromotionStep1" : {
-                    $('.xCNPromotionBackStep').prop('disabled', true);
-
-                    $('.xCNPromotionStep1').css( "background","#fff" );
-                    $('.xCNPromotionStep2').css( "background","#d6d6d6" );
-                    $('.xCNPromotionStep3').css( "background","#d6d6d6" );
-                    $('.xCNPromotionStep4').css( "background","#d6d6d6" );
-                    $('.xCNPromotionStep5').css( "background","#d6d6d6" );
-
-                    $('.xCNPromotionStep1').css('border', '2px solid #000');
-                    $('.xCNPromotionStep2').css('border', '2px solid #d6d6d6');
-                    $('.xCNPromotionStep3').css('border', '2px solid #d6d6d6');
-                    $('.xCNPromotionStep4').css('border', '2px solid #d6d6d6');
-                    $('.xCNPromotionStep5').css('border', '2px solid #d6d6d6');
-
-                    $('#odvPromotionLine').css( "background","#d6d6d6" );
-                    break;
-                }
-                case "odvPromotionStep2" : {
-                    if(!JCNbPromotionStep1IsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg20'); ?>'; // กรุณาตรวจสอบข้อมูล สร้างกลุ่ม/สินค้า
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
+            if(localStorage.tChkSubmitOrEdit != '1'){
+                switch(tTab){
+                    case "odvPromotionStep1" : {
                         $('.xCNPromotionBackStep').prop('disabled', true);
-                        $(".xCNPromotionTabContent #odvPromotionStep1").addClass("active").addClass("in");
-                        return;
-                    }
 
-                    JSxPromotionStep2GetPmtDtGroupNameInTmp(1, false, 1);
-                    JSxPromotionStep2GetPmtDtGroupNameInTmp(1, false, 2);
+                        $('.xCNPromotionStep1').css( "background","#fff" );
+                        $('.xCNPromotionStep2').css( "background","#d6d6d6" );
+                        $('.xCNPromotionStep3').css( "background","#d6d6d6" );
+                        $('.xCNPromotionStep4').css( "background","#d6d6d6" );
+                        $('.xCNPromotionStep5').css( "background","#d6d6d6" );
 
-                    $('.xCNPromotionStep1').css( "background","#000" );
-                    $('.xCNPromotionStep2').css( "background","#fff" );
-                    $('.xCNPromotionStep3').css( "background","#d6d6d6" );
-                    $('.xCNPromotionStep4').css( "background","#d6d6d6" );
-                    $('.xCNPromotionStep5').css( "background","#d6d6d6" );
+                        $('.xCNPromotionStep1').css('border', '2px solid #000');
+                        $('.xCNPromotionStep2').css('border', '2px solid #d6d6d6');
+                        $('.xCNPromotionStep3').css('border', '2px solid #d6d6d6');
+                        $('.xCNPromotionStep4').css('border', '2px solid #d6d6d6');
+                        $('.xCNPromotionStep5').css('border', '2px solid #d6d6d6');
 
-                    $('.xCNPromotionStep1').css('border', '2px solid #000');
-                    $('.xCNPromotionStep2').css('border', '2px solid #000');
-                    $('.xCNPromotionStep3').css('border', '2px solid #d6d6d6');
-                    $('.xCNPromotionStep4').css('border', '2px solid #d6d6d6');
-                    $('.xCNPromotionStep5').css('border', '2px solid #d6d6d6');
+                        $('#odvPromotionLine').css( "background","#d6d6d6" );
+                        break;
+                    }
+                    case "odvPromotionStep2" : {
+                        if(!JCNbPromotionStep1IsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg20'); ?>'; // กรุณาตรวจสอบข้อมูล สร้างกลุ่ม/สินค้า
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $('.xCNPromotionBackStep').prop('disabled', true);
+                            $(".xCNPromotionTabContent #odvPromotionStep1").addClass("active").addClass("in");
+                            return;
+                        }
 
-                    $('#odvPromotionLine').css( "background","linear-gradient(to right, black 25%, #d6d6d6 20% 40%)" );
-                    break;
-                }
-                case "odvPromotionStep3" : {
-                    if(!JCNbPromotionStep1IsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg20'); ?>'; // กรุณาตรวจสอบข้อมูล สร้างกลุ่ม/สินค้า
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep1").addClass("active").addClass("in");
-                        return;
-                    }
-                    if(!JCNbPromotionStep2IsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg21'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดกลุ่ม ซื้อ-รับ
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep2").addClass("active").addClass("in");
-                        return;
-                    }
-
-                    if(JSbPromotionConditionBuyIsRange()){ // เงื่อนไขการซื้อแบบช่วง
-                        $('.xCNPromotionStep3TableGroupBuyContainer').hide();
-                        $('.xCNPromotionStep3TableGroupBuyWithGroupGetContainer').show();
-                        $('.xCNPromotionStep3TableGroupGetContainer').hide();
-                    }
-                    if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
-                        $('.xCNPromotionStep3TableGroupBuyContainer').show();
-                        $('.xCNPromotionStep3TableGroupBuyWithGroupGetContainer').hide();
-                        $('.xCNPromotionStep3TableGroupGetContainer').show();
-                    }
+                        JSxPromotionStep2GetPmtDtGroupNameInTmp(1, false, 1);
+                        JSxPromotionStep2GetPmtDtGroupNameInTmp(1, false, 2);
 
                         $('.xCNPromotionStep1').css( "background","#000" );
-                        $('.xCNPromotionStep2').css( "background","#000" );
-                        $('.xCNPromotionStep3').css( "background","#fff" );
+                        $('.xCNPromotionStep2').css( "background","#fff" );
+                        $('.xCNPromotionStep3').css( "background","#d6d6d6" );
                         $('.xCNPromotionStep4').css( "background","#d6d6d6" );
                         $('.xCNPromotionStep5').css( "background","#d6d6d6" );
 
                         $('.xCNPromotionStep1').css('border', '2px solid #000');
                         $('.xCNPromotionStep2').css('border', '2px solid #000');
-                        $('.xCNPromotionStep3').css('border', '2px solid #000');
+                        $('.xCNPromotionStep3').css('border', '2px solid #d6d6d6');
                         $('.xCNPromotionStep4').css('border', '2px solid #d6d6d6');
                         $('.xCNPromotionStep5').css('border', '2px solid #d6d6d6');
 
-                        $('#odvPromotionLine').css( "background","linear-gradient(to right, black 50%, #d6d6d6 20% 40%)" );
-                    break;
-                }
-                case "odvPromotionStep4" : {
-                    if(!JCNbPromotionStep1IsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg20'); ?>'; // กรุณาตรวจสอบข้อมูล สร้างกลุ่ม/สินค้า
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep1").addClass("active").addClass("in");
-                        return;
+                        $('#odvPromotionLine').css( "background","linear-gradient(to right, black 25%, #d6d6d6 20% 40%)" );
+                        break;
                     }
-                    if(!JCNbPromotionStep2IsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg21'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดกลุ่ม ซื้อ-รับ
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep2").addClass("active").addClass("in");
-                        return;
-                    }
-                    if(!JCNbPromotionStep3AvgDisPercentIsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg22'); ?>'; // กรุณาตรวจสอบข้อมูล % เฉลี่ยส่วนลด
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
-                        return;
-                    }
-                    if(!JCNbPromotionStep3CouponIsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg23'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดเงื่อนไขกลุ่ม (เงื่อนไข - สิทธิประโยชน์คูปอง)
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
-                        return;
-                    }
-                    if(!JCNbPromotionStep3PointIsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg24'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดเงื่อนไขกลุ่ม (เงื่อนไข - สิทธิประโยชน์แต้ม)
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
-                        return;
-                    }
+                    case "odvPromotionStep3" : {
+                        if(!JCNbPromotionStep1IsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg20'); ?>'; // กรุณาตรวจสอบข้อมูล สร้างกลุ่ม/สินค้า
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep1").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep2IsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg21'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดกลุ่ม ซื้อ-รับ
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            // $(".xCNPromotionTabContent #odvPromotionStep2").addClass("active").addClass("in");
+                            return;
+                        }
 
-                    JSxPromotionStep4GetPdtPmtHDCstPriInTmp(1, false);
-                    JSxPromotionStep4GetPdtPmtHDBchInTmp(1, false);
-                    JSxPromotionStep4GetHDChnInTmp(1, false);
-                    JSxPromotionStep4GetHDRcvInTmp(1, false);
-                    JSxPromotionStep4GetHDCstInTmp(1, false);
+                        if(JSbPromotionConditionBuyIsRange()){ // เงื่อนไขการซื้อแบบช่วง
+                            $('.xCNPromotionStep3TableGroupBuyContainer').hide();
+                            $('.xCNPromotionStep3TableGroupBuyWithGroupGetContainer').show();
+                            $('.xCNPromotionStep3TableGroupGetContainer').hide();
+                        }
+                        if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
+                            $('.xCNPromotionStep3TableGroupBuyContainer').show();
+                            $('.xCNPromotionStep3TableGroupBuyWithGroupGetContainer').hide();
+                            $('.xCNPromotionStep3TableGroupGetContainer').show();
+                        }
 
-                    $('.xCNPromotionStep1').css( "background","#000" );
-                    $('.xCNPromotionStep2').css( "background","#000" );
-                    $('.xCNPromotionStep3').css( "background","#000" );
-                    $('.xCNPromotionStep4').css( "background","#fff" );
-                    $('.xCNPromotionStep5').css( "background","#d6d6d6" );
+                            $('.xCNPromotionStep1').css( "background","#000" );
+                            $('.xCNPromotionStep2').css( "background","#000" );
+                            $('.xCNPromotionStep3').css( "background","#fff" );
+                            $('.xCNPromotionStep4').css( "background","#d6d6d6" );
+                            $('.xCNPromotionStep5').css( "background","#d6d6d6" );
 
-                    $('.xCNPromotionStep1').css('border', '2px solid #000');
-                    $('.xCNPromotionStep2').css('border', '2px solid #000');
-                    $('.xCNPromotionStep3').css('border', '2px solid #000');
-                    $('.xCNPromotionStep4').css('border', '2px solid #000');
-                    $('.xCNPromotionStep5').css('border', '2px solid #d6d6d6')
+                            $('.xCNPromotionStep1').css('border', '2px solid #000');
+                            $('.xCNPromotionStep2').css('border', '2px solid #000');
+                            $('.xCNPromotionStep3').css('border', '2px solid #000');
+                            $('.xCNPromotionStep4').css('border', '2px solid #d6d6d6');
+                            $('.xCNPromotionStep5').css('border', '2px solid #d6d6d6');
 
-                    $('#odvPromotionLine').css( "background","linear-gradient(to right, black 75%, #d6d6d6 20% 40%)" );
-                    break;
-                }
-                case "odvPromotionStep5" : {
-                    if(!JCNbPromotionStep1IsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg20'); ?>'; // กรุณาตรวจสอบข้อมูล สร้างกลุ่ม/สินค้า
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep1").addClass("active").addClass("in");
-                        return;
+                            $('#odvPromotionLine').css( "background","linear-gradient(to right, black 50%, #d6d6d6 20% 40%)" );
+                        break;
                     }
-                    if(!JCNbPromotionStep2IsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg21'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดกลุ่ม ซื้อ-รับ
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep2").addClass("active").addClass("in");
-                        return;
+                    case "odvPromotionStep4" : {
+                        if(!JCNbPromotionStep1IsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg20'); ?>'; // กรุณาตรวจสอบข้อมูล สร้างกลุ่ม/สินค้า
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep1").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep2IsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg21'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดกลุ่ม ซื้อ-รับ
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            // $(".xCNPromotionTabContent #odvPromotionStep2").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep3AvgDisPercentIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg22'); ?>'; // กรุณาตรวจสอบข้อมูล % เฉลี่ยส่วนลด
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
+                       
+                        if(!JCNbPromotionStep3CouponIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg23'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดเงื่อนไขกลุ่ม (เงื่อนไข - สิทธิประโยชน์คูปอง)
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep3CheckboxIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg8'); ?>';
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            // $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep3PointIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg24'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดเงื่อนไขกลุ่ม (เงื่อนไข - สิทธิประโยชน์แต้ม)
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
+
+                        JSxPromotionStep4GetPdtPmtHDCstPriInTmp(1, false);
+                        JSxPromotionStep4GetPdtPmtHDBchInTmp(1, false);
+                        JSxPromotionStep4GetHDChnInTmp(1, false);
+                        JSxPromotionStep4GetHDRcvInTmp(1, false);
+                        JSxPromotionStep4GetHDCstInTmp(1, false);
+                        JSxPromotionStep4GetHDPnpInTmp(1, false);
+
+                        $('.xCNPromotionStep1').css( "background","#000" );
+                        $('.xCNPromotionStep2').css( "background","#000" );
+                        $('.xCNPromotionStep3').css( "background","#000" );
+                        $('.xCNPromotionStep4').css( "background","#fff" );
+                        $('.xCNPromotionStep5').css( "background","#d6d6d6" );
+
+                        $('.xCNPromotionStep1').css('border', '2px solid #000');
+                        $('.xCNPromotionStep2').css('border', '2px solid #000');
+                        $('.xCNPromotionStep3').css('border', '2px solid #000');
+                        $('.xCNPromotionStep4').css('border', '2px solid #000');
+                        $('.xCNPromotionStep5').css('border', '2px solid #d6d6d6')
+
+                        $('#odvPromotionLine').css( "background","linear-gradient(to right, black 75%, #d6d6d6 20% 40%)" );
+                        break;
                     }
-                    if(!JCNbPromotionStep3AvgDisPercentIsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg22'); ?>'; // กรุณาตรวจสอบข้อมูล % เฉลี่ยส่วนลด
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
-                        return;
-                    }
-                    if(!JCNbPromotionStep3CouponIsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg23'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดเงื่อนไขกลุ่ม (เงื่อนไข - สิทธิประโยชน์คูปอง)
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
-                        return;
-                    }
-                    if(!JCNbPromotionStep3PointIsValid()){
-                        var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg24'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดเงื่อนไขกลุ่ม (เงื่อนไข - สิทธิประโยชน์แต้ม)
-                        FSvCMNSetMsgWarningDialog(tWarningMessage);
-                        $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
-                        return;
-                    }
+                    case "odvPromotionStep5" : {
+                        if(!JCNbPromotionStep1IsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg20'); ?>'; // กรุณาตรวจสอบข้อมูล สร้างกลุ่ม/สินค้า
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep1").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep2IsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg21'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดกลุ่ม ซื้อ-รับ
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep2").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep3AvgDisPercentIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg22'); ?>'; // กรุณาตรวจสอบข้อมูล % เฉลี่ยส่วนลด
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
+                        
+                        if(!JCNbPromotionStep3CouponIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg23'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดเงื่อนไขกลุ่ม (เงื่อนไข - สิทธิประโยชน์คูปอง)
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep3CheckboxIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg8'); ?>';
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
+                        if(!JCNbPromotionStep3PointIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg24'); ?>'; // กรุณาตรวจสอบข้อมูล กำหนดเงื่อนไขกลุ่ม (เงื่อนไข - สิทธิประโยชน์แต้ม)
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
 
 
-                    JSxPromotionStep4GetCheckAndConfirmPage(false);
-                    $('.xCNPromotionStep1').css( "background","#000" );
-                    $('.xCNPromotionStep2').css( "background","#000" );
-                    $('.xCNPromotionStep3').css( "background","#000" );
-                    $('.xCNPromotionStep4').css( "background","#000" );
-                    $('.xCNPromotionStep5').css( "background","#fff" );
+                        JSxPromotionStep4GetCheckAndConfirmPage(false);
+                        $('.xCNPromotionStep1').css( "background","#000" );
+                        $('.xCNPromotionStep2').css( "background","#000" );
+                        $('.xCNPromotionStep3').css( "background","#000" );
+                        $('.xCNPromotionStep4').css( "background","#000" );
+                        $('.xCNPromotionStep5').css( "background","#fff" );
 
-                    $('.xCNPromotionStep1').css('border', '2px solid #000');
-                    $('.xCNPromotionStep2').css('border', '2px solid #000');
-                    $('.xCNPromotionStep3').css('border', '2px solid #000');
-                    $('.xCNPromotionStep4').css('border', '2px solid #000');
-                    $('.xCNPromotionStep5').css('border', '2px solid #000')
-                    $('#odvPromotionLine').css( "background","linear-gradient(to right, black 100%, #d6d6d6 20% 40%)" );
-                    $('.xCNPromotionNextStep').prop('disabled', true);
-                    break;
-                }
-                default : {
+                        $('.xCNPromotionStep1').css('border', '2px solid #000');
+                        $('.xCNPromotionStep2').css('border', '2px solid #000');
+                        $('.xCNPromotionStep3').css('border', '2px solid #000');
+                        $('.xCNPromotionStep4').css('border', '2px solid #000');
+                        $('.xCNPromotionStep5').css('border', '2px solid #000')
+                        $('#odvPromotionLine').css( "background","linear-gradient(to right, black 100%, #d6d6d6 20% 40%)" );
+                        $('.xCNPromotionNextStep').prop('disabled', true);
+                        break;
+                    }
+                    default : {
+                    }
                 }
             }
 
@@ -382,6 +400,13 @@
                 $('#odvModalWanning .xWBtnCancel').on('click', function(event){
                     $('#ocmPromotionPbyStaBuyCond').val(tPbyStaBuyCondBeforeChangeVal).selectpicker('refresh');
                 });
+            }else{
+                var tConditBuy = $("#ocmPromotionPbyStaBuyCond").val();
+                if(tConditBuy == '3' || tConditBuy == '4'){
+                    $("#ocmPromotionListTypeTmp option[value='8']").hide();
+                }else{
+                    $("#ocmPromotionListTypeTmp option[value='8']").show();
+                }
             }
             JSxPromotionStep4GetCheckAndConfirmPage(false);
         });
@@ -400,6 +425,16 @@
             // Clear กลุ่มซื้อ,กลุ่มรับ Step2
             $('.xCNPromotionStep2GroupBuy .xCNPromotionStep2GroupNameType1Item .close').click();
             $('.xCNPromotionStep2GroupGet .xCNPromotionStep2GroupNameType1Item .close').click();
+
+            var tConditBuy = $("#ocmPromotionPbyStaBuyCond").val();
+            if(tConditBuy == '3' || tConditBuy == '4'){
+                $("#ocmPromotionListTypeTmp option[value='8']").hide();
+            }else{
+                $("#ocmPromotionListTypeTmp option[value='8']").show();
+            }
+            $(".xCNPromotionPmtPdtDtGroupNameRow").each(function () { 
+                $(this).find( ".xCNIconDel" ).click();
+            });
         }
         /*===== End ocmPromotionPbyStaBuyCond(เงื่อนไขการซื้อ) Control =====================*/
 
@@ -576,8 +611,7 @@
                 DataColumnsFormat: ['', ''],
                 WidthModal: 50,
                 Perpage: 10,
-                OrderBy: ['TCNMBranch.FTBchCode'],
-                SourceOrder: "ASC"
+                OrderBy: ['TCNMBranch.FTBchCode DESC']
             },
             CallBack: {
                 ReturnType: 'S',
@@ -772,11 +806,23 @@
                 },
                 oetPromotionPmhCstDobNext: {
                     required: true
+                },
+                oetPromotionPmhName: {
+                    required: true
+                },
+                oetPromotionPmhNameSlip: {
+                    required: true
                 }
             },
             messages: {
                 oetPromotionDocNo: {
                     "required": $('#oetPromotionDocNo').attr('data-validate-required')
+                },
+                oetPromotionPmhName: {
+                    "required": $('#oetPromotionPmhName').attr('data-validate-required')
+                },
+                oetPromotionPmhNameSlip: {
+                    "required": $('#oetPromotionPmhNameSlip').attr('data-validate-required')
                 }
             },
             errorElement: "em",
@@ -813,9 +859,16 @@
                     FSvCMNSetMsgWarningDialog(tWarningMessage);
                     return;
                 }
+                
                 if(!JCNbPromotionStep3CouponIsValid()){
                     var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg23'); ?>';
                     FSvCMNSetMsgWarningDialog(tWarningMessage);
+                    return;
+                }
+                if(!JCNbPromotionStep3CheckboxIsValid()){
+                    var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg8'); ?>';
+                    FSvCMNSetMsgWarningDialog(tWarningMessage);
+                    $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
                     return;
                 }
                 if(!JCNbPromotionStep3PointIsValid()){
@@ -857,6 +910,7 @@
                 success: function(oResult) {
                     switch (oResult.nStaCallBack) {
                         case "1": {
+                            localStorage.tChkSubmitOrEdit = '1';
                             JSvPromotionCallPageEdit(oResult.tCodeReturn);
                             break;
                         }
@@ -869,6 +923,7 @@
                             break;
                         }
                         default: {
+                            localStorage.tChkSubmitOrEdit = '1';
                             JSvPromotionCallPageEdit(oResult.tCodeReturn);
                         }
                     }
@@ -951,6 +1006,12 @@
                         FSvCMNSetMsgWarningDialog(tWarningMessage);
                         return;
                     }
+                    if(!JCNbPromotionStep3CheckboxIsValid()){
+                            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg8'); ?>';
+                            FSvCMNSetMsgWarningDialog(tWarningMessage);
+                            $(".xCNPromotionTabContent #odvPromotionStep3").addClass("active").addClass("in");
+                            return;
+                        }
                     if(!JCNbPromotionStep3PointIsValid()){
                         var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg24'); ?>';
                         FSvCMNSetMsgWarningDialog(tWarningMessage);
@@ -1245,7 +1306,7 @@
               $('#ocmPromotionPmhStaLimitCst option:not(:selected)').attr('disabled',true);
           }else{
             $('#ocmPromotionPmhStaLimitCst option:not(:selected)').attr('disabled',false);
-            // $('#ocmPromotionPmhStaLimitCst').val(1).change();
+            $('#ocmPromotionPmhStaLimitCst').val(1).change();
           }
           $("#ocmPromotionPmhStaLimitCst").selectpicker("refresh");
     }
@@ -1263,5 +1324,49 @@
             {"DocBchCode"   : tUsrBchCode}
 		];
         window.open("<?php echo base_url(); ?>formreport/Frm_SQL_ALLMPmt?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    }
+
+    // Event Click Appove Document
+    $('#obtPromotionCopy').unbind().click(function(){
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if(typeof(nStaSession) !== "undefined" && nStaSession == 1) {
+            JSxPromotionCopyDocument(false);
+        }else{
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    // Functionality: Copy Doc Promotion
+    // Parameters: Event Click Save Document
+    // Creator: 17/03/2022 Off
+    // LastUpdate: 17/03/2022 Off
+    function JSxPromotionCopyDocument(pbIsConfirm){
+        if(pbIsConfirm){
+            $("#odvPromotionModalCopyDoc").modal("hide");
+            $('body').removeClass('modal-open');
+            $('.modal-backdrop').remove();
+            JCNxOpenLoading();
+            var tDocumentNumber =  $('#oetPromotionDocNo').val();
+            var tBchCode        =  $('#oetPromotionBchCode').val();
+            $.ajax({
+                type    : "POST",
+                url     : "promotionEvenCopy",
+                data    : {tDocumentNumber : tDocumentNumber  , tBchCode : tBchCode},
+                timeout: 0,
+                success: function(oDataReturn){
+                    FSvCMNSetMsgSucessDialog('คัดลอกเอกสารสำเร็จ');
+                    setTimeout(function () {
+                        JSvPromotionCallPageList();
+                    }, 500);
+                    JCNxCloseLoading();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    (jqXHR, textStatus, errorThrown);
+                }
+            });
+        }else{
+            $('#odvPromotionModalCopyDoc').modal({backdrop:'static',keyboard:false});
+            $("#odvPromotionModalCopyDoc").modal("show");
+        }
     }
 </script>

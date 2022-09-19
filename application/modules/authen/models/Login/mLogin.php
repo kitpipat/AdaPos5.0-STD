@@ -494,6 +494,25 @@ class mLogin extends CI_Model {
         return $aResult;
     }
 
+    //Creator: 14/09/2022 ยกมาจาก FitAuto
+    public function FStMFindConfigShowRecord(){
+
+        $tSQL   = "SELECT 
+                        CASE 
+                            WHEN ISNULL(FTSysStaUsrValue,'') = '' THEN FTSysStaDefValue 
+                            ELSE FTSysStaUsrValue 
+                        END FTValue
+                    FROM TSYSConfig WHERE FTSysCode = 'nVB_BrwTopWeb' AND FTSysApp = 'SB' ";
+        $oQuery = $this->db->query($tSQL);
+        if ( $oQuery->num_rows() > 0 ){
+            $aResult    = $oQuery->result_array();
+            $nValue     = $aResult[0]['FTValue'];
+        } else {
+            $nValue     = 30; 
+        }
+        return $nValue;
+    }
+
 }
 
 
