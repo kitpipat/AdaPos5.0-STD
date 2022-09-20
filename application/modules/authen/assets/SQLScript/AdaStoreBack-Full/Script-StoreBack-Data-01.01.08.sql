@@ -570,17 +570,3 @@ UPDATE TCNSRptSpc SET FTRptStaActive = 0
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.08', getdate() , 'ปิดรายงานพิเศษ', 'Nattakit K.');
 END
 GO
-
-
-
-
-
-IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.09') BEGIN
-
-INSERT INTO [TCNSRptSpc] ([FTAgnCode], [FTBchCode], [FTMerCode], [FTShpCode], [FNRptGrpSeq], [FTRptGrpCode], [FNRptSeq], [FTRptCode], [FTRptRoute], [FTRptFilterCol], [FTRptStaActive], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('', NULL, NULL, NULL, '1', 'SPC001', '2', 'SPCANI002', 'rptRptSaleByProductAnime', '1,6,2,3,26,13,8,9,4,53', '1', NULL, NULL, NULL, NULL);
-INSERT INTO [TCNSRptSpc_L] ([FTRptCode], [FNLngID], [FTRptName], [FTRptRmk]) VALUES ('SPCANI002', '1', 'รายงาน - ยอดขายตามสินค้า (Accounting)', NULL);
-
---ทุกครั้งที่รันสคริปใหม่
-INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.09', getdate() , 'เพิ่มรายงานพิเศษ', 'Nattakit K.');
-END
-GO
