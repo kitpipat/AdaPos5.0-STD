@@ -902,7 +902,7 @@ class mTaxinvoicefc extends CI_Model{
         $tBrowseBchCode               = $aPackData['tBrowseBchCode'];
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
         $tSQL       = " INSERT INTO TPSTTaxHDDis (
-                            FTBchCode,FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FCXhdAmt,FTXhdRefCode
+                            FTBchCode,FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FTXhdRefCode,FCXhdAmt
                         ) SELECT 
                         HDDis.FTBchCode,'$tTaxNumberFull',GETDATE() AS FDXhdDateIns,HDDis.FTXhdDisChgTxt,HDDis.FTXhdDisChgType,HDDis.FCXhdTotalAfDisChg,HDDis.FCXhdDisChg,HDDis.FTXhdRefCode,
                         CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(HDDis.FCXhdAmt,0) *-(1) ELSE ISNULL(HDDis.FCXhdAmt,0) END FCXhdAmt

@@ -560,3 +560,13 @@ INSERT INTO TSysReportFilter_L ([FTRptFltCode], [FNLngID], [FTRptFltName]) VALUE
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.07', getdate() , 'เพิ่มรายงานการซื้อและคลัง', 'Nattakit K.');
 END
 GO
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.08') BEGIN
+
+UPDATE TCNSRptSpc SET FTRptStaActive = 0 
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.08', getdate() , 'ปิดรายงานพิเศษ', 'Nattakit K.');
+END
+GO
