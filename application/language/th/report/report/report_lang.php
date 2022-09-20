@@ -2526,3 +2526,11 @@ $lang['tRptPssVayMonthB4Vat1'] = 'Before Vat';
 $lang['tRptPssVayMonthB4Vat2'] = 'Before Vat';
 $lang['tRptPssVayMonthVatVal'] = 'จำนวนเงินภาษี';
 $lang['tRptPssVayMonthAmtVal'] = 'จำนวนเงินรวม';
+
+
+//รายงานยอดขายตามสินค้า รายงานพิเศษ Anime Pos+
+$lang['tRptSaleByProductAnimeTitle'] = 'รายงาน - ยอดขายตามสินค้า (Accounting)';
+$lang['tRptSaleByProductAnimeBarCode'] = 'รหัสบาร์โค้ด';
+$lang['tRptSaleByProductAnimeBrand'] = 'ยี่ห้อ';
+$lang['tRptSaleByProductAnimeBalance'] = 'สต็อกคงเหลือ';
+$lang['tRptSaleByProductAnimeSetPrice'] = 'ราคา/หน่วย';

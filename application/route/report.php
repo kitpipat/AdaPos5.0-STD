@@ -850,3 +850,11 @@ $route['rptRptInventoryTranferClickPage']           = 'report/reportFitauto/Rpti
 $route['rtpPssVatByMonth'] = 'report/reportPSSVatByMonth/Rptpssvatbymonth_controller/index';
 $route['rtpPssVatByMonthClickPage'] = 'report/reportPSSVatByMonth/Rptpssvatbymonth_controller/FSvCCallRptViewBeforePrintClickPage';
 $route['rtpPssVatByMonthCallExportFile'] = "report/reportPSSVatByMonth/Rptpssvatbymonth_controller/FSvCCallRptExportFile";
+
+
+
+/** ========================================= รายงานยอดขายตามสินค้า (Accounting) ======================================================================== */
+$route['rptRptSaleByProductAnime']               = 'report/reportsale/Rptsalebyproductanime_controller/index';
+$route['rptRptSaleByProductAnimeClickPage']      = 'report/reportsale/Rptsalebyproductanime_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptRptSaleByProductAnimeCallExportFile'] = 'report/reportsale/Rptsalebyproductanime_controller/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */

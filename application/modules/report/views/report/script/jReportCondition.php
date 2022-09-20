@@ -837,7 +837,7 @@
         let tCondition          = '';
         let tAgnCode            = $('#oetSpcAgncyCode').val();
         if( tAgnCode != ''  && tAgnCode != undefined){
-            tCondition += " AND TCNMPdtType.FTAgnCode = '"+tAgnCode+"' ";
+            tCondition += " AND ( ISNULL(TCNMPdtType.FTAgnCode,'') = '"+tAgnCode+"' OR  ISNULL(TCNMPdtType.FTAgnCode,'') ='' ) ";
         }
 
         let oPtyOptionReturn = {
@@ -887,7 +887,7 @@
         let tCondition          = '';
         let tAgnCode            = $('#oetSpcAgncyCode').val();
         if( tAgnCode != ''  && tAgnCode != undefined){
-            tCondition += " AND TCNMPdtGrp.FTAgnCode = '"+tAgnCode+"' ";
+            tCondition += " AND ( ISNULL(TCNMPdtGrp.FTAgnCode,'') = '"+tAgnCode+"' OR  ISNULL(TCNMPdtGrp.FTAgnCode,'') = '' ) ";
         }
 
         let oPgpOptionReturn = {
@@ -1406,7 +1406,7 @@
     var oRptBrandOption = function(poReturnInputBrand) {
         var tSesAgnCode = '<?php echo $this->session->userdata("tSesUsrAgnCode")?>';
         if (tSesAgnCode != ''){
-            tWhereAngCode = 'AND TCNMPdtBrand.FTAgnCode = '+tSesAgnCode;
+            tWhereAngCode = " AND ( ISNULL(TCNMPdtBrand.FTAgnCode,'') = '"+tAgnCode+"' OR ISNULL(TCNMPdtBrand.FTAgnCode,'') = '') ";
         }else{
             tWhereAngCode = '';
         }
