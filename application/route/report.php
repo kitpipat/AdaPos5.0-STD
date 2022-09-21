@@ -858,3 +858,4 @@ $route['rptRptSaleByProductAnime']               = 'report/reportsale/Rptsalebyp
 $route['rptRptSaleByProductAnimeClickPage']      = 'report/reportsale/Rptsalebyproductanime_controller/FSvCCallRptViewBeforePrintClickPage';
 $route['rptRptSaleByProductAnimeCallExportFile'] = 'report/reportsale/Rptsalebyproductanime_controller/FSvCCallRptExportFile';
 /** =================================================================================================================================================== */
+

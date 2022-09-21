@@ -570,3 +570,17 @@ UPDATE TCNSRptSpc SET FTRptStaActive = 0
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.08', getdate() , 'ปิดรายงานพิเศษ', 'Nattakit K.');
 END
 GO
+
+
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.09') BEGIN
+
+INSERT INTO [TSysReport] ([FTRptCode], [FTGrpRptModCode], [FTGrpRptCode], [FTRptRoute], [FTRptStaUseFrm], [FTRptTblView], [FTRptFilterCol], [FTRptFileName], [FTRptStaShwBch], [FTRptStaShwYear], [FTRptSeqNo], [FTRptStaUse], [FTLicPdtCode]) VALUES ('001001041', '001', '001001', 'rptSalTimePrdTmp', NULL, NULL, '1,2,3,4,26,13', NULL, '1', '1', '35', '1', 'SB-RPT001001041');
+INSERT INTO [TSysReport_L] ([FTRptCode], [FNLngID], [FTRptName], [FTRptDes]) VALUES ('001001041', '1', 'รายงาน - ยอดขายตามช่วงเวลา', NULL);
+INSERT INTO [TSysReport_L] ([FTRptCode], [FNLngID], [FTRptName], [FTRptDes]) VALUES ('001001041', '2', 'Reports - Sales by period', '');
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.09', getdate() , 'เปิด รายงาน - ยอดขายตามช่วงเวลา', 'Nattakit K.');
+END
+GO
