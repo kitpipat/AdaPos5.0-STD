@@ -198,7 +198,7 @@ class Rptsalebyproductanime_controller extends MX_Controller
             'tRptPdtCode' => language('report/report/report', 'tRptPdtCode'),
             'tRptPdtName' => language('report/report/report', 'tRptPdtName'),
             'tRptPdtGrp' => language('report/report/report', 'tRptPdtGrp'),
-            'tRptQty' => language('report/report/report', 'tRptQty'),
+            'tRptQty' => language('report/report/report', 'tRptQtySale'),
             'tRptUnit' => language('report/report/report', 'tRptUnit'),
             'tRptAveragePrice' => language('report/report/report', 'tRptAveragePrice'),
 
@@ -240,7 +240,7 @@ class Rptsalebyproductanime_controller extends MX_Controller
 
             'tRptSaleByProductAnimeBarCode' => language('report/report/report', 'tRptSaleByProductAnimeBarCode'),
             'tRptSaleByProductAnimeBrand' => language('report/report/report', 'tRptSaleByProductAnimeBrand'),
-            'tRptSaleByProductAnimeBalance' => language('report/report/report', 'tRptSaleByProductAnimeBalance'),
+            'tRptSaleByProductAnimeBalance' => language('report/report/report', 'tRptInven'),
             'tRptSaleByProductAnimeSetPrice' => language('report/report/report', 'tRptSaleByProductAnimeSetPrice'),
             'tRptBranchCode' => language('report/report/report', 'tRptBranchCode'),
             'tRptBranchName' => language('report/report/report', 'tRptBranchName')

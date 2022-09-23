@@ -2533,4 +2533,4 @@ $lang['tRptSaleByProductAnimeTitle'] = 'รายงาน - ยอดขาย�
 $lang['tRptSaleByProductAnimeBarCode'] = 'รหัสบาร์โค้ด';
 $lang['tRptSaleByProductAnimeBrand'] = 'ยี่ห้อ';
 $lang['tRptSaleByProductAnimeBalance'] = 'สต็อกคงเหลือ';
-$lang['tRptSaleByProductAnimeSetPrice'] = 'ราคา/หน่วย';
+$lang['tRptSaleByProductAnimeSetPrice'] = 'ราคา';

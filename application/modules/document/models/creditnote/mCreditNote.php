@@ -1618,223 +1618,289 @@ class mCreditNote extends CI_Model {
         $tDocKey = $paParams['tDocKey'];
         $tBchCode = $paParams['tBchCode'];
         $tSessionID = $paParams['tSessionID'];   
+        $tDataVatInOrEx = $paParams['tDataVatInOrEx'];
 
-        $tSQL = "   SELECT 
-                        /* ยอดรวม ==============================================================*/
-                        SUM(ISNULL(DTTMP.FCXtdNet, 0)) AS FCXphTotal,
+       $tSQL       = " SELECT
+                            /* ยอดรวม ==============================================================*/
+                            SUM(ISNULL(DTTMP.FCXtdNet, 0)) AS FCXphTotal,
 
-                        /* ยอดรวมสินค้าไม่มีภาษี ==============================================================*/
-                        SUM(
-                            CASE
-                                WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
-                                ELSE 0
-                            END
-                        ) AS FCXphTotalNV,
+                            /* ยอดรวมสินค้าไม่มีภาษี ==============================================================*/
+                            SUM(CASE WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0) ELSE 0 END) AS FCXphTotalNV,
 
-                        /* ยอดรวมสินค้าห้ามลด ==============================================================*/
-                        SUM(
-                            CASE
-                                WHEN DTTMP.FTXtdStaAlwDis = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
-                                ELSE 0
-                            END
-                        ) AS FCXphTotalNoDis,
+                            /* ยอดรวมสินค้าห้ามลด ==============================================================*/
+                            SUM(CASE WHEN DTTMP.FTXtdStaAlwDis = 2 THEN ISNULL(DTTMP.FCXtdNet, 0) ELSE 0 END) AS FCXphTotalNoDis,
 
-                        /* ยอมรวมสินค้าลดได้ และมีภาษี ==============================================================*/
-                        SUM(
-                            CASE
-                                WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
-                                ELSE 0
-                            END
-                        ) AS FCXphTotalB4DisChgV,
+                            /* ยอมรวมสินค้าลดได้ และมีภาษี ==============================================================*/
+                            SUM(CASE WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdNet, 0) ELSE 0 END) AS FCXphTotalB4DisChgV,
 
-                        /* ยอมรวมสินค้าลดได้ และไม่มีภาษี */
-                        SUM(
-                            CASE
-                                WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
-                                ELSE 0
-                            END
-                        ) AS FCXphTotalB4DisChgNV,
+                            /* ยอมรวมสินค้าลดได้ และไม่มีภาษี */
+                            SUM(CASE WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0) ELSE 0 END) AS FCXphTotalB4DisChgNV,
 
-                        /* ยอดรวมหลังลด และมีภาษี ==============================================================*/
-                        SUM(
-                            CASE
-                                WHEN DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
-                                ELSE 0
-                            END
-                        ) AS FCXphTotalAfDisChgV,
+                            /* ยอดรวมหลังลด และมีภาษี ==============================================================*/
+                            SUM(CASE WHEN DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0) ELSE 0 END) AS FCXphTotalAfDisChgV,
 
-                        /* ยอดรวมหลังลด และไม่มีภาษี ==============================================================*/
-                        SUM(
-                            CASE
-                                WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
-                                ELSE 0
-                            END
-                        ) AS FCXphTotalAfDisChgNV,
+                            /* ยอดรวมหลังลด และไม่มีภาษี ==============================================================*/
+                            SUM(CASE WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0) ELSE 0 END) AS FCXphTotalAfDisChgNV,
 
-                        /* ยอดรวมเฉพาะภาษี ==============================================================*/
-                        (
+                            /* ยอดรวมเฉพาะภาษี ==============================================================*/
                             (
-                                /* ยอดรวม */
-                                SUM(DTTMP.FCXtdNet)
-                                - 
-                                /* ยอดรวมสินค้าไม่มีภาษี */
-                                SUM(
-                                    CASE
-                                        WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
-                                        ELSE 0
-                                    END
-                                )
-                            )
-                            -
-                            (
-                                /* ยอมรวมสินค้าลดได้ และมีภาษี */
-                                SUM(
-                                    CASE
-                                        WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
-                                        ELSE 0
-                                    END
-                                )
-                                -
-                                /* ยอมรวมสินค้าลดได้ และมีภาษี */
-                                SUM(
-                                    CASE
-                                        WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
-                                        ELSE 0
-                                    END
-                                )
-                            )
-                        ) AS FCXphAmtV,
-
-                        /* ยอดรวมเฉพาะไม่มีภาษี ==============================================================*/
-                        (
-                            (
-                                /* ยอดรวมสินค้าไม่มีภาษี */
-                                SUM(
-                                    CASE
-                                        WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
-                                        ELSE 0
-                                    END
-                                )
-                            )
-                            -
-                            (
-                                /* ยอมรวมสินค้าลดได้ และไม่มีภาษี */
-                                SUM(
-                                    CASE
-                                        WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
-                                        ELSE 0
-                                    END
-                                )
-                                -
-                                /* ยอดรวมหลังลด และไม่มีภาษี */
-                                SUM(
-                                    CASE
-                                        WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
-                                        ELSE 0
-                                    END
-                                )
-                            )
-                        ) AS FCXphAmtNV,
-
-                        /* ยอดภาษี ==============================================================*/
-                        SUM(ISNULL(DTTMP.FCXtdVat, 0)) AS FCXphVat,
-
-                        /* ยอดแยกภาษี ==============================================================*/
-                        (
-                            (
-                                /* ยอดรวมเฉพาะภาษี */
-                                (
-                                    (
-                                        /* ยอดรวม */
-                                        SUM(DTTMP.FCXtdNet)
-                                        - 
-                                        /* ยอดรวมสินค้าไม่มีภาษี */
-                                        SUM(
-                                            CASE
-                                                WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
-                                                ELSE 0
-                                            END
-                                        )
-                                    )
-                                    -
-                                    (
-                                        /* ยอมรวมสินค้าลดได้ และมีภาษี */
-                                        SUM(
-                                            CASE
-                                                WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
-                                                ELSE 0
-                                            END
+                                CASE 
+                                    WHEN $tDataVatInOrEx = 1 THEN --รวมใน
+                                        (
+                                            /* ยอดรวม */
+                                            SUM(DTTMP.FCXtdNet)
+                                            - 
+                                            /* ยอดรวมสินค้าไม่มีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                                    ELSE 0
+                                                END
+                                            )
                                         )
                                         -
-                                        /* ยอดรวมหลังลด และมีภาษี */
-                                        SUM(
-                                            CASE
-                                                WHEN DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
-                                                ELSE 0
-                                            END
+                                        (
+                                            /* ยอมรวมสินค้าลดได้ และมีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                                    ELSE 0
+                                                END
+                                            )
+                                            -
+                                            /* ยอมรวมสินค้าลดได้ และมีภาษี FCXphTotalAfDisChgV */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
+                                                    ELSE 0
+                                                END
+                                            )
                                         )
+                                    WHEN $tDataVatInOrEx = 2 THEN --แยกนอก
+                                        (
+                                            /* ยอดรวม */
+                                            SUM(DTTMP.FCXtdNet)
+                                            - 
+                                            /* ยอดรวมสินค้าไม่มีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                                    ELSE 0
+                                                END
+                                            )
+                                        )
+                                        -
+                                        (
+                                            /* ยอมรวมสินค้าลดได้ และมีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                                    ELSE 0
+                                                END
+                                            )
+                                            -
+                                            /* ยอมรวมสินค้าลดได้ และมีภาษี FCXphTotalAfDisChgV */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN 
+                                                        ISNULL(DTTMP.FCXtdNetAfHD, 0) + ISNULL(DTTMP.FCXtdVat, 0) 
+                                                    ELSE 0
+                                                END
+                                            )
+                                        )
+                                ELSE 0 END
+                            ) AS FCXphAmtV,
+
+                            /* ยอดรวมเฉพาะไม่มีภาษี ==============================================================*/
+                            (
+                                (
+                                    /* ยอดรวมสินค้าไม่มีภาษี */
+                                    SUM(
+                                        CASE
+                                            WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                            ELSE 0
+                                        END
                                     )
                                 )
                                 -
-                                /* ยอดภาษี */
-                                SUM(ISNULL(DTTMP.FCXtdVat, 0))	
-                            )
-                            +
-                            (
-                                /* ยอดรวมเฉพาะไม่มีภาษี */
                                 (
-                                    (
-                                        /* ยอดรวมสินค้าไม่มีภาษี */
-                                        SUM(
-                                            CASE
-                                                WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
-                                                ELSE 0
-                                            END
-                                        )
+                                    /* ยอมรวมสินค้าลดได้ และไม่มีภาษี */
+                                    SUM(
+                                        CASE
+                                            WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                            ELSE 0
+                                        END
                                     )
                                     -
-                                    (
-                                        /* ยอมรวมสินค้าลดได้ และไม่มีภาษี */
-                                        SUM(
-                                            CASE
-                                                WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
-                                                ELSE 0
-                                            END
-                                        )
-                                        -
-                                        /* ยอดรวมหลังลด และไม่มีภาษี */
-                                        SUM(
-                                            CASE
-                                                WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
-                                                ELSE 0
-                                            END
-                                        )
+                                    /* ยอดรวมหลังลด และไม่มีภาษี */
+                                    SUM(
+                                        CASE
+                                            WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
+                                            ELSE 0
+                                        END
                                     )
                                 )
-                            )
-                        ) AS FCXphVatable,
+                            ) AS FCXphAmtNV,
 
-                        /* รหัสอัตราภาษี ณ ที่จ่าย ==============================================================*/
-                        STUFF((
-                            SELECT  ',' + DOCCONCAT.FTXtdWhtCode
-                            FROM TCNTDocDTTmp DOCCONCAT
-                            WHERE  1=1 
-                            AND DOCCONCAT.FTBchCode = '$tBchCode'
-                            AND DOCCONCAT.FTXthDocNo = '$tDocNo'
-                            AND DOCCONCAT.FTSessionID = '$tSessionID'
-                        FOR XML PATH('')), 1, 1, '') AS FTXphWpCode,
+                            /* ยอดภาษี ==============================================================*/
+                            SUM(ISNULL(DTTMP.FCXtdVat, 0)) AS FCXphVat,
 
-                        /* ภาษีหัก ณ ที่จ่าย ==============================================================*/
-                        SUM(ISNULL(DTTMP.FCXtdWhtAmt, 0)) AS FCXphWpTax
+                            /* ยอดแยกภาษี ==============================================================*/
+                            (
+                                CASE  
+                                    WHEN $tDataVatInOrEx = 1 THEN --รวมใน
+                                        (
+                                            (
+                                                /* ยอดรวม */
+                                                SUM(DTTMP.FCXtdNet)
+                                                - 
+                                                /* ยอดรวมสินค้าไม่มีภาษี */
+                                                SUM(
+                                                    CASE
+                                                        WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                                        ELSE 0
+                                                    END
+                                                )
+                                            )
+                                            -
+                                            (
+                                                /* ยอมรวมสินค้าลดได้ และมีภาษี */
+                                                SUM(
+                                                    CASE
+                                                        WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
+                                                        ELSE 0
+                                                    END
+                                                )
+                                                -
+                                                /* ยอมรวมสินค้าลดได้ และมีภาษี */
+                                                SUM(
+                                                    CASE
+                                                        WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
+                                                        ELSE 0
+                                                    END
+                                                )
+                                            )
+                                            -
+                                            SUM(ISNULL(DTTMP.FCXtdVat, 0))
+                                        )
+                                        +
+                                        (
+                                            (
+                                                /* ยอดรวมสินค้าไม่มีภาษี */
+                                                SUM(
+                                                    CASE
+                                                        WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                                        ELSE 0
+                                                    END
+                                                )
+                                            )
+                                            -
+                                            (
+                                                /* ยอมรวมสินค้าลดได้ และไม่มีภาษี */
+                                                SUM(
+                                                    CASE
+                                                        WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
+                                                        ELSE 0
+                                                    END
+                                                )
+                                                -
+                                                /* ยอดรวมหลังลด และไม่มีภาษี */
+                                                SUM(
+                                                    CASE
+                                                        WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
+                                                        ELSE 0
+                                                    END
+                                                )
+                                            )
+                                        )
+                                    WHEN $tDataVatInOrEx = 2 THEN --แยกนอก
+                                    (
+                                        (
+                                            /* ยอดรวม */
+                                            SUM(DTTMP.FCXtdNet)
+                                            - 
+                                            /* ยอดรวมสินค้าไม่มีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                                    ELSE 0
+                                                END
+                                            )
+                                        )
+                                        -
+                                        (
+                                            /* ยอมรวมสินค้าลดได้ และมีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
+                                                    ELSE 0
+                                                END
+                                            )
+                                            -
+                                            /* ยอมรวมสินค้าลดได้ และมีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 1 THEN 
+                                                    ISNULL(DTTMP.FCXtdNetAfHD, 0) + ISNULL(DTTMP.FCXtdVat, 0) 
+                                                    ELSE 0
+                                                END
+                                            )
+                                        )
+                                        -
+                                        SUM(ISNULL(DTTMP.FCXtdVat, 0))
+                                    )
+                                    +
+                                    (
+                                        (
+                                            /* ยอดรวมสินค้าไม่มีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNet, 0)
+                                                    ELSE 0
+                                                END
+                                            )
+                                        )
+                                        -
+                                        (
+                                            /* ยอมรวมสินค้าลดได้ และไม่มีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdStaAlwDis = 1 AND DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdAmtB4DisChg, 0)
+                                                    ELSE 0
+                                                END
+                                            )
+                                            -
+                                            /* ยอดรวมหลังลด และไม่มีภาษี */
+                                            SUM(
+                                                CASE
+                                                    WHEN DTTMP.FTXtdVatType = 2 THEN ISNULL(DTTMP.FCXtdNetAfHD, 0)
+                                                    ELSE 0
+                                                END
+                                            )
+                                        )
+                                    )
+                                ELSE 0 END
+                            ) AS FCXphVatable,
 
-                        FROM TCNTDocDTTmp DTTMP 
-                        WHERE DTTMP.FTXthDocNo = '$tDocNo' 
-                        AND DTTMP.FTXthDocKey = '$tDocKey' 
-                        AND DTTMP.FTSessionID = '$tSessionID'
-                        AND DTTMP.FTBchCode = '$tBchCode'
+                            /* รหัสอัตราภาษี ณ ที่จ่าย ==============================================================*/
+                            STUFF((
+                                SELECT  ',' + DOCCONCAT.FTXtdWhtCode
+                                FROM TCNTDocDTTmp DOCCONCAT
+                                WHERE  1=1 
+                                AND DOCCONCAT.FTBchCode = '$tBchCode'
+                                AND DOCCONCAT.FTXthDocNo = '$tDocNo'
+                                AND DOCCONCAT.FTSessionID = '$tSessionID'
+                            FOR XML PATH('')), 1, 1, '') AS FTXphWpCode,
 
-                        GROUP BY DTTMP.FTSessionID
-                ";
+                            /* ภาษีหัก ณ ที่จ่าย ==============================================================*/
+                            SUM(ISNULL(DTTMP.FCXtdWhtAmt, 0)) AS FCXphWpTax
+
+                        FROM TCNTDocDTTmp DTTMP
+                        WHERE DTTMP.FTXthDocNo  = '$tDocNo' 
+                        AND DTTMP.FTXthDocKey   = '$tDocKey' 
+                        AND DTTMP.FTSessionID   = '$tSessionID'
+                        AND DTTMP.FTBchCode     = '$tBchCode'
+                        GROUP BY DTTMP.FTSessionID ";
             
             $oQuery = $this->db->query($tSQL);
             
