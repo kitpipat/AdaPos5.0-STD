@@ -190,6 +190,11 @@ class cRptSalTimePrdTmp extends MX_Controller
             'tRptTotalFooter' => language('report/report/report', 'tRptTotalFooter'),
             'tRptTaxSalePosNoData' => language('common/main/main', 'tCMNNotFoundData'),
             'tRptConditionInReport' => language('report/report/report', 'tRptConditionInReport'),
+            'tRptAll' => language('report/report/report', 'tRptAll'),
+            'tRptTel' => language('report/report/report', 'tRptTel'),
+            'tRptFaxNo' => language('report/report/report', 'tRptFaxNo'),
+            'tRPCTaxNo' => language('report/report/report', 'tRPCTaxNo'),
+            
         ];
 
         $this->tSysBchCode = SYS_BCH_CODE;
@@ -508,33 +513,33 @@ class cRptSalTimePrdTmp extends MX_Controller
         if (isset($aDataReport['aRptData']) && !empty($aDataReport['aRptData'])) {
             foreach ($aDataReport['aRptData'] as $nKey => $aValue) {
 
-                $nPctPerQty     = number_format(($aValue["FCXsdQty"]*100)/$aValue["FCXsdQty_SubTotal"], $this->nOptDecimalShow);
-                $nPctByBill     = number_format(($aValue["FCXshBillQty"]*100)/$aValue["FCXshBillQty_SubTotal"], $this->nOptDecimalShow);
-                $nPctByAmt      = number_format(($aValue["FCXsdNet"]*100)/$aValue["FCXsdNet_SubTotal"], $this->nOptDecimalShow);
+                $nPctPerQty     = FCNnGetNumeric(($aValue["FCXsdQty"]*100)/$aValue["FCXsdQty_SubTotal"]);
+                $nPctByBill     = FCNnGetNumeric(($aValue["FCXshBillQty"]*100)/$aValue["FCXshBillQty_SubTotal"]);
+                $nPctByAmt      = FCNnGetNumeric(($aValue["FCXsdNet"]*100)/$aValue["FCXsdNet_SubTotal"]);
 
                 $values = [
                     WriterEntityFactory::createCell($aValue["FTBchName"]),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell($aValue["FTXshSaleTime"]),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(number_format($aValue["FCXsdQty"], $this->nOptDecimalShow)),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXsdQty"])),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell($nPctPerQty ),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(number_format($aValue["FCXshBillQty"], $this->nOptDecimalShow)),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXshBillQty"])),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell($nPctByBill),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(number_format($aValue["FCXsdNet"], $this->nOptDecimalShow)),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXsdNet"])),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell($nPctByAmt),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(number_format($aValue["FCXsdDisChg"], $this->nOptDecimalShow)),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXsdDisChg"])),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(number_format($aValue["FCXshGrand"], $this->nOptDecimalShow)),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXshGrand"])),
                     WriterEntityFactory::createCell(null),
                 ];
                 $aRow = WriterEntityFactory::createRow($values);
@@ -546,24 +551,24 @@ class cRptSalTimePrdTmp extends MX_Controller
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($aValue["FCXsdQty"], $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXsdQty_Footer"])),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($aValue["FCXshBillQty"], $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXshBillQty_Footer"])),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($aValue["FCXsdNet"], $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXsdNet_Footer"])),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($aValue["FCXsdDisChg"], $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXsdDisChg_Footer"])),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($aValue["FCXshGrand"], $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCXshGrand_Footer"])),
                         WriterEntityFactory::createCell(null),
                     ];
                     $aRow = WriterEntityFactory::createRow($values, $oStyleColums);
@@ -578,166 +583,181 @@ class cRptSalTimePrdTmp extends MX_Controller
         $oWriter->close();
     }
 
-    /**
+       /**
      * Functionality: Render Excel Report Header
      * Parameters:  Function Parameter
-     * Creator: 01/10/2020 Sooksanti
+     * Creator: 30/07/2020 Nattakit
      * LastUpdate:
      * Return: oject
      * ReturnType: oject
      */
-    public function FSoCCallRptRenderHedaerExcel()
-    {
+    public function FSoCCallRptRenderHedaerExcel(){
+        if (isset($this->aCompanyInfo) && count($this->aCompanyInfo)>0) {
+    $tFTAddV1Village = $this->aCompanyInfo['FTAddV1Village']; 
+            $tFTCmpName = $this->aCompanyInfo['FTCmpName'];
+            $tFTAddV1No = $this->aCompanyInfo['FTAddV1No'];
+            $tFTAddV1Road = $this->aCompanyInfo['FTAddV1Road'];
+            $tFTAddV1Soi = $this->aCompanyInfo['FTAddV1Soi'];
+            $tFTSudName = $this->aCompanyInfo['FTSudName'];
+            $tFTDstName = $this->aCompanyInfo['FTDstName'];
+            $tFTPvnName = $this->aCompanyInfo['FTPvnName'];
+            $tFTAddV1PostCode = $this->aCompanyInfo['FTAddV1PostCode'];
+            $tFTAddV2Desc1 = $this->aCompanyInfo['FTAddV2Desc1'];
+            $tFTAddV2Desc2 = $this->aCompanyInfo['FTAddV2Desc2'];
+            $tFTAddVersion = $this->aCompanyInfo['FTAddVersion'];
+            $tFTBchName = $this->aCompanyInfo['FTBchName'];
+            $tFTAddTaxNo = $this->aCompanyInfo['FTAddTaxNo'];
+            $tFTCmpTel = $this->aCompanyInfo['FTAddTel'];
+            $tRptFaxNo = $this->aCompanyInfo['FTAddFax'];
+        }else {
+            $tFTCmpTel = "";
+            $tFTCmpName = "";
+            $tFTAddV1No = "";
+            $tFTAddV1Road = "";
+            $tFTAddV1Soi = "";
+            $tFTSudName = "";
+            $tFTDstName = "";
+            $tFTPvnName = "";
+            $tFTAddV1PostCode = "";
+            $tFTAddV2Desc1 = "1"; $tFTAddV1Village = "";
+            $tFTAddV2Desc2 = "2";
+            $tFTAddVersion = "";
+            $tFTBchName = "";
+            $tFTAddTaxNo = "";
+            $tRptFaxNo = "";
+        }
         $oStyle = (new StyleBuilder())
-            ->setFontBold()
-            ->setFontSize(12)
-            ->build();
+        ->setFontBold()
+        ->setFontSize(12)
+        ->build();
 
         $aCells = [
-            WriterEntityFactory::createCell($this->aCompanyInfo['FTCmpName']),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell($this->aText['tTitleReport']),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
+        WriterEntityFactory::createCell($tFTCmpName),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell($this->aText['tTitleReport']),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
         ];
 
-        $aMulltiRow[] = WriterEntityFactory::createRow($aCells, $oStyle);
+        $aMulltiRow[] = WriterEntityFactory::createRow($aCells,$oStyle);
 
         $tAddress = '';
-        if (isset($this->aCompanyInfo) && !empty($this->aCompanyInfo)) {
-            if ($this->aCompanyInfo['FTAddVersion'] == '1') {
-                $tAddress = $this->aCompanyInfo['FTAddV1No'] . ' ' . $this->aCompanyInfo['FTAddV1Road'] . ' ' . $this->aCompanyInfo['FTAddV1Soi'] . ' ' . $this->aCompanyInfo['FTSudName'] . ' ' . $this->aCompanyInfo['FTDstName'] . ' ' . $this->aCompanyInfo['FTPvnName'] . ' ' . $this->aCompanyInfo['FTAddV1PostCode'];
-            }
-            if ($this->aCompanyInfo['FTAddVersion'] == '2') {
-                $tAddress = $this->aCompanyInfo['FTAddV2Desc1'] . ' ' . $this->aCompanyInfo['FTAddV2Desc2'];
-            }
+        if ($tFTAddVersion == '1') {
+            $tAddress = $tFTAddV1No . ' ' .$tFTAddV1Village. ' '.$tFTAddV1Road.' ' . $tFTAddV1Soi . ' ' . $tFTSudName . ' ' . $tFTDstName . ' ' . $tFTPvnName . ' ' . $tFTAddV1PostCode;
+        }
+        if ($tFTAddVersion == '2') {
+            $tAddress = $tFTAddV2Desc1 . ' ' . $tFTAddV2Desc2;
         }
 
-        $aCells = [
-            WriterEntityFactory::createCell($tAddress),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
+    $aCells = [
+        WriterEntityFactory::createCell($tAddress),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
+        WriterEntityFactory::createCell(NULL),
         ];
 
         $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
 
-        $aCells = [
-            WriterEntityFactory::createCell($this->aText['tRptAddrTel'] . ' ' . $this->aCompanyInfo['FTCmpTel']),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-        ];
-
-        $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
 
         $aCells = [
-            WriterEntityFactory::createCell($this->aText['tRptAddrBranch'] . ' ' . $this->aCompanyInfo['FTBchName']),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-        ];
-
-        $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
-
-        $aCells = [
-            WriterEntityFactory::createCell($this->aText['tRptTaxSalePosTaxId'] . ' ' . $this->aCompanyInfo['FTAddTaxNo']),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-        ];
-
-
-        // Fillter DocDate (วันที่สร้างเอกสาร)
-        if ((isset($this->aRptFilter['tDocDateFrom']) && !empty($this->aRptFilter['tDocDateFrom'])) && (isset($this->aRptFilter['tDocDateTo']) && !empty($this->aRptFilter['tDocDateTo']))) {
-            $aCells = [
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell($this->aText['tRptDateFrom'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateFrom'])) . ' ' . $this->aText['tRptDateTo'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateTo']))),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
-                WriterEntityFactory::createCell(null),
+            WriterEntityFactory::createCell($this->aText['tRptTel'] . ' ' . $tFTCmpTel . ' '.$this->aText['tRptFaxNo'] . ' ' . $tRptFaxNo),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
             ];
-            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
-        }
+
+        $aMulltiRow[]  = WriterEntityFactory::createRow($aCells);
+
+
 
         $aCells = [
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-        ];
+            WriterEntityFactory::createCell($this->aText['tRptAddrBranch'] .' '. $tFTBchName),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            ];
 
         $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
 
+
         $aCells = [
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell(null),
-            WriterEntityFactory::createCell($this->aText['tDatePrint'] . ' ' . date('d/m/Y') . ' ' . $this->aText['tTimePrint'] . ' ' . date('H:i:s')),
-        ];
+            WriterEntityFactory::createCell($this->aText['tRPCTaxNo'] . ' : ' . $tFTAddTaxNo),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            ];
+
+        $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+
+
+        $aCells = [
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            ];
+
+        $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+
+
+        if((isset($this->aRptFilter['tDocDateFrom']) && !empty($this->aRptFilter['tDocDateFrom'])) && (isset($this->aRptFilter['tDocDateTo']) && !empty($this->aRptFilter['tDocDateTo']))){
+            $aCells = [
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell($this->aText['tRptTaxSalePosFilterDocDateFrom'].' '.date('d/m/Y',strtotime($this->aRptFilter['tDocDateFrom'])).' '.$this->aText['tRptTaxSalePosFilterDocDateTo'].' '.date('d/m/Y',strtotime($this->aRptFilter['tDocDateTo']))),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                ];
+                $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        $aCells = [
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell($this->aText['tDatePrint'].' '.date('d/m/Y').' '.$this->aText['tTimePrint'].' '.date('H:i:s')),
+            ];
 
         $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
 
