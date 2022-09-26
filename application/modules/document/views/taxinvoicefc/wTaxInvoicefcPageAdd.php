@@ -3,9 +3,9 @@
         overflow: hidden !important;
     }
 </style>
-
+<input type="hidden" name="ohdTAXApvType"  id="ohdTAXApvType" value="1"> <!-- 1.อนุมัติปกติ ใบลดหนี้/ใบเต็มรูป 2.อนุมัติใบยกเลิก ใบลดหนี้/ใบเต็มรูป -->
 <form id="ofmTaxInvoice" class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data">
-
+<input type="text" class="xCNHide" id="oetTXIStaETax" name="oetTXIStaETax" value="">
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
 
@@ -711,6 +711,161 @@
 	</div>
 </div>  
 
+<!--- ============================================================== ยกเลิกใบกำกับภาษี =============================================== -->
+<div id="odvTAXModalCancelETax" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"> <!-- data-toggle="modal" data-backdrop="static" data-keyboard="false"-->
+    <form id="ofmTaxCancel">
+        <div class="modal-dialog modal-dialog-scrollable" style="margin: 1.75rem auto;">
+            <div class="modal-content">
+                <div class="modal-header xCNModalHead">
+                    <label class="xCNTextModalHeard" style="font-weight: bold; font-size: 20px;"><?=language('document/taxinvoice/taxinvoice', 'ยกเลิกใบกำกับภาษี')?></label>
+                </div>
+                <div class="modal-body">
+                    
+                    <div class="row">
+
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="row">
+                                <div class="col-lg-6"><!--เลขที่ใบกำกับภาษี-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?= language('document/taxinvoice/taxinvoice', 'เลขที่ใบกำกับภาษี'); ?></label>
+                                        <input id="oetTAXModalCancelDocNo" readonly class="form-control xCNClearValue xWDisabledForCN" type="text" placeholder="<?= language('document/taxinvoice/taxinvoice', 'เลขที่ใบกำกับภาษี') ?>" >
+                                    </div>
+                                </div>
+                                <div class="col-lg-6"><!--เหตุผลการยกเลิก-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'เหตุผลการยกเลิก'); ?></label>
+                                        <div class="input-group">
+                                            <input id="oetTAXModalCancelRsnName" name="oetTAXModalCancelRsnName" class="form-control xCNClearValue" readonly type="text" value="" placeholder="<?= language('document/taxinvoice/taxinvoice', 'เหตุผลการยกเลิก') ?>" >
+                                            <input id="oetTAXModalCancelRsnCode" name="oetTAXModalCancelRsnCode" value="" class="form-control xCNHide xCNClearValue" type="text">
+                                            <span class="input-group-btn">
+                                                <button class="btn xCNBtnBrowseAddOn " id="obtTAXModalCancelBrowseRsn" type="button">
+                                                    <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'tTAXCustomerName'); ?></label>
+                                <div class="input-group">
+                                    <input name="oetTAXModalCancelCstName" id="oetTAXModalCancelCstName" class="form-control xCNClearValue xWDisabledForCN" value="" type="text" placeholder="<?= language('document/taxinvoice/taxinvoice', 'tTAXCustomer') ?>" >
+                                    <input name="oetTAXModalCancelCstCode" id="oetTAXModalCancelCstCode" value="" class="form-control xCNHide xCNClearValue" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn xCNBtnBrowseAddOn xWDisabledForCN" id="obtTAXModalCancelBrowseCus" type="button">
+                                            <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                        </button>
+                                    </span>
+                                    <span class="input-group-btn">
+                                        <button class="btn xCNBtnBrowseAddOn xWDisabledForCN" id="obtTAXModalCancelBrowseAddress" type="button">
+                                            <img src="<?= base_url() . '/application/modules/common/assets/images/icons/Home.png' ?>">
+                                        </button>
+                                    </span>
+                                </div>  
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12">
+
+                            <div id="odvModalCancelBusiness" class="row">
+                                                  
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <!--ประเภทกิจการ-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXTypeBusiness'); ?></label>
+                                        <select class="selectpicker form-control" id="ocmTAXModalCancelTypeBusiness" name="ocmTAXModalCancelTypeBusiness" maxlength="1">
+                                            <option value="1"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXTypeBusiness1')?></option>
+                                            <option value="2"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXTypeBusiness2')?></option>
+                                        </select>
+                                    </div>  
+                                </div> 
+
+                                <div class="col-lg-3 col-md-3 col-sm-3">
+                                    <!--สถานประกอบการ-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXBusiness'); ?></label>
+                                        <select class="selectpicker form-control" id="ocmTAXModalCancelBusiness" name="ocmTAXModalCancelBusiness" maxlength="1">
+                                            <option value="1"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXBusiness1')?></option>
+                                            <option value="2"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXBusiness2')?></option>
+                                        </select>
+                                    </div>  
+                                </div> 
+                                <div class="col-lg-3 col-md-3 col-sm-3">
+                                    <!--รหัสสาขา-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXBranch'); ?></label>
+                                        <input name="oetTAXModalCancelBranch" id="oetTAXModalCancelBranch" maxlength="5" class="form-control xCNClearValue" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXBranch') ?>" >
+                                    </div>    
+                                </div>
+                            </div> 
+
+                                    
+
+                            <div id="odvModalCancelInfo" class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <!--เบอร์โทรศัพท์-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXTelphone'); ?></label>
+                                        <input name="oetTAXModalCancelTel" id="oetTAXModalCancelTel"  maxlength="50" class="form-control xCNClearValue xCNInputNumericWithDecimal" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXTelphone') ?>" >
+                                    </div>  
+                                </div> 
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <!--เบอร์แฟ๊กซ์-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXFax'); ?></label>
+                                        <input name="oetTAXModalCancelFax" id="oetTAXModalCancelFax"  maxlength="50" class="form-control xCNClearValue" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXFax') ?>" >
+                                    </div> 
+                                </div>
+                            </div> 
+                            <!-- </div> -->
+
+                            <div id="odvModalCancelddress2" class="row">
+                                <div class="col-lg-6">
+                                    <!--ที่อยู่ 1 -->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?= language('document/taxinvoice/taxinvoice', 'tTAXAddress1'); ?></label>
+                                        <textarea id="otxTAXModalCancelAddress1" name="otxTAXModalCancelAddress1" class="form-control xWDisabledForCN" rows="2" style="resize: none;" maxlength="255"> </textarea>
+                                    </div> 
+                                </div> 
+                                <div class="col-lg-6">
+                                    <!--ที่อยู่ 2 -->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?= language('document/taxinvoice/taxinvoice', 'tTAXAddress2'); ?></label>
+                                        <textarea id="otxTAXModalCancelAddress2" name="otxTAXModalCancelAddress2" class="form-control xWDisabledForCN" rows="2" style="resize: none;" maxlength="255"> </textarea>
+                                    </div> 
+                                </div> 
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-lg-8 col-md-12 col-sm-12 text-left text-danger">
+                            <span id="ospTAXWarningMsgCancelCNFullTax" style="font-weight: bold;">กรณีชื่อ/ที่อยู่ไม่ถูกต้อง รบกวนดำเนินการแก้ไขที่ใบกำกับภาษีเต็มรูป</span>
+                        </div>
+                        <div class="col-lg-4 col-md-12 col-sm-12">
+                            <button id="osmTAXModalConfirm" type="submit" class="btn xCNBTNPrimery">
+                                <?=language('common/main/main', 'tModalConfirm'); ?>
+                            </button>
+                            <button type="button" class="btn xCNBTNDefult xCNBTNDefult2Btn" data-dismiss="modal">
+                                <?=language('common/main/main', 'tCMNClose'); ?>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+                
+    <!-- Input เก็บรหัส/ชื่อลูกค้า กรณี Browse ที่อยู่ลูกค้า -->
+    <input type="text" class="xCNHide" id="oetTAXBrowseCstCode">
+    <input type="text" class="xCNHide" id="oetTAXBrowseCstName">
+</div> 
 
 <script src="<?=base_url('application/modules/common/assets/js/jquery.mask.js')?>"></script>
 <script src="<?=base_url('application/modules/common/assets/src/jFormValidate.js')?>"></script>
@@ -724,7 +879,8 @@
         $('#obtApproveDocument').removeClass('xCNHide');
         $('#obtPrintDocument').addClass('xCNHide');
         $('#obtPrintPreviewDocument').addClass('xCNHide');
-        $('#obtSaveDocument').addClass('xCNHide');
+        $('#obtTAXCancleETax').addClass('xCNHide');
+        // $('#obtSaveDocument').addClass('xCNHide');
 
 
          //Load หน้าตารางสินค้า
@@ -876,7 +1032,7 @@
             var tDocumentNumber = ptDocumentNumber;
         }
         var tBrowseBchCode = $('#oetBrowseBchCode').val();
-        
+        console.log('FC','JSxRanderHDDT',tBrowseBchCode);
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCLoadDatatable",
@@ -924,6 +1080,7 @@
                     var tRefInt     = (aHD.raItems[0].FTXshRefInt == null ) ? '-' : aHD.raItems[0].FTXshRefInt; //เลขที่ภายใน
                     var tRefIntDate = (aHD.raItems[0].FDXshRefIntDate == null ) ? '-' : aHD.raItems[0].FDXshRefIntDate; //วันภายใน
                     var tRemark     = aHD.raItems[0].FTXshRmk //หมายเหตุ
+                    var tStaETax    = aHD.raItems[0].FTXshStaETax;
 
                     if(tTypeVAT == 1){ var tTypeVAT = 'รวมใน' }else{ var tTypeVAT = 'แยกนอก' }
                     // $('#oetTAXTypeVat').val(tTypeVAT);
@@ -936,6 +1093,7 @@
                     $('#oetTAXRefExtDoc').val(tRefExt);
                     $('#oetTAXRefExtDocDate').val(tRefExtDate);
                     $('#otxReason').text(tRemark);
+                    $('#oetTXIStaETax').val(tStaETax);
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -953,11 +1111,13 @@
             cache   : false,
             Timeout : 0,
             success : function (oResult) {
+                // var tTAXBrowseCusAddrType   = $('#ohdTAXBrowseCusAddrType').val();
                 var aPackData = JSON.parse(oResult);
                 if(aPackData.tStatus == 'null'){
                     console.log('ไม่พบข้อมูลที่อยู่');
 
                     $('#oetTAXCusNameCusABB').val('');
+                    $('#oetTAXNumber').val('');
                     $('#otxAddress1').val('');
                     $('#otxAddress2').val('');
                     $('#oetTAXTel').val('');
@@ -970,14 +1130,27 @@
                     if(ptCustomer != '' || ptCustomer != null){
                         $('#oetTAXCusName').val(ptNameCustomer);
                         $('#oetTAXCusCode').val(ptCustomer);
+                    }else{
+                        $('#oetTAXCusName').val('');
+                        $('#oetTAXCusCode').val('');
                     }
 
                 }else if(aPackData.tStatus == 'passABB'){
                     console.log('ใช้ที่อยู่ ของ TCNMTaxAddress_L');
+                    // if( tTAXBrowseCusAddrType == '1' ){
+                    //     $('#obtBrowseAddress').attr('disabled',false);
+                    // }else{
+                    //     $('#obtTAXModalCancelBrowseAddress').attr('disabled',false);
+                    // }
                     JSvRanderAddressMoreOne(aPackData.aList,'TaxADD');
                     $('#obtBrowseAddress').attr('disabled',false);
                 }else if(aPackData.tStatus == 'passCst'){
                     console.log('ใช้ที่อยู่ ของ TCNMCstAddress_L');
+                    // if( tTAXBrowseCusAddrType == '1' ){
+                    //     $('#obtBrowseAddress').attr('disabled',false);
+                    // }else{
+                    //     $('#obtTAXModalCancelBrowseAddress').attr('disabled',false);
+                    // }
                     JSvRanderAddressMoreOne(aPackData.aList,'CstADD');
                     $('#obtBrowseAddress').attr('disabled',false);
                 }
@@ -991,6 +1164,7 @@
     //กรณีที่อยู่มากกว่า 1 
     function JSvRanderAddressMoreOne(oText,ptType){
         //มีที่อยู่มากกว่า 1
+        console.log(oText);
         if(oText.length > 1){
             $('#odvTAXModalAddressMoreOne').modal('show');
                 $('#odvTAXModalAddressMoreOne .xCNTableAddressMoreOne tbody').html('');
@@ -1078,7 +1252,8 @@
             var tAddressFax     = oAddress.FTAddFax;
 
             if(tCustomerName == '' || tAddressCode == '' || tAddressCode == null || tCustomerName == null ){
-
+                $('#oetTAXCusName').val('');
+                $('#oetTAXCusCode').val('');
             }else{
                 $('#oetTAXCusName').val(tCustomerName);
                 $('#oetTAXCusCode').val(tAddressCode);
@@ -1096,8 +1271,14 @@
             $('#ocmTAXTypeBusiness option[value='+tBusiness+']').attr('selected','selected');
 
             //สถานประกอบการ
-            var tStaHQ = oAddress.FTAddStaHQ;
-            $('#ocmTAXBusiness option[value='+tStaHQ+']').attr('selected','selected');
+            // console.log('สถานประกอบการ', oAddress.FTAddStaHQ);
+            if(oAddress.FTAddStaHQ == '') {
+                // console.log('null');
+                $('#ocmTAXBusiness option[value=1]').attr('selected','selected');
+            }else{
+                var tStaHQ = oAddress.FTAddStaHQ;
+                $('#ocmTAXBusiness option[value='+tStaHQ+']').attr('selected','selected');
+            }
 
             //รหัสสาขา
             var tBCHCode = oAddress.FTAddStaBchCode;
@@ -1168,6 +1349,7 @@
             Text        : ["oetBrowseBchName","TCNMBranch_L.FTBchName"],
         },
         // DebugSQL : true,
+       
     }
 
     /********************************************************************************************/// ลู ก ค้ า 
@@ -1375,6 +1557,7 @@
     function JSxSelectTaxno(){
         var tTaxno       = $('#otbSelectTaxno tbody tr.xCNActive').attr('data-taxno');
         var nSeq         = $('#otbSelectTaxno tbody tr.xCNActive').attr('data-seqno');
+        console.log(tTaxno, "//", nSeq);
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCCheckTaxNO",
@@ -1383,6 +1566,7 @@
             Timeout : 0,
             success : function (oResult) {
                 var aResult = JSON.parse(oResult);
+                // console.log(oResult, " .00");
                 JSvRanderAddressMoreOne(aResult.aAddress,'TaxADD');
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -1394,7 +1578,9 @@
 
 <!--- PAGE - PREVIEW -->
 <script>
+
     if('<?=$tTypePage?>' == 'Preview'){
+        console.log('Preview');
         $('.selectpicker').selectpicker();
 
         //Block ปุ๊ป หลังจากอนุมัติเเล้ว
@@ -1405,7 +1591,8 @@
         $('#obtApproveDocument').addClass('xCNHide');
         $('#obtPrintDocument').removeClass('xCNHide');
         $('#obtPrintPreviewDocument').removeClass('xCNHide');
-        $('#obtSaveDocument').removeClass('xCNHide');
+        $('#obtTAXCancleETax').removeClass('xCNHide');
+        // $('#obtSaveDocument').removeClass('xCNHide');
 
         JSxDisableInput();
         JSxRanderHDDTPreview();
@@ -1421,17 +1608,17 @@
         $('#oetTAXABBCode').attr('disabled',true);
         $('#obtBrowseTaxABB').attr('disabled',true);
 
-        // $('#obtBrowseCus').attr('disabled',true);
+        $('#obtBrowseCus').attr('disabled',true);
         // $('#obtBrowseAddress').attr('disabled',true);
 
         $('#oetTAXCusNameCusABB').attr('disabled',true);
-        // $('#oetTAXNumber').attr('disabled',true);
-        // $('#obtBrowseTAXNumber').attr('disabled',true);
+        $('#oetTAXNumber').attr('disabled',true);
+        $('#obtBrowseTAXNumber').attr('disabled',true);
 
-        // $('#ocmTAXTypeBusiness').attr('disabled',true);
-        // $('#ocmTAXBusiness').attr('disabled',true);
+        $('#ocmTAXTypeBusiness').attr('disabled',true);
+        $('#ocmTAXBusiness').attr('disabled',true);
 
-        // $('#oetTAXBranch').attr('disabled',true);
+        $('#oetTAXBranch').attr('disabled',true);
         $('#oetTAXTel').attr('disabled',true);
         $('#oetTAXFax').attr('disabled',true);
 
@@ -1446,6 +1633,7 @@
     function JSxRanderHDDTPreview(){
         var tDocumentNumber = '<?=$tDocumentNumber?>';
         var tBrowseBchCode =  '<?=$tDocumentBchCode?>';
+        // console.log('FC','JSxRanderHDDTPreview',tBrowseBchCode);
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCLoadDatatableTax",
@@ -1459,65 +1647,89 @@
 
                 //HD
                 var aHD         = tHTML.aDetailHD;
-                var aHD         = aHD.raItems[0];
+                if (aHD.rtCode == '1') {
+                    // console.log(tHTML.aDetailHD);
+                    // console.log('aHD', aHD);
 
-                var tDocTime    = aHD.FDXshDocDate;
-                var aSplitTime  = tDocTime.split(" ");
-                $('#oetTAXDocDate').val(aSplitTime[0]);
-                $('#oetTAXDocTime').val(aSplitTime[1]);
-                $('#oetTAXABBCode').val(aHD.FTXshRefExt);
-                $('#oetTAXCusName').val('');
-                $('#oetTAXCusCode').val('');
-                $('#otxReason').text('');
-                $('#olbStatusDocument').text('อนุมัติแล้ว');
-                var FTXshDocNo  = aHD.FTXshDocNo //ประเภท
-                var tTypeVAT    = aHD.FTXshVATInOrEx //ประเภท
-                var tPrintCount = aHD.FNXshDocPrint //ปริ้น 
-                var tTypePay    = aHD.FTXshCshOrCrd //ชำระโดย
-                var tPoscode    = aHD.FTPosCode //รหัสเครื่องจุดขาย
-                var tRefExt     = (aHD.FTXshRefExt == null ) ? '-' : aHD.FTXshRefExt; //อ้างอิงเอกสารภายนอก
-                var tRefExtDate = (aHD.FDXshRefExtDate == null ) ? '-' : aHD.FDXshRefExtDate; //วันที่เอกสารภายนอก
-                var tRefInt     = (aHD.FTXshRefInt == null ) ? '-' : aHD.FTXshRefInt; //เลขที่ภายใน
-                var tRefIntDate = (aHD.FDXshRefIntDate == null ) ? '-' : aHD.FDXshRefIntDate; //วันภายใน
-                var tRemark     = aHD.FTXshRmk //หมายเหตุ
-                if(tTypeVAT == 1){ var tTypeVAT = 'รวมใน' }else{ var tTypeVAT = 'แยกนอก' }
-                $('#oetTAXTypeVat').val(tTypeVAT);
-                $('#oetTAXCountPrint').val(tPrintCount);
-                if(tTypePay == 1){ var tTypePay = 'เงินสด' }else{ var tTypePay = 'เครดิต' }
-                $('#oetTAXTypepay').val(tTypePay);
-                $('#oetTAXPos').val(tPoscode);
-                $('#oetTAXRefIntDoc').val(tRefInt);
-                $('#oetTAXRefIntDocDate').val(tRefIntDate);
-                $('#oetTAXRefExtDoc').val(tRefExt);
-                $('#oetTAXRefExtDocDate').val(tRefExtDate);
-                $('#otxReason').text(tRemark);
-                $('#oetTAXDocNo').val(FTXshDocNo);
-                $('#oetTAXABBCode').val(aHD.FTXshRefExt);
-                $('#ohdBCHDocument').val(aHD.FTBchCode);
-
-                //ประเภทของเอกสาร
-                $('#oetTAXABBTypeDocuement').val(aHD.FNXshDocType);
+                    var aHD         = aHD.raItems[0];
+    
+                    var tDocTime    = aHD.FDXshDocDate;
+                    var aSplitTime  = tDocTime.split(" ");
+                    $('#oetTAXDocDate').val(aSplitTime[0]);
+                    $('#oetTAXDocTime').val(aSplitTime[1]);
+                    $('#oetTAXABBCode').val(aHD.FTXshRefExt);
+                    $('#oetTAXCusName').val('');
+                    $('#oetTAXCusCode').val('');
+                    $('#otxReason').text('');
+                    $('#olbStatusDocument').text('อนุมัติแล้ว');
+                    var FTXshDocNo  = aHD.FTXshDocNo //ประเภท
+                    var tTypeVAT    = aHD.FTXshVATInOrEx //ประเภท
+                    var tPrintCount = aHD.FNXshDocPrint //ปริ้น 
+                    var tTypePay    = aHD.FTXshCshOrCrd //ชำระโดย
+                    var tPoscode    = aHD.FTPosCode //รหัสเครื่องจุดขาย
+                    var tRefExt     = (aHD.FTXshRefExt == null ) ? '-' : aHD.FTXshRefExt; //อ้างอิงเอกสารภายนอก
+                    var tRefExtDate = (aHD.FDXshRefExtDate == null ) ? '-' : aHD.FDXshRefExtDate; //วันที่เอกสารภายนอก
+                    var tRefInt     = (aHD.FTXshRefInt == null ) ? '-' : aHD.FTXshRefInt; //เลขที่ภายใน
+                    var tRefIntDate = (aHD.FDXshRefIntDate == null ) ? '-' : aHD.FDXshRefIntDate; //วันภายใน
+                    var tRemark     = aHD.FTXshRmk //หมายเหตุ
+                    if(tTypeVAT == 1){ var tTypeVAT = 'รวมใน' }else{ var tTypeVAT = 'แยกนอก' }
+                    $('#oetTAXTypeVat').val(tTypeVAT);
+                    $('#oetTAXCountPrint').val(tPrintCount);
+                    if(tTypePay == 1){ var tTypePay = 'เงินสด' }else{ var tTypePay = 'เครดิต' }
+                    $('#oetTAXTypepay').val(tTypePay);
+                    $('#oetTAXPos').val(tPoscode);
+                    $('#oetTAXRefIntDoc').val(tRefInt);
+                    $('#oetTAXRefIntDocDate').val(tRefIntDate);
+                    $('#oetTAXRefExtDoc').val(tRefExt);
+                    $('#oetTAXRefExtDocDate').val(tRefExtDate);
+                    $('#otxReason').text(tRemark);
+                    $('#oetTAXDocNo').val(FTXshDocNo);
+                    $('#oetTAXABBCode').val(aHD.FTXshRefExt);
+                    $('#ohdBCHDocument').val(aHD.FTBchCode);
+    
+                    //ประเภทของเอกสาร
+                    $('#oetTAXABBTypeDocuement').val(aHD.FNXshDocType);
+                    
+                    $('#oetTXIStaETax').val(aHD.FTXshStaETax);
+                }
 
                 //ที่อยู่
                 if(tHTML.aDetailAddress != false){
+                    console.log('Address');
                     var aAddresss = tHTML.aDetailAddress[0];
+                    console.log(aAddresss);
+                    var tAddStaHQ = '';
+                    if(aAddresss.FTAddStaHQ != ''){
+                        tAddStaHQ = aAddresss.FTAddStaHQ;
+                    }else {
+                        tAddStaHQ = '1';
+                    }
+                    
                     $('#oetTAXCusName').val(aAddresss.FTXshCstName);
                     $('#ohdSeqInTableAddress').val(aAddresss.FNAddSeqNo);
                     $('#ohdSeqAddress').val(aAddresss.FNAddSeqNo);
                     $('#oetTAXCusNameCusABB').val(aAddresss.FTAddName);
-                    $('#oetTAXNumber').val(aAddresss.FTAddTaxNo);
+                    // $('#oetTAXNumber').val(aAddresss.FTAddTaxNo);
+                    $('#oetTAXNumber').val(aAddresss.FTXshAddrTax);
                     $('#oetTAXNumberNew').val(aAddresss.FTAddTaxNo);
+                    $('#oetTAXNumberNew').val(aAddresss.oetTAXNumberNew);
                     $('#ocmTAXTypeBusiness option[value='+aAddresss.FTAddStaBusiness+']').attr('selected','selected');
-                    $('#ocmTAXBusiness option[value='+aAddresss.FTAddStaHQ+']').attr('selected','selected');
+                    // $('#ocmTAXBusiness option[value='+aAddresss.FTAddStaHQ+']').attr('selected','selected');
+                    $('#ocmTAXBusiness option[value='+tAddStaHQ+']').attr('selected','selected');
                     $('.selectpicker').selectpicker('refresh');
                     $('#oetTAXBranch').val(aAddresss.FTAddStaBchCode);
-                    $('#oetTAXTel').val(aAddresss.FTAddTel);
-                    $('#oetTAXFax').val(aAddresss.FTAddFax);
-                    $('#otxAddress1').text(aAddresss.FTAddV2Desc1);
-                    $('#otxAddress2').text(aAddresss.FTAddV2Desc2);
+                    // $('#oetTAXTel').val(aAddresss.FTAddTel);
+                    $('#oetTAXTel').val(aAddresss.FTXshCstTel);
+                    // $('#oetTAXFax').val(aAddresss.FTAddFax);
+                    $('#oetTAXFax').val(aAddresss.FTXshFax);
+                    // $('#otxAddress1').text(aAddresss.FTAddV2Desc1);
+                    // $('#otxAddress2').text(aAddresss.FTAddV2Desc2);
+                    $('#otxAddress1').text(aAddresss.FTXshDesc1);
+                    $('#otxAddress2').text(aAddresss.FTXshDesc2);
                 }
 
                 JSxRanderDTPreview(1);
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -1529,6 +1741,7 @@
     function  JSxRanderDTPreview(pnPage){
         var tDocumentNumber = '<?=$tDocumentNumber?>';
         var tBrowseBchCode =  '<?=$tDocumentBchCode?>';
+        console.log('FC','JSxRanderDTPreview',tBrowseBchCode);
         var tSearchPDT      = $('#oetTAXSearchPDT').val();
         $.ajax({
             type    : "POST",
@@ -1538,6 +1751,7 @@
             Timeout : 0,
             success : function (oResult) {
                 var tHTML = JSON.parse(oResult);
+                // console.log(tHTML['tContentPDT']);
                 $('#odvContentTAX').html(tHTML['tContentPDT']);
                 JCNxCloseLoading();
             },
@@ -1549,66 +1763,282 @@
 
     //เปิดให้ input เเก้ไขได้
     function JSxInputCanEdit(){
-        $('#oetTAXCusNameCusABB').attr('disabled',false);
-        $('#oetTAXTel').attr('disabled',false);
-        $('#oetTAXFax').attr('disabled',false);
-        $('#otxAddress1').attr('disabled',false);
-        $('#otxAddress2').attr('disabled',false);
+        $('#oetTAXCusNameCusABB').attr('disabled',true);
+        $('#oetTAXTel').attr('disabled',true);
+        $('#oetTAXFax').attr('disabled',true);
+        $('#otxAddress1').attr('disabled',true);
+        $('#otxAddress2').attr('disabled',true);
 
         //ปิด input สาขา
         $('.xCNSelectBCH').removeClass('col-lg-3').addClass('xCNHide');
         $('.xCNSelectTaxABB').removeClass('col-lg-8').addClass('col-lg-11');
     }
 
-    $('#obtSaveDocument').off();
-    $('#obtSaveDocument').on('click',function(){
-        var tCusNameABB     = $('#oetTAXCusNameCusABB').val();
-        var tBrowseBchCode  = $('#oetBrowseBchCode').val();
-        var tTel            = $('#oetTAXTel').val();
-        var tFax            = $('#oetTAXFax').val();
-        var tAddress1       = $('#otxAddress1').val();
-        var tAddress2       = $('#otxAddress2').val();
-        var ptTaxNumberFull = $('#oetTAXDocNo').val();
-        var tSeq            = $('#ohdSeqInTableAddress').val();
-        var tNumberTax      = $('#oetTAXNumber').val();
-        var tNumberTaxNew   = $('#oetTAXNumberNew').val();
+    // $('#obtSaveDocument').off();
+    // $('#obtSaveDocument').on('click',function(){
+    //     var tCusNameABB     = $('#oetTAXCusNameCusABB').val();
+    //     var tBrowseBchCode  = $('#oetBrowseBchCode').val();
+    //     console.log('FC','obtSaveDocument',tBrowseBchCode);
+    //     var tTel            = $('#oetTAXTel').val();
+    //     var tFax            = $('#oetTAXFax').val();
+    //     var tAddress1       = $('#otxAddress1').val();
+    //     var tAddress2       = $('#otxAddress2').val();
+    //     var ptTaxNumberFull = $('#oetTAXDocNo').val();
+    //     var tSeq            = $('#ohdSeqInTableAddress').val();
+    //     var tNumberTax      = $('#oetTAXNumber').val();
+    //     var tNumberTaxNew   = $('#oetTAXNumberNew').val();
 
-        var tTypeBusiness   = $('#ocmTAXTypeBusiness option:selected').val();
-        var tBusiness       = $('#ocmTAXBusiness option:selected').val();
-        var tBchCode        = $('#oetTAXBranch').val();
-        var tCstCode        = $('#oetTAXCusCode').val();
-        var tCstName        = $('#oetTAXCusName').val();
+    //     var tTypeBusiness   = $('#ocmTAXTypeBusiness option:selected').val();
+    //     var tBusiness       = $('#ocmTAXBusiness option:selected').val();
+    //     var tBchCode        = $('#oetTAXBranch').val();
+    //     var tCstCode        = $('#oetTAXCusCode').val();
+    //     var tCstName        = $('#oetTAXCusName').val();
 
-        $.ajax({
-            type    : "POST",
-            url     : "dcmTXFCUpdateWhenApprove",
-            data    : { 
-                        'tDocumentNo'   : ptTaxNumberFull ,
-                        'tBrowseBchCode': tBrowseBchCode,
-                        'tCusNameABB'   : tCusNameABB , 
-                        'tNumberTax'    : tNumberTax,
-                        'tNumberTaxNew' : tNumberTaxNew,
-                        'tTel'          : tTel , 
-                        'tFax'          : tFax ,
-                        'tAddress1'     : tAddress1,
-                        'tAddress2'     : tAddress2,
-                        'tSeq'          : tSeq,
-                        'tSeqNew'       : $('#ohdSeqAddress').val(),
-                        'tTypeBusiness' : tTypeBusiness,
-                        'tBusiness'     : tBusiness,
-                        'tBchCode'      : tBchCode,
-                        'tCstCode'      : tCstCode,
-                        'tCstName'      : tCstName
-                    },
-            cache   : false,
-            Timeout : 0,
-            success : function (oResult) {
-                console.log(oResult);
-                JSvTAXLoadPageAddOrPreview(tBrowseBchCode,ptTaxNumberFull);
+    //     $.ajax({
+    //         type    : "POST",
+    //         url     : "dcmTXFCUpdateWhenApprove",
+    //         data    : { 
+    //                     'tDocumentNo'   : ptTaxNumberFull ,
+    //                     'tBrowseBchCode': tBrowseBchCode,
+    //                     'tCusNameABB'   : tCusNameABB , 
+    //                     'tNumberTax'    : tNumberTax,
+    //                     'tNumberTaxNew' : tNumberTaxNew,
+    //                     'tTel'          : tTel , 
+    //                     'tFax'          : tFax ,
+    //                     'tAddress1'     : tAddress1,
+    //                     'tAddress2'     : tAddress2,
+    //                     'tSeq'          : tSeq,
+    //                     'tSeqNew'       : $('#ohdSeqAddress').val(),
+    //                     'tTypeBusiness' : tTypeBusiness,
+    //                     'tBusiness'     : tBusiness,
+    //                     'tBchCode'      : tBchCode,
+    //                     'tCstCode'      : tCstCode,
+    //                     'tCstName'      : tCstName
+    //                 },
+    //         cache   : false,
+    //         Timeout : 0,
+    //         success : function (oResult) {
+    //             console.log(oResult);
+    //             JSvTAXLoadPageAddOrPreview(tBrowseBchCode,ptTaxNumberFull);
+    //         },
+    //         error: function (jqXHR, textStatus, errorThrown) {
+    //             JCNxResponseError(jqXHR, textStatus, errorThrown);
+    //         }
+    //     });
+    // });
+
+    $('#obtTAXCancleETax').off('click').on('click',function(){
+
+        $("#ofmTaxCancel").validate().resetForm();
+        $("#ofmTaxCancel").find('.has-error').removeClass("has-error");
+        $("#ofmTaxCancel").find('.has-success').removeClass("has-success");
+        $('#ofmTaxCancel').find('.form-control-feedback').remove();
+
+        // เตรียมข้อมูล
+        var tTAXDocNo           = $('#oetTAXDocNo').val();
+        var tTAXCstName         = $('#oetTAXCusNameCusABB').val();
+        var tTAXCstCode         = $('#oetTAXCusCode').val();
+        var tAddress1           = $('#otxAddress1').val();
+        var tAddress2           = $('#otxAddress2').val();
+        var tTel                = $('#oetTAXTel').val();
+        var tFax                = $('#oetTAXFax').val();
+        var tTAXTypeBusiness    = $('#ocmTAXTypeBusiness').val();
+        var tTAXBusiness        = $('#ocmTAXBusiness').val();
+        // var tPvnName        = $('#oetFTAddV1PvnName').val();
+        // var tPvnCode        = $('#oetFTAddV1PvnCode').val();
+        // var tDstName        = $('#oetFTAddV1DstName').val();
+        // var tDstCode        = $('#oetFTAddV1DstCode').val();
+        // var tSubDistName    = $('#oetFTAddV1SubDistName').val();
+        // var tSubDistCode    = $('#oetFTAddV1SubDistCode').val();
+        // var tPostCode       = $('#oetFTAddV1PostCode').val();
+
+        // $('#oetTAXCusName').val(aAddresss.FTXshCstName);
+        // $('#ohdSeqInTableAddress').val(aAddresss.FNAddSeqNo);
+        // $('#ohdSeqAddress').val(aAddresss.FNAddSeqNo);
+        // $('#oetTAXCusNameCusABB').val(aAddresss.FTAddName);
+        // // $('#oetTAXNumber').val(aAddresss.FTAddTaxNo);
+        // $('#oetTAXNumber').val(aAddresss.FTXshAddrTax);
+        // $('#oetTAXNumberNew').val(aAddresss.FTAddTaxNo);
+        // $('#oetTAXNumberNew').val(aAddresss.oetTAXNumberNew);
+        // $('#ocmTAXTypeBusiness option[value='+aAddresss.FTAddStaBusiness+']').attr('selected','selected');
+        // // $('#ocmTAXBusiness option[value='+aAddresss.FTAddStaHQ+']').attr('selected','selected');
+        // $('#ocmTAXBusiness option[value='+tAddStaHQ+']').attr('selected','selected');
+        // $('.selectpicker').selectpicker('refresh');
+        // $('#oetTAXBranch').val(aAddresss.FTAddStaBchCode);
+        // // $('#oetTAXTel').val(aAddresss.FTAddTel);
+        // $('#oetTAXTel').val(aAddresss.FTXshCstTel);
+        // // $('#oetTAXFax').val(aAddresss.FTAddFax);
+        // $('#oetTAXFax').val(aAddresss.FTXshFax);
+        // // $('#otxAddress1').text(aAddresss.FTAddV2Desc1);
+        // // $('#otxAddress2').text(aAddresss.FTAddV2Desc2);
+        // $('#otxAddress1').text(aAddresss.FTXshDesc1);
+        // $('#otxAddress2').text(aAddresss.FTXshDesc2);
+
+
+        $('#oetTAXModalCancelDocNo').val(tTAXDocNo);
+        $('#oetTAXModalCancelCstName').val(tTAXCstName);
+        $('#oetTAXModalCancelCstCode').val(tTAXCstCode);
+        $('#otxTAXModalCancelAddress1').val(tAddress1);
+        $('#otxTAXModalCancelAddress2').val(tAddress2);
+        $('#oetTAXModalCancelTel').val(tTel);
+        $('#oetTAXModalCancelFax').val(tFax);
+        $('#ocmTAXModalCancelTypeBusiness option[value='+tTAXTypeBusiness+']').attr('selected','selected');
+        $('#ocmTAXModalCancelBusiness option[value='+tTAXBusiness+']').attr('selected','selected');
+        // $('#oetTAXModalCancelPvnName').val(tPvnName);
+        // $('#oetTAXModalCancelPvnCode').val(tPvnCode);
+        // $('#oetTAXModalCancelDstName').val(tDstName);
+        // $('#oetTAXModalCancelDstCode').val(tDstCode);
+        // $('#oetTAXModalCancelSubDistName').val(tSubDistName);
+        // $('#oetTAXModalCancelSubDistCode').val(tSubDistCode);
+        // $('#oetTAXModalCancelPostCode').val(tPostCode);
+
+        var tTaxABBType = $("#oetTAXABBTypeDocuement").val();
+        if( tTaxABBType == '5' ){  // CN-ABB
+            $('.xWDisabledForCN').attr('disabled',true);
+            $('#ospTAXWarningMsgCancelCNFullTax').show();
+        }else{
+            $('.xWDisabledForCN').attr('disabled',false);
+            $('#ospTAXWarningMsgCancelCNFullTax').hide();
+        }
+
+        $('#obtTAXModalCancelBrowseAddress').attr('disabled',true);
+
+        $('#odvTAXModalCancelETax').modal('show');
+    });
+
+    $('#osmTAXModalConfirm').off('click').on('click',function(){
+        $('#ofmTaxCancel').validate().destroy();
+        $('#ofmTaxCancel').validate({
+            rules: {
+                oetTAXModalCancelRsnName        : "required",
+                oetTAXModalCancelCstName        : "required",
+                // otxTAXModalCancelAddress1       : "required",
+                // oetTAXModalCancelPvnName        : "required",
+                // oetTAXModalCancelDstName        : "required",
+                // oetTAXModalCancelSubDistName    : "required",
+                // oetTAXModalCancelPostCode       : "required",
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                JCNxResponseError(jqXHR, textStatus, errorThrown);
-            }
+            messages: {
+                oetTAXModalCancelRsnName        : 'กรุณาเลือก เหตุผลการยกเลิก',
+                oetTAXModalCancelCstName        : 'กรุณากรอก ชื่อลูกค้า / ชื่อออกใบกำกับภาษี',
+                // otxTAXModalCancelAddress1       : 'กรุณากรอก ที่อยู่ 1 สำหรับออกใบกำกับภาษี',
+                // oetTAXModalCancelPvnName        : 'กรุณาเลือก จังหวัด',
+                // oetTAXModalCancelDstName        : 'กรุณาเลือก อำเภอ/เขต',
+                // oetTAXModalCancelSubDistName    : 'กรุณาเลือก ตำบล/แขวง',
+                // oetTAXModalCancelPostCode       : 'กรุณากรอก รหัสไปรษณีย์',
+            },
+            errorElement: "em",
+            errorPlacement: function (error, element ) {
+                error.addClass( "help-block" );
+                if ( element.prop( "type" ) === "checkbox" ) {
+                    error.appendTo( element.parent( "label" ) );
+                } else {
+                    var tCheck = $(element.closest('.form-group')).find('.help-block').length;
+                    if(tCheck == 0){
+                        error.appendTo(element.closest('.form-group')).trigger('change');
+                    }
+                }
+            },
+            highlight: function(element, errorClass, validClass) {
+                $( element ).closest('.form-group').addClass( "has-error" ).removeClass( "has-success" );
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $( element ).closest('.form-group').addClass( "has-success" ).removeClass( "has-error" );
+            },
+            submitHandler: function(form){
+                $('#ohdTAXApvType').val('2');
+                $('#odvTAXModalCancelETax').modal('hide');
+                JSxTAXComfirmApprove();
+            },
         });
     });
+
+    $('#obtTAXModalCancelBrowseCus').off('click').on('click',function(){
+        $('#ohdTAXBrowseCusAddrType').val('2');
+        oTAXBrowseCstOption      = oCstOption({
+            'tReturnInputCode'  : 'oetTAXModalCancelCstCode',
+            'tReturnInputName'  : 'oetTAXModalCancelCstName',
+            'tNextFuncName'     : 'JSxFindAddressByCustomer',
+            'aArgReturn'        : ['FTCstCode','FTCstTaxNo','FTCstCardID','FTCstName']
+        });
+        JCNxBrowseData('oTAXBrowseCstOption');
+    });
+
+    $('#obtTAXModalCancelBrowseAddress').off('click').on('click',function(){
+        $('#odvTAXModalCancelETax').modal('hide');
+        $('#odvTAXModalSelectAddressCustomer').modal('show');
+        JCNxSearchBrowseSelectAddressCustomer(2);
+    });
+
+    $('#obtTAXModalCancelBrowseRsn').off('click').on('click',function(){
+
+        var tDocType = $('#oetTAXABBTypeDocuement').val();
+        var tRsnGrp  = '017';
+        if( tDocType == '5' ){
+            tRsnGrp = '018';
+        }
+
+        oTAXModalBrowseReasonOption = oTAXReasonOption({
+            'tTitleModal'       : 'เหตุผลการยกเลิก',
+            'tReturnInputCode'  : 'oetTAXModalCancelRsnCode',
+            'tReturnInputName'  : 'oetTAXModalCancelRsnName',
+            'tRsnGrp'           : tRsnGrp
+        });
+        JCNxBrowseData('oTAXModalBrowseReasonOption');
+    });
+
+    var oTAXReasonOption = function(poDataFnc){
+        var nLangEdits          = '<?=$this->session->userdata("tLangEdit");?>';
+        var tTitleModal         = poDataFnc.tTitleModal;
+        var tInputReturnCode    = poDataFnc.tReturnInputCode;
+        var tInputReturnName    = poDataFnc.tReturnInputName;
+        var tRsnGrp             = poDataFnc.tRsnGrp;
+
+        var tWhereCondition     = "";
+        var tSesUsrAgnCode      = '<?=$this->session->userdata("tSesUsrAgnCode");?>';
+        var tSesUsrLevel        = '<?=$this->session->userdata("tSesUsrLevel");?>';
+
+        
+        if( tSesUsrLevel != "HQ" && tSesUsrAgnCode != "" ){
+            tWhereCondition += " AND TCNMRsn.FTAgnCode = '"+tSesUsrAgnCode+"' ";
+        }
+
+        if( tRsnGrp != "" ){
+            tWhereCondition += " AND TCNMRsn.FTRsgCode = '"+tRsnGrp+"' ";
+        }
+        
+        var oOptionReturn       = {
+            Title   : ['document/taxinvoice/taxinvoice', tTitleModal],
+            Table   : {Master:'TCNMRsn', PK:'FTRsnCode'},
+            Join    : {
+                Table   : ['TCNMRsn_L'],
+                On      : ['TCNMRsn_L.FTRsnCode = TCNMRsn.FTRsnCode AND TCNMRsn_L.FNLngID = '+nLangEdits]
+            },
+            Where:{
+                Condition : [ tWhereCondition ]
+            },
+            GrideView:{
+                ColumnPathLang      : 'document/taxinvoice/taxinvoice',
+                ColumnKeyLang       : ['รหัสเหตุผล', 'ชื่อเหตุผล'],
+                ColumnsSize         : ['15%', '85%'],
+                WidthModal          : 50,
+                DataColumns         : ['TCNMRsn.FTRsnCode', 'TCNMRsn_L.FTRsnName'],
+                // DisabledColumns     : [5],
+                DataColumnsFormat   : ['',''],
+                Perpage             : 10,
+                OrderBy             : ['TCNMRsn.FDCreateOn DESC']
+            },
+            CallBack:{
+                ReturnType  : 'S',
+                Value       : [tInputReturnCode,"TCNMRsn.FTRsnCode"],
+                Text        : [tInputReturnName,"TCNMRsn_L.FTRsnName"]
+            },
+            // NextFunc:{
+            //     FuncName    : tNextFuncName,
+            //     ArgReturn   : aArgReturn
+            // }
+        };
+        return oOptionReturn;
+    }
+
 </script>

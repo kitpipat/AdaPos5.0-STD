@@ -4290,7 +4290,6 @@ BEGIN TRY
 	--EXECUTE(@tSqlDrop)
 
 	--PRINT @tTblName 
-FNSeqNo,FNAppType,FTBchCode,FTXshDocDate,FTXshDocLegth,FTCstName,FTXshAddrTax,
 	SET @tSqlSale  =' INSERT INTO TRPTPSTaxMonthTmp_Animate '
 	SET @tSqlSale +=' ('
 	SET @tSqlSale +=' FTComName,FTRptCode,FTUsrSession,'
