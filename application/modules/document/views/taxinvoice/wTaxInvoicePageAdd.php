@@ -2253,7 +2253,6 @@
                     $('#otxAddress1').text(aAddresss.FTXshDesc1);
                     $('#otxAddress2').text(aAddresss.FTXshDesc2);
 
-                    
                 }
 
                 JSxRanderDTPreview(1);
