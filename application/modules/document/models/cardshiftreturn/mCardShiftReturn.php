@@ -899,7 +899,7 @@ class mCardShiftReturn extends CI_Model
                         LEFT JOIN TFNMCard_L ON TFNMCard_L.FTCrdCode = TFNMCard.FTCrdCode AND TFNMCard_L.FNLngID = '$tLangID'
                         LEFT JOIN TFNMCardType ON TFNMCardType.FTCtyCode = TFNMCard.FTCtyCode
                         WHERE TFNMCard.FTCrdCode = '$tCrdCode'
-                        AND (((TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '2')))
+                        AND (((TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '2') AND (TFNMCardType.FTCtyStaAlwRet = '1')))
                         AND TFNMCard.FTAgnCode = '$tAgnCode' ";
             $oQuery = $this->db->query($tSQL);
             if ($oQuery->num_rows() > 0){
