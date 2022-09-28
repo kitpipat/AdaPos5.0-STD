@@ -39,6 +39,7 @@
                         <th nowrap class="text-center xCNTextBold"><?php echo language('payment/cardtype/cardtype','tCTYName'); ?></th>
                         <th nowrap class="text-center xCNTextBold"><?php echo language('payment/cardtype/cardtype','tCTYDeposit'); ?></th>
                         <th nowrap class="text-center xCNTextBold"><?php echo language('payment/cardtype/cardtype','tCTYExpireCardlife'); ?></th>
+                        <th nowrap class="text-center xCNTextBold"><?php echo language('payment/cardtype/cardtype','tCTYFrmCrdStaReuse'); ?></th>
                         <th nowrap class="text-center xCNTextBold"><?php echo language('payment/cardtype/cardtype','tCTYStaPay');?></th>
                         <th nowrap class="text-center xCNTextBold"><?php echo language('payment/cardtype/cardtype','tCTYPaylimit');?></th>
                         <th nowrap class="text-center xCNTextBold"><?php echo language('payment/cardtype/cardtype','TCTYStaAlwRet'); ?></th>
@@ -81,8 +82,28 @@
                                         $tExpireType = language('payment/cardtype/cardtype','tCTYFrmYear');
                                     }
                                ?>
-    
-                                <td nowrap class="text-left"><?php echo $aValue['rtCtyExpirePeriod']; ?>&nbsp;<?php echo $tExpireType; ?></td>
+                                <?php
+                                    if($aValue['rtCtyTExpiredType']=="1"){
+                                       $tTExpireType = language('payment/cardtype/cardtype','tCTYFrmCldCycle');  
+                                    }elseif($aValue['rtCtyTExpiredType']=="2"){
+                                       $tTExpireType = language('payment/cardtype/cardtype','tCTYFrmTmeCycle');
+                                    }else{
+                                        $tTExpireType = language('payment/cardtype/cardtype','');
+                                    }
+                                ?>    
+                                <td nowrap class="text-left"><?php echo $aValue['rtCtyExpirePeriod']; ?>&nbsp;<?php echo $tExpireType; ?>&nbsp;<?php echo $tTExpireType; ?></td>
+
+
+                                <?php
+                                    if($aValue['rtCtyStaCrdReuse']=="1"){
+                                       $tCtyStaCrdReuse = language('payment/cardtype/cardtype','tCTYFrmCrdStaReuseTypeDefault');  
+                                    }elseif($aValue['rtCtyStaCrdReuse']=="2"){
+                                       $tCtyStaCrdReuse = language('payment/cardtype/cardtype','tCTYFrmCrdStaReuseTypeOneTime');
+                                    }else{
+                                        $tCtyStaCrdReuse = language('payment/cardtype/cardtype','');
+                                    }
+                                ?>
+                                <td nowrap class="text-left"><?php echo $tCtyStaCrdReuse; ?></td>
 
 
                                 <?php

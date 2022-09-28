@@ -31,7 +31,11 @@ class mCardType extends CI_Model {
                                         CTY.FTCtyStaPay AS rtCtyStaPay,
                                         CTY.FCCtyCreditLimit AS rtCtyCreditLimit,
                                         CTY.FTCtyStaShift AS rtCtyStaShif,
-                                        CTY.FDCreateOn
+                                        CTY.FDCreateOn,        
+                                        CTY.FTCtyExpiredType AS rtCtyTExpiredType,
+                                        CTY.FTCtyStaCrdReuse AS rtCtyStaCrdReuse,
+                                        CTY.FTCtyTAStaReset AS rtCtyTAStaReset,
+                                        CTY.FTCtyTAAlwReturn AS rtCtyTAAlwReturn
                                     FROM [TFNMCardType] CTY
                                     LEFT JOIN [TFNMCardType_L] CTY_L ON CTY.FTCtyCode = CTY_L.FTCtyCode AND CTY_L.FNLngID = $nLngID   
                                     WHERE 1=1 ";
@@ -130,7 +134,11 @@ class mCardType extends CI_Model {
                                 CTY_L.FTCtyRmk  AS rtCtyRmk,
                                 CTY.FTCtyStaShift AS rtCtyStaShif,
                                 CTY.FTAgnCode        AS rtAgnCode,
-                                AGN_L.FTAgnName      AS rtAgnName
+                                AGN_L.FTAgnName      AS rtAgnName,
+                                CTY.FTCtyExpiredType AS rtCtyTExpiredType,
+                                CTY.FTCtyStaCrdReuse AS rtCtyStaCrdReuse,
+                                CTY.FTCtyTAStaReset AS rtCtyTAStaReset,
+                                CTY.FTCtyTAAlwReturn AS rtCtyTAAlwReturn
                             FROM TFNMCardType CTY
                             LEFT JOIN TCNMAgency_L AGN_L ON CTY.FTAgnCode = AGN_L.FTAgnCode AND AGN_L.FNLngID = $nLngID
                             LEFT JOIN TFNMCardType_L CTY_L ON CTY.FTCtyCode = CTY_L.FTCtyCode AND CTY_L.FNLngID = $nLngID 
@@ -186,17 +194,21 @@ class mCardType extends CI_Model {
             // Update TFNMCardType
             $this->db->where('FTCtyCode', $paDataCardType['FTCtyCode']);
             $this->db->update('TFNMCardType',array(
-                'FCCtyDeposit'      => $paDataCardType['FCCtyDeposit'],
-                'FCCtyTopupAuto'    => $paDataCardType['FCCtyTopupAuto'],
-                'FNCtyExpiredType'  => $paDataCardType['FNCtyExpiredType'],
-                'FNCtyExpirePeriod' => $paDataCardType['FNCtyExpirePeriod'],
-                'FTCtyStaAlwRet'    => $paDataCardType['FTCtyStaAlwRet'],
-                'FTCtyStaPay'       => $paDataCardType['FTCtyStaPay'],
-                'FCCtyCreditLimit'  => $paDataCardType['FCCtyCreditLimit'],
-                'FDLastUpdOn'       => $paDataCardType['FDLastUpdOn'], 
-                'FTLastUpdBy'       => $paDataCardType['FTLastUpdBy'],
-                'FTCtyStaShift'     => $paDataCardType['FTCtyStaShift'],
-                'FTAgnCode'         => $paDataCardType['FTAgnCode'],
+                'FCCtyDeposit'          => $paDataCardType['FCCtyDeposit'],
+                'FCCtyTopupAuto'        => $paDataCardType['FCCtyTopupAuto'],
+                'FNCtyExpiredType'      => $paDataCardType['FNCtyExpiredType'],
+                'FNCtyExpirePeriod'     => $paDataCardType['FNCtyExpirePeriod'],
+                'FTCtyStaAlwRet'        => $paDataCardType['FTCtyStaAlwRet'],
+                'FTCtyStaPay'           => $paDataCardType['FTCtyStaPay'],
+                'FCCtyCreditLimit'      => $paDataCardType['FCCtyCreditLimit'],
+                'FDLastUpdOn'           => $paDataCardType['FDLastUpdOn'], 
+                'FTLastUpdBy'           => $paDataCardType['FTLastUpdBy'],
+                'FTCtyStaShift'         => $paDataCardType['FTCtyStaShift'],
+                'FTAgnCode'             => $paDataCardType['FTAgnCode'],
+                'FTCtyExpiredType'      => $paDataCardType['FTCtyExpiredType'],  //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyStaCrdReuse'      => $paDataCardType['FTCtyStaCrdReuse'],  //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyTAStaReset'       => $paDataCardType['FTCtyTAStaReset'],   //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyTAAlwReturn'      => $paDataCardType['FTCtyTAAlwReturn'],  //เพิ่มใหม่ 27092022 By: IcePHP
             ));
             if($this->db->affected_rows() > 0){
                 $aStatus = array(
@@ -206,20 +218,24 @@ class mCardType extends CI_Model {
             }else{
                 //Add TFNMCardType
                 $this->db->insert('TFNMCardType', array(
-                    'FCCtyDeposit'      => $paDataCardType['FCCtyDeposit'], 
-                    'FCCtyTopupAuto'    => $paDataCardType['FCCtyTopupAuto'],
-                    'FNCtyExpiredType'  => $paDataCardType['FNCtyExpiredType'],
-                    'FNCtyExpirePeriod' => $paDataCardType['FNCtyExpirePeriod'],
-                    'FTCtyStaAlwRet'    => $paDataCardType['FTCtyStaAlwRet'],
-                    'FTCtyStaPay'       => $paDataCardType['FTCtyStaPay'],
-                    'FCCtyCreditLimit'  => $paDataCardType['FCCtyCreditLimit'],
-                    'FTCtyCode'         => $paDataCardType['FTCtyCode'],
-                    'FDCreateOn'        => $paDataCardType['FDCreateOn'],
-                    'FTCreateBy'        => $paDataCardType['FTCreateBy'],
-                    'FDLastUpdOn'       => $paDataCardType['FDLastUpdOn'], 
-                    'FTLastUpdBy'       => $paDataCardType['FTLastUpdBy'],
-                    'FTCtyStaShift'     => $paDataCardType['FTCtyStaShift'],
-                    'FTAgnCode'         => $paDataCardType['FTAgnCode'],
+                    'FCCtyDeposit'          => $paDataCardType['FCCtyDeposit'], 
+                    'FCCtyTopupAuto'        => $paDataCardType['FCCtyTopupAuto'],
+                    'FNCtyExpiredType'      => $paDataCardType['FNCtyExpiredType'],
+                    'FNCtyExpirePeriod'     => $paDataCardType['FNCtyExpirePeriod'],
+                    'FTCtyStaAlwRet'        => $paDataCardType['FTCtyStaAlwRet'],
+                    'FTCtyStaPay'           => $paDataCardType['FTCtyStaPay'],
+                    'FCCtyCreditLimit'      => $paDataCardType['FCCtyCreditLimit'],
+                    'FTCtyCode'             => $paDataCardType['FTCtyCode'],
+                    'FDCreateOn'            => $paDataCardType['FDCreateOn'],
+                    'FTCreateBy'            => $paDataCardType['FTCreateBy'],
+                    'FDLastUpdOn'           => $paDataCardType['FDLastUpdOn'], 
+                    'FTLastUpdBy'           => $paDataCardType['FTLastUpdBy'],
+                    'FTCtyStaShift'         => $paDataCardType['FTCtyStaShift'],
+                    'FTAgnCode'             => $paDataCardType['FTAgnCode'],
+                    'FTCtyExpiredType'      => $paDataCardType['FTCtyExpiredType'],  //เพิ่มใหม่ 27092022 By: IcePHP
+                    'FTCtyStaCrdReuse'      => $paDataCardType['FTCtyStaCrdReuse'],  //เพิ่มใหม่ 27092022 By: IcePHP
+                    'FTCtyTAStaReset'       => $paDataCardType['FTCtyTAStaReset'],   //เพิ่มใหม่ 27092022 By: IcePHP
+                    'FTCtyTAAlwReturn'      => $paDataCardType['FTCtyTAAlwReturn'],  //เพิ่มใหม่ 27092022 By: IcePHP
                 ));
                 if($this->db->affected_rows() > 0){
                     $aStatus = array(

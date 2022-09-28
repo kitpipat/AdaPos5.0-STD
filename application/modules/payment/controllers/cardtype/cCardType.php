@@ -171,25 +171,32 @@ class cCardType extends MX_Controller {
             }
 
             $aDataCardType   = array(
-                'FTCtyCode'         => $tCtyCode,
-                'FTCtyName'         => $this->input->post('oetCtyName'),
-                'FCCtyDeposit'      => str_replace(',','',$this->input->post('oetCtyDeposit')),
-                'FCCtyTopupAuto'    => str_replace(',','',$this->input->post('oetCtyTopupAuto')),
-                'FNCtyExpiredType'  => $this->input->post('ocmCtyExpireType'),
-                'FNCtyExpirePeriod' => $this->input->post('oetCtyExpirePeriod'),
-                'FTCtyStaShift'     => $this->input->post('ohdCtyStaType'),
-                'FTCtyStaAlwRet'    => (!empty($this->input->post('ocbCtyStaAlwRet')))? '1':'2',
-                'FTCtyStaPay'       => $this->input->post('ocmCtyStatusPay'), // เพิ่มมาใหม่
-                'FCCtyCreditLimit'  => str_replace(',','',$this->input->post('oetCtyPaylimit')),
-                'FTCtyRmk'          => $this->input->post('otaCtyRmk'),
-                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
-                'FDCreateOn'        => date('Y-m-d H:i:s'),
-                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
-                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
-                'FNLngID'           => $this->session->userdata("tLangEdit"),
+                'FTCtyCode'             => $tCtyCode,
+                'FTCtyName'             => $this->input->post('oetCtyName'),
+                'FCCtyDeposit'          => str_replace(',','',$this->input->post('oetCtyDeposit')),
+                'FCCtyTopupAuto'        => str_replace(',','',$this->input->post('oetCtyTopupAuto')),
+                'FNCtyExpiredType'      => $this->input->post('ocmCtyExpireType'),
+                'FNCtyExpirePeriod'     => $this->input->post('oetCtyExpirePeriod'),
+                'FTCtyStaShift'         => $this->input->post('ohdCtyStaType'),
+                'FTCtyStaAlwRet'        => (!empty($this->input->post('ocbCtyStaAlwRet')))? '1':'2',
+                'FTCtyStaPay'           => $this->input->post('ocmCtyStatusPay'), // เพิ่มมาใหม่
+                'FCCtyCreditLimit'      => str_replace(',','',$this->input->post('oetCtyPaylimit')),
+                'FTCtyRmk'              => $this->input->post('otaCtyRmk'),
+                'FDLastUpdOn'           => date('Y-m-d H:i:s'),
+                'FDCreateOn'            => date('Y-m-d H:i:s'),
+                'FTCreateBy'            => $this->session->userdata('tSesUsername'),
+                'FTLastUpdBy'           => $this->session->userdata('tSesUsername'),
+                'FNLngID'               => $this->session->userdata("tLangEdit"),
 
-                'FTAgnCode'         => $this->input->post('oetCTYUsrAgnCode'),
+                'FTAgnCode'             => $this->input->post('oetCTYUsrAgnCode'),
+
+                'FTCtyExpiredType'      => $this->input->post('ocmCtyTExpireType'),                     //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyStaCrdReuse'      => $this->input->post('ocmCtyStaCrdReuse'),                     //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyTAStaReset'       => (!empty($this->input->post('ocbCtyTAStaReset')))? '1':'2',   //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyTAAlwReturn'      => (!empty($this->input->post('ocbCtyTAAlwReturn')))? '1':'2',  //เพิ่มใหม่ 27092022 By: IcePHP
             );
+
+            // print_r($aDataCardType); exit;
             $oCountDup      = $this->mCardType->FSnMCTYCheckDuplicate($aDataCardType['FTCtyCode']);
             $nStaDup        = $oCountDup['counts'];
             if($oCountDup !== FALSE && $nStaDup == 0){
@@ -232,25 +239,35 @@ class cCardType extends MX_Controller {
         try{
             $this->db->trans_begin();
             $aDataCardType   = array(
-                'FTCtyCode'          => $this->input->post('oetCtyCode'),
-                'FTCtyName'          => $this->input->post('oetCtyName'),
-                'FCCtyDeposit'       => str_replace(',','',$this->input->post('oetCtyDeposit')),
-                'FCCtyTopupAuto'     => str_replace(',','',$this->input->post('oetCtyTopupAuto')),
-                'FNCtyExpiredType'   => $this->input->post('ocmCtyExpireType'),
-                'FNCtyExpirePeriod'  => $this->input->post('oetCtyExpirePeriod'),
-                'FTCtyStaAlwRet'     => (!empty($this->input->post('ocbCtyStaAlwRet')))? '1':'2',
-                'FTCtyStaShift'      => $this->input->post('ohdCtyStaType'),
-                'FTCtyStaPay'        => $this->input->post('ocmCtyStatusPay'),  // เพิ่มมาใหม่
-                'FCCtyCreditLimit'  => str_replace(',','',$this->input->post('oetCtyPaylimit')),
-                'FTCtyRmk'           => $this->input->post('otaCtyRmk'),
-                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
-                'FDCreateOn'        => date('Y-m-d H:i:s'),
-                'FTCreateBy'         => $this->session->userdata('tSesUsername'),
-                'FTLastUpdBy'        => $this->session->userdata('tSesUsername'),
-                'FNLngID'            => $this->session->userdata("tLangEdit"),
+                'FTCtyCode'             => $this->input->post('oetCtyCode'),
+                'FTCtyName'             => $this->input->post('oetCtyName'),
+                'FCCtyDeposit'          => str_replace(',','',$this->input->post('oetCtyDeposit')),
+                'FCCtyTopupAuto'        => str_replace(',','',$this->input->post('oetCtyTopupAuto')),
+                'FNCtyExpiredType'      => $this->input->post('ocmCtyExpireType'),
+                'FNCtyExpirePeriod'     => $this->input->post('oetCtyExpirePeriod'),
+                'FTCtyStaAlwRet'        => (!empty($this->input->post('ocbCtyStaAlwRet')))? '1':'2',
+                'FTCtyStaShift'         => $this->input->post('ohdCtyStaType'),
+                'FTCtyStaPay'           => $this->input->post('ocmCtyStatusPay'),  // เพิ่มมาใหม่
+                'FCCtyCreditLimit'      => str_replace(',','',$this->input->post('oetCtyPaylimit')),
+                'FTCtyRmk'              => $this->input->post('otaCtyRmk'),
+                'FDLastUpdOn'           => date('Y-m-d H:i:s'),
+                'FDCreateOn'            => date('Y-m-d H:i:s'),
+                'FTCreateBy'            => $this->session->userdata('tSesUsername'),
+                'FTLastUpdBy'           => $this->session->userdata('tSesUsername'),
+                'FNLngID'               => $this->session->userdata("tLangEdit"),
 
-                'FTAgnCode'          => $this->input->post('oetCTYUsrAgnCode'),
+                'FTAgnCode'             => $this->input->post('oetCTYUsrAgnCode'),
+
+                'FTAgnCode'             => $this->input->post('oetCTYUsrAgnCode'),
+
+                'FTCtyExpiredType'      => $this->input->post('ocmCtyTExpireType'),                     //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyStaCrdReuse'      => $this->input->post('ocmCtyStaCrdReuse'),                     //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyTAStaReset'       => (!empty($this->input->post('ocbCtyTAStaReset')))? '1':'2',   //เพิ่มใหม่ 27092022 By: IcePHP
+                'FTCtyTAAlwReturn'      => (!empty($this->input->post('ocbCtyTAAlwReturn')))? '1':'2',  //เพิ่มใหม่ 27092022 By: IcePHP
             );
+
+            // print_r($aDataCardType); exit;
+            
             $aStaCtyMaster  = $this->mCardType->FSaMCTYAddUpdateMaster($aDataCardType);
             $aStaCtyLang    = $this->mCardType->FSaMCTYAddUpdateLang($aDataCardType);
             if($this->db->trans_status() === false){

@@ -41,16 +41,28 @@ $lang['tCTYFrmHour']            = "Hour";
 $lang['tCTYFrmDay']             = "Days";
 $lang['tCTYFrmMonth']           = "Month";
 $lang['tCTYFrmYear']            = "Year";
+$lang['tCTYFrmCldCycle']        = "Calendar Cycle";
+$lang['tCTYFrmTmeCycle']        = "Time Cycle";
 
 
 $lang['tCTYValidExpireType']    = 'Please select expired type';
 
 $lang['tCTYAllow']              = "Allow";
 $lang['tCTYNotAllow']           = "Not Allow";
-$lang['tCTYStaPay']     = "Payment status";
-$lang['tCTYPaylimit']     = "Limit";
-$lang['tCTYTopupfirst'] = "Top up first";
-$lang['tCTYPayLater']   = "Pay later";
+$lang['tCTYStaPay']                 = "Payment status";
+$lang['tCTYPaylimit']               = "Limit";
+$lang['tCTYTopupfirst']             = "Top up first";
+$lang['tCTYPayLater']               = "Pay later";
 $lang['tCTYFrmCrdStaTypeDefault']   = "Automatic";
 $lang['tCTYFrmCrdStaTypeNormal']    = "Normal";
 $lang['tCTYFrmCrdStaType']          = "Format Card";
+
+
+$lang['tCTYFrmCrdStaReuse']             = "การนำไปใช้";
+$lang['tCTYFrmCrdStaReuseTypeDefault']  = "ใช้ซ้ำได้";
+$lang['tCTYFrmCrdStaReuseTypeOneTime']  = "ใช้ครั้งเดียว";
+
+$lang['tCTYFrmTAStaResetDefault']       = "ไม่ล้างข้อมูลก่อนเติมเงินอัติโนมัติ";
+$lang['tCTYFrmTAStaReset']              = "ล้างข้อมูลก่อนเติมเงินอัติโนมัติ";
+$lang['tCTYFrmTAAlwReturnDefault']      = "ไม่อนุญาตคืนยอดเติมเงินอัติโนมัติ";
+$lang['tCTYFrmTAAlwReturn']             = "อนุญาตคืนยอดเติมเงินอัติโนมัติ";
