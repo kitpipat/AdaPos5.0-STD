@@ -895,6 +895,7 @@ class mCardShiftRefund extends CI_Model
                                 )
                                 AND TFNMCard.FTCrdStaActive = '1'
                                 AND (TFNMCard.FTCrdStaShift = '2')
+                                AND TFNMCard.FDCrdExpireDate > GETDATE()
                                 AND CONVERT (VARCHAR,TFNMCard.FDCrdExpireDate,111) >= CONVERT (VARCHAR, GETDATE(), 111)
                                 AND TFNMCard.FTAgnCode = '$tAgnCode'
                             ) AS Result";
