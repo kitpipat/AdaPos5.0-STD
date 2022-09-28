@@ -492,7 +492,7 @@ class cRptCardNoActive extends MX_Controller {
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell(empty($aValue['FDCrdExpireDate']) ? '' : date("d/m/Y", strtotime($aValue['FDCrdExpireDate']))),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCCrdValue']),$oStyle),
+                    WriterEntityFactory::createCell(number_format($aValue['FCCrdValue'],$nOptDecimalShow),$oStyle),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell($tTextStaActive),
                     WriterEntityFactory::createCell(null),

@@ -5560,7 +5560,7 @@ var oRptClvBrows = function(poReturnInput) {
             if (tDataBranch) {
                 if (tDataBranch != '') {
                     var tDataBranchWhere = tDataBranch.replaceAll("','", "','");
-                    tTextWhereInBranch = ' AND (TCNMShop.FTBchCode IN (' + tDataBranchWhere + '))';
+                    tTextWhereInBranch = ' AND (TCNMShop.FTBchCode IN (' +"'"+ tDataBranchWhere +"'"+ '))';
                 }
             }
 
@@ -5569,7 +5569,7 @@ var oRptClvBrows = function(poReturnInput) {
             let tTextWhereInMerchant = '';
             if (tDataMerchant) {
                 if (tDataMerchant != '') {
-                    tTextWhereInMerchant = ' AND (TCNMShop.FTMerCode IN (' + tDataMerchant + '))';
+                    tTextWhereInMerchant = ' AND (TCNMShop.FTMerCode IN (' +"'"+ tDataMerchant +"'"+ '))';
                 }
             }
 
