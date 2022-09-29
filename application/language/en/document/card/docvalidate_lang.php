@@ -36,3 +36,6 @@ $lang['tErrorNewCardNotEmpty'] = "New card code cannot be blank.";
 $lang['tErrorNewCardIsDup'] = "The new card code is the same as the other card. Or duplicate the card to be replaced";
 
 
+$lang['tErrorCtyStaShiftDefault']          = "เบิกปกติ";
+$lang['tErrorCtyStaShiftAuto']             = "เบิกอัติโนมัติ";
+
