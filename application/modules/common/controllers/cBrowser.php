@@ -274,7 +274,7 @@ class cBrowser extends CI_Controller
 
             // echo $tSQL."<hr>";
             // echo $tFinalQuery."<hr>";
-
+            // print_r($tFinalQuery);
             $oQuery = $this->db->query($tFinalQuery);
 
             // Get Total Record From Query

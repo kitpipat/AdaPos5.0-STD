@@ -34,9 +34,13 @@ $lang['tErrorStaCrdInActive']            = "ไม่พบสถานะบั
 $lang['tErrorStaCrdCancle']              = "สถานะบัตรถูกยกเลิก";
 $lang['tErrorCardOverBal']               = "มูลค่าที่คืนมากกว่ามูลค่าคงเหลือในบัตร";
 
-$lang['tErrorCrdTmpDup'] = "นำเข้าบัตรซ้ำ";
+$lang['tErrorCrdTmpDup']                = "นำเข้าบัตรซ้ำ";
 
-$lang['tErrorNewCardNotEmpty'] = "รหัสบัตรใหม่ต้องไม่เป็นค่าว่าง";
-$lang['tErrorNewCardIsDup'] = "รหัสบัตรใหม่ซ้ำกับบัตรอื่น หรือซ้ำกับบัตรที่จะเปลี่ยน";
+$lang['tErrorNewCardNotEmpty']          = "รหัสบัตรใหม่ต้องไม่เป็นค่าว่าง";
+$lang['tErrorNewCardIsDup']             = "รหัสบัตรใหม่ซ้ำกับบัตรอื่น หรือซ้ำกับบัตรที่จะเปลี่ยน";
+
+
+$lang['tErrorCtyStaShiftDefault']          = "เบิกปกติ";
+$lang['tErrorCtyStaShiftAuto']             = "เบิกอัติโนมัติ";
      
 

@@ -552,6 +552,7 @@ function FSaCCARTypeExcel($ptDocType, $ptDataSetType, $paDataExcel)
                             }
                         }
                         $tResultSql = substr($tSql, 0, -1);
+                        // print_r(["TEST",$tResultSql]); exit;
                         $ci->db->query($tResultSql);
                         $nLoopStart     = $nLoopEnd;
                         $nLoopEnd       = $nLoopEnd + 900;

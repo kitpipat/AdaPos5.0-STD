@@ -385,7 +385,7 @@
                 ]
             },
             Where: {
-                Condition: ["AND ( ( (TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '1') ) AND (TFNMCard.FTCrdStaActive = '1') AND (CONVERT(date, TFNMCard.FDCrdExpireDate) > CONVERT(date, GETDATE())) )" + tNotIn + tWhereCardByAgenCode]
+                Condition: ["AND ( ( (TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '1') ) AND (TFNMCard.FTCrdStaActive = '1') )" + tNotIn + tWhereCardByAgenCode]
             },
             GrideView: {
                 ColumnPathLang: 'payment/card/card',
@@ -1025,6 +1025,7 @@
                     var tDocNo = '-';
                 }
                 oFormData.append('tDocNo', tDocNo);
+                // console.log(oFormData['tStaShift']," /-/ ", oFormData['tStaDoc']);
                 $.ajax({
                     type: "POST",
                     url: "cardShiftOutDataSourceTableByFile",
@@ -1643,6 +1644,7 @@
         $('#oetCardShiftOutDataScannerID').focus();
         return;
       }else if($("#oetCardShiftOutDataScannerID").val() != '') {
+        console.log($("#oetCardShiftOutDataScannerID").val());
         $.ajax({
             type    : "POST",
             url     : "cardShiftOutEventScanner",
