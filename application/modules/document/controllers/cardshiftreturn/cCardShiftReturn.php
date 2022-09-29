@@ -160,7 +160,7 @@ class cCardShiftReturn extends MX_Controller {
             FSnHReturnCrdChkStaShiftInCard($paParams);
 
             //(9)
-            FSnHReturnCrdChkStaActiveInCard($paParams);
+            // FSnHReturnCrdChkStaActiveInCard($paParams);
         }else{
             if($tStaPrcDoc == "" AND $tStaDoc == "1"){ // Document pending status(approve) or complete status(doc status)
                 //(5)
@@ -173,7 +173,7 @@ class cCardShiftReturn extends MX_Controller {
                 FSnHReturnCrdChkStaShiftInCard($paParams);
 
                 //(9)
-                FSnHReturnCrdChkStaActiveInCard($paParams);
+                // FSnHReturnCrdChkStaActiveInCard($paParams);
             }
         }
         /** ========================================================================== */

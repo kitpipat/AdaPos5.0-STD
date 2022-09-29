@@ -980,8 +980,8 @@ class mCardShiftTopUp extends CI_Model
                         LEFT JOIN TFNMCard_L ON TFNMCard_L.FTCrdCode = TFNMCard.FTCrdCode AND TFNMCard_L.FNLngID = '$tLangID'
                         LEFT JOIN TFNMCardType ON TFNMCardType.FTCtyCode = TFNMCard.FTCtyCode
                         WHERE TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1' AND TFNMCard.FTCrdCode ='$tCrdCode'
-                        AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1') OR TFNMCardType.FTCtyStaShift = '2')
-                        AND (CONVERT (DATE,TFNMCard.FDCrdExpireDate) > CONVERT (DATE, GETDATE()))";
+                        AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1' AND (CONVERT (DATE,TFNMCard.FDCrdExpireDate) > CONVERT (DATE, GETDATE()))) 
+						OR TFNMCardType.FTCtyStaShift = '2')";
 
             if($tAgnCode != ''){
                 $tSQL .= " AND TFNMCard.FTAgnCode = '$tAgnCode' ";

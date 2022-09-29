@@ -411,7 +411,7 @@ function FSxInsertByBetween($ptDocType, $ptDataSetType, $paDataSet)
                         LEFT JOIN TFNMCardType CRDT ON CRDT.FTCtyCode = CRD.FTCtyCode
                         --LEFT JOIN
                         WHERE 1=1 
-                        AND ( CRD.FTCrdStaActive = 1 AND ((CRD.FTCrdStaShift = 2 AND CRDT.FTCtyStaShift = 1) OR CRDT.FTCtyStaShift = 2 ) AND ( CONVERT(datetime, CRD.FDCrdExpireDate) > CONVERT(datetime, GETDATE()) ) )
+                        AND ( CRD.FTCrdStaActive = 1 AND ((CRD.FTCrdStaShift = 2 AND CRDT.FTCtyStaShift = 1 AND ( CONVERT(datetime, CRD.FDCrdExpireDate) > CONVERT(datetime, GETDATE()) )) OR CRDT.FTCtyStaShift = 2 ) )
                         AND ( CRD.FTCrdCode NOT IN (SELECT TMP.FTCrdCode FROM TFNTCrdTopUpTmp TMP WITH(NOLOCK) WHERE FTSessionID = '$tSessionID') )
                         $tWhereCardCode 
                         $tWhereCardType

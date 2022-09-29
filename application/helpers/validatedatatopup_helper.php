@@ -266,7 +266,7 @@ function FSnHTopUpChkCardExpireDate($paParams){
                     SELECT CTT.FTCrdCode
                     FROM TFNTCrdTopUpTmp CTT
                     INNER JOIN TFNMCard CRD WITH (NOLOCK) ON CRD.FTCrdCode =  CTT.FTCrdCode AND  CONVERT(VARCHAR(10),CRD.FDCrdExpireDate,121) < CONVERT(VARCHAR(10),GETDATE (),121) 
-                    WHERE CTT.FTSessionID = '".$tSessionID."' ";
+                    WHERE CTT.FTSessionID = '".$tSessionID."' AND CRD.FTCtyCode NOT IN (SELECT FTCtyCode FROM TFNMCardType WHERE FTCtyStaShift='2') ";
     $tSQL   .= $tWhereSltSeqNo;
     $tSQL   .= " ) ";
     $tSQL   .= $tWhereUpdSeqNo;

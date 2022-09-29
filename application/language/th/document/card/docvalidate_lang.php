@@ -13,7 +13,7 @@ $lang['tErrorCrdNameNotEmpty']  = "ชื่อพนักงานไม่ม
 $lang['tErrorNotFoundCardCode'] = "ไม่พบบัตรในระบบ";
 $lang['tErrorStaCardShift']     = "บัตรถูกเบิกไปแล้ว";
 $lang['tErrorStaCrdActive']     = "บัตรนี้ไม่มีการเคลื่อนไหว";
-$lang['tErrorCardExpire']       = "ไม่พบสถาณะบัตรหมดอายุ";
+$lang['tErrorCardExpire']       = "บัตรหมดอายุ";
 
 
 //validatedatacardtranf_helper
