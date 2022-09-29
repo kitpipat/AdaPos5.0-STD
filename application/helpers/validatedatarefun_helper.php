@@ -368,6 +368,7 @@ function FSnHRefunChkCardBal($paParams){
     $tSQL .= $tWhereUpdSeqNo;
     $tSQL .= " AND FTXsdStaCrd = '1' AND FTSessionID = '$tSessionID'";
 
+    // print_r($tSQL);
     $ci->db->query($tSQL);
     
     if($ci->db->affected_rows() > 0){

@@ -327,8 +327,14 @@
             var tRoute = "<?php echo $tRoute;?>";
             if(tRoute  == 'cardtypeEventEdit'){
                var nStatusPay = $('#ocmCtyStatusPay').val();
+               var tTopupAuto = $("#oetCtyTopupAuto").val()
                if(nStatusPay == "1"){
                  $('#oetCtyPaylimit').attr('readonly','readonly');
+               }
+
+               if(tTopupAuto != '' && tTopupAuto > 0) {
+                    $("#ocbCtyTAStaReset").attr("disabled",false);
+                    $("#ocbCtyTAAlwReturn").attr("disabled",false);
                }
             }else{
                 $('#oetCtyPaylimit').attr('readonly','readonly');

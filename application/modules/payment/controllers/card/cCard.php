@@ -143,6 +143,8 @@ class cCard extends MX_Controller
                 'tImgObjPath'    => $aCrdData['raItems']['rtCrdImgObj'],
                 'aSumTotalCard'  => $aSumTotalCard
             );
+
+            // print_r
             $this->load->view('payment/card/wCardAdd', $aDataCard);
         } catch (Exception $Error) {
             echo $Error;
@@ -413,6 +415,33 @@ class cCard extends MX_Controller
                 'nOptDecimalShow' => $nOptDecimalShow
             ];
             $this->load->view('payment/card/advance_table/wCardHisDataTable', $aCrdHisTableParams);
+        } catch (Exception $Error) {
+            echo $Error;
+        }
+    }
+
+    function FSvCCRDGetExpiredInfo() {
+        try {
+            $tCrdCtyCode = $this->input->post('tCrdCtyCode');
+
+            $aData  = $this->mCard->FSvMCRDGetExpiredInfo($tCrdCtyCode);
+            
+            if($aData != '') {
+                $aReturn = array(
+                    'aCrdData'       => $aData,
+                    'nStaEvent'      => '1',
+                    'tStaMessg'      => 'Success.'
+                );
+                
+            }else {
+                $aReturn = array(
+                    'nStaEvent'      => '2',
+                    'tStaMessg'      => 'Not Found Data.'
+                );
+
+            }
+   
+            echo json_encode($aReturn);
         } catch (Exception $Error) {
             echo $Error;
         }
