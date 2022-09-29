@@ -284,7 +284,7 @@
                 ]
             },
             Where: {
-                Condition: ["AND TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1'  AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1'  AND (CONVERT(date, TFNMCard.FDCrdExpireDate) > CONVERT(date, GETDATE()))) OR TFNMCardType.FTCtyStaShift = '2')" + tNotIn + tWhereInCard + tWhereCardByAgenCode]
+                Condition: ["AND TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1'  AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1'  AND TFNMCard.FDCrdExpireDate > GETDATE()) OR TFNMCardType.FTCtyStaShift = '2')" + tNotIn + tWhereInCard + tWhereCardByAgenCode]
             },
             GrideView: {
                 ColumnPathLang: 'payment/card/card',
@@ -355,7 +355,7 @@
                 ]
             },
             Where: {
-                Condition: ["AND TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1' AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1'  AND (CONVERT(date, TFNMCard.FDCrdExpireDate) > CONVERT(date, GETDATE()))) OR TFNMCardType.FTCtyStaShift = '2')" + tNotIn + tWhereInCard + tWhereCardByAgenCode]
+                Condition: ["AND TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1' AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1'  AND TFNMCard.FDCrdExpireDate > GETDATE()) OR TFNMCardType.FTCtyStaShift = '2')" + tNotIn + tWhereInCard + tWhereCardByAgenCode]
             },
             GrideView: {
                 ColumnPathLang: 'payment/card/card',
@@ -407,7 +407,7 @@
                 ]
             },
             Where: {
-                Condition: ["AND TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1' AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1'  AND (CONVERT(date, TFNMCard.FDCrdExpireDate) > CONVERT(date, GETDATE()))) OR TFNMCardType.FTCtyStaShift = '2') " + tNotIn + tWhereCardByAgenCode]
+                Condition: ["AND TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1' AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1'  AND TFNMCard.FDCrdExpireDate > GETDATE()) OR TFNMCardType.FTCtyStaShift = '2') " + tNotIn + tWhereCardByAgenCode]
             },
             GrideView: {
                 ColumnPathLang: 'payment/card/card',
