@@ -896,9 +896,13 @@ class mCardShiftRefund extends CI_Model
                                 AND TFNMCard.FTCrdStaActive = '1'
                                 AND (TFNMCard.FTCrdStaShift = '2')
                                 AND TFNMCard.FDCrdExpireDate > GETDATE()
-                                AND CONVERT (VARCHAR,TFNMCard.FDCrdExpireDate,111) >= CONVERT (VARCHAR, GETDATE(), 111)
-                                AND TFNMCard.FTAgnCode = '$tAgnCode'
-                            ) AS Result";
+                                AND CONVERT (VARCHAR,TFNMCard.FDCrdExpireDate,111) >= CONVERT (VARCHAR, GETDATE(), 111)";
+                            
+                                if($tAgnCode != ''){
+                                    $tSQL .= " AND TFNMCard.FTAgnCode = '$tAgnCode' ";
+                                } 
+
+            $tSQL .=") AS Result";
             $oQuery = $this->db->query($tSQL);
             if ($oQuery->num_rows() > 0){
                 $oDetail = $oQuery->result();

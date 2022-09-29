@@ -981,8 +981,11 @@ class mCardShiftTopUp extends CI_Model
                         LEFT JOIN TFNMCardType ON TFNMCardType.FTCtyCode = TFNMCard.FTCtyCode
                         WHERE TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1' AND TFNMCard.FTCrdCode ='$tCrdCode'
                         AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1') OR TFNMCardType.FTCtyStaShift = '2')
-                        AND (CONVERT (DATE,TFNMCard.FDCrdExpireDate) > CONVERT (DATE, GETDATE()))
-                        AND TFNMCard.FTAgnCode = '$tAgnCode'";
+                        AND (CONVERT (DATE,TFNMCard.FDCrdExpireDate) > CONVERT (DATE, GETDATE()))";
+
+            if($tAgnCode != ''){
+                $tSQL .= " AND TFNMCard.FTAgnCode = '$tAgnCode' ";
+            } 
             $oQuery = $this->db->query($tSQL);
             if ($oQuery->num_rows() > 0){
                 $oDetail = $oQuery->result();
