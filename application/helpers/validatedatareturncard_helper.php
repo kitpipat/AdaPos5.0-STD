@@ -141,10 +141,10 @@ function FSnHReturnCrdChkStaShiftInCard($paParams){
     // StatusShift = TURE: สถานะบัตรยังไม่ถูกเบิก , FALSE: สถานะบัตรถูกเบิกไปแล้ว
         $tErrorStaCardShift   = "";
     if(!empty($bStaCardShift) && $bStaCardShift === TRUE){
-        $tWhereStaCrdShift    = " AND CRD.FTCrdStaShift = 1 ";
+        $tWhereStaCrdShift    = " AND CRD.FTCrdStaShift = 2 ";
         $tErrorStaCardShift   =   language('document/card/docvalidate','tErrorStaCrdShiftNotWithdrawned'); // Add validate for lang (golf) 08/01/2019
     }else if(!empty($bStaCardShift) && $bStaCardShift === FALSE){
-        $tWhereStaCrdShift    = " AND CRD.FTCrdStaShift = 2 ";
+        $tWhereStaCrdShift    = " AND CRD.FTCrdStaShift = 1 ";
         $tErrorStaCardShift   =   language('document/card/docvalidate','tErrorStaCrdShiftWithdrawned'); // Add validate for lang (golf) 08/01/2019
     }else{
         $tWhereStaCrdShift  = "";

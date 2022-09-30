@@ -146,7 +146,7 @@ class cCardShiftReturn extends MX_Controller {
         /** ===================== เช็ค Validate เอกสารเบิกบัตร =========================== */
         $paParams['tSessionID']     = $this->session->userdata("tSesSessionID");
         $paParams['tSeqNo']         = "";
-        $paParams['bStaCardShift']  = false;
+        $paParams['bStaCardShift']  = TRUE;
         $paParams['nCrdStaActive']  = 1;
 
         if($tStaPrcDoc == "" AND $tStaDoc == ""){
