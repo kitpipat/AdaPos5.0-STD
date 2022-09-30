@@ -274,6 +274,7 @@ class mCardShiftRefund extends CI_Model
         }
         $tSQL .= ") Base) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1]";
 
+        // print_r($tSQL);
         $oQuery = $this->db->query($tSQL);
 
         if ($oQuery->num_rows() > 0) {
@@ -777,6 +778,7 @@ class mCardShiftRefund extends CI_Model
             AND CRDDT.FTXshDocNo = '$tCardShiftRefundDocNo'
         ";
 
+        print_r($tSQL);
         $oQuery = $this->db->query($tSQL);
 
         if ($oQuery->num_rows() > 0) {
@@ -903,6 +905,8 @@ class mCardShiftRefund extends CI_Model
                                 } 
 
             $tSQL .=") AS Result";
+
+            // print_r($tSQL);
             $oQuery = $this->db->query($tSQL);
             if ($oQuery->num_rows() > 0){
                 $oDetail = $oQuery->result();

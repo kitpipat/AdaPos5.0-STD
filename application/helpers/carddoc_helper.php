@@ -845,7 +845,8 @@ function FSxInsertByChoose($ptDocType, $ptDataSetType, $paDataSet)
                         GROUP BY CRD.FTCrdCode
                     ) CRD
                 ";
-
+                        
+                // print_r($tSQL);
                 $oQuery = $ci->db->query($tSQL);
                 break;
             }

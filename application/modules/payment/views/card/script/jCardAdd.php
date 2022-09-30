@@ -7,9 +7,11 @@
     var nStaAddOrEdit = <?php echo $nStaAddOrEdit ?>;
     var tCrdStaShift = '<?php echo $tCrdStaShift ?>';
     var dDatNow = '<?php echo date('Y-m-d H:i:s') ?>';
+    var dTimeNow = '<?php echo date('H:i:s') ?>';
+    var tEpxDate = '';
+    var tStrDate = '';
     $(document).ready(function() {
         $('.xCNSelectBox').selectpicker();
-        var dTimeNow = '<?php echo date('H:i:s') ?>';
         $('#obtCrdStartDate').click(function(event) {
             $('#oetCrdStartDate').datepicker({
                 format: "yyyy-mm-dd" + " " + dTimeNow,
@@ -21,8 +23,13 @@
             });
             $('#oetCrdStartDate').datepicker('show');
             event.preventDefault();
-        });
-
+            // console.log(['1', $('#oetCrdStartDate').val()])
+            // if($('#oetCrdStartDate').val() == ''){
+                //     $('#oetCrdStartDate').val(dDatNow) 
+                // }
+            });
+            
+        console.log(['3', $('#oetCrdStartDate').val()])
         $('.xCNDatePicker').datepicker({
             format: "yyyy-mm-dd"  + " " + dTimeNow,
             todayHighlight: true,
@@ -31,17 +38,30 @@
             disableTouchKeyboard: true,
             autoclose: true
         });
-
+        
         $('#obtCrdStartDate').click(function(event) {
             $('#oetCrdStartDate').datepicker('show');
             event.preventDefault();
+            // if($('#oetCrdStartDate').val() == ''){
+                //     $('#oetCrdStartDate').val(dDatNow) 
+                // }
+            // console.log(['2', $('#oetCrdStartDate').val()])
         });
-
+        
         $('#obtCrdExpireDate').click(function(event) {
             $('#oetCrdExpireDate').datepicker('show');
             event.preventDefault();
         });
-
+            // if($('#oetCrdStartDate').val() == ''){
+                //     $('#oetCrdStartDate').val(dDatNow) 
+                // }
+            // if($('#oetCrdStartDate').val() == ''){
+            //     $('#oetCrdStartDate').val(dDatNow) 
+            // }
+            // if($('#oetCrdExpireDate').val() == ''){
+            //     $('#oetCrdExpireDate').val('9999-12-31 00:00:00') 
+            // }
+            
         if (nStaAddOrEdit === 99) {
             $('#oetCrdDeposit').val('0.00');
             $('#ocbCrdStaLocateUse').prop("checked", true);
@@ -53,6 +73,10 @@
         } else {
             JSxChkStaCardStaShif(tCrdStaShift);
         }
+        tEpxDate = $('#oetCrdExpireDate').val();
+        tStrDate = $('#oetCrdStartDate').val();
+        console.log(tStrDate, tEpxDate);
+
     });
 
     var tAgenCode = '<?php echo $this->session->userdata('tSesUsrAgnCode'); ?>';
@@ -539,35 +563,41 @@ if(tAgenCode != ''){
     });
 
     $('#oetCrdStartDate').change(function(){
-        // console.log($('#oetCrdCtyCode').val())
-        var tCrdCtyCode         = $('#oetCrdCtyCode').val();
-        var tCtyExpirePeriod    = '';
-        var tCtyExpiredType     = '';
-        var tExpiredType        = '';
+        console.log(tStrDate, tEpxDate);
+        if($('#oetCrdStartDate').val() == '' || $('#oetCrdStartDate').val() == dDatNow){
+            $('#oetCrdStartDate').val(tStrDate) 
+        }else{
 
-        if(tCrdCtyCode != '') {
-            $.ajax({
-                type: "POST",
-                url: "cardGetExpiredInfo",
-                data: {
-                    tCrdCtyCode: tCrdCtyCode,
-                },
-                cache: false,
-                timeout: 0,
-                success: function(tResult) {
-                    var aResult = JSON.parse(tResult);
-                    // console.log(aResult['aCrdData'][0]['FNCtyExpirePeriod']);
-                    tCtyExpirePeriod    = aResult['aCrdData'][0]['FNCtyExpirePeriod']
-                    tCtyExpiredType     = aResult['aCrdData'][0]['FNCtyExpiredType']
-                    tExpiredType        = aResult['aCrdData'][0]['FTCtyExpiredType']
-                    // $('#odvCardHisDataTalbleContainer').html(tResult);
-                    JSxChkCryExpiredInfo(tCtyExpirePeriod, tCtyExpiredType, tExpiredType)
-
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
+            // console.log($('#oetCrdCtyCode').val())
+            var tCrdCtyCode         = $('#oetCrdCtyCode').val();
+            var tCtyExpirePeriod    = '';
+            var tCtyExpiredType     = '';
+            var tExpiredType        = '';
+    
+            if(tCrdCtyCode != '') {
+                $.ajax({
+                    type: "POST",
+                    url: "cardGetExpiredInfo",
+                    data: {
+                        tCrdCtyCode: tCrdCtyCode,
+                    },
+                    cache: false,
+                    timeout: 0,
+                    success: function(tResult) {
+                        var aResult = JSON.parse(tResult);
+                        // console.log(aResult['aCrdData'][0]['FNCtyExpirePeriod']);
+                        tCtyExpirePeriod    = aResult['aCrdData'][0]['FNCtyExpirePeriod']
+                        tCtyExpiredType     = aResult['aCrdData'][0]['FNCtyExpiredType']
+                        tExpiredType        = aResult['aCrdData'][0]['FTCtyExpiredType']
+                        // $('#odvCardHisDataTalbleContainer').html(tResult);
+                        JSxChkCryExpiredInfo(tCtyExpirePeriod, tCtyExpiredType, tExpiredType)
+    
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    }
+                });
+            }
         }
 
 
@@ -650,9 +680,16 @@ if(tAgenCode != ''){
                 ("0" + tDateTime.getSeconds()).slice(-2)
         // console.log(tDateTime);
 
+        tEpxDate = tDateTime
         $('#oetCrdExpireDate').val(tDateTime);
 
     }
+
+    $('#oetCrdExpireDate').change(function(){
+        if($('#oetCrdExpireDate').val() == '' || $('#oetCrdExpireDate').val() == dDatNow){
+            $('#oetCrdExpireDate').val(tEpxDate);
+        }
+    });
 
 
 </script>

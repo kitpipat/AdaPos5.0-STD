@@ -59,6 +59,7 @@ class mCard extends CI_Model
                 }
             }
             $tSQL .= ") Base) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1]";
+
             $oQuery = $this->db->query($tSQL);
 
             if ($oQuery->num_rows() > 0) {
@@ -225,20 +226,38 @@ class mCard extends CI_Model
         try {
             // Update Card Main Table
             $this->db->where('FTCrdCode', $paDataCard['FTCrdCode']);
-            $this->db->update('TFNMCard', array(
-                'FDCrdStartDate'    => $paDataCard['FDCrdStartDate'],
-                'FDCrdExpireDate'   => $paDataCard['FDCrdExpireDate'],
-                'FTCtyCode'         => $paDataCard['FTCtyCode'],
-                // 'FCCrdDeposit'      => $paDataCard['FCCrdDeposit'],
-                'FTCrdHolderID'     => $paDataCard['FTCrdHolderID'],
-                'FTCrdRefID'        => $paDataCard['FTCrdRefID'],
-                // 'FTCrdStaType'      => $paDataCard['FTCrdStaType'],
-                'FTDptCode'         => $paDataCard['FTDptCode'],
-                //'FTCrdStaLocate'    => $paDataCard['FTCrdStaLocate'],
-                'FTCrdStaActive'    => $paDataCard['FTCrdStaActive'],
-                'FDLastUpdOn'       => $paDataCard['FDLastUpdOn'],
-                'FTLastUpdBy'       => $paDataCard['FTLastUpdBy']
-            ));
+            if($paDataCard['tChkCtyCode'] == 1) {
+                $this->db->update('TFNMCard', array(
+                    'FDCrdStartDate'    => $paDataCard['FDCrdStartDate'],
+                    'FDCrdExpireDate'   => $paDataCard['FDCrdExpireDate'],
+                    'FTCtyCode'         => $paDataCard['FTCtyCode'],
+                    // 'FCCrdDeposit'      => $paDataCard['FCCrdDeposit'],
+                    'FTCrdHolderID'     => $paDataCard['FTCrdHolderID'],
+                    'FTCrdRefID'        => $paDataCard['FTCrdRefID'],
+                    // 'FTCrdStaType'      => $paDataCard['FTCrdStaType'],
+                    'FTDptCode'         => $paDataCard['FTDptCode'],
+                    //'FTCrdStaLocate'    => $paDataCard['FTCrdStaLocate'],
+                    'FTCrdStaActive'    => $paDataCard['FTCrdStaActive'],
+                    'FDLastUpdOn'       => $paDataCard['FDLastUpdOn'],
+                    'FTLastUpdBy'       => $paDataCard['FTLastUpdBy']
+                ));
+            }else{
+                $this->db->update('TFNMCard', array(
+                    'FDCrdStartDate'    => $paDataCard['FDCrdStartDate'],
+                    'FDCrdExpireDate'   => $paDataCard['FDCrdExpireDate'],
+                    'FTCtyCode'         => $paDataCard['FTCtyCode'],
+                    // 'FCCrdDeposit'      => $paDataCard['FCCrdDeposit'],
+                    'FTCrdHolderID'     => $paDataCard['FTCrdHolderID'],
+                    'FTCrdRefID'        => $paDataCard['FTCrdRefID'],
+                    // 'FTCrdStaType'      => $paDataCard['FTCrdStaType'],
+                    'FTDptCode'         => $paDataCard['FTDptCode'],
+                    //'FTCrdStaLocate'    => $paDataCard['FTCrdStaLocate'],
+                    'FTCrdStaShift'     => $paDataCard['FTCrdStaShift'],
+                    'FTCrdStaActive'    => $paDataCard['FTCrdStaActive'],
+                    'FDLastUpdOn'       => $paDataCard['FDLastUpdOn'],
+                    'FTLastUpdBy'       => $paDataCard['FTLastUpdBy']
+                ));
+            }
             if ($this->db->affected_rows() > 0) {
                 $aStatus = array(
                     'rtCode' => '1',
@@ -462,6 +481,20 @@ class mCard extends CI_Model
 
         $tSQL = "SELECT FNCtyExpirePeriod, FNCtyExpiredType, FTCtyExpiredType 
                 FROM TFNMCardType 
+                WHERE FTCtyCode = '$ptCrdCtyCode'";
+        $oQuery = $this->db->query($tSQL);
+
+        if ($oQuery->num_rows() > 0) {
+            return $oQuery->result_array();
+        }else {
+            return "Not found data";
+        }
+
+    }
+
+    public function FSvMCRDGetCtyStaShift($ptCrdCtyCode){
+
+        $tSQL = "SELECT FTCtyStaShift FROM TFNMCardType
                 WHERE FTCtyCode = '$ptCrdCtyCode'";
         $oQuery = $this->db->query($tSQL);
 

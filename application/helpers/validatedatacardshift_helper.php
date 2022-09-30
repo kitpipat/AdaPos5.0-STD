@@ -198,40 +198,54 @@
             $tWhereUpdSeqNo = "";
         }
 
-        // StatusActive = 1: Active , 2:InActive ,3:Cancle
-                $tErrorStaCrdActive  = "";
-        switch ($nCrdStaActive) {
-            case '1':
-                //Status Active
-                $tWhereCrdStaActive  = " AND CRD.FTCrdStaActive = 1";
-                $tErrorStaCrdActive  = language('document/card/docvalidate','tErrorStaCrdActive'); // Add document validate (Jame) 09/01/2019
-                break;
-            case '2':
-                //Status InActives
-                $tWhereCrdStaActive  = " AND CRD.FTCrdStaActive = 2";
-                $tErrorStaCrdActive  = language('document/card/docvalidate','tErrorStaCrdInActive'); // Add document validate (Jame) 09/01/2019
-                break;
-            case '3':
-                //Status Cancle
-                $tWhereCrdStaActive  = " AND CRD.FTCrdStaActive = 3";
-                $tErrorStaCrdActive  = language('document/card/docvalidate','tErrorStaCrdCancle'); // Add document validate (Jame) 09/01/2019
-                break;
-            default:
-                $tWhereCrdStaActive  =  "";
-        }
+        // // StatusActive = 1: Active , 2:InActive ,3:Cancle
+        //         $tErrorStaCrdActive  = "";
+        // switch ($nCrdStaActive) {
+        //     case '1':
+        //         //Status Active
+        //         $tWhereCrdStaActive  = " AND CRD.FTCrdStaActive = 1";
+        //         $tErrorStaCrdActive  = language('document/card/docvalidate','tErrorStaCrdActive'); // Add document validate (Jame) 09/01/2019
+        //         break;
+        //     case '2':
+        //         //Status InActives
+        //         $tWhereCrdStaActive  = " AND CRD.FTCrdStaActive = 2";
+        //         $tErrorStaCrdActive  = language('document/card/docvalidate','tErrorStaCrdInActive'); // Add document validate (Jame) 09/01/2019
+        //         break;
+        //     case '3':
+        //         //Status Cancle
+        //         $tWhereCrdStaActive  = " AND CRD.FTCrdStaActive = 3";
+        //         $tErrorStaCrdActive  = language('document/card/docvalidate','tErrorStaCrdCancle'); // Add document validate (Jame) 09/01/2019
+        //         break;
+        //     default:
+        //         $tWhereCrdStaActive  =  "";
+        // }
 
-        $tSQL   = " UPDATE TFNTCrdShiftTmp SET FTXsdStaCrd = 2 , FTXsdRmk =  '".$tErrorStaCrdActive."'
-                    WHERE  FTCrdCode 
-                    NOT IN (
-                        SELECT  ISNULL(CRD.FTCrdCode,CRD.FTCrdCode) AS FTCrdCode
-                        FROM TFNTCrdShiftTmp CST
-                        LEFT JOIN  TFNMCard CRD WITH (NOLOCK) ON CRD.FTCrdCode = CST.FTCrdCode
-                        WHERE 1=1 ";
-        $tSQL   .= $tWhereSltSeqNo;
-        $tSQL   .= $tWhereCrdStaActive;
-        $tSQL   .= " ) ";  
-        $tSQL   .= $tWhereUpdSeqNo;
-        $tSQL   .= " AND FTXsdStaCrd = 1 AND FTSessionID =  '".$tSessionID."' ";
+        // $tSQL   = " UPDATE TFNTCrdShiftTmp SET FTXsdStaCrd = 2 , FTXsdRmk =  '".$tErrorStaCrdActive."'
+        //             WHERE  FTCrdCode 
+        //             NOT IN (
+        //                 SELECT  ISNULL(CRD.FTCrdCode,CRD.FTCrdCode) AS FTCrdCode
+        //                 FROM TFNTCrdShiftTmp CST
+        //                 LEFT JOIN  TFNMCard CRD WITH (NOLOCK) ON CRD.FTCrdCode = CST.FTCrdCode
+        //                 WHERE 1=1 ";
+        // $tSQL   .= $tWhereSltSeqNo;
+        // $tSQL   .= $tWhereCrdStaActive;
+        // $tSQL   .= " ) ";  
+        // $tSQL   .= $tWhereUpdSeqNo;
+        // $tSQL   .= " AND FTXsdStaCrd = 1 AND FTSessionID =  '".$tSessionID."' ";
+
+        $tRmkErrorInActive  = language('document/card/docvalidate', 'tErrorStaCrdActive');
+        $tRmkErrorCancel    = language('document/card/docvalidate', 'tErrorStaCrdCancle');
+
+        $tSQL = "UPDATE TFNTCrdTopUpTmp 
+                SET TFNTCrdTopUpTmp.FTXsdStaCrd = '2', 
+                    TFNTCrdTopUpTmp.FTXsdRmk = 
+                        CASE 
+                            WHEN CRD.FTCrdStaActive = '2' THEN '".$tRmkErrorInActive."' 
+                            WHEN CRD.FTCrdStaActive = '3' THEN '".$tRmkErrorCancel."' 
+                        END
+                FROM TFNTCrdTopUpTmp CTT WITH(NOLOCK)
+                INNER JOIN TFNMCard CRD WITH(NOLOCK) ON CTT.FTCrdCode = CRD.FTCrdCode
+                WHERE CTT.FTXsdStaCrd = '1' AND CTT.FTSessionID = '".$tSessionID."' AND CRD.FTCrdStaActive <> '1'";
 
         $oQuery = $ci->db->query($tSQL);
         if($ci->db->affected_rows() > 0){

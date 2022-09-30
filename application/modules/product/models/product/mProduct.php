@@ -106,18 +106,18 @@ class mProduct extends CI_Model
                 if(!empty($tSessionShopCode)){ //กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่ไม่ได้ผูก Shp ด้วย
                     $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'') = ''"   ;
                 }
-                    $tWHEREPermission_BCH .= " ) ";
+                    $tWHEREPermission_BCH .= " )) ";
             
       /* |-------------------------------------------------------------------------------------------| */
 
 
        //---------------------- การมองเห็นสินค้าระดับส่วนกลางหรือสินค้าที่ไม่ได้ผูกกับอะไรเลย--------------------------//
-                $tWHEREPermission_BCH .= " OR (";
-                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'') = '' ";
-                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'') = '' ";
-                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'') = '' ";
-                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'') = '' "   ;
-                $tWHEREPermission_BCH .= " )) ";
+                // $tWHEREPermission_BCH .= " OR (";
+                // $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'') = '' ";
+                // $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'') = '' ";
+                // $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'') = '' ";
+                // $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'') = '' "   ;
+                // $tWHEREPermission_BCH .= " )) ";
        /* |-------------------------------------------------------------------------------------------| */
 
         }
@@ -2606,7 +2606,7 @@ class mProduct extends CI_Model
                         AND TMT.FTMttTableKey   = '$tTableKey' ";
 
 
-        $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
+        $tSQL .= ") )Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
 
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
