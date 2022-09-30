@@ -456,4 +456,20 @@ class mCard extends CI_Model
         }
         return $aStatus;
     }
+
+
+    public function FSvMCRDGetExpiredInfo($ptCrdCtyCode){
+
+        $tSQL = "SELECT FNCtyExpirePeriod, FNCtyExpiredType, FTCtyExpiredType 
+                FROM TFNMCardType 
+                WHERE FTCtyCode = '$ptCrdCtyCode'";
+        $oQuery = $this->db->query($tSQL);
+
+        if ($oQuery->num_rows() > 0) {
+            return $oQuery->result_array();
+        }else {
+            return "Not found data";
+        }
+
+    }
 }

@@ -88,7 +88,8 @@ $tDecShow = FCNxHGetOptionDecimalShow();
                                     $dDateExpire = "-";
                                 }
                                 ?>
-                                <td nowrap class="text-center"><?php echo $dDateExpire ?></td>
+                                <!-- <td nowrap class="text-center"><?php echo $dDateExpire ?></td> -->
+                                <td nowrap class="text-center"><?php echo $aValue['rtCrdExpireDate'] ?></td>
 
                                 <?php
                                     // สถานะเบิกบัตร 1 : ยังไม่ถูกเบิก, 2 : เบิกไปแล้ว

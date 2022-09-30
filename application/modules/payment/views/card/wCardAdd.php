@@ -11,9 +11,10 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
     $tCrdName           = $aCrdData['raItems']['rtCrdName'];
     $tCrdCtyCode        = $aCrdData['raItems']['rtCrdCtyCode'];
     $tCrdCtyName        = $aCrdData['raItems']['rtCrdCtyName'];
-    $tCrdStartDate      = (!empty($aCrdData['raItems']['rtCrdStartDate'])) ? date("Y-m-d", strtotime($aCrdData['raItems']['rtCrdStartDate'])) : '';
-    $tCrdExpireDate     = (!empty($aCrdData['raItems']['rtCrdExpireDate'])) ? explode(" ", $aCrdData['raItems']['rtCrdExpireDate']) : array('');
-    $tCrdExpireDate     = $tCrdExpireDate[0];
+    $tCrdStartDate      = (!empty($aCrdData['raItems']['rtCrdStartDate'])) ? date("Y-m-d H:i:s", strtotime($aCrdData['raItems']['rtCrdStartDate'])) : '';
+    $tCrdExpireDate     = (!empty($aCrdData['raItems']['rtCrdExpireDate'])) ? date("Y-m-d H:i:s", strtotime($aCrdData['raItems']['rtCrdExpireDate'])) : '';
+    // $tCrdExpireDate     = (!empty($aCrdData['raItems']['rtCrdExpireDate'])) ? explode(" ", $aCrdData['raItems']['rtCrdExpireDate']) : array('');
+    // $tCrdExpireDate     = $tCrdExpireDate[0] . " " .$tCrdExpireDate[1] ;
     // $tCrdStaType     = $aCrdData['raItems']['rtCrdStaType'];
     $tCrdStaActive      = $aCrdData['raItems']['rtCrdStaActive'];
     // $tCrdStaLocate   = $aCrdData['raItems']['rtCrdStaLocate'];
@@ -26,6 +27,8 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
 
     $tCRDAgnCode = $aCrdData['raItems']['rtAgnCode'];
     $tCRDAgnName = $aCrdData['raItems']['rtAgnName'];
+
+    // print_r($tCrdExpireDate);
 
     $tDis = "readonly";
 } else {
@@ -294,7 +297,7 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                                     <div class="form-group">
                                         <label class="xCNLabelFrm"><?php echo language('payment/card/card', 'tCRDFrmCrdStartDate') ?></label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetCrdStartDate" name="oetCrdStartDate" autocomplete="off" value="<?php echo $tCrdStartDate; ?>" data-validate="<?php echo language('payment/card/card', 'tCRDValidCardStartDate') ?>">
+                                            <input type="text" class="form-control xCNDatePicker xCNInputMaskDateTime" id="oetCrdStartDate" name="oetCrdStartDate" autocomplete="off" value="<?php echo $tCrdStartDate; ?>" data-validate="<?php echo language('payment/card/card', 'tCRDValidCardStartDate') ?>">
                                             <span class="input-group-btn">
                                                 <button id="obtCrdStartDate" type="button" class="btn xCNBtnDateTime">
                                                     <img src="<?php echo base_url() . '/application/modules/common/assets/images/icons/icons8-Calendar-100.png' ?>">
@@ -305,7 +308,7 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                                     <div class="form-group">
                                         <label class="xCNLabelFrm"><?php echo language('payment/card/card', 'tCRDFrmCrdExpireDate') ?></label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetCrdExpireDate" name="oetCrdExpireDate" autocomplete="off" value="<?php echo $tCrdExpireDate; ?>">
+                                            <input type="text" class="form-control xCNDatePicker xCNInputMaskDateTime" id="oetCrdExpireDate" name="oetCrdExpireDate" autocomplete="off" value="<?php echo $tCrdExpireDate; ?>">
                                             <span class="input-group-btn">
                                                 <button id="obtCrdExpireDate" type="button" class="btn xCNBtnDateTime">
                                                     <img src="<?php echo base_url() . '/application/modules/common/assets/images/icons/icons8-Calendar-100.png' ?>">
@@ -437,7 +440,7 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                             <div class="form-group">
                                 <label class="xCNLabelFrm"><?php echo language('payment/card/card', 'tDate'); ?></label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetCrdHisDate" name="oetCrdHisDate" autocomplete="off" value="" maxlength="10">
+                                    <input type="text" class="form-control xCNDatePicker xCNInputMaskDateTime" id="oetCrdHisDate" name="oetCrdHisDate" autocomplete="off" value="">
                                     <span class="input-group-btn">
                                         <button type="button" class="btn xCNBtnDateTime" onclick="$('#oetCrdHisDate').trigger('focus');">
                                             <img src="<?php echo base_url('application/modules/common/assets/images/icons/icons8-Calendar-100.png'); ?>">
