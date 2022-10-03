@@ -35,3 +35,10 @@ $route['augDPYApprove']                  = 'tool/upgrade/Deploy_controller/FSvCD
 $route['augDPYApproveDep']               = 'tool/upgrade/Deploy_controller/FSvCDPYApproveDep';
 $route['augDPYCancel']                   = 'tool/upgrade/Deploy_controller/FSvCDPYCancel';
 $route['augDPYCoppyDoc']                 = 'tool/upgrade/Deploy_controller/FSvCDPYCoppyDoc';
+
+//ตั้งค่าใบเสร็จ ยกมาจาก KPC By:IcePHP 3/10/2022
+$route['toolConfigSlip']                        = 'tool/configslip/Configslip_controller/index';
+$route['toolConfigSlipDataList']                = 'tool/configslip/Configslip_controller/FSvCCFSPageDataTable';
+$route['toolConfigSlipEventSave']               = 'tool/configslip/Configslip_controller/FSaCCFSEventSave';
+$route['toolConfigSlipPageDemo']                = 'tool/configslip/Configslip_controller/FSvCCFSPageDemo';
+$route['toolConfigSlipEventResetDefault']       = 'tool/configslip/Configslip_controller/FSaCCFSEventResetDefault';

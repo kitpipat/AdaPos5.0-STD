@@ -7,7 +7,7 @@
                         <th class="xCNTextBold" style="width:5%;"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXNum')?></th>
                         <th class="xCNTextBold" style="width:210px;"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXDocNo')?></th>
                         <th class="xCNTextBold" style="width:210px;"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXDocDate')?></th>
-                        <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXCustomerName')?></th>
+                        <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXCustomerNameFC')?></th>
                         <th class="xCNTextBold" ><?=language('document/taxinvoicefc/taxinvoicefc','tTAXStaDoc')?></th>
                         <th class="xCNTextBold" style="width:90px;"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXPreview')?></th>
                     </tr>

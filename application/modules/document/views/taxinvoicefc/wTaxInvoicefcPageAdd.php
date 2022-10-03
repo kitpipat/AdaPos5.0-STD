@@ -269,9 +269,9 @@
                                             </div>
 
                                             <div class="col-lg-8 col-md-10 col-sm-10 xCNSelectTaxABB">
-                                                <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXABB'); ?></label>
+                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXABBFC'); ?></label>
                                                 <div class="input-group">
-                                                    <input name="oetTAXABBCode" maxlength="20" id="oetTAXABBCode" class="form-control xCNClearValue" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXABB') ?>" onkeypress="Javascript:if(event.keyCode==13) JSxSearchDocumentABB(event,this);">
+                                                    <input name="oetTAXABBCode" maxlength="20" id="oetTAXABBCode" class="form-control xCNClearValue" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXABBFC') ?>" onkeypress="Javascript:if(event.keyCode==13) JSxSearchDocumentABB(event,this);">
                                                     <span class="input-group-btn">
                                                         <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled disabled" type="button">
                                                             <img src="<?= base_url() . '/application/modules/common/assets/images/icons/scanner2.png' ?>">
@@ -294,9 +294,9 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-lg-11 col-md-10 col-sm-10">
-                                                <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer'); ?></label>
+                                                <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC'); ?></label>
                                                 <div class="input-group">
-                                                    <input name="oetTAXCusName" id="oetTAXCusName" class="form-control xCNClearValue" value="" type="text" readonly="" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer') ?>" >
+                                                    <input name="oetTAXCusName" id="oetTAXCusName" class="form-control xCNClearValue" value="" type="text" readonly="" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC') ?>" >
                                                     <input name="oetTAXCusCode" id="oetTAXCusCode" value="" class="form-control xCNHide xCNClearValue" type="text">
                                                     <span class="input-group-btn">
                                                         <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseCus" type="button">
@@ -324,8 +324,8 @@
                                                 <div class="row">
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
-                                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerName'); ?></label>
-                                                            <input name="oetTAXCusNameCusABB"  autocomplete="off" id="oetTAXCusNameCusABB"  maxlength="200" class="form-control xCNClearValue" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerName') ?>" >
+                                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerNameFC'); ?></label>
+                                                            <input name="oetTAXCusNameCusABB"  autocomplete="off" id="oetTAXCusNameCusABB"  maxlength="200" class="form-control xCNClearValue" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerNameFC') ?>" >
                                                         </div>  
                                                     </div>
                                                     
@@ -510,7 +510,7 @@
 			<div class="modal-header xCNModalHead">
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <label class="xCNTextModalHeard" style="font-weight: bold; font-size: 20px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXShow')?><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXABB')?></label>
+                        <label class="xCNTextModalHeard" style="font-weight: bold; font-size: 20px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXShow')?><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXABBFC')?></label>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
                         <button type="button" class="btn xCNBTNPrimery xCNBTNPrimery2Btn xCNConfrimABB" data-dismiss="modal" onclick="JSxSelectABB('SELECT','','')"><?=language('common/main/main', 'tModalConfirm'); ?></button>
@@ -626,7 +626,7 @@
                 <table class="table table-striped xCNTableAddressMoreOne">
                     <thead>
                         <tr>
-                            <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerName')?></th>
+                            <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerNameFC')?></th>
                             <th class="xCNTextBold" style="text-align:center; width:160px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXAddress1')?></th>
                             <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXAddress2')?></th>
                             <th class="xCNTextBold" style="text-align:center; width:80px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXTelphone')?></th>
@@ -757,9 +757,9 @@
 
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="form-group">
-                                <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer'); ?></label>
+                                <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC'); ?></label>
                                 <div class="input-group">
-                                    <input name="oetTAXModalCancelCstName" id="oetTAXModalCancelCstName" class="form-control xCNClearValue" value="" type="text" readonly="" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer') ?>" >
+                                    <input name="oetTAXModalCancelCstName" id="oetTAXModalCancelCstName" class="form-control xCNClearValue" value="" type="text" readonly="" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC') ?>" >
                                     <input name="oetTAXModalCancelCstCode" id="oetTAXModalCancelCstCode" value="" class="form-control xCNHide xCNClearValue" type="text">
                                     <span class="input-group-btn">
                                         <button class="btn xCNBtnBrowseAddOn xWDisabledForCN" id="obtTAXModalCancelBrowseCus" type="button">
@@ -1406,7 +1406,7 @@
         }
 
         var oOptionReturn       = {
-            Title   : ['document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer'],
+            Title   : ['document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC'],
             Table   : {Master:'TCNMCst', PK:'FTCstCode'},
             Join    : {
                 Table   : ['TCNMCst_L'],
