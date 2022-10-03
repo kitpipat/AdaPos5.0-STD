@@ -5560,7 +5560,7 @@ var oRptClvBrows = function(poReturnInput) {
             if (tDataBranch) {
                 if (tDataBranch != '') {
                     var tDataBranchWhere = tDataBranch.replaceAll("','", "','");
-                    tTextWhereInBranch = ' AND (TCNMShop.FTBchCode IN (' + tDataBranchWhere + '))';
+                    tTextWhereInBranch = " AND (TCNMShop.FTBchCode IN ('" + tDataBranchWhere + "')) ";
                 }
             }
 
@@ -5569,7 +5569,7 @@ var oRptClvBrows = function(poReturnInput) {
             let tTextWhereInMerchant = '';
             if (tDataMerchant) {
                 if (tDataMerchant != '') {
-                    tTextWhereInMerchant = ' AND (TCNMShop.FTMerCode IN (' + tDataMerchant + '))';
+                    tTextWhereInMerchant = " AND (TCNMShop.FTMerCode IN ('" + tDataMerchant + "')) ";
                 }
             }
 
@@ -5593,7 +5593,7 @@ var oRptClvBrows = function(poReturnInput) {
                 GrideView: {
                     ColumnPathLang: 'company/shop/shop',
                     ColumnKeyLang: ['tSHPTBBranch', 'tSHPTBCode', 'tSHPTBName'],
-                    ColumnsSize: ['15%', '15%', '75%'],
+                    ColumnsSize: ['30%', '15%', '55%'],
                     WidthModal: 50,
                     DataColumns: ['TCNMBranch_L.FTBchName', 'TCNMShop.FTShpCode', 'TCNMShop_L.FTShpName'],
                     DataColumnsFormat: ['', '', ''],

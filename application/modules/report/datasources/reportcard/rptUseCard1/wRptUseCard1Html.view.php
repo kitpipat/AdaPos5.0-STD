@@ -110,7 +110,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                     "label" => $aDataTextRef['tRPCCardName'],
                                     "formatValue" => function($tValue,$aData){
                                         $aExplodeCrdName = explode(";",$tValue);
-                                        return $aExplodeCrdName[1];
+                                        return ($aExplodeCrdName[1] == '') ? 'N/A' : $aExplodeCrdName[1];
                                     },
                                     "cssStyle" => array(
                                         "th" => "text-align:left",
@@ -147,7 +147,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                     "label" => $aDataTextRef['tRPCCardTxnDocNoRef'],
                                     "formatValue" => function($tValue,$aData){
                                         $aExplodeTxnDocNoRef = explode(";",$tValue);
-                                        return $aExplodeTxnDocNoRef[1];
+                                        return ($aExplodeTxnDocNoRef[1] == '') ? 'N/A' : $aExplodeTxnDocNoRef[1];
                                     },
                                     "cssStyle" => array(
                                         "th" => "text-align:left",
@@ -176,7 +176,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                     "formatValue" => function($tValue,$aRow){
                                         $aExplodeTxtDocOperatorName = explode(";",$tValue);
                                         if($aRow['FNLngID'] == 1){
-                                            return $aExplodeTxtDocOperatorName[1];
+                                            return ($aExplodeTxtDocOperatorName[1] == '') ? 'N/A' : $aExplodeTxtDocOperatorName[1];
                                         }else{
                                             return $aExplodeTxtDocOperatorName[2];
                                         }
@@ -196,7 +196,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                         "tf" => "text-align:right;border-top: 1px solid black !important;border-bottom: 1px solid black !important;"
                                     ),
                                     "formatValue" => function($tValue,$aRow){
-                                        return empty($tValue) ? '' : date("Y-m-d H:i:s", strtotime($tValue));
+                                        return empty($tValue) ? '' : date("d/m/Y H:i:s", strtotime($tValue));
                                     },
                                 ),
                                 'rtTxnValue' => array(
@@ -302,7 +302,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                 <?php if (isset($aDataFilter['tPosCodeSelect']) && !empty($aDataFilter['tPosCodeSelect'])) : ?>
                     <div class="xCNRptFilterBox">
                         <div class="xCNRptFilter">
-                            <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptPosFrom']; ?> : </span> <?php echo ($aDataFilter['bPosStaSelectAll']) ? $aDataTextRef['tRptAll'] : $aDataFilter['tPosCodeSelect']; ?></label>
+                            <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptPosFrom']; ?> : </span> <?php echo ($aDataFilter['bPosStaSelectAll']) ? $aDataTextRef['tRptAll'] : $aDataFilter['tPosNameSelect']; ?></label>
                         </div>
                     </div>
                 <?php endif; ?>

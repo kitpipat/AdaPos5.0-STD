@@ -12,9 +12,9 @@ class KoolReport extends Base
 	protected $resourceManager;
 	protected $events;
 	protected $colorSchemes;
-	
+
 	public function __construct($params=array())
-	{		
+	{
 		$this->events = array();
 		foreach($this->getTraitConstructs() as $traitConstruct)
 		{
@@ -24,7 +24,7 @@ class KoolReport extends Base
 		$this->dataSources = array();
 		$this->dataStores = array();
 		$this->colorSchemes = array();
-		
+
 		$this->fireEvent("OnInit");
 		if($this->fireEvent("OnBeforeSetup"))
 		{
@@ -92,7 +92,7 @@ class KoolReport extends Base
 		}
 		return $traitConstructs;
 	}
-	
+
 	public function getResourceManager()
 	{
 		if(!$this->resourceManager)
@@ -106,7 +106,7 @@ class KoolReport extends Base
 	{
 		$fullLocalPath = str_replace("\\", "/", $fullLocalPath);
 		$assets = Utility::get($this->settings(),"assets",array());
-		$document_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);			
+		$document_root = str_replace("\\", "/", $_SERVER["DOCUMENT_ROOT"]);
 		$assetUrl = "";
 		if($assets)
 		{
@@ -115,8 +115,13 @@ class KoolReport extends Base
 			if(!$targetAssetPath)
 			{
 				throw new \Exception("Could not find path to report's assets folder");
-			}			
+			}
 			$reportClassFolder = dirname(Utility::getClassPath($this));
+
+			if(!is_dir($reportClassFolder."/".$targetAssetPath)){
+				mkdir($reportClassFolder."/".$targetAssetPath);
+			}
+
 			if(is_dir($reportClassFolder."/".$targetAssetPath))
 			{
 				//Check if relative targetAssetPath existed
@@ -134,12 +139,12 @@ class KoolReport extends Base
 			//-----------------------
 
 			$objectFolderName = str_replace(dirname($fullLocalPath)."/","",$fullLocalPath);
-			
+
 			$objectHashFolderName = crc32("koolreport".$fullLocalPath.@filemtime($fullLocalPath));
 			$objectHashFolderName = ($objectHashFolderName<0)?abs($objectHashFolderName)."0":"$objectHashFolderName";
 			//-------------------------
 
-			$objectTargetPath = $targetAssetPath."/".$objectHashFolderName;			
+			$objectTargetPath = $targetAssetPath."/".$objectHashFolderName;
 			if(!is_dir($objectTargetPath))
 			{
 				Utility::recurse_copy($fullLocalPath,$objectTargetPath);
@@ -150,19 +155,19 @@ class KoolReport extends Base
 				//If there is then copy again.
 				//Currently do nothing for now
 			}
-			
+
 			if($targetAssetUrl)
 			{
 				$assetUrl = $targetAssetUrl."/".$objectHashFolderName;
 			}
 			else
 			{
-				$assetUrl = str_replace($document_root,"",$objectTargetPath);	
+				$assetUrl = str_replace($document_root,"",$objectTargetPath);
 			}
 		}
 		else
 		{
-			$assetUrl = str_replace($document_root,"",$fullLocalPath);			
+			$assetUrl = str_replace($document_root,"",$fullLocalPath);
 		}
 		return $assetUrl;
 	}
@@ -173,14 +178,14 @@ class KoolReport extends Base
 		//This function will be override by decendant to define
 		//how data will be executed.
 	}
-	
+
 	public function settings()
 	{
 		//This function will be override by decendant to define
 		//list of settings including dataSources.
 		return array();
 	}
-	
+
 	protected function src($name) {
 		$dataSources = Utility::get($this->settings(),"dataSources",array());
 		$dataSourceSetting = Utility::get($dataSources,$name);
@@ -195,17 +200,17 @@ class KoolReport extends Base
 		array_push($this->dataSources,$dataSource);
 		return $dataSource;
 	}
-	
-	
+
+
 	protected function newDataStore($params)
 	{
-        $dataStoreClass = utility::get($params,"class",'\koolreport\core\DataStore'); 
-        $dataStoreClass = str_replace("/","\\",$dataStoreClass);   
+        $dataStoreClass = utility::get($params,"class",'\koolreport\core\DataStore');
+        $dataStoreClass = str_replace("/","\\",$dataStoreClass);
 		return new $dataStoreClass($this,$params);
-	} 
-	
+	}
+
 	public function dataStore($name)
-	{	
+	{
 		if(gettype($name)=="string")
 		{
 			$settings = $this->settings();
@@ -214,16 +219,16 @@ class KoolReport extends Base
 			{
 				$this->dataStores[$name] = $this->newDataStore($dataStoreParams);
 			}
-			return $this->dataStores[$name];							
+			return $this->dataStores[$name];
 		}
 		else
 		{
 			//$name's type is different from string
 			//return everything for further process
 			return $name;
-		}			
+		}
 	}
-	
+
 	public function run()
 	{
 		if($this->fireEvent("OnBeforeRun"))
@@ -233,7 +238,7 @@ class KoolReport extends Base
 				foreach($this->dataSources as $dataSource)
 				{
 					$dataSource->start();
-				}	
+				}
 			}
 		}
 		$this->fireEvent("OnRunEnd");
@@ -245,7 +250,7 @@ class KoolReport extends Base
 		$GLOBALS["__ACTIVE_KOOLREPORT__"] = $this;
 		include(dirname(__FILE__)."/debug.view.php");
 	}
-	
+
 	public function innerView($view,$params=null,$return=false)
 	{
 		$currentDir = dirname(Utility::getClassPath($this));
@@ -255,8 +260,8 @@ class KoolReport extends Base
 			foreach($params as $key=>$value)
 			{
 				$$key = $value;
-			}			
-		}		
+			}
+		}
 		include($currentDir."/".$view.".view.php");
 		$content = ob_get_clean();
 		if($return)
@@ -268,7 +273,7 @@ class KoolReport extends Base
 			echo $content;
 		}
 	}
-		
+
 	public function render($view=null,$return=false)
 	{
 		if($view===null)
@@ -280,7 +285,7 @@ class KoolReport extends Base
             if(gettype($view)=="boolean")
             {
                 $view = Utility::getClassName($this);
-                $return = $view;    
+                $return = $view;
             }
         }
 		$currentDir = dirname(Utility::getClassPath($this));
@@ -294,7 +299,7 @@ class KoolReport extends Base
 				$this->getResourceManager()->init();
 				$GLOBALS["__ACTIVE_KOOLREPORT__"] = $this;
 				include($currentDir."/".$view.".view.php");
-				$content = ob_get_clean();	
+				$content = ob_get_clean();
 				//Adding resource to content
 				if($this->fireEvent("OnBeforeResourceAttached"))
 				{
@@ -310,7 +315,7 @@ class KoolReport extends Base
 				else
 				{
 					echo $content;
-					
+
 				}
 			}
 		}
