@@ -239,6 +239,7 @@ $lang['tCenterModalPDTBarcode']         = 'Barcode';
 $lang['tCenterModalPDTPGPFrom']         = 'Product Group';
 $lang['tCenterModalPDTPGPTo']           = 'to product group';
 $lang['tCenterModalPDTPTYFrom']         = 'Type';
+$lang['tCenterModalPDTPBNFrom']         = 'Brand';
 $lang['tCenterModalPDTPTYTo']           = 'to type';
 $lang['tCenterModalPDTBCHFrom']         = 'Branch';
 $lang['tCenterModalPDTBCHTo']           = 'to branch';

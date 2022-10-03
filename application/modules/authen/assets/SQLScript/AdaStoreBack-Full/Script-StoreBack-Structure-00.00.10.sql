@@ -1877,3 +1877,153 @@ IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAM
 	ALTER TABLE TFNMCardType ADD FTCtyTAAlwReturn varchar(1)
 END
 GO
+
+
+
+
+/****** Object:  Table [dbo].[TRPTSalDTTmp_Animate]    Script Date: 05/09/2022 18:36:43 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].TRPTSaleINFOTmp_Animate')) --and OBJECTPROPERTY(id, U'IsView') = 1)
+drop TABLE TRPTSaleINFOTmp_Animate
+GO
+CREATE TABLE [dbo].[TRPTSaleINFOTmp_Animate](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+
+	[FTBarCode] [varchar](25) NULL, --บาร์โคด
+	[FTPdtCode] [varchar](25) NULL, --รหัสสินค้า
+	[FTPdtName] [varchar](200) NULL, --ชื่อสินค้า
+	[FTPdtNameOth] [varchar](200) NULL, --ชื่อสินค้าภาษาญี่ปุ่น
+	[FTPtyName]  [varchar](100) NULL, --ประเภท	
+	[FTPbnName]  [varchar](100) NULL, --ยี่ห้อ
+	[FCPdtStkSetPrice] [numeric](18, 4) NULL, --ราคาขาย/ชิ้น
+	[FCPdtStkQtyIn] [numeric](18, 4) NULL, --จำนวนรับเข้า
+	[FCPdtStkQtySale] [numeric](18, 4) NULL, --จำนวนขาย
+	[FCStkQtyBal]  [numeric](18, 4) NULL, --สต๊อกคงเหลือ
+	
+	[FTComName] [varchar](50) NULL,
+	[FTRptCode] [varchar](50) NULL,
+	[FDTmpTxnDate] [datetime] NOT NULL,
+
+PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 70, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[TRPTSaleINFOTmp_Animate] ADD  DEFAULT (getdate()) FOR [FDTmpTxnDate]
+GO
+
+
+
+
+/****** Object:  Table [dbo].[TRPTSaleByPtyTmp_Animate]    Script Date: 28/09/2022 13:52 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].TRPTSaleByPtyTmp_Animate')) --and OBJECTPROPERTY(id, U'IsView') = 1)
+drop TABLE TRPTSaleByPtyTmp_Animate
+GO
+CREATE TABLE [dbo].[TRPTSaleByPtyTmp_Animate](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+
+	[FTPtyCode]  [varchar](5) NULL, --รหัสประเภท
+	[FTPtyName]  [varchar](100) NULL, --ชื่อประเภท	
+	[FCXsdCostAvg] [numeric](18, 4) NULL, --ทุนขายรวม
+	[FCXsdSaleTotal] [numeric](18, 4) NULL, --ยอดขายรวม
+	[FCStkCostBal] [numeric](18, 4) NULL, --มูลค่าทุนคงเหลือหน้าร้าน
+	[FCSalAmtBal]  [numeric](18, 4) NULL, --มูลค่าขายคงเหลือหน้าร้าน
+	
+	[FTComName] [varchar](50) NULL,
+	[FTRptCode] [varchar](50) NULL,
+	[FDTmpTxnDate] [datetime] NOT NULL,
+
+PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 70, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[TRPTSaleByPtyTmp_Animate] ADD  DEFAULT (getdate()) FOR [FDTmpTxnDate]
+GO
+
+
+
+
+IF OBJECT_ID(N'TCNMPosSpcCat') IS NULL BEGIN
+	CREATE TABLE [dbo].[TCNMPosSpcCat](
+		[FTBchCode] [varchar](5) NOT NULL,
+		[FTShpCode] [varchar](5) NOT NULL,
+		[FTPosCode] [varchar](5) NOT NULL,
+		[FNCatSeq] [smallint] NOT NULL,
+		[FTPdtCat1] [varchar](10) NULL,
+		[FTPdtCat2] [varchar](10) NULL,
+		[FTPdtCat3] [varchar](10) NULL,
+		[FTPdtCat4] [varchar](10) NULL,
+		[FTPdtCat5] [varchar](10) NULL,
+		[FTPgpChain] [varchar](30) NULL,
+		[FTPtyCode] [varchar](5) NULL,
+		[FTPbnCode] [varchar](5) NULL,
+		[FTPmoCode] [varchar](5) NULL,
+		[FTTcgCode] [varchar](5) NULL,
+		[FDLastUpdOn] [datetime] NULL,
+		[FTLastUpdBy] [varchar](20) NULL,
+		[FDCreateOn] [datetime] NULL,
+		[FTCreateBy] [varchar](20) NULL,
+	 CONSTRAINT [PK_TCNMPosSpcCat] PRIMARY KEY CLUSTERED 
+	(
+		[FTBchCode] ASC,
+		[FTShpCode] ASC,
+		[FTPosCode] ASC,
+		[FNCatSeq] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [AdaPos5_MAS_Filegroups]
+	) ON [AdaPos5_MAS_Filegroups]
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNTPdtPmtCG' AND COLUMN_NAME = 'FTSplCode') BEGIN
+	ALTER TABLE TCNTPdtPmtCG ADD FTSplCode VARCHAR(20)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNTPdtPmtCG' AND COLUMN_NAME = 'FDPgtPntStart') BEGIN
+	ALTER TABLE TCNTPdtPmtCG ADD FDPgtPntStart DATETIME
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNTPdtPmtCG' AND COLUMN_NAME = 'FDPgtPntExpired') BEGIN
+	ALTER TABLE TCNTPdtPmtCG ADD FDPgtPntExpired DATETIME
+END
+GO
+
+
+/*By IcePHP (27/09/2022)*/
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMCardType' AND COLUMN_NAME = 'FTCtyExpiredType') BEGIN
+	ALTER TABLE TFNMCardType ADD FTCtyExpiredType varchar(1)
+END
+GO
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMCardType' AND COLUMN_NAME = 'FTCtyStaCrdReuse') BEGIN
+	ALTER TABLE TFNMCardType ADD FTCtyStaCrdReuse varchar(1)
+END
+GO
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMCardType' AND COLUMN_NAME = 'FTCtyTAStaReset') BEGIN
+	ALTER TABLE TFNMCardType ADD FTCtyTAStaReset varchar(1)
+END
+GO
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMCardType' AND COLUMN_NAME = 'FTCtyTAAlwReturn') BEGIN
+	ALTER TABLE TFNMCardType ADD FTCtyTAAlwReturn varchar(1)
+END
+GO

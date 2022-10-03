@@ -50,6 +50,7 @@
                     <option class="" value="4"    <?php if($nFilterPdtType=='4'){ echo 'selected'; } ?>><?=language('product/product/product','tPdtSreachType4')?></option>
                     <option class="" value="5"    <?php if($nFilterPdtType=='5'){ echo 'selected'; } ?>><?=language('product/product/product','tPdtSreachType5')?></option>
                     <option class="" value="6"    <?php if($nFilterPdtType=='6'){ echo 'selected'; } ?>><?=language('product/product/product','tPdtSreachType6')?></option>
+                    <option class="" value="7"    <?php if($nFilterPdtType=='7'){ echo 'selected'; } ?>><?=language('product/product/product','tPdtSreachType7')?></option>
                 </select>
             </div>
         </div>

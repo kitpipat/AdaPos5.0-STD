@@ -1268,7 +1268,10 @@ class cPurchaseInvoice extends MX_Controller {
             } else {
                 $aDataWhere['FTXphDocNo'] = $tPIDocNo;
             }
-
+            //ตรวจสอบรายการสินค้าที่มีจำนวนเป็น 0 หากเป็น 0 ห้ามบันทึก
+            $aResultCheck = $this->mPurchaseInvoice->FSaMPIGetDocDTQtyZero($aDataWhere);
+  
+            if($aResultCheck['rtCode']!='1'){
             // Add Update Document HD
             $this->mPurchaseInvoice->FSxMPIAddUpdateHD($aDataMaster, $aDataWhere, $aTableAddUpdate);
 
@@ -1310,6 +1313,14 @@ class cPurchaseInvoice extends MX_Controller {
                     'tStaMessg' => 'Success Add Document.'
                 );
             }
+        }else{
+            $aReturnData = array(
+                'nStaCallBack' => $this->session->userdata('tBtnSaveStaActive'),
+                'tCodeReturn' => $aDataWhere['FTXphDocNo'],
+                'nStaReturn' => '900',
+                'tStaMessg' => language('document/purchaseorder/purchaseorder', 'tPONoQtyImpListDesc')
+            );
+        }
         } catch (Exception $Error) {
             $aReturnData = array(
                 'nStaReturn' => '500',
@@ -1480,7 +1491,12 @@ class cPurchaseInvoice extends MX_Controller {
             } else {
                 $aDataWhere['FTXphDocNo'] = $tPIDocNo;
             }
-
+            //ตรวจสอบรายการสินค้าที่มีจำนวนเป็น 0 หากเป็น 0 ห้ามบันทึก
+            $aResultCheck = $this->mPurchaseInvoice->FSaMPIGetDocDTQtyZero($aDataWhere);
+            // echo '<pre>';
+            // print_r($aResultCheck);
+            // echo '</pre>';
+            if($aResultCheck['rtCode']!='1'){
             // Add Update Document HD
             $this->mPurchaseInvoice->FSxMPIAddUpdateHD($aDataMaster, $aDataWhere, $aTableAddUpdate);
 
@@ -1521,6 +1537,14 @@ class cPurchaseInvoice extends MX_Controller {
                     'tStaMessg' => 'Success Add Document.'
                 );
             }
+        }else{
+            $aReturnData = array(
+                'nStaCallBack' => $this->session->userdata('tBtnSaveStaActive'),
+                'tCodeReturn' => $aDataWhere['FTXphDocNo'],
+                'nStaReturn' => '900',
+                'tStaMessg' => language('document/purchaseorder/purchaseorder', 'tPONoQtyImpListDesc')
+            );
+        }
         } catch (Exception $Error) {
             $aReturnData = array(
                 'nStaEvent' => '500',

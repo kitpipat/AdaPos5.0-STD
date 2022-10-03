@@ -110,6 +110,7 @@ $nStaTopPdt  =  $this->input->cookie("nSesTopPdt_" . $this->session->userdata("t
                                 <option value="FTPgpCode" type="5" <?php if($nFilterPdtType=='5'){ echo 'selected'; } ?>><?= language('common/main/main', 'tCenterModalPDTPGPFrom'); ?></option>
                                 <option value="FTPtyCode" type="6" <?php if($nFilterPdtType=='6'){ echo 'selected'; } ?>><?= language('common/main/main', 'tCenterModalPDTPTYFrom'); ?></option>
                                 <option value="FTBuyer"><?= language('common/main/main', 'tCenterModalPDTPurchasing'); ?></option>
+                                <option value="FTPbnCode" type="7" <?php if($nFilterPdtType=='7'){ echo 'selected'; } ?>><?= language('common/main/main', 'tCenterModalPDTPBNFrom'); ?></option>
                                 <!-- <option value="FTPlcCode"><?= language('common/main/main', 'tCenterModalPDTLOGSEQFrom'); ?></option> -->
                             </select>
                         </div>

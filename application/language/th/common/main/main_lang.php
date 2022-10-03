@@ -243,6 +243,7 @@ $lang['tCenterModalPDTBarcode']         = 'บาร์โค้ด';
 $lang['tCenterModalPDTPGPFrom']         = 'กลุ่มสินค้า';
 $lang['tCenterModalPDTPGPTo']           = 'ถึงกลุ่มสินค้า';
 $lang['tCenterModalPDTPTYFrom']         = 'ประเภทสินค้า';
+$lang['tCenterModalPDTPBNFrom']         = 'ยี่ห้อ';
 $lang['tCenterModalPDTPTYTo']           = 'ถึงประเภทสินค้า';
 $lang['tCenterModalPDTBCHFrom']         = 'สาขา';
 $lang['tCenterModalPDTBCHTo']           = 'ถึงสาขา';

@@ -271,55 +271,95 @@
             window.oProductBrowseMultiOption = undefined;
             let tSessionUsrLev = '<?=$this->session->userdata('tSesUsrLevel')?>';
             let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
-            let tCondition = '';
-            if (tBchCodeSess != '' && tSessionUsrLev!= 'HQ') {
-                tCondition += " AND ( TCNMPdtSpcBch.FTBchCode = '" + tBchCodeSess + "' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+
+            var oBrowsePdtSettings = {
+                Qualitysearch: [
+                    "NAMEPDT",
+                    "CODEPDT"
+                ],
+                PriceType: ["Cost", "tCN_Cost", "Company", "1"],
+                //'PriceType'       : ['Pricesell'],
+                //'SelectTier'      : ['PDT'],
+                SelectTier: ["Barcode"],
+                //'Elementreturn'   : ['oetInputTestValue','oetInputTestName'],
+                ShowCountRecord: 10,
+                NextFunc: "FSvMNTNextFuncB4SelPDT",
+                ReturnType: "M",
+                SPL: ["", ""],
+                BCH: [tBchCodeSess, tBchCodeSess],
+                MER: ["", ""],
+                SHP: ["", ""],
             }
 
-            let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
-            if( tAgnCode != '' ){
-                tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
-            }
+            $.ajax({
+                type: "POST",
+                url: "BrowseDataPDT",
+                data: oBrowsePdtSettings,
+                cache: false,
+                timeout: 5000,
+                success: function (tResult) {
+                    // $(".modal.fade:not(#odvTBBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTBPopupApv,#odvModalDelPdtTB)").remove();
+                    $("#odvModalDOCPDT").modal({ backdrop: "static", keyboard: false });
+                    $("#odvModalDOCPDT").modal({ show: true });
+
+                    //remove localstorage
+                    localStorage.removeItem("LocalItemDataPDT");
+                    $("#odvModalsectionBodyPDT").html(tResult);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+
+            // let tCondition = '';
+            // if (tBchCodeSess != '' && tSessionUsrLev!= 'HQ') {
+            //     tCondition += " AND ( TCNMPdtSpcBch.FTBchCode = '" + tBchCodeSess + "' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+            // }
+
+            // let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+            // if( tAgnCode != '' ){
+            //     tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
+            // }
 
 
-            oProductBrowseMultiOption = {
-                Title: ['product/product/product', 'tPDTTitle'],
-                Table: {
-                    Master: 'TCNMPdt',
-                    PK: 'FTPdtCode'
-                },
-                Join: {
-                    Table: ['TCNMPdt_L', 'TCNMPdtSpcBch'],
-                    On: [
-                        'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = ' + nLangEdits,
-                        'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
-                    ]
-                },
-                Where: {
-                    Condition: [tCondition]
-                },
-                GrideView: {
-                    ColumnPathLang: 'product/product/product',
-                    ColumnKeyLang: ['tPDTCode', 'tPDTName'],
-                    ColumnsSize: ['10%', '75%'],
-                    WidthModal: 50,
-                    DataColumns: ['TCNMPdt.FTPdtCode', 'TCNMPdt_L.FTPdtName'],
-                    DataColumnsFormat: ['', ''],
-                    Perpage: 10,
-                    OrderBy: ['TCNMPdt.FDCreateOn DESC'],
-                    SourceOrder: "ASC"
-                },
-                CallBack: {
-                    StaSingItem: '1',
-                    ReturnType: 'M',
-                    Value: ['oetMmtPdtCodeSelect', "TCNMPdt.FTPdtCode"],
-                    Text: ['oetMmtPdtNameSelect', "TCNMPdt_L.FTPdtName"],
-                },
-                // RouteAddNew : 'saleperson',
-                BrowseLev: 1,
-                //DebugSQL : true
-            }
-            JCNxBrowseData('oProductBrowseMultiOption');
+            // oProductBrowseMultiOption = {
+            //     Title: ['product/product/product', 'tPDTTitle'],
+            //     Table: {
+            //         Master: 'TCNMPdt',
+            //         PK: 'FTPdtCode'
+            //     },
+            //     Join: {
+            //         Table: ['TCNMPdt_L', 'TCNMPdtSpcBch'],
+            //         On: [
+            //             'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = ' + nLangEdits,
+            //             'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
+            //         ]
+            //     },
+            //     Where: {
+            //         Condition: [tCondition]
+            //     },
+            //     GrideView: {
+            //         ColumnPathLang: 'product/product/product',
+            //         ColumnKeyLang: ['tPDTCode', 'tPDTName'],
+            //         ColumnsSize: ['10%', '75%'],
+            //         WidthModal: 50,
+            //         DataColumns: ['TCNMPdt.FTPdtCode', 'TCNMPdt_L.FTPdtName'],
+            //         DataColumnsFormat: ['', ''],
+            //         Perpage: 10,
+            //         OrderBy: ['TCNMPdt.FDCreateOn DESC'],
+            //         SourceOrder: "ASC"
+            //     },
+            //     CallBack: {
+            //         StaSingItem: '1',
+            //         ReturnType: 'M',
+            //         Value: ['oetMmtPdtCodeSelect', "TCNMPdt.FTPdtCode"],
+            //         Text: ['oetMmtPdtNameSelect', "TCNMPdt_L.FTPdtName"],
+            //     },
+            //     // RouteAddNew : 'saleperson',
+            //     BrowseLev: 1,
+            //     //DebugSQL : true
+            // }
+            // JCNxBrowseData('oProductBrowseMultiOption');
 
 
             $('#obtMmtMultiBrowseProduct').attr("disabled", false);
@@ -333,4 +373,30 @@
         $('#obtMmtMultiBrowseProduct').attr("disabled", false);
     }
     // =========================================== Event Browse Multi Branch ===========================================
+       // =========================================== Event Browse Multi Branch ===========================================
+       function FSvMNTNextFuncB4SelPDT(paData){
+        // console.log(paData);
+                var tPdtCode = '';
+                var tPdtName = '';
+                var tComma = '';
+                var aData =  JSON.parse(paData);
+                //    console.log(aData.length);
+                if(aData.length>0){
+                for(var i=0;i<aData.length;i++){
+                    // console.log(aData[i].packData.PDTCode);
+                        if(i>0){
+                            tComma = ',';
+                        }
+                        tPdtCode += tComma+aData[i].packData.PDTCode;
+                        tPdtName += tComma+aData[i].packData.PDTName;
+                }
+                $('#oetMmtPdtCodeSelect').val(tPdtCode);
+                $('#oetMmtPdtNameSelect').val(tPdtName);
+                }else{
+                    $('#oetMmtPdtCodeSelect').val('');
+                $('#oetMmtPdtNameSelect').val(''); 
+                }
+    //    console.log(tPdtCode);
+    //    console.log(tPdtName);
+    }
 </script>

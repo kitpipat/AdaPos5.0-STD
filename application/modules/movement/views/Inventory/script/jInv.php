@@ -78,9 +78,8 @@
     });
     // =========================================== Event Browse Multi Branch ===========================================
 
-
-    // =========================================== Event Browse Multi Branch ===========================================
-    $('#obtInvMultiBrowseProduct').unbind().click(function(){
+  // =========================================== Event Browse Multi Branch ===========================================
+  $('#obtInvMultiBrowseProduct').unbind().click(function(){
         // $('#oetInvWahStaSelectAll').val('');
         // $('#oetInvWahCodeSelect').val('');
         // $('#oetInvWahNameSelect').val('');
@@ -88,52 +87,94 @@
         var nStaSession = JCNxFuncChkSessionExpired();
         if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
             JSxCheckPinMenuClose(); // Hidden Pin Menu
-            window.oProductBrowseMultiOption = undefined;
 
             let tBchCodeSess = $('#oetInvBchCodeSelect').val();
-            let tCondition ='';
-            if(tBchCodeSess!=''){
-                tCondition +=  " AND ( TCNMPdtSpcBch.FTBchCode = '"+tBchCodeSess+"' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+            var oBrowsePdtSettings = {
+                Qualitysearch: [
+                    "NAMEPDT",
+                    "CODEPDT"
+                ],
+                PriceType: ["Cost", "tCN_Cost", "Company", "1"],
+                //'PriceType'       : ['Pricesell'],
+                //'SelectTier'      : ['PDT'],
+                SelectTier: ["Barcode"],
+                //'Elementreturn'   : ['oetInputTestValue','oetInputTestName'],
+                ShowCountRecord: 10,
+                NextFunc: "FSvINVNextFuncB4SelPDT",
+                ReturnType: "M",
+                SPL: ["", ""],
+                BCH: [tBchCodeSess, tBchCodeSess],
+                MER: ["", ""],
+                SHP: ["", ""],
             }
 
-            let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
-            if( tAgnCode != '' ){
-                tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
-            }
+            $.ajax({
+                type: "POST",
+                url: "BrowseDataPDT",
+                data: oBrowsePdtSettings,
+                cache: false,
+                timeout: 5000,
+                success: function (tResult) {
+                    // $(".modal.fade:not(#odvTBBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTBPopupApv,#odvModalDelPdtTB)").remove();
+                    $("#odvModalDOCPDT").modal({ backdrop: "static", keyboard: false });
+                    $("#odvModalDOCPDT").modal({ show: true });
 
-            oProductBrowseMultiOption         = {
-                Title : ['product/product/product','tPDTTitle'],
-                Table:{Master:'TCNMPdt',PK:'FTPdtCode'},
-                Join :{
-                    Table:	['TCNMPdt_L','TCNMPdtSpcBch'],
-                    On:[
-                        'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = '+nLangEdits,
-                        'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
-                        ]
-                }, 
-                Where:{
-                        Condition : [tCondition]
+                    //remove localstorage
+                    localStorage.removeItem("LocalItemDataPDT");
+                    $("#odvModalsectionBodyPDT").html(tResult);
                 },
-                GrideView:{
-                    ColumnPathLang	: 'product/product/product',
-                    ColumnKeyLang	: ['tPDTCode','tPDTName'],
-                    ColumnsSize     : ['10%','75%'],
-                    WidthModal      : 50,
-                    DataColumns		: ['TCNMPdt.FTPdtCode','TCNMPdt_L.FTPdtName'],
-                    DataColumnsFormat : ['',''],
-                    Perpage			: 10,
-                    OrderBy			: ['TCNMPdt.FDCreateOn DESC'],
-                    // SourceOrder		: "ASC"
-                },
-                CallBack:{
-                    StaSingItem : '1',
-                    ReturnType	: 'M',
-                    Value		: ['oetInvPdtCodeSelect',"TCNMPdt.FTPdtCode"],
-                    Text		: ['oetInvPdtNameSelect',"TCNMPdt_L.FTPdtName"],
-                },
-                BrowseLev : 1
-            }
-            JCNxBrowseData('oProductBrowseMultiOption');
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+            // window.oProductBrowseMultiOption = undefined;
+
+            // let tBchCodeSess = $('#oetInvBchCodeSelect').val();
+            // let tCondition ='';
+            // if(tBchCodeSess!=''){
+            //     tCondition +=  " AND ( TCNMPdtSpcBch.FTBchCode = '"+tBchCodeSess+"' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+            // }
+
+            // let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+            // if( tAgnCode != '' ){
+            //     tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
+            // }
+
+            // oProductBrowseMultiOption         = {
+            //     Title : ['product/product/product','tPDTTitle'],
+            //     Table:{Master:'TCNMPdt',PK:'FTPdtCode'},
+            //     Join :{
+            //         Table:	['TCNMPdt_L','TCNMPdtSpcBch'],
+            //         On:[
+            //             'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = '+nLangEdits,
+            //             'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
+            //             ]
+            //     }, 
+            //     Where:{
+            //             Condition : [tCondition]
+            //     },
+            //     GrideView:{
+            //         ColumnPathLang	: 'product/product/product',
+            //         ColumnKeyLang	: ['tPDTCode','tPDTName'],
+            //         ColumnsSize     : ['10%','75%'],
+            //         WidthModal      : 50,
+            //         DataColumns		: ['TCNMPdt.FTPdtCode','TCNMPdt_L.FTPdtName'],
+            //         DataColumnsFormat : ['',''],
+            //         Perpage			: 10,
+            //         OrderBy			: ['TCNMPdt.FDCreateOn DESC'],
+            //         // SourceOrder		: "ASC"
+            //     },
+            //     CallBack:{
+            //         StaSingItem : '1',
+            //         ReturnType	: 'M',
+            //         Value		: ['oetInvPdtCodeSelect',"TCNMPdt.FTPdtCode"],
+            //         Text		: ['oetInvPdtNameSelect',"TCNMPdt_L.FTPdtName"],
+            //     },
+            //     BrowseLev : 1
+            // }
+            // JCNxBrowseData('oProductBrowseMultiOption');
+
+
 
 
             $('#obtInvMultiBrowseProduct').attr("disabled", false);
@@ -142,8 +183,95 @@
         }
     });
     // =========================================== Event Browse Multi Branch ===========================================
+    // $('#obtInvMultiBrowseProduct').unbind().click(function(){
+    //     // $('#oetInvWahStaSelectAll').val('');
+    //     // $('#oetInvWahCodeSelect').val('');
+    //     // $('#oetInvWahNameSelect').val('');
+
+    //     var nStaSession = JCNxFuncChkSessionExpired();
+    //     if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+    //         JSxCheckPinMenuClose(); // Hidden Pin Menu
+    //         window.oProductBrowseMultiOption = undefined;
+
+    //         let tBchCodeSess = $('#oetInvBchCodeSelect').val();
+    //         let tCondition ='';
+    //         if(tBchCodeSess!=''){
+    //             tCondition +=  " AND ( TCNMPdtSpcBch.FTBchCode = '"+tBchCodeSess+"' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+    //         }
+
+    //         let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+    //         if( tAgnCode != '' ){
+    //             tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
+    //         }
+
+    //         oProductBrowseMultiOption         = {
+    //             Title : ['product/product/product','tPDTTitle'],
+    //             Table:{Master:'TCNMPdt',PK:'FTPdtCode'},
+    //             Join :{
+    //                 Table:	['TCNMPdt_L','TCNMPdtSpcBch'],
+    //                 On:[
+    //                     'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = '+nLangEdits,
+    //                     'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
+    //                     ]
+    //             }, 
+    //             Where:{
+    //                     Condition : [tCondition]
+    //             },
+    //             GrideView:{
+    //                 ColumnPathLang	: 'product/product/product',
+    //                 ColumnKeyLang	: ['tPDTCode','tPDTName'],
+    //                 ColumnsSize     : ['10%','75%'],
+    //                 WidthModal      : 50,
+    //                 DataColumns		: ['TCNMPdt.FTPdtCode','TCNMPdt_L.FTPdtName'],
+    //                 DataColumnsFormat : ['',''],
+    //                 Perpage			: 10,
+    //                 OrderBy			: ['TCNMPdt.FDCreateOn DESC'],
+    //                 // SourceOrder		: "ASC"
+    //             },
+    //             CallBack:{
+    //                 StaSingItem : '1',
+    //                 ReturnType	: 'M',
+    //                 Value		: ['oetInvPdtCodeSelect',"TCNMPdt.FTPdtCode"],
+    //                 Text		: ['oetInvPdtNameSelect',"TCNMPdt_L.FTPdtName"],
+    //             },
+    //             BrowseLev : 1
+    //         }
+    //         JCNxBrowseData('oProductBrowseMultiOption');
 
 
+    //         $('#obtInvMultiBrowseProduct').attr("disabled", false);
+    //     }else{
+    //         JCNxShowMsgSessionExpired();
+    //     }
+    // });
+    // =========================================== Event Browse Multi Branch ===========================================
+
+   // =========================================== Event Browse Multi Branch ===========================================
+   function FSvINVNextFuncB4SelPDT(paData){
+        // console.log(paData);
+                var tPdtCode = '';
+                var tPdtName = '';
+                var tComma = '';
+                var aData =  JSON.parse(paData);
+                //    console.log(aData.length);
+                if(aData.length>0){
+                for(var i=0;i<aData.length;i++){
+                    // console.log(aData[i].packData.PDTCode);
+                        if(i>0){
+                            tComma = ',';
+                        }
+                        tPdtCode += tComma+aData[i].packData.PDTCode;
+                        tPdtName += tComma+aData[i].packData.PDTName;
+                }
+                $('#oetInvPdtCodeSelect').val(tPdtCode);
+                $('#oetInvPdtNameSelect').val(tPdtName);
+                }else{
+                    $('#oetInvPdtCodeSelect').val('');
+                $('#oetInvPdtNameSelect').val(''); 
+                }
+    //    console.log(tPdtCode);
+    //    console.log(tPdtName);
+    }
     // =========================================== Event Browse Multi WaHouse ===========================================
     $('#obtInvMultiBrowseWaHouse').unbind().click(function(){
         var nStaSession = JCNxFuncChkSessionExpired();

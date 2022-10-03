@@ -166,11 +166,13 @@
 
                             <td nowrap class="xPIImportDT xPIStaValidate<?=$aDataTableVal['FTSrnCode']?>" style="display:none;">
                             <?php
-                                if($aDataTableVal['FTSrnCode'] == 0):
+                                if($aDataTableVal['FTSrnCode'] == 0){
                                     echo '<span style="color:red">'.language('document/purchaseorder/purchaseorder','tPONotFoundPdtCodeAndBarcodeImp').'</span>';
-                                else:
+                                } if($aDataTableVal['FTSrnCode'] == 11){ 
+                                    echo '<span style="color:red">'.language('document/purchaseorder/purchaseorder','tPONoQtyImpList').'</span>';
+                                }else{
                                     echo "";
-                                endif;
+                                }
                             ?>
                             </td>
 

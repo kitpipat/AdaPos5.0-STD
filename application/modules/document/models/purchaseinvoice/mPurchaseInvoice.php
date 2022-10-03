@@ -2624,5 +2624,50 @@ class mPurchaseInvoice extends CI_Model {
         $this->db->query($tSQL);
     }
 
+ 
     
+    // Functionality    : Count All Documeny DT Temp
+    // Parameters       : function parameters
+    // Creator          : 30/09/2022 nattakit
+    // Last Modified    : 30/09/2022 nattakit
+    // Return           : array Data Count All Data QTY 0
+    // Return Type      : array
+    public function FSaMPIGetDocDTQtyZero($paDataWhere){
+        $tPIDocNo           = $paDataWhere['FTXphDocNo'];
+        $tPIDocKey          = 'TAPTPiHD';
+        $tPISesSessionID    = $this->session->userdata('tSesSessionID');
+
+        $tSQL   = " SELECT
+                        DOCTMP.FTPdtCode,
+                        DOCTMP.FTXtdPdtName,
+                        DOCTMP.FCXtdQtyAll
+                    FROM
+                        TCNTDocDTTmp DOCTMP WITH(NOLOCK)
+                    WHERE  DOCTMP.FCXtdQtyAll <=0 ";
+        
+        // $tSQL   .= " AND DOCTMP.FTXthDocNo  = '$tPIDocNo' ";
+        $tSQL   .= " AND DOCTMP.FTXthDocKey = '$tPIDocKey' ";
+        $tSQL   .= " AND DOCTMP.FTSessionID = '$tPISesSessionID' ";
+
+
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $aDetail        = $oQuery->result_array();
+            $aDataReturn    =  array(
+                'rtCountData'   => $aDetail,
+                'rtCode'        => '1',
+                'rtDesc'        => 'success',
+            );
+        }else{
+            $aDataReturn    =  array(
+                'rtCode'    => '800',
+                'rtDesc'    => 'Data Not Found',
+            );
+        }
+        unset($oQuery);
+        unset($aDetail);
+        return $aDataReturn;
+    }
+
+
 }

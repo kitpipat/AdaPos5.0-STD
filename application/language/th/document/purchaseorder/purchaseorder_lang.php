@@ -302,3 +302,8 @@ $lang['tPOChgBath']                  = "ชาร์จบาท";
 $lang['tPOChgPer']                  = "ชาร์จ";
 $lang['tPONotFoundPdtCodeAndBarcodeImp']   = "ไม่พบรหัสสินค้าและบาร์โค้ด";
 $lang['tPONotFoundPdtCodeAndBarcodeImpList']   = "ไม่พบรหัสสินค้าและบาร์โค้ดในบางรายการ กรุณาตรวจสอบรหัสสินค้าหรือแก้ไขข้อมูลเพื่อทำงานต่อ";
+
+
+
+$lang['tPONoQtyImpList']   = "จำนวนสินค้าต่ำกว่า 1";
+$lang['tPONoQtyImpListDesc']   = "มีรายการสินค้าจำนวนสินค้าต่ำกว่า 1 กรุณาตรวจสอบ";

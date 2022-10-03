@@ -879,12 +879,12 @@ class cHome extends MX_Controller
                             );
 
                             $aDataPdtMaster  = $this->mPurchaseInvoice->FSaMPIGetDataPdtByBarCode($aDataPdtParams);
-
+                            $aResult = $this->mPurchaseInvoice->FSaMPIGetDuplicateBarCodeByPdtCode($aDataPdtParams);
                             if ($aDataPdtMaster['rtCode'] == '1') { //ตรวจสอบก่อนว่าบาร์โค้ดมีการซ้ำกับสินค้าอื่นไหม และมีซ้ำกับ สินค้าตัวเองไหม
 
                                 if ($aDataPdtMaster['raItem']['FTPdtForSystem'] == '5') { //ต้องเป็นสินค้าแฟชั่น
 
-                                    $aResult = $this->mPurchaseInvoice->FSaMPIGetDuplicateBarCodeByPdtCode($aDataPdtParams);
+                                    // $aResult = $this->mPurchaseInvoice->FSaMPIGetDuplicateBarCodeByPdtCode($aDataPdtParams);
 
                                     //   echo '<pre>';
                                     //   print_r($aResult);
@@ -941,7 +941,11 @@ class cHome extends MX_Controller
                             //  echo $this->db->last_query();
                             //  die();
 
-
+                            if($aDataPdtMaster['raItem']['FCPdtUnitFact'] == 0 || $aDataPdtMaster['raItem']['FCPdtUnitFact'] == '' || $cQty ==0 ){
+                                $tSrnCode = 11;
+                            }else{
+                                $tSrnCode = 1;
+                            }
 
                             if ($aDataPdtMaster['rtCode'] == '1') {
                                 if ($aResult['rtCode'] != '2') {
@@ -970,7 +974,7 @@ class cHome extends MX_Controller
                                         'FCXtdSetPrice'     => $cPrice * 1,
                                         'FCXtdNet'          => $cPrice * $cQty,
                                         'FCXtdNetAfHD'      => $cPrice * $cQty,
-                                        'FTSrnCode'         => 1,
+                                        'FTSrnCode'         => $tSrnCode,
                                         'FTTmpStatus'       => $aDataPdtMaster['raItem']['FTPdtForSystem'],
                                         'FTSessionID'       => $this->session->userdata("tSesSessionID"),
                                         'FDLastUpdOn'       => date('Y-m-d h:i:s'),

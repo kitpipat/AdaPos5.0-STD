@@ -584,3 +584,34 @@ INSERT INTO [TSysReport_L] ([FTRptCode], [FNLngID], [FTRptName], [FTRptDes]) VAL
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.09', getdate() , 'เปิด รายงาน - ยอดขายตามช่วงเวลา', 'Nattakit K.');
 END
 GO
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.10') BEGIN
+
+IF NOT EXISTS(SELECT FTLblCode FROM TCNSLabelFmt WHERE FTLblCode = 'L016') BEGIN
+	INSERT [dbo].[TCNSLabelFmt] ([FTLblCode], [FTLblRptNormal], [FTLblRptPmt], [FTLblStaUse], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy], [FNLblQtyPerPageNml], [FNLblQtyPerPagePmt], [FTLblVerGroup], [FTLblSizeWH]) 
+	VALUES (N'L016', N'Frm_ALLPdtPriceTag3.2x2.5.mrt', N'', N'1', CAST(N'2022-08-16T00:00:00.000' AS DateTime), N'Junthon M.', CAST(N'2022-08-16T00:00:00.000' AS DateTime), N'Junthon M.', 3, NULL, N'STD', N'3.2 x 2.5 cm.')
+END
+
+IF NOT EXISTS(SELECT FTLblCode FROM TCNSLabelFmt_L WHERE FTLblCode = 'L016') BEGIN
+	INSERT [dbo].[TCNSLabelFmt_L] ([FTLblCode], [FNLngID], [FTLblName], [FTLblRmk]) VALUES (N'L016', 1, N'สติ๊กเกอร์บาร์โค้ด ขนาด 3.2*2.5 ซม', N'')
+	INSERT [dbo].[TCNSLabelFmt_L] ([FTLblCode], [FNLngID], [FTLblName], [FTLblRmk]) VALUES (N'L016', 2, N'Ticket Price 3.2*2.5 CM', N'')
+END
+
+IF EXISTS(SELECT FTLblCode FROM TCNSLabelFmt_L WHERE FTLblCode = 'L010' AND FNLngID = 1) BEGIN
+	UPDATE TCNSLabelFmt_L SET FTLblName = 'สติ๊กเกอร์บาร์โค้ด ขนาด 3.2*2.4 ซม' WHERE FTLblCode = 'L010' AND FNLngID = 1
+END
+
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.10', getdate() , 'เปิด รายงาน - ยอดขายตามช่วงเวลา', 'Nattakit K.')
+END
+GO
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.11') BEGIN
+UPDATE TSysConfig
+SET FTSysStaAlwEdit = '2'
+,FTSysStaUsrValue = '2'
+,FDLastUpdOn = GETDATE()
+,FTLastUpdBy = 'Admin'
+WHERE FTSysCode = 'bPS_StaChkPosReg'
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.11', getdate() , 'ปิด config ตรวจสอบลงทะเบียนจุดขาย')
+END
+GO

@@ -265,6 +265,7 @@ $lang['tPdtSreachType3']          = "Bar Code";
 $lang['tPdtSreachType4']          = "UNIT";
 $lang['tPdtSreachType5']          = "Group";
 $lang['tPdtSreachType6']          = "Type";
+$lang['tPdtSreachType7']          = "Brand";
 $lang['tPdtChangeUnit']           = "Change";
 $lang['tPdtUnitPrice']          = "Unit Price";
 

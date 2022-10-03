@@ -130,6 +130,7 @@ class mProduct extends CI_Model
             4 => 'LEFT JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID =' . $nLngID, //หาหน่วย
             5 => 'LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = PDT.FTPgpChain AND PGL.FNLngID =' . $nLngID, //หากลุ่มสินค้า
             6 => 'LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID =' . $nLngID, //หาประเภทสินค้า
+            7 => 'LEFT JOIN TCNMPdtBrand_L PBNL WITH (NOLOCK)    ON PDT.FTPbnCode = PBNL.FTPbnCode   AND PBNL.FNLngID =' . $nLngID, //ยี่ห้อ
         );
 
 
@@ -140,6 +141,7 @@ class mProduct extends CI_Model
             4 => " AND ( PUNL.FTPunName  COLLATE THAI_BIN    LIKE '%$tSearch%' OR PUNL.FTPunCode COLLATE THAI_BIN LIKE '%$tSearch%' ) ", //หาหน่วย
             5 => " AND ( PGL.FTPgpName   COLLATE THAI_BIN    LIKE '%$tSearch%' OR PGL.FTPgpChainName COLLATE THAI_BIN LIKE '%$tSearch%' ) ", //หากลุ่มสินค้า
             6 => " AND ( PTL.FTPtyName   COLLATE THAI_BIN    LIKE '%$tSearch%' ) ", //หาประเภทสินค้า
+            7 => " AND ( PBNL.FTPbnCode  ='$tSearch' OR  PBNL.FTPbnName  COLLATE THAI_BIN  LIKE '%$tSearch%' ) ", //หาประเภทสินค้า
         );
 
         $tSQLPdtMaster = "  SELECT  ";
@@ -151,6 +153,7 @@ class mProduct extends CI_Model
         // }
         $tSQLPdtMaster .=  "    PDT.FTPdtForSystem,
                                 PDT.FTPdtCode,
+                                PDT.FTPbnCode,
                                 PDT.FTPtyCode,
                                 PDT.FTPgpChain,
                                 PDT.FTCreateBy,
@@ -269,7 +272,7 @@ class mProduct extends CI_Model
                 LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID = $nLngID
                 LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = $nLngID
                 LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = PDT.FTPgpChain AND PGL.FNLngID = $nLngID
-
+                LEFT JOIN TCNMPdtBrand_L PBNL WITH (NOLOCK)     ON PDT.FTPbnCode = PBNL.FTPbnCode AND PBNL.FNLngID = $nLngID
                 LEFT JOIN (
                     SELECT
                         FCPgdPriceRet,FTPdtCode,FTPunCode
@@ -2585,7 +2588,7 @@ class mProduct extends CI_Model
         $nLngID         = $paData['FNLngID'];
         $tTableKey      = $paData['FTMttTableKey'];
 
-        $tSQL   = "SELECT c.* FROM( SELECT  ROW_NUMBER() OVER(ORDER BY FTBchCode ASC) AS FNRowID,* FROM
+        $tSQL   = "SELECT c.* FROM( SELECT  ROW_NUMBER() OVER(ORDER BY a.FTBchCode ASC) AS FNRowID,a.* FROM
                   (SELECT  DISTINCT
                          TMT.FTPdtCode,
                          TMT.FTWahCode,
@@ -2606,7 +2609,7 @@ class mProduct extends CI_Model
                         AND TMT.FTMttTableKey   = '$tTableKey' ";
 
 
-        $tSQL .= ") )Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
+        $tSQL .= ") AS  a ) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
 
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {

@@ -478,6 +478,7 @@ $lang['tPdtSreachType3']          = "บาร์โค้ด";
 $lang['tPdtSreachType4']          = "หน่วย";
 $lang['tPdtSreachType5']          = "กลุ่มสินค้า";
 $lang['tPdtSreachType6']          = "ประเภทสินค้า";
+$lang['tPdtSreachType7']          = "ยี่ห้อ";
 $lang['tPdtChangeUnit']          = "เปลี่ยน";
 $lang['tPdtUnitPrice']          = "ราคาต่อหน่วย";
 

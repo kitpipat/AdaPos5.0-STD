@@ -6203,3 +6203,3800 @@ BEGIN CATCH
 	SET @FNResult= -1
 END CATCH	
 GO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/****** Object:  StoredProcedure [dbo].[SP_RPTxPSSVat1001006]    Script Date: 05/09/2022 18:32:16 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPSSVat1001006]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPSSVat1001006
+GO
+CREATE PROCEDURE [dbo].[SP_RPTxPSSVat1001006]
+	--ALTER PROCEDURE [dbo].[SP_RPTxPSSVat1001006] 
+		@pnLngID int , 
+		@pnComName Varchar(100),
+		@ptRptCode Varchar(100),
+		@ptUsrSession Varchar(255),
+		@pnFilterType int, --1 BETWEEN 2 IN
+		--สาขา
+		@ptBchL Varchar(8000), --กรณี Condition IN
+		@ptBchF Varchar(5),
+		@ptBchT Varchar(5),
+		--Merchant
+		@ptMerL Varchar(8000), --กรณี Condition IN
+		@ptMerF Varchar(10),
+		@ptMerT Varchar(10),
+		--Shop Code
+		@ptShpL Varchar(8000), --กรณี Condition IN
+		@ptShpF Varchar(10),
+		@ptShpT Varchar(10),
+		--เครื่องจุดขาย
+		@ptPosL Varchar(8000), --กรณี Condition IN
+		@ptPosF Varchar(20),
+		@ptPosT Varchar(20),
+		--@ptBchF Varchar(5),
+		--@ptBchT Varchar(5),
+		----เครื่องจุดขาย
+		--@ptPosCodeF Varchar(20),
+		--@ptPosCodeT Varchar(20),
+
+		@ptDocDateF Varchar(10),
+		@ptDocDateT Varchar(10),
+		----ลูกค้า
+		--@ptCstF Varchar(20),
+		--@ptCstT Varchar(20),
+		@FNResult INT OUTPUT 
+	AS
+	--------------------------------------
+	-- Watcharakorn 
+	-- Create 10/07/2019
+	-- Temp name  TRPTSalRCTmp
+	-- @pnLngID ภาษา
+	-- @ptRptCdoe ชื่อรายงาน
+	-- @ptUsrSession UsrSession
+	-- @ptBchF จากรหัสสาขา
+	-- @ptBchT ถึงรหัสสาขา
+		--DECLARE @tPosCodeF Varchar(30)
+		--DECLARE @tPosCodeT Varchar(30)
+	-- @ptDocDateF จากวันที่
+	-- @ptDocDateT ถึงวันที่
+	-- @FNResult
+
+
+	--------------------------------------
+	BEGIN TRY
+
+		DECLARE @nLngID int 
+		DECLARE @nComName Varchar(100)
+		DECLARE @tRptCode Varchar(100)
+		DECLARE @tUsrSession Varchar(255)
+		DECLARE @tSql VARCHAR(8000)
+		DECLARE @tSqlIns VARCHAR(8000)
+		DECLARE @tSql1 nVARCHAR(Max)
+		DECLARE @tSql2 VARCHAR(8000)
+		DECLARE @tSql3 VARCHAR(8000)
+
+		--DECLARE @tBchF Varchar(5)
+		--DECLARE @tBchT Varchar(5)
+
+		--DECLARE @tPosCodeF Varchar(20)
+		--DECLARE @tPosCodeT Varchar(20)
+
+		--Branch Code
+		DECLARE @tBchF Varchar(5)
+		DECLARE @tBchT Varchar(5)
+		--Merchant
+		DECLARE @tMerF Varchar(10)
+		DECLARE @tMerT Varchar(10)
+		--Shop Code
+		DECLARE @tShpF Varchar(10)
+		DECLARE @tShpT Varchar(10)
+		--Pos Code
+		DECLARE @tPosF Varchar(20)
+		DECLARE @tPosT Varchar(20)
+
+		DECLARE @tDocDateF Varchar(10)
+		DECLARE @tDocDateT Varchar(10)
+		
+		SET @nLngID = @pnLngID
+		SET @nComName = @pnComName
+		SET @tUsrSession = @ptUsrSession
+		SET @tRptCode = @ptRptCode
+
+
+		--Branch
+		SET @tBchF  = @ptBchF
+		SET @tBchT  = @ptBchT
+		--Merchant
+		SET @tMerF  = @ptMerF
+		SET @tMerT  = @ptMerT
+		--Shop
+		SET @tShpF  = @ptShpF
+		SET @tShpT  = @ptShpT
+		--Pos
+		SET @tPosF  = @ptPosF 
+		SET @tPosT  = @ptPosT
+
+		SET @tDocDateF = @ptDocDateF
+		SET @tDocDateT = @ptDocDateT
+
+		SET @FNResult= 0
+
+		SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+		SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+		IF @nLngID = null
+		BEGIN
+			SET @nLngID = 1
+		END	
+
+
+		IF @ptBchL = null
+		BEGIN
+			SET @ptBchL = ''
+		END
+
+		IF @tBchF = null
+		BEGIN
+			SET @tBchF = ''
+		END
+		IF @tBchT = null OR @tBchT = ''
+		BEGIN
+			SET @tBchT = @tBchF
+		END
+
+		IF @ptMerL =null
+		BEGIN
+			SET @ptMerL = ''
+		END
+
+		IF @tMerF =null
+		BEGIN
+			SET @tMerF = ''
+		END
+		IF @tMerT =null OR @tMerT = ''
+		BEGIN
+			SET @tMerT = @tMerF
+		END 
+
+		IF @ptShpL =null
+		BEGIN
+			SET @ptShpL = ''
+		END
+
+		IF @tShpF =null
+		BEGIN
+			SET @tShpF = ''
+		END
+		IF @tShpT =null OR @tShpT = ''
+		BEGIN
+			SET @tShpT = @tShpF
+		END
+
+		IF @ptPosL =null
+		BEGIN
+			SET @ptPosL = ''
+		END
+
+		IF @tPosF = null
+		BEGIN
+			SET @tPosF = ''
+		END
+		IF @tPosT = null OR @tPosT = ''
+		BEGIN
+			SET @tPosT = @tPosF
+		END
+
+		IF @tDocDateF = null
+		BEGIN 
+			SET @tDocDateF = ''
+		END
+
+		IF @tDocDateT = null OR @tDocDateT =''
+		BEGIN 
+			SET @tDocDateT = @tDocDateF
+		END
+
+		SET @tSql1 = ' '
+		SET @tSql3 = ' '
+		IF @pnFilterType = '1'
+		BEGIN
+			IF (@tBchF <> '' AND @tBchT <> '')
+			BEGIN
+				SET @tSql1 +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+			END
+
+			IF (@tMerF <> '' AND @tMerT <> '')
+			BEGIN
+				SET @tSql1 +=' AND Shp.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+			END
+
+			IF (@tShpF <> '' AND @tShpT <> '')
+			BEGIN
+				SET @tSql1 +=' AND HD.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+			END
+
+			IF (@tPosF <> '' AND @tPosT <> '')
+			BEGIN
+				SET @tSql1 += ' AND HD.FTPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+			END		
+		END
+
+		IF @pnFilterType = '2'
+		BEGIN
+			IF (@ptBchL <> '' )
+			BEGIN
+				SET @tSql1 +=' AND HD.FTBchCode IN (' + @ptBchL + ')'
+			END
+
+			IF (@ptMerL <> '' )
+			BEGIN
+				SET @tSql1 +=' AND Shp.FTMerCode IN (' + @ptMerL + ')'
+			END
+
+			IF (@ptShpL <> '')
+			BEGIN
+				SET @tSql1 +=' AND HD.FTShpCode IN (' + @ptShpL + ')'
+			END
+
+			IF (@ptPosL <> '')
+			BEGIN
+				SET @tSql1 += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+			END		
+		END
+
+		IF (@tDocDateF <> '' AND @tDocDateT <> '')
+		BEGIN
+			SET @tSql1 +=' AND CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		END
+
+		DELETE FROM TRPTPSTaxHDTmp WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''--ลบข้อมูล Temp ของเครื่องที่จะบันทึกขอมูลลง Temp
+	
+		SET @tSql  = ' INSERT INTO TRPTPSTaxHDTmp '
+		SET @tSql +=' ('
+		SET @tSql +=' FTComName,FTRptCode,FTUsrSession,'
+		SET @tSql +=' FTBchCode,FTBchName,FDXshdocDate,FTXshDocNo,FTPosCode,FTXshDocRef,FTCstCode,FTCstName,FTCstTaxNo,FCXshAmt,FCXshVat,FCXshAmtNV,FCXshGrandTotal,'
+		--*NUI 2019-11-14
+		SET @tSql +=' FNAppType,FTPosRegNo,FTCstBchCode,FTCstBusiness,FTEstablishment,FTXshTaxID'
+		-------------
+		SET @tSql +=' )'
+		SET @tSql +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'	
+		SET @tSql +=' SalVat.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,FTXshDocNo,FTPosCode,FTXshRefInt,FTCstCode,FTCstName,FTCstTaxNo,FCXshValue,FCXshVat,FCXshAmtNV,FCXshGrand,'
+		--*NUI 2019-11-14
+		SET @tSql +=' FNAppType,FTPosRegNo,FTCstBchCode,FTCstBusiness,FTEstablishment,FTCstTaxNo AS FTXshTaxID'
+		SET @tSql +=' FROM'	
+				SET @tSql +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,FTXshDocNo,ISNULL(FTXshRefInt,'''') FTXshRefInt,HD.FTCstCode,Cst_L.FTCstName,Cst.FTCstTaxNo,'
+				--NUI10-04-2020
+				SET @tSql +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshVatable,0) ELSE (ISNULL(FCXshVatable,0))*-1 END AS FCXshValue,'
+				SET @tSql +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshVat,0) ELSE ISNULL(FCXshVat,0)*-1 END AS FCXshVat,'
+				SET @tSql +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshAmtNV,0) ELSE ISNULL(FCXshAmtNV,0)*-1 END AS FCXshAmtNV,'
+				--NUI10-04-2020
+				SET @tSql +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))*-1 END AS FCXshGrand,'
+				--*NUI 2019-11-14
+				SET @tSql +=' 1 AS FNAppType,POS.FTPosRegNo,Cst.FTCstBchCode,Cst.FTCstBusiness,'
+				SET @tSql +=' CASE WHEN ISNULL(Cst.FTCstBusiness,'''') <> ''1'' THEN '''' ELSE CASE WHEN FTCstBchHQ = ''2'' THEN ''2''  ELSE ''1'' END  END AS FTEstablishment'
+				SET @tSql +=' FROM TPSTSalHD HD LEFT JOIN'
+						SET @tSql +=' TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN'
+						SET @tSql +=' TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode LEFT JOIN'
+						SET @tSql +=' TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+						SET @tSql +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+						SET @tSql +=' WHERE 1=1 AND FTXshStaDoc = ''1'''			  			
+				SET @tSql += @tSql1			
+				SET @tSql +=' ) SalVat LEFT JOIN '    
+		SET @tSql +=' TCNMBranch_L Bch_L ON SalVat.FTBchCode = Bch_L.FTBchCode AND Bch_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+			
+		SET @tsql3 += ' UNION'
+
+		SET @tSql3 +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'	
+		SET @tSql3 +=' SalVat.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,FTXshDocNo,FTPosCode,FTXshRefInt,FTCstCode,FTCstName,FTCstTaxNo,FCXshValue,FCXshVat,FCXshAmtNV,FCXshGrand,'
+		--*NUI 2019-11-14
+		SET @tSql3 +=' FNAppType,FTPosRegNo,FTCstBchCode,FTCstBusiness,FTEstablishment,FTCstTaxNo AS FTXshTaxID'
+		SET @tSql3 +=' FROM'	
+				SET @tSql3 +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,HD.FTXshDocNo,ISNULL(FTXshRefInt,'''') FTXshRefInt,HD.FTCstCode,Cst_L.FTCstName,Cst.FTCstTaxNo,'
+				--NUI10-04-2020
+				--SET @tSql +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshVatable,0) ELSE ISNULL(FCXshVatable,0)*-1 END AS FCXshValue,'
+				SET @tSql3 +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshVatable,0) ELSE (ISNULL(FCXshVatable,0))*-1 END AS FCXshValue,'
+				SET @tSql3 +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshVat,0) ELSE ISNULL(FCXshVat,0)*-1 END AS FCXshVat,'
+				SET @tSql3 +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshAmtNV,0) ELSE ISNULL(FCXshAmtNV,0)*-1 END AS FCXshAmtNV,'
+				--NUI10-04-2020
+				--SET @tSql +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshGrand,0) ELSE ISNULL(FCXshGrand,0)*-1 END AS FCXshGrand,'
+				--SET @tSql +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))*-1 END AS FCXshGrand,'
+				SET @tSql3 +=' CASE WHEN HD.FNXshDocType = 1 THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) ELSE (ISNULL(FCXshGrand,0))*-1 END AS FCXshGrand,'
+				--*NUI 2019-11-14
+				SET @tSql3 +=' 2 AS FNAppType,POS.FTPosRegNo,Cst.FTCstBchCode,Cst.FTCstBusiness,'
+				SET @tSql3 +=' CASE WHEN ISNULL(Cst.FTCstBusiness,'''') <> ''1'' THEN '''' ELSE CASE WHEN FTCstBchHQ = ''2'' THEN ''2''  ELSE ''1'' END  END AS FTEstablishment'
+				SET @tSql3 +=' FROM TVDTSalHD HD' 
+				--NUI 2020-01-06
+				SET @tSql3 +=' INNER JOIN TVDTSalRC RC WITH(NOLOCK) ON HD.FTBchCode = RC.FTBchCode AND HD.FTXshDocNo = RC.FTXshDocNo'
+				SET @tSql3 +=' LEFT JOIN TFNMRcv Rcv WITH(NOLOCK) ON  RC.FTRcvCode = Rcv.FTRcvCode'			
+				------------
+						SET @tSql3 +=' LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN'
+						SET @tSql3 +=' TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode LEFT JOIN'
+						SET @tSql3 +=' TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+						SET @tSql3 +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+						SET @tSql3 +=' WHERE 1=1 AND FTXshStaDoc = ''1'' AND Rcv.FTFmtCode <> ''004'''
+				SET @tSql3 +=  @tSql1
+				SET @tSql3 +=' ) SalVat LEFT JOIN '    
+		SET @tSql3 +=' TCNMBranch_L Bch_L ON SalVat.FTBchCode = Bch_L.FTBchCode AND Bch_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''					 
+
+		--PRINT @tSql
+		EXECUTE(@tSql + @tSql3)
+
+		RETURN SELECT * FROM TRPTPSTaxHDTmp WHERE FTComName = ''+ @nComName + '' AND FTRptCode = ''+ @tRptCode +'' AND FTUsrSession = '' + @tUsrSession + ''
+		
+	END TRY
+
+	BEGIN CATCH 
+		SET @FNResult= -1
+	END CATCH	
+
+	--SELECT * FROM TRPTPSTaxHDTmp
+GO
+
+
+
+
+
+
+/****** Object:  StoredProcedure [dbo].[SP_RPTxPSSVatByDate1001007]    Script Date: 05/09/2022 18:32:16 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPSSVatByDate1001007]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPSSVatByDate1001007
+GO
+CREATE PROCEDURE [dbo].[SP_RPTxPSSVatByDate1001007] 
+--ALTER PROCEDURE [dbo].[SP_RPTxPSSVatByDate1001007] 
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptCode Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+	--สาขา
+	@ptBchL Varchar(8000), --กรณี Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+	--Merchant
+	@ptMerL Varchar(8000), --กรณี Condition IN
+	@ptMerF Varchar(10),
+	@ptMerT Varchar(10),
+	--Shop Code
+	@ptShpL Varchar(8000), --กรณี Condition IN
+	@ptShpF Varchar(10),
+	@ptShpT Varchar(10),
+	--เครื่องจุดขาย
+	@ptPosL Varchar(8000), --กรณี Condition IN
+	@ptPosF Varchar(20),
+	@ptPosT Varchar(20),
+
+	--@ptBchF Varchar(5),
+	--@ptBchT Varchar(5),
+	----เครื่องจุดขาย
+	--@ptPosCodeF Varchar(20),
+	--@ptPosCodeT Varchar(20),
+
+	@ptDocDateF Varchar(10),
+	@ptDocDateT Varchar(10),
+	----ลูกค้า
+	--@ptCstF Varchar(20),
+	--@ptCstT Varchar(20),
+	@FNResult INT OUTPUT 
+AS
+--------------------------------------
+-- Watcharakorn 
+-- Create 10/07/2019
+-- Temp name  TRPTSalRCTmp
+-- @pnLngID ภาษา
+-- @ptRptCdoe ชื่อรายงาน
+-- @ptUsrSession UsrSession
+-- @ptBchF จากรหัสสาขา
+-- @ptBchT ถึงรหัสสาขา
+	--DECLARE @tPosCodeF Varchar(30)
+	--DECLARE @tPosCodeT Varchar(30)
+-- @ptDocDateF จากวันที่
+-- @ptDocDateT ถึงวันที่
+-- @FNResult
+
+
+--------------------------------------
+BEGIN TRY
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptCode Varchar(100)
+	DECLARE @tUsrSession Varchar(255)
+	DECLARE @tSql VARCHAR(8000)
+	DECLARE @tSqlDrop VARCHAR(8000)
+	DECLARE @tSql1 nVARCHAR(Max)
+	DECLARE @tSqlSale VARCHAR(8000)
+	DECLARE @tTblName Varchar(255)
+	DECLARE @tSqlS Varchar(255)
+	DECLARE @tSqlR Varchar(255)
+	DECLARE @tSql2 VARCHAR(255)
+
+	--Branch Code
+	DECLARE @tBchF Varchar(5)
+	DECLARE @tBchT Varchar(5)
+	--Merchant
+	DECLARE @tMerF Varchar(10)
+	DECLARE @tMerT Varchar(10)
+	--Shop Code
+	DECLARE @tShpF Varchar(10)
+	DECLARE @tShpT Varchar(10)
+	--Pos Code
+	DECLARE @tPosF Varchar(20)
+	DECLARE @tPosT Varchar(20)
+
+	--DECLARE @tBchF Varchar(5)
+	--DECLARE @tBchT Varchar(5)
+
+	--DECLARE @tPosCodeF Varchar(20)
+	--DECLARE @tPosCodeT Varchar(20)
+
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+	--ลูกค้า
+	--DECLARE @tCstF Varchar(20)
+	--DECLARE @tCstT Varchar(20)
+
+
+	--SET @nLngID = 1
+	--SET @nComName = 'Ada062'
+	--SET @tRptName = 'PSSVat1001006'
+	--SET @ptUsrSession = '001'
+	--SET @tBchF = '001'
+	--SET @tBchT = '001'
+
+	--SET @tDocDateF = '2019-07-01'
+	--SET @tDocDateT = '2019-07-10'
+
+
+	--SET @nLngID = 1
+	--SET @nComName = 'Ada062'
+	--SET @tRptName = 'DailySaleByInv1001001'
+	--SET @ptUsrSession = '001'
+	--SET @tBchF = ''
+	--SET @tBchT = ''
+
+	--SET @tDocDateF = ''
+	--SET @tDocDateT = ''
+
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tUsrSession = @ptUsrSession
+	SET @tRptCode = @ptRptCode
+
+	--SET @tBchF = @ptBchF
+	--SET @tBchT = @ptBchT
+
+	--SET @tPosCodeF  = @ptPosCodeF 
+	--SET @tPosCodeT = @ptPosCodeT 
+
+	--Branch
+	SET @tBchF  = @ptBchF
+	SET @tBchT  = @ptBchT
+	--Merchant
+	SET @tMerF  = @ptMerF
+	SET @tMerT  = @ptMerT
+	--Shop
+	SET @tShpF  = @ptShpF
+	SET @tShpT  = @ptShpT
+	--Pos
+	SET @tPosF  = @ptPosF 
+	SET @tPosT  = @ptPosT
+
+	SET @tDocDateF = @ptDocDateF
+	SET @tDocDateT = @ptDocDateT
+
+	SET @FNResult= 0
+
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+	--Set ค่าให้ Paraleter กรณี T เป็นค่าว่างหรือ null
+
+	IF @ptBchL = null
+	BEGIN
+		SET @ptBchL = ''
+	END
+
+	IF @tBchF = null
+	BEGIN
+		SET @tBchF = ''
+	END
+	IF @tBchT = null OR @tBchT = ''
+	BEGIN
+		SET @tBchT = @tBchF
+	END
+
+	IF @ptMerL =null
+	BEGIN
+		SET @ptMerL = ''
+	END
+
+	IF @tMerF =null
+	BEGIN
+		SET @tMerF = ''
+	END
+	IF @tMerT =null OR @tMerT = ''
+	BEGIN
+		SET @tMerT = @tMerF
+	END 
+
+	IF @ptShpL =null
+	BEGIN
+		SET @ptShpL = ''
+	END
+
+	IF @tShpF =null
+	BEGIN
+		SET @tShpF = ''
+	END
+	IF @tShpT =null OR @tShpT = ''
+	BEGIN
+		SET @tShpT = @tShpF
+	END
+
+	IF @tPosF = null
+	BEGIN
+		SET @tPosF = ''
+	END
+	IF @tPosT = null OR @tPosT = ''
+	BEGIN
+		SET @tPosT = @tPosF
+	END
+
+	--IF @tBchF = null
+	--BEGIN
+	--	SET @tBchF = ''
+	--END
+	--IF @tBchT = null OR @tBchT = ''
+	--BEGIN
+	--	SET @tBchT = @tBchF
+	--END
+
+	--IF @tPosCodeF = null
+	--BEGIN
+	--	SET @tPosCodeF = ''
+	--END
+
+	--IF @tPosCodeT = null OR @tPosCodeT = ''
+	--BEGIN
+	--	SET @tPosCodeT = @tPosCodeF
+	--END
+
+
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+
+	SET @tSql2 =   ' WHERE 1=1 AND FTXshStaDoc = ''1'''
+	SET @tSqlS =   ' WHERE 1=1 AND FTXshStaDoc = ''1'' AND FNXshDocType = ''1'''
+	SET @tSqlR =   ' WHERE 1=1 AND FTXshStaDoc = ''1'' AND FNXshDocType = ''9'''
+
+	IF @pnFilterType = '1'
+	BEGIN
+		IF (@tBchF <> '' AND @tBchT <> '')
+		BEGIN
+			SET @tSqlS +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+			SET @tSqlR +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+			SET @tSql2 +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+		END
+
+		IF (@tMerF <> '' AND @tMerT <> '')
+		BEGIN
+			SET @tSqlS +=' AND Shp.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+			SET @tSqlR +=' AND Shp.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+			SET @tSql2 +=' AND Shp.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+		END
+
+		IF (@tShpF <> '' AND @tShpT <> '')
+		BEGIN
+			SET @tSqlS +=' AND HD.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+			SET @tSqlR +=' AND HD.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+			SET @tSql2 +=' AND HD.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+		END
+
+		IF (@tPosF <> '' AND @tPosT <> '')
+		BEGIN
+			SET @tSqlS += ' AND HD.FTPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+			SET @tSqlR += ' AND HD.FTPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+			SET @tSql2 += ' AND HD.FTPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+		END		
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN
+		IF (@ptBchL <> '' )
+		BEGIN
+			SET @tSqlS +=' AND HD.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSqlR +=' AND HD.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSql2 +=' AND HD.FTBchCode IN (' + @ptBchL + ')'
+		END
+
+		IF (@ptMerL <> '' )
+		BEGIN
+			SET @tSqlS +=' AND Shp.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSqlR +=' AND Shp.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSql2 +=' AND Shp.FTMerCode IN (' + @ptMerL + ')'
+		END
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSqlS +=' AND HD.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSqlR +=' AND HD.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSql2 +=' AND HD.FTShpCode IN (' + @ptShpL + ')'
+		END
+
+		IF (@ptPosL <> '')
+		BEGIN
+			SET @tSqlS += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+			SET @tSqlR += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+			SET @tSql2 += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+		END		
+	END
+
+	--IF (@tBchF <> '' AND @tBchT <> '')
+	--BEGIN
+
+	--	SET @tSqlS +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+	--	SET @tSqlR +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+	--	SET @tSql2 +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+	--END
+
+	--IF (@tPosCodeF <> '' AND @tPosCodeT <> '')
+	--	BEGIN
+	--		SET @tSql2 += ' AND HD.FTPosCode BETWEEN '''+@tPosCodeF+''' AND '''+@tPosCodeT+''''
+	--		SET @tSqlS += ' AND HD.FTPosCode BETWEEN '''+@tPosCodeF+''' AND '''+@tPosCodeT+''''
+	--		SET @tSqlR += ' AND HD.FTPosCode BETWEEN '''+@tPosCodeF+''' AND '''+@tPosCodeT+''''
+	--	END		
+
+	IF (@tDocDateF <> '' AND @tDocDateT <> '')
+	BEGIN
+		SET @tSql2 +=' AND CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		SET @tSqlS +=' AND CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		SET @tSqlR +=' AND CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+	END
+
+	DELETE FROM TRPTPSTaxHDDateTmp WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''--ลบข้อมูล Temp ของเครื่องที่จะบันทึกขอมูลลง Temp
+
+	--SET @tTblName = 'TRPTPSTaxTmp'+ @nComName + ''
+
+	----if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].''+@tTblName''')) 
+	--SET @tSqlDrop = ' if exists (select * from dbo.sysobjects where name = '''+@tTblName+ ''')'--id = object_id(N'[dbo].''+@tTblName'''))' 
+	--SET @tSqlDrop += ' DROP TABLE '+ @tTblName + ''
+	----PRINT @tSqlDrop
+	--EXECUTE(@tSqlDrop)
+
+	--PRINT @tTblName 
+
+	SET @tSqlSale  = ' INSERT INTO TRPTPSTaxHDDateTmp '
+	SET @tSqlSale +=' ('
+	SET @tSqlSale +=' FTComName,FTRptCode,FTUsrSession,'
+	SET @tSqlSale +=' FTBchCode,FTBchName,FDXshdocDate,FTPosCode,FTXshDocNoSale,FTXshDocNoRefun,FCXshAmt,FCXshVat,FCXshAmtNV,FCXshGrandTotal,'
+	--*NUI 2019-11-14
+	SET @tSqlSale +=' FNAppType,FTPosRegNo'
+	-----------
+	SET @tSqlSale +=' )'
+ 	SET @tSqlSale +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'	
+	SET @tSqlSale +=' vAT.FTBchCode,Vat.FTBchName,Vat.FDXshdocDate,Vat.FTPosCode,ISNULL(FTXshDocNoSale,'''') AS FTXshDocNoSale,ISNULL(FTXshDocNoRefun,'''') AS FTXshDocNoRefun,FCXshValue,FCXshVat,FCXshAmtNV,FCXshGrand, FNAppType,FTPosRegNo'
+	--SET @tSqlSale +=' INTO  '+ @tTblName + ''
+	SET @tSqlSale +=' FROM('
+ 	 SET @tSqlSale +=' SELECT HD.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,'
+	 --SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshAmtNV,0)-ISNULL(FCXshVat,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshAmtNV,0)-ISNULL(FCXshVat,0))*-1 END) AS FCXshValue, '
+	 --SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshVatable,0)-ISNULL(FCXshAmtNV,0) ELSE (ISNULL(FCXshVatable,0)-ISNULL(FCXshAmtNV,0))*-1 END) AS FCXshValue, '
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshVatable,0) ELSE (ISNULL(FCXshVatable,0))*-1 END) AS FCXshValue, '
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshVat,0) ELSE ISNULL(FCXshVat,0)*-1 END) AS FCXshVat,'
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshAmtNV,0) ELSE ISNULL(FCXshAmtNV,0)*-1 END) AS FCXshAmtNV,' 
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))*-1 END) AS FCXshGrand,' 
+ 	 SET @tSqlSale +=' 1 AS FNAppType,POS.FTPosRegNo'--,Cst.FTCstBchCode,Cst.FTCstBusiness 
+	 SET @tSqlSale +=' FROM TPSTSalHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+	  SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN' 
+	 SET @tSqlSale +=' TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''	 
+	 SET @tSqlSale +=' LEFT JOIN TCNMBranch_L Bch_L ON HD.FTBchCode = Bch_L.FTBchCode AND Bch_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+	 SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+	 SET @tSqlSale += @tSql2	
+	 SET @tSqlSale +=' GROUP BY HD.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121),HD.FTPosCode,POS.FTPosRegNo'
+	SET @tSqlSale +=' ) Vat LEFT JOIN'
+		SET @tSqlSale +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,'
+		SET @tSqlSale +=' MIN(FTXshDocNo) + ''-'' + MAX(FTXshDocNo) AS FTXshDocNoSale'
+		SET @tSqlSale +=' FROM TPSTSalHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+		 SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN' 
+		SET @tSqlSale +=' TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+		SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+		SET @tSqlSale += @tSqlS
+		SET @tSqlSale +=' GROUP BY HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121),HD.FTPosCode) Sale ON Vat.FTBchCode = Sale.FTBchCode AND Vat.FDXshdocDate = Sale.FDXshdocDate AND Vat.FTPosCode = Sale.FTPosCode '
+		SET @tSqlSale +=' LEFT JOIN'
+		SET @tSqlSale +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,'
+		SET @tSqlSale +=' MIN(FTXshDocNo) + ''-'' + MAX(FTXshDocNo) AS FTXshDocNoRefun'
+		SET @tSqlSale +=' FROM TPSTSalHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+		 SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN' 
+		SET @tSqlSale +=' TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+		SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+		SET @tSqlSale += @tSqlR
+		SET @tSqlSale +=' GROUP BY HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121),HD.FTPosCode) Ret ON Vat.FTBchCode = Ret.FTBchCode AND Vat.FDXshdocDate = Ret.FDXshdocDate AND Vat.FTPosCode = Ret.FTPosCode'	
+	--PRINT @tSqlSale
+	EXECUTE(@tSqlSale)
+
+	--Vending
+	SET @tSqlSale  = ' INSERT INTO TRPTPSTaxHDDateTmp '
+	SET @tSqlSale +=' ('
+	SET @tSqlSale +=' FTComName,FTRptCode,FTUsrSession,'
+	SET @tSqlSale +=' FTBchCode,FTBchName,FDXshdocDate,FTPosCode,FTXshDocNoSale,FTXshDocNoRefun,FCXshAmt,FCXshVat,FCXshAmtNV,FCXshGrandTotal,'
+	--*NUI 2019-11-14
+	SET @tSqlSale +=' FNAppType,FTPosRegNo'
+	-----------
+	SET @tSqlSale +=' )'
+ 	SET @tSqlSale +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'	
+	SET @tSqlSale +=' vAT.FTBchCode,Vat.FTBchName,Vat.FDXshdocDate,Vat.FTPosCode,ISNULL(FTXshDocNoSale,'''') AS FTXshDocNoSale,ISNULL(FTXshDocNoRefun,'''') AS FTXshDocNoRefun,FCXshValue,FCXshVat,FCXshAmtNV,FCXshGrand, FNAppType,FTPosRegNo'
+	--SET @tSqlSale +=' INTO  '+ @tTblName + ''
+	SET @tSqlSale +=' FROM('
+ 	 SET @tSqlSale +=' SELECT HD.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,'
+	 --SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshAmtNV,0)-ISNULL(FCXshVat,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshAmtNV,0)-ISNULL(FCXshVat,0))*-1 END) AS FCXshValue, '
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshVatable,0) ELSE (ISNULL(FCXshVatable,0))*-1 END) AS FCXshValue, '
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshVat,0) ELSE ISNULL(FCXshVat,0)*-1 END) AS FCXshVat,'
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshAmtNV,0) ELSE ISNULL(FCXshAmtNV,0)*-1 END) AS FCXshAmtNV,' 
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))*-1 END) AS FCXshGrand,' 
+ 	 SET @tSqlSale +=' 2 AS FNAppType,POS.FTPosRegNo'--,Cst.FTCstBchCode,Cst.FTCstBusiness 
+	 SET @tSqlSale +=' FROM TVDTSalHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+	  SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode ' 
+	--NUI 2020-01-07
+	SET @tSqlSale +=' INNER JOIN TVDTSalRC RC WITH(NOLOCK) ON HD.FTBchCode = RC.FTBchCode AND HD.FTXshDocNo = RC.FTXshDocNo'
+	SET @tSqlSale +=' LEFT JOIN TFNMRcv Rcv WITH(NOLOCK) ON  RC.FTRcvCode = Rcv.FTRcvCode'			
+	------------
+	 SET @tSqlSale +=' LEFT JOIN TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''	 
+	 SET @tSqlSale +=' LEFT JOIN TCNMBranch_L Bch_L ON HD.FTBchCode = Bch_L.FTBchCode AND Bch_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+	 SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+	 SET @tSqlSale += @tSql2	
+	 SET @tSqlSale += ' AND Rcv.FTFmtCode <> ''004'''
+	 SET @tSqlSale +=' GROUP BY HD.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121),HD.FTPosCode,POS.FTPosRegNo'
+	SET @tSqlSale +=' ) Vat LEFT JOIN'
+		SET @tSqlSale +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,'
+		SET @tSqlSale +=' MIN(HD.FTXshDocNo) + ''-'' + MAX(HD.FTXshDocNo) AS FTXshDocNoSale'
+		SET @tSqlSale +=' FROM TVDTSalHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+		 SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode ' 
+		--NUI 2020-01-07
+		SET @tSqlSale +=' INNER JOIN TVDTSalRC RC WITH(NOLOCK) ON HD.FTBchCode = RC.FTBchCode AND HD.FTXshDocNo = RC.FTXshDocNo'
+		SET @tSqlSale +=' LEFT JOIN TFNMRcv Rcv WITH(NOLOCK) ON  RC.FTRcvCode = Rcv.FTRcvCode'			
+		------------
+	    SET @tSqlSale +=' LEFT JOIN TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+		SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+		SET @tSqlSale += @tSqlS
+		SET @tSqlSale += ' AND Rcv.FTFmtCode <> ''004'''
+		SET @tSqlSale +=' GROUP BY HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121),HD.FTPosCode) Sale ON Vat.FTBchCode = Sale.FTBchCode AND Vat.FDXshdocDate = Sale.FDXshdocDate AND Vat.FTPosCode = Sale.FTPosCode '
+		SET @tSqlSale +=' LEFT JOIN'
+		SET @tSqlSale +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,'
+		SET @tSqlSale +=' MIN(HD.FTXshDocNo) + ''-'' + MAX(HD.FTXshDocNo) AS FTXshDocNoRefun'
+		SET @tSqlSale +=' FROM TVDTSalHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+		 SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode ' 
+		--NUI 2020-01-07
+		SET @tSqlSale +=' INNER JOIN TVDTSalRC RC WITH(NOLOCK) ON HD.FTBchCode = RC.FTBchCode AND HD.FTXshDocNo = RC.FTXshDocNo'
+		SET @tSqlSale +=' LEFT JOIN TFNMRcv Rcv WITH(NOLOCK) ON  RC.FTRcvCode = Rcv.FTRcvCode'			
+		------------
+		 SET @tSqlSale +=' LEFT JOIN TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+		SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+		SET @tSqlSale += @tSqlR
+		SET @tSqlSale += ' AND Rcv.FTFmtCode <> ''004'''
+		SET @tSqlSale +=' GROUP BY HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121),HD.FTPosCode) Ret ON Vat.FTBchCode = Ret.FTBchCode AND Vat.FDXshdocDate = Ret.FDXshdocDate AND Vat.FTPosCode = Ret.FTPosCode'	
+	--PRINT @tSqlSale
+	EXECUTE(@tSqlSale)
+
+	RETURN SELECT * FROM TRPTPSTaxHDDateTmp WHERE FTComName = ''+ @nComName + '' AND FTRptCode = ''+ @tRptCode +'' AND FTUsrSession = '' + @tUsrSession 
+
+	--SET @tSqlDrop += 'DROP TABLE '+ @tTblName + ''
+	----PRINT @tSqlDrop
+	--EXECUTE(@tSqlDrop)
+END TRY
+
+BEGIN CATCH 
+	SET @FNResult= -1
+END CATCH	
+GO
+
+
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPSSVatByDateFull]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPSSVatByDateFull
+GO
+CREATE PROCEDURE [dbo].[SP_RPTxPSSVatByDateFull] 
+--ALTER PROCEDURE [dbo].[SP_RPTxPSSVatByDate1001007] 
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptCode Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+	--สาขา
+	@ptBchL Varchar(8000), --กรณี Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+	--Merchant
+	@ptMerL Varchar(8000), --กรณี Condition IN
+	@ptMerF Varchar(10),
+	@ptMerT Varchar(10),
+	--Shop Code
+	@ptShpL Varchar(8000), --กรณี Condition IN
+	@ptShpF Varchar(10),
+	@ptShpT Varchar(10),
+	--เครื่องจุดขาย
+	@ptPosL Varchar(8000), --กรณี Condition IN
+	@ptPosF Varchar(20),
+	@ptPosT Varchar(20),
+
+	--@ptBchF Varchar(5),
+	--@ptBchT Varchar(5),
+	----เครื่องจุดขาย
+	--@ptPosCodeF Varchar(20),
+	--@ptPosCodeT Varchar(20),
+
+	@ptDocDateF Varchar(10),
+	@ptDocDateT Varchar(10),
+	----ลูกค้า
+	--@ptCstF Varchar(20),
+	--@ptCstT Varchar(20),
+	@FNResult INT OUTPUT 
+AS
+--------------------------------------
+-- Watcharakorn 
+-- Last Update 04/06/2020 แก้ไขเรื่อง บันทึกรายงานไม่ต้องแยกเครื่องจุดขาย
+-- Create 10/07/2019
+-- Temp name  TRPTSalRCTmp
+-- @pnLngID ภาษา
+-- @ptRptCdoe ชื่อรายงาน
+-- @ptUsrSession UsrSession
+-- @ptBchF จากรหัสสาขา
+-- @ptBchT ถึงรหัสสาขา
+	--DECLARE @tPosCodeF Varchar(30)
+	--DECLARE @tPosCodeT Varchar(30)
+-- @ptDocDateF จากวันที่
+-- @ptDocDateT ถึงวันที่
+-- @FNResult
+
+
+--------------------------------------
+BEGIN TRY
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptCode Varchar(100)
+	DECLARE @tUsrSession Varchar(255)
+	DECLARE @tSql VARCHAR(8000)
+	DECLARE @tSqlDrop VARCHAR(8000)
+	DECLARE @tSql1 VARCHAR(8000)
+	DECLARE @tSqlSale VARCHAR(8000)
+	DECLARE @tTblName Varchar(255)
+	DECLARE @tSqlS Varchar(255)
+	DECLARE @tSqlR Varchar(255)
+	DECLARE @tSql2 VARCHAR(255)
+
+	--Branch Code
+	DECLARE @tBchF Varchar(5)
+	DECLARE @tBchT Varchar(5)
+	--Merchant
+	DECLARE @tMerF Varchar(10)
+	DECLARE @tMerT Varchar(10)
+	--Shop Code
+	DECLARE @tShpF Varchar(10)
+	DECLARE @tShpT Varchar(10)
+	--Pos Code
+	DECLARE @tPosF Varchar(20)
+	DECLARE @tPosT Varchar(20)
+
+	--DECLARE @tBchF Varchar(5)
+	--DECLARE @tBchT Varchar(5)
+
+	--DECLARE @tPosCodeF Varchar(20)
+	--DECLARE @tPosCodeT Varchar(20)
+
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+	--ลูกค้า
+	--DECLARE @tCstF Varchar(20)
+	--DECLARE @tCstT Varchar(20)
+
+
+	--SET @nLngID = 1
+	--SET @nComName = 'Ada062'
+	--SET @tRptName = 'PSSVat1001006'
+	--SET @ptUsrSession = '001'
+	--SET @tBchF = '001'
+	--SET @tBchT = '001'
+
+	--SET @tDocDateF = '2019-07-01'
+	--SET @tDocDateT = '2019-07-10'
+
+
+	--SET @nLngID = 1
+	--SET @nComName = 'Ada062'
+	--SET @tRptName = 'DailySaleByInv1001001'
+	--SET @ptUsrSession = '001'
+	--SET @tBchF = ''
+	--SET @tBchT = ''
+
+	--SET @tDocDateF = ''
+	--SET @tDocDateT = ''
+
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tUsrSession = @ptUsrSession
+	SET @tRptCode = @ptRptCode
+
+	--SET @tBchF = @ptBchF
+	--SET @tBchT = @ptBchT
+
+	--SET @tPosCodeF  = @ptPosCodeF 
+	--SET @tPosCodeT = @ptPosCodeT 
+
+	--Branch
+	SET @tBchF  = @ptBchF
+	SET @tBchT  = @ptBchT
+	--Merchant
+	SET @tMerF  = @ptMerF
+	SET @tMerT  = @ptMerT
+	--Shop
+	SET @tShpF  = @ptShpF
+	SET @tShpT  = @ptShpT
+	--Pos
+	SET @tPosF  = @ptPosF 
+	SET @tPosT  = @ptPosT
+
+	SET @tDocDateF = @ptDocDateF
+	SET @tDocDateT = @ptDocDateT
+
+	SET @FNResult= 0
+
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+	--Set ค่าให้ Paraleter กรณี T เป็นค่าว่างหรือ null
+
+	IF @ptBchL = null
+	BEGIN
+		SET @ptBchL = ''
+	END
+
+	IF @tBchF = null
+	BEGIN
+		SET @tBchF = ''
+	END
+	IF @tBchT = null OR @tBchT = ''
+	BEGIN
+		SET @tBchT = @tBchF
+	END
+
+	IF @ptMerL =null
+	BEGIN
+		SET @ptMerL = ''
+	END
+
+	IF @tMerF =null
+	BEGIN
+		SET @tMerF = ''
+	END
+	IF @tMerT =null OR @tMerT = ''
+	BEGIN
+		SET @tMerT = @tMerF
+	END 
+
+	IF @ptShpL =null
+	BEGIN
+		SET @ptShpL = ''
+	END
+
+	IF @tShpF =null
+	BEGIN
+		SET @tShpF = ''
+	END
+	IF @tShpT =null OR @tShpT = ''
+	BEGIN
+		SET @tShpT = @tShpF
+	END
+
+	IF @tPosF = null
+	BEGIN
+		SET @tPosF = ''
+	END
+	IF @tPosT = null OR @tPosT = ''
+	BEGIN
+		SET @tPosT = @tPosF
+	END
+
+	--IF @tBchF = null
+	--BEGIN
+	--	SET @tBchF = ''
+	--END
+	--IF @tBchT = null OR @tBchT = ''
+	--BEGIN
+	--	SET @tBchT = @tBchF
+	--END
+
+	--IF @tPosCodeF = null
+	--BEGIN
+	--	SET @tPosCodeF = ''
+	--END
+
+	--IF @tPosCodeT = null OR @tPosCodeT = ''
+	--BEGIN
+	--	SET @tPosCodeT = @tPosCodeF
+	--END
+
+
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+
+	SET @tSql2 =   ' WHERE 1=1 AND FTXshStaDoc = ''1'''
+	SET @tSqlS =   ' WHERE 1=1 AND FTXshStaDoc = ''1'' AND FNXshDocType = ''4'''
+	SET @tSqlR =   ' WHERE 1=1 AND FTXshStaDoc = ''1'' AND FNXshDocType = ''5'''
+
+	IF @pnFilterType = '1'
+	BEGIN
+		IF (@tBchF <> '' AND @tBchT <> '')
+		BEGIN
+			SET @tSqlS +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+			SET @tSqlR +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+			SET @tSql2 +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+		END
+
+		IF (@tMerF <> '' AND @tMerT <> '')
+		BEGIN
+			SET @tSqlS +=' AND Shp.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+			SET @tSqlR +=' AND Shp.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+			SET @tSql2 +=' AND Shp.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+		END
+
+		IF (@tShpF <> '' AND @tShpT <> '')
+		BEGIN
+			SET @tSqlS +=' AND HD.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+			SET @tSqlR +=' AND HD.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+			SET @tSql2 +=' AND HD.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+		END
+
+		IF (@tPosF <> '' AND @tPosT <> '')
+		BEGIN
+			SET @tSqlS += ' AND HD.FTPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+			SET @tSqlR += ' AND HD.FTPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+			SET @tSql2 += ' AND HD.FTPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+		END		
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN
+		IF (@ptBchL <> '' )
+		BEGIN
+			SET @tSqlS +=' AND HD.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSqlR +=' AND HD.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSql2 +=' AND HD.FTBchCode IN (' + @ptBchL + ')'
+		END
+
+		IF (@ptMerL <> '' )
+		BEGIN
+			SET @tSqlS +=' AND Shp.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSqlR +=' AND Shp.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSql2 +=' AND Shp.FTMerCode IN (' + @ptMerL + ')'
+		END
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSqlS +=' AND HD.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSqlR +=' AND HD.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSql2 +=' AND HD.FTShpCode IN (' + @ptShpL + ')'
+		END
+
+		IF (@ptPosL <> '')
+		BEGIN
+			SET @tSqlS += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+			SET @tSqlR += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+			SET @tSql2 += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+		END		
+	END
+
+	--IF (@tBchF <> '' AND @tBchT <> '')
+	--BEGIN
+
+	--	SET @tSqlS +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+	--	SET @tSqlR +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+	--	SET @tSql2 +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+	--END
+
+	--IF (@tPosCodeF <> '' AND @tPosCodeT <> '')
+	--	BEGIN
+	--		SET @tSql2 += ' AND HD.FTPosCode BETWEEN '''+@tPosCodeF+''' AND '''+@tPosCodeT+''''
+	--		SET @tSqlS += ' AND HD.FTPosCode BETWEEN '''+@tPosCodeF+''' AND '''+@tPosCodeT+''''
+	--		SET @tSqlR += ' AND HD.FTPosCode BETWEEN '''+@tPosCodeF+''' AND '''+@tPosCodeT+''''
+	--	END		
+
+	IF (@tDocDateF <> '' AND @tDocDateT <> '')
+	BEGIN
+		SET @tSql2 +=' AND CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		SET @tSqlS +=' AND CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		SET @tSqlR +=' AND CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+	END
+
+	DELETE FROM TRPTPSTTaxDateFullTmp WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''--ลบข้อมูล Temp ของเครื่องที่จะบันทึกขอมูลลง Temp
+
+	--SET @tTblName = 'TRPTPSTaxTmp'+ @nComName + ''
+
+	----if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].''+@tTblName''')) 
+	--SET @tSqlDrop = ' if exists (select * from dbo.sysobjects where name = '''+@tTblName+ ''')'--id = object_id(N'[dbo].''+@tTblName'''))' 
+	--SET @tSqlDrop += ' DROP TABLE '+ @tTblName + ''
+	----PRINT @tSqlDrop
+	--EXECUTE(@tSqlDrop)
+
+	--PRINT @tTblName 
+
+	SET @tSqlSale  = ' INSERT INTO TRPTPSTTaxDateFullTmp '
+	SET @tSqlSale +=' ('
+	SET @tSqlSale +=' FTComName,FTRptCode,FTUsrSession,'
+	SET @tSqlSale +=' FTBchCode,FTBchName,FDXshdocDate,FTPosCode,FTXshDocNoSale,FTXshDocNoRefun,FCXshAmt,FCXshVat,FCXshAmtNV,FCXshGrandTotal,'
+	--*NUI 2019-11-14
+	SET @tSqlSale +=' FNAppType,FTPosRegNo'
+	-----------
+	SET @tSqlSale +=' )'
+ 	SET @tSqlSale +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'	
+	SET @tSqlSale +=' vAT.FTBchCode,Vat.FTBchName,Vat.FDXshdocDate,'''' AS FTPosCode,ISNULL(FTXshDocNoSale,'''') AS FTXshDocNoSale,ISNULL(FTXshDocNoRefun,'''') AS FTXshDocNoRefun,FCXshValue,FCXshVat,FCXshAmtNV,FCXshGrand, FNAppType,'''' AS FTPosRegNo'
+	--SET @tSqlSale +=' INTO  '+ @tTblName + ''
+	SET @tSqlSale +=' FROM('
+ 	 SET @tSqlSale +=' SELECT HD.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,'--HD.FTPosCode,'
+	 --SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''1'' THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshAmtNV,0)-ISNULL(FCXshVat,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshAmtNV,0)-ISNULL(FCXshVat,0))*-1 END) AS FCXshValue, '
+	 --SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''4'' THEN ISNULL(FCXshVatable,0)-ISNULL(FCXshAmtNV,0) ELSE (ISNULL(FCXshVatable,0)-ISNULL(FCXshAmtNV,0))*-1 END) AS FCXshValue, '
+		SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''4'' THEN ISNULL(FCXshVatable,0) ELSE (ISNULL(FCXshVatable,0))*-1 END) AS FCXshValue, '
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''4'' THEN ISNULL(FCXshVat,0) ELSE ISNULL(FCXshVat,0)*-1 END) AS FCXshVat,'
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''4'' THEN ISNULL(FCXshAmtNV,0) ELSE ISNULL(FCXshAmtNV,0)*-1 END) AS FCXshAmtNV,' 
+	 SET @tSqlSale +=' SUM(CASE WHEN HD.FNXshDocType = ''4'' THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))*-1 END) AS FCXshGrand,' 
+ 	 SET @tSqlSale +=' 1 AS FNAppType'--POS.FTPosRegNo'--,Cst.FTCstBchCode,Cst.FTCstBusiness 
+	 SET @tSqlSale +=' FROM TPSTTaxHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+	 SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN' 
+	 SET @tSqlSale +=' TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''	 
+	 SET @tSqlSale +=' LEFT JOIN TCNMBranch_L Bch_L ON HD.FTBchCode = Bch_L.FTBchCode AND Bch_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+	 SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+	 SET @tSqlSale += @tSql2	
+	 SET @tSqlSale +=' GROUP BY HD.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121)'--,HD.FTPosCode,'--POS.FTPosRegNo'
+	SET @tSqlSale +=' ) Vat LEFT JOIN'
+		SET @tSqlSale +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,'--HD.FTPosCode,'
+		SET @tSqlSale +=' MIN(FTXshDocNo) + ''-'' + MAX(FTXshDocNo) AS FTXshDocNoSale'
+		SET @tSqlSale +=' FROM TPSTTaxHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+		SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN' 
+		SET @tSqlSale +=' TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+		SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+		SET @tSqlSale += @tSqlS
+		SET @tSqlSale +=' GROUP BY HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121)) Sale ON Vat.FTBchCode = Sale.FTBchCode AND Vat.FDXshdocDate = Sale.FDXshdocDate'-- AND Vat.FTPosCode = Sale.FTPosCode '
+		SET @tSqlSale +=' LEFT JOIN'
+		SET @tSqlSale +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,'--HD.FTPosCode,'
+		SET @tSqlSale +=' MIN(FTXshDocNo) + ''-'' + MAX(FTXshDocNo) AS FTXshDocNoRefun'
+		SET @tSqlSale +=' FROM TPSTTaxHD HD LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode' 
+		SET @tSqlSale +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN' 
+		SET @tSqlSale +=' TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+		SET @tSqlSale +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+		SET @tSqlSale += @tSqlR
+		SET @tSqlSale +=' GROUP BY HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121)) Ret ON Vat.FTBchCode = Ret.FTBchCode AND Vat.FDXshdocDate = Ret.FDXshdocDate'-- AND Vat.FTPosCode = Ret.FTPosCode'	
+	--PRINT @tSqlSale
+	EXECUTE(@tSqlSale)
+
+
+	RETURN SELECT * FROM TRPTPSTTaxDateFullTmp WHERE FTComName = ''+ @nComName + '' AND FTRptCode = ''+ @tRptCode +'' AND FTUsrSession = '' + @tUsrSession 
+
+	--SET @tSqlDrop += 'DROP TABLE '+ @tTblName + ''
+	----PRINT @tSqlDrop
+	--EXECUTE(@tSqlDrop)
+END TRY
+
+BEGIN CATCH 
+	SET @FNResult= -1
+END CATCH	
+GO
+
+
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPSSVatFull]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPSSVatFull
+GO
+CREATE PROCEDURE [dbo].[SP_RPTxPSSVatFull] 
+
+--ALTER PROCEDURE [dbo].[SP_RPTxPSSVatFull] 
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptCode Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+	--สาขา
+	@ptBchL Varchar(8000), --กรณี Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+	--Merchant
+	@ptMerL Varchar(8000), --กรณี Condition IN
+	@ptMerF Varchar(10),
+	@ptMerT Varchar(10),
+	--Shop Code
+	@ptShpL Varchar(8000), --กรณี Condition IN
+	@ptShpF Varchar(10),
+	@ptShpT Varchar(10),
+	--เครื่องจุดขาย
+	@ptPosL Varchar(8000), --กรณี Condition IN
+	@ptPosF Varchar(20),
+	@ptPosT Varchar(20),
+	@ptDocDateF Varchar(10),
+	@ptDocDateT Varchar(10),
+	----ลูกค้า
+	--@ptCstF Varchar(20),
+	--@ptCstT Varchar(20),
+	@FNResult INT OUTPUT 
+AS
+--------------------------------------
+-- Watcharakorn 
+-- Create 10/07/2019
+-- Temp name  TRPTSalRCTmp
+-- @pnLngID ภาษา
+-- @ptRptCdoe ชื่อรายงาน
+-- @ptUsrSession UsrSession
+-- @ptBchF จากรหัสสาขา
+-- @ptBchT ถึงรหัสสาขา
+	--DECLARE @tPosCodeF Varchar(30)
+	--DECLARE @tPosCodeT Varchar(30)
+-- @ptDocDateF จากวันที่
+-- @ptDocDateT ถึงวันที่
+-- @FNResult
+
+
+--------------------------------------
+BEGIN TRY
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptCode Varchar(100)
+	DECLARE @tUsrSession Varchar(255)
+	DECLARE @tSql VARCHAR(8000)
+	DECLARE @tSqlIns VARCHAR(8000)
+	DECLARE @tSql1 nVARCHAR(Max)
+	DECLARE @tSql2 VARCHAR(8000)
+	DECLARE @tBchF Varchar(5)
+	DECLARE @tBchT Varchar(5)
+	--Merchant
+	DECLARE @tMerF Varchar(10)
+	DECLARE @tMerT Varchar(10)
+	--Shop Code
+	DECLARE @tShpF Varchar(10)
+	DECLARE @tShpT Varchar(10)
+	--Pos Code
+	DECLARE @tPosF Varchar(20)
+	DECLARE @tPosT Varchar(20)
+
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+	--ลูกค้า
+	
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tUsrSession = @ptUsrSession
+	SET @tRptCode = @ptRptCode
+
+	--Branch
+	SET @tBchF  = @ptBchF
+	SET @tBchT  = @ptBchT
+	--Merchant
+	SET @tMerF  = @ptMerF
+	SET @tMerT  = @ptMerT
+	--Shop
+	SET @tShpF  = @ptShpF
+	SET @tShpT  = @ptShpT
+	--Pos
+	SET @tPosF  = @ptPosF 
+	SET @tPosT  = @ptPosT
+
+	SET @tDocDateF = @ptDocDateF
+	SET @tDocDateT = @ptDocDateT
+
+	SET @FNResult= 0
+
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+	--Set ค่าให้ Paraleter กรณี T เป็นค่าว่างหรือ null
+
+
+	--IF @tBchF = null
+	--BEGIN
+	--	SET @tBchF = ''
+	--END
+	--IF @tBchT = null OR @tBchT = ''
+	--BEGIN
+	--	SET @tBchT = @tBchF
+	--END
+
+	--IF @tPosCodeF = null
+	--BEGIN
+	--	SET @tPosCodeF = ''
+	--END
+
+	--IF @tPosCodeT = null OR @tPosCodeT = ''
+	--BEGIN
+	--	SET @tPosCodeT = @tPosCodeF
+	--END
+
+	IF @ptBchL = null
+	BEGIN
+		SET @ptBchL = ''
+	END
+
+	IF @tBchF = null
+	BEGIN
+		SET @tBchF = ''
+	END
+	IF @tBchT = null OR @tBchT = ''
+	BEGIN
+		SET @tBchT = @tBchF
+	END
+
+	IF @ptMerL =null
+	BEGIN
+		SET @ptMerL = ''
+	END
+
+	IF @tMerF =null
+	BEGIN
+		SET @tMerF = ''
+	END
+	IF @tMerT =null OR @tMerT = ''
+	BEGIN
+		SET @tMerT = @tMerF
+	END 
+
+	IF @ptShpL =null
+	BEGIN
+		SET @ptShpL = ''
+	END
+
+	IF @tShpF =null
+	BEGIN
+		SET @tShpF = ''
+	END
+	IF @tShpT =null OR @tShpT = ''
+	BEGIN
+		SET @tShpT = @tShpF
+	END
+
+	IF @ptPosL =null
+	BEGIN
+		SET @ptPosL = ''
+	END
+
+	IF @tPosF = null
+	BEGIN
+		SET @tPosF = ''
+	END
+	IF @tPosT = null OR @tPosT = ''
+	BEGIN
+		SET @tPosT = @tPosF
+	END
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+
+	--SET @tSqlSal =  ' WHERE 1=1 AND FTXshStaDoc = ''1'''
+	--SET @tSqlVD =   ' WHERE 1=1 AND FTXshStaDoc = ''1'' AND Rcv.FTFmtCode <> ''004'''
+
+
+	--IF (@tBchF <> '' AND @tBchT <> '')
+	--BEGIN
+	--	SET @tSql1 +=' AND FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+	--END
+
+	--IF (@tPosCodeF <> '' AND @tPosCodeT <> '')
+	--	BEGIN
+	--		SET @tSql1 += ' AND HD.FTPosCode BETWEEN '''+@tPosCodeF+''' AND '''+@tPosCodeT+''''
+	--	END		
+
+	SET @tSql1 = ' '
+	IF @pnFilterType = '1'
+	BEGIN
+		IF (@tBchF <> '' AND @tBchT <> '')
+		BEGIN
+			SET @tSql1 +=' AND HD.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+		END
+
+		IF (@tMerF <> '' AND @tMerT <> '')
+		BEGIN
+			SET @tSql1 +=' AND Shp.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+		END
+
+		IF (@tShpF <> '' AND @tShpT <> '')
+		BEGIN
+			SET @tSql1 +=' AND HD.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+		END
+
+		IF (@tPosF <> '' AND @tPosT <> '')
+		BEGIN
+			SET @tSql1 += ' AND HD.FTPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+		END		
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN
+		IF (@ptBchL <> '' )
+		BEGIN
+			SET @tSql1 +=' AND HD.FTBchCode IN (' + @ptBchL + ')'
+		END
+
+		IF (@ptMerL <> '' )
+		BEGIN
+			SET @tSql1 +=' AND Shp.FTMerCode IN (' + @ptMerL + ')'
+		END
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSql1 +=' AND HD.FTShpCode IN (' + @ptShpL + ')'
+		END
+
+		IF (@ptPosL <> '')
+		BEGIN
+			SET @tSql1 += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+		END		
+	END
+
+	IF (@tDocDateF <> '' AND @tDocDateT <> '')
+	BEGIN
+		SET @tSql1 +=' AND CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+	END
+
+	DELETE FROM TRPTPSTaxHDFullTmp WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''--ลบข้อมูล Temp ของเครื่องที่จะบันทึกขอมูลลง Temp
+ 
+ 	SET @tSql  = ' INSERT INTO TRPTPSTaxHDFullTmp '
+	SET @tSql +=' ('
+	SET @tSql +=' FTComName,FTRptCode,FTUsrSession,'
+	SET @tSql +=' FTBchCode,FTBchName,FDXshdocDate,FTXshDocNo,FTPosCode,FTXshDocRef,FTCstCode,FTCstName,FTCstTaxNo,FCXshAmt,FCXshVat,FCXshAmtNV,FCXshGrandTotal,'
+	--*NUI 2019-11-14
+	SET @tSql +=' FNAppType,FTPosRegNo,FTCstBchCode,FTCstBusiness,FTEstablishment'
+	-------------
+	SET @tSql +=' )'
+	SET @tSql +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'	
+	SET @tSql +=' SalVat.FTBchCode,FTBchName,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,FTXshDocNo,FTPosCode,FTXshRefInt,FTCstCode,FTCstName,FTCstTaxNo,FCXshValue,FCXshVat,FCXshAmtNV,FCXshGrand,'
+	--*NUI 2019-11-14
+	SET @tSql +=' FNAppType,FTPosRegNo,FTCstBchCode,FTCstBusiness,FTEstablishment'
+	SET @tSql +=' FROM'	
+			SET @tSql +=' (SELECT HD.FTBchCode,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshdocDate,HD.FTPosCode,HD.FTXshDocNo,ISNULL(FTXshRefExt,'''') FTXshRefInt,HD.FTCstCode,TaxAddr.FTAddName AS FTCstName ,TaxAddr.FTAddTaxNo AS FTCstTaxNo,'
+			--NUI10-04-2020
+			--SET @tSql +=' CASE WHEN HD.FNXshDocType = 4 THEN ISNULL(FCXshVatable,0)-ISNULL(FCXshAmtNV,0) ELSE (ISNULL(FCXshVatable,0)-ISNULL(FCXshAmtNV,0))*-1 END AS FCXshValue,'
+			SET @tSql +=' CASE WHEN HD.FNXshDocType = 4 THEN ISNULL(FCXshVatable,0) ELSE (ISNULL(FCXshVatable,0))*-1 END AS FCXshValue,'
+			SET @tSql +=' CASE WHEN HD.FNXshDocType = 4 THEN ISNULL(FCXshVat,0) ELSE ISNULL(FCXshVat,0)*-1 END AS FCXshVat,'
+			SET @tSql +=' CASE WHEN HD.FNXshDocType = 4 THEN ISNULL(FCXshAmtNV,0) ELSE ISNULL(FCXshAmtNV,0)*-1 END AS FCXshAmtNV,'
+			--NUI10-04-2020
+			SET @tSql +=' CASE WHEN HD.FNXshDocType = 4 THEN ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) ELSE (ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))*-1 END AS FCXshGrand,'
+			--*NUI 2019-11-14
+			SET @tSql +=' 1 AS FNAppType,POS.FTPosRegNo,FTAddStaBchCode AS FTCstBchCode,FTAddStaBusiness AS FTCstBusiness,'
+			SET @tSql +=' CASE WHEN ISNULL(TaxAddr.FTAddStaBusiness,'''') <> ''1'' THEN '''' ELSE CASE WHEN FTAddStaHQ = ''1'' THEN ''Head Office  '' ELSE ''Branch / ''  END + CASE WHEN FTAddStaBchCode <> '''' THEN '' / '' + FTAddStaBchCode ELSE '''' END   END AS FTEstablishment'
+			SET @tSql +=' FROM TPSTTaxHD HD '
+			SET @tSql +=' LEFT JOIN TPSTTaxHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo'
+			SET @tSql +=' LEFT JOIN  TPSTTaxHDAddress TaxAddr WITH (NOLOCK) ON HD.FTXshDocNo = TaxAddr.FTXshDocNo'
+		 			  SET @tSql +=' LEFT JOIN TCNMCst Cst ON HD.FTCstCode = Cst.FTCstCode '
+					  SET @tSql +=' LEFT JOIN TCNMPOS POS ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode '
+					  SET @tSql +=' LEFT JOIN TCNMCst_L Cst_L ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+					  SET @tSql +=' LEFT JOIN TCNMShop Shp WITH (NOLOCK) ON HD.FTBchCode = Shp.FTBchCode AND HD.FTShpCode = Shp.FTShpCode '
+					  SET @tSql +=' WHERE 1=1 AND FTXshStaDoc = ''1'''			  			
+			SET @tSql += @tSql1			
+			SET @tSql +=' ) SalVat LEFT JOIN '    
+	SET @tSql +=' TCNMBranch_L Bch_L ON SalVat.FTBchCode = Bch_L.FTBchCode AND Bch_L.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''' '	 
+	
+	--PRINT @tSql
+	EXECUTE(@tSql)
+
+	RETURN SELECT * FROM TRPTPSTaxHDFullTmp WHERE FTComName = ''+ @nComName + '' AND FTRptCode = ''+ @tRptCode +'' AND FTUsrSession = '' + @tUsrSession + ''
+	
+END TRY
+
+BEGIN CATCH 
+	SET @FNResult= -1
+END CATCH	
+GO
+
+
+
+
+/****** Object:  StoredProcedure [dbo].[SP_RPTxDailySaleINFO_Animate]    Script Date: 05/09/2022 18:32:16 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxDailySaleINFO_Animate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxDailySaleINFO_Animate
+GO
+CREATE PROCEDURE SP_RPTxDailySaleINFO_Animate 
+--ALTER PROCEDURE [dbo].[SP_RPTxDailySaleByPdt1001002] 
+
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptCode Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+
+	--สาขา
+	@ptBchL Varchar(8000), --กรณี Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+	--Merchant
+	@ptMerL Varchar(8000), --กรณี Condition IN
+	@ptMerF Varchar(10),
+	@ptMerT Varchar(10),
+	--Shop Code
+	@ptShpL Varchar(8000), --กรณี Condition IN
+	@ptShpF Varchar(10),
+	@ptShpT Varchar(10),
+	--ตัวแทนขาย
+	@ptAgnL Varchar(8000), --กรณี Condition IN
+	--@ptPosF Varchar(20),
+	--@ptPosT Varchar(20),
+
+	@ptPdtCodeF Varchar(20),
+	@ptPdtCodeT Varchar(20),
+	@ptPdtChanF Varchar(30),
+	@ptPdtChanT Varchar(30),
+	@ptPdtTypeF Varchar(5),
+	@ptPdtTypeT Varchar(5),
+
+	--NUI 22-09-05 RQ2208-020
+	@ptPbnF Varchar(5),
+	@ptPbnT Varchar(5),
+
+	@ptDateF Varchar(10),
+	@ptDateT Varchar(10),
+	----ลูกค้า
+	--@ptCstF Varchar(20),
+	--@ptCstT Varchar(20),
+	@FNResult INT OUTPUT 
+AS
+--------------------------------------
+-- Watcharakorn 
+-- Create 16/09/2022
+-- V.04.00.00
+-- Temp name  TRPTSalDTTmp_Animate
+-- @pnLngID ภาษา
+-- @ptRptCdoe ชื่อรายงาน
+-- @ptUsrSession UsrSession
+-- @ptBchF จากรหัสสาขา
+-- @ptBchT ถึงรหัสสาขา
+-- @ptShpF จากร้านค้า
+-- @ptShpT ถึงร้านค้า
+-- @ptPdtCodeF จากสินค้า
+-- @ptPdtCodeT ถึงสินค้า
+-- @ptPdtChanF จากกลุ่มสินค้า
+-- @ptPdtChanT ถึงกลุ่มสินค้า
+-- @ptPdtTypeF จากประเภทสินค้า
+-- @ptPdtTypeT ถึงประเภท
+
+-- @ptDateF จากวันที่
+-- @ptDateT ถึงวันที่
+-- @FNResult
+
+
+--------------------------------------
+BEGIN TRY
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptCode Varchar(100)
+	DECLARE @tUsrSession Varchar(255)
+	DECLARE @tSql VARCHAR(8000)
+	DECLARE @tSqlLast VARCHAR(8000)
+	DECLARE @tSql1 VARCHAR(8000)
+	DECLARE @tSqlPdt VARCHAR(8000)
+
+	--Branch Code
+	DECLARE @tBchF Varchar(5)
+	DECLARE @tBchT Varchar(5)
+	--Merchant
+	DECLARE @tMerF Varchar(10)
+	DECLARE @tMerT Varchar(10)
+	--Shop Code
+	DECLARE @tShpF Varchar(10)
+	DECLARE @tShpT Varchar(10)
+	--Pos Code
+	DECLARE @tPosF Varchar(20)
+	DECLARE @tPosT Varchar(20)
+
+	DECLARE @tPdtCodeF Varchar(20)
+	DECLARE @tPdtCodeT Varchar(20)
+	DECLARE @tPdtChanF Varchar(30)
+	DECLARE @tPdtChanT Varchar(30)
+	DECLARE @tPdtTypeF Varchar(5)
+	DECLARE @tPdtTypeT Varchar(5)
+
+	DECLARE @tPbnF Varchar(5)
+	DECLARE @tPbnT Varchar(5)
+
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+	--ลูกค้า
+	--DECLARE @tCstF Varchar(20)
+	--DECLARE @tCstT Varchar(20)
+
+
+	
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tUsrSession = @ptUsrSession
+	SET @tRptCode = @ptRptCode
+
+	--Branch
+	SET @tBchF  = @ptBchF
+	SET @tBchT  = @ptBchT
+	--Merchant
+	SET @tMerF  = @ptMerF
+	SET @tMerT  = @ptMerT
+	--Shop
+	SET @tShpF  = @ptShpF
+	SET @tShpT  = @ptShpT
+	--Pos
+	--SET @tPosF  = @ptPosF 
+	--SET @tPosT  = @ptPosT
+
+	SET @tPdtCodeF  = @ptPdtCodeF 
+	SET @tPdtCodeT = @ptPdtCodeT
+	SET @tPdtChanF = @ptPdtChanF
+	SET @tPdtChanT = @ptPdtChanT 
+	SET @tPdtTypeF = @ptPdtTypeF
+	SET @tPdtTypeT = @ptPdtTypeT
+
+	SET @tPbnF = @ptPbnF
+	SET @tPbnT = @ptPbnT
+
+
+	SET @tDocDateF = @ptDateF
+	SET @tDocDateT = @ptDateT
+	SET @FNResult= 0
+
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+	--Set ค่าให้ Paraleter กรณี T เป็นค่าว่างหรือ null
+
+
+	IF @ptBchL = null
+	BEGIN
+		SET @ptBchL = ''
+	END
+
+	IF @tBchF = null
+	BEGIN
+		SET @tBchF = ''
+	END
+	IF @tBchT = null OR @tBchT = ''
+	BEGIN
+		SET @tBchT = @tBchF
+	END
+
+	IF @ptMerL =null
+	BEGIN
+		SET @ptMerL = ''
+	END
+
+	IF @tMerF =null
+	BEGIN
+		SET @tMerF = ''
+	END
+	IF @tMerT =null OR @tMerT = ''
+	BEGIN
+		SET @tMerT = @tMerF
+	END 
+
+	IF @ptShpL =null
+	BEGIN
+		SET @ptShpL = ''
+	END
+
+	IF @tShpF =null
+	BEGIN
+		SET @tShpF = ''
+	END
+	IF @tShpT =null OR @tShpT = ''
+	BEGIN
+		SET @tShpT = @tShpF
+	END
+
+	IF @ptAgnL =null
+	BEGIN
+		SET @ptAgnL = ''
+	END
+
+	--IF @tPosF = null
+	--BEGIN
+	--	SET @tPosF = ''
+	--END
+	--IF @tPosT = null OR @tPosT = ''
+	--BEGIN
+	--	SET @tPosT = @tPosF
+	--END
+
+	IF @tPdtCodeF = null
+	BEGIN
+		SET @tPdtCodeF = ''
+	END 
+	IF @tPdtCodeT = null OR @tPdtCodeT =''
+	BEGIN
+		SET @tPdtCodeT = @tPdtCodeF
+	END 
+
+	IF @tPdtChanF = null
+	BEGIN
+		SET @tPdtChanF = ''
+	END 
+	IF @tPdtChanT = null OR @tPdtChanT =''
+	BEGIN
+		SET @tPdtChanT = @tPdtChanF
+	END 
+
+	IF @tPdtTypeF = null
+	BEGIN
+		SET @tPdtTypeF = ''
+	END 
+	IF @tPdtTypeT = null OR @tPdtTypeT =''
+	BEGIN
+		SET @tPdtTypeT = @tPdtTypeF
+	END 
+
+	IF @tPbnF = null
+	BEGIN
+		SET @tPbnF = ''
+	END 
+	IF @tPbnT = null OR @tPbnT =''
+	BEGIN
+		SET @tPbnT = @tPbnF
+	END 
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+	SET @tSql1 = ' WHERE 1=1'
+	SET @tSqlPdt = ' WHERE 1=1'
+
+	IF @pnFilterType = '1'
+	BEGIN
+		IF (@tBchF <> '' AND @tBchT <> '')
+		BEGIN
+			SET @tSql1 +=' AND Stk.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+		END
+
+		IF (@tMerF <> '' AND @tMerT <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+		END
+
+		IF (@tShpF <> '' AND @tShpT <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+		END
+
+
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN
+		IF (@ptBchL <> '' )
+		BEGIN		
+			SET @tSql1 +=' AND (Stk.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSql1 +=' OR ISNULL(Stk.FTBchCode,'''') = '''') '
+			--SET @tSqlPdt +=' AND StkBal.FTBchCode IN (' + @ptBchL + ')'
+		END
+
+		IF (@ptMerL <> '' )
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+		END
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+		END
+
+		IF (@ptAgnL <> '')
+		BEGIN
+			SET @tSql1 += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+		END		
+	END
+	IF (@tPdtCodeF <> '' AND @tPdtCodeT <> '')
+	BEGIN
+		SET @tSqlPdt +=' AND Pdt.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+		SET @tSql1 +=' AND PdtM.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+	END
+
+	IF (@tPdtChanF <> '' AND @tPdtChanT <> '')
+	BEGIN
+		SET @tSqlPdt +=' AND Pdt.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+		SET @tSql1 +=' AND PdtM.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+	END
+
+	IF (@tPdtTypeF <> '' AND @tPdtTypeT <> '')
+	BEGIN
+		SET @tSqlPdt +=' AND Pdt.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+		SET @tSql1 += ' AND PdtM.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+	END
+
+	IF (@tPbnF <> '' AND @tPbnT <> '')
+	BEGIN
+		SET @tSqlPdt +=' AND Pdt.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+		SET @tSql1 += ' AND PdtM.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+	END
+
+	IF (@tDocDateF <> '' AND @tDocDateT <> '')
+	BEGIN
+		--PRINT @tSqlLast
+		--SET @tSql1 +=' AND (CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		SET @tSql1 += ' AND CONVERT(VARCHAR(10),Stk.FDStkDate,121) >= FORMAT(CONVERT(DATETIME,''' + @tDocDateF + '''), ''yyyy-MM-01'') AND CONVERT(VARCHAR(10),Stk.FDStkDate,121) <= ''' + @tDocDateT + ''''
+	END
+
+	DELETE FROM TRPTSaleINFOTmp_Animate WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''--ลบข้อมูล Temp ของเครื่องที่จะบันทึกขอมูลลง Temp
+ --Sale
+  	SET @tSql  =' INSERT INTO TRPTSaleINFOTmp_Animate '
+	SET @tSql +=' (FTComName,FTRptCode,FTUsrSession,'
+	 SET @tSql +=' FTPtyName,FTPbnName,FTPdtCode,FTPdtName,FTPdtNameOth,FTBarCode,FCPdtStkSetPrice,FCPdtStkQtySale,FCPdtStkQtyIn,FCStkQtyBal'
+	 SET @tSql +=' '
+	SET @tSql +=' )'
+	SET @tSql +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'
+	SET @tSql +=' FTPtyName,FTPbnName,FTPdtCode,FTPdtName,FTPdtNameOth,FTBarCode,ISNULL(FCPdtStkSetPrice,0) AS FCPdtStkSetPrice,ISNULL(FCPdtStkQtySale,0) AS FCPdtStkQtySale,'
+	SET @tSql +=' ISNULL(FCPdtStkQtyIn,0) AS FCPdtStkQtyIn,ISNULL(FCStkQtyMthEnd,0)+ISNULL(FCPdtStkQtyIn,0)-ISNULL(FCPdtStkQtySale,0) AS FCStkQtyBal'
+	SET @tSql +=' FROM('
+			SET @tSql +=' SELECT FTPtyName,FTPbnName,STK.FTPdtCode,FTPdtName,FTPdtNameOth,FTBarCode,StkSetPrice.FCPdtStkSetPrice,'
+			SET @tSql +=' SUM(CASE FTStkType'
+			SET @tSql +=' WHEN ''3'' THEN ISNULL(Stk.FCStkQty,0)'  --ขาย
+			SET @tSql +=' WHEN ''4'' THEN ISNULL(Stk.FCStkQty,0)*-1' --คืน
+			SET @tSql +=' END) AS FCPdtStkQtySale,'
+			SET @tSql +=' SUM(CASE FTStkType'
+			SET @tSql +=' WHEN ''1'' THEN ISNULL(Stk.FCStkQty,0)' --เข้า
+			SET @tSql +=' WHEN ''2'' THEN ISNULL(Stk.FCStkQty,0)*-1' --ออก
+			SET @tSql +=' WHEN ''5'' THEN ISNULL(Stk.FCStkQty,0)' -- ปรับจำนวน + : เข้า , - : ออก
+			SET @tSql +=' END) AS FCPdtStkQtyIn,SUM(ISNULL(MthEnd.FCStkQtyMthEnd,0))  + SUM(ISNULL(MthEnd1.FCStkQtyMthEnd,0)) AS FCStkQtyMthEnd'
+
+			SET @tSql +=' FROM TCNTPdtStkCrd Stk WITH (NOLOCK)'
+			SET @tSql +=' LEFT JOIN TCNMPdt PdtM WITH(NOLOCK) ON Stk.FTPdtCode = PdtM.FTPdtCode'
+			SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON PdtM.FTPdtCode =  SpcBch.FTPdtCode'
+			SET @tSql +=' LEFT JOIN'
+			SET @tSql +=' (SELECT Stk.FTBchCode,FTWahCode,Stk.FTPdtCode,'
+			 SET @tSql +=' CASE WHEN' 
+					SET @tSql +=' SUM(CASE FTStkType'
+					SET @tSql +=' WHEN ''3'' THEN ISNULL(Stk.FCStkQty,0)'  --ขาย
+					SET @tSql +=' WHEN ''4'' THEN ISNULL(Stk.FCStkQty,0)*-1' --คืน
+					SET @tSql +=' END) = 0 THEN 0' 				
+   			 SET @tSql +=' ELSE'			 
+					SET @tSql +=' (SUM(CASE FTStkType'
+			 			 SET @tSql +=' WHEN ''3'' THEN (ISNULL(Stk.FCStkQty,0)*ISNULL(FCStkSetPrice,0))'  --ขาย
+						 SET @tSql +=' WHEN ''4'' THEN (ISNULL(Stk.FCStkQty,0)*ISNULL(FCStkSetPrice,0))*-1' --คืน
+						 SET @tSql +=' END) /' 
+					 SET @tSql +=' SUM(CASE FTStkType'
+						 SET @tSql +=' WHEN ''3'' THEN ISNULL(Stk.FCStkQty,0)'  --ขาย
+						 SET @tSql +=' WHEN ''4'' THEN ISNULL(Stk.FCStkQty,0)*-1' --คืน
+						SET @tSql +=' END))' 
+			 SET @tSql +=' END AS FCPdtStkSetPrice'
+			 SET @tSql +=' FROM TCNTPdtStkCrd Stk WITH (NOLOCK)'	
+			 SET @tSql +=' LEFT JOIN TCNMPdt PdtM WITH(NOLOCK) ON Stk.FTPdtCode = PdtM.FTPdtCode'
+			 SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON PdtM.FTPdtCode =  SpcBch.FTPdtCode'
+			 SET @tSql +=' WHERE FTStkType IN (''3'',''4'') AND ISNULL(FCStkSetPrice,0) <> 0'
+			 SET @tSql +=' GROUP BY Stk.FTBchCode,FTWahCode,Stk.FTPdtCode'
+			 SET @tSql +=' ) StkSetPrice ON STK.FTBchCode = StkSetPrice.FTBchCode AND STK.FTPdtCode = StkSetPrice.FTPdtCode AND STK.FTWahCode = StkSetPrice.FTWahCode'
+			 SET @tSql +=' LEFT JOIN'
+					SET @tSql +=' ('--Pdt
+						SET @tSql +=' SELECT Pdt.FTPdtCode,PdtL.FTPdtName,ISNULL(PdtL.FTPdtNameOth,'''') AS FTPdtNameOth,PdtBar.FTBarCode,ISNULL(PtyL.FTPtyName,'''') AS FTPtyName,ISNULL(PbnL.FTPbnName,'''') AS FTPbnName'
+						SET @tSql +=' FROM TCNMPdt Pdt WITH(NOLOCK)'
+						SET @tSql +=' LEFT JOIN TCNMPdt_L PdtL WITH(NOLOCK) ON Pdt.FTPdtCode = PdtL.FTPdtCode AND PdtL.FNLngID =  '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+						SET @tSql +=' LEFT JOIN TCNMPdtBrand_L PbnL WITH(NOLOCK) ON Pdt.FTPbnCode = PbnL.FTPbnCode AND PbnL.FNLngID =  '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+						SET @tSql +=' LEFT JOIN TCNMPdtType_L PtyL WITH(NOLOCK) ON Pdt.FTPbnCode = PtyL.FTPtyCode AND PtyL.FNLngID =  '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+						SET @tSql +=' LEFT JOIN TCNMPdtPackSize Ppz WITH(NOLOCK) ON Pdt.FTPdtCode = Ppz.FTPdtCode AND FCPdtUnitFact = 1'
+						SET @tSql +=' LEFT JOIN TCNMPdtBar PdtBar WITH(NOLOCK) ON Ppz.FTPdtCode = PdtBar.FTPdtCode AND Ppz.FTPunCode = PdtBar.FTPunCode'
+						SET @tSql += @tSqlPdt
+					SET @tSql +=' ) Pdt ON Stk.FTpdtCode = Pdt.FTPdtCode'
+			SET @tSql +=' LEFT JOIN' 
+					SET @tSql +=' ('--TCNTPdtStkCrdME
+						SET @tSql +=' SELECT FDStkDate,StkME.FTBchCode,StkME.FTPdtCode,FCStkQty AS  FCStkQtyMthEnd,FORMAT(FDStkDate, ''yyyy-MM'') AS FTStkMonthYer'
+						SET @tSql +=' FROM TCNTPdtStkCrdME StkME WITH(NOLOCK)'
+						SET @tSql +=' WHERE FORMAT(FDStkDate, ''yyyy-MM'') = FORMAT(CONVERT(DATETIME,2022-07-25), ''yyyy-MM'')'
+					SET @tSql +=' ) MthEnd ON Stk.FTBchCode = MthEnd.FTBchCode AND Stk.FTPdtCode = MthEnd.FTPdtCode AND FORMAT(Stk.FDStkDate, ''yyyy-MM'') = FORMAT(MthEnd.FDStkDate, ''yyyy-MM'')'
+					  SET @tSql +=' LEFT JOIN'
+					SET @tSql +=' ('--	TCNTPdtStkCrd ยอดยกมา เพื่อรวม กับ Qty ใน TCNTPdtStkCrdME						
+						SET @tSql +=' SELECT FTBchCode,FTPdtCode,FORMAT(FDStkDate, ''yyyy-MM'') AS FTStkMonthYer,'
+						SET @tSql +=' SUM(CASE FTStkType'
+						SET @tSql +=' WHEN ''3'' THEN ISNULL(Stk1.FCStkQty,0)*-1'  --ขาย
+						SET @tSql +=' WHEN ''4'' THEN ISNULL(Stk1.FCStkQty,0)' --คืน
+						SET @tSql +=' WHEN ''1'' THEN ISNULL(Stk1.FCStkQty,0)' --เข้า
+						SET @tSql +=' WHEN ''2'' THEN ISNULL(Stk1.FCStkQty,0)*-1' --ออก
+						SET @tSql +=' WHEN ''5'' THEN ISNULL(Stk1.FCStkQty,0)' -- ปรับจำนวน + : เข้า , - : ออก
+						SET @tSql +=' END) AS  FCStkQtyMthEnd'
+						SET @tSql +=' FROM TCNTPdtStkCrd  Stk1 WITH(NOLOCK)'
+						SET @tSql +=' WHERE CONVERT(VARCHAR(10),Stk1.FDStkDate,121) >= FORMAT(CONVERT(DATETIME,''' + @ptDateF+ '''), ''yyyy-MM-01'') AND CONVERT(VARCHAR(10),Stk1.FDStkDate,121) < '''+ @ptDateF+''''--@ptDateF
+						SET @tSql +=' GROUP BY FTBchCode,FTPdtCode,FORMAT(FDStkDate, ''yyyy-MM'')'
+					SET @tSql +=' ) MthEnd1 ON STK.FTBchCode = MthEnd1.FTBchCode AND STK.FTPdtCode = MthEnd1.FTPdtCode AND FORMAT(STK.FDStkDate, ''yyyy-MM'') = MthEnd1.FTStkMonthYer'
+			--
+			 --WHERE CONVERT(VARCHAR(10),Stk.FDStkDate,121) >= FORMAT(CONVERT(DATETIME,@ptDateF), 'yyyy-MM-01') AND CONVERT(VARCHAR(10),Stk.FDStkDate,121) <= @ptDateT
+			SET @tSql +=@tSql1
+			SET @tSql +=' GROUP BY FTPtyName,FTPbnName,STK.FTPdtCode,Pdt.FTPdtName,Pdt.FTPdtNameOth,Pdt.FTBarCode,StkSetPrice.FCPdtStkSetPrice'--,ISNULL(MthEnd.FCStkQtyMthEnd,0)  + ISNULL(MthEnd1.FCStkQtyMthEnd,0) 
+			SET @tSql +=' ) SalData'
+
+	--SET @tSql +=' LEFT JOIN TCNMPdtBrand_L PbnL WITH (NOLOCK) ON Pdt.FTPbnCode = PbnL.FTPbnCode AND PbnL.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+	--PRINT @tSql
+	EXECUTE(@tSql)
+
+	--INSERT VD
+
+
+	--RETURN SELECT * FROM TRPTSalDTTmp WHERE FTComName = ''+ @nComName + '' AND FTRptCode = ''+ @tRptCode +'' AND FTUsrSession = '' + @tUsrSession + ''
+	
+END TRY
+
+BEGIN CATCH 
+	SET @FNResult= -1
+END CATCH	
+GO
+
+
+
+
+
+/****** Object:  StoredProcedure [dbo].[SP_RPTxDailySaleINFO_Animate]    Script Date: 05/09/2022 18:32:16 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxDailySaleINFO_Animate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxDailySaleINFO_Animate
+GO
+CREATE PROCEDURE SP_RPTxDailySaleINFO_Animate 
+--ALTER PROCEDURE [dbo].[SP_RPTxDailySaleByPdt1001002] 
+
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptCode Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+
+	--สาขา
+	@ptBchL Varchar(8000), --กรณี Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+	--Merchant
+	@ptMerL Varchar(8000), --กรณี Condition IN
+	@ptMerF Varchar(10),
+	@ptMerT Varchar(10),
+	--Shop Code
+	@ptShpL Varchar(8000), --กรณี Condition IN
+	@ptShpF Varchar(10),
+	@ptShpT Varchar(10),
+	--ตัวแทนขาย
+	@ptAgnL Varchar(8000), --กรณี Condition IN
+	--@ptPosF Varchar(20),
+	--@ptPosT Varchar(20),
+
+	@ptPdtCodeF Varchar(20),
+	@ptPdtCodeT Varchar(20),
+	@ptPdtChanF Varchar(30),
+	@ptPdtChanT Varchar(30),
+	@ptPdtTypeF Varchar(5),
+	@ptPdtTypeT Varchar(5),
+
+	--NUI 22-09-05 RQ2208-020
+	@ptPbnF Varchar(5),
+	@ptPbnT Varchar(5),
+
+	@ptDateF Varchar(10),
+	@ptDateT Varchar(10),
+	----ลูกค้า
+	--@ptCstF Varchar(20),
+	--@ptCstT Varchar(20),
+	@FNResult INT OUTPUT 
+AS
+--------------------------------------
+-- Watcharakorn 
+-- Create 16/09/2022
+-- V.04.00.00
+-- Temp name  TRPTSalDTTmp_Animate
+-- @pnLngID ภาษา
+-- @ptRptCdoe ชื่อรายงาน
+-- @ptUsrSession UsrSession
+-- @ptBchF จากรหัสสาขา
+-- @ptBchT ถึงรหัสสาขา
+-- @ptShpF จากร้านค้า
+-- @ptShpT ถึงร้านค้า
+-- @ptPdtCodeF จากสินค้า
+-- @ptPdtCodeT ถึงสินค้า
+-- @ptPdtChanF จากกลุ่มสินค้า
+-- @ptPdtChanT ถึงกลุ่มสินค้า
+-- @ptPdtTypeF จากประเภทสินค้า
+-- @ptPdtTypeT ถึงประเภท
+
+-- @ptDateF จากวันที่
+-- @ptDateT ถึงวันที่
+-- @FNResult
+
+
+--------------------------------------
+BEGIN TRY
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptCode Varchar(100)
+	DECLARE @tUsrSession Varchar(255)
+	DECLARE @tSql VARCHAR(8000)
+	DECLARE @tSqlLast VARCHAR(8000)
+	DECLARE @tSql1 VARCHAR(8000)
+	DECLARE @tSql2 VARCHAR(8000)
+	DECLARE @tSql3 VARCHAR(8000)
+	DECLARE @tSqlME VARCHAR(8000)
+	DECLARE @tSqlPdt VARCHAR(8000)
+
+	--Branch Code
+	DECLARE @tBchF Varchar(5)
+	DECLARE @tBchT Varchar(5)
+	--Merchant
+	DECLARE @tMerF Varchar(10)
+	DECLARE @tMerT Varchar(10)
+	--Shop Code
+	DECLARE @tShpF Varchar(10)
+	DECLARE @tShpT Varchar(10)
+	--Pos Code
+	DECLARE @tPosF Varchar(20)
+	DECLARE @tPosT Varchar(20)
+
+	DECLARE @tPdtCodeF Varchar(20)
+	DECLARE @tPdtCodeT Varchar(20)
+	DECLARE @tPdtChanF Varchar(30)
+	DECLARE @tPdtChanT Varchar(30)
+	DECLARE @tPdtTypeF Varchar(5)
+	DECLARE @tPdtTypeT Varchar(5)
+
+	DECLARE @tPbnF Varchar(5)
+	DECLARE @tPbnT Varchar(5)
+
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+	--ลูกค้า
+	--DECLARE @tCstF Varchar(20)
+	--DECLARE @tCstT Varchar(20)
+
+
+	
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tUsrSession = @ptUsrSession
+	SET @tRptCode = @ptRptCode
+
+	--Branch
+	SET @tBchF  = @ptBchF
+	SET @tBchT  = @ptBchT
+	--Merchant
+	SET @tMerF  = @ptMerF
+	SET @tMerT  = @ptMerT
+	--Shop
+	SET @tShpF  = @ptShpF
+	SET @tShpT  = @ptShpT
+	--Pos
+	--SET @tPosF  = @ptPosF 
+	--SET @tPosT  = @ptPosT
+
+	SET @tPdtCodeF  = @ptPdtCodeF 
+	SET @tPdtCodeT = @ptPdtCodeT
+	SET @tPdtChanF = @ptPdtChanF
+	SET @tPdtChanT = @ptPdtChanT 
+	SET @tPdtTypeF = @ptPdtTypeF
+	SET @tPdtTypeT = @ptPdtTypeT
+
+	SET @tPbnF = @ptPbnF
+	SET @tPbnT = @ptPbnT
+
+
+	SET @tDocDateF = @ptDateF
+	SET @tDocDateT = @ptDateT
+	SET @FNResult= 0
+
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+	--Set ค่าให้ Paraleter กรณี T เป็นค่าว่างหรือ null
+
+
+	IF @ptBchL = null
+	BEGIN
+		SET @ptBchL = ''
+	END
+
+	IF @tBchF = null
+	BEGIN
+		SET @tBchF = ''
+	END
+	IF @tBchT = null OR @tBchT = ''
+	BEGIN
+		SET @tBchT = @tBchF
+	END
+
+	IF @ptMerL =null
+	BEGIN
+		SET @ptMerL = ''
+	END
+
+	IF @tMerF =null
+	BEGIN
+		SET @tMerF = ''
+	END
+	IF @tMerT =null OR @tMerT = ''
+	BEGIN
+		SET @tMerT = @tMerF
+	END 
+
+	IF @ptShpL =null
+	BEGIN
+		SET @ptShpL = ''
+	END
+
+	IF @tShpF =null
+	BEGIN
+		SET @tShpF = ''
+	END
+	IF @tShpT =null OR @tShpT = ''
+	BEGIN
+		SET @tShpT = @tShpF
+	END
+
+	IF @ptAgnL =null
+	BEGIN
+		SET @ptAgnL = ''
+	END
+
+	--IF @tPosF = null
+	--BEGIN
+	--	SET @tPosF = ''
+	--END
+	--IF @tPosT = null OR @tPosT = ''
+	--BEGIN
+	--	SET @tPosT = @tPosF
+	--END
+
+	IF @tPdtCodeF = null
+	BEGIN
+		SET @tPdtCodeF = ''
+	END 
+	IF @tPdtCodeT = null OR @tPdtCodeT =''
+	BEGIN
+		SET @tPdtCodeT = @tPdtCodeF
+	END 
+
+	IF @tPdtChanF = null
+	BEGIN
+		SET @tPdtChanF = ''
+	END 
+	IF @tPdtChanT = null OR @tPdtChanT =''
+	BEGIN
+		SET @tPdtChanT = @tPdtChanF
+	END 
+
+	IF @tPdtTypeF = null
+	BEGIN
+		SET @tPdtTypeF = ''
+	END 
+	IF @tPdtTypeT = null OR @tPdtTypeT =''
+	BEGIN
+		SET @tPdtTypeT = @tPdtTypeF
+	END 
+
+	IF @tPbnF = null
+	BEGIN
+		SET @tPbnF = ''
+	END 
+	IF @tPbnT = null OR @tPbnT =''
+	BEGIN
+		SET @tPbnT = @tPbnF
+	END 
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+	SET @tSql1 = ' WHERE 1=1'
+	SET @tSqlPdt = ' WHERE 1=1'
+	SET @tSql2 = ''
+	SET @tSqlME = ''
+	SET @tSql3 = ''
+
+	IF @pnFilterType = '1'
+	BEGIN
+		IF (@tBchF <> '' AND @tBchT <> '')
+		BEGIN
+			SET @tSql1 +=' AND Stk.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+		END
+
+		IF (@tMerF <> '' AND @tMerT <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+		END
+
+		IF (@tShpF <> '' AND @tShpT <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+		END
+
+
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN
+		IF (@ptBchL <> '' )
+		BEGIN		
+			SET @tSql1 +=' AND (Stk.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSql1 +=' OR ISNULL(Stk.FTBchCode,'''') = '''') '
+			SET @tSql3 +=' AND (Stk.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSql3 +=' OR ISNULL(Stk.FTBchCode,'''') = '''') '
+			SET @tSql2 +=' AND (Stk1.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSql2 +=' OR ISNULL(Stk1.FTBchCode,'''') = '''') '
+			SET @tSqlME +=' AND (StkME.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSqlME +=' OR ISNULL(StkME.FTBchCode,'''') = '''') '
+
+			--SET @tSqlPdt +=' AND StkBal.FTBchCode IN (' + @ptBchL + ')'
+		END
+
+		IF (@ptMerL <> '' )
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSql3 +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSql2 +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSqlME +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+		END
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSql3 +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSql2 +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSqlME +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+		END
+
+		IF (@ptAgnL <> '')
+		BEGIN
+			SET @tSql1 += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+			SET @tSql3 += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+			SET @tSql2 += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+			SET @tSqlME += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+		END		
+	END
+	IF (@tPdtCodeF <> '' AND @tPdtCodeT <> '')
+	BEGIN
+		SET @tSqlPdt +=' AND Pdt.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+		SET @tSql1 +=' AND PdtM.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+		SET @tSql3 +=' AND PdtM.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+		SET @tSql2 +=' AND PdtM.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+		SET @tSqlMe +=' AND PdtM.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+	END
+
+	IF (@tPdtChanF <> '' AND @tPdtChanT <> '')
+	BEGIN
+		SET @tSqlPdt +=' AND Pdt.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+		SET @tSql1 +=' AND PdtM.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+		SET @tSql3 +=' AND PdtM.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+		SET @tSql2 +=' AND PdtM.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+		SET @tSqlME +=' AND PdtM.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+	END
+
+	IF (@tPdtTypeF <> '' AND @tPdtTypeT <> '')
+	BEGIN
+		SET @tSqlPdt +=' AND Pdt.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+		SET @tSql1 += ' AND PdtM.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+		SET @tSql3 += ' AND PdtM.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+		SET @tSql2 += ' AND PdtM.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+		SET @tSqlME += ' AND PdtM.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+	END
+
+	IF (@tPbnF <> '' AND @tPbnT <> '')
+	BEGIN
+		SET @tSqlPdt +=' AND Pdt.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+		SET @tSql1 += ' AND PdtM.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+		SET @tSql3 += ' AND PdtM.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+		SET @tSql2 += ' AND PdtM.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+		SET @tSqlME += ' AND PdtM.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+	END
+
+	IF (@tDocDateF <> '' AND @tDocDateT <> '')
+	BEGIN
+		--PRINT @tSqlLast
+		--SET @tSql1 +=' AND (CONVERT(VARCHAR(10),FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		SET @tSql1 += ' AND CONVERT(VARCHAR(10),Stk.FDStkDate,121) >= FORMAT(CONVERT(DATETIME,''' + @tDocDateF + '''), ''yyyy-MM-01'') AND CONVERT(VARCHAR(10),Stk.FDStkDate,121) <= ''' + @tDocDateT + ''''
+	END
+	
+	DELETE FROM TRPTSaleINFOTmp_Animate WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''--ลบข้อมูล Temp ของเครื่องที่จะบันทึกขอมูลลง Temp
+ --Sale
+  	SET @tSql  =' INSERT INTO TRPTSaleINFOTmp_Animate '
+	SET @tSql +=' (FTComName,FTRptCode,FTUsrSession,'
+	 SET @tSql +=' FTPtyName,FTPbnName,FTPdtCode,FTPdtName,FTPdtNameOth,FTBarCode,FCPdtStkSetPrice,FCPdtStkQtySale,FCPdtStkQtyIn,FCStkQtyBal'
+	 SET @tSql +=' '
+	SET @tSql +=' )'
+	SET @tSql +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'
+	SET @tSql +=' FTPtyName,FTPbnName,FTPdtCode,FTPdtName,FTPdtNameOth,FTBarCode,ISNULL(FCPdtStkSetPrice,0) AS FCPdtStkSetPrice,ISNULL(FCPdtStkQtySale,0) AS FCPdtStkQtySale,'
+	SET @tSql +=' ISNULL(FCPdtStkQtyIn,0) AS FCPdtStkQtyIn,ISNULL(FCStkQtyMthEnd,0)+ISNULL(FCPdtStkQtyIn,0)-ISNULL(FCPdtStkQtySale,0) AS FCStkQtyBal'
+	SET @tSql +=' FROM('
+			SET @tSql +=' SELECT FTPtyName,FTPbnName,STK.FTPdtCode,FTPdtName,FTPdtNameOth,FTBarCode,StkSetPrice.FCPdtStkSetPrice,'
+			SET @tSql +=' SUM(CASE FTStkType'
+			SET @tSql +=' WHEN ''3'' THEN ISNULL(Stk.FCStkQty,0)'  --ขาย
+			SET @tSql +=' WHEN ''4'' THEN ISNULL(Stk.FCStkQty,0)*-1' --คืน
+			SET @tSql +=' END) AS FCPdtStkQtySale,'
+			SET @tSql +=' SUM(CASE FTStkType'
+			SET @tSql +=' WHEN ''1'' THEN ISNULL(Stk.FCStkQty,0)' --เข้า
+			SET @tSql +=' WHEN ''2'' THEN ISNULL(Stk.FCStkQty,0)*-1' --ออก
+			SET @tSql +=' WHEN ''5'' THEN ISNULL(Stk.FCStkQty,0)' -- ปรับจำนวน + : เข้า , - : ออก
+			SET @tSql +=' END) AS FCPdtStkQtyIn,SUM(ISNULL(MthEnd.FCStkQtyMthEnd,0))  + SUM(ISNULL(MthEnd1.FCStkQtyMthEnd,0)) AS FCStkQtyMthEnd'
+
+			SET @tSql +=' FROM TCNTPdtStkCrd Stk WITH (NOLOCK)'
+			SET @tSql +=' LEFT JOIN TCNMPdt PdtM WITH(NOLOCK) ON Stk.FTPdtCode = PdtM.FTPdtCode'
+			SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON PdtM.FTPdtCode =  SpcBch.FTPdtCode'
+			SET @tSql +=' LEFT JOIN'
+			SET @tSql +=' (SELECT Stk.FTPdtCode,'
+			 SET @tSql +=' CASE WHEN' 
+					SET @tSql +=' SUM(CASE FTStkType'
+					SET @tSql +=' WHEN ''3'' THEN ISNULL(Stk.FCStkQty,0)'  --ขาย
+					SET @tSql +=' WHEN ''4'' THEN ISNULL(Stk.FCStkQty,0)*-1' --คืน
+					SET @tSql +=' END) = 0 THEN 0' 				
+   			 SET @tSql +=' ELSE'			 
+					SET @tSql +=' (SUM(CASE FTStkType'
+			 			 SET @tSql +=' WHEN ''3'' THEN (ISNULL(Stk.FCStkQty,0)*ISNULL(FCStkSetPrice,0))'  --ขาย
+						 SET @tSql +=' WHEN ''4'' THEN (ISNULL(Stk.FCStkQty,0)*ISNULL(FCStkSetPrice,0))*-1' --คืน
+						 SET @tSql +=' END) /' 
+					 SET @tSql +=' SUM(CASE FTStkType'
+						 SET @tSql +=' WHEN ''3'' THEN ISNULL(Stk.FCStkQty,0)'  --ขาย
+						 SET @tSql +=' WHEN ''4'' THEN ISNULL(Stk.FCStkQty,0)*-1' --คืน
+						SET @tSql +=' END))' 
+			 SET @tSql +=' END AS FCPdtStkSetPrice'
+			 SET @tSql +=' FROM TCNTPdtStkCrd Stk WITH (NOLOCK)'	
+			 SET @tSql +=' LEFT JOIN TCNMPdt PdtM WITH(NOLOCK) ON Stk.FTPdtCode = PdtM.FTPdtCode'
+			 SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON PdtM.FTPdtCode =  SpcBch.FTPdtCode'
+			 SET @tSql +=' WHERE FTStkType IN (''3'',''4'') AND ISNULL(FCStkSetPrice,0) <> 0'
+			 SET @tSql += @tSql3
+			 SET @tSql +=' GROUP BY Stk.FTPdtCode'
+			 SET @tSql +=' ) StkSetPrice ON STK.FTPdtCode = StkSetPrice.FTPdtCode '
+			 SET @tSql +=' LEFT JOIN'
+					SET @tSql +=' ('--Pdt
+						SET @tSql +=' SELECT Pdt.FTPdtCode,PdtL.FTPdtName,ISNULL(PdtL.FTPdtNameOth,'''') AS FTPdtNameOth,PdtBar.FTBarCode,ISNULL(PtyL.FTPtyName,'''') AS FTPtyName,ISNULL(PbnL.FTPbnName,'''') AS FTPbnName'
+						SET @tSql +=' FROM TCNMPdt Pdt WITH(NOLOCK)'
+						SET @tSql +=' LEFT JOIN TCNMPdt_L PdtL WITH(NOLOCK) ON Pdt.FTPdtCode = PdtL.FTPdtCode AND PdtL.FNLngID =  '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+						SET @tSql +=' LEFT JOIN TCNMPdtBrand_L PbnL WITH(NOLOCK) ON Pdt.FTPbnCode = PbnL.FTPbnCode AND PbnL.FNLngID =  '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+						SET @tSql +=' LEFT JOIN TCNMPdtType_L PtyL WITH(NOLOCK) ON Pdt.FTPtyCode = PtyL.FTPtyCode AND PtyL.FNLngID =  '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+						SET @tSql +=' LEFT JOIN TCNMPdtPackSize Ppz WITH(NOLOCK) ON Pdt.FTPdtCode = Ppz.FTPdtCode AND FCPdtUnitFact = 1'
+						SET @tSql +=' LEFT JOIN TCNMPdtBar PdtBar WITH(NOLOCK) ON Ppz.FTPdtCode = PdtBar.FTPdtCode AND Ppz.FTPunCode = PdtBar.FTPunCode'
+						SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON Pdt.FTPdtCode =  SpcBch.FTPdtCode'
+						SET @tSql += @tSqlPdt
+					SET @tSql +=' ) Pdt ON Stk.FTpdtCode = Pdt.FTPdtCode'
+			SET @tSql +=' LEFT JOIN' 
+					SET @tSql +=' ('--TCNTPdtStkCrdME
+						SET @tSql +=' SELECT FDStkDate,StkME.FTBchCode,StkME.FTPdtCode,FCStkQty AS  FCStkQtyMthEnd,FORMAT(FDStkDate, ''yyyy-MM'') AS FTStkMonthYer'
+						SET @tSql +=' FROM TCNTPdtStkCrdME StkME WITH(NOLOCK)'
+						SET @tSql +=' LEFT JOIN TCNMPdt PdtM WITH(NOLOCK) ON StkME.FTPdtCode = PdtM.FTPdtCode'
+						SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON PdtM.FTPdtCode =  SpcBch.FTPdtCode'
+						SET @tSql +=' WHERE FORMAT(FDStkDate, ''yyyy-MM'') = FORMAT(CONVERT(DATETIME,''' + @ptDateF+ '''), ''yyyy-MM'')'
+						--PRINT @tSqlME
+						SET @tSql += @tSqlME
+					SET @tSql +=' ) MthEnd ON Stk.FTBchCode = MthEnd.FTBchCode AND Stk.FTPdtCode = MthEnd.FTPdtCode AND FORMAT(Stk.FDStkDate, ''yyyy-MM'') = FORMAT(MthEnd.FDStkDate, ''yyyy-MM'')'
+					  SET @tSql +=' LEFT JOIN'
+					SET @tSql +=' ('--	TCNTPdtStkCrd ยอดยกมา เพื่อรวม กับ Qty ใน TCNTPdtStkCrdME						
+						SET @tSql +=' SELECT Stk1.FTBchCode,Stk1.FTPdtCode,FORMAT(FDStkDate, ''yyyy-MM'') AS FTStkMonthYer,'
+						SET @tSql +=' SUM(CASE FTStkType'
+						SET @tSql +=' WHEN ''3'' THEN ISNULL(Stk1.FCStkQty,0)*-1'  --ขาย
+						SET @tSql +=' WHEN ''4'' THEN ISNULL(Stk1.FCStkQty,0)' --คืน
+						SET @tSql +=' WHEN ''1'' THEN ISNULL(Stk1.FCStkQty,0)' --เข้า
+						SET @tSql +=' WHEN ''2'' THEN ISNULL(Stk1.FCStkQty,0)*-1' --ออก
+						SET @tSql +=' WHEN ''5'' THEN ISNULL(Stk1.FCStkQty,0)' -- ปรับจำนวน + : เข้า , - : ออก
+						SET @tSql +=' END) AS  FCStkQtyMthEnd'
+						SET @tSql +=' FROM TCNTPdtStkCrd  Stk1 WITH(NOLOCK)'
+						SET @tSql +=' LEFT JOIN TCNMPdt PdtM WITH(NOLOCK) ON Stk1.FTPdtCode = PdtM.FTPdtCode'
+						SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON PdtM.FTPdtCode =  SpcBch.FTPdtCode'
+						SET @tSql +=' WHERE CONVERT(VARCHAR(10),Stk1.FDStkDate,121) >= FORMAT(CONVERT(DATETIME,''' + @ptDateF+ '''), ''yyyy-MM-01'') AND CONVERT(VARCHAR(10),Stk1.FDStkDate,121) < '''+ @ptDateF+''''--@ptDateF
+						SET @tSql += @tSql2
+						SET @tSql +=' GROUP BY Stk1.FTBchCode,Stk1.FTPdtCode,FORMAT(FDStkDate, ''yyyy-MM'')'
+					SET @tSql +=' ) MthEnd1 ON STK.FTBchCode = MthEnd1.FTBchCode AND STK.FTPdtCode = MthEnd1.FTPdtCode AND FORMAT(STK.FDStkDate, ''yyyy-MM'') = MthEnd1.FTStkMonthYer'
+			--
+			 --WHERE CONVERT(VARCHAR(10),Stk.FDStkDate,121) >= FORMAT(CONVERT(DATETIME,@ptDateF), 'yyyy-MM-01') AND CONVERT(VARCHAR(10),Stk.FDStkDate,121) <= @ptDateT
+			SET @tSql +=@tSql1
+			SET @tSql +=' GROUP BY FTPtyName,FTPbnName,STK.FTPdtCode,Pdt.FTPdtName,Pdt.FTPdtNameOth,Pdt.FTBarCode,StkSetPrice.FCPdtStkSetPrice'--,ISNULL(MthEnd.FCStkQtyMthEnd,0)  + ISNULL(MthEnd1.FCStkQtyMthEnd,0) 
+			SET @tSql +=' ) SalData'
+
+	--SET @tSql +=' LEFT JOIN TCNMPdtBrand_L PbnL WITH (NOLOCK) ON Pdt.FTPbnCode = PbnL.FTPbnCode AND PbnL.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+	--PRINT @tSql
+	EXECUTE(@tSql)
+
+	--INSERT VD
+
+
+	--RETURN SELECT * FROM TRPTSalDTTmp WHERE FTComName = ''+ @nComName + '' AND FTRptCode = ''+ @tRptCode +'' AND FTUsrSession = '' + @tUsrSession + ''
+	
+END TRY
+
+BEGIN CATCH 
+	SET @FNResult= -1
+END CATCH	
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[SP_RPTxSaleByPty_Animate]    Script Date: 28/09/2022 18:32:16 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxSaleByPty_Animate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxSaleByPty_Animate
+GO
+CREATE PROCEDURE SP_RPTxSaleByPty_Animate 
+--ALTER PROCEDURE [dbo].[SP_RPTxDailySaleByPdt1001002] 
+
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptCode Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+
+	--สาขา
+	@ptBchL Varchar(8000), --กรณี Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+	--Merchant
+	@ptMerL Varchar(8000), --กรณี Condition IN
+	@ptMerF Varchar(10),
+	@ptMerT Varchar(10),
+	--Shop Code
+	@ptShpL Varchar(8000), --กรณี Condition IN
+	@ptShpF Varchar(10),
+	@ptShpT Varchar(10),
+	--ตัวแทนขาย
+	@ptAgnL Varchar(8000), --กรณี Condition IN
+	--@ptPosF Varchar(20),
+	--@ptPosT Varchar(20),
+
+	@ptPdtCodeF Varchar(20),
+	@ptPdtCodeT Varchar(20),
+	@ptPdtChanF Varchar(30),
+	@ptPdtChanT Varchar(30),
+	@ptPdtTypeF Varchar(5),
+	@ptPdtTypeT Varchar(5),
+
+	--NUI 22-09-05 RQ2208-020
+	@ptPbnF Varchar(5),
+	@ptPbnT Varchar(5),
+
+	@ptDateF Varchar(10),
+	@ptDateT Varchar(10),
+	----ลูกค้า
+	--@ptCstF Varchar(20),
+	--@ptCstT Varchar(20),
+	@FNResult INT OUTPUT 
+AS
+--------------------------------------
+-- Watcharakorn 
+-- Create 28/09/2022
+-- V.01.00.00
+-- Temp name  SP_RPTxSaleByPty_Animate
+-- @pnLngID ภาษา
+-- @ptRptCdoe ชื่อรายงาน
+-- @ptUsrSession UsrSession
+-- @ptBchF จากรหัสสาขา
+-- @ptBchT ถึงรหัสสาขา
+-- @ptShpF จากร้านค้า
+-- @ptShpT ถึงร้านค้า
+-- @ptPdtCodeF จากสินค้า
+-- @ptPdtCodeT ถึงสินค้า
+-- @ptPdtChanF จากกลุ่มสินค้า
+-- @ptPdtChanT ถึงกลุ่มสินค้า
+-- @ptPdtTypeF จากประเภทสินค้า
+-- @ptPdtTypeT ถึงประเภท
+
+-- @ptDateF จากวันที่
+-- @ptDateT ถึงวันที่
+-- @FNResult
+
+
+--------------------------------------
+BEGIN TRY
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptCode Varchar(100)
+	DECLARE @tUsrSession Varchar(255)
+	DECLARE @tSql VARCHAR(8000)
+	DECLARE @tSqlLast VARCHAR(8000)
+	DECLARE @tSql1 VARCHAR(8000)
+	DECLARE @tSql2 VARCHAR(8000)
+	DECLARE @tSql3 VARCHAR(8000)
+	DECLARE @tSqlME VARCHAR(8000)
+	DECLARE @tSqlPdt VARCHAR(8000)
+
+	--Branch Code
+	DECLARE @tBchF Varchar(5)
+	DECLARE @tBchT Varchar(5)
+	--Merchant
+	DECLARE @tMerF Varchar(10)
+	DECLARE @tMerT Varchar(10)
+	--Shop Code
+	DECLARE @tShpF Varchar(10)
+	DECLARE @tShpT Varchar(10)
+	--Pos Code
+	DECLARE @tPosF Varchar(20)
+	DECLARE @tPosT Varchar(20)
+
+	DECLARE @tPdtCodeF Varchar(20)
+	DECLARE @tPdtCodeT Varchar(20)
+	DECLARE @tPdtChanF Varchar(30)
+	DECLARE @tPdtChanT Varchar(30)
+	DECLARE @tPdtTypeF Varchar(5)
+	DECLARE @tPdtTypeT Varchar(5)
+
+	DECLARE @tPbnF Varchar(5)
+	DECLARE @tPbnT Varchar(5)
+
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+	--ลูกค้า
+	--DECLARE @tCstF Varchar(20)
+	--DECLARE @tCstT Varchar(20)
+
+
+	
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tUsrSession = @ptUsrSession
+	SET @tRptCode = @ptRptCode
+
+	--Branch
+	SET @tBchF  = @ptBchF
+	SET @tBchT  = @ptBchT
+	--Merchant
+	SET @tMerF  = @ptMerF
+	SET @tMerT  = @ptMerT
+	--Shop
+	SET @tShpF  = @ptShpF
+	SET @tShpT  = @ptShpT
+	--Pos
+	--SET @tPosF  = @ptPosF 
+	--SET @tPosT  = @ptPosT
+
+	SET @tPdtCodeF  = @ptPdtCodeF 
+	SET @tPdtCodeT = @ptPdtCodeT
+	SET @tPdtChanF = @ptPdtChanF
+	SET @tPdtChanT = @ptPdtChanT 
+	SET @tPdtTypeF = @ptPdtTypeF
+	SET @tPdtTypeT = @ptPdtTypeT
+
+	SET @tPbnF = @ptPbnF
+	SET @tPbnT = @ptPbnT
+
+
+	SET @tDocDateF = @ptDateF
+	SET @tDocDateT = @ptDateT
+	SET @FNResult= 0
+
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+	--Set ค่าให้ Paraleter กรณี T เป็นค่าว่างหรือ null
+
+
+	IF @ptBchL = null
+	BEGIN
+		SET @ptBchL = ''
+	END
+
+	IF @tBchF = null
+	BEGIN
+		SET @tBchF = ''
+	END
+	IF @tBchT = null OR @tBchT = ''
+	BEGIN
+		SET @tBchT = @tBchF
+	END
+
+	IF @ptMerL =null
+	BEGIN
+		SET @ptMerL = ''
+	END
+
+	IF @tMerF =null
+	BEGIN
+		SET @tMerF = ''
+	END
+	IF @tMerT =null OR @tMerT = ''
+	BEGIN
+		SET @tMerT = @tMerF
+	END 
+
+	IF @ptShpL =null
+	BEGIN
+		SET @ptShpL = ''
+	END
+
+	IF @tShpF =null
+	BEGIN
+		SET @tShpF = ''
+	END
+	IF @tShpT =null OR @tShpT = ''
+	BEGIN
+		SET @tShpT = @tShpF
+	END
+
+	IF @ptAgnL =null
+	BEGIN
+		SET @ptAgnL = ''
+	END
+
+	--IF @tPosF = null
+	--BEGIN
+	--	SET @tPosF = ''
+	--END
+	--IF @tPosT = null OR @tPosT = ''
+	--BEGIN
+	--	SET @tPosT = @tPosF
+	--END
+
+	IF @tPdtCodeF = null
+	BEGIN
+		SET @tPdtCodeF = ''
+	END 
+	IF @tPdtCodeT = null OR @tPdtCodeT =''
+	BEGIN
+		SET @tPdtCodeT = @tPdtCodeF
+	END 
+
+	IF @tPdtChanF = null
+	BEGIN
+		SET @tPdtChanF = ''
+	END 
+	IF @tPdtChanT = null OR @tPdtChanT =''
+	BEGIN
+		SET @tPdtChanT = @tPdtChanF
+	END 
+
+	IF @tPdtTypeF = null
+	BEGIN
+		SET @tPdtTypeF = ''
+	END 
+	IF @tPdtTypeT = null OR @tPdtTypeT =''
+	BEGIN
+		SET @tPdtTypeT = @tPdtTypeF
+	END 
+
+	IF @tPbnF = null
+	BEGIN
+		SET @tPbnF = ''
+	END 
+	IF @tPbnT = null OR @tPbnT =''
+	BEGIN
+		SET @tPbnT = @tPbnF
+	END 
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+	SET @tSql1 = ''
+	SET @tSqlPdt = ' WHERE 1=1'
+	SET @tSql2 = ''
+	SET @tSqlME = ''
+	SET @tSql3 = ''
+
+	IF @pnFilterType = '1'
+	BEGIN
+		IF (@tBchF <> '' AND @tBchT <> '')
+		BEGIN
+			SET @tSql1 +=' AND DT.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+		END
+
+		IF (@tMerF <> '' AND @tMerT <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+		END
+
+		IF (@tShpF <> '' AND @tShpT <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+		END
+
+
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN
+		IF (@ptBchL <> '' )
+		BEGIN		
+			SET @tSql1 +=' AND (DT.FTBchCode IN (' + @ptBchL + ')'
+			SET @tSql1 +=' OR ISNULL(DT.FTBchCode,'''') = '''') '
+			--SET @tSql3 +=' AND (Stk.FTBchCode IN (' + @ptBchL + ')'
+			--SET @tSql3 +=' OR ISNULL(Stk.FTBchCode,'''') = '''') '
+		END
+
+		IF (@ptMerL <> '' )
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSql3 +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSql2 +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+			SET @tSqlME +=' AND SpcBch.FTMerCode IN (' + @ptMerL + ')'
+		END
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSql1 +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSql3 +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSql2 +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+			SET @tSqlME +=' AND SpcBch.FTShpCode IN (' + @ptShpL + ')'
+		END
+
+		IF (@ptAgnL <> '')
+		BEGIN
+			SET @tSql1 += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+			SET @tSql3 += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+			SET @tSql2 += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+			SET @tSqlME += ' AND SpcBch.FTAgnCode IN (' + @ptAgnL + ')'
+		END		
+	END
+	IF (@tPdtCodeF <> '' AND @tPdtCodeT <> '')
+	BEGIN
+		SET @tSql1 +=' AND Pdt.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+		--SET @tSql3 +=' AND PdtM.FTPdtCode BETWEEN ''' + @tPdtCodeF + ''' AND ''' + @tPdtCodeT + ''''
+	END
+
+	IF (@tPdtChanF <> '' AND @tPdtChanT <> '')
+	BEGIN
+
+		SET @tSql1 +=' AND Pdt.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+		--SET @tSql3 +=' AND PdtM.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+	END
+
+	IF (@tPdtTypeF <> '' AND @tPdtTypeT <> '')
+	BEGIN		
+		SET @tSql1 += ' AND Pdt.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+		--SET @tSql3 += ' AND PdtM.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+	END
+
+	IF (@tPbnF <> '' AND @tPbnT <> '')
+	BEGIN
+		SET @tSql1 += ' AND Pdt.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+		--SET @tSql3 += ' AND PdtM.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+	END
+
+	IF (@tDocDateF <> '' AND @tDocDateT <> '')
+	BEGIN
+		--PRINT @tSqlLast
+		SET @tSql1 +=' AND CONVERT(VARCHAR(10),HD.FDXshDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		--SET @tSql1 += ' AND CONVERT(VARCHAR(10),Stk.FDStkDate,121) >= FORMAT(CONVERT(DATETIME,''' + @tDocDateF + '''), ''yyyy-MM-01'') AND CONVERT(VARCHAR(10),Stk.FDStkDate,121) <= ''' + @tDocDateT + ''''
+	END
+	
+	DELETE FROM TRPTSaleByPtyTmp_Animate WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''--ลบข้อมูล Temp ของเครื่องที่จะบันทึกขอมูลลง Temp
+ --Sale
+  	SET @tSql  =' INSERT INTO TRPTSaleByPtyTmp_Animate '
+	SET @tSql +=' (FTComName,FTRptCode,FTUsrSession,'
+	 SET @tSql +=' FTPtyCode,FTPtyName,FCXsdCostAvg,FCXsdSaleTotal,FCStkCostBal,FCSalAmtBal'
+	 SET @tSql +=' '
+	SET @tSql +=' )'
+	SET @tSql +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'
+	SET @tSql +=' ISNULL(SalePty.FTPtyCode,'''') AS FTPtyCode,ISNULL(PtyL.FTPtyName,'''') AS FTPtyName,SUM(FCXsdCostAvg)/SUM(FCXsdQtyAll) AS FCXsdCostAvg,'
+	SET @tSql +=' SUM(FCXsdSaleTotal) AS FCXsdSaleTotal,SUM(FCStkCostBal) AS FCStkCostBal,SUM(FCSalAmtBal) AS FCSalAmtBal'
+	SET @tSql +=' FROM('
+		SET @tSql +=' SELECT Cost1.FTBchCode,Cost1.FTPtyCode,(FCXsdCostTotal) AS FCXsdCostAvg,FCXsdQtyAll,Sale.FCXsdSaleTotal,Sale.FCStkQty AS FCStkQtyBal,(FCXsdCostTotal/FCXsdQtyAll) * Sale.FCStkQty AS FCStkCostBal,ISNULL(Sale.FCSalAmtBal,0) AS FCSalAmtBal'
+		SET @tSql +=' FROM('
+				SET @tSql +=' SELECT  DT.FTBchCode,Pdt.FTPtyCode,'
+				SET @tSql +=' SUM((CASE WHEN FNXshDocType = ''1'' THEN FCXsdQtyAll ELSE FCXsdQtyAll*-1 END)) AS FCXsdQtyAll,'
+				SET @tSql +=' SUM((CASE WHEN FNXshDocType = ''1'' THEN FCXsdQtyAll ELSE FCXsdQtyAll*-1 END)* FCXsdCostIN) AS FCXsdCostTotal'
+				SET @tSql +=' FROM TPSTSalDT DT WITH (NOLOCK) INNER JOIN TPSTSalHD  HD WITH (NOLOCK) ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo'
+				SET @tSql +=' LEFT JOIN TCNMPdt Pdt WITH(NOLOCK) ON DT.FTPdtCode = Pdt.FTPdtCode'
+				SET @tSql +=' LEFT JOIN TCNMPdtType_L PtyL WITH(NOLOCK) ON Pdt.FTPtyCode = PtyL.FTPtyCode AND PtyL.FNLngID ='''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+				SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON DT.FTPdtCode =  SpcBch.FTPdtCode'
+				SET @tSql +=' WHERE FCXsdCostIN <> 0'
+				-- Condition
+				SET @tSql += @tSql1
+				SET @tSql +=' GROUP BY DT.FTBchCode,Pdt.FTPtyCode'
+			SET @tSql +=' ) Cost1'
+			SET @tSql +=' LEFT JOIN'
+				SET @tSql +=' (SELECT  DT.FTBchCode,Pdt.FTPtyCode,'--DT.FTPdtCode,
+				SET @tSql +=' SUM(CASE WHEN FNXshDocType = ''1'' THEN FCXsdNetAfHD ELSE FCXsdNetAfHD*-1 END) AS FCXsdSaleTotal,'
+				SET @tSql +=' SUM(ISNULL(StkBal.FCStkQty,0)) AS FCStkQty,'
+				SET @tSql +=' SUM(ISNULL(StkBal.FCStkQty,0)*ISNULL(FCPgdPriceRet,0))  AS FCSalAmtBal'
+				SET @tSql +=' FROM TPSTSalDT DT WITH (NOLOCK) INNER JOIN TPSTSalHD  HD WITH (NOLOCK) ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo'
+				SET @tSql +=' LEFT JOIN TCNMPdt Pdt WITH(NOLOCK) ON DT.FTPdtCode = Pdt.FTPdtCode'
+				SET @tSql +=' LEFT JOIN TCNMPdtType_L PtyL WITH(NOLOCK) ON Pdt.FTPtyCode = PtyL.FTPtyCode AND PtyL.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+				SET @tSql +=' LEFT JOIN TCNMPdtSpcBch SpcBch  WITH(NOLOCK)  ON DT.FTPdtCode =  SpcBch.FTPdtCode'
+				SET @tSql +=' LEFT JOIN'
+					SET @tSql +=' (SELECT StkBal.FTBchCode,StkBal.FTPdtCode,FTPtyCode,'
+						SET @tSql +=' SUM(ISNULL(FCStkQty,0)) AS FCStkQty'			    
+						SET @tSql +=' FROM TCNTPdtStkBal StkBal WITH(NOLOCK)' 
+						SET @tSql +=' LEFT JOIN TCNMPdt Pdt WITH(NOLOCK) ON StkBal.FTPdtCode = Pdt.FTPdtCode'
+						SET @tSql +=' GROUP BY FTBchCode,StkBal.FTPdtCode,FTPtyCode'
+					SET @tSql +=' ) StkBal ON DT.FTBchCode = StkBal.FTBchCode AND DT.FTPdtCode = StkBal.FTPdtCode'
+				SET @tSql +=' LEFT JOIN'
+					SET @tSql +=' (SELECT SUBSTRING(P4Pdt.FTPghDocNo,3,5) AS FTBchCode,P4Pdt.FTPdtCode,Pdt.FTPtyCode,MAX(P4Pdt.FDPghDStop) AS FDPghDStop,AVG(P4Pdt.FCPgdPriceRet) AS FCPgdPriceRet'
+					  SET @tSql +=' FROM TCNTPdtPrice4PDT P4Pdt WITH(NOLOCK)'
+					  SET @tSql +=' LEFT JOIN TCNMPdt Pdt WITH(NOLOCK) ON P4Pdt.FTPdtCode = Pdt.FTPdtCode'
+					  SET @tSql +=' LEFT JOIN TCNMPdtPackSize Pzs WITH(NOLOCK) ON P4Pdt.FTPdtCode = Pzs.FTPdtCode'
+					  SET @tSql +=' WHERE Pzs.FCPdtUnitFact = 1'
+					  SET @tSql +=' GROUP BY SUBSTRING(FTPghDocNo,3,5) ,P4Pdt.FTPdtCode,Pdt.FTPtyCode'
+					SET @tSql +=' ) P4Pdt ON DT.FTBchCode = P4Pdt.FTBchCode AND DT.FTPdtCode = P4Pdt.FTPdtCode'
+				--WHERE FCXsdCostIN <> 0
+				SET @tSql +=@tSql1
+				SET @tSql +=' GROUP BY DT.FTBchCode,Pdt.FTPtyCode'--,DT.FTPdtCode
+				SET @tSql +=' ) Sale ON Cost1.FTBchCode = Sale.FTBchCode AND Cost1.FTPtyCode = Sale.FTPtyCode'
+	SET @tSql +=' )SalePty'
+	SET @tSql +=' LEFT JOIN TCNMPdtType_L PtyL WITH(NOLOCK) ON SalePty.FTPtyCode = PtyL.FTPtyCode AND PtyL.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+	SET @tSql +=' GROUP BY ISNULL(SalePty.FTPtyCode,''''),PtyL.FTPtyName'
+
+	--SET @tSql +=' LEFT JOIN TCNMPdtBrand_L PbnL WITH (NOLOCK) ON Pdt.FTPbnCode = PbnL.FTPbnCode AND PbnL.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+	--PRINT @tSql
+	EXECUTE(@tSql)
+
+	--INSERT VD
+
+
+	--RETURN SELECT * FROM TRPTSalDTTmp WHERE FTComName = ''+ @nComName + '' AND FTRptCode = ''+ @tRptCode +'' AND FTUsrSession = '' + @tUsrSession + ''
+	
+END TRY
+
+BEGIN CATCH 
+	SET @FNResult= -1
+END CATCH	
+GO
+
+
+
+
+
+/******************************************** Upgrade Table **************************************************/
+/******************************************** Upgrade Table **************************************************/
+
+
+
+
+
+/******************************************** Upgrade Data **************************************************/
+/******************************************** Upgrade Data **************************************************/
+
+
+
+
+/******************************************** Upgrade Stored Procedure **************************************************/
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCnTopupList')and OBJECTPROPERTY(id, N'IsProcedure') = 1) BEGIN
+	DROP PROCEDURE [dbo].STP_PRCnTopupList
+END
+GO
+CREATE PROCEDURE [dbo].[STP_PRCnTopupList] 
+	@ptBchCode VARCHAR(5) NUll,
+	@ptCrdCode VARCHAR(20) NUll,
+	@pcTxnValue  NUMERIC(18,4) NULL,
+	@pcTxnValuePmt  NUMERIC(18,4) NULL,
+	@pcTxnConditionPmt NUMERIC(18,4) NULL, 
+	@pcTxnNoRfn NUMERIC(18,4) NULL, -- 05.02.00 --
+	@ptTxnPosCode VARCHAR(5) NUll,
+	@pcCrdValue NUMERIC(18,4) NULL,
+	@ptShpCode  VARCHAR(5) NUll,
+	@ptUsrCode VARCHAR(20) NUll,
+	@ptDocNoRef VARCHAR(30) NUll,
+	@ptDocPmtRef VARCHAR(30) NULL
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	10/11/2020		Em		create 
+05.02.00	14/12/2020		Net		เพิ่ม Para ยอดห้ามคืน  
+05.03.00    04/01/2020		Zen		เพิ่ม Parameter ยอดเติมเงินที่ได้เงื่อนไข
+05.04.00    01/10/2022		Net		เพิ่ม Insert ยอดห้ามคืน CrdTopUpFifo
+----------------------------------------------------------------------*/
+DECLARE @tTrans varchar(20)
+DECLARE @nCount int
+SET @tTrans = 'Topup'
+BEGIN TRY
+	BEGIN TRANSACTION @tTrans
+	INSERT INTO TFNTCrdTopUp WITH(ROWLOCK) 
+    ( 
+		FTBchCode,FTTxnDocType,FTCrdCode 
+		,FDTxnDocDate,FCTxnValue 
+		,FTTxnStaPrc,FTTxnPosCode,FCTxnCrdValue,FCTxnPmt
+		,FTShpCode ,FTTxnDocNoRef ,FTUsrCode
+		,FCTxnNoRfn -- 05.02.00 --
+    ) 
+    VALUES 
+    ( 
+		@ptBchCode,'1',@ptCrdCode 
+		,GETDATE(),@pcTxnValue 
+		,'1',@ptTxnPosCode,@pcCrdValue,ISNULL(@pcTxnValuePmt,0)
+		,@ptShpCode,@ptDocNoRef,@ptUsrCode     
+		,@pcTxnNoRfn -- 05.02.00 --
+    ) 
+
+	IF NOT EXISTS(SELECT FTCrdCode FROM TFNMCardBal WITH(NOLOCK) WHERE FTCrdCode = @ptCrdCode)
+	BEGIN
+		INSERT INTO TFNMCardBal(FTCrdCode,FTCrdTxnCode,FCCrdValue,FDLastUpdOn)
+		SELECT @ptCrdCode,FTCrdTxnCode,0,GETDATE() FROM TFNSCrdBalType
+	END 
+    -- Update Master Card
+    UPDATE TFNMCard WITH (ROWLOCK) 
+	SET FDCrdResetDate = GETDATE() 
+		,FDLastUpdOn = GETDATE()  
+    WHERE FTCrdCode=@ptCrdCode
+
+	UPDATE TFNMCardBal
+	SET FCCrdValue = (ISNULL(FCCrdValue,0) + @pcTxnValue)
+	WHERE FTCrdCode = @ptCrdCode 
+	AND FTCrdTxnCode = '001'
+
+	UPDATE TFNMCardBal
+	SET FCCrdValue = ISNULL(CTP.FCCtyDeposit,0)
+	FROM TFNMCardBal BAL
+	INNER JOIN TFNMCard CRD WITH(NOLOCK) ON CRD.FTCrdCode = BAL.FTCrdCode
+	INNER JOIN TFNMCardType CTP WITH(NOLOCK) ON CTP.FTCtyCode = CRD.FTCtyCode
+	WHERE BAL.FTCrdCode = @ptCrdCode 
+	AND BAL.FTCrdTxnCode = '003'
+
+	IF ISNULL(@pcTxnValuePmt,0) > 0
+	BEGIN
+		UPDATE TFNMCardBal
+		SET FCCrdValue = (ISNULL(FCCrdValue,0) + ISNULL(@pcTxnValuePmt,0))
+		WHERE FTCrdCode = @ptCrdCode 
+		AND FTCrdTxnCode = '002'
+
+		INSERT INTO TFNTCrdTopUpFifo WITH(ROWLOCK) 
+		(
+			FTCrdCode ,FDDateTime ,FCPmcAmtPay,
+			FCPmcAmtGet ,FCPmcAmtNot ,
+			FCPmcNoRfnPay,FCPmcNoRfnGet,
+			FCPmcAmtPayAvb ,FCPmcAmtGetAvb ,FCPmcAmtNotAvb,
+			FDLastUpdOn ,FTLastUpdBy,FDCreateOn ,FTCreateBy
+		)
+		 SELECT @ptCrdCode,GETDATE(),@pcTxnConditionPmt,
+		 @pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 CASE WHEN PmtHD.FTPmhStaAlwRetMnyPay = '2' THEN @pcTxnConditionPmt ELSE 0 END,
+		 CASE WHEN PmtHD.FTPmhStaAlwRetMnyGet = '2' THEN @pcTxnValuePmt ELSE 0 END,
+		 @pcTxnConditionPmt,@pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 GETDATE(),@ptUsrCode,GETDATE(),@ptUsrCode
+		 FROM TFNTCrdPmtHD PmtHD
+		 WHERE FTPmhDocNo = @ptDocPmtRef
+		
+	END
+	ELSE
+	BEGIN
+		INSERT INTO TFNTCrdTopUpFifo WITH(ROWLOCK) 
+		(
+			FTCrdCode ,FDDateTime ,FCPmcAmtPay,
+			FCPmcAmtGet ,FCPmcAmtNot ,
+			FCPmcNoRfnPay,FCPmcNoRfnGet,
+			FCPmcAmtPayAvb ,FCPmcAmtGetAvb ,FCPmcAmtNotAvb,
+			FDLastUpdOn ,FTLastUpdBy,FDCreateOn ,FTCreateBy
+		)VALUES (
+		 @ptCrdCode,GETDATE(),@pcTxnConditionPmt,
+		 @pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 --0,
+		 @pcTxnNoRfn, -- 05.04.00 --
+		 0,
+		 @pcTxnConditionPmt,@pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 GETDATE(),@ptUsrCode,GETDATE(),@ptUsrCode )
+	END
+
+	 -- 05.02.00 --
+	IF ISNULL(@pcTxnNoRfn,0) > 0
+	BEGIN
+		UPDATE TFNMCardBal
+		SET FCCrdValue = (ISNULL(FCCrdValue,0) + ISNULL(@pcTxnNoRfn,0))
+		WHERE FTCrdCode = @ptCrdCode 
+		AND FTCrdTxnCode = '005'
+	END
+	 -- 05.02.00 --
+    
+	
+	COMMIT TRANSACTION @tTrans 
+
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION @tTrans 
+END CATCH
+GO
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCnResetCardExpired') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE dbo.STP_PRCnResetCardExpired
+GO
+CREATE PROCEDURE [dbo].[STP_PRCnResetCardExpired]
+    @ptCrdCode VARCHAR(30) NULL
+	, @FNResult INT OUTPUT AS
+/*---------------------------------------------------------------------
+Document History
+Date			User		Remark
+1.28/09/2022	Net			Create  
+----------------------------------------------------------------------*/
+BEGIN TRY
+    
+    
+    UPDATE CRD
+    SET FDCrdExpireDate = 
+        CASE WHEN ISNULL(FNCtyExpirePeriod, 0) = 0 THEN '9999-12-31'
+            ELSE CASE WHEN ISNULL(FTCtyExpiredType, '') = '2' --ตามรอบเวลา
+                THEN CASE ISNULL(FNCtyExpiredType, 2)
+                        WHEN 1 THEN DATEADD(HOUR, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        WHEN 2 THEN DATEADD(DAY, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        WHEN 3 THEN DATEADD(MONTH, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        WHEN 4 THEN DATEADD(YEAR, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        ELSE DATEADD(DAY, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        END
+                ELSE CASE ISNULL(FNCtyExpiredType, 2) -- ตามรอบปฏิทิน
+                        WHEN 1 THEN CONVERT(VARCHAR(14), DATEADD(HOUR, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE()), 121) + '59:59'
+                        WHEN 2 THEN CONVERT(VARCHAR(10), DATEADD(DAY, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE()), 121) + ' 23:59:59'
+                        WHEN 3 THEN CONVERT(VARCHAR(10), EOMONTH(DATEADD(MONTH, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE())), 121) + ' 23:59:59'
+                        WHEN 4 THEN CONVERT(VARCHAR(4), DATEADD(YEAR, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE()), 121) + '-12-31 23:59:59'
+                        ELSE CONVERT(VARCHAR(10), DATEADD(DAY, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE()), 121) + ' 23:59:59'
+                        END
+            END
+        END
+    FROM TFNMCard CRD WITH(NOLOCK) 
+    INNER JOIN TFNMCardType CTY WITH(NOLOCK) ON 
+        CRD.FTCtyCode = CTY.FTCtyCode 
+    WHERE CRD.FTCrdStaActive = '1'
+        AND CRD.FTCrdCode = @ptCrdCode
+
+    SELECT ''
+	SET @FNResult= 0
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE()
+	SET @FNResult= -1
+END CATCH
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_GEToCardInfoReturn')
+AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+BEGIN
+ DROP PROCEDURE dbo.STP_GEToCardInfoReturn
+END
+GO
+
+CREATE PROCEDURE [dbo].[STP_GEToCardInfoReturn] 
+ @ptCrdCode VARCHAR(30) NULL,
+ @pnLngID INT NULL
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	30/09/2022		Net     Create
+----------------------------------------------------------------------*/
+BEGIN TRY
+		SELECT 			
+		M.FTCrdCode 
+		,L.FTCrdName
+		,TFNMCardType_L.FTCtyName
+		,M.FDCrdExpireDate AS FDCrdExpireDate
+		,M.FDCrdResetDate AS FDCrdResetDate
+		,ISNULL(T.FCCtyTopUpAuto,0.00) AS FCCtyTopUpAuto
+		,T.FNCtyExpiredType
+		,T.FNCtyExpirePeriod
+		,ISNULL(L.FNLngID,1) AS FNLngID
+		,M.FTCrdStaShift
+		,M.FTCrdHolderID
+		,M.FTCrdStaActive
+		,T.FCCtyDeposit
+		,ISNULL(T.FTCtyStaAlwRet,0) AS FTCtyStaAlwRet	
+		,[dbo].[F_GETnCardAmount](@ptCrdCode) AS FCCardAmt --มูลค่าที่ใช้ได้
+		,[dbo].[F_GETnCardTotal](@ptCrdCode) AS FCCardTotal --ยอดคงเหลือ	
+		,T.FTCtyStaPay
+		,T.FTCtyStaShift	 
+		,T.FTCtyCode
+		,ISNULL(T.FCCtyCreditLimit,0) AS FCCtyCreditLimit		-- 05.03.00 --
+		,ISNULL([dbo].[F_GETnCardCheckout](@ptCrdCode),0) As FCCrdCheckout -- 05.04.00 --
+        ,ISNULL(M.FTAgnCode,'') AS FTAgnCode -- 05.07.00 --
+		FROM TFNMCard M WITH (NOLOCK)
+		LEFT JOIN TFNMCard_L L WITH (NOLOCK) ON M.FTCrdCode = L.FTCrdCode 
+		AND L.FNLngID = @pnLngID  -- 05.05.00 --
+		LEFT JOIN TFNMCardType  T WITH (NOLOCK) ON M.FTCtyCode= T.FTCtyCode
+		LEFT JOIN TFNMCardType_L WITH (NOLOCK) ON T.FTCtyCode= TFNMCardType_L.FTCtyCode  AND L.FNLngID = TFNMCardType_L.FNLngID
+		WHERE M.FTCrdCode=@ptCrdCode
+
+		IF NOT EXISTS(SELECT FTCrdCode FROM TFNMCardBal WITH(NOLOCK) WHERE FTCrdCode = @ptCrdCode)
+		BEGIN
+			INSERT INTO TFNMCardBal(FTCrdCode,FTCrdTxnCode,FCCrdValue,FDLastUpdOn)
+			SELECT @ptCrdCode,FTCrdTxnCode,0,GETDATE() FROM TFNSCrdBalType
+		END 
+
+		SELECT ROW_NUMBER() OVER (ORDER BY BAL.FTCrdTxnCode) AS FNTxnSeq,CBT.FTCrdName,BAL.FCCrdValue,BAL.FTCrdTxnCode
+		FROM TFNMCardBal BAL WITH(NOLOCK)
+		LEFT JOIN TFNSCrdBalType_L CBT WITH(NOLOCK) ON CBT.FTCrdTxnCode = BAL.FTCrdTxnCode AND CBT.FNLngID = @pnLngID
+		WHERE BAL.FTCrdCode = @ptCrdCode
+
+END TRY
+BEGIN CATCH
+	SELECT ERROR_MESSAGE()
+END CATCH
+GO
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_GEToCardInfo')
+AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+BEGIN
+ DROP PROCEDURE dbo.STP_GEToCardInfo
+END
+GO
+
+CREATE PROCEDURE [dbo].[STP_GEToCardInfo] 
+ @ptCrdCode VARCHAR(30) NULL,
+ @pnLngID INT NULL
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	11/11/2020		Em		create 
+05.03.00	14/12/2020		Em		เพิ่ม GET FCCtyCreditLimit
+05.04.00	10/03/2021		Zen		เพิ่ม Get Checkout
+05.05.00	02/04/2021		Zen		ย้าน Where ภาษา จาก Where หลักเป็น Where ใน Left Join
+05.06.00	09/04/2021		Zen		เพิ่ม FTCrdStaActive เช็คการเคลื่อนไหวบัตรกดเงินสด
+05.07.00	15/08/2021		Net		เพิ่ม FTAgnCode รองรับบัตรตามตัวแทนขาย
+----------------------------------------------------------------------*/
+BEGIN TRY
+		SELECT 			
+		M.FTCrdCode 
+		,L.FTCrdName
+		,TFNMCardType_L.FTCtyName
+		,M.FDCrdExpireDate AS FDCrdExpireDate
+		,M.FDCrdResetDate AS FDCrdResetDate
+		,ISNULL(T.FCCtyTopUpAuto,0.00) AS FCCtyTopUpAuto
+		,T.FNCtyExpiredType
+		,T.FNCtyExpirePeriod
+		,ISNULL(L.FNLngID,1) AS FNLngID
+		,M.FTCrdStaShift
+		,M.FTCrdHolderID
+		,M.FTCrdStaActive
+		,T.FCCtyDeposit
+		,ISNULL(T.FTCtyStaAlwRet,0) AS FTCtyStaAlwRet	
+		,[dbo].[F_GETnCardAmount](@ptCrdCode) AS FCCardAmt --มูลค่าที่ใช้ได้
+		,[dbo].[F_GETnCardTotal](@ptCrdCode) AS FCCardTotal --ยอดคงเหลือ	
+		,T.FTCtyStaPay
+		,T.FTCtyStaShift	 
+		,T.FTCtyCode
+		,ISNULL(T.FCCtyCreditLimit,0) AS FCCtyCreditLimit		-- 05.03.00 --
+		,ISNULL([dbo].[F_GETnCardCheckout](@ptCrdCode),0) As FCCrdCheckout -- 05.04.00 --
+        ,ISNULL(M.FTAgnCode,'') AS FTAgnCode -- 05.07.00 --
+		FROM TFNMCard M WITH (NOLOCK)
+		LEFT JOIN TFNMCard_L L WITH (NOLOCK) ON M.FTCrdCode = L.FTCrdCode 
+		AND L.FNLngID = @pnLngID  -- 05.05.00 --
+		LEFT JOIN TFNMCardType  T WITH (NOLOCK) ON M.FTCtyCode= T.FTCtyCode
+		LEFT JOIN TFNMCardType_L WITH (NOLOCK) ON T.FTCtyCode= TFNMCardType_L.FTCtyCode  AND L.FNLngID = TFNMCardType_L.FNLngID
+		WHERE M.FTCrdCode=@ptCrdCode AND M.FTCrdStaActive = '1'
+
+		IF NOT EXISTS(SELECT FTCrdCode FROM TFNMCardBal WITH(NOLOCK) WHERE FTCrdCode = @ptCrdCode)
+		BEGIN
+			INSERT INTO TFNMCardBal(FTCrdCode,FTCrdTxnCode,FCCrdValue,FDLastUpdOn)
+			SELECT @ptCrdCode,FTCrdTxnCode,0,GETDATE() FROM TFNSCrdBalType
+		END 
+
+		SELECT ROW_NUMBER() OVER (ORDER BY BAL.FTCrdTxnCode) AS FNTxnSeq,CBT.FTCrdName,BAL.FCCrdValue,BAL.FTCrdTxnCode
+		FROM TFNMCardBal BAL WITH(NOLOCK)
+		LEFT JOIN TFNSCrdBalType_L CBT WITH(NOLOCK) ON CBT.FTCrdTxnCode = BAL.FTCrdTxnCode AND CBT.FNLngID = @pnLngID
+		WHERE BAL.FTCrdCode = @ptCrdCode
+
+END TRY
+BEGIN CATCH
+	SELECT ERROR_MESSAGE()
+END CATCH
+GO
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCoCancelCrdNoReuse') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE dbo.STP_PRCoCancelCrdNoReuse
+GO
+CREATE PROCEDURE [dbo].[STP_PRCoCancelCrdNoReuse]
+	@pnBackDay INT
+	, @FNResult INT OUTPUT AS
+/*---------------------------------------------------------------------
+Document History
+Date			User		Remark
+1.28/09/2022	Net			Create  
+----------------------------------------------------------------------*/
+BEGIN TRY
+    
+    DECLARE @dDate DATE
+    SET @dDate = DATEADD(DAY ,@pnBackDay * -1, GETDATE())
+
+    UPDATE CRD
+    SET FTCrdStaActive = '3'
+    --SELECT *
+    FROM TFNMCard CRD WITH(NOLOCK)
+    INNER JOIN TFNMCardType CTY WITH(NOLOCK) ON
+        CRD.FTCtyCode = CTY.FTCtyCode
+    INNER JOIN TFNTCrdSale SAL WITH(NOLOCK) ON
+        CRD.FTCrdCode = SAL.FTCrdCode 
+        --AND SAL.FTTxnDocType NOT IN ('5','7','10')
+    WHERE CRD.FTCrdStaActive = '1' AND CRD.FTCrdStaShift = '2'
+        AND ISNULL(CTY.FTCtyStaCrdReuse, '') = '2'
+        AND CONVERT(DATE,SAL.FDTxnDocDate) >= @dDate
+        AND CRD.FDCrdExpireDate < GETDATE()
+
+    SELECT ''
+	SET @FNResult= 0
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE()
+	SET @FNResult= -1
+END CATCH
+GO
+/******************************************** Stored Procedure ******************************/
+
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'SP_CNoBrowseProduct')
+AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+BEGIN
+ DROP PROCEDURE dbo.SP_CNoBrowseProduct
+END
+GO
+CREATE PROCEDURE [dbo].[SP_CNoBrowseProduct]
+	--ผู้ใช้และสิท
+	@ptUsrCode VARCHAR(10),
+	@ptUsrLevel VARCHAR(10),
+	@ptSesAgnCode VARCHAR(10),
+	@ptSesBchCodeMulti VARCHAR(100),
+	@ptSesShopCodeMulti VARCHAR(100),
+	@ptSesMerCode VARCHAR(20),
+
+	--กำหนดการแสดงข้อมูล
+	@pnRow INT,
+	@pnPage INT,
+	@pnMaxTopPage INT,
+	--ค้นหาตามประเภท
+	@ptFilterBy VARCHAR(80),
+	@ptSearch VARCHAR(1000),
+
+	--OPTION PDT
+	@ptWhere VARCHAR(8000),
+	@ptNotInPdtType VARCHAR(8000),
+	@ptPdtCodeIgnorParam VARCHAR(30),
+	@ptPDTMoveon VARCHAR(1),
+	@ptPlcCodeConParam VARCHAR(10),
+	@ptDISTYPE VARCHAR(1),
+	@ptPagename VARCHAR(10),
+	@ptNotinItemString VARCHAR(8000),
+	@ptSqlCode VARCHAR(20),
+	
+	--Price And Cost
+	@ptPriceType VARCHAR(30),
+	@ptPplCode VARCHAR(30),
+	
+	@pnLngID INT
+AS
+/*---------------------------------------------------------------------
+Document History
+Date			User		Remark
+1.03/10/2022	Nale		เพิ่มฟิลเตอร์ค้นหาตามยี่ห้อสินค้า  
+----------------------------------------------------------------------*/
+BEGIN
+
+DECLARE @tSQL VARCHAR(MAX)
+DECLARE @tSQLMaster VARCHAR(MAX)
+
+DECLARE @tUsrCode VARCHAR(10)
+DECLARE @tUsrLevel VARCHAR(10)
+DECLARE @tSesAgnCode VARCHAR(10)
+DECLARE @tSesBchCodeMulti VARCHAR(100)
+DECLARE @tSesShopCodeMulti VARCHAR(100)
+DECLARE @tSesMerCode VARCHAR(20)
+
+DECLARE @nRow INT
+DECLARE @nPage INT
+DECLARE @nMaxTopPage INT
+
+DECLARE @tFilterBy VARCHAR(80)
+DECLARE @tSearch VARCHAR(80)
+
+	--OPTION PDT
+DECLARE	@tWhere VARCHAR(8000)
+DECLARE	@tNotInPdtType VARCHAR(8000)
+DECLARE	@tPdtCodeIgnorParam VARCHAR(30)
+DECLARE	@tPDTMoveon VARCHAR(1)
+DECLARE	@tPlcCodeConParam VARCHAR(10)
+DECLARE	@tDISTYPE VARCHAR(1)
+DECLARE	@tPagename VARCHAR(10)
+DECLARE	@tNotinItemString VARCHAR(8000)
+DECLARE	@tSqlCode VARCHAR(10)
+
+	--Price And Cost
+DECLARE	@tPriceType VARCHAR(10)
+DECLARE	@tPplCode VARCHAR(10)
+
+DECLARE @nLngID INT
+
+---///2021-09-10 -Nattakit K. :: สร้างสโตร
+SET @tUsrCode = @ptUsrCode
+SET @tUsrLevel = @ptUsrLevel
+SET @tSesAgnCode = @ptSesAgnCode
+SET @tSesBchCodeMulti = @ptSesBchCodeMulti
+SET @tSesShopCodeMulti = @ptSesShopCodeMulti
+SET @tSesMerCode = @ptSesMerCode
+
+SET @nRow = @pnRow
+SET @nPage = @pnPage
+SET @nMaxTopPage = @pnMaxTopPage
+
+SET @tFilterBy = @ptFilterBy
+SET @tSearch = @ptSearch
+
+SET @tWhere = @ptWhere
+SET @tNotInPdtType = @ptNotInPdtType
+SET @tPdtCodeIgnorParam = @ptPdtCodeIgnorParam
+SET @tPDTMoveon = @ptPDTMoveon
+SET @tPlcCodeConParam = @ptPlcCodeConParam
+SET @tDISTYPE = @ptDISTYPE
+SET @tPagename = @ptPagename
+SET @tNotinItemString = @ptNotinItemString
+SET @tSqlCode = @ptSqlCode
+
+SET @tPriceType = @ptPriceType
+SET @tPplCode = @ptPplCode
+
+SET @nLngID = @pnLngID
+
+
+
+
+----//----------------------Data Master And Filter-------------//
+								SET @tSQLMaster = ' SELECT Base.*, '
+
+						IF @nPage = 1 BEGIN
+								SET @tSQLMaster += ' COUNT(*) OVER() AS rtCountData '
+						END ELSE BEGIN
+								SET @tSQLMaster += ' 0 AS rtCountData '
+						END
+
+								SET @tSQLMaster += ' FROM ( '
+								SET @tSQLMaster += ' SELECT '
+
+						IF @nMaxTopPage > 0 BEGIN
+								SET @tSQLMaster += ' TOP ' + CAST(@nMaxTopPage  AS VARCHAR(10)) + ' '
+						END
+
+					      --SET @tSQLMaster += ' ROW_NUMBER () OVER (ORDER BY Products.FDCreateOn DESC) AS FNRowID,'
+								SET @tSQLMaster += ' Products.FTPdtForSystem, '
+                SET @tSQLMaster += ' Products.FTPdtCode,PDT_IMG.FTImgObj,'
+
+						IF @ptUsrLevel != 'HQ'  BEGIN
+								SET @tSQLMaster += ' PDLSPC.FTAgnCode,PDLSPC.FTBchCode,PDLSPC.FTShpCode,PDLSPC.FTMerCode, '
+						END ELSE BEGIN
+								SET @tSQLMaster += ' '''' AS FTAgnCode,'''' AS FTBchCode,'''' AS  FTShpCode,'''' AS FTMerCode, '
+						END 
+
+								SET @tSQLMaster += ' Products.FTPtyCode,'
+								SET @tSQLMaster += ' Products.FTPbnCode,'
+								SET @tSQLMaster += ' Products.FTPgpChain,'
+								SET @tSQLMaster += ' Products.FTPdtStaVatBuy,Products.FTPdtStaVat,Products.FTVatCode,Products.FTPdtStaActive, Products.FTPdtSetOrSN, Products.FTPdtStaAlwDis,Products.FTPdtType,Products.FCPdtCostStd,'
+								SET @tSQLMaster += ' PDTSPL.FTSplCode,PDTSPL.FTUsrCode AS FTBuyer,PBAR.FTBarCode,PPCZ.FTPunCode,PPCZ.FCPdtUnitFact,'
+								SET @tSQLMaster += ' Products.FTCreateBy,'
+								SET @tSQLMaster += ' Products.FDCreateOn'
+                SET @tSQLMaster += ' FROM'
+                SET @tSQLMaster += ' TCNMPdt Products WITH (NOLOCK)'
+
+						IF @ptUsrLevel != 'HQ'  BEGIN
+                SET @tSQLMaster += ' LEFT JOIN TCNMPdtSpcBch PDLSPC WITH (NOLOCK) ON Products.FTPdtCode = PDLSPC.FTPdtCode'
+						END
+
+								SET @tSQLMaster += ' INNER JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON Products.FTPdtCode = PPCZ.FTPdtCode LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)  ON Products.FTPdtCode = PBAR.FTPdtCode  AND PPCZ.FTPunCode = PBAR.FTPunCode' --//หาบาร์โค้ด
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdtSpl PDTSPL WITH (NOLOCK) ON PBAR.FTPdtCode = PDTSPL.FTPdtCode AND PBAR.FTBarCode = PDTSPL.FTBarCode '--//ผู้จำหน่าย
+								SET @tSQLMaster += ' LEFT JOIN TCNMImgPdt AS PDT_IMG WITH(NOLOCK) ON Products.FTPdtCode = PDT_IMG.FTImgRefID AND PDT_IMG.FTImgTable = ''TCNMPdt'' AND PDT_IMG.FNImgSeq = 1 '					
+			---//--------การจอยตาราง------///
+							IF @tFilterBy = 'FTPdtCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' '--//รหัสสินค้า
+							END
+
+							IF @tFilterBy = 'FTPdtName' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdt_L PDTL WITH (NOLOCK)       ON Products.FTPdtCode = PDTL.FTPdtCode  AND PDTL.FNLngID   = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '--//หาชื่อสินค้า
+							END
+
+							/*IF @tFilterBy = 'PDTANDBarcode' OR @tFilterBy = 'FTPlcCode' OR @tSqlCode != '' BEGIN
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)      ON PDT.FTPdtCode = PBAR.FTPdtCode  AND PPCZ.FTPunCode = PBAR.FTPunCode' --//หาบาร์โค้ด
+							END
+
+							IF @tFilterBy = 'FTBarCode' BEGIN
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)      ON PDT.FTPdtCode = PBAR.FTPdtCode  AND PPCZ.FTPunCode = PBAR.FTPunCode' --//หาบาร์โค้ด
+							END*/
+
+							IF @tFilterBy = 'FTPunCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' ' --//หาหน่วย
+							END								
+
+							IF @tFilterBy = 'FTPgpChain' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = Products.FTPgpChain AND PGL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '--//หากลุ่มสินค้า
+							END							
+
+							IF @tFilterBy = 'FTPtyCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON Products.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '--//หาประเภทสินค้า
+							END	
+
+							IF @tFilterBy = 'FTBuyer' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' '--//ผู้จัดซื้อ
+							END
+
+							IF @tFilterBy = 'FTPbnCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdtBrand_L PBNL WITH (NOLOCK)    ON Products.FTPbnCode = PBNL.FTPbnCode   AND PBNL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '--//หาประเภทสินค้า
+							END	
+
+
+						 /* IF @tSqlCode != '' BEGIN------//----------------ผู้จำหน่าย-------------------
+								SET @tSQLMaster += ' LEFT JOIN TCNMPdtSpl PDTSPL WITH (NOLOCK) ON PBAR.FTPdtCode = PDTSPL.FTPdtCode AND PBAR.FTBarCode = PDTSPL.FTBarCode '--//ผู้จำหน่าย
+							END*/
+								---//--------การจอยตาราง------///
+
+
+							SET @tSQLMaster += ' WHERE ISNULL(Products.FTPdtCode,'''') != '''' '
+
+
+								---//--------การค้นหา------///
+							IF @tFilterBy = 'FTPdtCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' AND ( Products.FTPdtCode = ''' + @tSearch + ''' )'--//รหัสสินค้า
+							END
+
+							IF @tFilterBy = 'FTPdtName' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' AND ( UPPER(PDTL.FTPdtName)  COLLATE THAI_BIN    LIKE UPPER(''%' + @tSearch + '%'') ) '--//หาชื่อสินค้า
+							END
+
+							IF @tFilterBy = 'FTBarCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' AND ( PBAR.FTBarCode = ''' + @tSearch + ''' )' --//หาบาร์โค้ด
+							END
+
+							IF @tFilterBy = 'PDTANDBarcode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' AND ( PBAR.FTPdtCode =''' + @tSearch + '''  OR  PBAR.FTBarCode =''' + @tSearch + ''' )' --//หาบาร์โค้ด
+							END
+
+							IF @tFilterBy = 'FTPunCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' AND ( PUNL.FTPunName  COLLATE THAI_BIN    LIKE ''%' + @tSearch + '%'' OR PUNL.FTPunCode COLLATE THAI_BIN LIKE ''%' + @tSearch + '%'' )' --//หาหน่วย
+							END								
+
+							IF @tFilterBy = 'FTPgpChain' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' AND ( PGL.FTPgpName   COLLATE THAI_BIN    LIKE ''%' + @tSearch + '%'' OR PGL.FTPgpChainName COLLATE THAI_BIN LIKE ''%' + @tSearch + '%'' ) '--//หากลุ่มสินค้า
+							END							
+
+							IF @tFilterBy = 'FTPtyCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' AND ( PTL.FTPtyName   COLLATE THAI_BIN    LIKE ''%' + @tSearch + '%'' ) '--//หาประเภทสินค้า
+							END	
+
+							IF @tFilterBy = 'FTBuyer' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' '--//ผู้จัดซื้อ
+							END
+
+							IF @tFilterBy = 'FTPbnCode' AND @tSearch <> '' BEGIN
+								SET @tSQLMaster += ' AND ( PBNL.FTPbnCode = ''' + @tSearch + ''' OR PBNL.FTPbnName COLLATE THAI_BIN LIKE ''%' + @tSearch + '%'' )' --//ยี่ห้อ
+							END		
+								---//--------การค้นหา------///
+
+								---//--------การมองเห็นสินค้าตามผู้ใช้------///
+
+						IF @tUsrLevel != 'HQ' BEGIN
+										--//---------------------- การมองเห็นเฉพาะสินค้าตามระดับผู้ใช้--------------------------//
+									SET @tSQLMaster += ' AND ( ('
+									SET @tSQLMaster += ' PDLSPC.FTAgnCode = '''+@tSesAgnCode+''' '
+			
+												IF @tSesMerCode != '' AND @tSesMerCode != '' BEGIN 
+														SET @tSQLMaster += ' AND PDLSPC.FTMerCode = '''+@tSesMerCode+''' '
+												END
+
+												IF (SELECT ISNULL(FTBchCode,'') FROM TCNTUsrGroup WHERE FTUsrCode= @tUsrCode)<>'' BEGIN
+														SET @tSQLMaster += ' AND PDLSPC.FTBchCode IN ('+@tSesBchCodeMulti+') '
+												END
+															
+												IF @tSesShopCodeMulti != '' BEGIN 
+														SET @tSQLMaster += ' AND PDLSPC.FTShpCode IN ('+@tSesShopCodeMulti+') '
+												END
+
+									SET @tSQLMaster += ' )'
+									-- |-------------------------------------------------------------------------------------------| 
+
+									--//---------------------- การมองเห็นสินค้าระดับสาขา (สำหรับผู้ใช้ระดับร้านค้า)--------------------------//
+										IF @tSesShopCodeMulti != '' BEGIN 
+
+												SET @tSQLMaster += ' OR ('--//กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่อยู่ใน Bch แต่ไม่ผูก Shp
+												SET @tSQLMaster += ' PDLSPC.FTAgnCode = '''+@tSesAgnCode+''' '
+												SET @tSQLMaster += ' AND PDLSPC.FTMerCode = '''+@tSesMerCode+''' '
+												SET @tSQLMaster += ' AND PDLSPC.FTBchCode IN ('+@tSesBchCodeMulti+') '
+												SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTShpCode,'''') = '''' '
+												SET @tSQLMaster += ' )'
+
+												SET @tSQLMaster += ' OR (' --//กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่อยู่ใน Bch แต่ไม่ผูก Shp และไม่ผูก Mer
+												SET @tSQLMaster += ' PDLSPC.FTAgnCode = '''+@tSesAgnCode+''' '
+												SET @tSQLMaster += ' AND PDLSPC.FTMerCode = '''' '
+												SET @tSQLMaster += ' AND PDLSPC.FTBchCode IN ('+@tSesBchCodeMulti+') '
+												SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTShpCode,'''') = '''' '
+												SET @tSQLMaster += ' )'
+
+												SET @tSQLMaster += ' OR (' --//กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่ไม่ผูก Bch และ ไม่ผูก Shp
+												SET @tSQLMaster += ' PDLSPC.FTAgnCode = '''+@tSesAgnCode+''' '
+												SET @tSQLMaster += ' AND PDLSPC.FTMerCode = '''+@tSesMerCode+''' '
+												SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTBchCode,'''') = '''' '
+												SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTShpCode,'''') = '''' '
+												SET @tSQLMaster += ' )'
+
+												SET @tSQLMaster += ' OR (' --//กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่ไม่ผูก Mer และสินค้าผูก Bch / Shp
+												SET @tSQLMaster += ' PDLSPC.FTAgnCode = '''+@tSesAgnCode+''' '
+												SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTMerCode,'''') = '''' '
+												SET @tSQLMaster += ' AND PDLSPC.FTBchCode IN ('+@tSesBchCodeMulti+') '
+												SET @tSQLMaster += ' AND PDLSPC.FTShpCode IN ('+@tSesShopCodeMulti+') '
+												SET @tSQLMaster += ' )'
+
+										END
+								
+									-- |-------------------------------------------------------------------------------------------| 
+									-- //---------------------- การมองเห็นสินค้าระดับส่วนกลางหรือสินค้าที่ไม่ได้ผูกกับอะไรเลย--------------------------//
+												SET @tSQLMaster += ' OR ('
+
+												SET @tSQLMaster += ' PDLSPC.FTAgnCode = '''+@tSesAgnCode+''' '
+
+												IF @tSesMerCode != '' AND @tSesMerCode != '' BEGIN --//กรณีผู้ใช้ผูก Mer จะต้องเห็นสินค้าที่ไม่ได้ผูก Mer ด้วย
+														SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTMerCode,'''') = '''' '
+												END
+
+												IF (SELECT ISNULL(FTBchCode,'') FROM TCNTUsrGroup WHERE FTUsrCode= @tUsrCode)<>'' BEGIN --//กรณีผู้ใช้ผูก Bch จะต้องเห็นสินค้าที่ไม่ได้ผูก Bch ด้วย
+														SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTBchCode,'''')  = '''' '
+												END
+
+												IF @tSesShopCodeMulti != '' BEGIN 
+														SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTShpCode,'''') = '''' '
+												END
+
+												SET @tSQLMaster += ' )'
+									-- |-------------------------------------------------------------------------------------------| 
+
+
+								-- //---------------------- การมองเห็นสินค้าระดับส่วนกลางหรือสินค้าที่ไม่ได้ผูกกับอะไรเลย--------------------------//
+												SET @tSQLMaster += ' OR ('
+												--SET @tSQLMaster += ' Products.FTPtyCode != ''00005'' '
+												SET @tSQLMaster += ' ISNULL(PDLSPC.FTAgnCode,'''') = '''' '
+												SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTMerCode,'''') = '''' '
+												SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTBchCode,'''') = '''' '
+												SET @tSQLMaster += ' AND ISNULL(PDLSPC.FTShpCode,'''') = '''' '
+												SET @tSQLMaster += ' ))'
+								-- |-------------------------------------------------------------------------------------------| 
+
+						END
+
+								---//--------การมองเห็นสินค้าตามผู้ใช้------///
+
+
+							-----//----Option-----//------
+
+							IF @tWhere != '' BEGIN
+								SET @tSQLMaster += @tWhere
+							END
+							
+							IF @tNotInPdtType != '' BEGIN-----//------------- ไม่แสดงสินค้าตาม ประเภทสินค้า -------------------
+								SET @tSQLMaster += ' AND ISNULL(Products.FTPDtCode,'''') NOT IN ('+@tNotInPdtType+') '
+							END
+
+							IF @tPdtCodeIgnorParam != '' BEGIN----//-------------สินค้าที่ไม่ใช่ตัวข้อมูลหลักในการจัดสินค้าชุด-------------------
+								SET @tSQLMaster += ' AND ISNULL(Products.FTPDtCode,'''') != '''+@tPdtCodeIgnorParam+''' '
+							END
+
+							IF @tPDTMoveon != '' BEGIN------//---------สินค้าเคลื่อนไหว---------
+								SET @tSQLMaster += ' AND  Products.FTPdtStaActive = '''+@tPDTMoveon+''' '
+							END
+
+							IF @tPlcCodeConParam != '' AND @tFilterBy = 'FTPlcCode' BEGIN---/ที่เก็บ-  //กรณีที่เข้าไปหา plc code เเล้วไม่เจอ PDT เลย ต้องให้มันค้นหา โดย KEYWORD : EMPTY
+									IF  @tPlcCodeConParam != 'EMPTY' BEGIN
+											SET @tSQLMaster += ' AND  PBAR.FTBarCode = '''+@tPlcCodeConParam+''' '
+									END
+									ELSE BEGIN
+											SET @tSQLMaster += ' AND  PPCZ.FTPdtCode = ''EMPTY'' AND PPCZ.FTPunCode = ''EMPTY'' '
+									END
+							END
+
+							IF @ptDISTYPE != '' BEGIN------//----------------อนุญาตลด----------------
+								SET @tSQLMaster += ' AND  Products.FTPdtStaAlwDis = '''+@ptDISTYPE+''' '
+							END
+
+							IF @tPagename = 'PI' BEGIN------//-----------------เงื่อนไขพิเศษ ตามหน้า-------------
+								SET @tSQLMaster += ' AND  Products.FTPdtSetOrSN != ''4'' '
+							END
+
+							IF @tNotinItemString  != '' BEGIN-------//-----------------ไม่เอาสินค้าอะไรบ้าง NOT IN-----------
+								SET @tSQLMaster += @tNotinItemString
+							END
+
+							IF @tSqlCode != '' BEGIN------//----------------ผู้จำหน่าย-------------------
+								SET @tSQLMaster += ' AND  ( PDTSPL.FTSplCode = '''+@tSqlCode+'''  OR ISNULL(PDTSPL.FTSplCode,'''') = '''' ) '
+							END
+							-----//----Option-----//------
+								
+							SET @tSQLMaster += ' ) Base '
+
+							IF @nRow != ''  BEGIN------------เงื่อนไขพิเศษ แบ่งหน้า----
+								SET @tSQLMaster += ' ORDER BY Base.FDCreateOn DESC '
+								SET @tSQLMaster += ' OFFSET '+CAST(((@nPage-1)*@nRow) AS VARCHAR(10))+' ROWS FETCH NEXT '+CAST(@nRow AS VARCHAR(10))+' ROWS ONLY'
+							END
+
+
+----//----------------------Data Master And Filter-------------//			
+
+
+
+----//----------------------Query Builder-------------//
+
+								SET @tSQL = '  SELECT PDT.rtCountData ,PDT.FTAgnCode,PDT.FTBchCode AS FTPdtSpcBch,PDT.FTShpCode,PDT.FTMerCode,PDT.FTImgObj,';
+								SET @tSQL += ' PDT.FTPdtCode,PDT_L.FTPdtName,PDT.FTPdtForSystem,PDT.FTPdtStaVatBuy,PDT.FTPdtStaVat,PDT.FTVatCode,ISNULL(VAT.FCVatRate, 0) AS FCVatRate, '
+								SET @tSQL += ' PDT.FTPdtStaActive,PDT.FTPdtSetOrSN,PDT.FTPgpChain,PDT.FTPtyCode,ISNULL(PDT_AGE.FCPdtCookTime,0) AS FCPdtCookTime,ISNULL(PDT_AGE.FCPdtCookHeat,0) AS FCPdtCookHeat, '
+								SET @tSQL += ' PDT.FTPunCode,PDT_UNL.FTPunName,PDT.FCPdtUnitFact, PDT.FTSplCode,PDT.FTBuyer,PDT.FTBarCode,PDT.FTPdtStaAlwDis,PDT.FTPdtType,PDT.FCPdtCostStd'
+
+								IF @tPriceType = 'Pricesell' OR @tPriceType = '' BEGIN------///ถ้าเป็นราคาขาย---
+									SET @tSQL += '  ,0 AS FCPgdPriceNet,0 AS FCPgdPriceRet,0 AS FCPgdPriceWhs'
+								END
+
+								IF @tPriceType = 'Price4Cst' BEGIN------// //ถ้าเป็นราคาทุน-----
+									SET @tSQL += '  ,0 AS FCPgdPriceNet,0 AS FCPgdPriceWhs,'
+									SET @tSQL += '  CASE'
+									SET @tSQL += '  WHEN ISNULL(PCUS.FCPgdPriceRet,0) <> 0 THEN PCUS.FCPgdPriceRet'
+									SET @tSQL += '  WHEN ISNULL(PBCH.FCPgdPriceRet,0) <> 0 THEN PBCH.FCPgdPriceRet'
+									SET @tSQL += '  WHEN ISNULL(PEMPTY.FCPgdPriceRet,0) <> 0 THEN PEMPTY.FCPgdPriceRet'
+									SET @tSQL += '  ELSE 0'
+									SET @tSQL += '  END AS FCPgdPriceRet'
+								END
+
+								IF @tPriceType = 'Cost' BEGIN------//-----
+									SET @tSQL += '  ,ISNULL(VPC.FCPdtCostStd,0)       AS FCPdtCostStd    , ISNULL(FCPdtCostAVGIN,0)     AS FCPdtCostAVGIN,'
+									SET @tSQL += '  ISNULL(VPC.FCPdtCostAVGEx,0)     AS FCPdtCostAVGEx  , ISNULL(FCPdtCostLast,0)      AS FCPdtCostLast,'
+									SET @tSQL += '  ISNULL(VPC.FCPdtCostFIFOIN,0)    AS FCPdtCostFIFOIN , ISNULL(FCPdtCostFIFOEx,0)    AS FCPdtCostFIFOEx'
+								END
+
+							  SET @tSQL += ' FROM ('
+				
+								SET @tSQL +=  @tSQLMaster
+		
+								SET @tSQL += ' ) PDT ';
+		            SET @tSQL += ' LEFT JOIN TCNMPdt_L AS PDT_L WITH(NOLOCK) ON PDT.FTPdtCode = PDT_L.FTPdtCode AND PDT_L.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+								SET @tSQL += ' LEFT JOIN TCNMPdtUnit_L AS PDT_UNL WITH(NOLOCK) ON PDT.FTPunCode = PDT_UNL.FTPunCode  AND PDT_UNL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''''
+								--SET @tSQL += ' LEFT OUTER JOIN TCNMImgPdt AS PDT_IMG WITH(NOLOCK) ON PDT.FTPdtCode = PDT_IMG.FTImgRefID AND PDT_IMG.FTImgTable = ''TCNMPdt'' AND PDT_IMG.FNImgSeq = 1 '
+								SET @tSQL += ' LEFT OUTER JOIN TCNMPdtAge AS PDT_AGE WITH(NOLOCK) ON PDT.FTPdtCode = PDT_AGE.FTPdtCode '
+								SET @tSQL += ' LEFT OUTER JOIN VCN_VatActive AS VAT WITH(NOLOCK) ON PDT.FTVatCode = VAT.FTVatCode '
+
+
+								IF @tPriceType = 'Pricesell' OR @tPriceType = ''  BEGIN------//-----
+									SET @tSQL += '  '
+								END
+
+
+								IF @tPriceType = 'Price4Cst' BEGIN
+														--//----ราคาของ customer
+								            SET @tSQL += '  LEFT JOIN ( '
+                            SET @tSQL += ' SELECT * FROM ('
+                            SET @tSQL += ' SELECT '
+														SET @tSQL += ' ROW_NUMBER () OVER ( PARTITION BY FTPdtCode , FTPunCode ORDER BY FDPghDStart,FTPghTStart DESC) AS FNRowPart,'
+														SET @tSQL += ' FTPdtCode , '
+														SET @tSQL += ' FTPunCode , '
+														SET @tSQL += ' FCPgdPriceRet '
+														SET @tSQL += ' FROM TCNTPdtPrice4PDT WHERE  '
+                            SET @tSQL += ' FDPghDStart <= CONVERT (VARCHAR(10), GETDATE(), 121)'
+                            SET @tSQL += ' AND FDPghDStop >= CONVERT (VARCHAR(10), GETDATE(), 121)'
+                            SET @tSQL += ' AND FTPghTStart <= CONVERT(time,GETDATE())'
+														SET @tSQL += ' AND FTPghTStop >= CONVERT(time,GETDATE())'
+                            SET @tSQL += ' AND FTPplCode = '''+@tPplCode+''' '
+                            SET @tSQL += ' ) AS PCUS '
+                            SET @tSQL += ' WHERE PCUS.FNRowPart = 1 '
+														SET @tSQL += ' ) PCUS ON PDT.FTPdtCode = PCUS.FTPdtCode AND PDT.FTPunCode = PCUS.FTPunCode' 
+
+													--// --ราคาของสาขา
+														SET @tSQL += ' LEFT JOIN ('
+                            SET @tSQL += ' SELECT * FROM ('
+                            SET @tSQL += ' SELECT '
+														SET @tSQL += ' ROW_NUMBER () OVER ( PARTITION BY FTPdtCode , FTPunCode ORDER BY FDPghDStart,FTPghTStart DESC) AS FNRowPart,'
+														SET @tSQL += ' FTPdtCode , '
+														SET @tSQL += ' FTPunCode , '
+														SET @tSQL += ' FCPgdPriceRet '
+														SET @tSQL += ' FROM TCNTPdtPrice4PDT WHERE  '
+                            SET @tSQL += ' FDPghDStart <= CONVERT (VARCHAR(10), GETDATE(), 121)'
+                            SET @tSQL += ' AND FDPghDStop >= CONVERT (VARCHAR(10), GETDATE(), 121)'
+                            SET @tSQL += ' AND FTPghTStart <= CONVERT(time,GETDATE())'
+														SET @tSQL += ' AND FTPghTStop >= CONVERT(time,GETDATE())'
+                            SET @tSQL += ' AND FTPplCode = (SELECT FTPplCode FROM TCNMBranch WHERE FTPplCode != '''' AND FTBchCode = (SELECT TOP 1 FTBchCode FROM TCNMBranch WHERE FTAgnCode = '''+@tSesAgnCode+''' ))'
+                            SET @tSQL += ') AS PCUS '
+                            SET @tSQL += ' WHERE PCUS.FNRowPart = 1 '
+														SET @tSQL += ' ) PBCH ON PDT.FTPdtCode = PBCH.FTPdtCode AND PDT.FTPunCode = PBCH.FTPunCode '
+
+
+												--// --ราคาที่ไม่กำหนด PPL
+														SET @tSQL += ' LEFT JOIN ('
+                            SET @tSQL += ' SELECT * FROM ('
+                            SET @tSQL += ' SELECT '
+														SET @tSQL += ' ROW_NUMBER () OVER ( PARTITION BY FTPdtCode , FTPunCode ORDER BY FDPghDStart,FTPghTStart DESC) AS FNRowPart,'
+														SET @tSQL += ' FTPdtCode , '
+														SET @tSQL += ' FTPunCode , '
+														SET @tSQL += ' FCPgdPriceRet '
+														SET @tSQL += 'FROM TCNTPdtPrice4PDT WHERE  '
+                            SET @tSQL += ' FDPghDStart <= CONVERT (VARCHAR(10), GETDATE(), 121)'
+                            SET @tSQL += 'AND FDPghDStop >= CONVERT (VARCHAR(10), GETDATE(), 121)'
+                            SET @tSQL += ' AND FTPghTStart <= CONVERT(time,GETDATE())'
+														SET @tSQL += ' AND FTPghTStop >= CONVERT(time,GETDATE())'
+                            SET @tSQL += ' AND ISNULL(FTPplCode,'''') = '''' '
+                            SET @tSQL += ' ) AS PCUS '
+                            SET @tSQL += ' WHERE PCUS.FNRowPart = 1 '
+														SET @tSQL += ' ) PEMPTY ON PDT.FTPdtCode = PEMPTY.FTPdtCode AND PDT.FTPunCode = PEMPTY.FTPunCode'
+
+								END
+
+								IF @tPriceType = 'Cost' BEGIN------//-----
+														SET @tSQL += '  LEFT JOIN VCN_ProductCost VPC WITH(NOLOCK) ON VPC.FTPdtCode = PDT.FTPdtCode'
+								END
+----//----------------------Query Builder-------------//
+--select @tSQL
+
+ EXECUTE(@tSQL)
+--PRINT @tSQL
+--RETURN @tSQL
+	--select @tSQL
+		 SELECT   
+        ERROR_NUMBER() AS ErrorNumber  
+        ,ERROR_SEVERITY() AS ErrorSeverity  
+        ,ERROR_STATE() AS ErrorState  
+        ,ERROR_LINE () AS ErrorLine  
+        ,ERROR_PROCEDURE() AS ErrorProcedure  
+        ,ERROR_MESSAGE() AS ErrorMessage; 
+END
+GO
