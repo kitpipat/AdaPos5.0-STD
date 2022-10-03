@@ -859,3 +859,20 @@ $route['rptRptSaleByProductAnimeClickPage']      = 'report/reportsale/Rptsalebyp
 $route['rptRptSaleByProductAnimeCallExportFile'] = 'report/reportsale/Rptsalebyproductanime_controller/FSvCCallRptExportFile';
 /** =================================================================================================================================================== */
 
+
+
+
+/** ========================================= รายงาน - ข้อมูลการขาย (Anime) ======================================================================== */
+$route['rptRptDailySaleINFOAnime']               = 'report/reportdailysaleinfo/Rptdailysaleinfoanime_controller/index';
+$route['rptRptDailySaleINFOAnimeClickPage']      = 'report/reportdailysaleinfo/Rptdailysaleinfoanime_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptRptDailySaleINFOAnimeCallExportFile'] = 'report/reportdailysaleinfo/Rptdailysaleinfoanime_controller/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */
+
+
+
+
+/** ========================================= รายงาน - ยอดขายตามประเภทสินค้า (Anime) ======================================================================== */
+$route['rptRptSaleByPtyAnime']               = 'report/reportsalebypty/Rptsalebyptyanime_controller/index';
+$route['rptRptSaleByPtyAnimeClickPage']      = 'report/reportsalebypty/Rptsalebyptyanime_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptRptSaleByPtyAnimeCallExportFile'] = 'report/reportsalebypty/Rptsalebyptyanime_controller/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */
