@@ -612,6 +612,6 @@ SET FTSysStaAlwEdit = '2'
 ,FDLastUpdOn = GETDATE()
 ,FTLastUpdBy = 'Admin'
 WHERE FTSysCode = 'bPS_StaChkPosReg'
-INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.11', getdate() , 'ปิด config ตรวจสอบลงทะเบียนจุดขาย')
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.11', getdate() , 'ปิด config ตรวจสอบลงทะเบียนจุดขาย', 'Nattakit K.')
 END
 GO
