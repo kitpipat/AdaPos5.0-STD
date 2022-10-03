@@ -587,7 +587,7 @@
         var tWhere = '';
         var nAggCode = $('#oetRcvSpcAggCode').val();
         if (nAggCode != '') {
-            tWhere = ' AND TCNMBranch.FTAgnCode = ' + nAggCode + ' '
+            tWhere = " AND TCNMBranch.FTAgnCode = '" + nAggCode + "'"
         }
 
         var oOptionReturn = {
