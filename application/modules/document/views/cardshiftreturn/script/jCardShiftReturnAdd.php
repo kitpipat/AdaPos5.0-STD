@@ -176,7 +176,7 @@
             On: ['TFNMCardType_L.FTCtyCode = TFNMCardType.FTCtyCode AND TFNMCardType_L.FNLngID = ' + nLangEdits]
         },
         Where: {
-            Condition : [tWhereCardTypeByAgenCode]
+            Condition : [tWhereCardTypeByAgenCode + "AND TFNMCardType.FTCtyStaShift = '1' AND TFNMCardType.FTCtyStaAlwRet = '1'"]
         },
         GrideView: {
             ColumnPathLang: 'payment/cardtype/cardtype',
@@ -417,7 +417,7 @@
                 ]
             },
             Where: {
-                Condition: ["AND ( ((TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '2')) )" + tNotIn + tWhereCardByAgenCode]
+                Condition: ["AND ( ((TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '2') AND (TFNMCardType.FTCtyStaAlwRet = '1')) )" + tNotIn + tWhereCardByAgenCode]
             },
             GrideView: {
                 ColumnPathLang: 'payment/card/card',

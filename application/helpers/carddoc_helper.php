@@ -357,7 +357,7 @@ function FSxInsertByBetween($ptDocType, $ptDataSetType, $paDataSet)
                             LEFT JOIN TFNMCardBal CRDB WITH(NOLOCK) ON CRDB.FTCrdCode = CRD.FTCrdCode
                             LEFT JOIN TFNMCardType CRDT WITH(NOLOCK) ON CRDT.FTCtyCode = CRD.FTCtyCode
                             WHERE 1=1 
-                            AND ( ((CRDT.FTCtyStaShift = '1') AND (CRD.FTCrdStaShift = '2')) )
+                            AND ( ((CRDT.FTCtyStaShift = '1') AND (CRD.FTCrdStaShift = '2') AND (CRDT.FTCtyStaAlwRet = '1')) )
                             AND ( CRD.FTCrdCode NOT IN (SELECT TMP.FTCrdCode FROM TFNTCrdShiftTmp TMP WITH(NOLOCK) WHERE TMP.FTSessionID = '$tSessionID') )
                             $tWhereCardCode 
                             $tWhereCardType
@@ -411,7 +411,7 @@ function FSxInsertByBetween($ptDocType, $ptDataSetType, $paDataSet)
                         LEFT JOIN TFNMCardType CRDT ON CRDT.FTCtyCode = CRD.FTCtyCode
                         --LEFT JOIN
                         WHERE 1=1 
-                        AND ( CRD.FTCrdStaActive = 1 AND ((CRD.FTCrdStaShift = 2 AND CRDT.FTCtyStaShift = 1) OR CRDT.FTCtyStaShift = 2 ) AND ( CONVERT(datetime, CRD.FDCrdExpireDate) > CONVERT(datetime, GETDATE()) ) )
+                        AND ( CRD.FTCrdStaActive = 1 AND ((CRD.FTCrdStaShift = 2 AND CRDT.FTCtyStaShift = 1 AND ( CONVERT(datetime, CRD.FDCrdExpireDate) > CONVERT(datetime, GETDATE()) )) OR CRDT.FTCtyStaShift = 2 ) )
                         AND ( CRD.FTCrdCode NOT IN (SELECT TMP.FTCrdCode FROM TFNTCrdTopUpTmp TMP WITH(NOLOCK) WHERE FTSessionID = '$tSessionID') )
                         $tWhereCardCode 
                         $tWhereCardType
@@ -515,7 +515,7 @@ function FSxInsertByBetween($ptDocType, $ptDataSetType, $paDataSet)
                         LEFT JOIN TFNMCardType CRDT WITH(NOLOCK) ON CRDT.FTCtyCode = CRD.FTCtyCode
                         WHERE 1=1 
                         AND ( 
-                            (CRD.FTCrdStaActive = '1') AND (CRD.FTCrdStaShift = '2')
+                            (CRD.FTCrdStaActive = '1') AND (CRD.FTCrdStaShift = '2') AND (CRD.FDCrdExpireDate > GETDATE())
                             AND (CRD.FTCrdCode NOT IN (SELECT FTCrdCode FROM TFNTCrdTopUpTmp WHERE FTSessionID = '$tSessionID')) 
                         )
                         AND CONVERT(VARCHAR,CRD.FDCrdExpireDate, 111) >= CONVERT(VARCHAR,GETDATE(), 111)
@@ -845,7 +845,8 @@ function FSxInsertByChoose($ptDocType, $ptDataSetType, $paDataSet)
                         GROUP BY CRD.FTCrdCode
                     ) CRD
                 ";
-
+                        
+                // print_r($tSQL);
                 $oQuery = $ci->db->query($tSQL);
                 break;
             }

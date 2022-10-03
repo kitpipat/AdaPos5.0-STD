@@ -15,11 +15,12 @@
                         <div>
                             <div style="width:100%;">
                                 <!-- <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button" id="obtPrintPreviewDocumentABB" onclick="JSxTaxPrintPreviewDocABB();"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXPrintABB'); ?></button> -->
+                                <!-- <button class="btn xCNBTNDefult xCNBTNDefult2Btn xCNHide" type="button" id="obtTAXCancleETax"><?=language('common/main/main', 'ยกเลิกเอกสาร'); ?></button> -->
                                 <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button" id="obtCancleDocument"><?=language('common/main/main', 'tCancel'); ?></button>
                                 <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button" id="obtApproveDocument"><?=language('common/main/main', 'tCMNApprove'); ?></button>
                                 <button class="btn xCNBTNDefult xCNBTNDefult2Btn xCNHide" type="button" id="obtPrintDocument" onclick="JSxTaxPrintDoc();"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXPrint'); ?></button>
                                 <button class="btn xCNBTNDefult xCNBTNDefult2Btn xCNHide" type="button" id="obtPrintPreviewDocument" onclick="JSxTaxPrintPreviewDoc();"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXPrintPreview'); ?></button>
-                                <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn xCNHide" type="button" id="obtSaveDocument"><?=language('common/main/main', 'tSave'); ?></button>
+                                <!-- <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn xCNHide" type="button" id="obtSaveDocument"><?=language('common/main/main', 'tSave'); ?></button> -->
                             </div>
                         </div>
                     </div>
@@ -173,6 +174,7 @@
 
     //โหลดหน้าจอเพิ่ม + เเก้ไข
     function JSvTAXLoadPageAddOrPreview(tDocumentBchCode,ptDocument){
+        console.log('JSvTAXLoadPageAddOrPreview',tDocumentBchCode);
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCLoadPageAdd",
@@ -257,7 +259,7 @@
                         tDocABB : $('#oetTAXABBCode').val(),
                         tBrowseBchCode : $('#oetBrowseBchCode').val()
                     }
-
+                    console.log('259',aPackData['tBrowseBchCode']);
                     //ส่งเข้า Q ไปหาเลขที่เอกสารก่อน
                     $.ajax({
                         type    : "POST",
@@ -266,8 +268,8 @@
                         data    : { 'aPackData' : aPackData , 'tType' : 'MQ'},
                         Timeout : 0,
                         success : function (oResult) {
-                          aResult = JSON.parse(oResult);
-                          if(aResult.nStaEvent == 500){
+                            aResult = JSON.parse(oResult);
+                            if(aResult.nStaEvent == 500){
                                 alert('เกิดข้อผิดพลาด กรุณาลองทำรายการใหม่อีกครั้ง');
                             }else if(aResult.nStaEvent == 550){
                                 alert('เกิดข้อผิดพลาด กรุณาลองตรวจสอบเลขที่ใบกำกับภาษีอย่างย่อ ใหม่อีกครั้ง');
@@ -304,6 +306,83 @@
             JCNxShowMsgSessionExpired();
         }
     });
+
+    function JSxTAXComfirmApprove(){
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if(typeof nStaSession !== "undefined" && nStaSession == 1){
+            try{
+
+                $('.form-group').removeClass("has-success").removeClass("has-error");
+
+                $('#odvModalAproveDocument').modal("show");
+                $('#obtConfirmApprDoc').off();
+
+                $('#obtCloseApprDoc').on('click',function(){
+                    $('#obtApproveDocument').attr("disabled",false);
+                    $('#obtConfirmApprDoc').attr("disabled",false);
+                });
+
+                $('#obtConfirmApprDoc').on('click',function(){
+                    $('#obtConfirmApprDoc').attr("disabled",true);
+                    $('#obtApproveDocument').attr("disabled",true);
+
+                    var aPackData = {
+                        tDocABB         : $('#oetTAXABBCode').val(),
+                        tBrowseBchCode  : $('#oetBrowseBchCode').val(),
+                        tStaETax        : $('#oetTXIStaETax').val(),
+                        tTAXApvType     : $('#ohdTAXApvType').val()
+                    }
+
+                    //ส่งเข้า Q ไปหาเลขที่เอกสารก่อน
+                    JCNxOpenLoading();
+                    $.ajax({
+                        type    : "POST",
+                        url     : "dcmTXFCApprove",
+                        cache   : false,
+                        data    : { 'aPackData' : aPackData , 'tType' : 'MQ'},
+                        Timeout : 0,
+                        success : function (oResult) {
+                            var aResult = JSON.parse(oResult);
+
+                            if(aResult.nStaEvent == 500){
+                                FSvCMNSetMsgWarningDialog('เกิดข้อผิดพลาด กรุณาลองทำรายการใหม่อีกครั้ง');
+                                JCNxCloseLoading();
+                            }else if(aResult.nStaEvent == 550){
+                                FSvCMNSetMsgWarningDialog('เกิดข้อผิดพลาด กรุณาลองตรวจสอบเลขที่ใบกำกับภาษีอย่างย่อ ใหม่อีกครั้ง');
+                                $('#odvModalAproveDocument').modal("hide");
+                                $('#obtConfirmApprDoc').attr("disabled",false);
+                                $('#obtApproveDocument').attr("disabled",false);
+                                JCNxCloseLoading();
+                            }else if(aResult.nStaEvent == 800){
+                                JSvCMNSetMsgErrorDialog(aResult.tStaMessg);
+                                JCNxCloseLoading();
+                            }else{
+                                $('#odvModalAproveDocument').modal("hide");
+                                $('#obtConfirmApprDoc').attr("disabled",false);
+                                $('#obtApproveDocument').attr("disabled",false);
+                                // var tBCH    = aResult.tBCHDoc;
+                                // JCNxOpenLoading();
+                                // var tDocABB = $('#oetTAXABBCode').val();
+                                // JSxINMSubScribeQName(tBCH,tDocABB);
+                                JSxControlGetMassageByServer();
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            // FSvCMNSetMsgWarningDialog('เกิดข้อผิดพลาด กรุณาลองทำรายการใหม่อีกครั้ง');
+                            JCNxResponseError(jqXHR, textStatus, errorThrown);
+                            $('#obtConfirmApprDoc').attr("disabled",false);
+                            $('#obtApproveDocument').attr("disabled",false);
+                        }
+                    });
+
+                });
+            } catch (err){
+                console.log("Approve Error: ", err);
+            }
+        }else{
+            JCNxShowMsgSessionExpired();
+        }
+    }
 
     //วิ่งเข้า MQ หาเลขที่เอกสาร
     function JSxINMSubScribeQName(ptBCH,ptDocType){
@@ -378,20 +457,20 @@
     }
 
 
-       //กรณีไม่สารถ GetMassage ได้จาก Stomp ให้ไป Get Massate ผ่าน Server
-       function JSxControlGetMassageByServer(){
-        let nTaxCheckOutCallTaxNo =  parseFloat($('#ohdTaxCheckOutCallTaxNo').val())+1;
-        console.log('ไม่สำเร็จครั้งที่ '+nTaxCheckOutCallTaxNo);
-        if(nTaxCheckOutCallTaxNo<5){
-            setTimeout(function(){
-                JSxTAXGetTaxNumberByServer();
-                $('#ohdTaxCheckOutCallTaxNo').val(nTaxCheckOutCallTaxNo);
-            },3000);
-        }else{
-            let tMessageError = 'เครือข่ายมีปัญหา กรุณาตรวจสอบเครือข่าย';
-            FSvCMNSetMsgErrorDialog(tMessageError);
-            $('#ohdTaxCheckOutCallTaxNo').val(0);
-        }
+    //กรณีไม่สารถ GetMassage ได้จาก Stomp ให้ไป Get Massate ผ่าน Server
+    function JSxControlGetMassageByServer(){
+    let nTaxCheckOutCallTaxNo =  parseFloat($('#ohdTaxCheckOutCallTaxNo').val())+1;
+    console.log('ไม่สำเร็จครั้งที่ '+nTaxCheckOutCallTaxNo);
+    if(nTaxCheckOutCallTaxNo<5){
+        setTimeout(function(){
+            JSxTAXGetTaxNumberByServer();
+            $('#ohdTaxCheckOutCallTaxNo').val(nTaxCheckOutCallTaxNo);
+        },3000);
+    }else{
+        let tMessageError = 'เครือข่ายมีปัญหา กรุณาตรวจสอบเครือข่าย';
+        FSvCMNSetMsgErrorDialog(tMessageError);
+        $('#ohdTaxCheckOutCallTaxNo').val(0);
+    }
 
 
     }
@@ -402,7 +481,7 @@
         var tBrowseBchCode  = $('#oetBrowseBchCode').val();
         var tStaETax        = $('#oetTXIStaETax').val();
         var tTAXApvType     = $('#ohdTAXApvType').val();
-
+        console.log('JSxTAXGetTaxNumberByServer',tBrowseBchCode);
         var aPackData = {
             tTAXApvType         : tTAXApvType,
             tCurretTaxDocNo     : $('#oetTAXDocNo').val(),
@@ -498,6 +577,7 @@
     //อัพเดทของจริง
     function JSxApprove(ptTaxNumberFull){
         var tBrowseBchCode  = $('#oetBrowseBchCode').val();
+        console.log('JSxApprove',tBrowseBchCode);
         var aPackData = {
             tBrowseBchCode  : $('#oetBrowseBchCode').val(),
             tTaxNumberFull  : ptTaxNumberFull,
@@ -554,13 +634,14 @@
     //ตรวจสอบก่อนพิมพ์ - เต็มรูป
     function JSxTaxPrintPreviewDoc(){
         var tDocBCH            = $('#ohdBCHDocument').val();
-        var tDocCode        = $('#oetTAXDocNo').val();
-        var tGrandText      = $("#olbGrandText").text();
-        var tTypeABB        = $("#oetTAXABBTypeDocuement").val();
-        var tOrginalRight   = 0;
-        var tCopyRight      = 0;
-        var tPrintByPage    = 1;
+        var tDocCode            = $('#oetTAXDocNo').val();
+        var tGrandText          = $("#olbGrandText").text();
+        var tTypeABB            = $("#oetTAXABBTypeDocuement").val();
+        var tOrginalRight       = 0;
+        var tCopyRight          = 0;
+        var tPrintByPage        = 1;
 
+        console.log($('#ohdBCHDocument').val());
         //เอาสาขาไปค้นหาก่อนว่ามีที่อยู่ยังถ้ายังต้องเอาสาขาของที่อยู่ส่งไปหา from
         $.ajax({
             type    : "POST",
@@ -581,8 +662,9 @@
                     {"DocBchCode":tDocBCH}
                 ];
 
+                console.log(aInfor);
                 if(tTypeABB == 4){//เอกสารขาย
-                    window.open("<?=base_url(); ?>formreport/TaxInvoicefc?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL' , '_blank');
+                    window.open("<?=base_url(); ?>formreport/TaxInvoice?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL' , '_blank');
                 }else{ //เอกสารคืน
                     window.open("<?=base_url(); ?>formreport/TaxInvoice_refund?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL', '_blank');
                 }
@@ -644,7 +726,7 @@
                     JCNxOpenLoading();
 
                     if(tTypeABB == 4){//เอกสารขาย
-                        $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoicefc?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
+                        $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoice?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
                     }else{ //เอกสารคืน
                         $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoice_refund?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
                     }

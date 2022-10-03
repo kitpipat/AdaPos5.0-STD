@@ -10,7 +10,8 @@ $route['cardEventAdd']             = 'payment/card/cCard/FSoCCRDAddEvent';
 $route['cardEventEdit']            = 'payment/card/cCard/FSoCCRDEditEvent';
 $route['cardEventDelete']          = 'payment/card/cCard/FSoCCRDDeleteEvent';
 $route['checkStatusActive']        = "payment/card/cCard/FSvCCRDChkStaAct";
-$route['cardGetHisDataTable'] = "payment/card/cCard/FSvCCRDGetHisDataTable";
+$route['cardGetHisDataTable']      = "payment/card/cCard/FSvCCRDGetHisDataTable";
+$route['cardGetExpiredInfo']       = "payment/card/cCard/FSvCCRDGetExpiredInfo";
 
 //CardType (ประเภทบัตร)
 $route['cardtype/(:any)/(:any)']   = 'payment/cardtype/cCardType/index/$1/$2';

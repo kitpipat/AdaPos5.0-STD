@@ -780,8 +780,67 @@ class mCardShiftTopUp extends CI_Model
             AND CRDDT.FTXshDocNo = '$tCardShiftTopUpDocNo'
         ";
 
-        $oQuery = $this->db->query($tSQL);
+        // $tSQLL = "
+        //     SELECT
+        //         CRDDT.FTXshDocNo AS rtCardShiftTopUpDocNo,
+        //         CRDDT.FTBchCode AS rtCardShiftTopUpBchCode,
+        //         CRDDT.FTCrdCode AS rtCardShiftTopUpCrdCode,
+        //         CRDDT.FNXsdSeqNo AS rtCardShiftTopUpSeqNo,
+        //         CRDDT.FCXsdAmt AS rtCardShiftTopUpCrdTP,
+        //         ((CARDB.CashIn + CARDB.Promotion) - CARDB.Payment) AS rtCardShiftTopUpCrdBal,
+        //         CRDDT.FCXsdAmtPmt AS rtCardShiftTopUpAmtPmt,
+        //         CRDDT.FTXsdRmk AS rtCardShiftTopUpRmk,
+        //         CRD.FTCrdStaShift AS rtCardShiftTopUpCrdStaShift,
+        //         CRD.FTCrdStaActive AS rtCardShiftTopUpCrdStaActive,
+        //         CRD.FDCrdExpireDate AS rtCardShiftTopUpCrdExpireDate,
+        //         CRDL.FTCrdName AS rtCardShiftTopUpCrdName,
+        //         CRDT.FTCtyStaShift AS rtCardShiftTopUpCtyStaShift,
+        //         CRDT.FTCtyStaPay AS rtCardShiftTopUpCtyStaPay
+        //     FROM [TFNTCrdTopUpDT] CRDDT WITH (NOLOCK)
+        //     LEFT JOIN TFNMCard CRD WITH (NOLOCK) ON CRD.FTCrdCode = CRDDT.FTCrdCode
+        //     LEFT JOIN TFNMCard_L CRDL WITH (NOLOCK) ON CRDL.FTCrdCode = CRDDT.FTCrdCode AND CRDL.FNLngID = $nLngID
+        //     LEFT JOIN TFNMCardType CRDT WITH (NOLOCK) ON CRDT.FTCtyCode = CRD.FTCtyCode
+        //     LEFT JOIN
+        //     (
+        //         SELECT
+        //             CRD.FTCrdCode,
+        //             SUM(CASE WHEN CRDB.FTCrdTxnCode='001'
+        //             THEN ISNULL(CRDB.FCCrdValue,0)
+        //             ELSE 0
+        //             END) CashIn ,
+        //             SUM(CASE WHEN CRDB.FTCrdTxnCode='002'
+        //             THEN ISNULL(CRDB.FCCrdValue,0)
+        //             ELSE 0
+        //             END) Promotion ,
+        //             SUM(CASE WHEN CRDB.FTCrdTxnCode='003'
+        //             THEN ISNULL(CRDB.FCCrdValue,0)
+        //             ELSE 0
+        //             END) DepositCrd ,
+        //             SUM(CASE WHEN CRDB.FTCrdTxnCode='004'
+        //             THEN ISNULL(CRDB.FCCrdValue,0)
+        //             ELSE 0
+        //             END) DepositPdt ,
+        //             SUM(CASE WHEN CRDB.FTCrdTxnCode='005'
+        //             THEN ISNULL(CRDB.FCCrdValue,0)
+        //             ELSE 0
+        //             END) NotReturn ,
+        //             SUM(CASE WHEN CRDB.FTCrdTxnCode='006'
+        //             THEN ISNULL(CRDB.FCCrdValue,0)
+        //             ELSE 0
+        //             END) Payment
+        //         FROM TFNMCard CRD WITH (NOLOCK)
+        //         LEFT JOIN TFNMCardBal CRDB WITH(NOLOCK) ON CRDB.FTCrdCode = CRD.FTCrdCode
+        //         GROUP BY CRD.FTCrdCode
+        //     ) CARDB ON CARDB.FTCrdCode = CRDDT.FTCrdCode
 
+        //     WHERE 1=1
+        //     AND CRDDT.FTBchCode = '$tCardShiftTopUpBchCode'
+        //     AND CRDDT.FTXshDocNo = '$tCardShiftTopUpDocNo'
+        //     AND CRD.FDCrdExpireDate > GETDATE()
+        // ";
+
+        $oQuery = $this->db->query($tSQL);
+        // $oOQuery = $this->db->query($tSQLL);
         if ($oQuery->num_rows() > 0) {
             $oDetail = $oQuery->result();
             $aResult = array(
@@ -921,9 +980,12 @@ class mCardShiftTopUp extends CI_Model
                         LEFT JOIN TFNMCard_L ON TFNMCard_L.FTCrdCode = TFNMCard.FTCrdCode AND TFNMCard_L.FNLngID = '$tLangID'
                         LEFT JOIN TFNMCardType ON TFNMCardType.FTCtyCode = TFNMCard.FTCtyCode
                         WHERE TFNMCard.FTCrdStaActive = '1' AND TFNMCardType.FTCtyStaPay = '1' AND TFNMCard.FTCrdCode ='$tCrdCode'
-                        AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1') OR TFNMCardType.FTCtyStaShift = '2')
-                        AND (CONVERT (DATE,TFNMCard.FDCrdExpireDate) > CONVERT (DATE, GETDATE()))
-                        AND TFNMCard.FTAgnCode = '$tAgnCode'";
+                        AND ((TFNMCard.FTCrdStaShift = '2' AND TFNMCardType.FTCtyStaShift = '1' AND TFNMCard.FDCrdExpireDate > GETDATE())
+						OR TFNMCardType.FTCtyStaShift = '2')";
+
+            if($tAgnCode != ''){
+                $tSQL .= " AND TFNMCard.FTAgnCode = '$tAgnCode' ";
+            } 
             $oQuery = $this->db->query($tSQL);
             if ($oQuery->num_rows() > 0){
                 $oDetail = $oQuery->result();

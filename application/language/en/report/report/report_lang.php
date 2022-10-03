@@ -2064,3 +2064,29 @@ $lang['tRptPssVayMonthB4Vat1'] = 'Before Vat (0%)';
 $lang['tRptPssVayMonthB4Vat2'] = 'Before Vat';
 $lang['tRptPssVayMonthVatVal'] = 'Vat';
 $lang['tRptPssVayMonthAmtVal'] = 'Total';
+
+
+
+//รายงานยอดขายตามสินค้า รายงานพิเศษ Anime Pos+
+$lang['tRptSaleByProductAnimeTitle'] = 'Report - Sale By Product (Accounting)';
+$lang['tRptSaleByProductAnimeBarCode'] = 'BarCode';
+$lang['tRptSaleByProductAnimeBrand'] = 'Brand';
+$lang['tRptSaleByProductAnimeBalance'] = 'Stock Balance';
+$lang['tRptSaleByProductAnimeSetPrice'] = 'Price/Unit';
+
+
+//รายงานข้อมูลการขาย Anime Pos+
+$lang['tRptDailySaleinfoTitle'] = 'report - saleinfomation';
+$lang['tFTPdtNameJP'] = 'product name japan';
+$lang['tRptBarCodeunit'] = "barcode (piece)";
+$lang['tRptSbdReTailUnit'] = 'sale price';
+$lang['tRptQtyIncomeUnit'] = 'qty in(piece)';
+$lang['tRptQtySalUnit'] = 'qty sale(piece)';
+
+
+//รายงานยอดขายตามประเภทสินค้า Anime Pos+
+$lang['tRptSalebyPtyTitle'] = 'Report - Sale By Product Type';
+$lang['tRptSalebyPtyCostTotal'] = 'Total capital';
+$lang['tRptSalebyPtySalAmtTotal'] = 'Total sales';
+$lang['tRptSalebyPtyBalCostTotal'] = 'Remaining capital value in front of the store';
+$lang['tRptSalebyPtyBalSalTotal'] = 'Storefront remaining sales value';

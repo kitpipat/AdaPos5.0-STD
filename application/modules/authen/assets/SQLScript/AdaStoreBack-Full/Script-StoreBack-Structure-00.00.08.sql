@@ -1575,6 +1575,7 @@ CREATE TABLE [dbo].[TRPTPSTaxMonthTmp_Animate](
 	[FCXshVat] [numeric](18, 4) NULL, --จำนวนเงินภาษี
 	[FCXshGrandAmt] [numeric](18, 4) NULL, --จำนวนเงินรวม
 
+	[FNSeqNo] [int] NULL,
 	[FTComName] [varchar](50) NULL,
 	[FTRptCode] [varchar](50) NULL,
 	[FDTmpTxnDate] [datetime] NOT NULL,
@@ -1725,3 +1726,154 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
+
+
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].TRPTSalDTTmp_Animate')) --and OBJECTPROPERTY(id, U'IsView') = 1)
+drop TABLE TRPTSalDTTmp_Animate
+GO
+CREATE TABLE [dbo].[TRPTSalDTTmp_Animate](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+
+	[FTBchCode] [varchar](5) NULL, --รหัสสาขา
+	[FTBchName] [varchar](100) NULL, --ชื่อสาขา
+	[FTXsdBarCode] [varchar](25) NULL, --บาร์โคด
+	[FTPdtName] [varchar](100) NULL, --ชื่อสินค้า
+	[FTPgpChainName] [varchar](255) NULL, --กลุ่มสินค้า
+	[FTPbnName]  [varchar](100) NULL, --ยี่ห้อ
+	[FCXsdQtyAll] [numeric](18, 4) NULL, --จำนวนขาย
+	[FCStkQty]  [numeric](18, 4) NULL, --สต๊อกคงเหลือ
+	[FCSdtNetSale] [numeric](18, 4) NULL, --ยอดขาย
+	[FCPgdPriceRet] [numeric](18, 4) NULL, --ราคา/หน่วย
+	[FCSdtNetAmt] [numeric](18, 4) NULL,--ยอดขายรวม
+
+	[FTComName] [varchar](50) NULL,
+	[FTRptCode] [varchar](50) NULL,
+	[FDTmpTxnDate] [datetime] NOT NULL,
+
+PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 70, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[TRPTSalDTTmp_Animate] ADD  DEFAULT (getdate()) FOR [FDTmpTxnDate]
+GO
+
+
+/****** Object:  Table [dbo].[TRPTPSByPeriodTmp]    Script Date: 11/01/2021 21:23:00 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+--CREATE TABLE [dbo].[TTRPTPSByPeriodTmp](
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].TRPTPSByPeriodTmp')) --and OBJECTPROPERTY(id, U'IsView') = 1)
+drop TABLE TRPTPSByPeriodTmp
+GO
+
+CREATE TABLE [dbo].[TRPTPSByPeriodTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+	[FNAppType] [int] NULL,
+
+	[FNTmeSeq] [int] NULL,
+	[FTTmeTime] [varchar](11) NULL, --ช่วงเวลา
+	[FCTmeSalQty] [decimal](18, 4) NULL, --จำนวนชิ้น
+	[FCTmeSalQtyPercen] [decimal](18, 4) NULL, --% ต่อ จำนวนชิ้นที่ขายทั้งหมด
+	[FCTmeSalBill] [decimal](18, 4) NULL, --จำนวนบิล 
+	[FCTmeSalBillPercen] [decimal](18, 4) NULL, --% ต่อ จำนวนบิลที่ขายทั้งหมด
+	[FCTmeSalAmt] [numeric](38, 4) NULL, -- ยอดขาย
+	[FCTmeSalAmtPercen] [decimal](18, 4) NULL, -- % ต่อ ยอดที่ขายทั้งหมด
+	[FCTmeDis] [numeric](18, 4) NULL, --ส่วนลด
+	[FCTmeSalTotal] [numeric](18, 4) NULL, --ยอดขายรวม
+
+	[FTComName] [varchar](50) NULL,
+	[FTRptCode] [varchar](50) NULL,
+ CONSTRAINT [PK_TRPTPSTaxDailyTmp] PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) --ON [AdaPos5_RPT_Filegroups]
+) --ON [AdaPos5_RPT_Filegroups]
+
+GO
+
+
+
+/****** Object:  Table [dbo].[TRPTPSTaxMonthTmp_Animate]    Script Date: 11/09/2022 11:21:27 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].TRPTPSTaxMonthTmp_Animate')) --and OBJECTPROPERTY(id, U'IsView') = 1)
+drop TABLE TRPTPSTaxMonthTmp_Animate
+GO
+CREATE TABLE [dbo].[TRPTPSTaxMonthTmp_Animate](
+--CREATE TABLE [dbo].[TRPTPSTaxHDDateTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+
+	[FNAppType] [int] NULL, -- 1 : Pos, 2 : Vending
+	[FTBchCode] [varchar](5) NULL, -- สาขา
+	--[FTBchName] [varchar](100) NULL,
+
+	[FTXshDocLegth] [varchar](100) NULL, -- ใบกำกับภาษี (เลขที่)
+	[FTXshDocDate] [varchar](30) NULL, -- ใบกำกับภาษี  (วันที่)
+
+	[FTCstCode] [varchar](20) NULL, 
+	[FTCstName] [varchar](255) NULL, --ผู้ซื้อสินค้า/ผู้รับบริการ
+	[FTXshMonthTH] [varchar](30) NULL, -- รายงานภาษีขายประจำเดือน ไทย
+	[FTXshMonthEN] [varchar](30) NULL, -- รายงานภาษีขายประจำเดือน Eng
+
+	[FTXshAddrTax] [varchar](30) NULL, --เลขประจำตัวผู้เสียภาษี
+	[FCXshAmtNV] [numeric](18, 4) NULL, -- Before Vat(0%)
+	[FCXshVatable] [numeric](18, 4) NULL, --Before Vat
+	[FCXshVat] [numeric](18, 4) NULL, --จำนวนเงินภาษี
+	[FCXshGrandAmt] [numeric](18, 4) NULL, --จำนวนเงินรวม
+	[FNSeqNo] [Int] Not NULL, 
+
+	[FTComName] [varchar](50) NULL,
+	[FTRptCode] [varchar](50) NULL,
+	[FDTmpTxnDate] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 70, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[TRPTPSTaxMonthTmp_Animate] ADD  DEFAULT (getdate()) FOR [FDTmpTxnDate]
+GO
+
+/*By IcePHP (27/09/2022)*/
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMCardType' AND COLUMN_NAME = 'FTCtyExpiredType') BEGIN
+	ALTER TABLE TFNMCardType ADD FTCtyExpiredType varchar(1)
+END
+GO
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMCardType' AND COLUMN_NAME = 'FTCtyStaCrdReuse') BEGIN
+	ALTER TABLE TFNMCardType ADD FTCtyStaCrdReuse varchar(1)
+END
+GO
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMCardType' AND COLUMN_NAME = 'FTCtyTAStaReset') BEGIN
+	ALTER TABLE TFNMCardType ADD FTCtyTAStaReset varchar(1)
+END
+GO
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TFNMCardType' AND COLUMN_NAME = 'FTCtyTAAlwReturn') BEGIN
+	ALTER TABLE TFNMCardType ADD FTCtyTAAlwReturn varchar(1)
+END
+GO

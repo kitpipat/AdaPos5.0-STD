@@ -146,7 +146,7 @@ class cCardShiftReturn extends MX_Controller {
         /** ===================== เช็ค Validate เอกสารเบิกบัตร =========================== */
         $paParams['tSessionID']     = $this->session->userdata("tSesSessionID");
         $paParams['tSeqNo']         = "";
-        $paParams['bStaCardShift']  = false;
+        $paParams['bStaCardShift']  = TRUE;
         $paParams['nCrdStaActive']  = 1;
 
         if($tStaPrcDoc == "" AND $tStaDoc == ""){
@@ -160,7 +160,7 @@ class cCardShiftReturn extends MX_Controller {
             FSnHReturnCrdChkStaShiftInCard($paParams);
 
             //(9)
-            FSnHReturnCrdChkStaActiveInCard($paParams);
+            // FSnHReturnCrdChkStaActiveInCard($paParams);
         }else{
             if($tStaPrcDoc == "" AND $tStaDoc == "1"){ // Document pending status(approve) or complete status(doc status)
                 //(5)
@@ -173,7 +173,7 @@ class cCardShiftReturn extends MX_Controller {
                 FSnHReturnCrdChkStaShiftInCard($paParams);
 
                 //(9)
-                FSnHReturnCrdChkStaActiveInCard($paParams);
+                // FSnHReturnCrdChkStaActiveInCard($paParams);
             }
         }
         /** ========================================================================== */

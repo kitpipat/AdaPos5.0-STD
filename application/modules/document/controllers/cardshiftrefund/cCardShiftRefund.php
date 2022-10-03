@@ -121,23 +121,23 @@ class cCardShiftRefund extends MX_Controller
      */
     public function FSvCardShiftRefundDataSourceList()
     {
-        $nPage = !empty($this->input->post('nPageCurrent')) ? $this->input->post('nPageCurrent') : 1;
-        $tSearchAll = $this->input->post('tSearchAll');
-        $tOptionDocNo = $this->input->post('tOptionDocNo');
-        $tDocNo = $this->input->post('tDocNo');
-        $aCardTypeRange = json_decode($this->input->post('tCardTypeRange'));
-        $aCardNumberRange = json_decode($this->input->post('tCardNumberRange'));
-        $aCardNumber = json_decode($this->input->post('tCardNumber'));
-        $aNotInCardNumber = json_decode($this->input->post('tNotInCardNumber'));
+        $nPage              = !empty($this->input->post('nPageCurrent')) ? $this->input->post('nPageCurrent') : 1;
+        $tSearchAll         = $this->input->post('tSearchAll');
+        $tOptionDocNo       = $this->input->post('tOptionDocNo');
+        $tDocNo             = $this->input->post('tDocNo');
+        $aCardTypeRange     = json_decode($this->input->post('tCardTypeRange'));
+        $aCardNumberRange   = json_decode($this->input->post('tCardNumberRange'));
+        $aCardNumber        = json_decode($this->input->post('tCardNumber'));
+        $aNotInCardNumber   = json_decode($this->input->post('tNotInCardNumber'));
         $tIsGetCardCodeMode = $this->input->post('tIsGetCardCodeMode');
-        $tSetEmpty = $this->input->post('tSetEmpty');
-        $tStaShift = $this->input->post('tStaShift');
-        $tIsTemp = $this->input->post('tIsTemp');
-        $tIsDataOnly = $this->input->post('tIsDataOnly');
-        $tStaPrcDoc = $this->input->post('tStaPrcDoc');
-        $tStaDoc = $this->input->post('tStaDoc');
-        $tStaType = $this->input->post('tStaType');
-        $tLastIndex = $this->input->post('tLastIndex');
+        $tSetEmpty          = $this->input->post('tSetEmpty');
+        $tStaShift          = $this->input->post('tStaShift');
+        $tIsTemp            = $this->input->post('tIsTemp');
+        $tIsDataOnly        = $this->input->post('tIsDataOnly');
+        $tStaPrcDoc         = $this->input->post('tStaPrcDoc');
+        $tStaDoc            = $this->input->post('tStaDoc');
+        $tStaType           = $this->input->post('tStaType');
+        $tLastIndex         = $this->input->post('tLastIndex');
 
         if ($nPage == '' || $nPage == null) {
             $nPage = 1;
@@ -154,18 +154,18 @@ class cCardShiftRefund extends MX_Controller
         if ($tIsGetCardCodeMode == "1") { // Use get card code mode
 
             $aData  = array(
-                'nPage' => $nPage,
-                'nRow' => 500,
-                'FNLngID' => $nLangEdit,
-                'tSearchAll' => $tSearchAll,
-                'aCardNumber' => $aCardNumber,
-                'aNotInCardNumber' => $aNotInCardNumber,
-                'aCardTypeRange' => $aCardTypeRange,
-                'aCardNumberRange' => $aCardNumberRange,
-                'tSetEmpty' => $tSetEmpty,
-                'FTCrdStaShift' => $tStaShift,
-                'tStaType' => $tStaType,
-                'FTCvhDocNo' => $tDocNo
+                'nPage'             => $nPage,
+                'nRow'              => 500,
+                'FNLngID'           => $nLangEdit,
+                'tSearchAll'        => $tSearchAll,
+                'aCardNumber'       => $aCardNumber,
+                'aNotInCardNumber'  => $aNotInCardNumber,
+                'aCardTypeRange'    => $aCardTypeRange,
+                'aCardNumberRange'  => $aCardNumberRange,
+                'tSetEmpty'         => $tSetEmpty,
+                'FTCrdStaShift'     => $tStaShift,
+                'tStaType'          => $tStaType,
+                'FTCvhDocNo'        => $tDocNo
             );
 
             if (!empty($tOptionDocNo)) { // Have document number

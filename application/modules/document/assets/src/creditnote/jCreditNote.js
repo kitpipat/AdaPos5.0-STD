@@ -110,7 +110,9 @@ function FSvPDTAddPdtIntoTableDT(ptPdtData, ptIsRefPI, tIsByScanBarCode) {
                 tBarCodeByScan          : $('#oetCreditNoteScanPdtHTML').val(),
                 tSplVatType             : JSxCreditNoteIsSplUseVatType('in') ? '1' : '2', // 1: รวมใน, 2: แยกนอก
                 tPdtData                : ptPdtData,
-                tCreditNoteOptionAddPdt : $("#ocmCreditNoteOptionAddPdt").val() // เพิ่มแถวใหม่ Default 1 : บวกรายการเดิมในรายการ
+                tCreditNoteOptionAddPdt : $("#ocmCreditNoteOptionAddPdt").val(), // เพิ่มแถวใหม่ Default 1 : บวกรายการเดิมในรายการ
+                tVatCode                : $('#ohdCNFrmSplVatCode').val(),
+                cVatRate                : $('#ohdCNFrmSplVatRate').val(),
             },
             cache: false,
             success: function (tResult) {
@@ -446,7 +448,9 @@ function FSvCreditNoteAddPdtIntoTableDT(ptPdtCode, ptPunCode, pnXthVATInOrEx) {
                 ptPdtCode: ptPdtCode,
                 ptPunCode: ptPunCode,
                 ptOptDocAdd: ptOptDocAdd,
-                pnXthVATInOrEx: pnXthVATInOrEx
+                pnXthVATInOrEx: pnXthVATInOrEx,
+                tVatCode    : $('#ohdCNFrmSplVatCode').val(),
+                cVatRate    : $('#ohdCNFrmSplVatRate').val(),
             },
             cache: false,
             success: function (tResult) {

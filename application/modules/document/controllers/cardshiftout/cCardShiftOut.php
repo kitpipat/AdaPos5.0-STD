@@ -117,14 +117,14 @@ class cCardShiftOut extends MX_Controller
      */
     public function FSvCardShiftOutDataSourceList()
     {
-        $nPage = $this->input->post('nPageCurrent');
-        $tSearchAll = $this->input->post('tSearchAll');
-        $tIsTemp = $this->input->post('tIsTemp');
-        $tIsDataOnly = $this->input->post('tIsDataOnly');
-        $tStaPrcDoc = $this->input->post('tStaPrcDoc');
-        $tStaDoc = $this->input->post('tStaDoc');
-        $tLastIndex = $this->input->post('tLastIndex');
-        $tOptionDocNo = $this->input->post('tOptionDocNo');
+        $nPage          = $this->input->post('nPageCurrent');
+        $tSearchAll     = $this->input->post('tSearchAll');
+        $tIsTemp        = $this->input->post('tIsTemp');
+        $tIsDataOnly    = $this->input->post('tIsDataOnly');
+        $tStaPrcDoc     = $this->input->post('tStaPrcDoc');
+        $tStaDoc        = $this->input->post('tStaDoc');
+        $tLastIndex     = $this->input->post('tLastIndex');
+        $tOptionDocNo   = $this->input->post('tOptionDocNo');
         if ($nPage == '' || $nPage == null) {
             $nPage = 1;
         } else {
@@ -156,8 +156,12 @@ class cCardShiftOut extends MX_Controller
             $paParams['nCrdStaActive'] = 1;
             FSnHCrdShiftChkStaActiveInCard($paParams);
 
+            //เช็คประเภทการเบิกบัตร
+            $paParams['nCtyStaShift'] = 1;
+            FSnHCrdShiftChkCtyStaShift($paParams);
+
             // เช็ควันหมดอายุของบัตร
-            FSnHCrdShiftChkCardExpireDate($paParams);
+            // FSnHCrdShiftChkCardExpireDate($paParams);
         } else {
             if ($tStaPrcDoc == "" and $tStaDoc == "1") { // Document pending status(approve) or complete status(doc status)
                 // เช็คบัตรในระบบ
@@ -174,8 +178,12 @@ class cCardShiftOut extends MX_Controller
                 $paParams['nCrdStaActive'] = 1;
                 FSnHCrdShiftChkStaActiveInCard($paParams);
 
+                //เช็คประเภทการเบิกบัตร
+                $paParams['nCtyStaShift'] = 1;
+                FSnHCrdShiftChkCtyStaShift($paParams);
+
                 // เช็ควันหมดอายุของบัตร
-                FSnHCrdShiftChkCardExpireDate($paParams);
+                // FSnHCrdShiftChkCardExpireDate($paParams);
             }
         }
         /** ========================================================================== */
@@ -307,23 +315,23 @@ class cCardShiftOut extends MX_Controller
     {
         try {
             $aDataMaster = array(
-                'tIsAutoGenCode' => $this->input->post('ocbCardShiftOutAutoGenCode'),
-                'FTXshDocNo' => $this->input->post('oetCardShiftOutCode'),
-                'FDXshDocDate' => $this->input->post('oetCardShiftOutDocDate') . ' ' . date('H:i:s'),
-                'FNXshDocType' => 1, // Take out card
-                'FTBchCode' => $this->input->post('ohdCardShiftOutUsrBchCode'),
-                'FTUsrCode' => $this->session->userdata("tSesUsername"),
-                'FNXshCardQty' => FSnSelectCountResult('TFNTCrdShiftTmp'),
-                'aCardCode' => json_decode($this->input->post('aCardCode')),
-                'FTXshApvCode' => $this->input->post('ohdCardShiftOutApvCode'),
-                'FTXshStaApv' => $this->input->post('ohdCardShiftOutCardStaPrcDoc'),
-                'FTXshStaDoc' => empty($this->input->post('hdCardShiftOutCardStaDoc')) ? "1" : $this->input->post('hdCardShiftOutCardStaDoc'),
-                'FNXshStaDocAct' => empty($this->input->post('hdCardShiftOutCardStaDoc')) ? 1 : $this->input->post('hdCardShiftOutCardStaDoc'),
-                'FTLastUpdBy' => $this->session->userdata('tSesUsername'),
-                'FDLastUpdOn' => date('Y-m-d H:i:s'),
-                'FTCreateBy' => $this->session->userdata('tSesUsername'),
-                'FDCreateOn' => date('Y-m-d H:i:s'),
-                'FNLngID' => $this->session->userdata("tLangEdit"),
+                'tIsAutoGenCode'    => $this->input->post('ocbCardShiftOutAutoGenCode'),
+                'FTXshDocNo'        => $this->input->post('oetCardShiftOutCode'),
+                'FDXshDocDate'      => $this->input->post('oetCardShiftOutDocDate') . ' ' . date('H:i:s'),
+                'FNXshDocType'      => 1, // Take out card
+                'FTBchCode'         => $this->input->post('ohdCardShiftOutUsrBchCode'),
+                'FTUsrCode'         => $this->session->userdata("tSesUsername"),
+                'FNXshCardQty'      => FSnSelectCountResult('TFNTCrdShiftTmp'),
+                'aCardCode'         => json_decode($this->input->post('aCardCode')),
+                'FTXshApvCode'      => $this->input->post('ohdCardShiftOutApvCode'),
+                'FTXshStaApv'       => $this->input->post('ohdCardShiftOutCardStaPrcDoc'),
+                'FTXshStaDoc'       => empty($this->input->post('hdCardShiftOutCardStaDoc')) ? "1" : $this->input->post('hdCardShiftOutCardStaDoc'),
+                'FNXshStaDocAct'    => empty($this->input->post('hdCardShiftOutCardStaDoc')) ? 1 : $this->input->post('hdCardShiftOutCardStaDoc'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FNLngID'           => $this->session->userdata("tLangEdit"),
             );
 
             // Setup DocNo
@@ -400,21 +408,21 @@ class cCardShiftOut extends MX_Controller
     {
         try {
             $aDataMaster = array(
-                'FTXshDocNo' => $this->input->post('oetCardShiftOutCode'),
-                'FDXshDocDate' => $this->input->post('oetCardShiftOutDocDate') . ' ' . date('H:i:s'),
-                'FNXshDocType' => 1, // Take out card
-                'FTBchCode' => $this->input->post('ohdCardShiftOutUsrBchCode'),
-                'FNXshCardQty' => FSnSelectCountResult('TFNTCrdShiftTmp'),
-                'aCardCode' => json_decode($this->input->post('aCardCode')),
-                'FTXshApvCode' => $this->input->post('ohdCardShiftOutApvCode'),
-                'FTXshStaApv' => $this->input->post('ohdCardShiftOutCardStaPrcDoc'),
-                'FTXshStaDoc' => empty($this->input->post('hdCardShiftOutCardStaDoc')) ? "1" : $this->input->post('hdCardShiftOutCardStaDoc'),
-                'FNXshStaDocAct' => empty($this->input->post('hdCardShiftOutCardStaDocAct')) ? 1 : $this->input->post('hdCardShiftOutCardStaDocAct'),
-                'FTLastUpdBy' => $this->session->userdata('tSesUsername'),
-                'FDLastUpdOn' => date('Y-m-d H:i:s'),
-                'FTCreateBy' => $this->session->userdata('tSesUsername'),
-                'FDCreateOn' => date('Y-m-d H:i:s'),
-                'FNLngID' => $this->session->userdata("tLangEdit"),
+                'FTXshDocNo'        => $this->input->post('oetCardShiftOutCode'),
+                'FDXshDocDate'      => $this->input->post('oetCardShiftOutDocDate') . ' ' . date('H:i:s'),
+                'FNXshDocType'      => 1, // Take out card
+                'FTBchCode'         => $this->input->post('ohdCardShiftOutUsrBchCode'),
+                'FNXshCardQty'      => FSnSelectCountResult('TFNTCrdShiftTmp'),
+                'aCardCode'         => json_decode($this->input->post('aCardCode')),
+                'FTXshApvCode'      => $this->input->post('ohdCardShiftOutApvCode'),
+                'FTXshStaApv'       => $this->input->post('ohdCardShiftOutCardStaPrcDoc'),
+                'FTXshStaDoc'       => empty($this->input->post('hdCardShiftOutCardStaDoc')) ? "1" : $this->input->post('hdCardShiftOutCardStaDoc'),
+                'FNXshStaDocAct'    => empty($this->input->post('hdCardShiftOutCardStaDocAct')) ? 1 : $this->input->post('hdCardShiftOutCardStaDocAct'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FNLngID'           => $this->session->userdata("tLangEdit"),
             );
 
             $this->db->trans_begin();
@@ -476,22 +484,22 @@ class cCardShiftOut extends MX_Controller
     {
         try {
             $aDataMaster = array(
-                'FTXshDocNo' => $this->input->post('oetCardShiftOutCode'),
-                'FDXshDocDate' => $this->input->post('oetCardShiftOutDocDate') . ' ' . date('H:i:s'),
-                'FNXshDocType' => 1, // Take out card
-                'FTBchCode' => $this->input->post('ohdCardShiftOutUsrBchCode'),
-                'FTUsrCode' => $this->session->userdata("tSesUsername"),
-                'FNXshCardQty' => count(json_decode($this->input->post('aCardCode'))),
-                'aCardCode' => json_decode($this->input->post('aCardCode')),
-                'FTXshApvCode' => $this->input->post('ohdCardShiftOutApvCode'),
-                'FTXshStaApv' => $this->input->post('ohdCardShiftOutCardStaPrcDoc'),
-                'FTXshStaDoc' => empty($this->input->post('hdCardShiftOutCardStaDoc')) ? "1" : $this->input->post('hdCardShiftOutCardStaDoc'),
-                'FNXshStaDocAct' => empty($this->input->post('hdCardShiftOutCardStaDocAct')) ? 1 : $this->input->post('hdCardShiftOutCardStaDocAct'),
-                'FTLastUpdBy' => $this->session->userdata('tSesUsername'),
-                'FDLastUpdOn' => date('Y-m-d H:i:s'),
-                'FTCreateBy' => $this->session->userdata('tSesUsername'),
-                'FDCreateOn' => date('Y-m-d H:i:s'),
-                'FNLngID' => $this->session->userdata("tLangEdit")
+                'FTXshDocNo'        => $this->input->post('oetCardShiftOutCode'),
+                'FDXshDocDate'      => $this->input->post('oetCardShiftOutDocDate') . ' ' . date('H:i:s'),
+                'FNXshDocType'      => 1, // Take out card
+                'FTBchCode'         => $this->input->post('ohdCardShiftOutUsrBchCode'),
+                'FTUsrCode'         => $this->session->userdata("tSesUsername"),
+                'FNXshCardQty'      => count(json_decode($this->input->post('aCardCode'))),
+                'aCardCode'         => json_decode($this->input->post('aCardCode')),
+                'FTXshApvCode'      => $this->input->post('ohdCardShiftOutApvCode'),
+                'FTXshStaApv'       => $this->input->post('ohdCardShiftOutCardStaPrcDoc'),
+                'FTXshStaDoc'       => empty($this->input->post('hdCardShiftOutCardStaDoc')) ? "1" : $this->input->post('hdCardShiftOutCardStaDoc'),
+                'FNXshStaDocAct'    => empty($this->input->post('hdCardShiftOutCardStaDocAct')) ? 1 : $this->input->post('hdCardShiftOutCardStaDocAct'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FNLngID'           => $this->session->userdata("tLangEdit")
             );
 
             $this->db->trans_begin();
@@ -520,7 +528,7 @@ class cCardShiftOut extends MX_Controller
                     }
                 }
                 /*===== End Set Card Item ==============================================*/
-
+                // print_r($aCardItems);
                 /*========================== Approved =========================*/
                 try {
                     /* Params MQ
@@ -591,8 +599,10 @@ class cCardShiftOut extends MX_Controller
                     'tStaMessg' => 'Success Update Event'
                 );
             }
+            // print_r(["THISSS", json_encode($aReturn)]); exit;
             echo json_encode($aReturn);
         } catch (Exception $Error) {
+            // print_r(["Error", $Error]); exit;
             echo $Error;
         }
     }
@@ -605,6 +615,8 @@ class cCardShiftOut extends MX_Controller
           'tLangID'         => $this->session->userdata("tLangID"),
           'nCountNumber'    => $this->input->post('nCountNumber')
       );
+
+    //   print_r($aData);
       $aResList = $this->mCardShiftOut->FSaMCardShiftOutListScanner($aData);
       echo json_encode($aResList);
     }
@@ -721,22 +733,22 @@ class cCardShiftOut extends MX_Controller
      */
     public function FSvCardShiftOutDataSourceListByFile()
     {
-        $nPage = $this->input->post('nPageCurrent');
-        $tSearchAll = $this->input->post('tSearchAll');
-        $aCardTypeRange = json_decode($this->input->post('tCardTypeRange'));
-        $aCardNumberRange = json_decode($this->input->post('tCardNumberRange'));
-        $aCardNumber = json_decode($this->input->post('tCardNumber'));
-        $aNotInCardNumber = json_decode($this->input->post('tNotInCardNumber'));
-        $tSetEmpty = $this->input->post('tSetEmpty');
-        $tStaShift = $this->input->post('tStaShift');
-        $tIsTemp = $this->input->post('tIsTemp');
-        $tIsDataOnly = $this->input->post('tIsDataOnly');
-        $tStaPrcDoc = $this->input->post('tStaPrcDoc');
-        $tStaDoc = $this->input->post('tStaDoc');
-        $tStaType = $this->input->post('tStaType');
-        $tLastIndex = $this->input->post('tLastIndex');
-        $tDocNo = $this->input->post('tDocNo');
-        $tBchCode = $this->input->post('tBchCode');
+        $nPage              = $this->input->post('nPageCurrent');
+        $tSearchAll         = $this->input->post('tSearchAll');
+        $aCardTypeRange     = json_decode($this->input->post('tCardTypeRange'));
+        $aCardNumberRange   = json_decode($this->input->post('tCardNumberRange'));
+        $aCardNumber        = json_decode($this->input->post('tCardNumber'));
+        $aNotInCardNumber   = json_decode($this->input->post('tNotInCardNumber'));
+        $tSetEmpty          = $this->input->post('tSetEmpty');
+        $tStaShift          = $this->input->post('tStaShift');
+        $tIsTemp            = $this->input->post('tIsTemp');
+        $tIsDataOnly        = $this->input->post('tIsDataOnly');
+        $tStaPrcDoc         = $this->input->post('tStaPrcDoc');
+        $tStaDoc            = $this->input->post('tStaDoc');
+        $tStaType           = $this->input->post('tStaType');
+        $tLastIndex         = $this->input->post('tLastIndex');
+        $tDocNo             = $this->input->post('tDocNo');
+        $tBchCode           = $this->input->post('tBchCode');
 
         if ($nPage == '' || $nPage == null) {
             $nPage = 1;
@@ -766,7 +778,7 @@ class cCardShiftOut extends MX_Controller
                     'nDocno' => $tDocNo,
                     'tBCHCode' => $tBchCode
                 ];
-
+                // print_r($aDataFiles);
                 $paDataSet = [];
                 if (isset($_FILES['aFile'])) {
                     $tResult = FCNaCARInsertDataToTempFileCenter($ptDocType, $ptDataSetType, $paDataExcel, $paDataSet);

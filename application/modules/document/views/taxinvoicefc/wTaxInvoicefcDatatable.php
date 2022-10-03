@@ -9,6 +9,7 @@
 						<th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXPDTName')?></th>
                         <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXPDTUnit')?></th>
                         <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXPDTQty')?></th>
+                        <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','ราคา')?></th>
                         <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXPDTDiscount')?></th>
                         <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXPDTTotal')?></th>
                     </tr>
@@ -18,12 +19,16 @@
                         <?php foreach($aGetDT['raItems'] as $nKey => $aValue): ?>
                             <tr class="text-center xCNTextDetail2">  
                                 <td class="text-left"><label><?=$aValue['FNRowID']?></label></td>
+                                <!-- <td class="text-left"><label>xx</label></td> -->
                                 <td class="text-left"><label><?=$aValue['FTPdtCode']?></label></td>
                                 <td class="text-left"><label><?=$aValue['FTXsdPdtName']?></label></td>
                                 <td class="text-left"><label><?=$aValue['FTPunName']?></label></td>
                                 <td class="text-right"><label><?=number_format($aValue['FCXsdQty'],2)?></label></td>
-                                <td class="text-right"><label><?=number_format($aValue['FCXsdDis'] + $aValue['FCXsdChg']+$aValue['DISPMT'],2)?></label></td>
-                                <td class="text-right"><label><?=number_format($aValue['FCXsdNet'] - $aValue['DISPMT'],2)?></label></td>
+                                <td class="text-right"><label><?=number_format($aValue['FCXsdAmtB4DisChg'],2)?></label></td>
+                                <td class="text-right"><label><?=number_format($aValue['FCXsdDis'],2)?></label></td>
+                                            <!-- <td class="text-right"><label><?=number_format($aValue['FCXsdDis'] + $aValue['FCXsdChg']+$aValue['DISPMT'],2)?></label></td> -->
+                                            <!-- <td class="text-right"><label><?=number_format($aValue['FCXsdNet'] - $aValue['DISPMT'],2)?></label></td> -->
+                                <td class="text-right"><label><?=number_format($aValue['FCXsdNet'],2)?></label></td>
                             </tr>
                         <?php endforeach;?>
                     <?php else:?>

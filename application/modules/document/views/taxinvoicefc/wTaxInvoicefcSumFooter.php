@@ -43,6 +43,25 @@
                             $tGndText       = 'บาท';
                             $cXshGrand      = '-';
                         }
+                        // if($aGetDT['rtCode'] == 1){
+                        //     //มีข้อมูล
+                        //     $FCXshTotal     = number_format($aGetDT['raItems'][0]['FCXshTotal'],2);
+                        //     $FCXshDis       = number_format($aGetDT['raItems'][0]['FCXsdDis'],2);
+                        //     $nB4            = number_format($aGetDT['raItems'][0]['FCXrcNet'],2);
+                        //     $FCXshVat       = number_format($aGetDT['raItems'][0]['FCXshVat'],2);
+                        //     $FCXshGrand     = number_format($aGetDT['raItems'][0]['FCXshGrand'],2);
+                        //     $tGndText       = FCNtNumberToTextBaht($aGetDT['raItems'][0]['FCXshGrand']);
+                        //     $cXshGrand     = $aGetDT['raItems'][0]['FCXshGrand'];
+                        // }else{
+                        //     //ไม่มีข้อมูล
+                        //     $FCXshTotal     = '0.00';
+                        //     $FCXshDis       = '0.00';
+                        //     $nB4            = '0.00';
+                        //     $FCXshVat       = '0.00';
+                        //     $FCXshGrand     = '0.00';
+                        //     $tGndText       = 'บาท';
+                        //     $cXshGrand      = '-';
+                        // }
                     ?>
                     <li class="list-group-item">
                         <label class="pull-left mark-font"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXTBSumFCXtdNet');?></label>

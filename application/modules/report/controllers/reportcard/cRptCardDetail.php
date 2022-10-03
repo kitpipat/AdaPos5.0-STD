@@ -545,7 +545,7 @@ class cRptCardDetail extends MX_Controller {
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell($tCrdStaExpr),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCCrdValue'])),
+                    WriterEntityFactory::createCell(number_format($aValue['FCCrdValue'],$nOptDecimalShow)),
                     WriterEntityFactory::createCell(null),
                 ];
 

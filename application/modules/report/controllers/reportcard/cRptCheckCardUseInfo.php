@@ -694,11 +694,11 @@ class cRptCheckCardUseInfo extends MX_Controller {
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell($rtTxnDocDate),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($tExplodeCrdAftTrans[1])),
+                    WriterEntityFactory::createCell(number_format($tExplodeCrdAftTrans[1],$nOptDecimalShow)),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['rtTxnValue'])),
+                    WriterEntityFactory::createCell(number_format($aValue['rtTxnValue'],$nOptDecimalShow)),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($tExplodeCrdBalance[1])),
+                    WriterEntityFactory::createCell(number_format($tExplodeCrdBalance[1],$nOptDecimalShow)),
                 ];
                 $aRow = WriterEntityFactory::createRow($values);
                 $oWriter->addRow($aRow);

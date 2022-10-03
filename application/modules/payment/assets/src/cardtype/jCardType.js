@@ -195,6 +195,9 @@ function JSoAddEditCardType(ptRoute){
                 ocmCtyExpireType : {
                     required: true
                 },
+                ocmCtyTExpireType : {
+                    required: true
+                },
                 oetCtyCode   : "required",
                 oetCtyCode   : "required",
                 oetCtyName   : "required",
@@ -202,6 +205,7 @@ function JSoAddEditCardType(ptRoute){
                 oetCtyTopupAuto : "required",
             },
             messages: {
+                ocmCtyTExpireType : $('#ocmCtyTExpireType').data('validate'),
                 ocmCtyExpireType : $('#ocmCtyExpireType').data('validate'),
                 oetCtyCode   : $('#oetCtyCode').data('validate'),
                 oetCtyCode   : $('#oetCtyCode').data('validate'),

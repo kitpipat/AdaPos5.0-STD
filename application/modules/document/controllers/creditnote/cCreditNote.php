@@ -192,6 +192,8 @@ class cCreditNote extends MX_Controller
         $tPdtData = $this->input->post('tPdtData');
         $tIsByScanBarCode = $this->input->post('tIsByScanBarCode');
         $tBarCodeByScan = $this->input->post('tBarCodeByScan');
+        $tVatCode = $this->input->post('tVatCode');
+        $cVatRate = $this->input->post('cVatRate');
         $aPdtData = json_decode($tPdtData);
 
         if ($tIsByScanBarCode != '1') { // ทำงานเมื่อไม่ใช่การแสกนบาร์โค้ดมา
@@ -210,9 +212,9 @@ class cCreditNote extends MX_Controller
                 $ptBarCode  = $aPdtData[$nI]->ptBarCode;
                 $ptPunCode  = $aPdtData[$nI]->ptPunCode;
                 $pcPrice    = $aPdtData[$nI]->packData->Price;
-                $pcQty      = $aPdtData[$nI]->packData->Qty;
-                $tVatrate   = $aPdtData[$nI]->packData->Vatrate;
-                $tVatcode   = $aPdtData[$nI]->packData->vatcode;
+                $pcQty      = 1;
+                $tVatrate   = $cVatRate;
+                $tVatcode   = $tVatCode;
 
                 $aDataWhere = array(
                     'tDocNo'    => $tDocNo,
@@ -435,7 +437,8 @@ class cCreditNote extends MX_Controller
                 'tDocNo'        => '',
                 'tBchCode'      => $tBchCode,
                 'tSessionID'    => $tSessionID,
-                'tDocKey'       => 'TAPTPcHD'
+                'tDocKey'       => 'TAPTPcHD',
+                'tDataVatInOrEx'  => $tSplVatType,
             ];
             $aCalDTTempForHD = $this->FSaCCreditNoteCalDTTempForHD($aCalDTTempParams);
             $aCalInHDDisTemp = $this->mCreditNote->FSaMCreditNoteCalInHDDisTemp($aCalDTTempParams);
@@ -892,8 +895,10 @@ class cCreditNote extends MX_Controller
                 'tDocNo' => $tDocNo,
                 'tBchCode' => $tBchCode,
                 'tSessionID' => $tSessionID,
-                'tDocKey' => 'TAPTPcHD'
+                'tDocKey' => 'TAPTPcHD',
+                'tDataVatInOrEx'  => $tSplVatType,
             ];
+            
             $aCalDTTempForHD = $this->FSaCCreditNoteCalDTTempForHD($aCalDTTempParams);
 
             $aCalInHDDisTemp = $this->mCreditNote->FSaMCreditNoteCalInHDDisTemp($aCalDTTempParams);

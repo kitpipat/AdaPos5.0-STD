@@ -850,3 +850,29 @@ $route['rptRptInventoryTranferClickPage']           = 'report/reportFitauto/Rpti
 $route['rtpPssVatByMonth'] = 'report/reportPSSVatByMonth/Rptpssvatbymonth_controller/index';
 $route['rtpPssVatByMonthClickPage'] = 'report/reportPSSVatByMonth/Rptpssvatbymonth_controller/FSvCCallRptViewBeforePrintClickPage';
 $route['rtpPssVatByMonthCallExportFile'] = "report/reportPSSVatByMonth/Rptpssvatbymonth_controller/FSvCCallRptExportFile";
+
+
+
+/** ========================================= รายงานยอดขายตามสินค้า (Accounting) ======================================================================== */
+$route['rptRptSaleByProductAnime']               = 'report/reportsale/Rptsalebyproductanime_controller/index';
+$route['rptRptSaleByProductAnimeClickPage']      = 'report/reportsale/Rptsalebyproductanime_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptRptSaleByProductAnimeCallExportFile'] = 'report/reportsale/Rptsalebyproductanime_controller/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */
+
+
+
+
+/** ========================================= รายงาน - ข้อมูลการขาย (Anime) ======================================================================== */
+$route['rptRptDailySaleINFOAnime']               = 'report/reportdailysaleinfo/Rptdailysaleinfoanime_controller/index';
+$route['rptRptDailySaleINFOAnimeClickPage']      = 'report/reportdailysaleinfo/Rptdailysaleinfoanime_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptRptDailySaleINFOAnimeCallExportFile'] = 'report/reportdailysaleinfo/Rptdailysaleinfoanime_controller/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */
+
+
+
+
+/** ========================================= รายงาน - ยอดขายตามประเภทสินค้า (Anime) ======================================================================== */
+$route['rptRptSaleByPtyAnime']               = 'report/reportsalebypty/Rptsalebyptyanime_controller/index';
+$route['rptRptSaleByPtyAnimeClickPage']      = 'report/reportsalebypty/Rptsalebyptyanime_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptRptSaleByPtyAnimeCallExportFile'] = 'report/reportsalebypty/Rptsalebyptyanime_controller/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */

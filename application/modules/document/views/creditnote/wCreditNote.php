@@ -115,7 +115,7 @@
     var tUsrApv         = '<?php echo $this->session->userdata("tSesUsername");?>';
 </script>
 
-<script type="text/javascript" src="<?php echo base_url('application/modules/document/assets/src/creditnote/jCreditNote.js'); ?>"></script>
+<script type="text/javascript" src="<?php echo base_url('application/modules/document/assets/src/creditnote/jCreditNote.js?v=1'); ?>"></script>
 
 
 

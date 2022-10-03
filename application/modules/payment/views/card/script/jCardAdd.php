@@ -6,13 +6,15 @@
     var nLangEdits = <?php echo $this->session->userdata("tLangEdit") ?>;
     var nStaAddOrEdit = <?php echo $nStaAddOrEdit ?>;
     var tCrdStaShift = '<?php echo $tCrdStaShift ?>';
-    var dDatNow = '<?php echo date('Y-m-d') ?>';
+    var dDatNow = '<?php echo date('Y-m-d H:i:s') ?>';
+    var dTimeNow = '<?php echo date('H:i:s') ?>';
+    var tEpxDate = '';
+    var tStrDate = '';
     $(document).ready(function() {
         $('.xCNSelectBox').selectpicker();
-
         $('#obtCrdStartDate').click(function(event) {
             $('#oetCrdStartDate').datepicker({
-                format: "yyyy-mm-dd",
+                format: "yyyy-mm-dd" + " " + dTimeNow,
                 todayHighlight: true,
                 enableOnReadonly: false,
                 startDate: '1900-01-01',
@@ -21,38 +23,60 @@
             });
             $('#oetCrdStartDate').datepicker('show');
             event.preventDefault();
-        });
-
+            // console.log(['1', $('#oetCrdStartDate').val()])
+            // if($('#oetCrdStartDate').val() == ''){
+                //     $('#oetCrdStartDate').val(dDatNow) 
+                // }
+            });
+            
+        console.log(['3', $('#oetCrdStartDate').val()])
         $('.xCNDatePicker').datepicker({
-            format: "yyyy-mm-dd",
+            format: "yyyy-mm-dd"  + " " + dTimeNow,
             todayHighlight: true,
             enableOnReadonly: false,
             startDate: '1900-01-01',
             disableTouchKeyboard: true,
             autoclose: true
         });
-
+        
         $('#obtCrdStartDate').click(function(event) {
             $('#oetCrdStartDate').datepicker('show');
             event.preventDefault();
+            // if($('#oetCrdStartDate').val() == ''){
+                //     $('#oetCrdStartDate').val(dDatNow) 
+                // }
+            // console.log(['2', $('#oetCrdStartDate').val()])
         });
-
+        
         $('#obtCrdExpireDate').click(function(event) {
             $('#oetCrdExpireDate').datepicker('show');
             event.preventDefault();
         });
-
+            // if($('#oetCrdStartDate').val() == ''){
+                //     $('#oetCrdStartDate').val(dDatNow) 
+                // }
+            // if($('#oetCrdStartDate').val() == ''){
+            //     $('#oetCrdStartDate').val(dDatNow) 
+            // }
+            // if($('#oetCrdExpireDate').val() == ''){
+            //     $('#oetCrdExpireDate').val('9999-12-31 00:00:00') 
+            // }
+            
         if (nStaAddOrEdit === 99) {
             $('#oetCrdDeposit').val('0.00');
             $('#ocbCrdStaLocateUse').prop("checked", true);
             $('#oetCrdStartDate').removeAttr('maxlength');
             $('#oetCrdExpireDate').removeAttr('maxlength');
             $('#oetCrdStartDate').val(dDatNow);
-            $('#oetCrdExpireDate').val('9999-12-31');
+            $('#oetCrdExpireDate').val('9999-12-31 00:00:00');
             JSxChkUseCrdStaType();
         } else {
             JSxChkStaCardStaShif(tCrdStaShift);
         }
+        tEpxDate = $('#oetCrdExpireDate').val();
+        tStrDate = $('#oetCrdStartDate').val();
+        console.log(tStrDate, tEpxDate);
+
     });
 
     var tAgenCode = '<?php echo $this->session->userdata('tSesUsrAgnCode'); ?>';
@@ -505,4 +529,167 @@ if(tAgenCode != ''){
             JCNxShowMsgSessionExpired();
         }
     }
+
+    $('#oetCrdCtyCode').change(function(){
+        // console.log($('#oetCrdCtyCode').val())
+        var tCrdCtyCode         = $('#oetCrdCtyCode').val();
+        var tCtyExpirePeriod    = '';
+        var tCtyExpiredType     = '';
+        var tExpiredType        = '';
+
+        $.ajax({
+            type: "POST",
+            url: "cardGetExpiredInfo",
+            data: {
+                tCrdCtyCode: tCrdCtyCode,
+            },
+            cache: false,
+            timeout: 0,
+            success: function(tResult) {
+                var aResult = JSON.parse(tResult);
+                // console.log(aResult['aCrdData'][0]['FNCtyExpirePeriod']);
+                tCtyExpirePeriod    = aResult['aCrdData'][0]['FNCtyExpirePeriod']
+                tCtyExpiredType     = aResult['aCrdData'][0]['FNCtyExpiredType']
+                tExpiredType        = aResult['aCrdData'][0]['FTCtyExpiredType']
+                // $('#odvCardHisDataTalbleContainer').html(tResult);
+                JSxChkCryExpiredInfo(tCtyExpirePeriod, tCtyExpiredType, tExpiredType)
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+
+    });
+
+    $('#oetCrdStartDate').change(function(){
+        console.log(tStrDate, tEpxDate);
+        if($('#oetCrdStartDate').val() == '' || $('#oetCrdStartDate').val() == dDatNow){
+            $('#oetCrdStartDate').val(tStrDate) 
+        }else{
+
+            // console.log($('#oetCrdCtyCode').val())
+            var tCrdCtyCode         = $('#oetCrdCtyCode').val();
+            var tCtyExpirePeriod    = '';
+            var tCtyExpiredType     = '';
+            var tExpiredType        = '';
+    
+            if(tCrdCtyCode != '') {
+                $.ajax({
+                    type: "POST",
+                    url: "cardGetExpiredInfo",
+                    data: {
+                        tCrdCtyCode: tCrdCtyCode,
+                    },
+                    cache: false,
+                    timeout: 0,
+                    success: function(tResult) {
+                        var aResult = JSON.parse(tResult);
+                        // console.log(aResult['aCrdData'][0]['FNCtyExpirePeriod']);
+                        tCtyExpirePeriod    = aResult['aCrdData'][0]['FNCtyExpirePeriod']
+                        tCtyExpiredType     = aResult['aCrdData'][0]['FNCtyExpiredType']
+                        tExpiredType        = aResult['aCrdData'][0]['FTCtyExpiredType']
+                        // $('#odvCardHisDataTalbleContainer').html(tResult);
+                        JSxChkCryExpiredInfo(tCtyExpirePeriod, tCtyExpiredType, tExpiredType)
+    
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    }
+                });
+            }
+        }
+
+
+    });
+
+    function JSxChkCryExpiredInfo(ptCtyExpirePeriod, ptCtyExpiredType, ptExpiredType){
+
+        console.log(ptCtyExpirePeriod, ptCtyExpiredType, ptExpiredType)
+        var nPeriod     = parseInt(ptCtyExpirePeriod);
+        var tStartDateTime  = $('#oetCrdStartDate').val();
+        var tDateTime       = new Date(tStartDateTime);
+        // console.log(tStartDateTime)
+        // console.log(tDateTime)
+
+        if(ptExpiredType == '1') { //ตามรอบปฏิทิน
+            //ถ้า period ไม่ใช่ 1 คือ + 1 ที่ ptCtyExpiredType
+            if(nPeriod != 1) {
+                switch(ptCtyExpiredType) {
+                    case 1: //ชั่วโมง
+                        tDateTime.setHours(tDateTime.getHours()+nPeriod)
+                        break;
+                    case 2: //วัน
+                        tDateTime.setDate(tDateTime.getDate()+(nPeriod-1))
+                        break;
+                    case 3: //เดือน
+                        tDateTime.setMonth(tDateTime.getMonth()+nPeriod, 0)
+                        break;
+                    case 4: //ปี
+                        tDateTime.setFullYear(tDateTime.getFullYear()+nPeriod, 0, 0)
+                        break;
+                    default:
+                }
+
+            }else { //ถ้า period เป็น 1 คือไม่ต้อง + 1 ที่ ptCtyExpiredType ยกเว้น tpye 1 เป็น ชม.
+                switch(ptCtyExpiredType) {
+                    case 1: //ชั่วโมง
+                        tDateTime.setHours(tDateTime.getHours()+nPeriod)
+                        break;
+                    case 2: //วัน
+                        tDateTime.setDate(tDateTime.getDate())
+                        break;
+                    case 3: //เดือน
+                        tDateTime.setMonth(tDateTime.getMonth()+1, 0)
+                        break;
+                    case 4: //ปี
+                        tDateTime.setFullYear(tDateTime.getFullYear()+1, 0, 0)
+                        break;
+                    default:
+                }
+            }
+
+            //ถ้า ptCtyExpiredType ไม่ใช่ชั่วโมง ให้เซ็ตชม.เป็น 23:59:59
+            if(ptCtyExpiredType != 1) { 
+                tDateTime.setHours(23,59,59)
+            }
+        } 
+        else if(ptExpiredType == '2') { //ตามรอบเวลา
+            switch(ptCtyExpiredType) {
+                case 1: //ชั่วโมง
+                    tDateTime.setHours(tDateTime.getHours()+nPeriod)
+                    break;
+                case 2: //วัน
+                    tDateTime.setDate(tDateTime.getDate()+nPeriod)
+                    break;
+                case 3: //เดือน
+                    tDateTime.setMonth(tDateTime.getMonth()+nPeriod)
+                    break;
+                case 4: //ปี
+                    tDateTime.setFullYear(tDateTime.getFullYear()+nPeriod)
+                    break;
+                default:
+            }
+        }
+
+        tDateTime = tDateTime.getFullYear()                + "-" +
+                ("0" + (tDateTime.getMonth()+1)).slice(-2) + "-" +
+                ("0" + tDateTime.getDate()).slice(-2)      + " " +
+                ("0" + tDateTime.getHours()).slice(-2)     + ":" +
+                ("0" + tDateTime.getMinutes()).slice(-2)   + ":" +
+                ("0" + tDateTime.getSeconds()).slice(-2)
+        // console.log(tDateTime);
+
+        tEpxDate = tDateTime
+        $('#oetCrdExpireDate').val(tDateTime);
+
+    }
+
+    $('#oetCrdExpireDate').change(function(){
+        if($('#oetCrdExpireDate').val() == '' || $('#oetCrdExpireDate').val() == dDatNow){
+            $('#oetCrdExpireDate').val(tEpxDate);
+        }
+    });
+
+
 </script>

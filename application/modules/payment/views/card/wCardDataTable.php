@@ -88,7 +88,9 @@ $tDecShow = FCNxHGetOptionDecimalShow();
                                     $dDateExpire = "-";
                                 }
                                 ?>
-                                <td nowrap class="text-center"><?php echo $dDateExpire ?></td>
+                                <!-- <td nowrap class="text-center"><?php echo $dDateExpire ?></td> -->
+                                <!-- <td nowrap class="text-center"><?php echo $aValue['rtCrdExpireDate'] ?></td> -->
+                                <td nowrap class="text-center"><?php echo date("Y-m-d H:i:s", strtotime($aValue['rtCrdExpireDate'])) ?></td>
 
                                 <?php
                                     // สถานะเบิกบัตร 1 : ยังไม่ถูกเบิก, 2 : เบิกไปแล้ว
@@ -106,6 +108,7 @@ $tDecShow = FCNxHGetOptionDecimalShow();
                                 <td nowrap class="text-left"><?php echo $tStaCrd ?></td>
 
                                 <?php
+                                
                                 switch ($aValue['rtCrdStaActive']) {
                                     case 1:
                                         $tStaCrdAct     = language('payment/card/card', 'tCRDFrmCrdActive');
@@ -129,7 +132,13 @@ $tDecShow = FCNxHGetOptionDecimalShow();
                                 $dCurrentDate = date("Y-m-d");
 
                                 if( $dCurrentDate > $dExpireDate ){
-                                    $tStaCrdAct     = language('payment/card/card', 'tCRDFrmCrdExpire');
+                                    if($aValue['rtCrdStaActive'] == 3 ) {
+                                        $tStaCrdAct     = language('payment/card/card', 'tCRDFrmCrdCancel');
+                                    }else if($aValue['rtCrdStaActive'] == 2 ) {
+                                        $tStaCrdAct     = language('payment/card/card', 'tCRDFrmCrdInactive');
+                                    }else{
+                                        $tStaCrdAct     = language('payment/card/card', 'tCRDFrmCrdExpire');
+                                    }
                                     $tClassStaAtv   = 'xWCardCancle';
                                 }
 

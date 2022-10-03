@@ -14,6 +14,7 @@ $lang['tCTYExpireMonth']    = "อายุบัตร";
 $lang['tCTYExpireYear']     = "อายุบัตร";
 
 $lang['tCTYExpireDate']     = "ประเภทหมดอายุ";
+$lang['tCTYTExpiredType']   = "รูปแบบหมดอายุ";
 $lang['TCTYStaAlwRet']      = "อนุญาตคืน";
 $lang['tCTYDelete']         = "ลบ";
 $lang['tCTYEdit']           = "แก้ไข";
@@ -43,6 +44,8 @@ $lang['tCTYFrmHour']        = "ชั่วโมง";
 $lang['tCTYFrmDay']         = "วัน";
 $lang['tCTYFrmMonth']       = "เดือน";
 $lang['tCTYFrmYear']        = "ปี";
+$lang['tCTYFrmCldCycle']    = "ตามรอบปฏิทิน";
+$lang['tCTYFrmTmeCycle']    = "ตามรอบเวลา";
 
 $lang['tCTYValidExpireType'] = 'กรุณาเลือกประเภทหมดอายุ';
 
@@ -57,6 +60,15 @@ $lang['tCTYPaylimit']   = "วงเงิน";
 $lang['tCTYFrmCrdStaTypeDefault']   = "เบิกอัตโนมัติ";
 $lang['tCTYFrmCrdStaTypeNormal']    = "เบิกปกติ";
 $lang['tCTYFrmCrdStaType']          = "ประเภทบัตร";
+
+$lang['tCTYFrmCrdStaReuse']             = "ประเภทการนำไปใช้";
+$lang['tCTYFrmCrdStaReuseTypeDefault']  = "ใช้ซ้ำได้";
+$lang['tCTYFrmCrdStaReuseTypeOneTime']  = "ใช้ครั้งเดียว";
+
+$lang['tCTYFrmTAStaResetDefault']       = "ไม่ล้างข้อมูลก่อนเติมเงินอัติโนมัติ";
+$lang['tCTYFrmTAStaReset']              = "ล้างข้อมูลก่อนเติมเงินอัติโนมัติ";
+$lang['tCTYFrmTAAlwReturnDefault']      = "ไม่อนุญาตคืนยอดเติมเงินอัติโนมัติ";
+$lang['tCTYFrmTAAlwReturn']             = "อนุญาตคืนยอดเติมเงินอัติโนมัติ";
 
  
 

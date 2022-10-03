@@ -1,2 +1,0 @@
-UPDATE TCNSRptSpc SET FTRptStaActive = 0 
-UPDATE [TCNSRptSpc] SET [FTAgnCode]=NULL, [FTBchCode]=NULL, [FTMerCode]=NULL, [FTShpCode]=NULL, [FNRptGrpSeq]='1', [FTRptGrpCode]='SPC001', [FNRptSeq]='1', [FTRptCode]='SPCANI001', [FTRptRoute]='rtpPssVatByMonth', [FTRptFilterCol]='1,6,2,3,5,28', [FTRptStaActive]='1', [FDLastUpdOn]=NULL, [FTLastUpdBy]=NULL, [FDCreateOn]=NULL, [FTCreateBy]=NULL WHERE ([FNRptGrpSeq]='1') AND ([FTRptGrpCode]='SPC001') AND ([FNRptSeq]='1') AND ([FTRptCode]='SPCANI001');

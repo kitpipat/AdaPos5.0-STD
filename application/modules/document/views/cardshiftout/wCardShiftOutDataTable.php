@@ -56,7 +56,7 @@
                             <td nowrap class="text-left xCNBchCode"><?php echo @$aValue['rtCardShiftOutBchCode']?></td>
                             <td nowrap class="text-left"><?php echo @$aValue['rtCardShiftOutDocNo']; ?></td>
                             <td nowrap class="text-center"><?php echo date('d/m/Y', strtotime(@$aValue['rtCardShiftOutDocDate'])); ?></td>
-                            <td nowrap class="text-left"><?php echo @number_format($aValue['rtCardShiftOutCshCardQty'], 0); ?></td>
+                            <td nowrap class="text-right"><?php echo @number_format($aValue['rtCardShiftOutCshCardQty'], 0); ?></td>
                             <?php
                             $tCshStaDoc = "";
                                 //StaDoc

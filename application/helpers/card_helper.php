@@ -357,7 +357,7 @@ function FSaCCARTypeExcel($ptDocType, $ptDataSetType, $paDataExcel)
                                                 $tData_CrdCode = '';
                                             } else {
                                                 $nLenghtCrdCode = strlen($tCrdCode); // Length check
-                                                if ($nLenghtCrdCode > 10 && $nLenghtCrdCode != 0) {
+                                                if ($nLenghtCrdCode > 30 && $nLenghtCrdCode != 0) {
                                                     $tError         = language('document/card/main', 'tMainCardCodeMaxOverLenght');
                                                     $tData_CrdCode = substr($tCellData, 0, 30);
                                                 } else {
@@ -552,6 +552,7 @@ function FSaCCARTypeExcel($ptDocType, $ptDataSetType, $paDataExcel)
                             }
                         }
                         $tResultSql = substr($tSql, 0, -1);
+                        // print_r(["TEST",$tResultSql]); exit;
                         $ci->db->query($tResultSql);
                         $nLoopStart     = $nLoopEnd;
                         $nLoopEnd       = $nLoopEnd + 900;

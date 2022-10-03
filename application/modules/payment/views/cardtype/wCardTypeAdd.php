@@ -20,6 +20,11 @@
 
         $tUsrAgnCode        = $aCtyData['raItems']['rtAgnCode'];
         $tUsrAgnName        = $aCtyData['raItems']['rtAgnName'];
+
+        $tCtyTExpiredType   = $aCtyData['raItems']['rtCtyTExpiredType'];
+        $tCtyStaCrdReuse    = $aCtyData['raItems']['rtCtyStaCrdReuse'];
+        $tCtyTAStaReset     = $aCtyData['raItems']['rtCtyTAStaReset'];
+        $tCtyTAAlwReturn    = $aCtyData['raItems']['rtCtyTAAlwReturn'];
     }else{
         $tRoute              = "cardtypeEventAdd"; 
         $tCtyCode            = "";
@@ -35,6 +40,11 @@
         $tCtyStatusPay       = 1;
         $tUsrAgnCode         = $this->session->userdata("tSesUsrAgnCode");
         $tUsrAgnName         = $this->session->userdata("tSesUsrAgnName");
+
+        $tCtyTExpiredType   = 1;
+        $tCtyStaCrdReuse    = 1;
+        $tCtyTAStaReset     = 2;
+        $tCtyTAAlwReturn    = 2;
     }
 ?>
 <form class="contact100-form validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" id="ofmAddCardType">
@@ -119,7 +129,20 @@
     		        <div class="form-group">
                         <label class="xCNLabelFrm"><?php echo language('payment/cardtype/cardtype','tCTYTopupAuto')?></label> <!-- เปลี่ยนชื่อ Class -->
                         <input type="text" class="form-control xCNInputNumericWithDecimal text-right" id="oetCtyTopupAuto" name="oetCtyTopupAuto" value="<?php echo $tCtyTopupAuto;?>" 
-                        data-validate="<?php echo language('payment/cardtype/cardtype','tCTYValidTopupAuto')?>"> <!-- เปลี่ยนชื่อ Class เพิ่ม DataValidate --> <!-- onclick="JCNdValidateComma('oetCtyTopupAuto',3,'FC');" onfocusout="JCNdValidatelength8Decimal('oetCtyTopupAuto','FC',3,'<?php echo $nOptDecimalShow?>')" -->
+                        data-validate="<?php echo language('payment/cardtype/cardtype','tCTYValidTopupAuto')?>" onkeyup="JStCtyDisbledChkboxTopupAuto()"> <!-- เปลี่ยนชื่อ Class เพิ่ม DataValidate --> <!-- onclick="JCNdValidateComma('oetCtyTopupAuto',3,'FC');" onfocusout="JCNdValidatelength8Decimal('oetCtyTopupAuto','FC',3,'<?php echo $nOptDecimalShow?>')" -->
+                    </div>
+
+                    <!-- ประเภทหมดอายุ(1=ตามรอบปฏิทิน/2=ตามรอบเวลา) -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('payment/cardtype/cardtype','tCTYTExpiredType')?></label>
+                        <select  required  class="selectpicker form-control" id="ocmCtyTExpireType" name="ocmCtyTExpireType" data-live-search="true" data-validate="<?php echo language('payment/cardtype/cardtype','tCTYValidExpirePeriod')?>">
+                            <option value='1' <?php echo  (isset($tCtyTExpiredType) && !empty($tCtyTExpiredType) && $tCtyTExpiredType == '1')? "selected":""?>>
+                                <?php echo language('payment/cardtype/cardtype','tCTYFrmCldCycle')?>
+                            </option>
+                            <option value='2' <?php echo  (isset($tCtyTExpiredType) && !empty($tCtyTExpiredType) && $tCtyTExpiredType == '2')? "selected":""?>>
+                                <?php echo language('payment/cardtype/cardtype','tCTYFrmTmeCycle')?>
+                            </option>
+                        </select>
                     </div>
 
                     <!-- ประเภทหมดอายุ(1=ชั่วโมง/2=วัน/3=เดือน/4=ปี) -->
@@ -163,6 +186,16 @@
                         </select>
                     </div>
 
+                    <!-- ประเภทการนำไปใช้ -->
+                    <div class="form-group"> 
+                        <input type="hidden" class="form-control" id="ohdCtyStaCrdReuse" name="ohdCtyStaCrdReuse" value='<?php echo $tCtyStaCrdReuse ?>'> 
+                        <label class="xCNLabelFrm"><?php echo language('payment/cardtype/cardtype', 'tCTYFrmCrdStaReuse');?></label>
+                        <select class="selectpicker form-control xCNSelectBox" id="ocmCtyStaCrdReuse" name="ocmCtyStaCrdReuse" <?php echo $tDisable ?>>
+                            <option value='1' <?php echo ($tCtyStaCrdReuse == 1)? 'selected':''?>><?php echo language('payment/cardtype/cardtype','tCTYFrmCrdStaReuseTypeDefault')?></option>
+                            <option value='2' <?php echo ($tCtyStaCrdReuse == 2)? 'selected':''?>><?php echo language('payment/cardtype/cardtype','tCTYFrmCrdStaReuseTypeOneTime')?></option>
+                        </select>
+                    </div>
+
                     <!-- สถานะการชำระ เพิ่มมาใหม่ -->
                     <div class="form-group">
                         <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('payment/cardtype/cardtype','tCTYStaPay')?></label>
@@ -196,7 +229,38 @@
                                 <span> <?php echo language('payment/cardtype/cardtype','TCTYStaAlwRet'); ?></span>
                             </label>
                         </div>
-                  </div>
+                    </div>
+
+                    <!-- ล้างข้อมูลก่อนเติม -->
+                    <div class="form-group">
+			            <div class="">
+                            <label class="fancy-checkbox">
+                                <input type="checkbox"  id="ocbCtyTAStaReset" name="ocbCtyTAStaReset" <?php 
+                                    if($tRoute == "cardtypeEventAdd"){
+                                        // echo "checked";
+                                    }else{
+                                        echo ($tCtyTAStaReset == '1') ? "checked" : ''; 
+                                    } ?> value="1" disabled="disabled">
+                                <span> <?php echo language('payment/cardtype/cardtype','tCTYFrmTAStaReset'); ?></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- อนุญาตคืน เงินเติมอัตโนมัติ -->
+                    <div class="form-group">
+			            <div class="">
+                            <label class="fancy-checkbox">
+                                <input type="checkbox" id="ocbCtyTAAlwReturn" name="ocbCtyTAAlwReturn" <?php 
+                                    if($tRoute == "cardtypeEventAdd"){
+                                        // echo "checked";
+                                    }else{
+                                        echo ($tCtyTAAlwReturn == '1') ? "checked" : ''; 
+                                    } ?> value="1" disabled="disabled">
+                                <span> <?php echo language('payment/cardtype/cardtype','tCTYFrmTAAlwReturn'); ?></span>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- หมายเหตุ -->
                     <div class="form-group">
                         <label class="xCNLabelFrm"><?php echo language('payment/cardtype/cardtype','tCTYFrmCtyRmk')?></label> <!-- เปลี่ยนชื่อ Class -->
@@ -219,11 +283,17 @@
         $('#ocmCtyExpireType-error').hide();
     });
 
+    $('#ocmCtyTExpireType').change(function() {
+        $('#ocmCtyTExpireType-error').hide();
+    });
+
     $('#obtGenCodeCardType').click(function(){
         JStGenerateCardTypeCode();
     });
 
     $('#ocmCtyExpireType').selectpicker();
+
+    $('#ocmCtyTExpireType').selectpicker();
     
     $('#ocmCtyExpireType').change(function(){
         var nStaExpireType = $(this).val();
@@ -257,8 +327,14 @@
             var tRoute = "<?php echo $tRoute;?>";
             if(tRoute  == 'cardtypeEventEdit'){
                var nStatusPay = $('#ocmCtyStatusPay').val();
+               var tTopupAuto = $("#oetCtyTopupAuto").val()
                if(nStatusPay == "1"){
                  $('#oetCtyPaylimit').attr('readonly','readonly');
+               }
+
+               if(tTopupAuto != '' && tTopupAuto > 0) {
+                    $("#ocbCtyTAStaReset").attr("disabled",false);
+                    $("#ocbCtyTAAlwReturn").attr("disabled",false);
                }
             }else{
                 $('#oetCtyPaylimit').attr('readonly','readonly');
@@ -273,6 +349,25 @@
                 $('#oetCtyPaylimit').attr('readonly','readonly');
             }else{
                 $('#oetCtyPaylimit').removeAttr('readonly');
+            }
+        });
+
+        // ล้างค่า TExpiredType
+        $('#ocmCtyTExpireType').change(function(){
+            var nStatustExpired = $(this).val();
+            // console.log(nStatustExpired);
+            switch (nStatustExpired){
+                case '1' :
+                    // $("#ocmCtyExpireType option[value='2']").attr('selected', 'selected');
+                    $('#oetCtyExpirePeriod').val('');
+                break;
+                case '2' :
+                    // $("#ocmCtyExpireType option[value='2']").attr('selected', 'selected');
+                    $('#oetCtyExpirePeriod').val('');
+                break;
+                default : 
+                    // $("#ocmCtyExpireType option[value='2']").attr('selected', 'selected');
+                    $('#oetCtyExpirePeriod').val('');
             }
         });
 
@@ -302,23 +397,41 @@
     $('#ocmCtyStaType').change(function(){
             var nStatusPay = $(this).val();
                 $("#ohdCtyStaType").val(nStatusPay);
-        });
+    });
 
-        $('#ocmCtyStatusPay').change(function(){
-            var nStatusPay = $(this).val();
-            if(nStatusPay == '2'){
-                $("#ocmCtyStaType").val(1);
-                $("#ohdCtyStaType").val(1);
-                $("#ocmCtyStaType").val(1).change();
-                $("#ocmCtyStaType").attr("disabled",true);
-                $("#ocmCtyStaType").selectpicker('refresh')
-            }else{
-                $("#ocmCtyStaType").val(2);
-                $("#ohdCtyStaType").val(2);
-                $("#ocmCtyStaType").val(2).change();
-                $("#ocmCtyStaType").attr("disabled",false);
-                $("#ocmCtyStaType").selectpicker('refresh')
-            }
-        });
+    $('#ocmCtyStatusPay').change(function(){
+        var nStatusPay = $(this).val();
+        if(nStatusPay == '2'){
+            $("#ocmCtyStaType").val(1);
+            $("#ohdCtyStaType").val(1);
+            $("#ocmCtyStaType").val(1).change();
+            $("#ocmCtyStaType").attr("disabled",true);
+            $("#ocmCtyStaType").selectpicker('refresh')
+        }else{
+            $("#ocmCtyStaType").val(2);
+            $("#ohdCtyStaType").val(2);
+            $("#ocmCtyStaType").val(2).change();
+            $("#ocmCtyStaType").attr("disabled",false);
+            $("#ocmCtyStaType").selectpicker('refresh')
+        }
+    });
+
+    function JStCtyDisbledChkboxTopupAuto(){
+        var tTopupAuto = $("#oetCtyTopupAuto").val()
+        if(tTopupAuto == '' || tTopupAuto <= 0.00){
+            // console.log('0',tTopupAuto);
+            $("#ocbCtyTAStaReset").attr("disabled",true);
+            $("#ocbCtyTAAlwReturn").attr("disabled",true);
+            $("#ocbCtyTAStaReset").attr("checked", false);
+            $("#ocbCtyTAAlwReturn").attr("checked", false);
+        }else{
+            // console.log('1',tTopupAuto);
+            $("#ocbCtyTAStaReset").attr("disabled",false);
+            $("#ocbCtyTAAlwReturn").attr("disabled",false);
+        }
+        
+    }
+
+        
 
 </script>

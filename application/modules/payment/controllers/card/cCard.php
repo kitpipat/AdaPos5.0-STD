@@ -143,6 +143,7 @@ class cCard extends MX_Controller
                 'tImgObjPath'    => $aCrdData['raItems']['rtCrdImgObj'],
                 'aSumTotalCard'  => $aSumTotalCard
             );
+
             $this->load->view('payment/card/wCardAdd', $aDataCard);
         } catch (Exception $Error) {
             echo $Error;
@@ -183,8 +184,13 @@ class cCard extends MX_Controller
                 $tCrdCode = $this->input->post('oetCrdCode');
             }
 
+            // $tCrdCtyStaShift    = '';
+
             $tImageUplode       = $this->input->post('oetImgInputCard');
             $tImageUplodeOld    = $this->input->post('oetImgInputCardOld');
+
+            $tCrdCtyCode        = $this->input->post('oetCrdCtyCode');
+            $tCrdCtyStaShift    = $this->mCard->FSvMCRDGetCtyStaShift($tCrdCtyCode);
 
             $aDataCard  = array(
                 'FTCrdCode'         => $tCrdCode,
@@ -197,7 +203,7 @@ class cCard extends MX_Controller
                 // 'FTCrdStaType'      => $this->input->post('ocmCrdStaType'),
                 'FTDptCode'         => $this->input->post('oetCrdDepartment'),
                 //'FTCrdStaLocate'    => ($this->input->post('ocmCrdStaType') == 1)? '1' : '2',
-                'FTCrdStaShift'     => 1,
+                'FTCrdStaShift'     => ($tCrdCtyStaShift[0]['FTCtyStaShift'] == 1)? 1 : 2,
                 'FTCrdStaActive'    => $this->input->post('ocmCrdStaAct'),
                 'FTCrdName'         => $this->input->post('oetCrdName'),
                 'FTCrdRmk'          => $this->input->post('otaCrdRmk'),
@@ -207,9 +213,10 @@ class cCard extends MX_Controller
                 'FTCreateBy'        => $this->session->userdata('tSesUsername'),
                 'FNLngID'           => $this->session->userdata("tLangEdit"),
                 'FTAgnCode'         => $this->input->post('oetCrdAgnCode'),
-
+                'tChkCtyCode'       => 1
 
             );
+
             $oCountDup      = $this->mCard->FSnMCRDCheckDuplicate($aDataCard['FTCrdCode']);
             $nStaDup        = $oCountDup['counts'];
             if ($oCountDup !== FALSE && $nStaDup == 0) {
@@ -266,10 +273,23 @@ class cCard extends MX_Controller
     //Return Type : String
     public function FSoCCRDEditEvent()
     {
+        
         try {
+            
+            $tCrdCode       = $this->input->post('oetCrdCode');
             // echo "Save"; //Save ได้
-            $tImageUplode = $this->input->post('oetImgInputCard');
+            $tImageUplode       = $this->input->post('oetImgInputCard');
             $tImageUplodeOld    = $this->input->post('oetImgInputCardOld');
+
+            $aData  = array(
+                'FTCrdCode' => $tCrdCode,
+                'FNLngID'   => 1
+            );
+
+            $aCrdData           = $this->mCard->FSaMCRDGetDataByID($aData);
+            $tCrdCtyCode        = $this->input->post('oetCrdCtyCode');
+            $tCrdCtyStaShift    = $this->mCard->FSvMCRDGetCtyStaShift($tCrdCtyCode);
+
             $aDataCard  = array(
                 'FTCrdCode'         => $this->input->post('oetCrdCode'),
                 'FDCrdStartDate'    => (!empty($this->input->post('oetCrdStartDate'))) ? $this->input->post('oetCrdStartDate') : null,
@@ -281,7 +301,7 @@ class cCard extends MX_Controller
                 // 'FTCrdStaType'      => $this->input->post('ocmCrdStaType'),
                 'FTDptCode'         => $this->input->post('oetCrdDepartment'),
                 //'FTCrdStaLocate'    => ($this->input->post('ocmCrdStaType') == 1)? '1' : '2',
-                'FTCrdStaShift'     => 1,
+                'FTCrdStaShift'     => ($tCrdCtyStaShift[0]['FTCtyStaShift'] == 1)? 1 : 2,
                 'FTCrdStaActive'    => $this->input->post('ocmCrdStaAct'),
                 'FTCrdName'         => $this->input->post('oetCrdName'),
                 'FTCrdRmk'          => $this->input->post('otaCrdRmk'),
@@ -291,7 +311,9 @@ class cCard extends MX_Controller
                 'FTCreateBy'        => $this->session->userdata('tSesUsername'),
                 'FNLngID'           => $this->session->userdata("tLangEdit"),
                 'FTAgnCode'         => $this->input->post('oetCrdAgnCode'),
+                'tChkCtyCode'       => ($aCrdData['raItems']['rtCrdCtyCode'] == $tCrdCtyCode)? 1 : 2  //ถ้ารหัสประเภทบัตรเหมือนกัน(1) แปลว่าไม่มีการเปลี่ยนประเภทบัตร ถ้าต่างกัน(2) แปลว่ามีการเลือกประเภทบัตรใหม่
             );
+
             $this->db->trans_begin();
             $aStaCrdMaster  = $this->mCard->FSaMCRDAddUpdateMaster($aDataCard);
             $aStaCrdLang    = $this->mCard->FSaMCRDAddUpdateLang($aDataCard);
@@ -413,6 +435,33 @@ class cCard extends MX_Controller
                 'nOptDecimalShow' => $nOptDecimalShow
             ];
             $this->load->view('payment/card/advance_table/wCardHisDataTable', $aCrdHisTableParams);
+        } catch (Exception $Error) {
+            echo $Error;
+        }
+    }
+
+    function FSvCCRDGetExpiredInfo() {
+        try {
+            $tCrdCtyCode = $this->input->post('tCrdCtyCode');
+
+            $aData  = $this->mCard->FSvMCRDGetExpiredInfo($tCrdCtyCode);
+            
+            if($aData != '') {
+                $aReturn = array(
+                    'aCrdData'       => $aData,
+                    'nStaEvent'      => '1',
+                    'tStaMessg'      => 'Success.'
+                );
+                
+            }else {
+                $aReturn = array(
+                    'nStaEvent'      => '2',
+                    'tStaMessg'      => 'Not Found Data.'
+                );
+
+            }
+   
+            echo json_encode($aReturn);
         } catch (Exception $Error) {
             echo $Error;
         }

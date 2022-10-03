@@ -69,6 +69,7 @@ class cTaxinvoicefc extends MX_Controller
             'tDocumentBchCode'  => $tDocumentBchCode,
         );
 
+        // print_r($aReturnData);
         $tViewPageAdd       = $this->load->view('document/taxInvoicefc/wTaxInvoicefcPageAdd',$aReturnData);
         return $tViewPageAdd;
     }
@@ -101,9 +102,10 @@ class cTaxinvoicefc extends MX_Controller
                             'rtDesc'        => 'data not found'
                         );
         }else{
-            $aGetDT     = $this->mTaxinvoicefc->FSaMTXFGetDT($aWhere);
+            $aGetDT     = $this->mTaxinvoicefc->FSaMTXFGetDT($aWhere); 
             $aGetHD     = $this->mTaxinvoicefc->FSaMTXFGetHD($aWhere);
         }
+       
 
         // $aGetDT     = $this->mTaxinvoicefc->FSaMTXFGetDT($aWhere);
         // $aGetHD     = $this->mTaxinvoicefc->FSaMTXFGetHD($aWhere);
@@ -238,6 +240,7 @@ class cTaxinvoicefc extends MX_Controller
     public function FSaCTXFCheckTaxno(){
         $tTaxno     = $this->input->post('tTaxno');
         $nSeq       = $this->input->post('nSeq');
+        // print_r($tTaxno); exit;
         $aGetTaxno  = $this->mTaxinvoicefc->FSaMTXFCheckTaxno($tTaxno,$nSeq);
         if(empty($aGetTaxno)){
             $aReturn = array(
@@ -310,8 +313,10 @@ class cTaxinvoicefc extends MX_Controller
     public function FSaCTXFApprove(){
         $aPackData          = $this->input->post('aPackData');
         $tType              = $this->input->post('tType');
-        $tABB   = $aPackData['tDocABB'];
-        $tBrowseBchCode   = $aPackData['tBrowseBchCode'];
+        $tABB               = $aPackData['tDocABB'];
+        $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
+        // $tStaETax           = $aPackData['tStaETax'];
+        // $tTAXApvType        = $aPackData['tTAXApvType'];
         $aWhere = array(
             'tDocumentNumber' => $tABB ,
             'tBrowseBchCode' => $tBrowseBchCode
@@ -321,9 +326,9 @@ class cTaxinvoicefc extends MX_Controller
         // print_r($aGetBCHABB);
         // exit();
         //วิ่งเข้าไปหาเลขที่เอกสาร ที่MQ ก่อน
+        // if( (isset($aGetBCHABB['raItems'][0]['FTXshDocVatFull']) && $aGetBCHABB['raItems'][0]['FTXshDocVatFull'] == '') || $tTAXApvType == '2' ) {
         if (isset($aGetBCHABB['raItems'])) {
           if($tType == 'MQ'){
-
 
               $tDocType = ($aGetBCHABB['raItems'][0]['FNXshDocType']==0 ? 'R' : 'S');
               $tUserCode      = $this->session->userdata("tSesUserCode");
@@ -467,6 +472,7 @@ class cTaxinvoicefc extends MX_Controller
             'tBrowseBchCode'  => $tBrowseBchCode
         );
         $aGetBCHABB = $this->mTaxinvoicefc->FSaMTXFGetHD($aWhere);
+        //  print_r(['FSxCTXFCallTaxNoLastDoc1',$aGetBCHABB]);
         // $tBchCode         = $aGetBCHABB['raItems'][0]['FTBchCode'];
         // $nSaleType        = $aGetBCHABB['raItems'][0]['FNXshDocType'];
 
@@ -533,31 +539,32 @@ class cTaxinvoicefc extends MX_Controller
                 // );
 
                 /////////////////////////////////// -- MOVE -- ///////////////////////////////////
-
+                // print_r(['FSxCTXFCallTaxNoLastDoc2',$aPackData]);
+                // print_r($aPackData);exit;
                 $this->db->trans_begin();
 
                      // TPSTSalHD -> TPSTTaxHD
                      $this->mTaxinvoicefc->FSaMTXFMoveSalHD_TaxHD($aPackData);
 
-                     // TPSTSalHDDis -> TPSTTaxHDDis
+                     // TPSTSalHDDis -> TPSTTaxHDDis ไม่เห็นมีข้อมูล
                      $this->mTaxinvoicefc->FSaMTXFMoveSalHDDis_TaxHDDis($aPackData);
        
                      // TPSTSalDT -> TPSTTaxDT
                      $this->mTaxinvoicefc->FSaMTXFMoveSalDT_TaxDT($aPackData);
        
-                     // TPSTSalDTDis -> TPSTTaxDTDis
+                     // TPSTSalDTDis -> TPSTTaxDTDis ไม่เห็นมีข้อมูล
                      $this->mTaxinvoicefc->FSaMTXFMoveSalDTDis_TaxDTDis($aPackData);
        
                      // TPSTSalHDCst -> TPSTTaxHDCst
                      $this->mTaxinvoicefc->FSaMTXFMoveSalHDCst_TaxHDCst($aPackData);
        
-                     // TPSTSalPD -> TPSTTaxPD
+                     // TPSTSalPD -> TPSTTaxPD ไม่เห็นมีข้อมูล
                      $this->mTaxinvoicefc->FSaMTXFMoveSalPD_TaxPD($aPackData);
        
                      // TPSTSalRC -> TPSTTaxRC
                      $this->mTaxinvoicefc->FSaMTXFMoveSalRC_TaxRC($aPackData);
        
-                     // TPSTSalRD -> TPSTTaxRD
+                     // TPSTSalRD -> TPSTTaxRD ไม่เห็นมีข้อมูล
                      $this->mTaxinvoicefc->FSaMTXFMoveSalRD_TaxRD($aPackData);
        
                      ///////////////////////////// -- INSERT UPDATE -- /////////////////////////////
@@ -647,12 +654,16 @@ class cTaxinvoicefc extends MX_Controller
             'FNLngID'         => $this->session->userdata("tLangEdit")
         );
 
+        // print_r($aWhere); exit;
+        // $aGetDT     = $this->mTaxinvoicefc->FSaMTXFGetDT($aWhere);
         $aGetHD     = $this->mTaxinvoicefc->FSaMTXFGetHDTax($aWhere);
         $aAddress   = $this->mTaxinvoicefc->FSaMTXFGetAddressTax($aWhere);
         $aPackData  = array(
+            // 'aGetDT'        => $aGetDT,
             'aGetHD'        => $aGetHD,
             'aAddress'      => $aAddress
         );
+        // print_r($aPackData); exit;
         $aReturnData = array(
             'tContentSumFooter'   => $this->load->view('document/taxInvoicefc/wTaxInvoicefcSumFooter',$aPackData, true),
             'aDetailHD'           => $aGetHD,
@@ -731,6 +742,8 @@ class cTaxinvoicefc extends MX_Controller
             'tRemark'      => $tReason,
             'nStaDocAct'   => $nStaDocAct
         );
+
+        // print_r($aSet); exit;
 
         //อัพเดทที่อยู่แบบปกติ
         // $this->mTaxinvoicefc->FSaMTXFUpdateWhenApprove($aWhere,$aSet,'UPDATEADDRESS');

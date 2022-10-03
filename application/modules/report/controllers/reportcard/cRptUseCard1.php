@@ -907,10 +907,10 @@ class cRptUseCard1 extends MX_Controller {
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(date("d/m/Y H:i:s", strtotime($aValue['rtTxnDocDate']))),
                     WriterEntityFactory::createCell(NULL),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['rtTxnValue'])),
+                    WriterEntityFactory::createCell(number_format($aValue['rtTxnValue'],$nOptDecimalShow)),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aCrdBalance[1])),
+                    WriterEntityFactory::createCell(number_format($aCrdBalance[1],$nOptDecimalShow)),
                 ];
                 $aRow = WriterEntityFactory::createRow($values);
                 $oWriter->addRow($aRow);

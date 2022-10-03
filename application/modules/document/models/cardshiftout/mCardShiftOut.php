@@ -720,6 +720,8 @@ class mCardShiftOut extends CI_Model {
             AND CRDDT.FTXshDocNo = '$tCardShiftOutDocNo'
         ";
 
+        // print_r($tSQL);
+
         $oQuery = $this->db->query($tSQL);
 
         if ($oQuery->num_rows() > 0){
@@ -748,6 +750,7 @@ class mCardShiftOut extends CI_Model {
       $tCrdCode     = $paData['tCrdCode'];
       $tLangID      = $paData['tLangID'];
       $tSessionID = $this->session->userdata("tSesSessionID");
+    //   print_r(['tsess',$tSessionID]);
 
       //เช็คก่อนว่าบัตรใบนี้เคยเพิ่มลง Temp หรือยัง ถ้ายังจะค้นหาได้ แต่ถ้าเคยมีเเล้ว จะจบทันที่
       $tSQL       = " SELECT FTCrdCode FROM TFNTCrdShiftTmp WHERE FTCrdCode = '$tCrdCode' AND FTSessionID = '$tSessionID' ";
@@ -769,9 +772,14 @@ class mCardShiftOut extends CI_Model {
                         WHERE TFNMCard.FTCrdCode ='$tCrdCode'
                         AND TFNMCardType.FTCtyStaShift = '1'
                         AND TFNMCard.FTCrdStaShift = '1'
-                        AND TFNMCard.FTCrdStaActive = '1'
-                        AND CONVERT (DATE,TFNMCard.FDCrdExpireDate) > CONVERT (DATE, GETDATE())
-                        AND TFNMCard.FTAgnCode = '$tAgnCode' ";
+                        AND TFNMCard.FTCrdStaActive = '1' ";
+
+        if ($this->session->userdata('tSesUsrLevel') != "HQ") { // ไม่ใช่ผู้ใช้ระดับ HQ ดูได้แค่FTAgnCodeที่ login
+            $tSQL .= " AND TFNMCard.FTAgnCode = '$tAgnCode' ";
+        }
+                        // AND CONVERT (DATE,TFNMCard.FDCrdExpireDate) > CONVERT (DATE, GETDATE())
+                        // AND TFNMCard.FTAgnCode = '$tAgnCode' ";
+                        // print_r($tSQL);
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0){
             $oDetail = $oQuery->result();

@@ -374,7 +374,7 @@
                     " ELSE 0 END) DepositCrd , SUM(CASE WHEN CRDB.FTCrdTxnCode='004' THEN ISNULL(CRDB.FCCrdValue,0) ELSE 0 END) DepositPdt , SUM(CASE WHEN CRDB.FTCrdTxnCode='005' THEN ISNULL(CRDB.FCCrdValue,0)" +
                     " ELSE 0 END) NotReturn , SUM(CASE WHEN CRDB.FTCrdTxnCode='006' THEN ISNULL(CRDB.FCCrdValue,0) ELSE 0 END) Payment FROM TFNMCard CRD WITH (NOLOCK)" +
                     " LEFT JOIN TFNMCardBal CRDB WITH (NOLOCK) ON CRDB.FTCrdCode = CRD.FtCrdCode GROUP BY CRD.FTCrdCode ) CB)" +
-                    " AND TFNMCard.FTCrdStaActive = '1' AND (TFNMCard.FTCrdStaShift = '2') AND CONVERT(VARCHAR,TFNMCard.FDCrdExpireDate, 111) >= CONVERT(VARCHAR,GETDATE(), 111)" + tNotIn + tWhereInCard + tWhereCardByAgenCode
+                    " AND TFNMCard.FTCrdStaActive = '1' AND TFNMCard.FDCrdExpireDate > GETDATE() AND (TFNMCard.FTCrdStaShift = '2') AND CONVERT(VARCHAR,TFNMCard.FDCrdExpireDate, 111) >= CONVERT(VARCHAR,GETDATE(), 111)" + tNotIn + tWhereInCard + tWhereCardByAgenCode
                 ]
             },
             GrideView: {

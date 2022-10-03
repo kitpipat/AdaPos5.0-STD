@@ -1,10 +1,10 @@
 {
   "ReportVersion": "2022.1.4.0",
-  "ReportGuid": "de281eb8145d457f9278b98dda87db1d",
+  "ReportGuid": "9c5d745b1a294ca8942d28ce83fc4fd3",
   "ReportName": "Frm_PSInvoiceSale",
   "ReportAlias": "Frm_PSInvoiceSale",
   "ReportCreated": "/Date(1582089004000+0700)/",
-  "ReportChanged": "/Date(1663142995021+0700)/",
+  "ReportChanged": "/Date(1663388147561+0700)/",
   "EngineVersion": "EngineV2",
   "CalculationMode": "Interpretation",
   "Script": "using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\nusing System.Data;\r\nusing Stimulsoft.Controls;\r\nusing Stimulsoft.Base.Drawing;\r\nusing Stimulsoft.Report;\r\nusing Stimulsoft.Report.Dialogs;\r\nusing Stimulsoft.Report.Components;\r\n\r\nnamespace Reports\r\n{\r\n    public class Frm_PSInvoiceSale : Stimulsoft.Report.StiReport\r\n    {\r\n        public Frm_PSInvoiceSale()        {\r\n            this.InitializeComponent();\r\n        }\r\n\r\n        #region StiReport Designer generated code - do not modify\r\n\t\t#endregion StiReport Designer generated code - do not modify\r\n    }\r\n}\r\n",
@@ -61,7 +61,7 @@
         "AllowUseAsSqlParameter": true
       },
       "5": {
-        "Value": "S22000070000001",
+        "Value": "S22000010000006",
         "Name": "SP_tDocNo",
         "Alias": "SP_tDocNo",
         "Type": "System.String",
@@ -84,7 +84,7 @@
         "AllowUseAsSqlParameter": true
       },
       "8": {
-        "Value": "00007",
+        "Value": "00001",
         "Name": "SP_tDocBch",
         "Alias": "SP_tDocBch",
         "Type": "System.String",
@@ -563,7 +563,7 @@
         },
         "NameInSource": "SaleInv",
         "CommandTimeout": 5000,
-        "SqlCommand": " SELECT  CASE WHEN ISNULL(HD.FTXshStaDoc,'') IN ('1','5') THEN HD.FTXshRefExt ELSE HD.FTXshRefInt\r\n\t\tEND AS FTXshRefDoc,\r\n\tHD.FTBchCode,HD.FTXshRefExt,\r\n\tPos.FTPosRegNo,\r\n\tHD.FTXshStaApv, \r\n\tApp_L.FTUsrName AS FTUsrApp,\r\n\tHD.FTCstCode,\r\n\tHDAddr.FTAddName,\r\n\tISNULL(HDAddr.FTAddTaxNo,'')  AS FTCstTaxNo,\t\t\r\n\tCASE WHEN HDAddr.FTAddStaBusiness = '1' THEN CASE WHEN HDAddr.FTAddStaHQ = '1' THEN 'สำนักงานใหญ่ ' ELSE 'สาขา : ' + HDAddr.FTAddStaBchCode  END ELSE HDAddr.FTAddStaBchCode  END \tAS FTBchName,\r\n\tHDAddr.FTAddTel,\r\n\tHDAddr.FTAddFax,\r\n\tHD.FTXshDocNo,CONVERT(VARCHAR(10),HD.FDXshDocDate,121) AS FDXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,103) AS FTXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,8) AS FTXshDocTime,HD.FTXshRefInt,HD.FTCreateBy,\r\n\tISNULL(HD.FTSpnCode,'') AS FTSpnCode,Spn_L.FTSpnName,\r\n\tISNULL(HD.FTUsrCode,'') AS FTUsrCode,Usr_L.FTUsrName,\r\n    Red_L.FTUsrName AS FTXshRecorder,\r\n\tISNULL(HD.FTXshVATInOrEx,'') AS FTXshVATInOrEx,\r\n\tISNULL(HD.FTXshStaDoc,'') AS FTXshStaDoc,\r\n\tISNULL(HD.FTXshStaApv,'') AS FTXshStaApv,\r\n\tISNULL(HD.FTXshStaPrcStk,'') AS FTXshStaPrcStk,\r\n\tISNULL(HD.FTXshApvCode,'') AS FTXshApvCode,\r\n\tISNULL(HDCst.FTXshCtrName,'') AS FTXshCtrName,\r\n\tISNULL(HD.FTXshRmk,'') AS FTXshRmk,\r\n\tISNULL(HDAddr.FTAddVersion,'') AS FTAddVersion,\r\n\tHDAddr.FTAddV2Desc1,\r\n\tHDAddr.FTAddV2Desc2,\r\n\tISNULL(HDAddr.FTAddRefNo,'') AS FTAddRefNo,\r\n\tISNULL(HDAddr.FTAddV1PvnCode,'') AS FTAddV1PvnCode, ISNULL(HDAddr.FTAddV1DstCode,'') AS FTAddV1DstCode,\r\n\tISNULL(HDAddr.FTAddV1SubDist,'') AS FTAddV1SubDist, \r\n\tISNULL(Pro_L.FTPvnName,'') AS FTPvnName,\r\n\tISNULL(Dis_L.FTDstName,'') AS FTDstName,\r\n\tISNULL(SDis_L.FTSudName,'') AS FTSudName,\r\n\tHDAddr.FTAddName, \r\n\tISNULL(HDAddr.FTAddV1No, '') AS FTAddV1No,\r\n\tISNULL(HDAddr.FTAddV1Village, '') AS FTAddV1Village,\r\n\tISNULL(HDAddr.FTAddV1Soi, '') AS FTAddV1Soi,\r\n\tISNULL(HDAddr.FTAddV1Road, '') AS FTAddV1Road,\r\n\tISNULL(HDAddr.FTAddV1PostCode, '') AS FTAddV1PostCode,\r\n\tISNULL(HD.FCXshTotal,0) AS FCXshTotal,ISNULL(HD.FCXshVat,0) AS FCXshVat,ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0) AS FCXshDiscount,\r\n    ISNULL(HD.FCXshVatable,0) + ISNULL(HD.FCXshVat,0) AS FCXshVatAmt,\r\n\tISNULL(HD.FCXshVatable,0) AS FCXshVatable,\r\n\tISNULL(HD.FCXshTotalAfDisChgV,0)+ISNULL(HD.FCXshTotalAfDisChgNV,0) AS FCXshTotalAFDis,\r\n    ISNULL(HD.FCXshGrand,0)-ISNULL(HD.FCXshRnd,0) AS FCXshGrandBFRnd,\r\n\tISNULL(HD.FCXshRnd,0) AS FCXshRnd,\r\n\tISNULL(HD.FCXshGrand,0) AS FCXshGrandAmt,\r\n\tISNULL(HD.FCXshAmtV,0) AS FCXshAmtV,\r\n\tCASE WHEN HD.FTXshVATInOrEx='1' THEN ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)) ELSE (ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)))+HD.FCXshVat END AS FCXshGrand,\r\n    HD.FTXshGndText, \r\n\tHD.FNXshDocPrint,\r\n\tISNULL(HD.FTXshStaETax,'2') AS FTXshStaETax,\r\n\tHDAddr.FTAddStaBusiness,\r\n\tApver_L.FTUsrName AS FTUsrNameApp,\r\n\tHDMst.FTRsnCode AS FTRsnCodeMst,RanMst.FTRsnName AS FTRsnNameMst,\r\n\tHDMst.FTXshDocNo AS FTXshDocNoMst,HD.FCXshAmtNV\r\n\tFROM TPSTTaxHD  HD WITH (NOLOCK)  INNER JOIN \r\n     TPSTTaxHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo LEFT JOIN\r\n\t TCNMPos Pos WITH (NOLOCK) ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN \r\n\t TCNMCst Cst WITH (NOLOCK) ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN\r\n\t TCNMCst_L Cst_L WITH (NOLOCK) ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMSpn_L Spn_L WITH (NOLOCK) ON  HD.FTSpnCode = Spn_L.FTSpnCode AND Spn_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Usr_L  WITH (NOLOCK) ON HD.FTUsrCode = Usr_L.FTUsrCode AND Usr_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Red_L   WITH (NOLOCK) ON HD.FTLastUpdBy = Red_L.FTUsrCode AND Red_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Apver_L  WITH (NOLOCK) ON HD.FTXshApvCode = Apver_L.FTUsrCode AND Apver_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMUser_L App_L  WITH (NOLOCK) ON HD.FTXshApvCode = App_L.FTUsrCode AND App_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddr WITH (NoLock) ON  HD.FTBchCode = HDAddr.FTBchCode AND HD.FTXshDocNo = HDAddr.FTXshDocNo LEFT JOIN\r\n\t TPSTTaxHD HDMst WITH (NOLOCK) ON HD.FTBchCode = HDMst.FTBchCode AND HD.FTXshRefAE= HDMst.FTXshDocNo AND HDMst.FTXshStaDoc = '5' LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddrEdit WITH (NoLock) ON  HDMst.FTBchCode = HDAddrEdit.FTBchCode AND HDMst.FTXshDocNo = HDAddrEdit.FTXshDocNo LEFT JOIN\r\n\t TCNMRsn_L RanMst WITH (NOLOCK) ON HDMst.FTRsnCode = RanMst.FTRsnCode AND RanMst.FNLngID = @pnLanguage \r\n\t LEFT JOIN TCNMProvince_L Pro_L WITH (NoLock) ON HDAddr.FTAddV1PvnCode = Pro_L.FTPvnCode AND Pro_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L Dis_L WITH (NoLock) ON HDAddr.FTAddV1DstCode = Dis_L.FTDstCode AND Dis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMSubDistrict_L SDis_L WITH (NoLock) ON HDAddr.FTAddV1SubDist = SDis_L.FTSudCode AND SDis_L.FNLngID = @pnLanguage\r\nWHERE HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch",
+        "SqlCommand": " SELECT  CASE WHEN ISNULL(HD.FTXshStaDoc,'') IN ('1','5') THEN HD.FTXshRefExt ELSE HD.FTXshRefInt\r\n\t\tEND AS FTXshRefDoc,\r\n\tHD.FTBchCode,HD.FTXshRefExt,\r\n\tPos.FTPosRegNo,\r\n\tHD.FTXshStaApv, \r\n\tApp_L.FTUsrName AS FTUsrApp,\r\n\tHD.FTCstCode,\r\n\tHDAddr.FTAddName,\r\n\tISNULL(HDAddr.FTAddTaxNo,'')  AS FTCstTaxNo,\t\t\r\n\tCASE WHEN HDAddr.FTAddStaBusiness = '1' THEN CASE WHEN HDAddr.FTAddStaHQ = '1' THEN 'สำนักงานใหญ่ ' ELSE 'สาขา : ' + HDAddr.FTAddStaBchCode  END ELSE HDAddr.FTAddStaBchCode  END \tAS FTBchName,\r\n\tHDAddr.FTAddTel,\r\n\tHDAddr.FTAddFax,\r\n\tHD.FTXshDocNo,CONVERT(VARCHAR(10),HD.FDXshDocDate,121) AS FDXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,103) AS FTXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,8) AS FTXshDocTime,HD.FTXshRefInt,HD.FTCreateBy,\r\n\tISNULL(HD.FTSpnCode,'') AS FTSpnCode,Spn_L.FTSpnName,\r\n\tISNULL(HD.FTUsrCode,'') AS FTUsrCode,Usr_L.FTUsrName,\r\n    Red_L.FTUsrName AS FTXshRecorder,\r\n\tISNULL(HD.FTXshVATInOrEx,'') AS FTXshVATInOrEx,\r\n\tISNULL(HD.FTXshStaDoc,'') AS FTXshStaDoc,\r\n\tISNULL(HD.FTXshStaApv,'') AS FTXshStaApv,\r\n\tISNULL(HD.FTXshStaPrcStk,'') AS FTXshStaPrcStk,\r\n\tISNULL(HD.FTXshApvCode,'') AS FTXshApvCode,\r\n\tISNULL(HDCst.FTXshCtrName,'') AS FTXshCtrName,\r\n\tISNULL(HD.FTXshRmk,'') AS FTXshRmk,\r\n\tISNULL(HDAddr.FTAddVersion,'') AS FTAddVersion,\r\n\tHDAddr.FTAddV2Desc1,\r\n\tHDAddr.FTAddV2Desc2,\r\n\tISNULL(HDAddr.FTAddRefNo,'') AS FTAddRefNo,\r\n\tISNULL(HDAddr.FTAddV1PvnCode,'') AS FTAddV1PvnCode, ISNULL(HDAddr.FTAddV1DstCode,'') AS FTAddV1DstCode,\r\n\tISNULL(HDAddr.FTAddV1SubDist,'') AS FTAddV1SubDist, \r\n\tISNULL(Pro_L.FTPvnName,'') AS FTPvnName,\r\n\tISNULL(Dis_L.FTDstName,'') AS FTDstName,\r\n\tISNULL(SDis_L.FTSudName,'') AS FTSudName,\r\n\tHDAddr.FTAddName, \r\n\tISNULL(HDAddr.FTAddV1No, '') AS FTAddV1No,\r\n\tISNULL(HDAddr.FTAddV1Village, '') AS FTAddV1Village,\r\n\tISNULL(HDAddr.FTAddV1Soi, '') AS FTAddV1Soi,\r\n\tISNULL(HDAddr.FTAddV1Road, '') AS FTAddV1Road,\r\n\tISNULL(HDAddr.FTAddV1PostCode, '') AS FTAddV1PostCode,\r\n\tISNULL(HD.FCXshTotal,0) AS FCXshTotal,ISNULL(HD.FCXshVat,0) AS FCXshVat,ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0) AS FCXshDiscount,\r\n    ISNULL(HD.FCXshAmtV,0) AS FCXshVatAmt,\r\n\tISNULL(HD.FCXshVatable,0) AS FCXshVatable,\r\n\tISNULL(HD.FCXshTotalAfDisChgV,0)+ISNULL(HD.FCXshTotalAfDisChgNV,0) AS FCXshTotalAFDis,\r\n    ISNULL(HD.FCXshGrand,0)-ISNULL(HD.FCXshRnd,0) AS FCXshGrandBFRnd,\r\n\tISNULL(HD.FCXshRnd,0) AS FCXshRnd,\r\n\tISNULL(HD.FCXshGrand,0) AS FCXshGrandAmt,\r\n\tISNULL(HD.FCXshAmtV,0) AS FCXshAmtV,\r\n\tCASE WHEN HD.FTXshVATInOrEx='1' THEN ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)) ELSE (ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)))+HD.FCXshVat END AS FCXshGrand,\r\n    HD.FTXshGndText, \r\n\tHD.FNXshDocPrint,\r\n\tISNULL(HD.FTXshStaETax,'2') AS FTXshStaETax,\r\n\tHDAddr.FTAddStaBusiness,\r\n\tApver_L.FTUsrName AS FTUsrNameApp,\r\n\tHDMst.FTRsnCode AS FTRsnCodeMst,RanMst.FTRsnName AS FTRsnNameMst,\r\n\tHDMst.FTXshDocNo AS FTXshDocNoMst,HD.FCXshAmtNV\r\n\tFROM TPSTTaxHD  HD WITH (NOLOCK)  INNER JOIN \r\n     TPSTTaxHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo LEFT JOIN\r\n\t TCNMPos Pos WITH (NOLOCK) ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN \r\n\t TCNMCst Cst WITH (NOLOCK) ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN\r\n\t TCNMCst_L Cst_L WITH (NOLOCK) ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMSpn_L Spn_L WITH (NOLOCK) ON  HD.FTSpnCode = Spn_L.FTSpnCode AND Spn_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Usr_L  WITH (NOLOCK) ON HD.FTUsrCode = Usr_L.FTUsrCode AND Usr_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Red_L   WITH (NOLOCK) ON HD.FTLastUpdBy = Red_L.FTUsrCode AND Red_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Apver_L  WITH (NOLOCK) ON HD.FTXshApvCode = Apver_L.FTUsrCode AND Apver_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMUser_L App_L  WITH (NOLOCK) ON HD.FTXshApvCode = App_L.FTUsrCode AND App_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddr WITH (NoLock) ON  HD.FTBchCode = HDAddr.FTBchCode AND HD.FTXshDocNo = HDAddr.FTXshDocNo LEFT JOIN\r\n\t TPSTTaxHD HDMst WITH (NOLOCK) ON HD.FTBchCode = HDMst.FTBchCode AND HD.FTXshRefAE= HDMst.FTXshDocNo AND HDMst.FTXshStaDoc = '5' LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddrEdit WITH (NoLock) ON  HDMst.FTBchCode = HDAddrEdit.FTBchCode AND HDMst.FTXshDocNo = HDAddrEdit.FTXshDocNo LEFT JOIN\r\n\t TCNMRsn_L RanMst WITH (NOLOCK) ON HDMst.FTRsnCode = RanMst.FTRsnCode AND RanMst.FNLngID = @pnLanguage \r\n\t LEFT JOIN TCNMProvince_L Pro_L WITH (NoLock) ON HDAddr.FTAddV1PvnCode = Pro_L.FTPvnCode AND Pro_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L Dis_L WITH (NoLock) ON HDAddr.FTAddV1DstCode = Dis_L.FTDstCode AND Dis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMSubDistrict_L SDis_L WITH (NoLock) ON HDAddr.FTAddV1SubDist = SDis_L.FTSudCode AND SDis_L.FNLngID = @pnLanguage\r\nWHERE HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -1261,7 +1261,7 @@
                       "Name": "CmpAddr",
                       "Guid": "0eed0aacfe9a45f394ae5141b241b125",
                       "CanGrow": true,
-                      "ClientRectangle": "0.05,0.63,10.45,1.74",
+                      "ClientRectangle": "0.05,0.63,10.29,1.74",
                       "Interaction": {
                         "Ident": "StiInteraction"
                       },
@@ -1274,6 +1274,10 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
+                      "TextOptions": {
+                        "WordWrap": true
+                      },
+                      "TextQuality": "Wysiwyg",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
@@ -1538,7 +1542,7 @@
                       "Name": "SplAddr",
                       "Guid": "026b08060db9474cbdccedb313ea0700",
                       "CanGrow": true,
-                      "ClientRectangle": "1.65,0.8,8.8,2.35",
+                      "ClientRectangle": "1.65,0.8,8.92,2.35",
                       "Interaction": {
                         "Ident": "StiInteraction"
                       },
@@ -1551,6 +1555,9 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
+                      "TextOptions": {
+                        "WordWrap": true
+                      },
                       "TextQuality": "Wysiwyg",
                       "Type": "Expression"
                     },
@@ -2368,7 +2375,7 @@
                 "17": {
                   "Ident": "StiEndPointPrimitive",
                   "Name": "EndPointPrimitive5",
-                  "ClientRectangle": "19.82,0.73,0,0",
+                  "ClientRectangle": "19.82,0.69,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
                   },
@@ -2881,7 +2888,7 @@
                   "Name": "Text10",
                   "Guid": "08fd64c220074211b80cf9d9f06823c7",
                   "PrintOn": "OnlyLastPage",
-                  "ClientRectangle": "4,1.03,2.75,0.5",
+                  "ClientRectangle": "4,0.99,2.75,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
                   },
@@ -3251,7 +3258,7 @@
           "Ident": "StiRoundedRectanglePrimitive",
           "Name": "RoundedRectangle1",
           "Guid": "f0995d634c2140b0b760906527e9feb0",
-          "ClientRectangle": "0.3,7.61,19.7,15.99",
+          "ClientRectangle": "0.3,7.61,19.7,15.95",
           "Interaction": {
             "Ident": "StiInteraction"
           },

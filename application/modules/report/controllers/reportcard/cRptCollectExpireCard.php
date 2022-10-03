@@ -825,10 +825,10 @@ class cRptCollectExpireCard extends MX_Controller {
                     WriterEntityFactory::createCell($aValue["rtCrdCodeExpQty"],$oStyle),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue["rtCrdValue"]),$oStyle),
+                    WriterEntityFactory::createCell(number_format($aValue["rtCrdValue"],$nOptDecimalShow),$oStyle),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($nSumValue),$oStyle),
+                    WriterEntityFactory::createCell(number_format($nSumValue,$nOptDecimalShow),$oStyle),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL)
                 ];
