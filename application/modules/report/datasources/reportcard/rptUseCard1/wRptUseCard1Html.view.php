@@ -110,7 +110,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                     "label" => $aDataTextRef['tRPCCardName'],
                                     "formatValue" => function($tValue,$aData){
                                         $aExplodeCrdName = explode(";",$tValue);
-                                        return ($aExplodeCrdName[1] == '') ? 'N/A' : $aExplodeCrdName[1];
+                                        return ($aExplodeCrdName[1] == '') ? '' : $aExplodeCrdName[1];
                                     },
                                     "cssStyle" => array(
                                         "th" => "text-align:left",
@@ -147,7 +147,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                     "label" => $aDataTextRef['tRPCCardTxnDocNoRef'],
                                     "formatValue" => function($tValue,$aData){
                                         $aExplodeTxnDocNoRef = explode(";",$tValue);
-                                        return ($aExplodeTxnDocNoRef[1] == '') ? 'N/A' : $aExplodeTxnDocNoRef[1];
+                                        return ($aExplodeTxnDocNoRef[1] == '') ? '' : $aExplodeTxnDocNoRef[1];
                                     },
                                     "cssStyle" => array(
                                         "th" => "text-align:left",
@@ -159,6 +159,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                     "label" => $aDataTextRef['tRPCCardTxnDocTypeName'],
                                     "formatValue" => function($tValue,$aRow){
                                         $aExplodeTxtDocTypeName = explode(";",$tValue);
+                                        //print_r($tValue);
                                         if($aRow['FNLngID'] == 1){
                                             return $aExplodeTxtDocTypeName[1];
                                         }else{
@@ -175,8 +176,9 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                     "label" => $aDataTextRef['tRPCOperator'],
                                     "formatValue" => function($tValue,$aRow){
                                         $aExplodeTxtDocOperatorName = explode(";",$tValue);
+                                        //print_r($tValue);
                                         if($aRow['FNLngID'] == 1){
-                                            return ($aExplodeTxtDocOperatorName[1] == '') ? 'N/A' : $aExplodeTxtDocOperatorName[1];
+                                            return ($aExplodeTxtDocOperatorName[1] == '') ? '' : $aExplodeTxtDocOperatorName[1];
                                         }else{
                                             return $aExplodeTxtDocOperatorName[2];
                                         }
