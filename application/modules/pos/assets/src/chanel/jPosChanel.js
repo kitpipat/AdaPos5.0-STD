@@ -413,22 +413,25 @@ function JSaChanelDelete(pnPage, ptBch, tCode, ptName) {
         $('#odvModalDelChanel').modal('show');
         $('#ospConfirmDelete').html($('#oetTextComfirmDeleteSingle').val() + ' ' + tCode + ' ( ' + ptName + ' ) ');
         $('#osmConfirm').on('click', function(evt) {
+            JCNxOpenLoading();
             $.ajax({
                 type: "POST",
                 url: "chanelDelete",
                 data: { 'tChnBchCode': ptBch, 'tChnCode': tCode },
                 cache: false,
                 timeout: 0,
-                success: function(tResult) {
+                success: function(oResult) {
                     // tResult = tResult.trim();
                     //console.log(tResult);
-                    var aReturn = JSON.parse(tResult);
-                    if (tResult == 0) {
-                        $('#odvModalDelChanel').modal('hide');
-                        $('#ospConfirmDelete').text($('#oetTextComfirmDeleteSingle').val());
-                        $('#ohdConfirmIDDelete').val('');
-                        localStorage.removeItem('LocalItemData');
-                        $('.modal-backdrop').remove();
+
+                    $('#odvModalDelChanel').modal('hide');
+                    $('#ospConfirmDelete').text($('#oetTextComfirmDeleteSingle').val());
+                    $('#ohdConfirmIDDelete').val('');
+                    localStorage.removeItem('LocalItemData');
+                    $('.modal-backdrop').remove();
+
+                    var aReturn = JSON.parse(oResult);
+                    if ( aReturn['nStaEvent'] == 1 ) {
                         setTimeout(function() {
                             if (aReturn["nNumRowChnLoc"] != 0) {
                                 if (aReturn["nNumRowChnLoc"] > 10) {
@@ -446,8 +449,8 @@ function JSaChanelDelete(pnPage, ptBch, tCode, ptName) {
                             }
                         }, 500);
                     } else {
-                        JCNxOpenLoading();
-                        alert(aReturn['tStaMessg']);
+                        JCNxCloseLoading();
+                        FSvCMNSetMsgErrorDialog(aReturn['tStaMessg']);
                     }
                     JSxChanelNavDefult();
                 },
@@ -1078,7 +1081,7 @@ function JSxChnDeleteMutirecord(pnPage) {
     // var tRcvSpcStaAlwCfg = $('#ohdtRcvSpcStaAlwCfg').val();
     let nStaSession = JCNxFuncChkSessionExpired();
     if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
-        // JCNxOpenLoading();
+        JCNxOpenLoading();
         let aDataChnCode = [];
         let aDataBchCode = [];
         let ocbListItem = $(".ocbListItem");
@@ -1101,20 +1104,20 @@ function JSxChnDeleteMutirecord(pnPage) {
             },
             cache: false,
             timeout: 0,
-            success: function(tResult) {
-                tResult = tResult.trim();
-                var aReturn = $.parseJSON(tResult);
+            success: function(oResult) {
+                $('#odvModalDeleteMutirecord').modal('hide');
+                $('#ospConfirmDelete').empty();
+                localStorage.removeItem('LocalItemData');
+                // tResult = tResult.trim();
+                var aReturn = $.parseJSON(oResult);
                 if (aReturn['nStaEvent'] == '1') {
-                    $('#odvModalDeleteMutirecord').modal('hide');
-                    $('#ospConfirmDelete').empty();
-                    localStorage.removeItem('LocalItemData');
                     setTimeout(function() {
                         JSvCallPageChanel(pnPage);
                     }, 500);
                 } else {
-                    alert(aReturn['tStaMessg']);
+                    JCNxCloseLoading();
+                    FSvCMNSetMsgErrorDialog(aReturn['tStaMessg']);
                 }
-                JCNxCloseLoading();
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 JCNxResponseError(jqXHR, textStatus, errorThrown);

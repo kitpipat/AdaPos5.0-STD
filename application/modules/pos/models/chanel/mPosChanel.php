@@ -425,6 +425,7 @@ class mPosChanel extends CI_Model
      */
     public function FSnMCHNDelHD($paData)
     {
+        $this->db->trans_begin();
         // $this->db->where_in('FTBchCode', $paData['FTBchCode']);
         $this->db->where('FTChnCode', $paData['FTChnCode']);
         $this->db->delete('TCNMChannel');
@@ -441,21 +442,35 @@ class mPosChanel extends CI_Model
         
         // print_r($this->db->affected_rows());
         // exit();
-        if ($this->db->affected_rows() > 0) {
-            // Success
-            $aStatus = array(
-                'rtCode' => '1',
-                'rtDesc' => 'success',
-            );
-        } else {
-            // Ploblem
+        // if ($this->db->affected_rows() > 0) {
+        //     // Success
+        //     $aStatus = array(
+        //         'rtCode' => '1',
+        //         'rtDesc' => 'success',
+        //     );
+        // } else {
+        //     // Ploblem
+        //     $aStatus = array(
+        //         'rtCode' => '905',
+        //         'rtDesc' => 'cannot Delete Item.',
+        //     );
+        // }
+        // $jStatus = json_encode($aStatus);
+        // $aStatus = json_decode($jStatus, true);
+        // return $aStatus;
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
             $aStatus = array(
                 'rtCode' => '905',
-                'rtDesc' => 'cannot Delete Item.',
+                'rtDesc' => 'Delete Unsuccess.',
+            );
+        }else{
+            $this->db->trans_commit();
+            $aStatus = array(
+                'rtCode' => '1',
+                'rtDesc' => 'Delete Success.',
             );
         }
-        $jStatus = json_encode($aStatus);
-        $aStatus = json_decode($jStatus, true);
         return $aStatus;
     }
 
@@ -521,16 +536,14 @@ class mPosChanel extends CI_Model
     public function  FSaMChnDeleteMultiple($paDataDelete)
     {
         // print_r($paDataDelete); die();
-
+        $this->db->trans_begin();
         // $this->db->where_in('FTBchCode', $paDataDelete['FTBchCode']);
         $this->db->where_in('FTChnCode', $paDataDelete['FTChnCode']);
         $this->db->delete('TCNMChannel');
 
-
         // $this->db->where_in('FTBchCode', $paDataDelete['FTBchCode']);
         $this->db->where_in('FTChnCode', $paDataDelete['FTChnCode']);
         $this->db->delete('TCNMChannel_L');
-
 
         $this->db->where_in('FTChnCode', $paDataDelete['FTChnCode']);
         $this->db->delete('TCNMChannelSpc');
@@ -538,23 +551,38 @@ class mPosChanel extends CI_Model
         $this->db->where_in('FTChnCode', $paDataDelete['FTChnCode']);
         $this->db->delete('TCNMChannelSpcWah');
 
-
-        if ($this->db->affected_rows() == 0) {
-            //Success
-            $aStatus   = array(
-                'rtCode' => '1',
-                'rtDesc' => 'success',
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
+            $aStatus = array(
+                'rtCode' => '905',
+                'rtDesc' => 'Delete Unsuccess.',
             );
-        } else {
-            //Ploblem
+        }else{
+            $this->db->trans_commit();
             $aStatus = array(
                 'rtCode' => '1',
-                'rtDesc' => 'cannot Delete Item.',
+                'rtDesc' => 'Delete Success.',
             );
         }
-        $jStatus = json_encode($aStatus);
-        $aStatus = json_decode($jStatus, true);
         return $aStatus;
+
+
+        // if ($this->db->affected_rows() == 0) {
+        //     //Success
+        //     $aStatus   = array(
+        //         'rtCode' => '1',
+        //         'rtDesc' => 'success',
+        //     );
+        // } else {
+        //     //Ploblem
+        //     $aStatus = array(
+        //         'rtCode' => '1',
+        //         'rtDesc' => 'cannot Delete Item.',
+        //     );
+        // }
+        // $jStatus = json_encode($aStatus);
+        // $aStatus = json_decode($jStatus, true);
+        // return $aStatus;
     }
 
     //Functionality : Count Seq

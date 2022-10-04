@@ -428,7 +428,7 @@ class cPosChanel extends MX_Controller
         // }
         // echo json_encode($aChnCode);
         try {
-            $this->db->trans_begin();
+            // $this->db->trans_begin();
             $aDataWhereDel  = $this->input->post('paDataWhere');
             // print_r($aDataWhereDel); die();
             $aDataDelete    = [
@@ -437,20 +437,31 @@ class cPosChanel extends MX_Controller
             ];
 
             // $tRevCodeWhere =  $this->input->post('ptRevCodeWhere');
-            $tResult    = $this->mPosChanel->FSaMChnDeleteMultiple($aDataDelete);
-            if ($this->db->trans_status() == FALSE) {
-                $this->db->trans_rollback();
+            $aResult = $this->mPosChanel->FSaMChnDeleteMultiple($aDataDelete);
+            if( $aResult['rtCode'] == '1' ){
+                $aDataReturn     = array(
+                    'nStaEvent' => 1,
+                    'tStaMessg' => 'Success Delete Multiple'
+                );
+            }else{
                 $aDataReturn    = array(
                     'nStaEvent' => 500,
                     'tStaMessg' => 'Error Not Delete Data Multiple'
                 );
-            } else {
-                $this->db->trans_commit();
-                $aDataReturn     = array(
-                    'nStaEvent' => 1,
-                    'tStaMessg' => 'Success Delete  Multiple'
-                );
             }
+            // if ($this->db->trans_status() == FALSE) {
+            //     $this->db->trans_rollback();
+            //     $aDataReturn    = array(
+            //         'nStaEvent' => 500,
+            //         'tStaMessg' => 'Error Not Delete Data Multiple'
+            //     );
+            // } else {
+            //     $this->db->trans_commit();
+            //     $aDataReturn     = array(
+            //         'nStaEvent' => 1,
+            //         'tStaMessg' => 'Success Delete  Multiple'
+            //     );
+            // }
         } catch (Exception $Error) {
             $aDataReturn     = array(
                 'nStaEvent' => 500,
@@ -470,25 +481,24 @@ class cPosChanel extends MX_Controller
      */
     public function FSoCHNDelete()
     {
-
         $tChnBchCode = $this->input->post('tChnBchCode');
         $tChnCode = $this->input->post('tChnCode');
         $aDataMaster = array(
             'FTChnCode' => $tChnCode,
             'FTBchCode' => $tChnBchCode
         );
-        $aResDel    = $this->mPosChanel->FSnMCHNDelHD($aDataMaster);
-        $nNumRowChnLoc = $this->mPosChanel->FSnMLOCGetAllNumRow();
-        if ($nNumRowChnLoc !== false) {
-            $aReturn    = array(
-                'nStaEvent'     => $aResDel['rtCode'],
-                'tStaMessg'     => $aResDel['rtDesc'],
-                'nNumRowChnLoc' => $nNumRowChnLoc
-            );
-            echo json_encode($aReturn);
-        } else {
-            echo "database error";
-        }
+        $aResDel        = $this->mPosChanel->FSnMCHNDelHD($aDataMaster);
+        $nNumRowChnLoc  = $this->mPosChanel->FSnMLOCGetAllNumRow();
+        // if ($nNumRowChnLoc !== false) {
+        $aReturn    = array(
+            'nStaEvent'     => $aResDel['rtCode'],
+            'tStaMessg'     => $aResDel['rtDesc'],
+            'nNumRowChnLoc' => $nNumRowChnLoc
+        );
+        echo json_encode($aReturn);
+        // } else {
+        //     echo "database error";
+        // }
     }
 
     // Create By: Napat(Jame) 10/06/2022
