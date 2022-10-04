@@ -162,6 +162,7 @@ class mBranch extends CI_Model {
         return $aResult;
     }
 
+    //ยกมาจาก Fit Auto : 16/09/2022
     //Functionality : list Branch
     //Parameters : function parameters
     //Creator : 09/03/2018 Krit(Copter)
@@ -169,50 +170,45 @@ class mBranch extends CI_Model {
     //Return : data
     //Return Type : Array
     public function FSnMBCHList($paData) {
-
-        $aRowLen = FCNaHCallLenData($paData['nRow'], $paData['nPage']);
-        $nLngID = $paData['FNLngID'];
-
-        $tSQL   =   "   SELECT c.* FROM(
-                            SELECT  ROW_NUMBER() OVER(ORDER BY rtCreateOn DESC , rtBchCode DESC) AS rtRowID,* FROM (
-                                SELECT DISTINCT
-                                    BCH.FTBchCode                           AS rtBchCode,
-                                    FTBchName                               AS rtBchName,
-                                    FTBchType                               AS rtBchType,
-                                    BCH.FDCreateOn                          AS rtCreateOn,
-                                    BCH.FTBchPriority                       AS rtBchPriority,
-                                    CONVERT(CHAR(10),FDBchStart,120)        AS rdBchStart,
-                                    CONVERT(CHAR(10),FDBchStop,120)         AS rdBchStop,
-                                    IMGO.FTImgObj                           AS rtImgObj,
-                                    rnCountLang = (SELECT COUNT (DISTINCT(FNLngID)) FROM TCNMBranch_L),
-                                    SALHD.FTBchCode                        AS rtUseInSaleHD
-                                FROM TCNMBranch         BCH     WITH(NOLOCK)
-                                LEFT JOIN TCNMBranch_L  BCHL    WITH(NOLOCK) ON BCH.FTBchCode = BCHL.FTBchCode  AND BCHL.FNLngID = $nLngID
-                                LEFT JOIN TPSTSalHD     SALHD    WITH(NOLOCK) ON BCH.FTBchCode = SALHD.FTBchCode 
-                                LEFT JOIN TCNMImgObj    IMGO    WITH(NOLOCK) ON BCH.FTBchCode = IMGO.FTImgRefID AND IMGO.FTImgTable = 'TCNMBranch' AND IMGO.FNImgSeq = 1
-                                WHERE 1 = 1 ";
+        $aRowLen    = FCNaHCallLenData($paData['nRow'], $paData['nPage']);
+        $nLngID     = $paData['FNLngID'];
+        $tSQL       =   "
+            SELECT c.* FROM(
+                SELECT  ROW_NUMBER() OVER(ORDER BY rtCreateOn DESC , rtBchCode DESC) AS rtRowID,* FROM (
+                    SELECT
+                        BCH.FTBchCode                           AS rtBchCode,
+                        FTBchName                               AS rtBchName,
+                        FTBchType                               AS rtBchType,
+                        BCH.FDCreateOn                          AS rtCreateOn,
+                        BCH.FTBchPriority                       AS rtBchPriority,
+                        CONVERT(CHAR(10),FDBchStart,120)        AS rdBchStart,
+                        CONVERT(CHAR(10),FDBchStop,120)         AS rdBchStop,
+                        IMGO.FTImgObj                           AS rtImgObj,
+                        rnCountLang  = 2, 
+                        STKC.FTBchCode                        AS rtUseInSaleHD
+                    FROM TCNMBranch         BCH     WITH(NOLOCK)
+                    LEFT JOIN TCNMBranch_L  BCHL    WITH(NOLOCK) ON BCH.FTBchCode = BCHL.FTBchCode  AND BCHL.FNLngID    = ".$this->db->escape($nLngID)."
+                    LEFT JOIN (SELECT DISTINCT FTBchCode FROM TCNTPdtStkCrd WITH(NOLOCK) ) STKC ON BCH.FTBchCode = STKC.FTBchCode
+                    LEFT JOIN TCNMImgObj    IMGO    WITH(NOLOCK) ON BCH.FTBchCode = IMGO.FTImgRefID AND IMGO.FTImgTable = 'TCNMBranch' AND IMGO.FNImgSeq = 1
+                    WHERE 1 = 1 
+        ";
 
         $tSearchList    = $paData['tSearchAll'];
         if($this->session->userdata("tSesUsrLevel") != "HQ"){
             $tBchCode    = $this->session->userdata("tSesUsrBchCodeMulti");
-            $tSQL       .= " AND BCH.FTBchCode IN ($tBchCode) ";
+            $tSQL       .= " AND BCH.FTBchCode IN ($tBchCode)";
         }
-
         if ($tSearchList != '') {
-            $tSQL   .= " AND (BCH.FTBchCode COLLATE THAI_BIN LIKE '%$tSearchList%'";
-            $tSQL   .= " OR BCHL.FTBchName  COLLATE THAI_BIN LIKE '%$tSearchList%')";
+            $tSQL   .= " AND (BCH.FTBchCode COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%'";
+            $tSQL   .= " OR BCHL.FTBchName  COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%')";
         }
-
-        $tSQL .= ") Base) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1]";
-
+        $tSQL   .= ") Base) AS c WHERE c.rtRowID > ".$this->db->escape($aRowLen[0])." AND c.rtRowID <= ".$this->db->escape($aRowLen[1])."";
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
-
             $aList = $oQuery->result();
             $aFoundRow = $this->JSnMBCHGetPageAll($tSearchList, $nLngID);
             $nFoundRow = $aFoundRow[0]->counts;
             $nPageAll = ceil($nFoundRow / $paData['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
-
             $aResult = array(
                 'raItems' => $aList,
                 'rnAllRow' => $nFoundRow,

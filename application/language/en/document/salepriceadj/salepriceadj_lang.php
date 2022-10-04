@@ -70,6 +70,8 @@ $lang['tSpaADDConditionsTitle']     = "Price adjustment conditions";
 $lang['tSpaADDXphDocType']          = "Price type";
 $lang['tSpaADDXphDocType1']         = "BasePrice";
 $lang['tSpaADDXphDocType2']         = "Price Off";
+$lang['tSpaADDXphDocType3']         = "Promotion";
+$lang['tSpaADDXphDocType4']         = "Coupon";
 $lang['tSpaADDXphStaAdj']           = "Price adjustment type";
 $lang['tSpaADDXphStaAdj1']          = "New Price";
 $lang['tSpaADDXphStaAdj2']          = "Downgrade %%";
@@ -102,7 +104,7 @@ $lang['tSpaADDXphStaDocAct']        = "Active";
 $lang['tSpaADDXphPriType']          = "Sale type";
 
 //btn
-$lang['tSpaADDBtnAdjAll']           = "Adjust the entire document"; 
+$lang['tSpaADDBtnAdjAll']           = "Adjust the entire document";
 $lang['tSpaTitlePdtPriList']        = "Product list";
 
 
@@ -143,7 +145,8 @@ $lang['tPdtPriTBBarCode']           = "Bar Code";
 $lang['tPdtPriTBPunCode']           = "Product Unit";
 $lang['tPdtPriTBBch']               = "Effective branch";
 $lang['tPdtPriTBShp']               = "Effective Shop";
-$lang['tPdtPriTBPriceOgn']          = "Latest price";
+// $lang['tPdtPriTBPriceOgn']          = "Latest price";
+$lang['tPdtPriTBPriceOgn']          = "Check price";
 $lang['tPdtPriTBPriceRet']          = "Sale price";
 $lang['tPdtPriTBPriceWhs']          = "Wholesale price";
 $lang['tPdtPriTBPriceNet']          = "Price Online";
@@ -151,7 +154,16 @@ $lang['tPdtPriTBAdjustAll']         = "All adjusted";
 $lang['tPdtPriTBDelete']            = "DElete";
 $lang['tPdtPriTBEdit']              = "Edit";
 
-$lang['tPdtPriTiTleOrnPri']         = "Latest price";
+
+$lang['tPdtPriTBStartDate']         = "Start Date";
+$lang['tPdtPriTBStopDate']          = "Stop Date";
+$lang['tPdtPriTBStartTime']         = "Start Time";
+$lang['tPdtPriTBEndTime']           = "Stop Time";
+$lang['tPdtPriTBPriceType']         = "Price Type";
+
+
+// $lang['tPdtPriTiTleOrnPri']         = "Latest price";
+$lang['tPdtPriTiTleOrnPri']         = "Check price";
 $lang['tPdtPriSumTotalPrice']       = "Total Price";
 
 $lang['tPdtAdvSearch']   = "Advanced Search";
@@ -172,3 +184,6 @@ $lang['tSpaBRWBranchTitleFrom']     = "From branch";
 $lang['tSpaBRWBranchTitleTo']       = "To branch";
 $lang['tSpaBRWDocDateFrom']         = "From Date";
 $lang['tSpaBRWDocDateTo']           = "To Date";
+
+$lang['tPdtSelectAgnBch']  = "Please enter Agency and Branch";
+$lang['tPdtFilterAgency']  = "Agency";

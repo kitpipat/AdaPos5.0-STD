@@ -5,7 +5,7 @@ $lang['tCPTTitle']      = "ประเภทคูปอง";
 $lang['tCPTTitleAdd']   = "เพิ่ม ประเภทคูปอง";
 $lang['tCPTTitleEdit']  = "แก้ไข ประเภทคูปอง";
 
-//Table header 
+//Table header
 $lang['tCPTTBChoose']   = "เลือก";
 $lang['tCPTTBCode']     = "รหัส";
 $lang['tCPTTBName']     = "ชื่อประเภทคูปอง";
@@ -21,19 +21,21 @@ $lang['tCPTStaChk']     = "สถานะตรวจสอบคูปอง";
 $lang['tCptStaUse']     = "สถานะใช้งาน";
 $lang['tCPTStaChkHQ']   = "ตรวจสอบตาม";
 
-//Form 
+//Form
 $lang['tCPTCode']       = "รหัส";
 $lang['tCPTName']       = "ชื่อ";
 
 $lang['tCPTCouponType1'] = "คูปองเงินสด";
 $lang['tCPTCouponType2'] = "คูปองส่วนลด";
-$lang['tCPTCouponChk2']  = "ไม่ตรวจสอบ";
-$lang['tCPTCouponChk1']  = "ตรวจสอบ";
+$lang['tCPTCouponChk3']  = "กำหนดเอง";
+$lang['tCPTCouponChk2']  = "ตรวจสอบฟอร์แมต";
+$lang['tCPTCouponChk1']  = "ตรวจสอบข้อมูล";
 $lang['tCPTCouponBch']   = "สาขา";
 $lang['tCPTCouponHq']    = "ส่วนกลาง";
+$lang['tCPTCouponCm']    = "กำหนดเอง";
 
 //CheckStatusHQ
-$lang['tCPTStaChkHQ1']   = "สำนักงานใหญ่";
+$lang['tCPTStaChkHQ1']   = "ส่วนกลาง";
 
 $lang['tCPTStBranch']       = "สาขา";
 
@@ -44,3 +46,18 @@ $lang['tCPTNameType']  = "ชื่อประเภทคูปอง";
 $lang['tCptValidCode']  = "รหัสประเภทคูปอง";
 $lang['tCptValidName']  = "กรุณากรอกชื่อประเภทคูปอง";
 $lang['tCPTValidCheckCode']  = "รหัสประเภทคูปองนี้มีในระบบแล้วกรุณาครวจสอบอีกครั้ง";
+
+//สถานะรับเต็มจำนวน
+$lang['tCPTCouponTypefull']  = "สถานะรับเต็มจำนวน";
+$lang['tCPTCouponTypefull1']  = "รับบางส่วน เกินตัดทิ้ง";
+$lang['tCPTCouponTypefull2']  = "รับบางส่วน เกินเก็บไว้";
+$lang['tCPTCouponTypefull3']  = "รับบางส่วน ทอน";
+$lang['tCPTCouponTypefull4']  = "รับเต็ม";
+
+//
+$lang['tCPTPriTitle']  = "ใบปรับราคา";
+$lang['tCPTPriDocno']  = "รหัสเอกสาร";
+$lang['tCPTPriRmk']  = "หมายเหตุ";
+$lang['tCPTPriDate']  = "วันที่เอกสาร";
+$lang['tCPTPriTime']  = "เวลาเอกสาร";
+$lang['tCPTPriStatus']  = "สถานะเอกสาร";

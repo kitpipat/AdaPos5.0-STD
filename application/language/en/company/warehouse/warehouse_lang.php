@@ -45,5 +45,8 @@ $lang['tPosCheckCantStock']             = "Don't check (Sell minus)";
 $lang['tPosCheckOffline']               = "Check Offline (Pos)";
 $lang['tPosCheckOnline']                = "Check Online (Storeback)";
 
-$lang['tWahStaAlwCntStk']   = "Status Allow Check Stock (Sall)";
-$lang['tWahStaAlwCostAmt']  = "Status Allow Check Cost Amount";
+$lang['tPosStaAlwPLFrmTBO']                = "Allow use the arrangement from transfer document";
+$lang['tPosStaAlwPLFrmSale']               = "Allow use the arrangement from sales document";
+$lang['tPosStaAlwSNPL']                 = "Allow S/N in arrangement";
+$lang['tWahStaAlwCntStk']               = "Status Allow Check Stock (Sall)";
+$lang['tWahStaAlwCostAmt']              = "Status Allow Check Cost Amount";

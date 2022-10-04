@@ -51,6 +51,7 @@ class mRptInventory extends CI_Model {
         );
 
         $oQuery = $this->db->query($tCallStore, $aDataStore);
+        // echo $this->db->last_query();exit;
         if ($oQuery != FALSE) {
             unset($oQuery);
             return 1;

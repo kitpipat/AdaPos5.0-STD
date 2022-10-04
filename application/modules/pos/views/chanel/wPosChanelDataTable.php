@@ -19,7 +19,7 @@ if ($aDataList['rtCode'] == '1') {
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelSystem'); ?></th>
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelAgency'); ?></th>
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelBranch'); ?></th>
-                        <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelWahouse'); ?></th>
+                        <!-- <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelWahouse'); ?></th> -->
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelPriceGroup'); ?></th>
                         <th class="xCNTextBold text-center" style="width:10%;"><?php echo language('common/main/main', 'tCMNActionDelete'); ?></th>
                         <th class="xCNTextBold text-center" style="width:10%;"><?php echo language('common/main/main', 'tEdit'); ?></th>
@@ -54,7 +54,7 @@ if ($aDataList['rtCode'] == '1') {
                                 <td class="text-left"><?php echo $aValue['rtChnAppName']; ?></td>
                                 <td class="text-left"><?php echo $aValue['rtChnAgnName']; ?></td>
                                 <td class="text-left"><?php echo $aValue['rtChnBchName']; ?></td>
-                                <td class="text-left"><?php echo $aValue['rtChnWahName']; ?></td>
+                                <!-- <td class="text-left"><?php echo $aValue['rtChnWahName']; ?></td> -->
                                 <td class="text-left"><?php echo $aValue['rtChnPplName']; ?></td>
                                 <td>
                                     <img class="xCNIconTable <?=$tClassDel?>" src="<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>" <?=$tOnClickDel?> title="<?php echo language('common/main/main', 'tCMNActionDelete'); ?>">

@@ -240,7 +240,11 @@ class cTaxinvoicefc extends MX_Controller
     public function FSaCTXFCheckTaxno(){
         $tTaxno     = $this->input->post('tTaxno');
         $nSeq       = $this->input->post('nSeq');
+<<<<<<< HEAD
         // print_r($tTaxno); exit;
+=======
+
+>>>>>>> origin/IcePHP
         $aGetTaxno  = $this->mTaxinvoicefc->FSaMTXFCheckTaxno($tTaxno,$nSeq);
         if(empty($aGetTaxno)){
             $aReturn = array(
@@ -315,30 +319,41 @@ class cTaxinvoicefc extends MX_Controller
         $tType              = $this->input->post('tType');
         $tABB               = $aPackData['tDocABB'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
+<<<<<<< HEAD
         // $tStaETax           = $aPackData['tStaETax'];
         // $tTAXApvType        = $aPackData['tTAXApvType'];
+=======
+        $tInputBchCode      = $aPackData['tInputBchCode'];
+        $tStaETax           = $aPackData['tStaETax'];
+        $tTAXApvType        = $aPackData['tTAXApvType'];
+>>>>>>> origin/IcePHP
         $aWhere = array(
             'tDocumentNumber' => $tABB ,
             'tBrowseBchCode' => $tBrowseBchCode
         );
-
+        
         $aGetBCHABB = $this->mTaxinvoicefc->FSaMTXFGetHD($aWhere);
-        // print_r($aGetBCHABB);
-        // exit();
+        
         //วิ่งเข้าไปหาเลขที่เอกสาร ที่MQ ก่อน
+<<<<<<< HEAD
         // if( (isset($aGetBCHABB['raItems'][0]['FTXshDocVatFull']) && $aGetBCHABB['raItems'][0]['FTXshDocVatFull'] == '') || $tTAXApvType == '2' ) {
         if (isset($aGetBCHABB['raItems'])) {
+=======
+        if( (isset($aGetBCHABB['raItems'][0]['FTXshDocVatFull']) && $aGetBCHABB['raItems'][0]['FTXshDocVatFull'] == '') || $tTAXApvType == '2' ) {
+        // if (isset($aGetBCHABB['raItems'])) {
+>>>>>>> origin/IcePHP
           if($tType == 'MQ'){
 
               $tDocType = ($aGetBCHABB['raItems'][0]['FNXshDocType']==0 ? 'R' : 'S');
               $tUserCode      = $this->session->userdata("tSesUserCode");
-              $tCheckMQ['tQname']  = 'CN_QRetGenTaxNo_'.$aGetBCHABB['raItems'][0]['FTBchCode'].'_'.$tDocType;
+            //   $tCheckMQ['tQname']  = 'CN_QRetGenTaxNo_'.$aGetBCHABB['raItems'][0]['FTBchCode'].'_'.$tDocType;
+              $tCheckMQ['tQname']  = 'CN_QRetGenTaxNo_'.$tInputBchCode.'_'.$tDocType;
               $tCheckQueue =  FCNxRabbitMQCheckQueueMassage($tCheckMQ);
               if($tCheckQueue=='false'){
               $aMQParams  = [
                   "queueName" => "CN_QReqGenTaxNo",
                   "params" => [
-                      "ptBchCode"         => $aGetBCHABB['raItems'][0]['FTBchCode'],
+                      "ptBchCode"         => $tInputBchCode,
                       "pnSaleType"        => $aGetBCHABB['raItems'][0]['FNXshDocType'],
                       "ptDocNo"           => $tABB,
                       "ptUser"            => $this->session->userdata("tSesUserCode")
@@ -349,7 +364,7 @@ class cTaxinvoicefc extends MX_Controller
               }
               $tDoctype  = ($aGetBCHABB['raItems'][0]['FNXshDocType']==0? 'R' : 'S');
               $aReturnData    = array(
-                  'tBCHDoc'   => $aGetBCHABB['raItems'][0]['FTBchCode'],
+                  'tBCHDoc'   => $tInputBchCode,
                   'tDoctype' => $tDoctype,
               );
               echo json_encode($aReturnData);
@@ -464,15 +479,18 @@ class cTaxinvoicefc extends MX_Controller
         $aPackData          = $this->input->post('aPackData');
         $tABB               = $aPackData['tDocABB'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
-
-        // print_r($aPackData);exit;
+        $tInputBchCode     = $aPackData['tInputBchCode'];
 
         $aWhere = array(
             'tDocumentNumber' => $tABB,
             'tBrowseBchCode'  => $tBrowseBchCode
         );
         $aGetBCHABB = $this->mTaxinvoicefc->FSaMTXFGetHD($aWhere);
+<<<<<<< HEAD
         //  print_r(['FSxCTXFCallTaxNoLastDoc1',$aGetBCHABB]);
+=======
+        
+>>>>>>> origin/IcePHP
         // $tBchCode         = $aGetBCHABB['raItems'][0]['FTBchCode'];
         // $nSaleType        = $aGetBCHABB['raItems'][0]['FNXshDocType'];
 
@@ -489,27 +507,25 @@ class cTaxinvoicefc extends MX_Controller
         // );
         $tUserCode          = $this->session->userdata("tSesUserCode");
         $tDocType           = ($aGetBCHABB['raItems'][0]['FNXshDocType']==9 ? 'R' : 'S');
-        $aParamQ['tQname']  = 'CN_QRetGenTaxNo_'.$aGetBCHABB['raItems'][0]['FTBchCode'].'_'.$tDocType;
+        // $aParamQ['tQname']  = 'CN_QRetGenTaxNo_'.$aGetBCHABB['raItems'][0]['FTBchCode'].'_'.$tDocType;
+        $aParamQ['tQname']  = 'CN_QRetGenTaxNo_'.$tInputBchCode.'_'.$tDocType;
         $tTaxJsonString     = FCNxRabbitMQGetMassage($aParamQ);
 
         // echo "<pre>";
-        // print_r($aGetBCHABB['raItems']); 
-        // print_r($tTaxJsonString); 
         
-        
-
         // $tTaxNumberFull = $this->mTaxinvoicefc->FSaMTAXCallTaxNoLastDoc($aParamData);
         // $nResult    = $this->mTaxinvoicefc->FSnMTAXCheckDuplicationOnTaxHD($tTaxNumberFull);
         //หากไม่มีเลข Tax นี้ทำการ บันทึกออกใบกำกับตามปกติ
         if( $tTaxJsonString != 'false' ){
             $aTaxJsonString =  json_decode($tTaxJsonString);
             // echo "<pre>";
-            // print_r($aTaxJsonString);
+            
             $tTaxNumberFull = $aTaxJsonString->rtDocNo;
+
             $tBCHCode       = $aGetBCHABB['raItems'][0]['FTBchCode'];
             $nResult        = $this->mTaxinvoicefc->FSnMTXFCheckDuplicationOnTaxHD($tTaxNumberFull,$tBCHCode);
             // echo $nResult;
-            // exit;
+
             if( $nResult == 0 ){
                 //Move จากตารางจริง ไปตาราง Tax + update ข้อมูลที่จำเป็น
                 $aPackData['tTaxNumberFull'] = $tTaxNumberFull;
@@ -539,8 +555,12 @@ class cTaxinvoicefc extends MX_Controller
                 // );
 
                 /////////////////////////////////// -- MOVE -- ///////////////////////////////////
+<<<<<<< HEAD
                 // print_r(['FSxCTXFCallTaxNoLastDoc2',$aPackData]);
                 // print_r($aPackData);exit;
+=======
+                
+>>>>>>> origin/IcePHP
                 $this->db->trans_begin();
 
                      // TPSTSalHD -> TPSTTaxHD
@@ -551,7 +571,14 @@ class cTaxinvoicefc extends MX_Controller
        
                      // TPSTSalDT -> TPSTTaxDT
                      $this->mTaxinvoicefc->FSaMTXFMoveSalDT_TaxDT($aPackData);
+<<<<<<< HEAD
        
+=======
+                     
+                    // TPSTSalDTSN -> TPSTTaxDTSN
+                    $this->mTaxinvoicefc->FSaMTXFMoveSalDTSN_TaxDTSN($aPackData);
+
+>>>>>>> origin/IcePHP
                      // TPSTSalDTDis -> TPSTTaxDTDis ไม่เห็นมีข้อมูล
                      $this->mTaxinvoicefc->FSaMTXFMoveSalDTDis_TaxDTDis($aPackData);
        
@@ -566,19 +593,38 @@ class cTaxinvoicefc extends MX_Controller
        
                      // TPSTSalRD -> TPSTTaxRD ไม่เห็นมีข้อมูล
                      $this->mTaxinvoicefc->FSaMTXFMoveSalRD_TaxRD($aPackData);
+
+                     
+
        
                      ///////////////////////////// -- INSERT UPDATE -- /////////////////////////////
-       
-                     //Update FTXshDocVatFull  + ว่าเอกสารนี้ถูกใช้งานเเล้ว
-                     $this->mTaxinvoicefc->FSaMTXFUpdateDocVatFull($aPackData);
-       
-                     //Insert ลงตารางที่อยู่
-                     $this->mTaxinvoicefc->FSaMTXFInsertTaxAddress($aPackData);
 
+                    //Update FTXshDocVatFull  + ว่าเอกสารนี้ถูกใช้งานเเล้ว
+                    $this->mTaxinvoicefc->FSaMTXFUpdateDocVatFull($aPackData);
+
+                    //Insert ลงตารางที่อยู่
+                    $this->mTaxinvoicefc->FSaMTXFInsertTaxAddress($aPackData);
+
+                    if( $aPackData['tTAXApvType'] == '2' ){ // ทำใบยกเลิกเอกสาร
+                        
+                        switch($tDocType){
+                            case 'R': // CN-FullTax
+                                $this->mTaxinvoicefc->FSxMTXFUpdAddrCNFullTax($aPackData);
+                                break;
+                            case 'S':
+                                $this->mTaxinvoicefc->FSxMTXFUpdAddrABBFullTax($aPackData);
+                                break;
+                        }
+
+                        //Update RefInt + RefAE
+                        $this->mTaxinvoicefc->FSxMTXFUpdateReference($aPackData);
+
+                    }
 
 
                 // TPSTTaxHDCst อัพเดทข้อมูลที่อยู่จากหน้าจอ
                 // $this->mTaxinvoicefc->FSaMTAXUpdAddrTaxHDCst($aPackData);
+
 
                 if($this->db->trans_status() === FALSE){
                     $this->db->trans_rollback();
@@ -592,13 +638,32 @@ class cTaxinvoicefc extends MX_Controller
 
                 //Delete คิวทุกครั้งที่ใช้เสร็จ
                 // $tUserCode      = $this->session->userdata("tSesUserCode");
-                $tQueueName     = 'CN_QRetGenTaxNo_'.$aGetBCHABB['raItems'][0]['FTBchCode'].'_'.$tDocType;
+                // $tQueueName     = 'CN_QRetGenTaxNo_'.$aGetBCHABB['raItems'][0]['FTBchCode'].'_'.$tDocType;
+                $tQueueName     = 'CN_QRetGenTaxNo_'.$tInputBchCode.'_'.$tDocType;
                 // $oConnection    = new AMQPStreamConnection(HOST, PORT, USER, PASS, VHOST);
                 // $oChannel       = $oConnection->channel();
                 // $oChannel->queue_delete($tQueueName);
                 // $oChannel->close();
                 // $oConnection->close();
                 // echo $tQueueName;
+
+                $tStaETax = $aPackData['tStaETax'];
+                if( $tStaETax == '1' ){
+                    $aPackDataMQ = array(
+                        'tAbbDocNo' => $aPackData['tDocABB'],
+                        'tTaxDocNo' => $aPackData['tTaxNumberFull'],
+                        // 'tBchCode'  => $aPackData['tBrowseBchCode'],
+                        'tBchCode'  => $tInputBchCode,
+                        'tPosCode'  => $aPackData['tPosCode'],
+                        'tDocType'  => $aGetBCHABB['raItems'][0]['FNXshDocType']
+                    );
+                    $aRabbitMQ = $this->FSaCTXFEventSendMQETax($aPackDataMQ);
+
+                    if( $aRabbitMQ['nStaEvent'] != '1' ){
+                        echo json_encode($aRabbitMQ);
+                        return;
+                    }
+                }
 
                 $aDataReturn    = array(
                     'nStaEvent'     => $tStatus,
@@ -612,14 +677,15 @@ class cTaxinvoicefc extends MX_Controller
 
                 $tUserCode      = $this->session->userdata("tSesUserCode");
                 $tDocType = ($aGetBCHABB['raItems'][0]['FNXshDocType']==9 ? 'R' : 'S');
-                $tCheckMQ['tQname']     = 'CN_QRetGenTaxNo_'.$aGetBCHABB['raItems'][0]['FTBchCode'].'_'.$tDocType;
+                // $tCheckMQ['tQname']     = 'CN_QRetGenTaxNo_'.$aGetBCHABB['raItems'][0]['FTBchCode'].'_'.$tDocType;
+                $tCheckMQ['tQname']     = 'CN_QRetGenTaxNo_'.$tInputBchCode.'_'.$tDocType;
                 $tCheckQueue =  FCNxRabbitMQCheckQueueMassage($tCheckMQ);
 
                 if($tCheckQueue=='false'){
                     $aMQParams  = [
                         "queueName" => "CN_QReqGenTaxNo",
                         "params" => [
-                            "ptBchCode"         => $aGetBCHABB['raItems'][0]['FTBchCode'],
+                            "ptBchCode"         => $tInputBchCode,
                             "pnSaleType"        => $aGetBCHABB['raItems'][0]['FNXshDocType'],
                             "ptDocNo"           => $tABB,
                             "ptUser"            => ''
@@ -630,7 +696,7 @@ class cTaxinvoicefc extends MX_Controller
                 $aDataReturn    = array(
                     'nStaEvent'     => '800',
                     'tStaMessg'     => 'กำลังหาเลขที่เอกสารใหม่อีกครั้ง',
-                    'tBCHDoc'      => $aGetBCHABB['raItems'][0]['FTBchCode']
+                    'tBCHDoc'      => $tInputBchCode
                 );
                 echo json_encode($aDataReturn);
             }
@@ -638,7 +704,7 @@ class cTaxinvoicefc extends MX_Controller
             $aDataReturn    = array(
                 'nStaEvent'     => '800',
                 'tStaMessg'     => 'กำลังหาเลขที่เอกสารใหม่อีกครั้ง',
-                'tBCHDoc'       => $aGetBCHABB['raItems'][0]['FTBchCode']
+                'tBCHDoc'       => $tInputBchCode
             );
             echo json_encode($aDataReturn);
         }
@@ -654,7 +720,10 @@ class cTaxinvoicefc extends MX_Controller
             'FNLngID'         => $this->session->userdata("tLangEdit")
         );
 
+<<<<<<< HEAD
         // print_r($aWhere); exit;
+=======
+>>>>>>> origin/IcePHP
         // $aGetDT     = $this->mTaxinvoicefc->FSaMTXFGetDT($aWhere);
         $aGetHD     = $this->mTaxinvoicefc->FSaMTXFGetHDTax($aWhere);
         $aAddress   = $this->mTaxinvoicefc->FSaMTXFGetAddressTax($aWhere);
@@ -663,7 +732,11 @@ class cTaxinvoicefc extends MX_Controller
             'aGetHD'        => $aGetHD,
             'aAddress'      => $aAddress
         );
+<<<<<<< HEAD
         // print_r($aPackData); exit;
+=======
+        
+>>>>>>> origin/IcePHP
         $aReturnData = array(
             'tContentSumFooter'   => $this->load->view('document/taxInvoicefc/wTaxInvoicefcSumFooter',$aPackData, true),
             'aDetailHD'           => $aGetHD,
@@ -743,7 +816,13 @@ class cTaxinvoicefc extends MX_Controller
             'nStaDocAct'   => $nStaDocAct
         );
 
+<<<<<<< HEAD
         // print_r($aSet); exit;
+=======
+        $aWhere  = array(
+            'FNAddSeqNo' => $tSeq
+        );
+>>>>>>> origin/IcePHP
 
         //อัพเดทที่อยู่แบบปกติ
         // $this->mTaxinvoicefc->FSaMTXFUpdateWhenApprove($aWhere,$aSet,'UPDATEADDRESS');
@@ -752,7 +831,7 @@ class cTaxinvoicefc extends MX_Controller
         // echo $tSeqNew . '-' . $tSeq . '///' . $tNumberTaxNew . '-' . $tNumberTax;
 
         // if($tSeqNew != $tSeq || $tNumberTaxNew != $tNumberTax ){
-            $this->mTaxinvoicefc->FSaMTXFUpdateWhenApprove($aSet);
+            $this->mTaxinvoicefc->FSaMTXFUpdateWhenApprove($aWhere,$aSet,'UPDATEHDCST');
         // }
 
     }
@@ -957,6 +1036,111 @@ class cTaxinvoicefc extends MX_Controller
         echo json_encode($aReturnData);
     }
 
+
+     // Create By: Napat(Jame) 04/08/2021
+    // Last Update : Napat(Jame) 16/09/2021
+    public function FSaCTXFEventApvETax(){
+        $tABBDocNo          = $this->input->post('ptABBDocNo');
+        $tTaxDocNo          = $this->input->post('ptTaxDocNo');
+        $tPosCode           = $this->input->post('ptPosCode');
+        $tBchCode           = $this->input->post('ptBchCode');
+        $tDocType           = $this->input->post('ptDocType');
+        $aDataHDAddress     = $this->input->post('paDataHDAddress');
+        $aDataHDCst         = $this->input->post('paDataHDCst');
+
+        // Where Condition
+        $aWhereCondition = array(
+            'FTBchCode'     => $tBchCode,
+            'FTXshDocNo'    => $tTaxDocNo
+        );
+
+        // Update Address
+        $this->mTaxinvoicefc->FSxMTXFUpdAddrAndCst($aDataHDAddress,$aDataHDCst,$aWhereCondition);
+
+        $aPackDataMQ = array(
+            'tAbbDocNo' => $tABBDocNo,
+            'tTaxDocNo' => $tTaxDocNo,
+            'tBchCode'  => $tBchCode,
+            'tPosCode'  => $tPosCode,
+            'tDocType'  => $tDocType
+        );
+        $aRabbitMQ = $this->FSaCTXFEventSendMQETax($aPackDataMQ);
+        echo json_encode($aRabbitMQ);
+
+    }
+
+    // Create By: Napat(Jame) 16/09/2021
+    // ส่ง MQ ETax
+    public function FSaCTXFEventSendMQETax($paPackDataMQ){
+
+        $tABBDocNo          = $paPackDataMQ['tAbbDocNo'];
+        $tTaxDocNo          = $paPackDataMQ['tTaxDocNo'];
+        $tPosCode           = $paPackDataMQ['tPosCode'];
+        $tBchCode           = $paPackDataMQ['tBchCode'];
+        $tDocType           = $paPackDataMQ['tDocType'];
+
+        // Convert Document Type
+        if( $tDocType == '1' || $tDocType == '4' ){        // เอกสารขาย 1,4
+            $tABBDocType        = "1"; // ABB
+            $tFullTaxDocType    = "2"; // FullTax
+        }else{                                              // เอกสารคืน 5,9
+            $tABBDocType        = "3"; // CN
+            $tFullTaxDocType    = "4"; // CN-FullTax
+        }
+
+        // Where Condition ABB
+        $aWhereABB = array(
+            'FTBchCode'     => $tBchCode,
+            'FTXshDocNo'    => $tABBDocNo
+        );
+        $bChkStaABB = $this->mTaxinvoicefc->FSbMTXFChkStaABBETaxApv($aWhereABB);
+
+        // ถ้า ABB ส่ง iNet ไม่สำเร็จ ให้ส่งอีกรอบ
+        if( $bChkStaABB ){
+            // Send MQ ABB
+            $aMQParams = [
+                "queueName" => "EX_TxnSaleETax",
+                "params" => [
+                    "ptFunction"    => "SaleRef",
+                    "ptSource"      => "AdaStoreBack",
+                    "ptDest"        => "MQAdaLink",
+                    "ptData"        => json_encode([
+                        "ptProvider"    => "1",
+                        "ptUserCode"    => $this->session->userdata("tSesUserCode"), // User Login
+                        "ptBchCode"     => $tBchCode,
+                        "ptPosCode"     => $tPosCode,
+                        "ptDocType"     => $tABBDocType,
+                        "ptDocNo"       => $tABBDocNo,
+                        "ptRefDocType"  => "",
+                        "ptDocRef"      => ""
+                    ])
+                ]
+            ];
+            FCNaRabbitMQInterface($aMQParams);
+        }
+
+        // Send MQ FULL TAX
+        $aMQParamsFullTax = [
+            "queueName" => "EX_TxnSaleETax",
+            "params" => [
+                "ptFunction"    => "SaleRef",
+                "ptSource"      => "AdaStoreBack",
+                "ptDest"        => "MQAdaLink",
+                "ptData"        => json_encode([
+                    "ptProvider"    => "1",
+                    "ptUserCode"    => $this->session->userdata("tSesUserCode"), // User Login
+                    "ptBchCode"     => $tBchCode,
+                    "ptPosCode"     => $tPosCode,
+                    "ptDocType"     => $tFullTaxDocType,
+                    "ptDocNo"       => $tTaxDocNo,
+                    "ptRefDocType"  => "",
+                    "ptDocRef"      => ""
+                ])
+            ]
+        ];
+        return FCNaRabbitMQInterface($aMQParamsFullTax);
+    }
+    
 
 
 }

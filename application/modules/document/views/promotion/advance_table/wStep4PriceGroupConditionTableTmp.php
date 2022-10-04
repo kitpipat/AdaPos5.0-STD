@@ -1,11 +1,11 @@
 <div class="table-responsive">
     <table class="table table-striped xWPdtTableFont" id="otbPromotionStep4PriceGroupConditionTable">
         <thead>
-            <tr>
-                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
-                <th width="30%" class="text-left"><?php echo language('document/promotion/promotion', 'tGroup'); ?></th>
-                <th width="60%" class="text-left"><?php echo language('document/promotion/promotion', 'tPriceGroupName'); ?></th>
-                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
+            <tr class="xCNPanelHeadColorWhite">
+                <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
+                <th width="30%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tGroup'); ?></th>
+                <th width="60%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tPriceGroupName'); ?></th>
+                <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
             </tr>
         </thead>
         <tbody>

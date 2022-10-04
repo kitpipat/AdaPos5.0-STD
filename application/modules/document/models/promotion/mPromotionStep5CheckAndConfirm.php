@@ -150,8 +150,10 @@ class mPromotionStep5CheckAndConfirm extends CI_Model
                 TMP.FTPgtCpnText,
                 TMP.FTCphDocNo,
                 TMP.FTCphDocName,
-                TMP.FTSessionID
+                TMP.FTSessionID,
+                TPL.FTMshName
             FROM TCNTPdtPmtCG_Tmp TMP WITH(NOLOCK)
+            LEFT JOIN TCNMMsgHD_L  TPL ON TPL.FTMshCode = TMP.FTPgtCpnText
             WHERE TMP.FTSessionID = '$tUserSessionID'
             AND TMP.FNPgtSeq = -1
             AND (TMP.FTPgtStaCoupon IS NOT NULL OR TMP.FTPgtStaCoupon <> '')
@@ -385,6 +387,36 @@ class mPromotionStep5CheckAndConfirm extends CI_Model
         return $oQuery->result_array();
     }
 
+    /**
+     * Functionality : Get CstLev in Temp
+     * Parameters : -
+     * Creator : ยกมาจาก KPC
+     * Last Modified : 19/09/2022 By : IcePHP
+     * Return : Data List 
+     * Return Type : Array
+     */
+    public function FSaMGetPdtPmtHDCstLevInTmp($paParams = [])
+    {
+        $tUserSessionID = $paParams['tUserSessionID'];
+
+        $tSQL = "
+            SELECT
+                TMP.FTBchCode,
+                TMP.FTPmhDocNo,
+                TMP.FTClvCode,
+                TMP.FTClvName,
+                TMP.FTPmhStaType,
+                TMP.FTSessionID
+            FROM TCNTPdtPmtHDCstLev_Tmp TMP WITH(NOLOCK)
+            WHERE TMP.FTSessionID = '$tUserSessionID'
+            ORDER BY TMP.FTPmhStaType ASC, TMP.FTClvName ASC
+        ";
+
+
+        $oQuery = $this->db->query($tSQL);
+
+        return $oQuery->result_array();
+    }
 
 
     /**
@@ -411,6 +443,38 @@ class mPromotionStep5CheckAndConfirm extends CI_Model
     INNER JOIN  TFNMRcv_L TMPL ON  TMP.FTRcvCode = TMPL.FTRcvCode
     WHERE TMP.FTSessionID = '$tUserSessionID'
     ORDER BY TMP.FTPmhStaType ASC, TMPL.FTRcvName ASC
+        ";
+
+        $oQuery = $this->db->query($tSQL);
+
+        return $oQuery->result_array();
+    }
+
+
+    /**
+     * Functionality : Get Pay Type in Temp
+     * Parameters : -
+     * Creator : 17/09/2021 Worakorn
+     * Last Modified : -
+     * Return : Data List PdtPmtHDChn
+     * Return Type : Array
+     */
+    public function FSaMGetPdtPmtHDPnpInTmp($paParams = [])
+    {
+        $tUserSessionID = $paParams['tUserSessionID'];
+
+        $tSQL = "
+        SELECT
+        TMP.FTBchCode,
+        TMP.FTPmhDocNo,
+        TMP.FTPmhDocRef,
+        TMPL.FTPmhName,
+        TMP.FTPmhStaType,
+        TMP.FTSessionID
+    FROM TCNTPdtPmtHDSeq_Tmp TMP WITH(NOLOCK)
+    INNER JOIN  TCNTPdtPmtHD_L TMPL ON  TMP.FTPmhDocRef = TMPL.FTPmhDocNo
+    WHERE TMP.FTSessionID = '$tUserSessionID'
+    ORDER BY TMP.FTPmhStaType ASC, TMPL.FTPmhName ASC
         ";
 
         $oQuery = $this->db->query($tSQL);

@@ -91,3 +91,7 @@ $route ['setCookkiePdtType']            = "common/cBrowserPDTCallView/FSaSetCook
 $route ['setCookkiePdtList']            = "common/cBrowserPDTCallView/FSaSetCookkiePdtList";
 
 $route ['RabbitMQCheckDocHdStaPrc']     = 'common/rabbitmq/cRabbitMQ/FSaCheckDocHdStaPrc';
+
+//Pack Data  To Log MQ
+$route['PackDataToLogMQ']               = "common/cCommon/FCNoCCMMPackDataToLogMQ";
+$route['PackDataToLogClient']           = "common/cCommon/FCNoCCMMPackDataToLogClient";

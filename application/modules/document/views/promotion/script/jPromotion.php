@@ -193,6 +193,7 @@
                     $("#odvPromotionBtnInfo").hide();
                     $("#odvBtnAddEdit").show();
                     $("#obtPromotionApprove").hide();
+                    $("#obtPromotionCopy").hide();
                     $("#obtPromotionPrint").hide();
                     $("#obtPromotionCancel").hide();
                     $("#obtPromotionPrint").hide();
@@ -239,12 +240,35 @@
                         $("#odvPromotionBtnInfo").hide();
                         $("#odvBtnAddEdit").show();
                         $("#obtPromotionApprove").show();
+                        $("#obtPromotionCopy").show();
                         $("#obtPromotionPrint").show();
                         $("#obtPromotionCancel").show();
                         $("#obtPromotionPrint").show();
                         $("#oliPromotionTitleDetail").hide();
 
                         $("#odvPromotionContentPage").html(tResult);
+
+                        if(localStorage.tChkSubmitOrEdit == '1'){
+                            JCNxOpenLoading();
+                            setTimeout(function () {
+                                $('.xCNPromotionStep5').click();
+                            }, 6000)
+                            $('.xCNPromotionStep1').css( "background","#000" );
+                            $('.xCNPromotionStep2').css( "background","#000" );
+                            $('.xCNPromotionStep3').css( "background","#000" );
+                            $('.xCNPromotionStep4').css( "background","#000" );
+                            $('.xCNPromotionStep5').css( "background","#fff" );
+
+                            $('.xCNPromotionStep1').css('border', '2px solid #000');
+                            $('.xCNPromotionStep2').css('border', '2px solid #000');
+                            $('.xCNPromotionStep3').css('border', '2px solid #000');
+                            $('.xCNPromotionStep4').css('border', '2px solid #000');
+                            $('.xCNPromotionStep5').css('border', '2px solid #000')
+                            $('#odvPromotionLine').css( "background","linear-gradient(to right, black 100%, #d6d6d6 20% 40%)" );
+                            $('.xCNPromotionNextStep').prop('disabled', true);
+                        }else{
+                        }
+                        localStorage.tChkSubmitOrEdit = '0';
                     }
 
                     JCNxLayoutControll();
@@ -447,4 +471,5 @@
         }
         JSvPromotionCallPageDataTable(nPageCurrent);
     }
+
 </script>

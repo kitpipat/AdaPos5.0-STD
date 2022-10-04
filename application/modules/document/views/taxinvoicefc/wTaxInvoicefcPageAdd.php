@@ -115,6 +115,12 @@
                 <div id="odvTWIDataConditionREF" class="xCNMenuPanelData panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
 
+                        <!-- อ้างอิงเลขที่เอกสารภายต้นฉบับ กรณียกเลิกเอกสารกำกับภาษี -->
+                        <div class="form-group xWTaxRefAE">
+                            <label class="xCNLabelFrm"><?=language('document/taxinvoice/taxinvoice','อ้างอิงเอกสารต้นฉบับ');?></label>
+                            <input type="text" class="form-control" id="oetTAXRefAE" name="oetTAXRefAE" readonly value="">
+                        </div>
+
                         <!-- อ้างอิงเลขที่เอกสารภายใน -->
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXLabelFrmRefIntDoc');?></label>
@@ -251,6 +257,7 @@
                                                             <input name="oetBrowseBchName" id="oetBrowseBchName" class="form-control" value="<?=$tInputBchName?>" type="text" readonly="" 
                                                                     placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITablePDTBch') ?>">
                                                             <input name="oetBrowseBchCode" id="oetBrowseBchCode" value="<?=$tInputBchCode?>" class="form-control xCNHide xCNClearValue" type="text">
+                                                            <input name="oetInputBchCode" id="oetInputBchCode" value="<?=$tInputBchCode?>" class="form-control xCNHide xCNClearValue" type="text">
                                                             <span class="input-group-btn">
                                                                 <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseBCH" type="button">
                                                                     <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
@@ -750,9 +757,15 @@
 
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="form-group">
+<<<<<<< HEAD
                                 <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'tTAXCustomerName'); ?></label>
                                 <div class="input-group">
                                     <input name="oetTAXModalCancelCstName" id="oetTAXModalCancelCstName" class="form-control xCNClearValue xWDisabledForCN" value="" type="text" placeholder="<?= language('document/taxinvoice/taxinvoice', 'tTAXCustomer') ?>" >
+=======
+                                <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer'); ?></label>
+                                <div class="input-group">
+                                    <input name="oetTAXModalCancelCstName" id="oetTAXModalCancelCstName" class="form-control xCNClearValue" value="" type="text" readonly="" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer') ?>" >
+>>>>>>> origin/IcePHP
                                     <input name="oetTAXModalCancelCstCode" id="oetTAXModalCancelCstCode" value="" class="form-control xCNHide xCNClearValue" type="text">
                                     <span class="input-group-btn">
                                         <button class="btn xCNBtnBrowseAddOn xWDisabledForCN" id="obtTAXModalCancelBrowseCus" type="button">
@@ -770,6 +783,26 @@
 
                         <div class="col-lg-12">
 
+<<<<<<< HEAD
+=======
+                            <div id="odvModalCancelInfoName" class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <!--ชื่อลูกค้า/ใบออกกำกับภาษี-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'tTAXCustomerName'); ?></label>
+                                        <input name="oetTAXModalCancelCstNameABB" id="oetTAXModalCancelCstNameABB" class="form-control xCNClearValue xWDisabledForCN" value="" type="text" placeholder="<?= language('document/taxinvoice/taxinvoice', 'tTAXCustomer') ?>" >
+                                    </div>  
+                                </div> 
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <!--เลขประจำตัวผู้เสียภาษี-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXNumber'); ?></label>
+                                        <input name="oetTAXModalCancelNumber" autocomplete="off" id="oetTAXModalCancelNumber" maxlength="20" class="form-control xCNClearValue xCNInputNumericWithDecimal" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXNumber') ?>" >
+                                    </div> 
+                                </div>
+                            </div> 
+
+>>>>>>> origin/IcePHP
                             <div id="odvModalCancelBusiness" class="row">
                                                   
                                 <div class="col-lg-6 col-md-6 col-sm-6">
@@ -1031,8 +1064,14 @@
         }else{
             var tDocumentNumber = ptDocumentNumber;
         }
+<<<<<<< HEAD
         var tBrowseBchCode = $('#oetBrowseBchCode').val();
         console.log('FC','JSxRanderHDDT',tBrowseBchCode);
+=======
+        var tBrowseBchCode  = $('#oetBrowseBchCode').val();
+        var tInput          = $('#oetInputBchCode').val();
+        
+>>>>>>> origin/IcePHP
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCLoadDatatable",
@@ -1088,6 +1127,7 @@
                     if(tTypePay == 1){ var tTypePay = 'เงินสด' }else{ var tTypePay = 'เครดิต' }
                     // $('#oetTAXTypepay').val(tTypePay);
                     // $('#oetTAXPos').val(tPoscode);
+                    $('#oetTAXRefAE').val('');
                     $('#oetTAXRefIntDoc').val(tRefInt);
                     $('#oetTAXRefIntDocDate').val(tRefIntDate);
                     $('#oetTAXRefExtDoc').val(tRefExt);
@@ -1164,7 +1204,11 @@
     //กรณีที่อยู่มากกว่า 1 
     function JSvRanderAddressMoreOne(oText,ptType){
         //มีที่อยู่มากกว่า 1
+<<<<<<< HEAD
         console.log(oText);
+=======
+        
+>>>>>>> origin/IcePHP
         if(oText.length > 1){
             $('#odvTAXModalAddressMoreOne').modal('show');
                 $('#odvTAXModalAddressMoreOne .xCNTableAddressMoreOne tbody').html('');
@@ -1566,7 +1610,11 @@
             Timeout : 0,
             success : function (oResult) {
                 var aResult = JSON.parse(oResult);
+<<<<<<< HEAD
                 // console.log(oResult, " .00");
+=======
+                
+>>>>>>> origin/IcePHP
                 JSvRanderAddressMoreOne(aResult.aAddress,'TaxADD');
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -1633,7 +1681,11 @@
     function JSxRanderHDDTPreview(){
         var tDocumentNumber = '<?=$tDocumentNumber?>';
         var tBrowseBchCode =  '<?=$tDocumentBchCode?>';
+<<<<<<< HEAD
         // console.log('FC','JSxRanderHDDTPreview',tBrowseBchCode);
+=======
+        
+>>>>>>> origin/IcePHP
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCLoadDatatableTax",
@@ -1648,8 +1700,11 @@
                 //HD
                 var aHD         = tHTML.aDetailHD;
                 if (aHD.rtCode == '1') {
+<<<<<<< HEAD
                     // console.log(tHTML.aDetailHD);
                     // console.log('aHD', aHD);
+=======
+>>>>>>> origin/IcePHP
 
                     var aHD         = aHD.raItems[0];
     
@@ -1678,6 +1733,10 @@
                     if(tTypePay == 1){ var tTypePay = 'เงินสด' }else{ var tTypePay = 'เครดิต' }
                     $('#oetTAXTypepay').val(tTypePay);
                     $('#oetTAXPos').val(tPoscode);
+<<<<<<< HEAD
+=======
+                    $('#oetTAXRefAE').val(aHD.FTXshRefAE);
+>>>>>>> origin/IcePHP
                     $('#oetTAXRefIntDoc').val(tRefInt);
                     $('#oetTAXRefIntDocDate').val(tRefIntDate);
                     $('#oetTAXRefExtDoc').val(tRefExt);
@@ -1697,7 +1756,10 @@
                 if(tHTML.aDetailAddress != false){
                     console.log('Address');
                     var aAddresss = tHTML.aDetailAddress[0];
+<<<<<<< HEAD
                     console.log(aAddresss);
+=======
+>>>>>>> origin/IcePHP
                     var tAddStaHQ = '';
                     if(aAddresss.FTAddStaHQ != ''){
                         tAddStaHQ = aAddresss.FTAddStaHQ;
@@ -1836,7 +1898,13 @@
 
         // เตรียมข้อมูล
         var tTAXDocNo           = $('#oetTAXDocNo').val();
+<<<<<<< HEAD
         var tTAXCstName         = $('#oetTAXCusNameCusABB').val();
+=======
+        var tTAXCstName         = $('#oetTAXCusName').val();
+        var tTAXCusNameCusABB = $('#oetTAXCusNameCusABB').val();
+        var tTAXModalCancelNumber = $('#oetTAXNumber').val();
+>>>>>>> origin/IcePHP
         var tTAXCstCode         = $('#oetTAXCusCode').val();
         var tAddress1           = $('#otxAddress1').val();
         var tAddress2           = $('#otxAddress2').val();
@@ -1844,6 +1912,7 @@
         var tFax                = $('#oetTAXFax').val();
         var tTAXTypeBusiness    = $('#ocmTAXTypeBusiness').val();
         var tTAXBusiness        = $('#ocmTAXBusiness').val();
+<<<<<<< HEAD
         // var tPvnName        = $('#oetFTAddV1PvnName').val();
         // var tPvnCode        = $('#oetFTAddV1PvnCode').val();
         // var tDstName        = $('#oetFTAddV1DstName').val();
@@ -1877,6 +1946,13 @@
 
         $('#oetTAXModalCancelDocNo').val(tTAXDocNo);
         $('#oetTAXModalCancelCstName').val(tTAXCstName);
+=======
+
+        $('#oetTAXModalCancelDocNo').val(tTAXDocNo);
+        $('#oetTAXModalCancelCstName').val(tTAXCstName);
+        $('#oetTAXModalCancelCstNameABB').val(tTAXCusNameCusABB);
+        $('#oetTAXModalCancelNumber').val(tTAXModalCancelNumber);
+>>>>>>> origin/IcePHP
         $('#oetTAXModalCancelCstCode').val(tTAXCstCode);
         $('#otxTAXModalCancelAddress1').val(tAddress1);
         $('#otxTAXModalCancelAddress2').val(tAddress2);
@@ -1884,6 +1960,7 @@
         $('#oetTAXModalCancelFax').val(tFax);
         $('#ocmTAXModalCancelTypeBusiness option[value='+tTAXTypeBusiness+']').attr('selected','selected');
         $('#ocmTAXModalCancelBusiness option[value='+tTAXBusiness+']').attr('selected','selected');
+<<<<<<< HEAD
         // $('#oetTAXModalCancelPvnName').val(tPvnName);
         // $('#oetTAXModalCancelPvnCode').val(tPvnCode);
         // $('#oetTAXModalCancelDstName').val(tDstName);
@@ -1891,6 +1968,10 @@
         // $('#oetTAXModalCancelSubDistName').val(tSubDistName);
         // $('#oetTAXModalCancelSubDistCode').val(tSubDistCode);
         // $('#oetTAXModalCancelPostCode').val(tPostCode);
+=======
+        $('#oetTAXModalCancelNumber').attr('disabled',true);
+        
+>>>>>>> origin/IcePHP
 
         var tTaxABBType = $("#oetTAXABBTypeDocuement").val();
         if( tTaxABBType == '5' ){  // CN-ABB
@@ -1902,7 +1983,11 @@
         }
 
         $('#obtTAXModalCancelBrowseAddress').attr('disabled',true);
+<<<<<<< HEAD
 
+=======
+        // $('#obtTAXModalCancelBrowseCus').attr('disabled',true);
+>>>>>>> origin/IcePHP
         $('#odvTAXModalCancelETax').modal('show');
     });
 
@@ -1911,7 +1996,11 @@
         $('#ofmTaxCancel').validate({
             rules: {
                 oetTAXModalCancelRsnName        : "required",
+<<<<<<< HEAD
                 oetTAXModalCancelCstName        : "required",
+=======
+                oetTAXModalCancelCstNameABB        : "required",
+>>>>>>> origin/IcePHP
                 // otxTAXModalCancelAddress1       : "required",
                 // oetTAXModalCancelPvnName        : "required",
                 // oetTAXModalCancelDstName        : "required",
@@ -1920,7 +2009,11 @@
             },
             messages: {
                 oetTAXModalCancelRsnName        : 'กรุณาเลือก เหตุผลการยกเลิก',
+<<<<<<< HEAD
                 oetTAXModalCancelCstName        : 'กรุณากรอก ชื่อลูกค้า / ชื่อออกใบกำกับภาษี',
+=======
+                oetTAXModalCancelCstNameABB        : 'กรุณากรอก ชื่อลูกค้า / ชื่อออกใบกำกับภาษี',
+>>>>>>> origin/IcePHP
                 // otxTAXModalCancelAddress1       : 'กรุณากรอก ที่อยู่ 1 สำหรับออกใบกำกับภาษี',
                 // oetTAXModalCancelPvnName        : 'กรุณาเลือก จังหวัด',
                 // oetTAXModalCancelDstName        : 'กรุณาเลือก อำเภอ/เขต',
@@ -1973,9 +2066,15 @@
     $('#obtTAXModalCancelBrowseRsn').off('click').on('click',function(){
 
         var tDocType = $('#oetTAXABBTypeDocuement').val();
+<<<<<<< HEAD
         var tRsnGrp  = '017';
         if( tDocType == '5' ){
             tRsnGrp = '018';
+=======
+        var tRsnGrp  = '015';
+        if( tDocType == '5' ){
+            tRsnGrp = '016';
+>>>>>>> origin/IcePHP
         }
 
         oTAXModalBrowseReasonOption = oTAXReasonOption({
@@ -2007,6 +2106,10 @@
             tWhereCondition += " AND TCNMRsn.FTRsgCode = '"+tRsnGrp+"' ";
         }
         
+<<<<<<< HEAD
+=======
+        console.log(tWhereCondition);
+>>>>>>> origin/IcePHP
         var oOptionReturn       = {
             Title   : ['document/taxinvoice/taxinvoice', tTitleModal],
             Table   : {Master:'TCNMRsn', PK:'FTRsnCode'},

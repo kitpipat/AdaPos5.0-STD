@@ -186,7 +186,15 @@ if($aResult['rtCode'] == "1"){
 						<div class="form-group">
 							<label class="xCNLabelFrm"><span style="color:red">*</span><?=language('document/adjuststockvd/adjuststockvd', 'tADJVDDocDate'); ?></label>
 							<div class="input-group">
-								<input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetXthDocDate" name="oetXthDocDate" value="<?=$dXthDocDate; ?>" data-validate="<?=language('document/adjuststockvd/adjuststockvd', 'tADJVDPlsEnterDocDate'); ?>">
+								<input 
+									type="text"
+									class="form-control xCNDatePicker xCNInputMaskDate"
+									id="oetXthDocDate" 
+									name="oetXthDocDate" 
+									value="<?=$dXthDocDate; ?>" 
+									data-validate="<?=language('document/adjuststockvd/adjuststockvd', 'tADJVDPlsEnterDocDate'); ?>"
+									<?php echo ($tXthStaApv == '1')? 'disabled' : ''; ?>
+								>
 								<span class="input-group-btn">
 									<button id="obtXthDocDate" type="button" class="btn xCNBtnDateTime">
 										<img src="<?= base_url().'/application/modules/common/assets/images/icons/icons8-Calendar-100.png'?>">
@@ -199,7 +207,15 @@ if($aResult['rtCode'] == "1"){
 						<div class="form-group">
 							<label class="xCNLabelFrm"><span style="color:red">*</span><?=language('document/adjuststockvd/adjuststockvd', 'tADJVDDocTime'); ?></label>
 							<div class="input-group">
-								<input type="text" class="form-control xCNTimePicker" id="oetXthDocTime" name="oetXthDocTime" value="<?=$tXthDocTime; ?>" data-validate="<?=language('document/adjuststockvd/adjuststockvd', 'tADJVDPlsEnterDocTime'); ?>">
+								<input 
+									type="text"
+									class="form-control xCNTimePicker"
+									id="oetXthDocTime"
+									name="oetXthDocTime"
+									value="<?=$tXthDocTime; ?>"
+									data-validate="<?=language('document/adjuststockvd/adjuststockvd', 'tADJVDPlsEnterDocTime'); ?>"
+									<?php echo ($tXthStaApv == '1')? 'disabled' : ''; ?>
+								>
 								<span class="input-group-btn">
 									<button id="obtXthDocTime" type="button" class="btn xCNBtnDateTime">
 										<img src="<?= base_url().'/application/modules/common/assets/images/icons/icons8-Calendar-100.png'?>">
@@ -207,6 +223,7 @@ if($aResult['rtCode'] == "1"){
 								</span>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6">
 								<label class="xCNLabelFrm"><?=language('document/adjuststockvd/adjuststockvd', 'tADJVDCreateBy'); ?></label>
@@ -325,7 +342,7 @@ if($aResult['rtCode'] == "1"){
 						<script>
                             var tUsrLevel = '<?=$this->session->userdata('tSesUsrLevel')?>';
                             if( tUsrLevel == "SHP" ){
-								var tSHPCount = '<?=$this->session->userdata("nSesUsrShpCount");?>';
+								var tSHPCount	= '<?=$this->session->userdata("nSesUsrShpCount");?>';
                                 if(tSHPCount < 2){
 									$('#obtADJ_VendingBrowseShp').attr('disabled',true);
                                 }else{
@@ -346,12 +363,12 @@ if($aResult['rtCode'] == "1"){
                             }
                         </script>
 						<div class="form-group <?= !FCNbGetIsShpEnabled() ? 'xCNHide' : ''; ?>">
-							<label class="xCNLabelFrm"><?=language('document/adjuststockvd/adjuststockvd', 'tADJVDShop'); ?></label>
+							<label class="xCNLabelFrm"><?=language('document/adjuststockvd/adjuststockvd', 'tADJVDShopVD'); ?></label>
 							<div class="input-group">
 								<input class="form-control xCNHide" id="oetShpCodeStart" name="oetShpCodeStart" maxlength="5" value="<?=$tShpCodeStart;?>">
-								<input class="form-control xWPointerEventNone" type="text" id="oetShpNameStart" name="oetShpNameStart"  placeholder="<?=language('document/adjuststockvd/adjuststockvd', 'tADJVDShop'); ?>" value="<?=$tShpNameStart;?>" readonly>
+								<input class="form-control xWPointerEventNone" type="text" id="oetShpNameStart" name="oetShpNameStart"  placeholder="<?=language('document/adjuststockvd/adjuststockvd', 'tADJVDShopVD'); ?>" value="<?=$tShpNameStart;?>" readonly>
 								<span class=" input-group-btn">
-									<button class="btn xCNBtnBrowseAddOn xCNClassBlockEventClick" id="obtADJ_VendingBrowseShp" type="button" disabled>
+									<button class="btn xCNBtnBrowseAddOn" id="obtADJ_VendingBrowseShp" type="button">
 										<img src="<?=base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
 									</button>
 								</span>
@@ -374,7 +391,7 @@ if($aResult['rtCode'] == "1"){
 
 						<!-- คลัง -->
 						<div class="form-group">
-							<label class="xCNLabelFrm"><?=language('document/adjuststockvd/adjuststockvd', 'คลังเครื่องจุดขาย'); ?></label>
+							<label class="xCNLabelFrm"><?=language('document/adjuststockvd/adjuststockvd', 'tADJVDPosWah'); ?></label>
 							<div class="">
 								<input class="form-control xCNHide" type="text" name="ohdWahCodeStart" id="ohdWahCodeStart" value="<?=$tWahCodeStart?>">
 								<input name="oetWahNameStart" id="oetWahNameStart" class="form-control" value="<?=$tWahNameStart?>" type="text" readonly=""
@@ -592,6 +609,33 @@ if($aResult['rtCode'] == "1"){
 		</div>
 	</div>
 </div>
+
+<!-- Modal แจ้งเตือน ลบ ข้อมูลรายการสินค้าทั้งหมด -->
+<div class="modal fade" 	id="odvADJVDPopupFoundDataInTblDT">
+	<input type="hidden" 	id="odvADJVDTypeClick" name="odvADJVDTypeClick">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header xCNModalHead">
+				<label class="xCNTextModalHeard"><?=language('document/document/document','tDocStawarning'); ?></label>
+			</div>
+			<div class="modal-body">
+				<p id="obpMsgApv"><?=language('document/adjuststockvd/adjuststockvd','มีข้อมูลรายการสินค้าเดิมในระบบ ท่านต้องการที่จะลบข้อมูลรายการสินค้า ใช่ หรือ ไม่ ?'); ?>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn xCNBTNPrimery"	onclick="JSxTopUpVDEvnConfirmDelDTTemp()">
+					<?=language('common/main/main', 'tModalConfirm'); ?>
+				</button>
+				<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
+					<?=language('common/main/main', 'tModalCancel'); ?>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
 
 <script src="<?= base_url('application/modules/common/assets/js/jquery.mask.js')?>"></script>
 <?php include('script/jAdjust_stock_vending.php')?>

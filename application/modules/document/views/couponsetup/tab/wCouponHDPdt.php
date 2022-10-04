@@ -15,7 +15,7 @@
                         <th nowrap class="xCNTextBold" style="width:10%;"><?php echo language('document/couponsetup/couponsetup', 'tCPHTabCouponHDPdtCode') ?></th>
                         <th nowrap class="xCNTextBold" style="width:60%;"><?php echo language('document/couponsetup/couponsetup', 'tCPHTabCouponHDPdtName') ?></th>
                         <th nowrap class="xCNTextBold" style="width:10%;"><?php echo language('document/couponsetup/couponsetup', 'tCPHTabCouponHDPdtPunCode') ?></th>
-                        <th></th>
+                        <th nowrap class="xCNTextBold" style="width:5%;"><?php echo language('common/main/main','tCMNActionDelete')?></th>
                     </tr>
                 </thead>
                 <tbody id="otbCouponHDPdtInclude">
@@ -52,7 +52,7 @@
                         <th nowrap class="xCNTextBold" style="width:10%;"><?php echo language('document/couponsetup/couponsetup', 'tCPHTabCouponHDPdtCode') ?></th>
                         <th nowrap class="xCNTextBold" style="width:60%;"><?php echo language('document/couponsetup/couponsetup', 'tCPHTabCouponHDPdtName') ?></th>
                         <th nowrap class="xCNTextBold" style="width:10%;"><?php echo language('document/couponsetup/couponsetup', 'tCPHTabCouponHDPdtPunCode') ?></th>
-                        <th></th>
+                        <th nowrap class="xCNTextBold" style="width:5%;"><?php echo language('common/main/main','tCMNActionDelete')?></th>
                     </tr>
                 </thead>
                 <tbody id="otbCouponHDPdtExclude">
@@ -366,51 +366,42 @@
     $('#obtTabCouponHDPdtInclude').unbind().click(function() {
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
-            JSxCheckPinMenuClose(); // Hidden Pin Menu
-            // $('#oetCPHCouponPdtCode').val('');
-            // $('#oetCPHCouponPdtName').val('');
-            // $('#ohdCPHPdtUnitCode').val('');
-            // $('#ohdCPHPdtUnitName').val('');
-            // $('#ohdCPHcouponModalTypeIncludeHDPdt').val(1);
-            // $('#obtCPHAddProductUnit').attr('disabled',true);
-            // $("#odvCPHCouponHDPdt").modal({backdrop: "static", keyboard: false});
-            // $("#odvCPHCouponHDPdt").modal({show: true});
-
-            // Last Update : 09/11/2020 Napat(Jame) เปลี่ยนเป็น Browse สินค้าจาก Center
-            var dTime = new Date();
-            var dTimelocalStorage = dTime.getTime();
-
-
-            var aDataNotINItem = [];
-            var arrIn = window.document.getElementsByClassName("ohdCPHCouponIncludePdtCode");
-            var arrEx = window.document.getElementsByClassName("ohdCPHCouponExcludePdtCode");
+            JSxCheckPinMenuClose(); 
+            
+            var dTime               = new Date();
+            var dTimelocalStorage   = dTime.getTime();
+            var aDataNotINItem      = [];
+            var arrIn               = window.document.getElementsByClassName("ohdCPHCouponIncludePdtCode");
+            var arrEx               = window.document.getElementsByClassName("ohdCPHCouponExcludePdtCode");
 
             for (var i = 0; i < arrIn.length; i++) {
-                var tPdtCodeSet = " AND Products.FTPdtCode != '" + arrIn[i].value + "' "
-                aDataNotINItem.push(tPdtCodeSet);
+                // var tPdtCodeSet = " AND Products.FTPdtCode != '" + arrIn[i].value + "' "
+                var tPDTCode    = arrIn[i].value;
+                aDataNotINItem.push([tPDTCode,0]);
             }
 
             for (var i = 0; i < arrEx.length; i++) {
-                var tPdtCodeSet = " AND Products.FTPdtCode != '" + arrEx[i].value + "' "
-                aDataNotINItem.push(tPdtCodeSet);
+                // var tPdtCodeSet = ' AND Products.FTPdtCode != '" + arrEx[i].value + "' 
+                var tPDTCode    = arrEx[i].value;
+                aDataNotINItem.push([tPDTCode,0]);
             }
 
             $.ajax({
-                type: "POST",
-                url: "BrowseDataPDT",
-                data: {
-                    'Qualitysearch': ['SUP', 'NAMEPDT', 'CODEPDT', 'FromToBCH', 'FromToSHP', 'FromToPGP', 'FromToPTY'],
-                    'PriceType': ['Pricesell'],
-                    'SelectTier': ['PDT'], //PDT, Barcode
-                    'Elementreturn': ['oetInputTestValue', 'oetInputTestName'],
-                    'ShowCountRecord': 10,
-                    'NextFunc': 'JSxConsNextFuncBrowsePdtInclude',
-                    'ReturnType': 'M', //S = Single M = Multi
-                    'SPL': ['', ''],
-                    'BCH': [$('#ohdCPHUsrBchCode').val(), ''], //Code, Name
-                    'SHP': ['', ''],
-                    'TimeLocalstorage': dTimelocalStorage,
-                    'Where': aDataNotINItem
+                type    : "POST",
+                url     : "BrowseDataPDT",
+                data    : {
+                    'Qualitysearch'     : [],
+                    'PriceType'         : ['Pricesell'],
+                    'SelectTier'        : ['PDT'], //PDT, Barcode
+                    'ShowCountRecord'   : 10,
+                    'NextFunc'          : 'JSxConsNextFuncBrowsePdtInclude',
+                    'ReturnType'        : 'M', //S = Single M = Multi
+                    'SPL'               : ['', ''],
+                    'BCH'               : [$('#ohdCPHUsrBchCode').val(), ''], //Code, Name
+                    'SHP'               : ['', ''],
+                    'TimeLocalstorage'  : dTimelocalStorage,
+                    'NOTINITEM'         : aDataNotINItem
+                    // 'Where'             : ['AND Products.FTPdtCode != "00109" ','AND Products.FTPdtCode != "00111"']
                 },
                 cache: false,
                 timeout: 0,
@@ -464,31 +455,35 @@
             var arrEx = window.document.getElementsByClassName("ohdCPHCouponExcludePdtCode");
 
             for (var i = 0; i < arrIn.length; i++) {
-                var tPdtCodeSet = " AND Products.FTPdtCode != '" + arrIn[i].value + "' "
-                aDataNotINItem.push(tPdtCodeSet);
+                // var tPdtCodeSet = " AND Products.FTPdtCode != '" + arrIn[i].value + "' "
+                // aDataNotINItem.push(tPdtCodeSet);
+                var tPDTCode    = arrIn[i].value;
+                aDataNotINItem.push([tPDTCode,0]);
             }
 
             for (var i = 0; i < arrEx.length; i++) {
-                var tPdtCodeSet = " AND Products.FTPdtCode != '" + arrEx[i].value + "' "
-                aDataNotINItem.push(tPdtCodeSet);
+                // var tPdtCodeSet = " AND Products.FTPdtCode != '" + arrEx[i].value + "' "
+                // aDataNotINItem.push(tPdtCodeSet);
+                var tPDTCode    = arrEx[i].value;
+                aDataNotINItem.push([tPDTCode,0]);
             }
 
             $.ajax({
                 type: "POST",
                 url: "BrowseDataPDT",
                 data: {
-                    'Qualitysearch': ['SUP', 'NAMEPDT', 'CODEPDT', 'FromToBCH', 'FromToSHP', 'FromToPGP', 'FromToPTY'],
-                    'PriceType': ['Pricesell'],
-                    'SelectTier': ['PDT'], //PDT, Barcode
-                    'Elementreturn': ['oetInputTestValue', 'oetInputTestName'],
-                    'ShowCountRecord': 10,
-                    'NextFunc': 'JSxConsNextFuncBrowsePdtExclude',
-                    'ReturnType': 'M', //S = Single M = Multi
-                    'SPL': ['', ''],
-                    'BCH': [$('#ohdCPHUsrBchCode').val(), ''], //Code, Name
-                    'SHP': ['', ''],
-                    'TimeLocalstorage': dTimelocalStorage,
-                    'Where': aDataNotINItem
+                    'Qualitysearch'     : ['SUP', 'NAMEPDT', 'CODEPDT', 'FromToBCH', 'FromToSHP', 'FromToPGP', 'FromToPTY'],
+                    'PriceType'         : ['Pricesell'],
+                    'SelectTier'        : ['PDT'], //PDT, Barcode
+                    'Elementreturn'     : ['oetInputTestValue', 'oetInputTestName'],
+                    'ShowCountRecord'   : 10,
+                    'NextFunc'          : 'JSxConsNextFuncBrowsePdtExclude',
+                    'ReturnType'        : 'M', //S = Single M = Multi
+                    'SPL'               : ['', ''],
+                    'BCH'               : [$('#ohdCPHUsrBchCode').val(), ''], //Code, Name
+                    'SHP'               : ['', ''],
+                    'TimeLocalstorage'  : dTimelocalStorage,
+                    'NOTINITEM'         : aDataNotINItem
                 },
                 cache: false,
                 timeout: 0,
@@ -557,83 +552,58 @@
                 nAproveAppend++;
             }
         }
-        // console.log(nAproveAppend);
         return nAproveAppend;
-
     }
-    /*===== Begin Event Next Function Browse ========================================== */
-    // Functionality : 
-    // Parameter : Event Next Func Modal
-    // Create : 11/02/2020 Nattakit(Nale)
-    // Last Update : 09/11/2020 Napat(Jame) เปลี่ยนเป็น Browse สินค้าจาก Center
-    // Return : Set Element And value
-    // Return Type : -
+    
+    //หลังจากเลือก "สินค้าเฉพาะ"
     function JSxConsNextFuncBrowsePdtInclude(poDataNextFunc) {
         var aDataPdt = JSON.parse(poDataNextFunc);
-        var tMarkUp = "";
+        aDataPdt.sort();
+
+        var tMarkUp     = "";
+        var tKeepPDT    = "";
         for (var i = 0; i < aDataPdt.length; i++) {
-            // tMarkUp += "<tr class='otrInclude' id='otrCPHcouponIncludePdt" + i + "'>";
-            tMarkUp += "<tr class='otrInclude' id='otrCPHcouponIncludePdt" + aDataPdt[i]['packData']['PDTCode'] + "'>";
-            tMarkUp += "<td><input type='hidden' name='ohdCPHCouponIncludePdtCode[" + i + "]' class='ohdCPHCouponIncludePdtCode' value='" + aDataPdt[i]['packData']['PDTCode'] + "'>" + aDataPdt[i]['packData']['PDTCode'] + "</td>";
-            tMarkUp += "<td>" + aDataPdt[i]['packData']['PDTName'] + "</td>";
-            tMarkUp += "<td><input type='hidden' name='ohdCPHCouponIncludePdtUnitCode[" + i + "]' class='ohdCPHCouponIncludePdtUnitCode' value='" + aDataPdt[i]['packData']['PUNCode'] + "'>" + aDataPdt[i]['packData']['PUNName'] + "</td>";
-            // tMarkUp += "<td align='center'><img onclick='JSxCPHcouponRemoveTRIncludePdt(" + i + ")' class='xCNIconTable xCNIconDel' src='<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>' ></td>";
-            tMarkUp += "<td align='center'><img onclick='JSxCPHcouponRemoveTRIncludePdt(\"" + aDataPdt[i]['packData']['PDTCode'] + "\")' class='xCNIconTable xCNIconDel' src='<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>' ></td>";
-            tMarkUp += "</tr>";
+            if(tKeepPDT == aDataPdt[i]['packData']['PDTCode'] ){ //เจอไม่ต้อง append
+
+            }else{
+                tMarkUp += "<tr class='otrInclude' id='otrCPHcouponIncludePdt" + aDataPdt[i]['packData']['PDTCode'] + "'>";
+                tMarkUp += "<td><input type='hidden' name='ohdCPHCouponIncludePdtCode[" + i + "]' class='ohdCPHCouponIncludePdtCode' value='" + aDataPdt[i]['packData']['PDTCode'] + "'>" + aDataPdt[i]['packData']['PDTCode'] + "</td>";
+                tMarkUp += "<td>" + aDataPdt[i]['packData']['PDTName'] + "</td>";
+                tMarkUp += "<td><input type='hidden' name='ohdCPHCouponIncludePdtUnitCode[" + i + "]' class='ohdCPHCouponIncludePdtUnitCode' value='" + aDataPdt[i]['packData']['PUNCode'] + "'>" + aDataPdt[i]['packData']['PUNName'] + "</td>";
+                tMarkUp += "<td align='center'><img onclick='JSxCPHcouponRemoveTRIncludePdt(\"" + aDataPdt[i]['packData']['PDTCode'] + "\")' class='xCNIconTable xCNIconDel' src='<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>' ></td>";
+                tMarkUp += "</tr>";
+            }
+            tKeepPDT = aDataPdt[i]['packData']['PDTCode'];
         }
         $('#otbCouponHDPdtInclude').append(tMarkUp);
-
-        // if(typeof(poDataNextFunc) != 'undefined' && poDataNextFunc != "NULL"){
-        // var i = Date.now();
-        // var tMarkUp ="";
-        //     tMarkUp +="<tr class='otrInclude' id='otrCPHcouponIncludePdt"+i+"'>";
-        //     tMarkUp +="<td><input type='hidden' name='ohdCPHCouponIncludePdtCode["+i+"]' class='ohdCPHCouponIncludePdtCode' value='"+poDataNextFunc.tCPHCouponPdtCode+"'>"+poDataNextFunc.tCPHCouponPdtCode+"</td>";
-        //     tMarkUp +="<td>"+poDataNextFunc.tCPHCouponPdtName+"</td>";
-        //     tMarkUp +="<td><input type='hidden' name='ohdCPHCouponIncludePdtUnitCode["+i+"]' class='ohdCPHCouponIncludePdtUnitCode' value='"+poDataNextFunc.tCPHPdtUnitCode+"'>"+poDataNextFunc.tCPHPdtUnitName+"</td>";
-        //     tMarkUp +="<td align='center'><img onclick='JSxCPHcouponRemoveTRIncludePdt("+i+")' class='xCNIconTable xCNIconDel' src='<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>' ></td>";
-        //     tMarkUp +="</tr>";
-        // $('#otbCouponHDPdtInclude').append(tMarkUp);
-        // }
     }
 
     function JSxCPHcouponRemoveTRIncludePdt(ptCode) {
         $('#otrCPHcouponIncludePdt' + ptCode).remove();
-
     }
 
-    /*===== Begin Event Next Function Browse ========================================== */
-    // Functionality : 
-    // Parameter : Event Next Func Modal
-    // Create : 11/02/2020 Nattakit(Nale)
-    // Last Update : 09/11/2020 Napat(Jame) เปลี่ยนเป็น Browse สินค้าจาก Center
-    // Return : Set Element And value
-    // Return Type : -
+    //หลังจากเลือก "ยกเว้นสินค้า"
     function JSxConsNextFuncBrowsePdtExclude(poDataNextFunc) {
-        var aDataPdt = JSON.parse(poDataNextFunc);
-        var tMarkUp = "";
+        var aDataPdt    = JSON.parse(poDataNextFunc);
+        aDataPdt.sort();
+
+        var tMarkUp     = "";
+        var tKeepPDT    = "";
         for (var i = 0; i < aDataPdt.length; i++) {
-            // tMarkUp += "<tr class='otrInclude' id='otrCPHcouponExcludePdt" + i + "'>";
-            tMarkUp += "<tr class='otrInclude' id='otrCPHcouponExcludePdt" + aDataPdt[i]['packData']['PDTCode'] + "'>";
-            tMarkUp += "<td><input type='hidden' name='ohdCPHCouponExcludePdtCode[" + i + "]' class='ohdCPHCouponExcludePdtCode' value='" + aDataPdt[i]['packData']['PDTCode'] + "'>" + aDataPdt[i]['packData']['PDTCode'] + "</td>";
-            tMarkUp += "<td>" + aDataPdt[i]['packData']['PDTName'] + "</td>";
-            tMarkUp += "<td><input type='hidden' name='ohdCPHCouponExcludePdtUnitCode[" + i + "]' class='ohdCPHCouponExcludePdtUnitCode' value='" + aDataPdt[i]['packData']['PUNCode'] + "'>" + aDataPdt[i]['packData']['PUNName'] + "</td>";
-            // tMarkUp += "<td align='center'><img onclick='JSxCPHcouponRemoveTRExcludePdt(" + i + ")' class='xCNIconTable xCNIconDel' src='<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>' ></td>";
-            tMarkUp += "<td align='center'><img onclick='JSxCPHcouponRemoveTRExcludePdt(\"" + aDataPdt[i]['packData']['PDTCode'] + "\")' class='xCNIconTable xCNIconDel' src='<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>' ></td>";
-            tMarkUp += "</tr>";
+
+            if(tKeepPDT == aDataPdt[i]['packData']['PDTCode'] ){ //เจอไม่ต้อง append
+
+            }else{
+                tMarkUp += "<tr class='otrInclude' id='otrCPHcouponExcludePdt" + aDataPdt[i]['packData']['PDTCode'] + "'>";
+                tMarkUp += "<td><input type='hidden' name='ohdCPHCouponExcludePdtCode[" + i + "]' class='ohdCPHCouponExcludePdtCode' value='" + aDataPdt[i]['packData']['PDTCode'] + "'>" + aDataPdt[i]['packData']['PDTCode'] + "</td>";
+                tMarkUp += "<td>" + aDataPdt[i]['packData']['PDTName'] + "</td>";
+                tMarkUp += "<td><input type='hidden' name='ohdCPHCouponExcludePdtUnitCode[" + i + "]' class='ohdCPHCouponExcludePdtUnitCode' value='" + aDataPdt[i]['packData']['PUNCode'] + "'>" + aDataPdt[i]['packData']['PUNName'] + "</td>";
+                tMarkUp += "<td align='center'><img onclick='JSxCPHcouponRemoveTRExcludePdt(\"" + aDataPdt[i]['packData']['PDTCode'] + "\")' class='xCNIconTable xCNIconDel' src='<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>' ></td>";
+                tMarkUp += "</tr>";
+            }
+            tKeepPDT = aDataPdt[i]['packData']['PDTCode'];
         }
         $('#otbCouponHDPdtExclude').append(tMarkUp);
-
-        // if(typeof(poDataNextFunc) != 'undefined' && poDataNextFunc != "NULL"){
-        //     var i = Date.now();
-        //     var tMarkUp ="";
-        //     tMarkUp +="<tr class='otrExclude' id='otrCPHcouponExcludePdt"+i+"'>";
-        //     tMarkUp +="<td><input type='hidden' name='ohdCPHCouponExcludePdtCode["+i+"]' class='ohdCPHCouponExcludePdtCode' value='"+poDataNextFunc.tCPHCouponPdtCode+"'>"+poDataNextFunc.tCPHCouponPdtCode+"</td>";
-        //     tMarkUp +="<td>"+poDataNextFunc.tCPHCouponPdtName+"</td>";
-        //     tMarkUp +="<td><input type='hidden' name='ohdCPHCouponExcludePdtUnitCode["+i+"]' class='ohdCPHCouponExcludePdtUnitCode' value='"+poDataNextFunc.tCPHPdtUnitCode+"'>"+poDataNextFunc.tCPHPdtUnitName+"</td>";
-        //     tMarkUp +="<td align='center'><img onclick='JSxCPHcouponRemoveTRExcludePdt("+i+")' class='xCNIconTable xCNIconDel' src='<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>' ></td>";
-        //     tMarkUp +="</tr>";
-        //     $('#otbCouponHDPdtExclude').append(tMarkUp);
-        // }
     }
 
     function JSxCPHcouponRemoveTRExcludePdt(ptCode) {

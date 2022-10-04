@@ -20,16 +20,33 @@ $lang['tCPTType']       = "Coupon Type";
 $lang['tCPTCouponType1'] = "Coupon Cash";
 $lang['tCPTCouponType2'] = "Coupon Discount";
 $lang['tCPTStaChk']     = "Status Check Coupon";
-$lang['tCPTCouponChk1']  = "Not checked";
-$lang['tCPTCouponChk2']  = "Checked";
+$lang['tCPTCouponChk1']  = "Check Information";
+$lang['tCPTCouponChk2']  = "Check Format";
+$lang['tCPTCouponChk3']  = "Custom";
 $lang['tCPTCouponBch']   = "Branch";
 $lang['tCPTCouponHq']    = "Center";
+$lang['tCPTCouponCm']    = "Custom";
 
 $lang['tCPTStBranch']       = "Branch";
-//Form 
+//Form
 $lang['tCPTCode']       = "Code";
 $lang['tCPTName']       = "Name";
 $lang['tCPTValidCheckCode']  = "This Coupontype code is already in the system. Please check again";
 $lang['tCPCTValidCode']  = "Please Enter Code or Click to Genarated Code";
 $lang['tCptValidCode']  = "Coupon type code";
 $lang['tCptValidName']  = "Please enter a coupon name.";
+
+//สถานะรับเต็มจำนวน
+$lang['tCPTCouponTypefull'] = "Full Receipt Status";
+$lang['tCPTCouponTypefull1'] = "Get some extra cut off";
+$lang['tCPTCouponTypefull2'] = "Get some extra hold";
+$lang['tCPTCouponTypefull3'] = "Receive partial partial";
+$lang['tCPTCouponTypefull4'] = "Get Full";
+
+//
+$lang['tCPTPriTitle']   = "Price Adjustment";
+$lang['tCPTPriDocno']   = "Doc No";
+$lang['tCPTPriRmk']  = "Remark";
+$lang['tCPTPriDate']    = "Doc Date";
+$lang['tCPTPriTime']    = "Doc Time";
+$lang['tCPTPriStatus']  = "Doc Status";

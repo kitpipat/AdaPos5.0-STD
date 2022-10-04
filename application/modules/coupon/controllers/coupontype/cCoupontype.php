@@ -6,13 +6,18 @@ class cCoupontype extends MX_Controller {
 	public function __construct() {
             parent::__construct ();
             $this->load->model('Coupontype/mCoupontype');
+            // Test XSS Load Helper Security
+            $this->load->helper("security");
+            if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
+                echo "ERROR XSS Filter";
+            }
     }
 
     public function index($nBrowseType,$tBrowseOption){
 
         $aData['nBrowseType']        = $nBrowseType;
         $aData['tBrowseOption']      = $tBrowseOption;
-				$aData['aAlwEventVoucher']   = FCNaHCheckAlwFunc('coupontype/0/0'); //Controle Event
+        $aData['aAlwEventVoucher']   = FCNaHCheckAlwFunc('coupontype/0/0'); //Controle Event
         $aData['vBtnSave']           = FCNaHBtnSaveActiveHTML('coupontype/0/0'); //Load Html ของปุ่ม Save ที่เก็บ Session ปัจจุบัน
 
         $this->load->view('coupon/coupontype/wCoupontype',$aData);
@@ -30,7 +35,7 @@ class cCoupontype extends MX_Controller {
 
         $nLangResort    = $this->session->userdata("tLangID");
         $nLangEdit      = $this->session->userdata("tLangEdit");
-        $aLangHave = FCNaHGetAllLangByTable('TFNMCouponType_L');
+        $aLangHave      = FCNaHGetAllLangByTable('TFNMCouponType_L');
 		if ($aLangHave != false) {
 			$nLangHave = FCNnHSizeOf($aLangHave);
 		}else {
@@ -90,6 +95,7 @@ class cCoupontype extends MX_Controller {
                 'FTCptStaChk'    => $this->input->post('ocmCptStatusChk'),
                 'FTCptStaChkHQ'  => $this->input->post('ocmCptStatusChkHq'),
                 'FTCptRemark'    => $this->input->post('otaCptRemark'),
+                'FTCptStaPartial'=> $this->input->post('ocmCptStatusfull'),
                 'FTCptStaUse'    => ($this->input->post('ocbCptcheck') == "1")?"1":"2",
                 'FDCreateOn'     => date("Y-m-d H:i:s"),
                 'FTLastUpdBy'    => $this->session->userdata('tSesUsername'),
@@ -167,22 +173,23 @@ class cCoupontype extends MX_Controller {
 
         try{
             $aDataMaster = array(
-                'tIsAutoGenCode' => $this->input->post('ocbCoupontypeAutoGenCode'),
-                'FTCptCode'     => $this->input->post('oetCptCode'),
-                'FTCptName'     => $this->input->post('oetCptName'),
-                'FTCptType'     => $this->input->post('ocmCptStatus'),
-                'FTCptStaChk'   => $this->input->post('ocmCptStatusChk'),
-                'FTCptStaChkHQ' => $this->input->post('ocmCptStatusChkHq'),
-                'FTCptRemark'   => $this->input->post('otaCptRemark'),
-                'FTCptStaUse'    => ($this->input->post('ocbCptcheck') == "1")?"1":"2",
-                'FDCreateOn'    => date("Y-m-d H:i:s"),
-                'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
-                'FDLastUpdOn'   => date("Y-m-d H:i:s"),
-                'FTCreateBy'    => $this->session->userdata('tSesUsername'),
-                'FNLngID'       => $this->session->userdata("tLangEdit"),
+                'tIsAutoGenCode'    => $this->input->post('ocbCoupontypeAutoGenCode'),
+                'FTCptCode'         => $this->input->post('oetCptCode'),
+                'FTCptName'         => $this->input->post('oetCptName'),
+                'FTCptType'         => $this->input->post('ocmCptStatus'),
+                'FTCptStaChk'       => $this->input->post('ocmCptStatusChk'),
+                'FTCptStaChkHQ'     => $this->input->post('ocmCptStatusChkHq'),
+                'FTCptRemark'       => $this->input->post('otaCptRemark'),
+                'FTCptStaPartial'   => $this->input->post('ocmCptStatusfull'),
+                'FTCptStaUse'       => ($this->input->post('ocbCptcheck') == "1")?"1":"2",
+                'FDCreateOn'        => date("Y-m-d H:i:s"),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FDLastUpdOn'       => date("Y-m-d H:i:s"),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                'FNLngID'           => $this->session->userdata("tLangEdit"),
 
                 //เพิ่ม AD Create By :Non
-                'FTAgnCode'     => $this->input->post('oetCPTUsrAgnCode'),
+                'FTAgnCode'         => $this->input->post('oetCPTUsrAgnCode'),
             );
 
             $this->db->trans_begin();
@@ -224,12 +231,12 @@ class cCoupontype extends MX_Controller {
         $aDataMaster = array(
             'FTCptCode' => $tIDCode
         );
-        $aResDel   = $this->mCoupontype->FSnMCPTDel($aDataMaster);
+        $aResDel        = $this->mCoupontype->FSnMCPTDel($aDataMaster);
         $nNumRowCPTType = $this->mCoupontype->FSnMLOCGetAllNumRow();
         if($nNumRowCPTType !==false){
             $aReturn    = array(
-                'nStaEvent'     => $aResDel['rtCode'],
-                'tStaMessg'     => $aResDel['rtDesc'],
+                'nStaEvent'         => $aResDel['rtCode'],
+                'tStaMessg'         => $aResDel['rtDesc'],
                 'nNumRowCouponType' => $nNumRowCPTType
             );
             echo json_encode($aReturn);
@@ -243,10 +250,10 @@ class cCoupontype extends MX_Controller {
 
 		$aAlwEventVoucher	= FCNaHCheckAlwFunc('vouchertype/0/0'); //Controle Event
 
-        $tCptCode       = $this->input->post('tCptCode');
-        $nLangResort    = $this->session->userdata("tLangID");
-        $nLangEdit      = $this->session->userdata("tLangEdit");
-        $aLangHave      = FCNaHGetAllLangByTable('TFNMCouponType_L');
+        $tCptCode           = $this->input->post('tCptCode');
+        $nLangResort        = $this->session->userdata("tLangID");
+        $nLangEdit          = $this->session->userdata("tLangEdit");
+        $aLangHave          = FCNaHGetAllLangByTable('TFNMCouponType_L');
 		if ($aLangHave != false) {
 			$nLangHave = FCNnHSizeOf($aLangHave);
 		}else {
@@ -272,7 +279,7 @@ class cCoupontype extends MX_Controller {
             'FNLngID'   => $nLangEdit
         );
 
-        $aResult       = $this->mCoupontype->FSaMCPTSearchByID($aData);
+        $aResult        = $this->mCoupontype->FSaMCPTSearchByID($aData);
         $aDataEdit      = array('aResult'           => $aResult,
                                 'aAlwEventVoucher'   => $aAlwEventVoucher
                             );
@@ -298,13 +305,13 @@ class cCoupontype extends MX_Controller {
 
         //Lang ภาษา
         $nLangResort    = $this->session->userdata("tLangID");
-		    $nLangEdit      = $this->session->userdata("tLangEdit");
-		    $aLangHave      = FCNaHGetAllLangByTable('TFNMCouponType_L');
-			if ($aLangHave != false) {
-				$nLangHave = FCNnHSizeOf($aLangHave);
-			}else {
-				$nLangHave = 0;
-			}
+        $nLangEdit      = $this->session->userdata("tLangEdit");
+        $aLangHave      = FCNaHGetAllLangByTable('TFNMCouponType_L');
+        if ($aLangHave != false) {
+            $nLangHave = FCNnHSizeOf($aLangHave);
+        }else {
+            $nLangHave = 0;
+        }
         if($nLangHave > 1){
 	        if($nLangEdit != ''){
 	            $nLangEdit = $nLangEdit;
@@ -337,6 +344,5 @@ class cCoupontype extends MX_Controller {
 
         $this->load->view('coupon/coupontype/wCoupontypeDataTable',$aGenTable);
     }
-
 
 }

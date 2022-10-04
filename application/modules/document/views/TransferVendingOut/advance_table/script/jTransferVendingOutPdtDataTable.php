@@ -3,10 +3,8 @@
     $(document).ready(function(){
 
         localStorage.removeItem("LocalItemData");
-
         $('.ocbListItem').click(function(){
             var tSeq = $(this).parent().parent().parent().attr('data-seq-no');    //Seq
-
             $(this).prop('checked', true);
             var LocalItemData = localStorage.getItem("LocalItemData");
             var obj = [];
@@ -45,6 +43,20 @@
             }
             JSxTVOPdtShowButtonChoose();
         });
+
+        $("#oetAllCheck").click(function(){ // เมื่อคลิกที่ checkbox ตัวควบคุม
+            if($(this).prop("checked")){
+                $(".ocbListItem").prop("checked",true);
+                JSxAddlocalStorage();
+            }else{
+                $(".ocbListItem").prop("checked",false); 
+                localStorage.removeItem("LocalItemData");
+                JSxTVOPdtTextinModal();
+            }
+        });
+
+
+
 
         // Create By : Napat(Jame) 10/09/2020
         sessionStorage.removeItem("EditInLine");
@@ -92,7 +104,9 @@
     //Create By : Napat(Jame) 10/09/2020
     function JSxTVOPdtTextinModal() {
         var aArrayConvert = [JSON.parse(localStorage.getItem("LocalItemData"))];
-        if (aArrayConvert[0] == null || aArrayConvert[0] == "") {} else {
+        if (aArrayConvert[0] == null || aArrayConvert[0] == "") {
+            $(".xCNIconDel").removeClass("xCNDisabled");
+        } else {
             var tTextCode = "";
             for ($i = 0; $i < aArrayConvert[0].length; $i++) {
                 tTextCode += aArrayConvert[0][$i].tSeq;
@@ -197,38 +211,42 @@
      * Return Type : -
      */
     function JSxTVOPdtDataTableDeleteBySeq(poElm) {
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+        if($(poElm).hasClass('xCNDisabled')){
+            return false; //ถ้าเลือกมัลติอยู่ ลบรายการไม่ได้
+        }else{
+            var nStaSession = JCNxFuncChkSessionExpired();
+            if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
-            JCNxOpenLoading();
+                JCNxOpenLoading();
 
-            var nSeqNo   = $(poElm).parents('.xCNTopUpVendingPdtLayoutRow').data('seq-no');
-            var tPdtCode = $(poElm).parents('.xCNTopUpVendingPdtLayoutRow').data('pdtcode');
-            var tPdtName = $(poElm).parents('.xCNTopUpVendingPdtLayoutRow').data('pdtname');
+                var nSeqNo   = $(poElm).parents('.xCNTopUpVendingPdtLayoutRow').data('seq-no');
+                var tPdtCode = $(poElm).parents('.xCNTopUpVendingPdtLayoutRow').data('pdtcode');
+                var tPdtName = $(poElm).parents('.xCNTopUpVendingPdtLayoutRow').data('pdtname');
 
-            $.ajax({
-                type: "POST",
-                url: "docTVOEventDeletePdtLayoutInTmp",
-                data: {
-                    nSeqNo: nSeqNo
-                },
-                cache: false,
-                timeout: 0,
-                success: function(tResult) {
-                    JSxTVOGetPdtLayoutDataTableInTmp();
-                    
-                    var tNewTextName = $('#oetTVOPdtNameMulti').val().split(tPdtName+',').join('').split(','+tPdtName).join('').split(tPdtName).join('');
-                    var tNewTextCode = $('#oetTVOPdtCodeMulti').val().split(tPdtCode+',').join('').split(','+tPdtCode).join('').split(tPdtCode).join('');
-                    $('#oetTVOPdtCodeMulti').val(tNewTextCode);
-                    $('#oetTVOPdtNameMulti').val(tNewTextName);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
+                $.ajax({
+                    type: "POST",
+                    url: "docTVOEventDeletePdtLayoutInTmp",
+                    data: {
+                        nSeqNo: nSeqNo
+                    },
+                    cache: false,
+                    timeout: 0,
+                    success: function(tResult) {
+                        JSxTVOGetPdtLayoutDataTableInTmp();
+                        
+                        var tNewTextName = $('#oetTVOPdtNameMulti').val().split(tPdtName+',').join('').split(','+tPdtName).join('').split(tPdtName).join('');
+                        var tNewTextCode = $('#oetTVOPdtCodeMulti').val().split(tPdtCode+',').join('').split(','+tPdtCode).join('').split(tPdtCode).join('');
+                        $('#oetTVOPdtCodeMulti').val(tNewTextCode);
+                        $('#oetTVOPdtNameMulti').val(tNewTextName);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    }
+                });
 
-        } else {
-            JCNxShowMsgSessionExpired();
+            } else {
+                JCNxShowMsgSessionExpired();
+            }
         }
     }
 
@@ -265,4 +283,54 @@
             JCNxShowMsgSessionExpired();
         }
     }
+
+
+    //function Checkbox All Header
+    // Create By Witsarut 16-09-2020
+    function JSxAddlocalStorage(){
+        $('.ocbListItem').each(function(){
+            var tSeq = $(this).parent().parent().parent().attr('data-seq-no');    //Seq
+            $(this).prop('checked', true);
+            var LocalItemData = localStorage.getItem("LocalItemData");
+            var obj = [];
+            if(LocalItemData){
+                obj = JSON.parse(LocalItemData);
+            }
+            var aArrayConvert = [JSON.parse(localStorage.getItem("LocalItemData"))];
+            if(aArrayConvert == '' || aArrayConvert == null){
+                obj.push({"tSeq": tSeq,});
+                localStorage.setItem("LocalItemData",JSON.stringify(obj));
+                JSxTVOPdtTextinModal();
+            }else{
+                var aReturnRepeat = findObjectByKey(aArrayConvert[0],'tSeq',tSeq);
+                if(aReturnRepeat == 'None' ){           //ยังไม่ถูกเลือก
+                    obj.push({"tSeq": tSeq});
+                    localStorage.setItem("LocalItemData",JSON.stringify(obj));
+                    JSxTVOPdtTextinModal();
+                }else if(aReturnRepeat == 'Dupilcate'){	//เคยเลือกไว้แล้ว
+                    localStorage.removeItem("LocalItemData");
+                    $(this).prop('checked', false);
+                    var nLength = aArrayConvert[0].length;
+                    for($i=0; $i<nLength; $i++){
+                        if(aArrayConvert[0][$i].tSeq == tSeq){
+                            delete aArrayConvert[0][$i];
+                        }
+                    }
+                    var aNewarraydata = [];
+                    for($i=0; $i<nLength; $i++){
+                        if(aArrayConvert[0][$i] != undefined){
+                            aNewarraydata.push(aArrayConvert[0][$i]);
+                        }
+                    }
+                    localStorage.setItem("LocalItemData",JSON.stringify(aNewarraydata));
+                    JSxTVOPdtTextinModal();
+                }
+            }
+            JSxTVOPdtShowButtonChoose();
+        });
+    }
+
+
+
+
 </script>

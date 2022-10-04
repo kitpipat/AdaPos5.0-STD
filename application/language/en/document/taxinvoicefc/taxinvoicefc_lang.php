@@ -97,3 +97,6 @@ $lang['tTAXPrintBypageKey']                = 'Key Pages';
 $lang['tTAXDebitShop']                     = 'บัตรเดบิตร้านค้า';
 $lang['tTAXVatInclude']                    = 'ภาษีรวมใน';
 $lang['tTAXVatExclude']                    = 'ภาษีแยกนอก';
+
+$lang['tTAXStaDoc1']                           = 'In Use';
+$lang['tTAXStaDoc2']                           = 'Cancel';

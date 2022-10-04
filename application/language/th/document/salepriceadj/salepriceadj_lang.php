@@ -70,6 +70,8 @@ $lang['tSpaADDConditionsTitle']     = "เงื่อนไขการปร�
 $lang['tSpaADDXphDocType']          = "ประเภทราคา";
 $lang['tSpaADDXphDocType1']         = "BasePrice";
 $lang['tSpaADDXphDocType2']         = "Price Off";
+$lang['tSpaADDXphDocType3']         = "Promotion";
+$lang['tSpaADDXphDocType4']         = "Coupon";
 $lang['tSpaADDXphStaAdj']           = "ประเภทการปรับราคา";
 $lang['tSpaADDXphStaAdj1']          = "ราคาใหม่";
 $lang['tSpaADDXphStaAdj2']          = "ปรับลด %%";
@@ -96,13 +98,13 @@ $lang['tSpaADDXphRefInt']           = "อ้างอิงเอกสาร�
 
 //อื่นๆ
 $lang['tSpaADDOtherTitle']          = "อื่นๆ";
-$lang['tSpaADDAggCode']             = "กลุ่มตัวแทนขายที่มีผล";
+$lang['tSpaADDAggCode']             = "กลุ่มตัวแทนขาย/แฟรนไชส์ที่มีผล";
 $lang['tSpaADDXphRmk']              = "หมายเหตุ";
 $lang['tSpaADDXphStaDocAct']        = "เคลื่อนไหว";
 $lang['tSpaADDXphPriType']          = "ประเภทการขาย";
 
 //btn
-$lang['tSpaADDBtnAdjAll']           = "ปรับทั้งเอกสาร"; 
+$lang['tSpaADDBtnAdjAll']           = "ปรับทั้งเอกสาร";
 $lang['tSpaTitlePdtPriList']        = "รายการสินค้า";
 
 
@@ -113,10 +115,10 @@ $lang['tSpaBRWPdtPriListTitle']     = "กลุ่มราคาที่ม�
 $lang['tSpaBRWPdtPriListTBCode']    = "รหัสกลุ่มราคาที่มีผล";
 $lang['tSpaBRWPdtPriListTBName']    = "ชื่อกลุ่มราคาลูกค้า";
 
-//กลุ่มตัวแทนขาย
-$lang['tSpaBRWAgencyTitle']         = "กลุ่มตัวแทนขาย";
-$lang['tSpaBRWAgencyTBCode']        = "รหัสกลุ่มตัวแทนขาย";
-$lang['tSpaBRWAgencyTBName']        = "ชื่อกลุ่มตัวแทนขาย";
+//กลุ่มตัวแทนขาย/แฟรนไชส์
+$lang['tSpaBRWAgencyTitle']         = "กลุ่มตัวแทนขาย/แฟรนไชส์";
+$lang['tSpaBRWAgencyTBCode']        = "รหัสกลุ่มตัวแทนขาย/แฟรนไชส์";
+$lang['tSpaBRWAgencyTBName']        = "ชื่อกลุ่มตัวแทนขาย/แฟรนไชส์";
 
 //โซน
 $lang['tSpaBRWZoneTitle']           = "โซน";
@@ -143,7 +145,8 @@ $lang['tPdtPriTBBarCode']           = "บาร์โค้ด";
 $lang['tPdtPriTBPunCode']           = "หน่วยสินค้า";
 $lang['tPdtPriTBBch']               = "สาขาที่มีผล";
 $lang['tPdtPriTBShp']               = "ร้านค้าที่มีผล";
-$lang['tPdtPriTBPriceOgn']          = "ราคาล่าสุด";
+// $lang['tPdtPriTBPriceOgn']          = "ราคาล่าสุด";
+$lang['tPdtPriTBPriceOgn']          = "ตรวจสอบราคา";
 $lang['tPdtPriTBPriceRet']          = "ราคาขาย";
 $lang['tPdtPriTBPriceWhs']          = "ราคาส่ง";
 $lang['tPdtPriTBPriceNet']          = "ราคาออนไลน์";
@@ -151,7 +154,15 @@ $lang['tPdtPriTBAdjustAll']         = "ปรับทั้งหมด";
 $lang['tPdtPriTBDelete']            = "ลบ";
 $lang['tPdtPriTBEdit']              = "แก้ไข";
 
-$lang['tPdtPriTiTleOrnPri']         = "ราคาล่าสุด";
+$lang['tPdtPriTBStartDate']              = "วันที่มีผล";
+$lang['tPdtPriTBStopDate']              = "ถึงวันที่";
+$lang['tPdtPriTBStartTime']              = "เวลา";
+$lang['tPdtPriTBEndTime']              = "ถึงเวลา";
+$lang['tPdtPriTBPriceType']              = "ประเภทราคา";
+
+
+// $lang['tPdtPriTiTleOrnPri']         = "ราคาล่าสุด";
+$lang['tPdtPriTiTleOrnPri']         = "ตรวจสอบราคา";
 $lang['tPdtPriSumTotalPrice']       = "จำนวนเงินรวม";
 
 $lang['tPdtAdvSearch']   = "ค้นหาขั้นสูง";
@@ -173,3 +184,6 @@ $lang['tSpaBRWBranchTitleFrom']     = "จากสาขา";
 $lang['tSpaBRWBranchTitleTo']       = "ถึงสาขา";
 $lang['tSpaBRWDocDateFrom']         = "จากวันที่เอกสาร";
 $lang['tSpaBRWDocDateTo']           = "ถึงวันที่เอกสาร";
+
+$lang['tPdtSelectAgnBch']           = "กรุณาเลือกตัวแทนขายและสาขา";
+$lang['tPdtFilterAgency']           = "ตัวแทนขาย";

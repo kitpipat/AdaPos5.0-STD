@@ -19,7 +19,7 @@
                             <th nowrap class="xCNTextBold" style="width:80%;"><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDBchName')?></th>
                             <th nowrap class="xCNTextBold" style="width:30%;"><?php echo language('company/merchant/merchant','tMerchantTitle')?></th>
                             <th nowrap class="xCNTextBold" style="width:30%;"><?php echo language('company/shop/shop','tSHPTitle')?></th>
-                            <th  style="width:10%;"></th>
+                            <th nowrap class="xCNTextBold" style="width:5%;"><?php echo language('common/main/main','tCMNActionDelete')?></th>
                         </tr >
                     </thead>
                     <tbody id="otbCouponHDBchInclude">
@@ -129,7 +129,7 @@
                             <th nowrap class="xCNTextBold" style="width:80%;"><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDBchName')?></th>
                              <th nowrap class="xCNTextBold" style="width:30%;"><?php echo language('company/merchant/merchant','tMerchantTitle')?></th>
                             <th nowrap class="xCNTextBold" style="width:30%;"><?php echo language('company/shop/shop','tSHPTitle')?></th> 
-                            <th  style="width:10%;"></th>
+                            <th nowrap class="xCNTextBold" style="width:5%;"><?php echo language('common/main/main','tCMNActionDelete')?></th>
                         </tr>
                     </thead>
                     <tbody id="otbCouponHDBchExclude">

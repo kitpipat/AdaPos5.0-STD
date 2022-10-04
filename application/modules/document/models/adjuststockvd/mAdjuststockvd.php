@@ -953,7 +953,7 @@ class mAdjuststockvd extends CI_Model {
         try{
             $this->db->trans_begin();
             $this->db->where_in('FTXthDocNo', $aDataWhere['FTXthDocNo']);
-            $this->db->where_in('FTXthDocKey', 'TCNTPdtAdjStkHD');
+            $this->db->where_in('FTXthDocKey', $aDataWhere['FTXthDocKey']);
             $this->db->where_in('FTSessionID' , $this->session->userdata('tSesSessionID'));
             $this->db->delete('TCNTDocDTTmp');
 

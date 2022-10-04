@@ -302,7 +302,7 @@ class cPromotionStep3PmtCG extends MX_Controller
         $aClearPmtCGInTmpParams = [
             'tUserSessionID' => $tUserSessionID
         ];
-        $this->mPromotionStep3PmtCG->FSbClearPmtCGInTmp($aClearPmtCGInTmpParams);
+        // $this->mPromotionStep3PmtCG->FSbClearPmtCGInTmp($aClearPmtCGInTmpParams);
 
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();

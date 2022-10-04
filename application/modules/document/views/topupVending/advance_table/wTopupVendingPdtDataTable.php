@@ -5,7 +5,9 @@
                 <th width="8%" class="text-center othShowChkbox">
                     <label class="fancy-checkbox">
                         <input type="checkbox" class="ocbHeadCheckBox xCNApvOrCanCelDisabled" name="oetAllCheck" id="oetAllCheck">
-                        <span style="font-family: THSarabunNew-Bold; font-weight: 500;"><?=language('document/TopupVending/TopupVending', 'tTBChoose');?></span>
+                        <span style="font-family: THSarabunNew-Bold; font-weight: 500;">
+                            <!-- <?=language('document/TopupVending/TopupVending', 'tTBChoose');?> -->
+                        </span>
                     </label>
                 </th>
                 <th width="5%" class="text-center"><?php echo language('document/TopupVending/TopupVending', 'tTBNo'); ?></th>
@@ -63,37 +65,6 @@
         </tbody>
     </table>
 </div>
-
-<!-- <div class="row">
-    <div class="col-md-6">
-        <p><?= language('common/main/main','tResultTotalRecord')?> <?=$aDataList['rnAllRow']?> <?= language('common/main/main','tRecord')?> <?= language('common/main/main','tCurrentPage')?> <?=$aDataList['rnCurrentPage']?> / <?=$aDataList['rnAllPage']?></p>
-    </div>
-    <div class="col-md-6">
-        <div class="xWPage btn-toolbar pull-right">
-            <?php if($nPage == 1){ $tDisabledLeft = 'disabled'; }else{ $tDisabledLeft = '-';} ?>
-            <button onclick="JSvTopUpVendignPdtDataTableClickPage('previous')" class="btn btn-white btn-sm" <?php echo $tDisabledLeft ?>>
-                <i class="fa fa-chevron-left f-s-14 t-plus-1"></i>
-            </button>
-            <?php for($i=max($nPage-2, 1); $i<=max(0, min($aDataList['rnAllPage'],$nPage+2)); $i++){?>
-                <?php 
-                    if($nPage == $i){ 
-                        $tActive = 'active'; 
-                        $tDisPageNumber = 'disabled';
-                    }else{ 
-                        $tActive = '';
-                        $tDisPageNumber = '';
-                    }
-                ?>
-                <button onclick="JSvTopUpVendignPdtDataTableClickPage('<?php echo $i?>')" type="button" class="btn xCNBTNNumPagenation <?php echo $tActive ?>" <?php echo $tDisPageNumber ?>><?php echo $i?></button>
-            <?php } ?>
-            <?php if($nPage >= $aDataList['rnAllPage']){  $tDisabledRight = 'disabled'; }else{  $tDisabledRight = '-';  } ?>
-            <button onclick="JSvTopUpVendignPdtDataTableClickPage('next')" class="btn btn-white btn-sm" <?php echo $tDisabledRight ?>>
-                <i class="fa fa-chevron-right f-s-14 t-plus-1"></i>
-            </button>
-        </div>
-    </div>
-</div> -->
-
 
 <!-- ============================================================== ลบสินค้าแบบหลายตัว  ============================================================ -->
 <div id="odvTUVModalDelPdtInDTTempMultiple" class="modal fade" tabindex="-1" role="dialog">

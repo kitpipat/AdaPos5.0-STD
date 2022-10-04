@@ -5143,46 +5143,46 @@ var oRptClvBrows = function(poReturnInput) {
     // Click Button Call View Before Print
     $('#obtRptViewBeforePrint').unbind().click(function() {
 
-        if (xCNbNotSelectBchValidate()) {
-            FSvCMNSetMsgWarningDialog(tWarningCheckBchMessage);
-            return;
-        }
+    if (xCNbNotSelectBchValidate()) {
+        FSvCMNSetMsgWarningDialog(tWarningCheckBchMessage);
+        return;
+    }
 
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
-            $('#ohdRptTypeExport').val('html');
-            JSxReportDataExport();
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+        $('#ohdRptTypeExport').val('html');
+        JSxReportDataExport();
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
     });
 
     // Click Button Call Export Excel
     $('#obtRptDownloadPdf').unbind().click(function() {
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
-            $('#ohdRptTypeExport').val('pdf');
-            JSxReportDataExport();
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+        $('#ohdRptTypeExport').val('pdf');
+        JSxReportDataExport();
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
     });
 
     // Click Button Call Export PDF
     $('#obtRptExportExcel').unbind().click(function() {
 
-        if (xCNbNotSelectBchValidate()) {
-            FSvCMNSetMsgWarningDialog(tWarningCheckBchMessage);
-            return;
-        }
+    if (xCNbNotSelectBchValidate()) {
+        FSvCMNSetMsgWarningDialog(tWarningCheckBchMessage);
+        return;
+    }
 
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
-            $('#ohdRptTypeExport').val('excel');
-            JSxReportDataExport();
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+        $('#ohdRptTypeExport').val('excel');
+        JSxReportDataExport();
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
     });
 
     // Click Button Call Year From

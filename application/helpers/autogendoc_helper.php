@@ -23,7 +23,7 @@
       $tFieldPK = $aResult[0]['FTSatFedCode'];
 
       $tSQLCheck   = " SELECT B.FTSatFedCode FROM $tTable A LEFT JOIN TCNTAuto B ON B.FTSatTblName = '$tTable'
-                       WHERE A.FTBchCode = '$tBchCode' AND A.$tFieldPK = '$tDocumentNumber' AND B.FTSatStaDocType = '$nDocType' ";
+                      WHERE A.FTBchCode = '$tBchCode' AND A.$tFieldPK = '$tDocumentNumber' AND B.FTSatStaDocType = '$nDocType' ";
       if($tShpCode != '' || $tShpCode != null){ //ถ้ามีร้านค้า
         $tSQLCheck  .= " AND A.FTShpCode = '$tShpCode' ";
       }

@@ -4,19 +4,8 @@
     }
 </style>
 <?php 
-    if($aPdtPriDataList['rtCode'] == '1'){
-        $nCurrentPage = $aPdtPriDataList['rnCurrentPage'];
-    }else{
-        $nCurrentPage = '1';
-    }
+    $nCurrentPage = '1';
 ?>
-
-<!-- <div class="row">
-    <div class="col-md-12">
-        <div class="text-right"><label onclick="JSxOpenColumnFormSet()" style="cursor:pointer"><?= language('common/main/main','tModalAdvTable')?></label></div>
-    </div>
-</div> -->
-
 <?php 
     $tImportStatus = "1";
     if( $aPdtPriDataList['rtCode'] == 1 ){
@@ -34,26 +23,35 @@
             <table id="otbSpaDataList" class="table table-striped" style="margin-bottom: 0px;">
                 <thead>
                     <tr>
-                    <th><?= language('document/salepriceadj/salepriceadj','tPdtPriTBChoose')?></th>
-                    <?php foreach($aColumnShow as $HeaderColKey=>$HeaderColVal){?>
-                        <th nowrap title="<?php echo iconv_substr($HeaderColVal->FTShwNameUsr, 0,30, "UTF-8");?>">
-                            <?php echo iconv_substr($HeaderColVal->FTShwNameUsr, 0,30, "UTF-8");?>
-                        </th>
-                    <?php }?>
-                    <!-- <th><?php echo language('document/salepriceadj/salepriceadj','tPdtPriTBChoose'); ?></th> -->
-                    <?php if(@$tXphStaApv != 1 && @$tXphStaDoc != 3){?>
-                        <?php if( $tImportStatus != "1" ){ ?>
+                    <th class="text-center otdListItem">
+                        <label class="fancy-checkbox">
+                            <input id="ocbCheckAll" type="checkbox" class="ocbListItemAll" name="ocbCheckAll" onclick="FSxSPASelectAll(this)">
+                            <span class="">&nbsp;</span>
+                        </label>
+                    </th>
+                    <th><?= language('document/purchaseorder/purchaseorder','ลำดับ')?></th>
+                    <th ><?= language('document/purchaseorder/purchaseorder', 'รหัสสินค้า')?></th>
+                    <th ><?= language('document/purchaseorder/purchaseorder', 'ชื่อสินค้า')?></th>
+                    <th ><?= language('document/purchaseorder/purchaseorder', 'หน่วยสินค้า')?></th>
+                    <th ><?= language('document/purchaseorder/purchaseorder', 'ราคาล่าสุด')?></th>
+                    <?php 
+                    if( $tImportStatus != "1" ){
+                    ?>
                             <th><?= language('document/salepriceadj/salepriceadj','หมายเหตุ')?></th>
-                        <?php } ?>
-                        <th class="xWDeleteBtnEditButton"><?= language('document/salepriceadj/salepriceadj','tPdtPriTBEdit')?></th>
+                    <?php } ?>
+                    <th ><?= language('document/purchaseorder/purchaseorder', 'ราคาขาย')?></th>
+                    <?php if(@$tXphStaApv != 1 && @$tXphStaDoc != 3){?>
+                        <th class="xWDeleteBtnEditButton text-center xCNPIBeHideMQSS"><?= language('document/salepriceadj/salepriceadj','tPdtPriTBDelete')?></th>
                     <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if($aPdtPriDataList['rtCode'] == 1 ):?>
                         <?php $nIndex = 1; ?>
-                        <?php foreach($aPdtPriDataList['raItems'] as $DataTableKey => $DataTableVal){ ?>
-                            <tr class="text-center xCNTextDetail2 otrSpaPdtPri" 
+                        <?php foreach($aPdtPriDataList['raItems'] as $DataTableKey => $DataTableVal){  
+                            $aAllpunCode = (explode(",",$DataTableVal['FTAllPunCode']));
+                            $aAllpunName = (explode(",",$DataTableVal['FTAllPunName']));?>
+                            <tr class="text-center xCNTextDetail2 otrSpaPdtPri xWPdtItem" 
                             id="otrSpaPdtPri<?=$DataTableVal['FNXtdSeqNo']?>" 
                             name="otrSpaPdtPri" 
                             data-doc="<?=$DataTableVal['FTXthDocNo']?>" 
@@ -63,7 +61,7 @@
                             data-status="<?=$DataTableVal['FTTmpStatus']?>"
                             data-rmk="<?=$DataTableVal['FTTmpRemark']?>" 
                             data-page="<?=$nCurrentPage?>">
-                                <td nowrap class="text-center">
+                                <td nowrap class="text-center otdListItem">
                                     <label class="fancy-checkbox">
                                         <input id="ocbListItem<?=$DataTableVal['FNXtdSeqNo']?>" type="checkbox" class="ocbListItem" name="ocbListItem[]">
                                         <span class="ospListItem">&nbsp;</span>
@@ -72,93 +70,31 @@
                                     <input type="hidden" id="ohdFTXpdShpTo<?=$DataTableVal['FNXtdSeqNo']?>" name="ohdFTXpdShpTo<?=$DataTableVal['FNXtdSeqNo']?>" value="<?=$DataTableVal['FTXtdShpTo']?>">
                                     <input type="hidden" id="ohdFTXpdBchTo<?=$DataTableVal['FNXtdSeqNo']?>" name="ohdFTXpdBchTo<?=$DataTableVal['FNXtdSeqNo']?>" value="<?=$DataTableVal['FTXtdBchTo']?>">
                                 </td>
-                                <?php  
-                                    $aDataSeqCollumSumFooter = [];
+                                <td><?=($DataTableKey+1)?></td> <!-- $DataTableVal['FNXtdSeqNo'] -->
+                                <td class="text-left" ><label id="olaFTPdtCode<?=$DataTableVal['FNXtdSeqNo']?>" name="olaFTPdtCode<?=$DataTableVal['FNXtdSeqNo']?>" class="text-left xCNPdtFont xWShowValueFTPdtCode<?php echo $DataTableVal['FNXtdSeqNo']?>"><?php echo $DataTableVal['FTPdtCode']?></label></td>
+                                <td class="text-left" ><label id="olaFTPdtName<?=$DataTableVal['FNXtdSeqNo']?>" name="olaFTPdtName<?=$DataTableVal['FNXtdSeqNo']?>" class="text-left xCNPdtFont xWShowValueFTPdtName <?php echo $DataTableVal['FNXtdSeqNo']?>"><?php echo $DataTableVal['FTPdtName']?></label></td>
+                                <td class="text-left">
+                                <?php if(@$tXphStaApv == 1 || @$tXphStaDoc == 3){?>
+                                <label class="text-right xCNPdtFont xWShowValuePuncode <?php echo $DataTableVal['FNXtdSeqNo']?>"><?php echo $DataTableVal['FTPunName']?>
 
-                                    foreach($aColumnShow as $DataKey=>$DataVal){ 
-
-                                        $tColumnName = $DataVal->FTShwFedShw;
-                                        $nColWidth   = $DataVal->FNShwColWidth;
-
-                                        if($tColumnName=='FCXtdPriceNet'){
-                                            $aDataSeqCollumSumFooter[] = $tColumnName;
-                                        }
-
-                                        if($tColumnName=='FCXtdPriceRet'){
-                                            $aDataSeqCollumSumFooter[] = $tColumnName;
-                                        }
-
-                                        if($tColumnName=='FCXtdPriceWhs'){
-                                            $aDataSeqCollumSumFooter[] = $tColumnName;
-                                        }
-
-                                        $tColumnDataType = substr($tColumnName,0,2);
-
-                                        if($tColumnDataType == 'FC'){
-                                            $tMaxlength = '11';
-                                            $tAlignFormat = 'text-right';
-                                            $tDataCol =  $DataTableVal[$tColumnName] != '' ? number_format($DataTableVal[$tColumnName], $nOptDecimalShow, '.', ',') : number_format(0, $nOptDecimalShow,'.',',');
-                                            $InputType = 'text';
-                                            $tValidateType = 'xCNInputNumericWithDecimal';
-                                        }elseif($tColumnDataType == 'FN'){
-                                            $tMaxlength = '';
-                                            $tAlignFormat = 'text-right';
-                                            $tDataCol = $DataTableVal[$tColumnName] != '' ? number_format($DataTableVal[$tColumnName], $nOptDecimalShow, '.', ',') : number_format(0, $nOptDecimalShow,'.',',');
-                                            $InputType = 'number';
-                                            $tValidateType = '';
-                                        }else{
-                                            $tMaxlength = '';
-                                            $tAlignFormat = 'text-left';
-                                            $tDataCol = $DataTableVal[$tColumnName];
-                                            $InputType = 'text';
-                                            $tValidateType = '';
-                                        }
-
-                                        $tFieldCol = "";
-
-                                        switch($tColumnName){
-                                            case 'FNXtdSeqNo': {
-                                                $tAlignFormat = 'text-center';
-                                                $tDataCol = $DataTableVal[$tColumnName];
-                                                break;
-                                            }
-                                            case 'FTDefalutPrice': {
-                                                $tDataCol = "<label id='olaOriginalPrice".$DataTableVal['FNXtdSeqNo']."' class='xWOriginalPriceClick xCNLinkClick' data-seq='".$DataTableVal['FNXtdSeqNo']."' style='cursor:pointer'>".language('document/salepriceadj/salepriceadj', 'tPdtPriTBPriceOgn')."</label>";
-                                                break;
-                                            }
-                                            case 'FTPdtCode': {
-                                                if(in_array($DataTableVal['FTTmpStatus'], ["3","4"]) && explode("$&", $DataTableVal['FTTmpRemark'])[0] == "[0]"){
-                                                    $tFieldCol = "[0]";
-                                                    $tDataCol = explode("$&", $DataTableVal['FTTmpRemark'])[2];
-                                                }
-                                                break;
-                                            }
-                                            case 'FCXtdPriceRet': {
-                                                if(in_array($DataTableVal['FTTmpStatus'], ["3","4"]) && explode("$&", $DataTableVal['FTTmpRemark'])[0] == "[2]"){
-                                                    $tDataCol = explode("$&", $DataTableVal['FTTmpRemark'])[2];
-                                                    $tFieldCol = "[3]";
-                                                }
-                                                break;
-                                            }
-                                        }
-
-                                ?>
-
-                                <td nowrap class="<?=$tAlignFormat?>">
-                                    <?php if($DataVal->FTShwStaAlwEdit == 1){ ?>
-                                            <!-- <label
-                                                dataSEQ = '<?=$DataTableVal['FNXtdSeqNo']?>' 
-                                                dataPRICE = '<?=$tColumnName?>'
-                                                dataPAGE = "<?=$aPdtPriDataList['rnCurrentPage']?>";
-                                                class = "xCNPdtFont xWShowInLine<?=$DataTableVal['FNXtdSeqNo']?> xWShowValue<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>"
-                                            >
-                                            <?=$tDataCol?>
-                                            </label> -->
-
+                                    <?php }else{ ?>
+                                    <select class="form-control xWSelectDis" id="ocmXphPuncode" name="ocmXphPuncode" maxlength="20" seq="<?=$DataTableVal['FNXtdSeqNo']?>" onchange="JSxEditPun(value,this);">
+                                        <?php foreach($aAllpunCode as $nKeypun => $aValPun){ ?>
+                                        <option id="optStaAdj1" value="<?php echo $aValPun ?>" <?= $aValPun == $DataTableVal['FTPunCode'] ? "selected" : ""; ?> ><?php echo $aAllpunName[$nKeypun] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                    <?php } ?>
+                                    <!-- <label class="text-left xCNPdtFont xWShowValueFTPunName<?php echo $DataTableVal['FNXtdSeqNo']?>"><?php echo $DataTableVal['FTPunName']?></label> -->
+                                </td>
+                                <td class="text-center"><label id='olaOriginalPrice<?php echo $DataTableVal['FNXtdSeqNo']?>' class='xWOriginalPriceClick xCNLinkClick' data-seq='<?php echo $DataTableVal['FNXtdSeqNo']?>' style='cursor:pointer'><?php echo language('document/salepriceadj/salepriceadj', 'tPdtPriTBPriceOgn')?></label></td>
+                                <?php if( $tImportStatus != "1" ){ ?>
+                                    <td nowrap class="xCNAdjPriceStaRmk text-left text-danger"><?php echo $DataTableVal['FTTmpRemark']; ?></td>
+                                <?php } ?>
+                                <td nowrap class="text-right">
                                             <input type="hidden" 
                                             name="ohdSPAFrtPdtCode" 
                                             id="ohdSPAFrtPdtCode<?=$DataTableVal['FTPdtCode']?><?=$DataTableVal['FTPunCode']?>"
-                                            value="ohd<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>">
+                                            value="ohdFCXtdPriceRet<?=$DataTableVal['FNXtdSeqNo']?>">
 
                                             <div class=" xWEditInLine<?=$DataTableVal['FNXtdSeqNo']?>">
                                                 <input 
@@ -171,60 +107,34 @@
                                                         padding: 0px;
                                                         text-align: right;
                                                     "
-                                                    type="<?=$InputType?>" 
-                                                    class="form-control xStaDocEdit xWValueEditInLine<?=$DataTableVal['FNXtdSeqNo']?> <?=$tValidateType?> <?=$tAlignFormat;?>"
-                                                    id="ohd<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>" 
-                                                    name="ohd<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>" 
-                                                    maxlength="<?=$tMaxlength?>" 
-                                                    value="<?=$tDataCol?>"
+                                                    type="text" 
+                                                    class="form-control xStaDocEdit xWValueEditInLine<?=$DataTableVal['FNXtdSeqNo']?> xCNInputNumericWithDecimal text-right"
+                                                    id="ohdFCXtdPriceRet<?=$DataTableVal['FNXtdSeqNo']?>" 
+                                                    name="ohdFCXtdPriceRet<?=$DataTableVal['FNXtdSeqNo']?>" 
+                                                    maxlength="11" 
+                                                    value="<?= number_format($DataTableVal['FCXtdPriceRet']) ?>"
                                                     autocomplete="off"
                                                     seq="<?=$DataTableVal['FNXtdSeqNo']?>"
-                                                    columname="<?=$tColumnName?>"
-                                                    col-validate="<?php echo $tFieldCol; ?>"
+                                                    columname="FCXtdPriceRet"
+                                                    col-validate=""
                                                     page="<?=$nPage?>"
-                                                    b4value="<?=$tDataCol?>"
+                                                    b4value="<?= number_format($DataTableVal['FCXtdPriceRet']) ?>"
                                                     onkeypress=" if(event.keyCode==13 ){     event.preventDefault(); return JSxSpaSaveInLine(event,this); } "
                                                     onfocusout="JSxSpaSaveInLine(event,this)"
                                                     onclick="JSxSPASetValueCommaOut(this)"
                                                 >
                                             </div>
-                                    <?php }else{   ?>
-                                        <label 
-                                        class="xCNPdtFont xWShowInLine xWShowValue<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>" 
-                                        id="ohd<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>" ><?=$tDataCol?></label>
-                                        <!-- <label class="xCNPdtFont xWShowValue<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>"><?=$tDataCol?></label>
-                                        <input type="<?=$InputType?>" class="xCNHide xWValueEditInLine<?=$DataTableVal['FNXtdSeqNo']?>" id="ohd<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>" name="ohd<?=$tColumnName?><?=$DataTableVal['FNXtdSeqNo']?>" value="<?=$tDataCol?>" data-field="<?=$tColumnName?>"> -->
-                                    <?php } ?>
                                 </td>
-
-                            <?php } ?>
-                            
-                            <?php if( $tImportStatus != "1" ){ ?>
-                                <td nowrap class="xCNAdjPriceStaRmk text-left text-danger">
-                                    <?php 
-                                        if(in_array($DataTableVal['FTTmpStatus'], ["3","4","7"])){
-                                            echo explode("$&", $DataTableVal['FTTmpRemark'])[1];
-                                        }else{
-                                            echo $DataTableVal['FTTmpRemark'];
-                                        }
-                                    ?>
-                                </td>
-                            <?php } ?>
-                                
+                                <!-- <label 
+                                        class="xCNPdtFont xWShowInLine xWShowValueFCXtdPriceRet<?=$DataTableVal['FNXtdSeqNo']?>" 
+                                        id="ohdFTPdtCode<?=$DataTableVal['FNXtdSeqNo']?>" ><?=$DataTableVal['FTPdtCode']?></label> -->
                             <?php if(@$tXphStaApv != 1 && @$tXphStaDoc != 3){?>
                             
-                                <td nowrap class="text-center xWInLine">
+                                <td nowrap class="text-center xWInLine xCNPIBeHideMQSS">
                                 <label class="xCNTextLink xWLabelInLine">
                                     <img class="xCNIconTable xCNDeleteInLineClick" data-seq="<?=$DataTableVal['FNXtdSeqNo']?>" src="<?=base_url().'/application/modules/common/assets/images/icons/delete.png'?>" title="Remove">
                                 </label>
                                 </td>
-                                <!-- <td nowrap class="text-center xWInLine">
-                                <label class="xCNTextLink xWLabelInLine">
-                                    <img id="oimSpaPdtPriEdit xWDeleteBtnEditButton" data-seq="<?=$DataTableVal['FNXtdSeqNo']?>" class="xWShowIconEditInLine<?=$DataTableVal['FNXtdSeqNo']?> xCNIconTable xCNEditInLineClick" src="<?=base_url().'/application/modules/common/assets/images/icons/edit.png'?>">
-                                    <img id="oimSpaPdtPriSave xWDeleteBtnEditButton" data-seq="<?=$DataTableVal['FNXtdSeqNo']?>" class="xWShowIconSaveInLine<?=$DataTableVal['FNXtdSeqNo']?> xCNIconTable xCNSaveInLineClick xCNHide" src="<?=base_url().'/application/modules/common/assets/images/icons/save.png'?>">
-                                    <img id="oimSpaPdtPriCancel xWDeleteBtnEditButton" data-seq="<?=$DataTableVal['FNXtdSeqNo']?>" class="xWShowIconCancelInLine<?=$DataTableVal['FNXtdSeqNo']?> xCNIconTable xCNCancelInLineClick xCNHide" src="<?=base_url().'/application/modules/common/assets/images/icons/reply_new.png'?>">
-                                </label>
-                                </td> -->
                             <?php } ?>
                             </tr>
                             <?php $nIndex++ ?>
@@ -240,36 +150,8 @@
     </div>
 </div>
 
-<div class="row" style="margin-top:10px;">
-    <div class="col-md-6">
-        <p><?= language('common/main/main','tResultTotalRecord')?> <?=$aPdtPriDataList['rnAllRow']?> <?= language('common/main/main','tRecord')?> <?= language('common/main/main','tCurrentPage')?> <?=$aPdtPriDataList['rnCurrentPage']?> / <?=$aPdtPriDataList['rnAllPage']?></p>
-    </div>
-    <div class="col-md-6">
-        <div class="xWPagePdtPri btn-toolbar pull-right">
-            <?php if($nPage == 1){ $tDisabledLeft = 'disabled'; }else{ $tDisabledLeft = '-';} ?>
-            <button onclick="JSvPdtPriClickPage('previous')" class="btn btn-white btn-sm" <?php echo $tDisabledLeft ?>> 
-                <i class="fa fa-chevron-left f-s-14 t-plus-1"></i>
-            </button>
-            <?php for($i=max($nPage-2, 1); $i<=max(0, min($aPdtPriDataList['rnAllPage'],$nPage+2)); $i++){?> 
-                <?php 
-                    if($nPage == $i){ 
-                        $tActive = 'active'; 
-                        $tDisPageNumber = 'disabled';
-                    }else{ 
-                        $tActive = '';
-                        $tDisPageNumber = '';
-                    }
-                ?>
-                 
-                <button onclick="JSvPdtPriClickPage('<?php echo $i?>')" type="button" class="btn xCNBTNNumPagenation <?php echo $tActive ?>" <?php echo $tDisPageNumber ?>><?php echo $i?></button>
-            <?php } ?>
-            <?php if($nPage >= $aPdtPriDataList['rnAllPage']){  $tDisabledRight = 'disabled'; }else{  $tDisabledRight = '-';  } ?>
-            <button onclick="JSvPdtPriClickPage('next')" class="btn btn-white btn-sm" <?php echo $tDisabledRight ?>> 
-                <i class="fa fa-chevron-right f-s-14 t-plus-1"></i>
-            </button>
-        </div>
-    </div>
-</div>
+
+<div class="row" style="margin-top:10px;"></div>
 
 <!-- Modal Delete Items -->
 <div class="modal fade" id="odvModalDelSpaPdtPri">
@@ -332,6 +214,50 @@
 </div>
 
 <script type="text/javascript">
+
+//เปลี่ยนข้อความใน Table
+var nXphStaAdj = $('#ocmXphStaAdj').val();
+if(nXphStaAdj == 1){
+    var tTextTHInTable = "ราคาขาย";
+}else if(nXphStaAdj == 2){
+    var tTextTHInTable = "ปรับลด %";
+}else if(nXphStaAdj == 3){
+    var tTextTHInTable = "ปรับลด มูลค่า";
+}else if(nXphStaAdj == 4){
+    var tTextTHInTable = "ปรับเพิ่ม %";
+}else if(nXphStaAdj == 5){
+    var tTextTHInTable = "ปรับเพิ่ม มูลค่า";
+}else{
+    var tTextTHInTable = "ราคาขาย";
+}
+$('.xCNPriceRetInAdjPrice').text(tTextTHInTable);
+
+$('#ocbCheckAll').click(function(){
+    if($(this).is(':checked')==true){
+        $('.ocbListItem').prop('checked',true);
+        $("#odvMngTableList #oliBtnDeleteAll").removeClass("disabled");
+    }else{
+        $('.ocbListItem').prop('checked',false);
+        $("#odvMngTableList #oliBtnDeleteAll").addClass("disabled");
+    }
+});
+
+function FSxSPASelectAll(){
+    if($('.ocbListItemAll').is(":checked")){
+        $('.ocbListItem').each(function (e) { 
+            if(!$(this).is(":checked")){
+                $(this).on( "click", FSxSPASelectMulDel(this) );
+            }
+        });
+    }else{
+        $('.ocbListItem').each(function (e) { 
+            if($(this).is(":checked")){
+                $(this).on( "click", FSxSPASelectMulDel(this) );
+            }
+        });
+    }
+}
+
 $('.xCNDeleteInLineClick').off('click');
 $('.xCNDeleteInLineClick').on('click',function(){
     var nSeq  = $(this).data('seq');
@@ -344,24 +270,18 @@ $('.xCNDeleteInLineClick').on('click',function(){
     JSoSpaPdtPriDel(nPage,tDoc,tPdt,tPun,nSeq,tSta);
 });
 
-// $('.xCNEditInLineClick').click(function(){
-//     var elem = $(this).data('seq');
-//     JSxSpaEditInLine(elem);
-// });
-
-// $('.xCNSaveInLineClick').click(function(){
-//     var elem = $(this).data('seq');
-//     JSxSpaSaveInLine(elem);
-// });
-
-// $('.xCNCancelInLineClick').click(function(){
-//     var elem = $(this).data('seq');
-//     JSxSpaCancelInLine(elem);
-// });
-
 if($('#ohdXphStaApv').val()==1){
+    if($("#ocmXphDocType").val() != '4'){
+        $('.xWSelectDis').prop('disabled',true);
         $('.xStaDocEdit').prop('disabled',true);
     }
+}
+
+if($('#oetStaDoc').val()==3){
+    $('.xStaDocEdit').prop('disabled',true);
+    $('.xWSelectDis').prop('disabled',true);
+}
+
 
 function JSxSPASetValueCommaOut(e){
 
@@ -371,7 +291,6 @@ function JSxSPASetValueCommaOut(e){
             $(e).select();
     
 }
-
 
 $('.xWOriginalPriceClick').click(function(){
     var elem = $(this).data('seq');
@@ -439,4 +358,52 @@ $('ducument').ready(function(){
         JSxShowButtonChoose();
     })
 });
+
+function FSxSPASelectMulDel(ptElm){
+    // $('#otbDODocPdtAdvTableList #odvTBodyDOPdtAdvTableList .ocbListItem').click(function(){
+    var tSeq = $(ptElm).parents('.xWPdtItem').data('seq'); // Pdt
+    var tPdt = $(ptElm).parents('.xWPdtItem').data('code'); // Pdt
+    var tDoc = $(ptElm).parents('.xWPdtItem').data('doc'); // Doc
+    var tPun = $(ptElm).parents('.xWPdtItem').data('pun'); // Pun
+    var tSta = $(ptElm).parents('.xWPdtItem').data('status'); // Pun
+
+    $(ptElm).prop('checked', true);
+    var LocalItemData = localStorage.getItem("LocalItemData");
+    var obj = [];
+    if(LocalItemData){
+        obj = JSON.parse(LocalItemData);
+    }else{ }
+    var aArrayConvert = [JSON.parse(localStorage.getItem("LocalItemData"))];
+    if(aArrayConvert == '' || aArrayConvert == null){
+        obj.push({"tSeq": tSeq, "tPdt": tPdt, "tDoc": tDoc, "tPun": tPun, "tSta" : tSta });
+        localStorage.setItem("LocalItemData",JSON.stringify(obj));
+        JSxSpaPdtPriTextinModal();
+    }else{
+        var aReturnRepeat = findObjectByKey(aArrayConvert[0],'tSeq',tSeq);
+        if(aReturnRepeat == 'None' ){ // ยังไม่ถูกเลือก
+            obj.push({"tSeq": tSeq, "tPdt": tPdt, "tDoc": tDoc, "tPun": tPun, "tSta" : tSta });
+            localStorage.setItem("LocalItemData",JSON.stringify(obj));
+            JSxSpaPdtPriTextinModal();
+        }else if(aReturnRepeat == 'Dupilcate'){	// เคยเลือกไว้แล้ว
+            localStorage.removeItem("LocalItemData");
+            $(this).prop('checked', false);
+            var nLength = aArrayConvert[0].length;
+            for($i=0; $i<nLength; $i++){
+                if(aArrayConvert[0][$i].tSeq == tSeq){
+                    delete aArrayConvert[0][$i];
+                }
+            }
+            var aNewarraydata = [];
+            for($i=0; $i<nLength; $i++){
+                if(aArrayConvert[0][$i] != undefined){
+                    aNewarraydata.push(aArrayConvert[0][$i]);
+                }
+            }
+            localStorage.setItem("LocalItemData",JSON.stringify(aNewarraydata));
+            JSxSpaPdtPriTextinModal();
+        }
+    }
+    JSxShowButtonChoose();
+}
+
 </script>
