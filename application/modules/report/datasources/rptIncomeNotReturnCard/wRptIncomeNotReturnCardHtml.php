@@ -60,10 +60,10 @@
                         <!-- ============================ ฟิวเตอร์ข้อมูล วันที่สร้างเอกสาร ============================ -->
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                <div class="text-center">
-                                    <label class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptDateFrom']?></label>   <label><?=date('d/m/Y',strtotime($aDataFilter['tDocDateFrom']));?>  </label>&nbsp;
-                                    <label class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptDateTo']?></label>     <label><?=date('d/m/Y',strtotime($aDataFilter['tDocDateTo']));?>    </label>
-                                </div>
+                                <div class="text-center xCNRptFilter">
+                                        <label><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptDateFrom']; ?> : </span> <?=date('d/m/Y',strtotime($aDataFilter['tDocDateFrom']));?> </label>
+                                        <label><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptDateTo']; ?> : </span> <?=date('d/m/Y',strtotime($aDataFilter['tDocDateFrom']));?> </label>
+                                    </div>
                             </div>
                         </div>
                     <?php endif;?>
@@ -193,7 +193,7 @@
                             <?php  } ?>
                         <?php }else{ ?>
                             <tr>
-                                <td  colspan="6"  class="text-center xCNRptColumnFooter" ><?php echo $aDataTextRef['tRptNoData']; ?></td>
+                                <td  colspan="6"  class="text-center xCNRptDetail" ><?php echo $aDataTextRef['tRptNoData']; ?></td>
                             </tr>
                         <?php } ?>
                     </tbody>
