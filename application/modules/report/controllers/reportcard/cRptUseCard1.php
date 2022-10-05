@@ -812,6 +812,7 @@ class cRptUseCard1 extends MX_Controller {
     public function  FSvCCallRptRenderExcel(){
 
         $tFileName = $this->aText['tTitleReport'].'_'.date('YmdHis').'.xlsx';
+        $nOptDecimalShow    = $this->nOptDecimalShow;
         $oWriter = WriterEntityFactory::createXLSXWriter();
 
         $oWriter->openToBrowser($tFileName); // stream data directly to the browser
