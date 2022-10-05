@@ -580,7 +580,7 @@ class mCreditNoteDisChgModal extends CI_Model {
 
     //หาราคาล่าสุด
     public function FSaMCENGetPriceAlwDiscount($paParams){
-        $tSQL = "   SELECT SUM(FCXtdAmt) AS Total FROM TCNTDocDTTmp 
+        $tSQL = "   SELECT SUM(FCXtdNet) AS Total FROM TCNTDocDTTmp 
                     WHERE 
                         TCNTDocDTTmp.FTSessionID    = '".$paParams['tSessionID']."'
                     AND TCNTDocDTTmp.FTBchCode      = '".$paParams['tBCHCode']."'

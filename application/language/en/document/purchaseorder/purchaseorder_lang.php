@@ -293,5 +293,5 @@ $lang['tPONotFoundPdtCodeAndBarcodeImp']   = "No product code and barcode found.
 $lang['tPONotFoundPdtCodeAndBarcodeImpList']   = "Cannot find product codes and barcodes in some items. Please check the product code or edit the information to continue working";
 
 
-$lang['tPONoQtyImpList']   = "จำนวนสินค้าต่ำกว่า 1";
-$lang['tPONoQtyImpListDesc']   = "มีรายการสินค้าจำนวนสินค้าต่ำกว่า 1 กรุณาตรวจสอบ";
+$lang['tPONoQtyImpList']   = "0 items are not allowed.";
+$lang['tPONoQtyImpListDesc']   = "0 items are not allowed. Please check.";

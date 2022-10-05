@@ -2552,11 +2552,11 @@ class mPurchaseInvoice extends CI_Model {
         $tUsername  = $this->session->userdata('tSesUsername');
 
         $tSQL =  "  INSERT INTO TCNTDocDTTmp (FTBchCode, FTXthDocNo, FNXtdSeqNo,FTXthDocKey,FTPdtCode,FTXtdPdtName,FCXtdFactor,FTPunCode,FTPunName,
-                    FTXtdBarCode,FTXtdVatType,FTVatCode,FCXtdVatRate,FTXtdStaAlwDis,FTXtdSaleType,FCXtdSalePrice,FCXtdQty,
+                    FTXtdBarCode,FTXtdVatType,FTVatCode,FCXtdVatRate,FTXtdStaAlwDis,FTXtdSaleType,FCXtdSalePrice,FCXtdQty,FTXtdDisChgTxt,
                     FCXtdQtyAll,FCXtdSetPrice,FTSessionID,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
                  ";
-        $tSQL .= "  SELECT FTBchCode, '".$paData['tDocNo']."', FNXpdSeqNo,'".$paData['tDocKey']."',FTPdtCode,FTXpdPdtName,FCXpdFactor,FTPunCode,FTPunName,
-                    FTXpdBarCode,FTXpdVatType,FTVatCode,FCXpdVatRate,FTXpdStaAlwDis,FTXpdSaleType,FCXpdSalePrice,FCXpdQty,
+        $tSQL .= "  SELECT '".$paData['tBchCode']."', '".$paData['tDocNo']."', FNXpdSeqNo,'".$paData['tDocKey']."',FTPdtCode,FTXpdPdtName,FCXpdFactor,FTPunCode,FTPunName,
+                    FTXpdBarCode,FTXpdVatType,FTVatCode,FCXpdVatRate,FTXpdStaAlwDis,FTXpdSaleType,FCXpdSalePrice,FCXpdQty,FTXpdDisChgTxt,
                     FCXpdQtyAll,FCXpdSetPrice,'".$paData['tSessionID']."','".$tDate."','".$tUsername."','".$tDate."','".$tUsername."'  
                     FROM TAPTPoDT WITH(NOLOCK)
                     WHERE FTXphDocNo = '".$paData['tPODocNo']."' 
@@ -2566,6 +2566,63 @@ class mPurchaseInvoice extends CI_Model {
 
 
     }
+
+
+    // Functionality    : MovePODTDisToDocTmp
+    // Parameters       : function parameters
+    // Creator          : 04/10/2022 Nattakit
+    // Last Modified    : 04/10/2022 Nattakit
+    // Return           : 
+    // Return Type      : 
+    public function FSaMPIMovePODTDisToDocTmp($paData){
+
+        $tDate      = date('Y-m-d h:i:s');
+        $tUsername  = $this->session->userdata('tSesUsername');
+
+
+        $tSQL =  "  INSERT INTO TCNTDocDTDisTmp
+        (FTBchCode,FTXthDocNo,FNXtdSeqNo,FTSessionID,FDXtdDateIns,FNXtdStaDis,FTXtdDisChgType,FCXtdNet,FCXtdValue,FTXtdDisChgTxt,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy)
+        ";
+        $tSQL .= "  SELECT 
+                    '".$paData['tBchCode']."','".$paData['tDocNo']."',FNXpdSeqNo,'".$paData['tSessionID']."',FDXpdDateIns,FNXpdStaDis,FTXpdDisChgType,FCXpdNet,FCXpdValue,FTXpdDisChgTxt
+                    ,'".$tDate."','".$tDate."','".$tUsername."','".$tUsername."'
+                    FROM TAPTPoDTDis WITH(NOLOCK)
+                    WHERE FTXphDocNo = '".$paData['tPODocNo']."'
+            ";
+
+        $this->db->query($tSQL);
+
+
+    }
+
+
+    
+    // Functionality    : MovePOHDDisToDocTmp
+    // Parameters       : function parameters
+    // Creator          : 04/10/2022 Nattakit
+    // Last Modified    : 04/10/2022 Nattakit
+    // Return           : 
+    // Return Type      : 
+    public function FSaMPIMovePOHDDisToDocTmp($paData){
+        $tDate      = date('Y-m-d h:i:s');
+        $tUsername  = $this->session->userdata('tSesUsername');
+        $tSQL =  "  INSERT INTO TCNTDocHDDisTmp
+        (FTBchCode,FTXthDocNo,FDXtdDateIns,FTXtdDisChgTxt,FTXtdDisChgType,FCXtdTotalAfDisChg,FCXtdDisChg,FCXtdAmt,
+        FTSessionID,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy)
+        ";
+        $tSQL .= " SELECT 
+                   '".$paData['tBchCode']."','".$paData['tDocNo']."',FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalafDisChg,FCXhdDisChg,FCXhdAmt
+                    ,'".$paData['tSessionID']."','".$tDate."','".$tDate."','".$tUsername."','".$tUsername."' 
+                    FROM TAPTPoHDDis WITH(NOLOCK)
+                    WHERE FTXphDocNo = '".$paData['tPODocNo']."'
+            ";
+
+        $this->db->query($tSQL);
+
+    }
+
+
+
 
 
     // Create By : Nattakit(Nale) 25/05/2021

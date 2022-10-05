@@ -1786,4 +1786,118 @@ class cCreditNote extends MX_Controller
         $this->mCreditNote->FSaMCNChangeSPLAffectNewVAT($aItem);
     }
 
+
+
+    // Create By : Napat(Jame) 05/04/2021
+    // หลังจากเลือก Ref IN PO Move รายการสินค้าจาก PO ไปยัง Tmp PI
+    public function FSvCCreditNoteMovePdtPIToDocTmp() {
+        try {
+            $tPIDocNo           = $this->input->post('tPIDocNo');
+            $tCNDocNo           = $this->input->post('tCNDocNo');
+            $tCNVATInOrEx       = $this->input->post('tCNVATInOrEx');
+            $tCNBchCode         = $this->input->post('tBCHCode');
+            $tCNOptionAddPdt    = $this->input->post('tCNOptionAddPdt');
+            $nVatRate           = $this->input->post('nVatRate');
+            $nVatCode           = $this->input->post('nVatCode');
+            $tPdtItemsSeq       = implode(',',$this->input->post('aPdtItemsSeq'));
+            
+            $aDataWhere = array(
+                'FTBchCode'     => $tCNBchCode,
+                'FTXthDocNo'    => $tCNDocNo,
+                'FTXthDocKey'   => 'TAPTPcHD'
+            );
+
+            $this->db->trans_begin();
+
+            /*======================= Begin Data Process =====================*/
+
+            $this->mCreditNote->FSxMClearPdtInTmp();
+            $this->mCreditNote->FSxMClearDTDisTmp();
+            $this->mCreditNote->FSxMClearHDDisTmp();
+
+            /*========================= End Data Process =====================*/
+
+            $aDataPdtParams = array(
+                'tPIDocNo'          => $tPIDocNo,
+                'tDocNo'            => $tCNDocNo,
+                'tBchCode'          => $tCNBchCode,
+                'nLngID'            => $this->session->userdata("tLangID"),
+                'tSessionID'        => $this->session->userdata('tSesSessionID'),
+                'tDocKey'           => 'TAPTPcHD',
+                'tCNOptionAddPdt'   => $tCNOptionAddPdt,
+                'nVatRate'          => $nVatRate,
+                'nVatCode'          => $nVatCode,
+                'tPdtItemsSeq'      => $tPdtItemsSeq,
+            );
+            
+            // นำรายการสินค้า จากใบ CN DT เข้า DT Temp
+            $this->mCreditNote->FSaMCNMovePODTToDocTmp($aDataPdtParams);
+            
+            // นำรายการสินค้า จากใบ CN DTDis เข้า DTDis Temp
+            $this->mCreditNote->FSaMCNMovePODTDisToDocTmp($aDataPdtParams);
+
+            // นำรายการสินค้า จากใบ CN HDDis เข้า HDDis Temp
+            $this->mCreditNote->FSaMCNMovePOHDDisToDocTmp($aDataPdtParams);
+
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $aReturnData = array(
+                    'nStaEvent' => '500',
+                    'tStaMessg' => 'Error Insert Product Error Please Contact Admin.'
+                );
+            } else {
+                $this->db->trans_commit();
+                // Calcurate Document DT Temp Array Parameter
+                $aCalcDTParams = [
+                    'tDataDocEvnCall'   => '1',
+                    'tDataVatInOrEx'    => $tCNVATInOrEx,
+                    'tDataDocNo'        => $tCNDocNo,
+                    'tDataDocKey'       => 'TAPTPcHD',
+                    'tDataSeqNo'        => ''
+                ];
+                $tStaCalcuRate = FCNbHCallCalcDocDTTemp($aCalcDTParams);
+                if ($tStaCalcuRate === TRUE) {
+                    $this->FSxCalculateHDDisAgain($tCNDocNo,$tCNBchCode);
+
+        
+                    FCNaHCalculateProrate('TAPTPcHD', $aCalcDTParams['tDataDocNo']);
+                    FCNbHCallCalcDocDTTemp($aCalcDTParams);
+                
+                    
+                    $aReturnData = array(
+                        'nStaEvent' => '1',
+                        'tStaMessg' => 'Success Add Product Into Document DT Temp.'
+                    );
+                } else {
+                    $aReturnData = array(
+                        'nStaEvent' => '500',
+                        'tStaMessg' => 'Error Calcurate Document DT Temp Please Contact Admin.'
+                    );
+                }
+            }
+        } catch (Exception $Error) {
+            $aReturnData = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
+            );
+        }
+        echo json_encode($aReturnData);
+    }
+
+
+    // Function         : คำนวณส่วนลดท้ายบิลใหม่อีกครั้ง กรณีมีการเพิ่มสินค้า , แก้ไขจำนวน , แก้ไขราคา , ลบสินค้า , ลดรายการ , ลดท้ายบิล
+    // Parameters       : -
+    // Creator          : 24/02/2021 Supawat
+    // LastUpdate       : -
+    // Return           : -
+    // ReturnType       : -
+    public function FSxCalculateHDDisAgain($ptDocumentNumber , $ptBCHCode){
+        $aPackDataCalCulate = array(
+            'tDocNo'        => $ptDocumentNumber,
+            'tBchCode'      => $ptBCHCode
+        );
+        FSaCCNDocumentUpdateHDDisAgain($aPackDataCalCulate);
+    }
+
+
 }

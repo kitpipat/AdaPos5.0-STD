@@ -135,9 +135,9 @@ function FCNbHUpdateDocDTTemp($paParams){
                         ((DataB4CalcCost.FCXtdNetAfHD - DataB4CalcCost.FCXtdVatIn)*ISNULL(DataB4CalcCost.FCXtdWhtRate,0)) AS FCXtdWhtAmtIn,
                         ((DataB4CalcCost.FCXtdNetAfHD - DataB4CalcCost.FCXtdVatEx)*ISNULL(DataB4CalcCost.FCXtdWhtRate,0)) AS FCXtdWhtAmtEx,
                         (DataB4CalcCost.FCXtdVatIn+(DataB4CalcCost.FCXtdNetAfHD - DataB4CalcCost.FCXtdVatIn)) AS 	FCXtdCostInVatIn,
-                        (DataB4CalcCost.FCXtdVatEx+(DataB4CalcCost.FCXtdNetAfHD - DataB4CalcCost.FCXtdVatEx)) AS	FCXtdCostInVatEx,
+                        (DataB4CalcCost.FCXtdNetAfHD + DataB4CalcCost.FCXtdVatEx) AS	FCXtdCostInVatEx,
                         (DataB4CalcCost.FCXtdNetAfHD - DataB4CalcCost.FCXtdVatIn) AS FCXtdCostExVatIn,
-                        (DataB4CalcCost.FCXtdNetAfHD - DataB4CalcCost.FCXtdVatEx) AS FCXtdCostExVatEx
+                        (DataB4CalcCost.FCXtdNetAfHD) AS FCXtdCostExVatEx
                     FROM (
                         SELECT
                             DataB4Calc.FTBchCode,
@@ -259,6 +259,8 @@ function FCNbHUpdateDocDTTemp($paParams){
                 AND DocDTUpd.FNXtdSeqNo 	= DocDTSlt.FNXtdSeqNo
                 AND DocDTUpd.FTSessionID	= DocDTSlt.FTSessionID
     ";
+    // echo $tSQL;
+    // die();
     $oQuery = $ci->db->query($tSQL);
     if($oQuery == 1){
         return true;

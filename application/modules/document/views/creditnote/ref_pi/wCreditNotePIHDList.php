@@ -87,6 +87,8 @@
                                 data-splcode="<?php echo $aValue['FTSplCode']?>"
                                 data-splname="<?php echo $aValue['FTSplName']?>"
                                 data-vatinorex="<?php echo $aValue['FTXphVATInOrEx']?>"
+                                data-vatcode="<?php echo $aValue['FTVatCode']?>"
+                                data-vatrate="<?php echo $aValue['FCVatRate']?>"
                                 data-daterefin="<?php echo date('Y-m-d', strtotime(str_replace('/', '-', $aValue['FDXphDocDate']))); ?>"
                                 >
                                 

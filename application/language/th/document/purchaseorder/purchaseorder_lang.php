@@ -305,5 +305,5 @@ $lang['tPONotFoundPdtCodeAndBarcodeImpList']   = "ไม่พบรหัสส
 
 
 
-$lang['tPONoQtyImpList']   = "จำนวนสินค้าต่ำกว่า 1";
-$lang['tPONoQtyImpListDesc']   = "มีรายการสินค้าจำนวนสินค้าต่ำกว่า 1 กรุณาตรวจสอบ";
+$lang['tPONoQtyImpList']   = "ไม่อนุญาตระบุสินค้าจำนวน 0 ชิ้น";
+$lang['tPONoQtyImpListDesc']   = "ไม่อนุญาตระบุสินค้าจำนวน 0 ชิ้น กรุณาตรวจสอบ";

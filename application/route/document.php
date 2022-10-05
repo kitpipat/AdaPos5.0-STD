@@ -510,6 +510,7 @@ $route['creditNoteDisChgHDList']           = 'document/creditnote/cCreditNoteDis
 $route['creditNoteDisChgDTList']           = 'document/creditnote/cCreditNoteDisChgModal/FSoCreditNoteDisChgDTList';
 $route['creditNoteCalEndOfBillNonePdt']    = 'document/creditnote/cCreditNote/FSoCreditNoteCalEndOfBillNonePdt';
 $route['creditNoteChangeSPLAffectNewVAT']  = 'document/creditnote/cCreditNote/FSoCCreditNoteChangeSPLAffectNewVAT';
+$route['creditNoteMovePdtPIToDocTmp']      = 'document/creditnote/cCreditNote/FSvCCreditNoteMovePdtPIToDocTmp';
 
 
 //ใบจ่ายโอนระหว่างคลัง - ใบจ่ายโอนระหว่างสาขา - ใบเบิกออก

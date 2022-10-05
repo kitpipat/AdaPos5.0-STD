@@ -37,6 +37,7 @@ class cCreditNoteRefPIModal extends MX_Controller {
                 'nPage'             => $nPage,
                 'nRow'              => 10,
                 'aAdvanceSearch'    => $aAdvanceSearch,
+                'tCNPIMoDocNo'      => $this->input->post('oetCNPIMoDocNo'),
                 'tStaApv'           => $this->input->post('ocmStaApv'),
                 'tStaRef'           => $this->input->post('ocmStaRef'),
                 'tStaDocAct'        => $this->input->post('ocmStaDocAct'),

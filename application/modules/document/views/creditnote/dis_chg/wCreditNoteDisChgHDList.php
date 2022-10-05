@@ -12,7 +12,7 @@
                 <thead>
                     <tr class="xCNCenter">
 			<th class="xCNTextBold"><?php echo language('document/purchaseinvoice/purchaseinvoice','tPTSeq')?></th>
-                        <th class="xCNTextBold"><?php echo language('document/purchaseinvoice/purchaseinvoice','tPIB4Discount')?></th>
+                        <th class="xCNTextBold"><?php echo language('document/purchaseinvoice/purchaseinvoice','tPIBeforereducing')?></th>
                         <th class="xCNTextBold"><?php echo language('document/purchaseinvoice/purchaseinvoice','tPIValueAfterDiscount')?></th>
                         <th class="xCNTextBold"><?php echo language('document/purchaseinvoice/purchaseinvoice','tPIB4Discount')?></th>
                         <th class="xCNTextBold"><?php echo language('document/purchaseinvoice/purchaseinvoice','tPIType')?></th>

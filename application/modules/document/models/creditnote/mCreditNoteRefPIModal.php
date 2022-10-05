@@ -22,7 +22,7 @@ class mCreditNoteRefPIModal extends CI_Model {
         $tSearchDocDateFrom = ''; // $aAdvanceSearch['tSearchDocDateFrom'];
         $tSearchDocDateTo   = ''; // $aAdvanceSearch['tSearchDocDateTo'];
         $tSearchStaPrcStk   = ''; // $aAdvanceSearch['tSearchStaPrcStk'];
-        
+        $tSearchList        = $paDataCondition['tCNPIMoDocNo'];
         $tSearchStaDoc      = $paDataCondition['tStaDoc'];
         $tSearchStaApprove  = $paDataCondition['tStaApv'];
         $tSearchStaDocAct   = $paDataCondition['tStaDocAct'];
@@ -54,20 +54,24 @@ class mCreditNoteRefPIModal extends CI_Model {
                         SPLL.FTSplName,
                         SHPL.FTShpName,
                         WAHL.FTWahName,
-                        USRLAPV.FTUsrName   AS FTXphApvName
+                        USRLAPV.FTUsrName   AS FTXphApvName,
+                        SPL.FTVatCode,
+                        VAT.FCVatRate
                     FROM TAPTPiHD           PIHD    WITH (NOLOCK)
+                    LEFT JOIN TCNMSpl SPL WITH (NOLOCK) ON PIHD.FTSplCode = SPL.FTSplCode
                     LEFT JOIN TCNMSpl_L SPLL WITH (NOLOCK) ON PIHD.FTSplCode = SPLL.FTSplCode AND SPLL.FNLngID = $nLngID
                     LEFT JOIN TCNMBranch_L  BCHL    WITH (NOLOCK) ON PIHD.FTBchCode = BCHL.FTBchCode    AND BCHL.FNLngID    = $nLngID 
                     LEFT JOIN TCNMUser_L    USRL    WITH (NOLOCK) ON PIHD.FTCreateBy = USRL.FTUsrCode    AND USRL.FNLngID    = $nLngID
                     LEFT JOIN TCNMUser_L    USRLAPV WITH (NOLOCK) ON PIHD.FTXphApvCode = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = $nLngID
                     LEFT JOIN TCNMShop_L    SHPL WITH (NOLOCK) ON PIHD.FTShpCode = SHPL.FTShpCode AND PIHD.FTBchCode = SHPL.FTBchCode AND SHPL.FNLngID = $nLngID
                     LEFT JOIN TCNMWaHouse_L WAHL WITH (NOLOCK) ON PIHD.FTWahCode = WAHL.FTWahCode AND PIHD.FTBchCode = WAHL.FTBchCode AND WAHL.FNLngID = $nLngID
+                    LEFT JOIN VCN_VatActive VAT   WITH (NOLOCK) ON SPL.FTVatCode = VAT.FTVatCode
                     WHERE 1=1
         ";
 
         // ค้นหารหัสเอกสาร,ชือสาขา,วันที่เอกสาร
         if(isset($tSearchList) && !empty($tSearchList)){
-            $tSQL .= " AND ((PIHD.FTXphDocNo LIKE '%$tSearchList%') OR (BCHL.FTBchName LIKE '%$tSearchList%') OR (CONVERT(CHAR(10),PIHD.FDXphDocDate,103) LIKE '%$tSearchList%'))";
+            $tSQL .= " AND ((PIHD.FTXphDocNo LIKE '%$tSearchList%') OR (BCHL.FTBchName LIKE '%$tSearchList%')  OR (SPLL.FTSplName LIKE '%$tSearchList%') OR (CONVERT(CHAR(10),PIHD.FDXphDocDate,103) LIKE '%$tSearchList%'))";
         }
         
         // ค้นหาจากสาขา - ถึงสาขา
@@ -339,6 +343,7 @@ class mCreditNoteRefPIModal extends CI_Model {
                         FROM
                             (SELECT DISTINCT
                                 PIDT.FTXphDocNo,
+                                PIDT.FNXpdSeqNo,
                                 PIDT.FTPdtCode,
                                 PIDT.FTXpdBarCode,
                                 PIDT.FTXpdPdtName,

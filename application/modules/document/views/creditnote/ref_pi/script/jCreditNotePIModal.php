@@ -263,8 +263,10 @@ function JSxCreditNoteAddPdtFromPIToDTTemp(){
     if(JCNbCreditNoteIsDocType('havePdt')) {
     
         var aPdtItems = [];
+        var aPdtItemsSeq = [];
         $('.xWPIDTDocItems .xWCreditNoteSelectPIDTItem:checked').each(function(index){
             var tPdtCode    = $(this).parents('.xWPIDTDocItems').data('code');
+            var nSeqno    = $(this).parents('.xWPIDTDocItems').data('seqno');
             var tBarCode    = $(this).parents('.xWPIDTDocItems').data('barcode');
             var tPunCode    = $(this).parents('.xWPIDTDocItems').data('puncode');
             var tPrice      = $(this).parents('.xWPIDTDocItems').data('price');
@@ -282,12 +284,45 @@ function JSxCreditNoteAddPdtFromPIToDTTemp(){
                     Vatcode : tVatcode
                 }
             });
+
+            aPdtItemsSeq.push(nSeqno);
+
         });
         var tPdtItems = JSON.stringify(aPdtItems); 
         var tIsRefPI = '1';
         
         if(JSbCreditNoteSetConditionFromPI()) {
-            FSvPDTAddPdtIntoTableDT(tPdtItems, tIsRefPI);
+            // FSvPDTAddPdtIntoTableDT(tPdtItems, tIsRefPI);
+            $.ajax({
+                type : "POST",
+                url: "creditNoteMovePdtPIToDocTmp",
+                data:{
+                    'tPIDocNo'            : window.tPIHDDocCode,
+                    'tBCHCode'            : $('#oetCreditNoteBchCode').val(),
+                    'tCNDocNo'            : $('#oetCreditNoteDocNo').val(),
+                    'tCNVATInOrEx'        : $('#ocmCreditNoteXphVATInOrEx').val(),
+                    'tCNOptionAddPdt'     : $('#ocmCreditNoteOptionAddPdt').val(),
+                    'nVatRate'            : $('#ohdCNFrmSplVatRate').val(),
+                    'nVatCode'            : $('#ohdCNFrmSplVatCode').val(),
+                    'aPdtItemsSeq'        : aPdtItemsSeq
+                },
+                cache: false,
+                timeout: 0,
+                success: function(oResult){
+                    var aResult = JSON.parse(oResult);
+                    if(aResult['nStaEvent'] == 1){
+                        JSvCreditNoteLoadPdtDataTableHtml();
+                    }else{
+                        var tMessageError = aResult['tStaMessg'];
+                        FSvCMNSetMsgErrorDialog(tMessageError);
+                        JCNxCloseLoading();
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
             $('#oetCreditNoteRefPICode').val(window.tPIHDDocCode);
             $('#oetCreditNoteRefPIName').val(window.tPIHDDocCode);
             $('#odvCreditNotePIPanel').modal('hide');
@@ -305,6 +340,8 @@ function JSbCreditNoteSetConditionFromPI(){
     var tSplname    = $('.xWPIHDDocItems.xCNActive').data('splname');
     var tVatInorEx  = $('.xWPIHDDocItems.xCNActive').data('vatinorex');
     var dDateRefIn  = $('.xWPIHDDocItems.xCNActive').data('daterefin');
+    var tVatcode  = $('.xWPIHDDocItems.xCNActive').data('vatcode');
+    var nVatrate  = $('.xWPIHDDocItems.xCNActive').data('vatrate');
 
     $('#oetCreditNoteMchCode').val('');
     $('#oetCreditNoteMchName').val('');
@@ -323,6 +360,8 @@ function JSbCreditNoteSetConditionFromPI(){
     $('#oetCreditNoteWahCode').val(tWahCode);
     $('#oetCreditNoteWahName').val(tWahName);
     $('#oetCreditNoteXphRefIntDate').val(dDateRefIn);
+    $('#ohdCNFrmSplVatCode').val(tVatcode);
+    $('#ohdCNFrmSplVatRate').val(nVatrate);
     //ถ้าอ้างอิงผู้จำหน่าย
     $('#oetCreditNoteSplCode').val(tSplcode);
     $('#oetCreditNoteSplName').val(tSplname);

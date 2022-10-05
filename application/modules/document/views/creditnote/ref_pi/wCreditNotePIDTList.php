@@ -29,6 +29,7 @@
                                 class="text-center xCNTextDetail2 xWPIDTDocItems" 
                                 id="otrCreditNotePIDTDoc<?php echo $aValue['FNRowID']; ?>" 
                                 data-code="<?php echo $aValue['FTPdtCode']?>" 
+                                data-seqno="<?php echo $aValue['FNXpdSeqNo']?>" 
                                 data-barcode="<?php echo $aValue['FTXpdBarCode']?>"
                                 data-puncode="<?php echo $aValue['FTPunCode']?>"
                                 data-price="<?php echo $aValue['FCXpdSetPrice']?>"

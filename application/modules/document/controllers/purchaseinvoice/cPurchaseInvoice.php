@@ -1848,6 +1848,13 @@ class cPurchaseInvoice extends MX_Controller {
 
             $this->db->trans_begin();
 
+            $aDataForClearDocTmp = array(
+                'FTXthDocNo' => $tPIDocNo,
+                'FTXthDocKey' => 'TAPTPiHD',
+                'FTSessionID' => $this->session->userdata('tSesSessionID')
+            );
+            $this->mPurchaseInvoice->FSxMPIClearDataInDocTemp($aDataForClearDocTmp);
+
             $aDataPdtParams = array(
                 'tPODocNo'          => $tPODocNo,
                 'tDocNo'            => $tPIDocNo,
@@ -1863,6 +1870,11 @@ class cPurchaseInvoice extends MX_Controller {
             // นำรายการสินค้า จากใบ PO DT เข้า DT Temp
             $this->mPurchaseInvoice->FSaMPIMovePODTToDocTmp($aDataPdtParams);
             
+            // นำรายการสินค้า จากใบ PO DTDis เข้า DTDis Temp
+            $this->mPurchaseInvoice->FSaMPIMovePODTDisToDocTmp($aDataPdtParams);
+
+            // นำรายการสินค้า จากใบ PO HDDis เข้า HDDis Temp
+            $this->mPurchaseInvoice->FSaMPIMovePOHDDisToDocTmp($aDataPdtParams);
 
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();

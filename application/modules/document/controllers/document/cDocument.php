@@ -55,6 +55,11 @@ class cDocument extends MX_Controller {
           ->where('FTSessionID',$tSessionID)
           ->update('TCNTDocDTDisTmp');
 
+          $this->db->set('FTBchCode',$tDocBchCode)
+          ->where('FTXthDocNo',$tDocNo)
+          ->where('FTSessionID',$tSessionID)
+          ->update('TCNTDocHDDisTmp');
+
           $aReturnData = array(
             'nStaEvent' => '1',
             'tStaMessg' => 'Success'

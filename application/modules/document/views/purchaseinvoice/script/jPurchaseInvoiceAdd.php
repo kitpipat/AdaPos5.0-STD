@@ -1676,10 +1676,14 @@ var oBrowsePODoc = function(poReturnInput) {
     var tInputReturnCode = poReturnInput.tReturnInputCode;
     var tInputReturnName = poReturnInput.tReturnInputName;
     var tBchMulti = "<?=$this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+    var tPIFrmBchCode = $('#oetPIFrmBchCode').val();
     var tWhereCondition = '';
     if (tSesUsrLevel != "HQ") { // ไม่ใช่ผู้ใช้ระดับ HQ ดูได้แค่สาขาที่ login
         tWhereCondition += " AND TAPTPoHD.FTBchCode IN ("+tBchMulti+") ";
     }
+    // if(tPIFrmBchCode!=''){
+    //     tWhereCondition += " AND TAPTPoHD.FTBchCode ='"+tPIFrmBchCode+"' ";
+    // }
 
     var oSMPBrowsePODoc = {
         Title: ['document/purchaseorder/purchaseorder','tPOTitleMenu'],

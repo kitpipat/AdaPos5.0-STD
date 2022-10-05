@@ -15,6 +15,17 @@
                         <div class="col-md-3">
                             <label class="xCNLabelFrm xWFont-size-30px"><?php echo language('document/transferwarehouseout/transferwarehouseout', 'เงื่อนไขการค้นหา'); ?></label>
                             <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('document/transferwarehouseout/transferwarehouseout', 'tTWOFillTextSearch'); ?></label>
+                                <div class="input-group">
+                                <input type="text" class="form-control" name="oetCNPIMoDocNo" id="oetCNPIMoDocNo" maxlength="20" >
+                                <span class="input-group-btn">
+                                    <button id="" type="button" class="btn xCNBtnBrowseAddOn" onclick="JSxCreditNotePIHDList(1);"" >
+                                        <img src="<?php echo base_url('application/modules/common/assets/images/icons/search-24.png'); ?>">
+                                    </button>
+                                </span>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="xCNLabelFrm"><?php echo language('document/transferwarehouseout/transferwarehouseout', 'tCreditNoteTBStaApv'); ?></label>
                                 <select class="selectpicker form-control" id="ocmStaApv" name="ocmStaApv" onchange="JSxCreditNotePIHDList(1);">
                                     <option value='0'><?php echo language('common/main/main', 'tAll'); ?></option>
