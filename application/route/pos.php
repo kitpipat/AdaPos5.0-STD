@@ -77,7 +77,7 @@
     $route ['adMessageEventAdd']                        = 'pos/admessage/cAdMessage/FSaADVAddEvent';
     $route ['adMessagePageEdit']                        = 'pos/admessage/cAdMessage/FSvADVEditPage';
     $route ['adMessageEventEdit']                       = 'pos/admessage/cAdMessage/FSaADVEditEvent';
-    $route ['adMessageDeleteMulti']                     = 'pos/admessage/cAdMessage/FSoADVDeleteMulti';
+    // $route ['adMessageDeleteMulti']                     = 'pos/admessage/cAdMessage/FSoADVDeleteMulti';
     $route ['adMessageDelete']                          = 'pos/admessage/cAdMessage/FSoADVDelete';
     $route ['adMessageUniqueValidate/(:any)']           = 'pos/admessage/cAdMessage/FStADVUniqueValidate/$1';
     $route ['adMessageUniqueFileNameValidate/(:any)']   = 'pos/admessage/cAdMessage/FStADVUniqueFileNameValidate/$1';

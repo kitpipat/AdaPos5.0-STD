@@ -201,7 +201,8 @@ $aStaUseItems = [
                                 <?php if($aAdTypeItem['value'] == $tAdvType) : ?>
                                     <option  value="<?=$aAdTypeItem['value']?>" selected="true"><?=$aAdTypeItem['text']?></option>
                                 <?php else : ?>
-                                    <option  disabled value="<?=$aAdTypeItem['value']?>"><?=$aAdTypeItem['text']?></option>
+                                    <!-- <option  disabled value="<?=$aAdTypeItem['value']?>"><?=$aAdTypeItem['text']?></option> -->
+                                    <option  value="<?=$aAdTypeItem['value']?>"><?=$aAdTypeItem['text']?></option>
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         </select>
@@ -324,6 +325,73 @@ $aStaUseItems = [
                     <div class="col-xs-12 col-md-12 col-lg-12" style="overflow-x:hidden;overflow-y:auto;" data-validate="Please Insert Media"> <!--height:300px;-->
                         <label class="xCNLabelFrm"><?= language('pos/admessage/admessage','tFileMaxValue')?></label>
                         <ul class="xWAdvSortContainer" id="odvAdvMediaContainer">
+                                <?php foreach($aAdvMediaItems as $nMediaIndex => $oMediaItem) : $nMediaIndex++; ?>
+                                    <li class="ui-state-default xWAdvItemSelect" style="width: <?php if($tAdvType == '3'){ echo '50%'; }else if($tAdvType == '5'){ echo '100%'; }?>">
+                                        <div class="well well-sm" style="margin:0px;">
+                                            <div class="xWMediaDisplay">
+                                                <?php
+                                                    // if(isset($oMediaItem['FTMedPath']) && !empty($oMediaItem['FTMedPath'])){
+
+                                                    //     $aValueImgExplode = explode('/modules/',$oMediaItem['FTMedPath']);
+                                                    //     $tFullPatch = './application/modules/'.$aValueImgExplode[1];
+                                                    //     if (file_exists($tFullPatch)){
+                                                    //         $tPatchFile = base_url().'application/modules/'.$aValueImgExplode[1];
+                                                    //     }else{
+                                                    //         $tPatchFile = base_url().'application/modules/common/assets/images/200x200.png';
+                                                    //     }
+                                                    // }else{
+                                                    //     $tPatchFile  =   base_url().'application/modules/common/assets/images/200x200.png';
+                                                    // }
+                                                    // $aExplodeImg    = explode('/',$oMediaItem['FTMedPath']);
+
+                                                    $tPatchFile = $oMediaItem['FTMedPath'];
+                                                ?>
+
+                                                <?php if(isset($tAdvType) && $tAdvType == '3'){ ?>
+                                                    <video controls style="width:100%;">
+                                                        <source src="<?=$tPatchFile?>" type="video/mp4">
+                                                    </video>
+                                                <?php }else if(isset($tAdvType) && $tAdvType == '5'){ ?>
+                                                    <audio controls style="width:100%;">
+                                                        <source src="<?=$tPatchFile?>" type="audio/mpeg">
+                                                    </audio>
+                                                <?php } ?>
+                                            </div>
+
+                                            <div class="input-group xWAdvItem old" id="<?=$nMediaIndex?>">
+                                                <span class="input-group-btn">
+                                                    <div class="btn xCNBtnGenCode xWAdvMoveIcon">
+                                                        <i class="icon-move fa fa-arrows"></i>
+                                                    </div>
+                                                </span>
+                                                <input type="text" class="form-control xWAdvFile" readonly="" value="<?php if(isset($oMediaItem['FTMedPath'])){ print_r($oMediaItem['FTMedPath']); } ?>">
+                                                <label class="input-group-btn">
+                                                    <div class="btn xCNBtnPrimeryAddOn" style="font-size:18px;">
+                                                        <input
+                                                                accesskey=""
+                                                                type="file"
+                                                                seq="<?=$nMediaIndex?>"
+                                                                media-id="<?=$oMediaItem['FNMedID']?>"
+                                                                id="oetAdvMedia<?=$nMediaIndex?>"
+                                                                class="xWAdvMedia"
+                                                                data-key="<?=$oMediaItem['FTMedKey']?>"
+                                                                name="oetAdvMedia[<?=$nMediaIndex?>]"
+                                                                style="position: absolute;clip: rect(0px, 0px, 0px, 0px);"
+                                                                onchange="JSxChangedFile(this, event)"> <?= language('pos/admessage/admessage','tSelectFile')?>
+                                                    </div>
+                                                </label>
+                                                <span class="input-group-btn">
+                                                    <button class="btn xCNBtnGenCode" style="font-size:18px;" type="button" onclick="JSxDeleteMediaRow(this, event)">
+                                                        <?= language('pos/admessage/admessage','tADVDeleteRow')?>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                <?php endforeach; ?>
+                        </ul>
+
+                        <ul class="xWAdvSortContainer xCNHide" id="ohdAdvMediaContainer">
                                 <?php foreach($aAdvMediaItems as $nMediaIndex => $oMediaItem) : $nMediaIndex++; ?>
                                     <li class="ui-state-default xWAdvItemSelect" style="width: <?php if($tAdvType == '3'){ echo '50%'; }else if($tAdvType == '5'){ echo '100%'; }?>">
                                         <div class="well well-sm" style="margin:0px;">
