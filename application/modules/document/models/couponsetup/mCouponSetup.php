@@ -1282,6 +1282,22 @@ class mCouponSetup extends CI_Model {
         return;
     }
 
+    //Functionality : pdateStaClosed Coupon HD
+    //Parameters : function parameters
+    //Creator : 05/10/2022 IcePHP
+    //Last Modified : -
+    //Return : Array
+    //Return Type : Array
+    public function FSaMCCPUpdateStaClosedCouponHD($paDataCouponHD){
+        
+        $tSQL = " UPDATE TFNTCouponHD SET 
+                    FTCphStaClosed  =  '".$paDataCouponHD['FTCphStaClosed']."'
+                    WHERE TFNTCouponHD.FTBchCode = '".$paDataCouponHD['FTBchCode']."' AND TFNTCouponHD.FTCphDocNo = '".$paDataCouponHD['FTCphDocNo']."'
+        ";
+
+        $oQuery = $this->db->query($tSQL);
+        return;
+    }
 
 
 }

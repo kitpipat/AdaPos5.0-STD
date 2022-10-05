@@ -809,4 +809,38 @@ class cCouponSetup extends MX_Controller {
         }
         echo json_encode($aReturnData);
     }
+
+    //Functionality : อัพเดตสถานะหยุดใช้งาน
+    //Parameters : nStaClosed tCPHDocNo tBchCode
+    //Creator : 05/10/2022 IcePHP
+    //Return : status
+    //Return Type : json
+    public function FSaCCPHChangStatusAfApv() {
+        try {
+            $nStaClosed               = $this->input->post('nStaClosed');
+            $tCPHDocNo               = $this->input->post('tCPHDocNo');
+            $tBchCode               = $this->input->post('tBchCode');
+    
+            $aDataCouponHD      = [
+                'FTBchCode'         => $tBchCode, 
+                'FTCphDocNo'        => $tCPHDocNo,
+                'FTCphStaClosed'    => $nStaClosed,
+            ];
+    
+            $this->mCouponSetup->FSaMCCPUpdateStaClosedCouponHD($aDataCouponHD);
+            // print_r($aDataCouponHD);
+            $aReturnData = array(
+                'nStaEvent' => '1',
+                'tStaMessg' => "Fucntion Success"
+            );
+        } catch (Exception $Error) {
+            $aReturnData = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
+            );
+        }
+
+        echo json_encode($aReturnData);
+
+    }
 }
