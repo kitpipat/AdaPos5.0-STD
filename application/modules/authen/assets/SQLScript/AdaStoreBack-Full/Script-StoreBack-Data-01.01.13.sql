@@ -623,3 +623,87 @@ UPDATE TSysReport SET FTRptFilterCol = '1,4' WHERE FTRptCode='004001017'
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.12', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Nattakit K.')
 END
 GO
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.13') BEGIN
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTSysCode = 'KB030' AND FTGhdCode='031') BEGIN
+INSERT INTO [TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) 
+VALUES ('031', 'KB030', 'SF-PS031KB030', '1', '21', '21', '1', '1', 'C_KBDxCreditSale', '1', '1', '1')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('031', 'KB030', '1', 'เงินเชื่อ')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('031', 'KB030', '2', 'Credit Sale')
+
+END
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTSysCode = 'KB030' AND FTGhdCode='064') BEGIN
+INSERT INTO [TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) 
+VALUES ('064', 'KB030', 'SF-SB064KB030', '1', '9', '9', '0', '0', '', '1', '1', '1')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('064', 'KB030', '1', 'แต้มพิเศษ')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('064', 'KB030', '2', 'Special points')
+
+END
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTSysCode = 'KB058' AND FTGhdCode='090') BEGIN
+INSERT INTO [TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) 
+VALUES ('090', 'KB058', 'KB058090', '1', '1', '1', '0', '0', 'C_KBCbAlwSalePriZero', '1', '1', '1')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('090', 'KB058', '1', 'อนุญาต ให้ขายสินค้าราคาศูนย์')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('090', 'KB058', '2', 'Allow to sale product zero price')
+
+END
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTSysCode = 'KB058' AND FTGhdCode='091') BEGIN
+INSERT INTO [TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) 
+VALUES ('091', 'KB058', 'KB058090', '1', '1', '1', '0', '0', 'C_KBCbAlwSalePriZero', '1', '1', '1')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('091', 'KB058', '1', 'อนุญาต ให้ขายสินค้าราคาศูนย์')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('091', 'KB058', '2', 'Allow to sale product zero price')
+END
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTSysCode = 'KB101' AND FTGhdCode='088') BEGIN
+INSERT INTO [TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) 
+VALUES ('088', 'KB101', '', '1', '0', '0', '0', '0', 'C_KBDxAlwEditWHT', '1', '1', '1')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('088', 'KB101', '1', 'อนุญาต แก้ไขยอดหักภาษี ณ ที่จ่าย')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('088', 'KB101', '2', 'Allow edit Withholding tax amount')
+END
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTSysCode = 'KB102' AND FTGhdCode='088') BEGIN
+INSERT INTO [TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) 
+VALUES ('088', 'KB102', '', '1', '0', '0', '0', '0', 'C_KBDxAlwRetSalDiffDate', '1', '1', '1')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('088', 'KB102', '1', 'อนุญาต คืนบิลขายข้ามวัน')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('088', 'KB102', '2', 'Allow return sale different date')
+
+END
+
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTSysCode = 'KB103' AND FTGhdCode='088') BEGIN
+INSERT INTO [TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) 
+VALUES ('088', 'KB103', '', '1', '0', '0', '0', '0', 'C_KBDxAlwSalOverCrd', '1', '1', '1')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('088', 'KB103', '1', 'อนุญาต ขายเกินวงเงินเครดิต')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('088', 'KB103', '2', 'Allow sale over credit')
+
+END
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTSysCode = 'KB104' AND FTGhdCode='088') BEGIN
+INSERT INTO [TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) 
+VALUES ('088', 'KB104', '', '1', '0', '0', '0', '0', 'C_KBDxAlwResetDocPrint', '1', '1', '1')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('088', 'KB104', '1', 'อนุญาต ปรับการพิมพ์เอกสารเป็นต้นฉบับ')
+INSERT INTO [TPSMFuncDT_L] ([FTGhdCode], [FTSysCode], [FNLngID], [FTGdtName]) VALUES ('088', 'KB104', '2', 'Allow Change doucument printing to master')
+END
+
+IF NOT EXISTS(SELECT FTGhdCode FROM TPSMFuncHD WHERE FTGhdCode='088') BEGIN
+INSERT INTO [TPSMFuncHD] ([FTGhdCode], [FTGhdApp], [FTKbdScreen], [FTKbdGrpName], [FNGhdMaxPerPage], [FTGhdLayOut], [FNGhdMaxLayOutX], [FNGhdMaxLayOutY], [FTGhdStaAlwChg], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) 
+VALUES ('088', 'PS', 'ROLE', 'ROLE', '0', 'ALL', '0', '0', '0', '2022-09-27 20:56:17.000', 'Jirayu S.', '2022-09-21 10:32:58.977', 'Jirayu S.')
+END
+
+IF NOT EXISTS(SELECT FTGhdCode FROM TPSMFuncHD WHERE FTGhdCode='090') BEGIN
+INSERT INTO [TPSMFuncHD] ([FTGhdCode], [FTGhdApp], [FTKbdScreen], [FTKbdGrpName], [FNGhdMaxPerPage], [FTGhdLayOut], [FNGhdMaxLayOutX], [FNGhdMaxLayOutY], [FTGhdStaAlwChg], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) 
+VALUES ('090', 'PS', 'SALE', 'ROLE', '0', 'ALL', '0', '0', '1', '2022-08-10 23:46:00.000', 'Junthon M.', '2022-08-10 23:46:00.000', 'Junthon M.')
+END
+IF NOT EXISTS(SELECT FTGhdCode FROM TPSMFuncHD WHERE FTGhdCode='091') BEGIN
+INSERT INTO [TPSMFuncHD] ([FTGhdCode], [FTGhdApp], [FTKbdScreen], [FTKbdGrpName], [FNGhdMaxPerPage], [FTGhdLayOut], [FNGhdMaxLayOutX], [FNGhdMaxLayOutY], [FTGhdStaAlwChg], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) 
+VALUES ('091', 'VS', 'SALE', 'ROLE', '0', 'ALL', '0', '0', '1', '2022-08-10 23:46:00.000', 'Junthon M.', '2022-08-10 23:46:00.000', 'Junthon M.')
+END
+
+
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.13', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Nattakit K.')
+END
+GO
