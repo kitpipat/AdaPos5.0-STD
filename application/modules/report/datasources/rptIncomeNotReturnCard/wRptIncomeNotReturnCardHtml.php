@@ -97,7 +97,7 @@
             <div id="odvRptTableAdvance" class="table-responsive">
                 <table class="table">
                     <thead>
-                        <tr style="border-bottom: 2px solid #ffffff !important;">
+                        <!-- <tr style="border-bottom: 2px solid #ffffff !important;">
                             <th style="width:10%" nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardBranch');?></th>
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardShop');?></th>
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
@@ -105,16 +105,16 @@
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
-                        </tr>
+                        </tr> -->
 
                         <tr style="border-bottom: 1px solid black !important">
-                            <th nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
+                            <th nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardBranch');?></th>
                             <th nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardSeq');?></th>
                             <th nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardCode');?></th>
                             <th nowrap class="text-left xCNRptColumnHeader"></th>
                             <th nowrap class="text-left xCNRptColumnHeader"><?php //echo language('report/report/report','tRptIncomeNotReturnCardTopupDate');?></th>
                             <th nowrap class="text-center xCNRptColumnHeader"><?php //echo language('report/report/report','tRptIncomeNotReturnCardUsr');?></th>
-                            <th nowrap class="text-right xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardAmt');?></th>
+                            <th nowrap class="text-right xCNRptColumnHeader"><?php echo language('report/report/report','tRPC9TBCardValue');?></th>
                         </tr>
                     <thead>
                     <tbody>
@@ -129,7 +129,7 @@
 
                          foreach($aDataReport['aRptData'] as $k => $aValue){
 
-                            $nCrdValue_SubTotal = $aValue['FCTxnCrdValue_SubTotal'];
+                            // $nCrdValue_SubTotal = $aValue['FCTxnCrdValue_SubTotal'];
                             $nCrdValue_Footer   = $aValue['FCTxnCrdValue_Footer'];
 
 
@@ -141,14 +141,14 @@
                                 </tr>
                             <?php } ?>
 
-                            <?php if( ($tShpCode != $aValue['FTShpName']) || ($tPosCode != $aValue['FTPosName']) ){ ?>
-                                <tr>
+                            <?php //if( ($tShpCode != $aValue['FTShpName']) || ($tPosCode != $aValue['FTPosName']) ){ ?>
+                                <!-- <tr>
                                     <td class="text-left xCNRptDetail xCNRptGrouPing">&nbsp;</td>
                                     <td class="text-left xCNRptDetail xCNRptGrouPing"><?php echo (!empty($aValue['FTShpName']) ? $aValue['FTShpName'] : '-' );?></td>
                                     <td class="text-left xCNRptDetail xCNRptGrouPing">&nbsp;</td>
                                     <td class="text-left xCNRptDetail xCNRptGrouPing"><?php echo (!empty($aValue['FTPosName']) ? $aValue['FTPosName'] : '-' );?></td>
-                                </tr>
-                            <?php } ?>
+                                </tr> -->
+                            <?php //} ?>
                             <tr >
                               <td class="text-left xCNRptDetail">&nbsp;</td>
                                 <td class="text-left xCNRptDetail"><?php echo $aValue['FNRowPartID'];?></td>
@@ -158,14 +158,14 @@
                                 <td class="text-center xCNRptDetail"><?php //echo $aValue['FTUsrName'];?></td>
                                 <td class="text-right xCNRptDetail"><?php echo number_format($aValue['FCTxnCrdValue'],$nOptDecimalShow);?></td>
                             </tr >
-                            <?php  if($aValue['FNRowPartID_MaxSeq']== $aValue['FNRowPartID']){ ?>
-                                <tr>
+                            <?php  //if($aValue['FNRowPartID_MaxSeq']== $aValue['FNRowPartID']){ ?>
+                                <!-- <tr>
                                     <td  style="border-bottom: 1px dashed #ccc !important;" class="text-left xCNRptDetail">&nbsp;</td>
                                     <td  style="border-bottom: 1px dashed #ccc !important;" colspan="1" class="text-left xCNRptSumFooter xCNRptGrouPing"><?php echo language('report/report/report','tRptTotal');?></td>
                                     <td  style="border-bottom: 1px dashed #ccc !important;" colspan="3" class="text-left xCNRptDetail ">&nbsp;</td>
                                     <td  style="border-bottom: 1px dashed #ccc !important;" colspan="2" class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCTxnCrdValue_SubTotal"], $nOptDecimalShow);?></td>
-                                </tr>
-                            <?php } ?>
+                                </tr> -->
+                            <?php //} ?>
                             <?php
                                 $tShpCode   = $aValue['FTShpName'];
                                 $tPosCode   = $aValue['FTPosName'];
@@ -193,7 +193,7 @@
                             <?php  } ?>
                         <?php }else{ ?>
                             <tr>
-                                <td  colspan="6"  class="text-center xCNRptColumnFooter" ><?php echo $aDataTextRef['tRptNoData']; ?></td>
+                                <td  colspan="100%"  class="text-center xCNRptColumnFooter" ><?php echo $aDataTextRef['tRptNoData']; ?></td>
                             </tr>
                         <?php } ?>
                     </tbody>

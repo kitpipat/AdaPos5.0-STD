@@ -218,6 +218,7 @@ class cRptIncomeNotReturnCard extends MX_Controller
             'tRptShopTo'     => language('report/report/report','tRptShopTo'),
             'tRptPosFrom'   => language('report/report/report','tRptPosFrom'),
             'tRptPosTo'     => language('report/report/report','tRptPosTo'),
+            'tRPC9TBCardValue' => language('report/report/report','tRPC9TBCardValue'),
         ];
 
         $this->tSysBchCode      = SYS_BCH_CODE;
@@ -456,10 +457,10 @@ class cRptIncomeNotReturnCard extends MX_Controller
 
         $aCells = [
             WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardBranch']),
-            WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardShop']),
-            WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardPos']),
+            // WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardShop']),
+            // WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardPos']),
             WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardCode']),
-            WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardAmt']),
+            WriterEntityFactory::createCell($this->aText['tRPC9TBCardValue']),
         ];
 
         /** add a row at a time */
@@ -491,8 +492,8 @@ class cRptIncomeNotReturnCard extends MX_Controller
 
                 $values = [
                     WriterEntityFactory::createCell($aValue['FTBchName']),
-                    WriterEntityFactory::createCell($aValue['FTShpName']),
-                    WriterEntityFactory::createCell($aValue['FTPosName']),
+                    // WriterEntityFactory::createCell($aValue['FTShpName']),
+                    // WriterEntityFactory::createCell($aValue['FTPosName']),
                     WriterEntityFactory::createCell($aValue['FTCrdCode']),
                     WriterEntityFactory::createCell(number_format($aValue['FCTxnCrdValue'], 2), $oStyle),
                 ];
@@ -503,8 +504,8 @@ class cRptIncomeNotReturnCard extends MX_Controller
                 if (($nKey + 1) == FCNnHSizeOf($aDataReport['aRptData'])) { //SumFooter
                     $values = [
                         WriterEntityFactory::createCell($this->aText['tRptRentAmtFolCourSumText']),
-                        WriterEntityFactory::createCell(NULL),
-                        WriterEntityFactory::createCell(NULL),
+                        // WriterEntityFactory::createCell(NULL),
+                        // WriterEntityFactory::createCell(NULL),
                         WriterEntityFactory::createCell(NULL),
                         WriterEntityFactory::createCell(number_format($aValue["FCTxnCrdValue_Footer"], 2), $oStyle),
 

@@ -139,33 +139,31 @@ class mRptIncomeNotReturnCard extends CI_Model
             SELECT
                 L.*,
                 T.FCTxnCrdValue_Footer
-
             FROM (
                 SELECT  
-                    ROW_NUMBER() OVER(ORDER BY FTPosCode ASC) AS RowID ,
-                    A.*,
-                    S.FNRptGroupMember,
-                    S.FNRowPartID_MaxSeq,
-                    S.FCTxnCrdValue_SubTotal
+                    ROW_NUMBER() OVER(ORDER BY FTBchCode ASC) AS RowID ,
+                    A.*
                 FROM TRPTIncomeNotReturnCardTmp A WITH(NOLOCK)
-                /* Calculate Misures */
-
-                LEFT JOIN (
-                    SELECT
-                        FTPosCode AS FTPosCode_SUM,
-                        COUNT(FTPosCode)   AS FNRptGroupMember,
-                        MAX(FNRowPartID) AS FNRowPartID_MaxSeq,
-                        SUM(FCTxnCrdValue) AS FCTxnCrdValue_SubTotal
-                    FROM TRPTIncomeNotReturnCardTmp WITH(NOLOCK)
-                    WHERE FTComName = '$tComName'
-                    AND FTRptCode = '$tRptCode'
-                    AND FTUsrSession = '$tSession'";
-
-        $tSQL .= "  GROUP BY FTPosCode
-                 ) AS S ON  A.FTPosCode = S.FTPosCode_SUM
                  WHERE A.FTComName = '$tComName'
                  AND   A.FTRptCode = '$tRptCode'
-                 AND   A.FTUsrSession = '$tSession'";
+                 AND   A.FTUsrSession = '$tSession' ";
+
+                //  S.FNRptGroupMember,
+                //     S.FNRowPartID_MaxSeq,
+                //     S.FCTxnCrdValue_SubTotal
+
+                //  LEFT JOIN (
+                //     SELECT
+                //         FTPosCode AS FTPosCode_SUM,
+                //         COUNT(FTPosCode)   AS FNRptGroupMember,
+                //         MAX(FNRowPartID) AS FNRowPartID_MaxSeq,
+                //         SUM(FCTxnCrdValue) AS FCTxnCrdValue_SubTotal
+                //     FROM TRPTIncomeNotReturnCardTmp WITH(NOLOCK)
+                //     WHERE FTComName = '$tComName'
+                //     AND FTRptCode = '$tRptCode'
+                //     AND FTUsrSession = '$tSession'  
+                //     GROUP BY FTPosCode
+                //  ) AS S ON  A.FTPosCode = S.FTPosCode_SUM
 
         $tSQL .= " /* End Calculate Misures */
             ) AS L 
@@ -176,7 +174,7 @@ class mRptIncomeNotReturnCard extends CI_Model
         // WHERE เงื่อนไข Page
         $tSQL .= " WHERE L.RowID > $nRowIDStart AND L.RowID <= $nRowIDEnd ";
 
-        $tSQL .= " ORDER BY FTPosCode";
+        // $tSQL .= " ORDER BY FTPosCode";
 
         $oQuery = $this->db->query($tSQL);
 
