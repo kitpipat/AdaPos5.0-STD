@@ -1692,11 +1692,14 @@ var oBrowsePODoc = function(poReturnInput) {
             PK: 'FTXphDocNo'
         },
         Join: {
-            Table: ['TCNMBranch_L','TCNMUser_L','TCNMSpl_L'],
+            Table: ['TCNMBranch_L','TCNMUser_L','TCNMSpl_L','TCNMSpl','TCNMSplCredit','VCN_VatActive'],
             On: [
                 'TAPTPoHD.FTBchCode = TCNMBranch_L.FTBchCode AND TCNMBranch_L.FNLngID =' + nLangEdits,
                 'TAPTPoHD.FTCreateBy = TCNMUser_L.FTUsrCode AND TAPTPoHD.FTXphApvCode = TCNMUser_L.FTUsrCode AND TCNMUser_L.FNLngID = ' + nLangEdits,
-                'TAPTPoHD.FTSplCode = TCNMSpl_L.FTSplCode AND TCNMSpl_L.FNLngID = ' + nLangEdits
+                'TAPTPoHD.FTSplCode = TCNMSpl_L.FTSplCode AND TCNMSpl_L.FNLngID = ' + nLangEdits ,
+                'TAPTPoHD.FTSplCode = TCNMSpl.FTSplCode',
+                'TCNMSpl.FTSplCode = TCNMSplCredit.FTSplCode',
+                'TCNMSpl.FTVatCode = VCN_VatActive.FTVatCode'
             ]
         },
         Where: {
@@ -1710,9 +1713,9 @@ var oBrowsePODoc = function(poReturnInput) {
             ColumnPathLang: 'document/purchaseorder/purchaseorder',
             ColumnKeyLang: ['tPOTBDocNo','tPOTBBchCreate','tPOTBCreateBy','tPOTBDocDate'],
             WidthModal: 50,
-            DataColumns: ['TAPTPoHD.FTXphDocNo', 'TCNMBranch_L.FTBchName','TCNMUser_L.FTUsrName','TAPTPoHD.FDXphDocDate','TAPTPoHD.FTSplCode','TCNMSpl_L.FTSplName'],
+            DataColumns: ['TAPTPoHD.FTXphDocNo', 'TCNMBranch_L.FTBchName','TCNMUser_L.FTUsrName','TAPTPoHD.FDXphDocDate','TAPTPoHD.FTSplCode','TCNMSpl_L.FTSplName', 'TCNMSplCredit.FNSplCrTerm', 'TCNMSplCredit.FCSplCrLimit', 'TCNMSpl.FTSplStaVATInOrEx', 'TCNMSplCredit.FTSplTspPaid','VCN_VatActive.FTVatCode','VCN_VatActive.FCVatRate'],
             DataColumnsFormat: ['', '','','Date:0','',''],
-            DisabledColumns: [4,5],
+            DisabledColumns: [4,5,6,7,8,9,10,11],
             Perpage: 10,
             OrderBy: ['TAPTPoHD.FDCreateOn DESC,TAPTPoHD.FTXphDocNo DESC'],
         },
@@ -1723,7 +1726,7 @@ var oBrowsePODoc = function(poReturnInput) {
         },
         NextFunc: {
             FuncName: 'FSxPINextFuncPODoc',
-            ArgReturn: ['FDXphDocDate','FTXphDocNo','FTSplCode','FTSplName']
+            ArgReturn: ['FDXphDocDate','FTXphDocNo','FTSplCode','FTSplName','FNSplCrTerm', 'FCSplCrLimit', 'FTSplStaVATInOrEx', 'FTSplTspPaid', 'FTSplCode', 'FTSplName', 'FTVatCode', 'FCVatRate']
         },
     };
     return oSMPBrowsePODoc;
@@ -1764,6 +1767,21 @@ function FSxPIMovePODTToDocTmp(poDataNextFunc){
 
     $('#oetPIFrmSplCode').val(aDataNextFunc[2]);
     $('#oetPIFrmSplName').val(aDataNextFunc[3]);
+
+
+    var poParams = {
+        FNSplCrTerm         : aDataNextFunc[4],
+        FCSplCrLimit        : aDataNextFunc[5],
+        FTSplStaVATInOrEx   : aDataNextFunc[6],
+        FTSplTspPaid        : aDataNextFunc[7],
+        FTSplCode           : aDataNextFunc[8],
+        FTSplName           : aDataNextFunc[9],
+        FTVatCode           : aDataNextFunc[10],
+        FCVatRate           : aDataNextFunc[11]
+    };
+    // console.log(poParams);
+    JSxPISetPanelSupplierData(poParams);
+
 
     var ptXthDocNoSend  = "";
     if ($("#ohdPIRoute").val() == "dcmPIEventEdit") {

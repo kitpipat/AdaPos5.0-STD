@@ -615,3 +615,11 @@ WHERE FTSysCode = 'bPS_StaChkPosReg'
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.11', getdate() , 'ปิด config ตรวจสอบลงทะเบียนจุดขาย', 'Nattakit K.')
 END
 GO
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.12') BEGIN
+
+UPDATE TSysReport SET FTRptFilterCol = '1,4' WHERE FTRptCode='004001017'
+
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.12', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Nattakit K.')
+END
+GO
