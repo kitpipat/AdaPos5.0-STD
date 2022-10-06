@@ -254,6 +254,7 @@ function JSvCPHCallPageDataTable(pnPage){
         timeout: 0,
         success: function (oResult){
             var aReturnData = JSON.parse(oResult);
+            console.log(aReturnData);
             if (aReturnData['nStaEvent'] == '1') {
                 JSxCPHNavDefultDocument();
                 $('#ostCPHDataTableDocument').html(aReturnData['tCPHViewDataTableList']);

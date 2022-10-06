@@ -7,7 +7,13 @@
       <table class="table table-striped xWPdtTableFont" id="otbDOCPdtTable">
         <thead>
           <tr class="xCNCenter">
-            <th><?= language('document/purchaseorder/purchaseorder','tPOTBChoose')?></th>
+            <!-- <th><?= language('document/purchaseorder/purchaseorder','tPOTBChoose')?></th> -->
+            <th class="xCNTWIBeHideMQSS">
+              <label class="fancy-checkbox" style="padding-left:7px">
+                <input id="ocbCheckAll" type="checkbox" class="ocbListItemAll" name="ocbCheckAll" onclick="FSxDOSelectAll(this)" >
+                <span class="">&nbsp;</span>
+              </label>
+            </th>
             <th><?= language('document/purchaseorder/purchaseorder','tPOTBNo')?></th>
             <?php foreach($aColumnShow as $HeaderColKey=>$HeaderColVal){?>
             <th nowrap title="<?php echo iconv_substr($HeaderColVal->FTShwNameUsr, 0,30, "UTF-8");?>">

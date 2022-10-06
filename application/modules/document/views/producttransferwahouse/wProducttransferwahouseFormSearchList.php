@@ -151,6 +151,7 @@
 				<div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
 					<button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
 						<?= language('common/main/main', 'tCMNOption') ?>
+						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" role="menu">
 						<li id="oliBtnDeleteAll" class="disabled">

@@ -12,7 +12,13 @@ if ($aDataList['rtCode'] == '1') {
                 <thead>
                     <tr class="xCNCenter">
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
-                            <th class="xCNTextBold" style="width:5%;"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWTBChoose') ?></th>
+                            <!-- <th class="xCNTextBold" style="width:5%;"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWTBChoose') ?></th> -->
+                            <th nowrap class="xCNTextBold text-center" style="width:5%;">
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" class="ocmCENCheckDeleteAll" id="ocmCENCheckDeleteAll" >
+                                    <span class="ospListItem">&nbsp;</span>
+                                </label>
+                            </th>
                         <?php endif; ?>
                         <th class="xCNTextBold"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWTBBchCreate') ?></th>
                         <th class="xCNTextBold"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWTBDocNo') ?></th>
@@ -85,7 +91,14 @@ if ($aDataList['rtCode'] == '1') {
                                 <td class="text-left"><?php echo $aValue['FTXthDocNo'] != '' ? $aValue['FTXthDocNo'] : '-' ?></td>
                                 <td class="text-center"><?php echo $aValue['FDXthDocDate'] != '' ? $aValue['FDXthDocDate'] : '-' ?></td>
                                 <td class="text-left"><label class="xCNTDTextStatus <?= $tClassStaDoc ?>"><?php echo $tNewProcess; ?></label></td>
-                                <td class="text-left"><label class="xCNTDTextStatus <?= $tClassPrcStk ?>"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWStaPrcStk' . $aValue['FTXthStaPrcStk']) ?></label></td>
+                                <!-- <td class="text-left"><label class="xCNTDTextStatus <?= $tClassPrcStk ?>"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWStaPrcStk' . $aValue['FTXthStaPrcStk']) ?></label></td> -->
+                                <td class="text-left">
+                                    <?php if ($aValue['FTXthStaDoc'] == 3) { ?>
+                                        <label class="text-danger xCNTDTextStatus"><?php echo language('document/adjuststock/adjuststock', 'tASTStaDoc3'); ?></label>
+                                    <?php }else{ ?>
+                                        <label class="xCNTDTextStatus <?= $tClassPrcStk ?>"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWStaPrcStk' . $aValue['FTXthStaPrcStk']) ?></label>
+                                    <?php } ?>
+                                </td>
                                 <td class="text-left"><?php echo $aValue['FTCreateByName'] != '' ? $aValue['FTCreateByName'] : '-' ?></td>
                                 <td class="text-left"><?php if ($aValue['FTXthApvCode'] != "") {
                                                             echo $aValue['FTXthApvName'];
@@ -123,7 +136,7 @@ if ($aDataList['rtCode'] == '1') {
         <p><?= language('common/main/main', 'tResultTotalRecord') ?> <?= $aDataList['rnAllRow'] ?> <?= language('common/main/main', 'tRecord') ?> <?= language('common/main/main', 'tCurrentPage') ?> <?= $aDataList['rnCurrentPage'] ?> / <?= $aDataList['rnAllPage'] ?></p>
     </div>
     <!-- เปลี่ยน -->
-    <div class="col-md-6">
+    <!-- <div class="col-md-6">
         <div class="xWPage btn-toolbar pull-right">
             <?php if ($nPage == 1) {
                 $tDisabledLeft = 'disabled';
@@ -154,7 +167,7 @@ if ($aDataList['rtCode'] == '1') {
                 <i class="fa fa-chevron-right f-s-14 t-plus-1"></i>
             </button>
         </div>
-    </div>
+    </div> -->
 </div>
 
 <div class="modal fade" id="odvModalDel">
