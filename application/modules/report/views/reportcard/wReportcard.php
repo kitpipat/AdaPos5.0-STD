@@ -590,7 +590,7 @@
             case 'RptUseCard1':
                 $('#odvYear').hide();
                 $('#odvBranch').hide();
-                $('#odvCrdType').hide();
+                $('#odvCrdType').show();
                 $('#odvCrdTypeOld').hide();
                 $('#odvCrdTypeNew').hide();
                 $('#odvPosCode').hide();

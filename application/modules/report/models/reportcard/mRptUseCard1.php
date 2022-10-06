@@ -23,6 +23,10 @@ class mRptUseCard1 extends CI_Model {
         // รหัสเลขหลังบัตร
         $tCardCodeFrom  = empty($paDataFilter['tCardCodeFrom']) ? '' : $paDataFilter['tCardCodeFrom']; 
         $tCardCodeTo    = empty($paDataFilter['tCardCodeTo']) ? '' : $paDataFilter['tCardCodeTo'];
+
+        // รหัสประเภทบัตร
+        $tCardTypeCodeFrom  = empty($paDataFilter['tCardTypeCodeFrom']) ? '' : $paDataFilter['tCardTypeCodeFrom']; 
+        $tCardTypeCodeTo    = empty($paDataFilter['tCardTypeCodeTo']) ? '' : $paDataFilter['tCardTypeCodeTo'];
         // วันที่สร้างเอกสาร
         $tDocDateFrom   = empty($paDataFilter['tDocDateFrom']) ? '' : $paDataFilter['tDocDateFrom'];
         $tDocDateTo     = empty($paDataFilter['tDocDateTo']) ? '' : $paDataFilter['tDocDateTo'];
@@ -39,7 +43,8 @@ class mRptUseCard1 extends CI_Model {
         // ประเภทเครื่องจุดขาย
         $tPosCodeSelect = ($paDataFilter['bPosStaSelectAll']) ? '' : FCNtAddSingleQuote($paDataFilter['tPosCodeSelect']);
 
-        $tCallStore = "{CALL SP_RPTxUseCard1(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+        $tCallStore = "{CALL SP_RPTxUseCard1(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+        // $tCallStore = "{CALL SP_RPTxUseCard1(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
         $aDataStore = array(
             'pnLngID'       => $nLngID,
             'pnComName'     => $tComName,
@@ -65,13 +70,17 @@ class mRptUseCard1 extends CI_Model {
 
             'ptCrdF'        => $tCardCodeFrom,
             'ptCrdT'        => $tCardCodeTo,
+            'ptCrdTypeF'    => $tCardTypeCodeFrom,
+            'ptCrdTypeT'    => $tCardTypeCodeTo,
             'ptDocDateF'    => $tDocDateFrom,
             'ptDocDateT'    => $tDocDateTo,
 
             'FNResult'   => 0
         );
 
+        // echo $this->db->last_query();exit;
         $oQuery = $this->db->query($tCallStore, $aDataStore);
+        // echo $this->db->last_query();exit;
 
         if (false !== $oQuery) {
             unset($oQuery);
@@ -107,6 +116,7 @@ class mRptUseCard1 extends CI_Model {
                     ROW_NUMBER() OVER(ORDER BY TMP.FTCrdCode ASC, TMP.FTCrdName ASC, TMP.FDTxnDocDate ASC) AS rtRowID,
                     TMP.FTTxndocType, 
                     TMP.FTCrdCode AS rtCrdCode, 
+                    CONCAT(TMP.FTCtyCode,';',TMP.FTCtyName) AS rtCtyName, 
                     CONCAT(TMP.FTCrdCode,';',TMP.FTCrdName) AS rtCrdName, 
                     CONCAT(TMP.FTCrdCode,';',TMP.FTShpCode) AS rtShpCode, 
                     CONCAT(TMP.FTCrdCode,';',TMP.FTShpName) AS rtShpName, 
