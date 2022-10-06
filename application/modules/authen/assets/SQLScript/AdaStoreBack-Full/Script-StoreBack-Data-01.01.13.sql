@@ -623,3 +623,6 @@ UPDATE TSysReport SET FTRptFilterCol = '1,4' WHERE FTRptCode='004001017'
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.12', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Nattakit K.')
 END
 GO
+
+/* เพิ่มการเลือกประเภทบัตรในรายงานข้อมูลการใช้งาน By: IcePHP 06/10/2022 */
+UPDATE TSysReport SET FTRptFilterCol = '1,2,3,4,6,16,17' WHERE FTRptCode = '004001001'
