@@ -705,6 +705,12 @@ VALUES ('091', 'VS', 'SALE', 'ROLE', '0', 'ALL', '0', '0', '1', '2022-08-10 23:4
 END
 
 
+INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '088', 'KB102', 'PS', '1', '0', '2022-09-30 11:55:14.223', '00002', '2022-09-30 11:55:14.223', '00002');
+INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '088', 'KB103', 'PS', '1', '0', '2022-09-30 11:55:14.223', '00002', '2022-09-30 11:55:14.223', '00002');
+INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '090', 'KB058', 'PS', '1', '0', '2022-09-30 11:55:14.227', '00002', '2022-09-30 11:55:14.227', '00002');
+INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '091', 'KB058', 'VS', '1', '0', '2022-09-30 11:55:14.263', '00002', '2022-09-30 11:55:14.263', '00002');
+
+
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.13', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Nattakit K.')
 END
 GO
