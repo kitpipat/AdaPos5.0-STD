@@ -721,3 +721,19 @@ END
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.13', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Nattakit K.')
 END
 GO
+
+/* เพิ่มการเลือกประเภทบัตรในรายงานข้อมูลการใช้งาน By: IcePHP 06/10/2022 */
+UPDATE TSysReport SET FTRptFilterCol = '1,2,3,4,6,16,17' WHERE FTRptCode = '004001001'
+
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.13', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Ice')
+END
+GO
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.14') BEGIN
+
+	ALTER TABLE TFCTRptCrdTmp ALTER COLUMN FTDocCreateBy varchar(255)
+	ALTER TABLE TFCTRptCrdTmp ALTER COLUMN FTUsrCreate varchar(255)
+
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.14', getdate() , 'ปรับคอลัม UsrName varchar(255)', 'Napat')
+END
+
