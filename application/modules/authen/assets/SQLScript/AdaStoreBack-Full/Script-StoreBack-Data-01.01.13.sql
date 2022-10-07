@@ -718,6 +718,6 @@ INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FN
 END
 
 
-INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.13', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Nattakit K.')
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.13', getdate() , 'เพิ่มฟังชั่นที่ยังไม่มีใน Prod', 'Nattakit K.')
 END
 GO
