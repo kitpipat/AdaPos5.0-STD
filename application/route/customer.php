@@ -109,3 +109,9 @@ $route ['HisBuyLicenseList']                    = 'customer/HisBuyLicense/cHisBu
 $route ['HisBuyLicenseDataTable']               = 'customer/HisBuyLicense/cHisBuyLicense/FSvCHISBuyLicenseDataTable';
 $route ['HisBuyLicensePagePreview']             = 'customer/HisBuyLicense/cHisBuyLicense/FSvCHISBuyLicensePagePreview';
 
+// Customer Manage Credit / ปรับปรุงลูกค้าเครดิต
+$route ['cstMngCredit/(:any)/(:any)']   = 'customer/customerMngCredit/Customermngcredit_controller/index/$1/$2';
+$route ['cstMngCreditList']             = 'customer/customerMngCredit/Customermngcredit_controller/FSvCMCRListPage';
+$route ['cstMngCreditDataTable']        = 'customer/customerMngCredit/Customermngcredit_controller/FSvCMCRDataList';
+$route ['cstMngCreditEventUpdInline']   = 'customer/customerMngCredit/Customermngcredit_controller/FSaCMCREventUpdInline';
+$route ['cstMngCreditEventCutOffCstCr'] = 'customer/customerMngCredit/Customermngcredit_controller/FsaCMCREventCutOffCstCr';
