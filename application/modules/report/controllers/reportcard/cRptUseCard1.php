@@ -147,11 +147,14 @@ class cRptUseCard1 extends MX_Controller {
             // Filter Report
             'tRPCCrdFrom'               => language('report/report/report','tRPCCrdFrom'),
             'tRPCCrdTo'                 => language('report/report/report','tRPCCrdTo'),
+            'tRPCCrdTypeFrom'           => language('report/report/report','tRPCCrdTypeFrom'),
+            'tRPCCrdTypeTo'             => language('report/report/report','tRPCCrdTypeTo'),
             'tRPCDateFrom'              => language('report/report/report','tRPCDateFrom'),
             'tRPCDateTo'                => language('report/report/report','tRPCDateTo'),
             // Table Report
             'tRPCCardCode'              => language('report/report/report','tRPC1TBCardCardCode'),
             'tRPCCardName'              => language('report/report/report','tRPC1TBCardCardName'),
+            'tRPCCardTypeName'              => language('report/report/report','tRPC2TBCardType'),
             'tRPCCardPosType'           => language('report/report/report','tRPC1TBCardPosType'),
             'tRPCCardTxnDocNo'          => language('report/report/report','tRPC1TBCardTxnDocNo'),
             'tRPCCardTxnDocNoRef'       => language('report/report/report','tRPC1TBCardTxnDocNoRef'),
@@ -250,6 +253,12 @@ class cRptUseCard1 extends MX_Controller {
             'tPosCodeSelect'    => !empty($this->input->post('oetRptPosCodeSelect')) ? $this->input->post('oetRptPosCodeSelect') : "",
             'tPosNameSelect'    => !empty($this->input->post('oetRptPosNameSelect')) ? $this->input->post('oetRptPosNameSelect') : "",
             'bPosStaSelectAll'  => !empty($this->input->post('oetRptPosStaSelectAll')) && ($this->input->post('oetRptPosStaSelectAll') == 1) ? true : false,
+
+            // ประเภทบัตร
+            'tCardTypeCodeFrom' => !empty($this->input->post('oetRptCardTypeCodeFrom')) ? $this->input->post('oetRptCardTypeCodeFrom') : '',
+            'tCardTypeNameFrom' => !empty($this->input->post('oetRptCardTypeNameFrom')) ? $this->input->post('oetRptCardTypeNameFrom') : '',
+            'tCardTypeCodeTo'   => !empty($this->input->post('oetRptCardTypeCodeTo')) ? $this->input->post('oetRptCardTypeCodeTo') : '',
+            'tCardTypeNameTo'   => !empty($this->input->post('oetRptCardTypeNameTo')) ? $this->input->post('oetRptCardTypeNameTo') : '',
 
         ];
 
@@ -505,38 +514,39 @@ class cRptUseCard1 extends MX_Controller {
     //22/12/2020 Supawat ส่วนหัว
     public function FSoCCallRptRenderHedaerExcel(){
         if (isset($this->aCompanyInfo) && count($this->aCompanyInfo)>0) {
-    $tFTAddV1Village = $this->aCompanyInfo['FTAddV1Village']; 
-            $tFTCmpName = $this->aCompanyInfo['FTCmpName'];
-            $tFTAddV1No = $this->aCompanyInfo['FTAddV1No'];
-            $tFTAddV1Road = $this->aCompanyInfo['FTAddV1Road'];
-            $tFTAddV1Soi = $this->aCompanyInfo['FTAddV1Soi'];
-            $tFTSudName = $this->aCompanyInfo['FTSudName'];
-            $tFTDstName = $this->aCompanyInfo['FTDstName'];
-            $tFTPvnName = $this->aCompanyInfo['FTPvnName'];
-            $tFTAddV1PostCode = $this->aCompanyInfo['FTAddV1PostCode'];
-            $tFTAddV2Desc1 = $this->aCompanyInfo['FTAddV2Desc1'];
-            $tFTAddV2Desc2 = $this->aCompanyInfo['FTAddV2Desc2'];
-            $tFTAddVersion = $this->aCompanyInfo['FTAddVersion'];
-            $tFTBchName = $this->aCompanyInfo['FTBchName'];
-            $tFTAddTaxNo = $this->aCompanyInfo['FTAddTaxNo'];
-            $tFTCmpTel = $this->aCompanyInfo['FTAddTel'];
-            $tRptFaxNo = $this->aCompanyInfo['FTAddFax'];
+            $tFTAddV1Village    = $this->aCompanyInfo['FTAddV1Village']; 
+            $tFTCmpName         = $this->aCompanyInfo['FTCmpName'];
+            $tFTAddV1No         = $this->aCompanyInfo['FTAddV1No'];
+            $tFTAddV1Road       = $this->aCompanyInfo['FTAddV1Road'];
+            $tFTAddV1Soi        = $this->aCompanyInfo['FTAddV1Soi'];
+            $tFTSudName         = $this->aCompanyInfo['FTSudName'];
+            $tFTDstName         = $this->aCompanyInfo['FTDstName'];
+            $tFTPvnName         = $this->aCompanyInfo['FTPvnName'];
+            $tFTAddV1PostCode   = $this->aCompanyInfo['FTAddV1PostCode'];
+            $tFTAddV2Desc1      = $this->aCompanyInfo['FTAddV2Desc1'];
+            $tFTAddV2Desc2      = $this->aCompanyInfo['FTAddV2Desc2'];
+            $tFTAddVersion      = $this->aCompanyInfo['FTAddVersion'];
+            $tFTBchName         = $this->aCompanyInfo['FTBchName'];
+            $tFTAddTaxNo        = $this->aCompanyInfo['FTAddTaxNo'];
+            $tFTCmpTel          = $this->aCompanyInfo['FTAddTel'];
+            $tRptFaxNo          = $this->aCompanyInfo['FTAddFax'];
         }else {
-            $tFTCmpTel = "";
-            $tFTCmpName = "";
-            $tFTAddV1No = "";
-            $tFTAddV1Road = "";
-            $tFTAddV1Soi = "";
-            $tFTSudName = "";
-            $tFTDstName = "";
-            $tFTPvnName = "";
-            $tFTAddV1PostCode = "";
-            $tFTAddV2Desc1 = "1"; $tFTAddV1Village = "";
-            $tFTAddV2Desc2 = "2";
-            $tFTAddVersion = "";
-            $tFTBchName = "";
-            $tFTAddTaxNo = "";
-            $tRptFaxNo = "";
+            $tFTCmpTel          = "";
+            $tFTCmpName         = "";
+            $tFTAddV1No         = "";
+            $tFTAddV1Road       = "";
+            $tFTAddV1Soi        = "";
+            $tFTSudName         = "";
+            $tFTDstName         = "";
+            $tFTPvnName         = "";
+            $tFTAddV1PostCode   = "";
+            $tFTAddV2Desc1      = "1"; 
+            $tFTAddV1Village    = "";
+            $tFTAddV2Desc2      = "2";
+            $tFTAddVersion      = "";
+            $tFTBchName         = "";
+            $tFTAddTaxNo        = "";
+            $tRptFaxNo          = "";
         }
         $oStyle = (new StyleBuilder())
         ->setFontBold()
@@ -736,6 +746,19 @@ class cRptUseCard1 extends MX_Controller {
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
+        //ประเภทบัตร
+        if ((isset($this->aRptFilter['tCardTypeCodeFrom']) && !empty($this->aRptFilter['tCardTypeCodeFrom'])) && (isset($this->aRptFilter['tCardTypeCodeTo']) && !empty($this->aRptFilter['tCardTypeCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRPCCrdTypeFrom'] . ' : ' .$this->aRptFilter['tCardTypeNameFrom']),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell(null),
+                WriterEntityFactory::createCell($this->aText['tRPCCrdTypeTo'] . ' : ' .$this->aRptFilter['tCardTypeNameTo']),
+                WriterEntityFactory::createCell(null),
+
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
         // สาขา แบบเลือก
         if (!empty($this->aRptFilter['tBchCodeSelect'])) {
             $tBchSelectText = ($this->aRptFilter['bBchStaSelectAll']) ? $this->aText['tRptAll'] : $this->aRptFilter['tBchNameSelect'];
@@ -838,6 +861,9 @@ class cRptUseCard1 extends MX_Controller {
             WriterEntityFactory::createCell($this->aText['tRPCCardName']),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell($this->aText['tRPCCardTypeName']),
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell($this->aText['tRPCCardPosType']),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
@@ -878,6 +904,7 @@ class cRptUseCard1 extends MX_Controller {
         if(isset($aDataReport['raItems']) && !empty($aDataReport['raItems'])) {
             foreach ($aDataReport['raItems'] as $nKey => $aValue) {
                 $aCrdName           = explode(";",$aValue['rtCrdName']);
+                $aCtyName           = explode(";",$aValue['rtCtyName']);
                 $aTxnPosType        = explode(";",$aValue['rtTxnPosType']);
                 $aTxnDocNo          = explode(";",$aValue['rtTxnDocNo']);
                 $aTxnDocNoRef       = explode(";",$aValue['rtTxnDocNoRef']);
@@ -890,6 +917,9 @@ class cRptUseCard1 extends MX_Controller {
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell($aCrdName[1]),
+                    WriterEntityFactory::createCell(NULL),
+                    WriterEntityFactory::createCell(NULL),
+                    WriterEntityFactory::createCell($aCtyName[1]),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell($aTxnPosType[1]),
@@ -908,10 +938,10 @@ class cRptUseCard1 extends MX_Controller {
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(date("d/m/Y H:i:s", strtotime($aValue['rtTxnDocDate']))),
                     WriterEntityFactory::createCell(NULL),
-                    WriterEntityFactory::createCell(number_format($aValue['rtTxnValue'],$nOptDecimalShow)),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['rtTxnValue'])),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL),
-                    WriterEntityFactory::createCell(number_format($aCrdBalance[1],$nOptDecimalShow)),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aCrdBalance[1])),
                 ];
                 $aRow = WriterEntityFactory::createRow($values);
                 $oWriter->addRow($aRow);
@@ -920,6 +950,9 @@ class cRptUseCard1 extends MX_Controller {
                     $aDataSumFooterReport = $this->mRptUseCard1->FSaMRPTCRDGetDataRptUseCard1Sum($aDataWhere);
                     $aDataReport['aDataSumFooterReport'] = $aDataSumFooterReport;
                     $values= [
+                        WriterEntityFactory::createCell(NULL),
+                        WriterEntityFactory::createCell(NULL),
+                        WriterEntityFactory::createCell(NULL),
                         WriterEntityFactory::createCell(NULL),
                         WriterEntityFactory::createCell(NULL),
                         WriterEntityFactory::createCell(NULL),

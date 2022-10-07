@@ -118,6 +118,18 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                         'tf' => "border-top: 1px solid black !important;border-bottom: 1px solid black !important;"
                                     ),
                                 ),
+                                'rtCtyName' => array(
+                                    "label" => $aDataTextRef['tRPCCardTypeName'],
+                                    "formatValue" => function($tValue,$aData){
+                                        $aExplodeCrdName = explode(";",$tValue);
+                                        return ($aExplodeCrdName[1] == '') ? '' : $aExplodeCrdName[1];
+                                    },
+                                    "cssStyle" => array(
+                                        "th" => "text-align:left",
+                                        "td" => "text-align:left",
+                                        'tf' => "border-top: 1px solid black !important;border-bottom: 1px solid black !important;"
+                                    ),
+                                ),
                                 'rtTxnPosType' => array(
                                     "label" => $aDataTextRef['tRPCCardPosType'],
                                     "formatValue" => function($tValue,$aRow){
@@ -239,6 +251,7 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
 						    <tr>
                                 <th class="xCNRptColumnHeader"><?php echo $aDataTextRef['tRPCCardCode']; ?></th>
                                 <th class="xCNRptColumnHeader"><?php echo $aDataTextRef['tRPCCardName']; ?></th>
+                                <th class="xCNRptColumnHeader"><?php echo $aDataTextRef['tRPCCardTypeName']; ?></th>
                                 <th class="xCNRptColumnHeader"><?php echo $aDataTextRef['tRPCCardPosType']; ?></th>
                                 <th class="xCNRptColumnHeader"><?php echo $aDataTextRef['tRPCCardTxnDocNo']; ?></th>
                                 <th class="xCNRptColumnHeader"><?php echo $aDataTextRef['tRPCCardTxnDocNoRef']; ?></th>
@@ -320,6 +333,18 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                         </div>
                     </div>
                 <?php }?>
+
+                <?php if ((isset($aDataFilter['tCardTypeCodeFrom']) && !empty($aDataFilter['tCardTypeCodeFrom'])) && (isset($aDataFilter['tCardTypeCodeTo']) && !empty($aDataFilter['tCardTypeCodeTo']))) { ?>
+                    <!-- ============================ ฟิวเตอร์ข้อมูล ประเภทบัตร ============================ -->
+                    <div class="xCNRptFilterBox">
+                        <div class="xCNRptFilter">
+                            <label><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRPCCrdTypeFrom']; ?> : </span> <?php echo $aDataFilter['tCardTypeNameFrom']; ?></label>
+                            <br>
+                            <label><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRPCCrdTypeTo']; ?> : </span> <?php echo $aDataFilter['tCardTypeNameTo']; ?></label>
+                        </div>
+                    </div>
+                <?php } ?>
+
 
         </div>
 
