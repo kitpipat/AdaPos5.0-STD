@@ -119,7 +119,13 @@
                         <span style="margin-left:-27px;">ข้อมูลเซิฟเวอร์</span>
                     </a>
                 </li>
-            
+                        
+                <li class="treeview-item xCNMenuItem">
+                        <a data-mnrname="cstMngCredit/0/0" data-toggle="collapse" class="collapsed xWLiSubmenu">
+                            <span style="margin-left:-27px;"><?=language('register/register','จัดการวงเงินเครดิต');?></span>
+                        </a>
+                    </li>
+
             </ul>
         </nav>
         <!-- ADA-Register 08/01/2021 -->
