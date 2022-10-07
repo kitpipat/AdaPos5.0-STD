@@ -737,3 +737,4 @@ IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '0
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.14', getdate() , 'ปรับคอลัม UsrName varchar(255)', 'Napat')
 END
 
+UPDATE TSysReport SET FTRptFilterCol = '1,3,4,16,17' WHERE FTRptCode = '004001001'
