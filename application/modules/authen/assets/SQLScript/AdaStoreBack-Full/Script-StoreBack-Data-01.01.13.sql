@@ -705,10 +705,17 @@ VALUES ('091', 'VS', 'SALE', 'ROLE', '0', 'ALL', '0', '0', '1', '2022-08-10 23:4
 END
 
 
-INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '088', 'KB102', 'PS', '1', '0', '2022-09-30 11:55:14.223', '00002', '2022-09-30 11:55:14.223', '00002');
-INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '088', 'KB103', 'PS', '1', '0', '2022-09-30 11:55:14.223', '00002', '2022-09-30 11:55:14.223', '00002');
-INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '090', 'KB058', 'PS', '1', '0', '2022-09-30 11:55:14.227', '00002', '2022-09-30 11:55:14.227', '00002');
-INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '091', 'KB058', 'VS', '1', '0', '2022-09-30 11:55:14.263', '00002', '2022-09-30 11:55:14.263', '00002');
+INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '088', 'KB102', 'PS', '1', '0', '2022-09-30 11:55:14.223', '00002', '2022-09-30 11:55:14.223', '00002')
+INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '088', 'KB103', 'PS', '1', '0', '2022-09-30 11:55:14.223', '00002', '2022-09-30 11:55:14.223', '00002')
+INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '090', 'KB058', 'PS', '1', '0', '2022-09-30 11:55:14.227', '00002', '2022-09-30 11:55:14.227', '00002')
+INSERT INTO [TCNTUsrFuncRpt] ([FTRolCode], [FTUfrType], [FTUfrGrpRef], [FTUfrRef], [FTGhdApp], [FTUfrStaAlw], [FTUfrStaFavorite], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('00002', '1', '091', 'KB058', 'VS', '1', '0', '2022-09-30 11:55:14.263', '00002', '2022-09-30 11:55:14.263', '00002')
+
+
+IF NOT EXISTS(SELECT FTSysCode FROM TSysConfig WHERE FTSysCode='bPS_AlwSalePriZero') BEGIN
+INSERT INTO [TSysConfig] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FTGmnCode], [FTSysStaAlwEdit], [FTSysStaDataType], [FNSysMaxLength], [FTSysStaDefValue], [FTSysStaDefRef], [FTSysStaUsrValue], [FTSysStaUsrRef], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('bPS_AlwSalePriZero', 'PS', 'POS', '1', 'MPOS', '1', '4', '1', '1', '', '1', '', '2022-08-11 01:03:23.000', '00011', '2022-08-09 00:00:00.000', 'Junthon M.')
+INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FNLngID], [FTSysName], [FTSysDesc], [FTSysRmk]) VALUES ('bPS_AlwSalePriZero', 'PS', 'POS', '1', '1', 'อนุญาต ให้ขายสินค้าราคาศูนย์', '1 : อนุญาต, 0 : ไม่อนุญาต', '')
+INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FNLngID], [FTSysName], [FTSysDesc], [FTSysRmk]) VALUES ('bPS_AlwSalePriZero', 'PS', 'POS', '1', '2', 'Allow to sale product zero price', '1 : Allow, 0 : Not  Allow', '')
+END
 
 
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.13', getdate() , 'ปรับฟิลเตอร์รายงาน 004001017', 'Nattakit K.')
