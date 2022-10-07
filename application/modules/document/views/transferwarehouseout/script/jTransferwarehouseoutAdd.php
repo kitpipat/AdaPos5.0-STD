@@ -1805,6 +1805,14 @@
                                     alert(aReturn['tStaMessg']);
                                 }
                                 // JCNxCloseLoading();
+                                var nDODocNoCallBack = aReturn['tCodeReturn'];
+                                var oDOCallDataTableFile = {
+                                    ptElementID: 'odvDOShowDataTable',
+                                    ptBchCode: $('#oetSOFrmBchCode').val(),
+                                    ptDocNo: nDODocNoCallBack,
+                                    ptDocKey: 'TCNTPdtTwoHD',
+                                }
+                                JCNxUPFInsertDataFile(oDOCallDataTableFile);
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
                                 JCNxResponseError(jqXHR, textStatus, errorThrown);
