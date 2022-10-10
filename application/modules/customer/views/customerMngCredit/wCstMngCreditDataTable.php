@@ -152,7 +152,7 @@
 </div>
 <div class="row">
     <div class="col-md-6">
-        <?php $nShowRecord  = get_cookie('nShowRecordInPageList'); ?>
+        <?php $nShowRecord  = 30; ?>
         <p><?= language('customer/customermngcredit/customermngcredit','tMCRShowTheLastItems')?> <?=$nShowRecord?> <?= language('customer/customermngcredit/customermngcredit','tMCRShowList')?></p>
     </div>
 </div>
