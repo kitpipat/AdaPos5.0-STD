@@ -932,8 +932,8 @@ $lang['tRPCCardDetailStaActive2']   = "ไม่เคลื่อนไหว";
 $lang['tRPCCardDetailStaActive3']   = "ยกเลิก";
 
 /** สถานะหมดอายุ */
-$lang['tRPCCardDetailStaExpr1']   = "ใช่";
-$lang['tRPCCardDetailStaExpr2']   = "ไม่";
+$lang['tRPCCardDetailStaExpr1']   = "หมดอายุ";
+$lang['tRPCCardDetailStaExpr2']   = "ไม่หมดอายุ";
 
 //Text
 $lang['tRPCStaActive1']    = "ใช้งาน";

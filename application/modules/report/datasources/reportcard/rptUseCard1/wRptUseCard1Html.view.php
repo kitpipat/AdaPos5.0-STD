@@ -231,9 +231,10 @@ $bIsLastPage = ($nAllPage == $nCurrentPage);
                                 ),
                                 'rtCrdBalance' => array(
                                     "label" => $aDataTextRef['tRPCCardBalance'],
+                                    "decimals" => $nOptDecimalShow,
                                     "formatValue" => function($tValue,$aRow){
                                         $aExplodeCrdBalance = explode(";",$tValue);
-                                        return number_format(intval($aExplodeCrdBalance[1]), 2);
+                                        return number_format($aExplodeCrdBalance[1],2);
                                     },
                                     "cssStyle" =>array(
                                         "th" => "text-align:right",

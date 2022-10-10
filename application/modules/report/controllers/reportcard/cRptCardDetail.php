@@ -546,7 +546,7 @@ class cRptCardDetail extends MX_Controller {
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell($tCrdStaExpr),
                     WriterEntityFactory::createCell(null),
-                    WriterEntityFactory::createCell(number_format($aValue['FCCrdValue'],$nOptDecimalShow)),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCCrdValue']), $oStyle),
                     WriterEntityFactory::createCell(null),
                 ];
 
@@ -573,7 +573,7 @@ class cRptCardDetail extends MX_Controller {
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(FCNnGetNumeric($aSumDataReport[0]['FCCrdValue'])),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aSumDataReport[0]['FCCrdValue']), $oStyle),
                         WriterEntityFactory::createCell(null),
                     ];
                     $aRow = WriterEntityFactory::createRow($values,$oStyleColums);
