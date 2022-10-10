@@ -411,3 +411,5 @@ $lang['tDowloadFileAttem']           = "ดาวน์โหลดไฟล์�
 $lang['tImportCheckTemp']           = "Re-Check Product Dup";   
 $lang['tPdtEventAddProductValidateAgency']           = "In case the sales representative is not specified, the system will add the product centrally and apply to all stores. Please confirm.";
 $lang['tPdtEventAddProductValidateAgency2']           = "If the user is a higher level than the sales representative, the user is not authorized to sell. The product is added centrally and applies to all stores. Please confirm.";
+
+$lang['tCenterModalPDTPBNFrom']           = "Brand";

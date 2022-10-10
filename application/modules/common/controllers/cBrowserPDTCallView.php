@@ -167,8 +167,8 @@ class cBrowserPDTCallView extends MX_Controller
             $tReturnType            =  $this->input->post("ReturnType");
             $aNotinItem             =  $this->input->post("aNotinItem");
             $nTotalResult           =  $this->input->post("nTotalResult");
-            $tSearchSelect          =  '';
-            $tSearchText            =  '';
+            $tSearchSelect          =  $this->input->post("tSearchSelect");
+            $tSearchText            =  $this->input->post("tSearchText");
             $aPackDataForSerach     =  $this->input->post("aPackDataForSerach");
             $tTYPEPDT               =  $this->input->post("tTYPEPDT");
             $tPdtSpcCtl             =  $this->input->post('tPdtSpcCtl');
@@ -585,10 +585,17 @@ class cBrowserPDTCallView extends MX_Controller
         // print_r($paData['tPdtSpcCtl']);
         // var_dump($tWhere);
         if ( isset($tWhere) && !empty($tWhere) && $tWhere != 'null' ) {
-            $aItem =  json_decode($tWhere);
+            // $aItem =  json_decode($tWhere);
+            if(is_array($tWhere)){
+                $aItem = $tWhere;
+            }else{
+                $aItem =  json_decode($tWhere);
+            }
+
             foreach($aItem as $nKey => $tValue){
                 $tFilter .= $tValue;
             }
+
         }
 
         //------------------- ไม่แสดงสินค้าตาม ประเภทสินค้า -------------------
@@ -752,7 +759,7 @@ class cBrowserPDTCallView extends MX_Controller
                 //$tFilter .= " OR (Products.FTBuyer = '$tSearchText')";
             }
         }
-
+        $tSearchText = trim($paData['tSearchText']);
         //-------------------ประเภทสินค้า-------------------
         $tTYPEPDT = $paData['tTYPEPDT'];
         if ($tTYPEPDT != '') {
