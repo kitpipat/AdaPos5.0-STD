@@ -66,8 +66,8 @@ if ($aDataList['rtCode'] == '1') {
                                 }
                             }
 
-                            // เช็ค Text Color FTXthStaPrcStk
-                            if ($aValue['FTXthStaPrcStk'] == 1) {
+                             // เช็ค Text Color FTXthStaPrcStk
+                             if ($aValue['FTXthStaPrcStk'] == 1) {
                                 $tClassPrcStk = 'text-success';
                             } else if ($aValue['FTXthStaPrcStk'] == 2) {
                                 $tClassPrcStk = 'text-warning';

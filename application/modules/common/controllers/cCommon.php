@@ -261,5 +261,58 @@ class cCommon extends MX_Controller {
         }
     }
 
+    // Create By : Napat(Jame) 22/06/2022
+    public function FCNaCChkStkB4ApvDoc(){
+        $aParams = $this->input->post('paParams');
+        $aWahChkStk     = $this->mCommon->FCNaMWahChkStk($aParams);
+        if( $aWahChkStk['nCode'] == 1 ){
+            $aDataDocApv        = $this->mCommon->FCNaMGetDocInvPendingApv($aParams);
+            $aDataNotEnoughQty  = $this->mCommon->FCNaMGetNotEnoughQty($aParams);
+
+            if( $aDataDocApv['nCode'] == 1 || $aDataNotEnoughQty['nCode'] == 1 ){
+
+                $tTextMsg = "";
+                if( $aDataDocApv['nCode'] == 1 ){
+                    $tTextMsg .= "มีเอกสารค้างอนุมัติ ";
+                }else{
+                    $tTextMsg .= "ไม่มีเอกสารค้างอนุมัติ ";
+                }
+
+                if( $aDataNotEnoughQty['nCode'] == 1 ){
+                    $tTextMsg .= "สินค้าในคลังไม่เพียงพอในการทำเอกสาร";
+                }else{
+                    $tTextMsg .= "สินค้าในคลังเพียงพอในการทำเอกสาร";
+                }
+
+                $aReturn = array(
+                    'aSection1' => array(
+                        'tHtmlRender'   => $this->load->view('common/chkstkb4apvdoc/wDataTableSection1', $aDataDocApv, true),
+                        'nStaEvent'     => $aDataDocApv['nCode'],
+                        'tStaMessg'     => $aDataDocApv['tDesc']
+                    ),
+                    'aSection2' => array(
+                        'tHtmlRender'   => $this->load->view('common/chkstkb4apvdoc/wDataTableSection2', $aDataNotEnoughQty, true),
+                        'nStaEvent'     => $aDataNotEnoughQty['nCode'],
+                        'tStaMessg'     => $aDataNotEnoughQty['tDesc']
+                    ),
+                    'nStaEvent'     => 1,
+                    'tStaMessg'     => 'คลังตัดสต๊อก '.$tTextMsg
+                );
+            }else{
+                $aReturn = array(
+                    'nStaEvent'     => 200,
+                    'tStaMessg'     => 'คลังตัดสต๊อก ไม่มีเอกสารค้างอนุมัติ สินค้าในคลังเพียงพอในการทำเอกสาร'
+                );
+            }
+        }else{
+            $aReturn = array(
+                'nStaEvent'     => 300,
+                'tStaMessg'     => 'คลังไม่เช็คสต๊อก'
+            );
+        }
+        echo json_encode($aReturn);
+    }
+
+
 }
 

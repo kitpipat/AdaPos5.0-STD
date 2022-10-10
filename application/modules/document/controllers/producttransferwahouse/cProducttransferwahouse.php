@@ -1209,16 +1209,16 @@ class cProducttransferwahouse extends MX_Controller
 
             foreach ($aDataDTTmp as $Key => $value) {
 
-                $aDataDTTmp[$Key]['FCXtdFactor'] = number_format($value['FCXtdFactor'], $nOptDecimalSave, '.', '');
+                $aDataDTTmp[$Key]['FCXtdFactor']        = number_format($value['FCXtdFactor'], $nOptDecimalSave, '.', '');
 
 
                 //FCXtdQtyAll จำนวนรวมหน่วยเล็กสุด(จ่ายโอน)  (Qty*Factor*StkFac)
                 $FCXtdQtyAll = $value['FCXtdQty'] * $value['FCXtdFactor'];
-                $aDataDTTmp[$Key]['FCXtdQtyAll'] = $FCXtdQtyAll;
+                $aDataDTTmp[$Key]['FCXtdQtyAll']        = $FCXtdQtyAll;
 
                 //คำนวน FCXtdAmt  (Qty*SetPrice) 
                 $FCXtdAmt = $value['FCXtdQty'] * $value['FCXtdSetPrice'];
-                $aDataDTTmp[$Key]['FCXtdAmt'] = number_format($FCXtdAmt, $nOptDecimalSave, '.', '');
+                $aDataDTTmp[$Key]['FCXtdAmt']           = number_format($FCXtdAmt, $nOptDecimalSave, '.', '');
 
                 //มูลค่าภาษี IN: amt-((amt*100)/(100+VatRate)) ,EX: ((amt*(100+VatRate))/100)-Neamtt
                 if ($ptXthVATInOrEx == 1) {
@@ -1226,22 +1226,22 @@ class cProducttransferwahouse extends MX_Controller
                 } else {
                     $FCXtdVat = ($FCXtdAmt * (100 + $value['FCXtdVatRate'])) / 100;
                 }
-                $aDataDTTmp[$Key]['FCXtdVat'] = number_format($FCXtdVat, $nOptDecimalSave, '.', '');
+                $aDataDTTmp[$Key]['FCXtdVat']           = number_format($FCXtdVat, $nOptDecimalSave, '.', '');
 
                 //มูลค่าแยกภาษี (Amt-FCXpdVat)
                 $FCXtdVatable = $FCXtdAmt - $FCXtdVat;
-                $aDataDTTmp[$Key]['FCXtdVatable'] = number_format($FCXtdVatable, $nOptDecimalSave, '.', '');
+                $aDataDTTmp[$Key]['FCXtdVatable']       = number_format($FCXtdVatable, $nOptDecimalSave, '.', '');
 
                 //มูลค่าสุทธิก่อนท้ายบิล (FCXpdVat+FCXpdVatable)
                 $FCXtdNet = $FCXtdVat + $FCXtdVatable;
-                $aDataDTTmp[$Key]['FCXtdNet'] = number_format($FCXtdNet, $nOptDecimalSave, '.', '');
+                $aDataDTTmp[$Key]['FCXtdNet']           = number_format($FCXtdNet, $nOptDecimalSave, '.', '');
 
                 //ต้นทุนรวมใน (FCXpdVat+FCXpdVatable)
                 $FCXtdCostIn = $FCXtdVat + $FCXtdVatable;
-                $aDataDTTmp[$Key]['FCXtdCostIn'] = number_format($FCXtdCostIn, $nOptDecimalSave, '.', '');
+                $aDataDTTmp[$Key]['FCXtdCostIn']        = number_format($FCXtdCostIn, $nOptDecimalSave, '.', '');
 
                 //ต้นทุนแยกนอก (FCXpdVatable)
-                $aDataDTTmp[$Key]['FCXtdCostEx'] = number_format($FCXtdVatable, $nOptDecimalSave, '.', '');
+                $aDataDTTmp[$Key]['FCXtdCostEx']        = number_format($FCXtdVatable, $nOptDecimalSave, '.', '');
             }
 
             $aResUpd = $this->mProducttransferwahouse->FSnMWTOUpdateDTTemp($aDataDTTmp, $aDataWhere);
@@ -2718,6 +2718,123 @@ class cProducttransferwahouse extends MX_Controller
                     );
                 }
             }
+        } catch (Exception $Error) {
+            $aReturnData = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
+            );
+        }
+        echo json_encode($aReturnData);
+    }
+
+    // เช็คว่ามีของในคลังพอไหมอนุมัติ
+    public function FSoCTWXCheckProductWahouse(){
+        try{
+            $tDocNo       = $this->input->post('tDocNo');
+            $tBchCode     = $this->input->post('tBchCode');
+            $tWahCode     = $this->input->post('tWahCode');
+
+            $aDataWhere = array(
+                'FTBchCode'         => $tBchCode,
+                'FTXshDocNo'        => $tDocNo,
+                'FTXthDocKey'       => 'TCNTPdtTwxHD',
+                'FTSessionID'       => $this->session->userdata('tSesSessionID'),
+                'FTWahCode'         => $tWahCode
+            );
+            $this->mProducttransferwahouse->FSxMTWXUpdatePdtStkPrcAll($aDataWhere,'1');
+            // $aGetPdtInTmpForSendToAPI = $this->mProducttransferwahouse->FSaMTWXGetPdtInTmpForSendToAPI($aDataWhere);
+            // if( FCNnHSizeOf($aGetPdtInTmpForSendToAPI) > 0 ){
+
+            //     //API CheckSTK
+            //     $aConfig = $this->mProducttransferwahouse->FSaMTWXGetConfigAPI();
+            //     if($aConfig['rtCode'] == '800'){
+            //         $aReturnData = array(
+            //             'nStaEvent' => 300,
+            //             'tStaMessg' => 'เกิดข้อผิดพลาด ไม่พบ API ในการเชื่อมต่อ'
+            //         );
+            //         $this->mProducttransferwahouse->FSxMTWXUpdatePdtStkPrcAll($aDataWhere,'0');
+            //         echo json_encode($aReturnData);
+            //         return false;
+            //     }else{
+            //         $tUrlAddress = $aConfig['raItems'][0]['FTUrlAddress'];
+            //     }
+
+            //     $tUrlApi    = $tUrlAddress.'/Stock/CheckStockPdts';
+            //     $aParam     = $aGetPdtInTmpForSendToAPI;
+            //     $aAPIKey    = array(
+            //         'tKey'      => 'X-API-KEY',
+            //         'tValue'    => '12345678-1111-1111-1111-123456789410'
+            //     );
+            //     $aResult    = FCNaHCallAPIBasic($tUrlApi,'POST',$aParam,$aAPIKey);
+            //     // echo "<pre>"; print_r($aResult); echo "</pre>"; exit;
+            //     if( $aResult['rtCode'] == '001' ){
+            //         $aHaveItemInWah     = array();
+            //         $aNotFoundItemInWah = array();
+            //         $nCountItem         = FCNnHSizeOf($aResult['raItems']);
+
+            //         for($i=0; $i<$nCountItem; $i++){
+            //             // if( $aResult['raItems'][$i]['rcReqQty'] <= $aResult['raItems'][$i]['rcStkQty'] ){ // เอาเฉพาะสินค้าที่มีในคลังขาย
+            //             //     array_push($aHaveItemInWah,$aResult['raItems'][$i]['rtPdtCode']);
+            //             // }else{
+            //             //     array_push($aNotFoundItemInWah,$aResult['raItems'][$i]['rtPdtCode']);
+            //             // }
+
+            //             if($aResult['raItems'][$i]['rtStaPrcStock'] == 2 ){ //stock ไม่พอ
+            //                //สินค้า , จำนวนร้องขอ , จำนวนคงเหลือ
+            //                $aFindTextNamePDTNoStock    = $this->mProducttransferwahouse->FSxMTWXFindTextNamePDTNoStock("'".$aResult['raItems'][$i]['rtPdtCode']."'");
+            //                $tPdtName                   = $aFindTextNamePDTNoStock[0]['FTPdtName'];
+            //                array_push($aNotFoundItemInWah,array($aResult['raItems'][$i]['rtPdtCode'],$tPdtName,$aResult['raItems'][$i]['rcReqQty'],$aResult['raItems'][$i]['rcStkQty']));
+            //             }else{
+            //                 array_push($aHaveItemInWah,$aResult['raItems'][$i]['rtPdtCode']);
+            //             }
+            //         }
+
+            //         // ถ้าสินค้าไหนมีอยู่ในคลังขาย ก็ให้ปรับ PdtStkPrc = 1
+            //         if( FCNnHSizeOf($aHaveItemInWah) > 0 ){
+            //             $tUpdatePdtStkPrc = $this->mProducttransferwahouse->FSxMTWXUpdatePdtStkPrc($aDataWhere,$aHaveItemInWah);
+            //         }
+            //         $tChkTsysConfig = $this->mProducttransferwahouse->FSxMTWXChkConfig($aDataWhere,$aHaveItemInWah);
+
+            //         if( FCNnHSizeOf($aNotFoundItemInWah) > 0 ){
+            //             $aReturnData = array(
+            //                 'nStaEvent'         => 600,
+            //                 'tStaMessg'         => 'ไม่สามารถอนุมัติเอกสารได้เนื่องจากมีสินค้าบางรายการมีสต๊อกไม่เพียงพอ',
+            //                 'tChkTsysConfig'    => $tChkTsysConfig[0]['FTSysStaUsrValue'],
+            //                 'aItemFail'         => $aNotFoundItemInWah
+            //             );
+            //             $this->mProducttransferwahouse->FSxMTWXUpdatePdtStkPrcAll($aDataWhere,'0');
+            //         }else{
+
+            //             $aReturnData = array(
+            //                 'nStaEvent'         => 1,
+            //                 'tStaMessg'         => 'SUCCESS',
+            //                 'tUpdatePdtStkPrc'  => $tUpdatePdtStkPrc,
+            //                 'tChkTsysConfig'    => $tChkTsysConfig[0]['FTSysStaUsrValue'],
+            //             );
+            //         }
+
+            //     }else{
+            //         $aReturnData = array(
+            //             'nStaEvent'     => 800,
+            //             'tStaMessg'     => 'API Error',
+            //             'aPdtSendAPI'   => $aGetPdtInTmpForSendToAPI,
+            //             'oAPIReturn'    => $aResult
+            //         );
+            //         $this->mProducttransferwahouse->FSxMTWXUpdatePdtStkPrcAll($aDataWhere,'0');
+            //     }
+            // }else{
+            //     $aReturnData = array(
+            //         'nStaEvent'     => 400,
+            //         'tStaMessg'     => 'สินค้าทั้งหมดในเอกสาร ยืนยันสต็อคหมดแล้ว'
+            //     );
+            // }
+
+            $aReturnData = array(
+                'nStaEvent'         => 1,
+                'tStaMessg'         => 'SUCCESS',
+                // 'tUpdatePdtStkPrc'  => $tUpdatePdtStkPrc,
+                // 'tChkTsysConfig'    => $tChkTsysConfig[0]['FTSysStaUsrValue'],
+            );
         } catch (Exception $Error) {
             $aReturnData = array(
                 'nStaEvent' => '500',
