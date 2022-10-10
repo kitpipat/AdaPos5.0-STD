@@ -25,7 +25,7 @@ class Customermngcredit_model extends CI_Model {
                 CSTCR.*,
                 (CSTCR.FCCstCrBalExt - CSTCR.FCCstCrAmtBuffer - CSTCR.FCCstCrLeft) AS FCCstCrBalLeft
             FROM (
-                SELECT TOP ". get_cookie('nShowRecordInPageList')."
+                SELECT TOP 30
                     CST.FTCstCode,
                     CSTL.FTCstName,
                     CRD.FTCstStaApv,    
