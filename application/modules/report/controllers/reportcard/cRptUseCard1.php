@@ -900,7 +900,8 @@ class cRptUseCard1 extends MX_Controller {
             'nRow'              => 999999999
         );
         $aDataReport = $this->mRptUseCard1->FSaMGetDataReport($aDataWhere, $aDataFilter);
-
+        $tCrdCode = ''; 
+        $tCrdBalance = '';
         if(isset($aDataReport['raItems']) && !empty($aDataReport['raItems'])) {
             foreach ($aDataReport['raItems'] as $nKey => $aValue) {
                 $aCrdName           = explode(";",$aValue['rtCrdName']);
@@ -911,6 +912,13 @@ class cRptUseCard1 extends MX_Controller {
                 $aTxnDocTypeName    = explode(";",$aValue['rtTxnDocTypeName']);
                 $aTxnDocCreateBy    = explode(";",$aValue['rtTxnDocCreateBy']);
                 $aCrdBalance        = explode(";",$aValue['rtCrdBalance']);
+
+                if($aValue['rtCrdCode'] == $tCrdCode) {
+                    $tCrdBalanceShow = '';
+                }
+                else{
+                    $tCrdBalanceShow = FCNnGetNumeric($aCrdBalance[1]);
+                }
 
                 $values= [
                     WriterEntityFactory::createCell($aValue['rtCrdCode']),
@@ -941,7 +949,7 @@ class cRptUseCard1 extends MX_Controller {
                     WriterEntityFactory::createCell(FCNnGetNumeric($aValue['rtTxnValue'])),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL),
-                    WriterEntityFactory::createCell(FCNnGetNumeric($aCrdBalance[1])),
+                    WriterEntityFactory::createCell($tCrdBalanceShow),
                 ];
                 $aRow = WriterEntityFactory::createRow($values);
                 $oWriter->addRow($aRow);
@@ -983,6 +991,8 @@ class cRptUseCard1 extends MX_Controller {
                     $aRow = WriterEntityFactory::createRow($values,$oStyleColums);
                     $oWriter->addRow($aRow);
                 }
+
+                $tCrdCode = $aValue['rtCrdCode'];
             }
         }
 
