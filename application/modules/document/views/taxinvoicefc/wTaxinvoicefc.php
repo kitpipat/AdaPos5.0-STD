@@ -15,7 +15,7 @@
                         <div>
                             <div style="width:100%;">
                                 <!-- <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button" id="obtPrintPreviewDocumentABB" onclick="JSxTaxPrintPreviewDocABB();"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXPrintABB'); ?></button> -->
-                                <!-- <button class="btn xCNBTNDefult xCNBTNDefult2Btn xCNHide" type="button" id="obtTAXCancleETax"><?=language('common/main/main', 'ยกเลิกเอกสาร'); ?></button> -->
+                                <button class="btn xCNBTNDefult xCNBTNDefult2Btn xCNHide" type="button" id="obtTAXCancleETax"><?=language('common/main/main', 'ยกเลิกเอกสาร'); ?></button>
                                 <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button" id="obtCancleDocument"><?=language('common/main/main', 'tCancel'); ?></button>
                                 <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button" id="obtApproveDocument"><?=language('common/main/main', 'tCMNApprove'); ?></button>
                                 <button class="btn xCNBTNDefult xCNBTNDefult2Btn xCNHide" type="button" id="obtPrintDocument" onclick="JSxTaxPrintDoc();"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXPrint'); ?></button>
@@ -174,7 +174,7 @@
 
     //โหลดหน้าจอเพิ่ม + เเก้ไข
     function JSvTAXLoadPageAddOrPreview(tDocumentBchCode,ptDocument){
-        console.log('JSvTAXLoadPageAddOrPreview',tDocumentBchCode);
+        
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCLoadPageAdd",
@@ -257,9 +257,12 @@
 
                     var aPackData = {
                         tDocABB : $('#oetTAXABBCode').val(),
-                        tBrowseBchCode : $('#oetBrowseBchCode').val()
+                        tBrowseBchCode : $('#oetBrowseBchCode').val(),
+                        tInputBchCode   : $('#oetInputBchCode').val(),
+                        tStaETax        : $('#oetTXIStaETax').val(),
+                        tTAXApvType     : $('#ohdTAXApvType').val()
                     }
-                    console.log('259',aPackData['tBrowseBchCode']);
+                    
                     //ส่งเข้า Q ไปหาเลขที่เอกสารก่อน
                     $.ajax({
                         type    : "POST",
@@ -329,10 +332,11 @@
                     var aPackData = {
                         tDocABB         : $('#oetTAXABBCode').val(),
                         tBrowseBchCode  : $('#oetBrowseBchCode').val(),
+                        tInputBchCode   : $('#oetInputBchCode').val(),
                         tStaETax        : $('#oetTXIStaETax').val(),
                         tTAXApvType     : $('#ohdTAXApvType').val()
                     }
-
+                    
                     //ส่งเข้า Q ไปหาเลขที่เอกสารก่อน
                     JCNxOpenLoading();
                     $.ajax({
@@ -360,6 +364,7 @@
                                 $('#odvModalAproveDocument').modal("hide");
                                 $('#obtConfirmApprDoc').attr("disabled",false);
                                 $('#obtApproveDocument').attr("disabled",false);
+                                
                                 // var tBCH    = aResult.tBCHDoc;
                                 // JCNxOpenLoading();
                                 // var tDocABB = $('#oetTAXABBCode').val();
@@ -477,16 +482,16 @@
 
     //กรณีไม่สารถ GetMassage ได้จาก Stomp ให้ไป Get Massate ผ่าน Server
     function JSxTAXGetTaxNumberByServer(){
-        console.log('JSxTAXGetTaxNumberByServer Processing');
         var tBrowseBchCode  = $('#oetBrowseBchCode').val();
         var tStaETax        = $('#oetTXIStaETax').val();
         var tTAXApvType     = $('#ohdTAXApvType').val();
-        console.log('JSxTAXGetTaxNumberByServer',tBrowseBchCode);
+        
         var aPackData = {
             tTAXApvType         : tTAXApvType,
             tCurretTaxDocNo     : $('#oetTAXDocNo').val(),
             tOriginTaxDocNo     : $('#oetTAXRefAE').val(),
             tBrowseBchCode      : $('#oetBrowseBchCode').val(),
+            tInputBchCode       : $('#oetInputBchCode').val(),
             dDocDate            : $('#oetTAXDocDate').val(),
             dDocTime            : $('#oetTAXDocTime').val(),
             tDocABB             : $('#oetTAXABBCode').val(),
@@ -515,22 +520,20 @@
             // tAddV1Road          : $('#oetFTAddV1Road').val(),
         };
 
-        // if( tTAXApvType == '2' ){
-        //     aPackData['tReason']            = $('#oetTAXModalCancelRsnCode').val();
-        //     aPackData['tCstCode']           = $('#oetTAXModalCancelCstCode').val();
-        //     aPackData['tCstName']           = $('#oetTAXModalCancelCstName').val();
-        //     aPackData['tCstNameABB']        = $('#oetTAXModalCancelCstName').val();
-        //     aPackData['tAddress1']          = $('#otxTAXModalCancelAddress1').val();
-        //     aPackData['tAddress2']          = $('#otxTAXModalCancelAddress2').val();
-        //     aPackData['tAddV1PvnCode']      = $('#oetTAXModalCancelPvnCode').val();
-        //     aPackData['tAddV1DstCode']      = $('#oetTAXModalCancelDstCode').val();
-        //     aPackData['tAddV1SubDistCode']  = $('#oetTAXModalCancelSubDistCode').val();
-        //     aPackData['tAddV1PostCode']     = $('#oetTAXModalCancelPostCode').val();
-        //     aPackData['dDocDate']           = '<?=date('Y-m-d');?>';
-        //     aPackData['dDocTime']           = '<?=date('H:i:s')?>';
-        // }
-
-        // console.log(aPackData);
+        if( tTAXApvType == '2' ){
+            aPackData['tReason']            = $('#oetTAXModalCancelRsnCode').val();
+            aPackData['tCstCode']           = $('#oetTAXModalCancelCstCode').val();
+            aPackData['tCstName']           = $('#oetTAXModalCancelCstName').val();
+            aPackData['tCstNameABB']        = $('#oetTAXModalCancelCstNameABB').val();
+            aPackData['tAddress1']          = $('#otxTAXModalCancelAddress1').val();
+            aPackData['tAddress2']          = $('#otxTAXModalCancelAddress2').val();
+            aPackData['tTel']               = $('#oetTAXModalCancelTel').val();
+            aPackData['tFax']               = $('#oetTAXModalCancelFax').val();
+            aPackData['tTypeBusiness']      = $('#ocmTAXModalCancelTypeBusiness option:selected').val();
+            aPackData['tBusiness']          = $('#ocmTAXModalCancelBusiness option:selected').val();
+            aPackData['dDocDate']           = '<?=date('Y-m-d');?>';
+            aPackData['dDocTime']           = '<?=date('H:i:s')?>';
+        }
 
         $.ajax({
             type    : "POST",
@@ -577,9 +580,10 @@
     //อัพเดทของจริง
     function JSxApprove(ptTaxNumberFull){
         var tBrowseBchCode  = $('#oetBrowseBchCode').val();
-        console.log('JSxApprove',tBrowseBchCode);
+        
         var aPackData = {
             tBrowseBchCode  : $('#oetBrowseBchCode').val(),
+            tInputBchCode   : $('#oetInputBchCode').val(),
             tTaxNumberFull  : ptTaxNumberFull,
             dDocDate        : $('#oetTAXDocDate').val(),
             dDocTime        : $('#oetTAXDocTime').val(),
@@ -596,7 +600,9 @@
             tAddress1       : $('#otxAddress1').val(),
             tAddress2       : $('#otxAddress2').val(),
             tReason         : $('#otxReason').val(),
-            tSeqAddress     : $('#ohdSeqAddress').val()
+            tSeqAddress     : $('#ohdSeqAddress').val(),
+            tStaETax        : $('#oetTXIStaETax').val(),
+            tTAXApvType     : $('#ohdTAXApvType').val()
         };
 
         if(ptTaxNumberFull == '' || ptTaxNumberFull == null){
@@ -641,7 +647,6 @@
         var tCopyRight          = 0;
         var tPrintByPage        = 1;
 
-        console.log($('#ohdBCHDocument').val());
         //เอาสาขาไปค้นหาก่อนว่ามีที่อยู่ยังถ้ายังต้องเอาสาขาของที่อยู่ส่งไปหา from
         $.ajax({
             type    : "POST",
@@ -662,9 +667,8 @@
                     {"DocBchCode":tDocBCH}
                 ];
 
-                console.log(aInfor);
                 if(tTypeABB == 4){//เอกสารขาย
-                    window.open("<?=base_url(); ?>formreport/TaxInvoice?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL' , '_blank');
+                    window.open("<?=base_url(); ?>formreport/TaxInvoicefc?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL' , '_blank');
                 }else{ //เอกสารคืน
                     window.open("<?=base_url(); ?>formreport/TaxInvoice_refund?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL', '_blank');
                 }
@@ -726,7 +730,7 @@
                     JCNxOpenLoading();
 
                     if(tTypeABB == 4){//เอกสารขาย
-                        $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoice?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
+                        $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoicefc?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
                     }else{ //เอกสารคืน
                         $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoice_refund?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
                     }

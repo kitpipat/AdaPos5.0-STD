@@ -36,6 +36,7 @@ $lang['tCancel']                    = 'Cancel';
 $lang['tBack']                      = 'Back';
 $lang['tSave']                      = 'Save';
 $lang['tEdit']                      = "Edit";
+$lang['tDelete']                    = "Delete";
 $lang['tAdd']                       = "Add";
 $lang['tDelAll']                    = "Delete All";
 $lang['tSelectPic']                 = "Select Image";

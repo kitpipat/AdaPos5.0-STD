@@ -1,4 +1,4 @@
-ซ<script type="text/javascript">
+<script type="text/javascript">
     var nLangEdits = <?php echo $this->session->userdata("tLangEdit") ?>;
     var nStaRcvSpcBrowseType = $('#oetRcvSpcStaBrowse').val();
     var tCallRecSpcBackOption = $('#oetRcvSpcCallBackOption').val();

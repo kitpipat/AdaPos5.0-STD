@@ -60,7 +60,7 @@ function FCNaHBtnSaveActiveHTML($tMnuCtlName){
 
 
 function FCNaHCheckAlwFunc($tMnuCtlName){
-  
+
    $ci = &get_instance();
    $ci->load->database();
    $ci->load->library('session');
@@ -81,37 +81,34 @@ function FCNaHCheckAlwFunc($tMnuCtlName){
 //       USRMENU.FTAutStaPrint,
 //       USRMENU.FTAutStaPrintMore,
 //       USRMENU.FTAutStaFavorite
-      
+
 //      FROM TCNTUsrMenu USRMENU
-//      LEFT JOIN TSysMenuList MENULIST ON USRMENU.FTGmnCode = MENULIST.FTGmnCode 
-//             AND USRMENU.FTMnuParent = MENULIST.FTMnuParent 
+//      LEFT JOIN TSysMenuList MENULIST ON USRMENU.FTGmnCode = MENULIST.FTGmnCode
+//             AND USRMENU.FTMnuParent = MENULIST.FTMnuParent
 //             AND USRMENU.FTMnuCode = MENULIST.FTMnuCode
-      
+
 //     WHERE MENULIST.FTMnuCtlName = '".trim($tMnuCtlName)."' AND USRMENU.FTRolCode = '".trim($tUsrRoleCode)."' ";
 
    $tSQLAuto = "SELECT
-               A.FTMnuCode
-               ,MAX(CAST(A.FTAutStaFull AS int)) AS FTAutStaFull
-               ,MAX(CAST(A.FTAutStaRead AS int)) AS FTAutStaRead
-               ,MAX(CAST(A.FTAutStaAdd AS int)) AS FTAutStaAdd
-               ,MAX(CAST(A.FTAutStaEdit AS int)) AS FTAutStaEdit
-               ,MAX(CAST(A.FTAutStaDelete AS int)) AS FTAutStaDelete
-               ,MAX(CAST(A.FTAutStaCancel AS int)) AS FTAutStaCancel
-               ,MAX(CAST(A.FTAutStaAppv AS int)) AS FTAutStaAppv
-               ,MAX(CAST(A.FTAutStaPrint AS int)) AS FTAutStaPrint
-               ,MAX(CAST(A.FTAutStaPrintMore AS int)) AS FTAutStaPrintMore
-               ,MAX(CAST(A.FTAutStaFavorite AS int)) AS FTAutStaFavorite
+                  A.FTMnuCode
+                  ,MAX(CAST(A.FTAutStaFull AS int)) AS FTAutStaFull
+                  ,MAX(CAST(A.FTAutStaRead AS int)) AS FTAutStaRead
+                  ,MAX(CAST(A.FTAutStaAdd AS int)) AS FTAutStaAdd
+                  ,MAX(CAST(A.FTAutStaEdit AS int)) AS FTAutStaEdit
+                  ,MAX(CAST(A.FTAutStaDelete AS int)) AS FTAutStaDelete
+                  ,MAX(CAST(A.FTAutStaCancel AS int)) AS FTAutStaCancel
+                  ,MAX(CAST(A.FTAutStaAppv AS int)) AS FTAutStaAppv
+                  ,MAX(CAST(A.FTAutStaPrint AS int)) AS FTAutStaPrint
+                  ,MAX(CAST(A.FTAutStaPrintMore AS int)) AS FTAutStaPrintMore
+                  ,MAX(CAST(A.FTAutStaFavorite AS int)) AS FTAutStaFavorite
                FROM (
-               SELECT 
-               USRMENU.*
-               FROM TCNTUsrMenu USRMENU
-               LEFT JOIN TSysMenuList MENULIST ON USRMENU.FTGmnCode = MENULIST.FTGmnCode 
-               AND USRMENU.FTMnuParent = MENULIST.FTMnuParent 
-               AND USRMENU.FTMnuCode = MENULIST.FTMnuCode
-               LEFT JOIN TCNMUsrActRole ACTRole ON ACTRole.FTRolCode =  USRMENU.FTRolCode
-               WHERE ACTRole.FTUsrCode = '".trim($tUsrCode)."'
-               AND MENULIST.FTMnuCtlName = '".trim($tMnuCtlName)."'
-               ) A GROUP BY A.FTMnuCode";
+                  SELECT
+                     USRMENU.*
+                  FROM TCNTUsrMenu USRMENU WITH(NOLOCK)
+                  INNER JOIN TSysMenuList MENULIST WITH(NOLOCK) ON USRMENU.FTGmnCode = MENULIST.FTGmnCode AND USRMENU.FTMnuParent = MENULIST.FTMnuParent AND USRMENU.FTMnuCode = MENULIST.FTMnuCode
+                  INNER JOIN TCNMUsrActRole ACTRole WITH(NOLOCK) ON ACTRole.FTRolCode =  USRMENU.FTRolCode
+                  WHERE ACTRole.FTUsrCode = '".trim($tUsrCode)."' AND MENULIST.FTMnuCtlName = '".trim($tMnuCtlName)."'
+               ) A GROUP BY A.FTMnuCode ";
    $oQueryAuto = $ci->db->query($tSQLAuto);
    $aCheckAlwEvent = $oQueryAuto->result_array();
    $aAlwEvent = '';

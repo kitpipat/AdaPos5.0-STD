@@ -4,7 +4,7 @@
 
         $tCPHDocNo          = $aDataDocHD['raItems']['FTCphDocNo'];
         $dCPHDocDate        = $aDataDocHD['raItems']['FDCphDocDate'];
-        $dCPHDocTime        = date("h:i:s a",strtotime($aDataDocHD['raItems']['FDCphDocDate']));
+        $dCPHDocTime        = date("H:i:s",strtotime($aDataDocHD['raItems']['FDCphDocDate']));
         $tCPHCptCode        = $aDataDocHD['raItems']['FTCptCode'];
         $tCPHCptName        = $aDataDocHD['raItems']['FTCptName'];
         $tCPHCpnName        = $aDataDocHD['raItems']['FTCpnName'];
@@ -20,6 +20,7 @@
         $tCPHStaChkMember   = $aDataDocHD['raItems']['FTStaChkMember'];
 
         $tCPHPplCode        = $aDataDocHD['raItems']['FTPplCode'];
+        $tCPHRefCode        = $aDataDocHD['raItems']['FTCphRefInt'];
         $tCPHPplName        = $aDataDocHD['raItems']['FTPplName'];
         // User Branch Ana Shop
         $tCPHUsrBchCode     = $aDataDocHD['raItems']['FTBchCode'];
@@ -39,12 +40,18 @@
 
         // User Create And User Appove
         $tCPHUsrNameCreateBy    = ($aDataDocHD['raItems']['FTUserNameCreate'] != "")? $aDataDocHD['raItems']['FTUserNameCreate'] : 'N/A';
+
+        $tCphPrefix             = $aDataDocHD['raItems']['FTCphFmtPrefix'];
+        $tCphFmtLen             = $aDataDocHD['raItems']['FNCphFmtLen'];
+        $tCphStaChk             = $aDataDocHD['raItems']['FTCptStaChk'];
+        $tCphStaChkHQ           = $aDataDocHD['raItems']['FTCptStaChkHQ'];
+
     }else{
         $tCPHRoute          = "dcmCouponSetupEventAdd";
 
         $tCPHDocNo          = "";
-        $dCPHDocDate        = "";
-        $dCPHDocTime        = "";
+        $dCPHDocDate        = date('Y-m-d');
+        $dCPHDocTime        = date('H:i:s');
         $tCPHCptCode        = "";
         $tCPHCptName        = "";
         $tCPHCpnName        = "";
@@ -60,6 +67,7 @@
         $tCPHCpnCond        = "";
         $tCPHStaChkMember   = "";
         $tCPHPplCode        = "";
+        $tCPHRefCode        = "";
         $tCPHPplName        = "";
         // User Branch Ana Shop
         $tCPHUsrBchCode     = $this->session->userdata('tSesUsrBchCodeDefault');
@@ -77,6 +85,11 @@
         $tCphStaOnTopPmt = 1;
         $tCphRefAccCode = '';
         $tCphMinValue = 0;
+
+        $tCphPrefix             = '';
+        $tCphFmtLen             = '';
+        $tCphStaChk             = '';
+        $tCphStaChkHQ           = 1;
     }
 ?>
 <input type="text" class="xCNHide" id="oetCPHBchCodeMulti" name="oetCPHBchCodeMulti" value="<?php if($this->session->userdata('tSesUsrLevel')!='HQ') { echo str_replace("'","",$this->session->userdata('tSesUsrBchCodeMulti')); } ?>">
@@ -93,8 +106,7 @@
     <input type="hidden" id="ohdCPHStaApv"      name="ohdCPHStaApv"     value="<?php echo @$tCPHStaApv;?>">
     <input type="hidden" id="ohdCPHStaPrcDoc"   name="ohdCPHStaPrcDoc"  value="<?php echo @$tCPHStaPrcDoc;?>">
     <input type="hidden" id="ohdCPHStaDelMQ"    name="ohdCPHStaDelMQ"   value="<?php echo @$tCPHStaDelMQ;?>">
-    <input type="hidden" id="ohdCPHDetailItems"  name="aDetailItems"  >
-    
+    <input type="hidden" id="ohdDetailItems"    name="aDetailItems"   value="<?php echo @$tCPHStaDelMQ;?>">
     <button style="display:none" type="submit" id="obtCPHSubmitDocument" onclick="JSxCPHAddEditDocument()"></button>
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
@@ -284,7 +296,7 @@
                                         <input type="text" class="form-control xCNHide" id="oetCPHFrmCptCode" name="oetCPHFrmCptCode" maxlength="5" value="<?php echo @$tCPHCptCode;?>">
                                         <input
                                             type="text"
-                                            class="form-control xWPointerEventNone xCNInputWhenStaCancelDoc"
+                                            class="form-control xWPointerEventNone"
                                             id="oetCPHFrmCptName"
                                             name="oetCPHFrmCptName"
                                             value="<?php echo @$tCPHCptName;?>"
@@ -298,6 +310,52 @@
                                         </span>
                                     </div>
                                 </div>
+
+
+                                <!--กำหนดรูปแบบการตรวจสอบ-->
+                                <?php
+                                    if($tCphStaChk == 2){
+                                        $tStyleDisplay = "display:block;";
+                                    }else{
+                                        $tStyleDisplay = "display:none;";
+                                    }
+                                ?>
+
+                                <div class="xCNSpcFormatCoupon" style="border:1px solid #ccc;position:relative;padding:15px; margin-top: 30px; margin-bottom: 10px; <?=$tStyleDisplay?>">
+                                    <label class="xCNLabelFrm" style="position:absolute;top:-15px;left:15px;
+                                        background: #fff;
+                                        padding-left: 10px;
+                                        padding-right: 10px;">กำหนดรูปแบบการตรวจสอบ</label>
+
+                                    <input type="hidden" id="ohdCPHStaChk" name="ohdCPHStaChk" value="<?=@$tCphStaChk?>">
+                                    <input type="hidden" id="ohdCPHStaChkHQ" name="ohdCPHStaChkHQ" value="<?=@$tCphStaChkHQ?>">
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm">รหัสนำหน้าคูปอง</label>
+                                        <input
+                                            type="text"
+                                            class="form-control xCNInputWhenStaCancelDoc"
+                                            id="oetCPHFrmCpnFirstChar"
+                                            name="oetCPHFrmCpnFirstChar"
+                                            maxlength="10"
+                                            placeholder="รหัสนำหน้าคูปอง"
+                                            value="<?=$tCphPrefix?>"
+                                        >
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm">ความยาวรหัสคูปอง</label>
+                                        <input
+                                            type="text"
+                                            class="form-control xCNInputWhenStaCancelDoc xCNInputNumericWithDecimal"
+                                            id="oetCPHFrmCpnLengChar"
+                                            name="oetCPHFrmCpnLengChar"
+                                            maxlength="10"
+                                            placeholder="ความยาวรหัสคูปอง"
+                                            value="<?=$tCphFmtLen?>"
+                                        >
+                                    </div>
+                                </div>
+
                                 <!-- Condition ชื่อคูปอง -->
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCptName');?></label>
@@ -353,20 +411,25 @@
                                 <!-- Condition ประส่วนลด -->
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCphDisType');?></label>
-                                    <select class="selectpicker form-control xCNInputWhenStaCancelDoc" id="ostCPHFrmCphDisType" name="ostCPHFrmCphDisType" value="<?php echo $tCPHCphDisType;?>">
-                                        <option value="1"><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCouponDisType1'); ?></option>
-                                        <option value="2"><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCouponDisType2'); ?></option>
-                                        <option value="3"><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCouponDisType3'); ?></option>
+                                    <select class="selectpicker form-control xCNInputWhenStaCancelDoc" id="ostCPHFrmCphDisType" name="ostCPHFrmCphDisType">
+                                        <option value="1" <?php echo $tCPHCphDisType == '1' ? 'selected' : '';?>><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCouponDisType1'); ?></option>
+                                        <option value="2" <?php echo $tCPHCphDisType == '2' ? 'selected' : '';?>><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCouponDisType2'); ?></option>
+                                        <option value="3" <?php echo $tCPHCphDisType == '3' ? 'selected' : '';?>><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCouponDisType3'); ?></option>
+                                        <option value="4" <?php echo $tCPHCphDisType == '4' ? 'selected' : '';?>><?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCouponDisType4'); ?></option>
                                     </select>
-                                    <?php if($tCPHRoute == 'dcmCouponSetupEventEdit'):?>
-                                        <script type="text/javascript">
-                                            let tCPHCphDisType  = '<?php echo $tCPHCphDisType; ?>';
-                                            if(tCPHCphDisType != undefined ||tCPHCphDisType != ''){
-                                                $('#ostCPHFrmCphDisType').val(tCPHCphDisType).selectpicker('refresh');
-                                            }
-                                        </script>
-                                    <?php endif;?>
                                 </div>
+                            
+                            <!-- Condition อ้างอิงเอกสาร -->
+                            <div class='form-group'>
+                                <label class="xCNLabelFrm"><span style="color:red;">*</span><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDDocref')?></label>
+                                <div class='input-group'>
+                                    <input type='text' class='form-control xCNHide xWCPHAllInput' id='oetCPHHDDocrefCode' name='oetCPHHDDocrefCode' maxlength='20' value="<?php echo $tCPHRefCode;?>" validatedata = "<?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDDocRef')?>">
+                                    <input type='text' class='form-control xWPointerEventNone xWCPHAllInput' id='oetCPHHDDocrefName' name='oetCPHHDDocrefName' value="<?php echo $tCPHRefCode;?>" readonly>
+                                    <span class='input-group-btn'>
+                                        <button id='obtCPHBrowseDocref' type='button' class='btn xCNBtnBrowseAddOn xCNInputWhenStaCancelDoc'><img class='xCNIconFind'></button>
+                                    </span>
+                                </div>
+                            </div>
 
                             <!-- Condition มูลค่า -->
                             <div class="form-group">
@@ -380,16 +443,16 @@
                                         value="<?php echo @$tCPHCphDisValue;?>"
                                     >
                                 </div>
-                                        <div class='form-group'>
-                                            <label class="xCNLabelFrm"><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDCstPriTitle')?></label>
-                                            <div class='input-group'>
-                                                <input type='text' class='form-control xCNHide xWCPHAllInput' id='oetCPHHDCstPriCode' name='oetCPHHDCstPriCode' maxlength='5' value="<?php echo $tCPHPplCode;?>" validatedata = "<?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDCstPriSelect')?>">
-                                                <input type='text' class='form-control xWPointerEventNone xWCPHAllInput' id='oetCPHHDCstPriName' name='oetCPHHDCstPriName' value="<?php echo $tCPHPplName;?>" readonly>
-                                                <span class='input-group-btn'>
-                                                    <button id='obtCPHBrowseHDCstPri' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
-                                                </span>
-                                            </div>
-                                        </div>
+                            <div class='form-group'>
+                                <label class="xCNLabelFrm"><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDCstPriTitle')?></label>
+                                <div class='input-group'>
+                                    <input type='text' class='form-control xCNHide xWCPHAllInput' id='oetCPHHDCstPriCode' name='oetCPHHDCstPriCode' maxlength='5' value="<?php echo $tCPHPplCode;?>" validatedata = "<?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDCstPriSelect')?>">
+                                    <input type='text' class='form-control xWPointerEventNone xWCPHAllInput' id='oetCPHHDCstPriName' name='oetCPHHDCstPriName' value="<?php echo $tCPHPplName;?>" readonly>
+                                    <span class='input-group-btn'>
+                                        <button id='obtCPHBrowseHDCstPri' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
+                                    </span>
+                                </div>
+                            </div>
 
 
 
@@ -491,7 +554,7 @@
                                         id="oetCPHFrmCpnCond"
                                         name="oetCPHFrmCpnCond"
                                         rows="2"
-                                        maxlength="255"
+                                        maxlength="250"
                                         placeholder="<?php echo language('document/couponsetup/couponsetup','tCPHLabelFrmCouponCond');?>"
                                     ><?php echo @$tCPHCpnCond;?></textarea>
                                 </div>
@@ -708,6 +771,35 @@
         </div>
     </div>
 </div>
+<!-- ================================================== Modal Copy Appove ================================================== -->
+<div id="odvCPHModalCopyDoc" class="modal fade xCNModalApprove">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="xCNHeardModal modal-title" style="display:inline-block"><?php echo language('document/couponsetup/couponsetup','tCPHSCopyDocTitle'); ?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <ul>
+                        <!-- <li><?php echo language('common/main/main','tMainApproveStatus1'); ?></li> -->
+                    </ul>
+                <!-- <p><?php echo language('common/main/main','tMainApproveStatus5'); ?></p> -->
+                <p><strong><?php echo language('document/couponsetup/couponsetup','tCPHSCopyDocStatus6'); ?></strong></p>
+            </div>
+            <div class="modal-footer">
+                <button onclick="JSxCPHCopyDocument(true)" type="button" class="btn xCNBTNPrimery">
+                    <?php echo language('common/main/main', 'tModalConfirm'); ?>
+                </button>
+                <button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
+                    <?php echo language('common/main/main', 'tModalCancel'); ?>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="odvCPHCouponHDBch" role="dialog">
     <div class="modal-dialog" role="document">
@@ -1294,7 +1386,7 @@
                 DataColumns		: ['TCNMBranch.FTBchCode','TCNMBranch_L.FTBchName'],
                 DataColumnsFormat : ['',''],
                 Perpage			: 10,
-                OrderBy			: ['TCNMBranch_L.FTBchCode ASC'],
+                OrderBy			: ['TCNMBranch_L.FTBchCode DESC'],
             },
             CallBack:{
                 ReturnType	: 'S',
@@ -1366,7 +1458,7 @@
 
                     // Report Pos (รานงานการขาย) + Report Vending (รานงานตู้ขายสินค้า)
                     tShpWhereShop       = " AND (TCNMShop.FTShpStaActive = 1)";
-                    tShpWhereShopAndBch = " AND ((TCNMShop.FTBchCode BETWEEN "+tShpCPHBranchForm+" AND "+tShpCPHBranchTo+") OR (TCNMShop.FTBchCode BETWEEN "+tShpCPHBranchTo+" AND "+tShpCPHBranchForm+"))";
+                    tShpWhereShopAndBch = " AND ((TCNMShop.FTBchCode BETWEEN '"+tShpCPHBranchForm+"' AND '"+tShpCPHBranchTo+"') OR (TCNMShop.FTBchCode BETWEEN '"+tShpCPHBranchTo+"' AND '"+tShpCPHBranchForm+"'))";
 
             if(typeof tShpCPHBranchForm === 'undefined'  && typeof tShpCPHBranchTo === 'undefined'){
                 // แสดงข้อมูล ร้านค้าทั้งหมดตามประเภทของรายงาน

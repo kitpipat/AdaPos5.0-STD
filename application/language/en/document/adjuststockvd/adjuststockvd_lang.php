@@ -38,10 +38,11 @@ $lang['tADJVDTBType']      = "Type";
 $lang['tADJVDTBValue']     = "Value";
 
 //Form Search
-$lang['tADJVDAllBranch']   = "Branch All";
-$lang['tADJVDShop']        = "Shop";
-$lang['tADJVDBranch']      = "Branch";
-$lang['tADJVDPos']         = "Pos";
+$lang['tADJVDAllBranch']    = "Branch All";
+$lang['tADJVDShop']         = "Shop";
+$lang['tADJVDBranch']       = "Branch";
+$lang['tADJVDPos']          = "Pos";
+$lang['tADJVDShopVD']       = "Product Arrangement";
 
 //$lang Modal Browse Address
 $lang['tBrowseADDTitle']        = "ข้อมูลที่อยู่";

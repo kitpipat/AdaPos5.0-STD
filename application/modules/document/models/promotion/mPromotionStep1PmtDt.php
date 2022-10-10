@@ -3,6 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class mPromotionStep1PmtDt extends CI_Model
 {
+    /** ยกมาจาก Fit Auto 16/09/2022 */
     /**
      * Functionality : Get PmtDt Group in Temp
      * Parameters : -
@@ -200,6 +201,33 @@ class mPromotionStep1PmtDt extends CI_Model
         $this->db->where('FNPmdSeq', $paParams['nSeqNo']);
         $this->db->delete('TCNTPdtPmtDT_Tmp');
 
+        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
+        $this->db->where('FNPmdSeq', $paParams['nSeqNo']);
+        $this->db->delete('TCNTPdtPmtDTLot_Tmp');
+
+        $bStatus = false;
+
+        if ($this->db->affected_rows() > 0) {
+            $bStatus = true;
+        }
+
+        return $bStatus;
+    }
+
+        /**
+     * Functionality : Delete PmtDt in Temp by SeqNo
+     * Parameters : -
+     * Creator : 04/02/2020 piya
+     * Last Modified : -
+     * Return : Status Delete
+     * Return Type : Boolean
+     */
+    public function FSbDeletePmtDtInTmpBySeqLot($paParams = [])
+    {
+        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
+        $this->db->where('FNPmdSeq', $paParams['nSeqNo']);
+        $this->db->delete('TCNTPdtPmtDTLot_Tmp');
+
         $bStatus = false;
 
         if ($this->db->affected_rows() > 0) {
@@ -219,6 +247,24 @@ class mPromotionStep1PmtDt extends CI_Model
      */
     public function FSbDeletePmtDtInTmpByGroupName($paParams = [])
     {
+        $Session = $paParams['tUserSessionID'];
+        $tGroupName = $paParams['tGroupName'];
+
+        $tSQL = "SELECT FNPmdSeq 
+        FROM TCNTPdtPmtDT_Tmp 
+        WHERE FTSessionID = '$Session' 
+        AND FTPmdGrpName = '$tGroupName'";
+
+        $oQuery = $this->db->query($tSQL);
+        $oList = $oQuery->result_array();
+
+        foreach($oList as $aValue){
+            $this->db->where('FTSessionID', $paParams['tUserSessionID']);
+            $this->db->where('FNPmdSeq', $aValue['FNPmdSeq']);
+            $this->db->delete('TCNTPdtPmtDTLot_Tmp');
+        }
+
+
         $this->db->where('FTSessionID', $paParams['tUserSessionID']);
         $this->db->where('FTPmdGrpName', $paParams['tGroupName']);
         $this->db->delete('TCNTPdtPmtDT_Tmp');
@@ -264,6 +310,22 @@ class mPromotionStep1PmtDt extends CI_Model
 
         $this->db->query($tSQL);
 
+
+        // ทำการลบ ใน TCNTPdtPmtDTLOT_Bin ก่อนสำเนา Temp ไป TCNTPdtPmtDTLOT_Bin
+        $this->db->where('FTSessionID', $tUserSessionID);
+        $this->db->delete('TCNTPdtPmtDTLot_Bin');
+        $tSQL2 = "   
+            INSERT TCNTPdtPmtDTLot_Bin
+        ";
+        $tSQL2 .= "  
+            SELECT
+                TMP.*
+            FROM TCNTPdtPmtDTLot_Tmp TMP WITH(NOLOCK)
+            WHERE TMP.FTSessionID = '$tUserSessionID'
+        ";
+
+        $this->db->query($tSQL2);
+
         $bStatus = false;
 
         if ($this->db->affected_rows() > 0) {
@@ -305,6 +367,23 @@ class mPromotionStep1PmtDt extends CI_Model
 
         $this->db->query($tSQL);
 
+        // ทำการลบ ใน TCNTPdtPmtDT_Tmp ก่อนสำเนา Temp ไป TCNTPdtPmtDT_Tmp
+        $this->db->where('FTSessionID', $tUserSessionID);
+        $this->db->delete('TCNTPdtPmtDTLot_Tmp');
+
+        $tSQL2 = "   
+            INSERT TCNTPdtPmtDTLot_Tmp
+        ";
+
+        $tSQL2 .= "  
+            SELECT
+                BIN.*
+            FROM TCNTPdtPmtDTLot_Bin BIN WITH(NOLOCK)
+            WHERE BIN.FTSessionID = '$tUserSessionID'
+        ";
+
+        $this->db->query($tSQL2);
+
         $bStatus = false;
 
         if ($this->db->affected_rows() > 0) {
@@ -315,6 +394,10 @@ class mPromotionStep1PmtDt extends CI_Model
         $this->db->where('FTPmdGrpName', $tGroupName);
         $this->db->where('FTSessionID', $tUserSessionID);
         $this->db->delete('TCNTPdtPmtDT_Bin');
+
+        // ทำการลบ ใน TCNTPdtPmtDTLot_Bin เมื่อสำเนา ไป TCNTPdtPmtDTLot_Tmp เสร็จแล้ว
+        $this->db->where('FTSessionID', $tUserSessionID);
+        $this->db->delete('TCNTPdtPmtDTLot_Bin');
 
         return $bStatus;
     }

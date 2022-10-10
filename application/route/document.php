@@ -82,6 +82,7 @@ $route['TFWCancel']                     = 'document/producttransferwahouse/cProd
 $route['TFWClearDocTemForChngCdt']      = 'document/producttransferwahouse/cProducttransferwahouse/FSxCTFXClearDocTemForChngCdt';
 $route['TFWCheckViaCodeForApv']         = 'document/producttransferwahouse/cProducttransferwahouse/FSxCTWXCheckViaCodeForApv';
 $route['docTFWEventAddPdtIntoDTFhnTemp'] = 'document/producttransferwahouse/cProducttransferwahouse/FSoCTFWEventAddPdtIntoDTFhnTemp';
+$route['TFWCheckProductWahouse']        = 'document/producttransferwahouse/cProducttransferwahouse/FSoCTWXCheckProductWahouse';
 
 
 // TFW (ใบโอนสินค้าระหว่างคลัง ตู้ VD) -
@@ -130,7 +131,7 @@ $route['ADJSTKVDFormSearchList']         = 'document/adjuststockvd/cAdjstockvd/F
 $route['ADJSTKVDPageAdd']                = 'document/adjuststockvd/cAdjstockvd/FSxCADJVDAddPage';
 $route['ADJSTKVDPageEdit']               = 'document/adjuststockvd/cAdjstockvd/FSvCADJVDEditPage';
 $route['ADJSTKVDPdtDtLoadToTem']         = 'document/adjuststockvd/cAdjstockvd/FSxCADJVDPdtDtLoadToTem';
-$route['ADJSTKVDPdtAdvanceTableLoadData']= 'document/adjuststockvd/cAdjstockvd/FSvCADJVDPdtAdvTblLoadData';
+$route['ADJSTKVDPdtAdvanceTableLoadData'] = 'document/adjuststockvd/cAdjstockvd/FSvCADJVDPdtAdvTblLoadData';
 $route['ADJSTKVDEventAdd']               = 'document/adjuststockvd/cAdjstockvd/FSaCADJVDAddEvent';
 $route['ADJSTKVDEditPdtIntoTableDT']     = 'document/adjuststockvd/cAdjstockvd/FSvCADJVDEditPdtIntoTableDT';
 $route['ADJSTKVDCheckPdtInTmp']          = 'document/adjuststockvd/cAdjstockvd/FSbCADJVDheckHaveProductInTemp';
@@ -249,6 +250,7 @@ $route['dcmSPAOriginalPrice']              = 'document/salepriceadj/cSalePriceAd
 $route['dcmSPAPdtPriAdjust']               = 'document/salepriceadj/cSalePriceAdj/FSoCSPAPdtPriAdjustEvent';
 $route['dcmSPAEventApprove']               = 'document/salepriceadj/cSalePriceAdj/FSoCSPAApproveEvent';
 $route['dcmSPAUpdateStaDocCancel']         = 'document/salepriceadj/cSalePriceAdj/FSoCSPAUpdateStaDocCancel';
+$route['dcmSPAPdtPriEventUpdPriPunTmp']    = 'document/salepriceadj/cSalePriceAdj/FSoCSPAUpdatePunTemp';
 
 // จ่ายโอนสินค้า
 // $route['TWO/(:any)/(:any)']            = 'document/transferwarehouseout/cTransferwarehouseout/index/$1/$2';
@@ -612,35 +614,37 @@ $route['dcmCouponSetupGetDataTable']        = 'document/couponsetup/cCouponSetup
 $route['dcmCouponSetupPageAdd']             = 'document/couponsetup/cCouponSetup/FSoCCPHCallPageAdd';
 $route['dcmCouponSetupPageEdit']            = 'document/couponsetup/cCouponSetup/FSoCCPHCallPageEdit';
 $route['dcmCouponSetupPageDetailDT']        = 'document/couponsetup/cCouponSetup/FSoCCPHCallPageDetailDT';
-$route['dcmCouponSetupPageDetailDT']        = 'document/couponsetup/cCouponSetup/FSoCCPHCallPageDetailDT';
 $route['dcmCouponSetupEventAddCouponToDT']  = 'document/couponsetup/cCouponSetup/FSoCCPHCallEventAddCouponToDT';
+$route['dcmCouponSetupEventAddCouponToDTDef']  = 'document/couponsetup/cCouponSetup/FSoCCPHCallEventAddCouponDefault';
 $route['dcmCouponSetupEventAdd']            = 'document/couponsetup/cCouponSetup/FSoCCPHEventAdd';
 $route['dcmCouponSetupEventEdit']           = 'document/couponsetup/cCouponSetup/FSoCCPHEventEdit';
 $route['dcmCouponSetupEventDelete']         = 'document/couponsetup/cCouponSetup/FSoCCPHEventDelete';
 $route['dcmCouponSetupEvenApprove']         = 'document/couponsetup/cCouponSetup/FSaCCPHEventAppove';
 $route['dcmCouponSetupEvenCancel']          = 'document/couponsetup/cCouponSetup/FSaCCPHEventCancel';
 $route['dcmCouponSetupChangStatusAfApv']    = 'document/couponsetup/cCouponSetup/FSaCCPHChangStatusAfApv';
+$route['dcmCouponSetupEvenCopy']            = 'document/couponsetup/cCouponSetup/FSaCCPHCopyDoc';
 
 //ใบเติมสินค้า
-$route['TWXVD/(:any)/(:any)']                      = 'document/topupVending/cTopupVending/index/$1/$2';
-$route['TopupVendingList']                         = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingList';
-$route['TopupVendingDataTable']                    = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDataTable';
-$route['TopupVendingCallPageAdd']                  = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingAddPage';
-$route['TopupVendingEventAdd']                     = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingAddEvent';
-$route['TopupVendingCallPageEdit']                 = 'document/topupVending/cTopupVending/FSvCTUVTopupVendingEditPage';
-$route['TopupVendingEventEdit']                    = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingEditEvent';
-$route['TopupVendingDocApprove']                   = 'document/topupVending/cTopupVending/FStCTopUpVendingDocApprove';
-$route['TopupVendingDocCancel']                    = 'document/topupVending/cTopupVending/FStCTopUpVendingDocCancel';
-$route['TopupVendingDelDoc']                       = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteDoc';
-$route['TopupVendingDelDocMulti']                  = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteMultiDoc';
-$route['TopupVendingGetWahByShop']                 = 'document/topupVending/cTopupVending/FStGetWahByShop';
-$route['TopupVendingUniqueValidate']               = 'document/topupVending/cTopupVending/FStCTopUpVendingUniqueValidate/$1';
-$route['TopupVendingInsertPdtLayoutToTmp']         = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingInsertPdtLayoutToTmp';
-$route['TopupVendingGetPdtLayoutDataTableInTmp']   = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingGetPdtLayoutDataTableInTmp';
-$route['TopupVendingUpdatePdtLayoutInTmp']         = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingUpdatePdtLayoutInTmp';
-$route['TopupVendingDeletePdtLayoutInTmp']         = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeletePdtLayoutInTmp';
-$route['TopupVendingDeleteMultiPdtLayoutInTmp']    = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeleteMultiPdtLayoutInTmp';
-$route['dcmTVDEventDelPdtValueZero']               = 'document/topupVending/cTopupVending/FSxCTVDDelPdtValueZero';
+$route['TWXVD/(:any)/(:any)']                       = 'document/topupVending/cTopupVending/index/$1/$2';
+$route['TopupVendingList']                          = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingList';
+$route['TopupVendingDataTable']                     = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDataTable';
+$route['TopupVendingCallPageAdd']                   = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingAddPage';
+$route['TopupVendingEventAdd']                      = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingAddEvent';
+$route['TopupVendingCallPageEdit']                  = 'document/topupVending/cTopupVending/FSvCTUVTopupVendingEditPage';
+$route['TopupVendingEventEdit']                     = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingEditEvent';
+$route['TopupVendingDocApprove']                    = 'document/topupVending/cTopupVending/FStCTopUpVendingDocApprove';
+$route['TopupVendingDocCancel']                     = 'document/topupVending/cTopupVending/FStCTopUpVendingDocCancel';
+$route['TopupVendingDelDoc']                        = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteDoc';
+$route['TopupVendingDelDocMulti']                   = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteMultiDoc';
+$route['TopupVendingGetWahByShop']                  = 'document/topupVending/cTopupVending/FStGetWahByShop';
+$route['TopupVendingUniqueValidate']                = 'document/topupVending/cTopupVending/FStCTopUpVendingUniqueValidate/$1';
+$route['TopupVendingInsertPdtLayoutToTmp']          = 'document/topupVending/cTopupVending/FSaCTUVTopupVendingInsertPdtLayoutToTmp';
+$route['TopupVendingGetPdtLayoutDataTableInTmp']    = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingGetPdtLayoutDataTableInTmp';
+$route['TopupVendingUpdatePdtLayoutInTmp']          = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingUpdatePdtLayoutInTmp';
+$route['TopupVendingDeletePdtLayoutInTmp']          = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeletePdtLayoutInTmp';
+$route['TopupVendingDeleteMultiPdtLayoutInTmp']     = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeleteMultiPdtLayoutInTmp';
+$route['dcmTVDEventDelPdtValueZero']                = 'document/topupVending/cTopupVending/FSxCTVDDelPdtValueZero';
+$route['TopupVendingDeleteDataDTTemp']              = 'document/topupVending/cTopupVending/FSxCTUVTopupVendingDeleteDelDTTemp';
 
 //ใบนำฝาก
 $route['deposit/(:any)/(:any)']            = 'document/deposit/cDeposit/index/$1/$2';
@@ -689,7 +693,7 @@ $route['dcmRDHSetPdtGrpDTTemp']             = 'document/conditionredeem/cConditi
 $route['dcmRDHDelGroupInDTTemp']            = 'document/conditionredeem/cConditionRedeem/FSaCRDHDelGroupInDTTemp';
 $route['dcmRDHChangStatusAfApv']            = 'document/conditionredeem/cConditionRedeem/FSaCRDHChangStatusAfApv';
 
-/*===== Begin โปรโมชั่น ==================================================================*/
+/*===== Begin โปรโมชั่น ยกมาจาก fit Auto 16/09/2565 By: IcePHP ===================================================================*/
 // Master
 $route['promotion/(:any)/(:any)']           = 'document/promotion/cPromotion/index/$1/$2';
 $route['promotionList']                     = 'document/promotion/cPromotion/FSxCPromotionList';
@@ -703,12 +707,14 @@ $route['promotionDocApprove']               = 'document/promotion/cPromotion/FSt
 $route['promotionDocCancel']                = 'document/promotion/cPromotion/FStCPromotionDocCancel';
 $route['promotionDelDoc']                   = 'document/promotion/cPromotion/FStPromotionDeleteDoc';
 $route['promotionDelDocMulti']              = 'document/promotion/cPromotion/FStPromotionDeleteMultiDoc';
+$route['promotionEvenCopy']                 = 'document/promotion/cPromotion/FStPromotionCopyDoc';
 
 // Step1 PMTDT Tmp
 $route['promotionStep1ConfirmPmtDtInTmp']               = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionConfirmPmtDtInTmp';
 $route['promotionStep1CancelPmtDtInTmp']                = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionCancelPmtDtInTmp';
 $route['promotionStep1PmtDtInTmpToBin']                 = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionPmtDtInTmpToBin';
 $route['promotionStep1DeletePmtDtInTmp']                = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionDeletePmtDtInTmp';
+$route['promotionStep1DeletePmtDtInTmpLot']             = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionDeletePmtDtInTmpLot';
 $route['promotionStep1DeleteMorePmtDtInTmp']            = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionDeleteMorePmtDtInTmp';
 $route['promotionStep1ClearPmtDtInTmp']                 = 'document/promotion/cPromotionStep1PmtDt/FSxCPromotionClearPmtDtInTmp';
 // Step1 Group Name
@@ -718,11 +724,16 @@ $route['promotionStep1UniqueValidateGroupName']         = 'document/promotion/cP
 // Step1 PDT Tmp
 $route['promotionStep1InsertPmtPdtDtToTmp']             = 'document/promotion/cPromotionStep1PmtPdtDt/FSaCPromotionInsertPmtPdtDtToTmp';
 $route['promotionStep1GetPmtPdtDtInTmp']                = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionGetPmtPdtDtInTmp';
+$route['promotionStep1GetPmtPriDtInTmp']                = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionGetPmtPriDtInTmp';
 $route['promotionStep1UpdatePmtPdtDtInTmp']             = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionUpdatePmtPdtDtInTmp';
+$route['promotionStep1GetLotDetail']                    = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionGetLotDetail';
+$route['docPromotionLotInsertTmp']                      = 'document/promotion/cPromotionStep1PmtPdtDt/FSxCPromotionInsertLotTmp';
 // Step1 Brand Tmp
 $route['promotionStep1InsertPmtBrandDtToTmp']           = 'document/promotion/cPromotionStep1PmtBrandDt/FSaCPromotionInsertPmtBrandDtToTmp';
+$route['promotionStep1InsertPmtPriDtToTmp']             = 'document/promotion/cPromotionStep1PmtBrandDt/FSaCPromotionInsertPmtPriDtToTmp';
 $route['promotionStep1GetPmtBrandDtInTmp']              = 'document/promotion/cPromotionStep1PmtBrandDt/FSxCPromotionGetPmtBrandDtInTmp';
 $route['promotionStep1UpdatePmtBrandDtInTmp']           = 'document/promotion/cPromotionStep1PmtBrandDt/FSxCPromotionUpdatePmtBrandDtInTmp';
+$route['promotionStep1GetLotBrandDetail']               = 'document/promotion/cPromotionStep1PmtBrandDt/FSxCPromotionGetLotBrandDetail';
 // Step1 Import PmtDt from Excel
 $route['promotionStep1ImportExcelPmtDtToTmp']           = 'document/promotion/cPromotionStep1ImportPmtExcel/FStPromotionImportFromExcel';
 // Step2 Group Name
@@ -766,8 +777,7 @@ $route['promotionStep4InsertBchConditionToTmp']         = 'document/promotion/cP
 $route['promotionStepeUpdateBchConditionInTmp']         = 'document/promotion/cPromotionStep4BchCondition/FSxCPromotionUpdateBchConditionInTmp';
 $route['promotionStep4DeleteBchConditionInTmp']         = 'document/promotion/cPromotionStep4BchCondition/FSxCPromotionDeleteBchConditionInTmp';
 // Step4 Channel Condition
-
-$route ['promotionStep4GetChnConditionInTmp'] = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionGetHDChnInTmp';
+$route ['promotionStep4GetChnConditionInTmp']    = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionGetHDChnInTmp';
 $route ['promotionStep4InsertChnConditionToTmp'] = 'document/promotion/cPromotionStep4ChnCondition/FSaCPromotionInsertChnToTmp';
 $route ['promotionStepeUpdateChnConditionInTmp'] = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionUpdateChnInTmp';
 $route ['promotionStep4DeleteChnConditionInTmp'] = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionDeleteChnInTmp';
@@ -776,16 +786,23 @@ $route ['promotionStep4GetRcvConditionInTmp'] = 'document/promotion/cPromotionSt
 $route ['promotionStep4InsertRcvConditionToTmp'] = 'document/promotion/cPromotionStep4RcvCondition/FSaCPromotionInsertRcvToTmp';
 $route ['promotionStepeUpdateRcvConditionInTmp'] = 'document/promotion/cPromotionStep4RcvCondition/FSxCPromotionUpdateRcvInTmp';
 $route ['promotionStep4DeleteRcvConditionInTmp'] = 'document/promotion/cPromotionStep4RcvCondition/FSxCPromotionDeleteRcvInTmp';
-// Step4 Customer Level Condition
+// Step4 Customer Type Condition
 $route ['promotionStep4GetCstConditionInTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSxCPromotionGetHDCstInTmp';
 $route ['promotionStep4InsertCstConditionToTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSaCPromotionInsertCstToTmp';
 $route ['promotionStepeUpdateCstConditionInTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSxCPromotionUpdateCstInTmp';
 $route ['promotionStep4DeleteCstConditionInTmp'] = 'document/promotion/cPromotionStep4CstCondition/FSxCPromotionDeleteCstInTmp';
 
-$route ['promotionStep4GetChnConditionInTmp']           = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionGetHDChnInTmp';
-$route ['promotionStep4InsertChnConditionToTmp']        = 'document/promotion/cPromotionStep4ChnCondition/FSaCPromotionInsertChnToTmp';
-$route ['promotionStepeUpdateChnConditionInTmp']        = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionUpdateChnInTmp';
-$route ['promotionStep4DeleteChnConditionInTmp']        = 'document/promotion/cPromotionStep4ChnCondition/FSxCPromotionDeleteChnInTmp';
+// Step4 Customer Level Condition
+$route ['promotionStep4GetCstLevConditionInTmp'] = 'document/promotion/cPromotionStep4CstLevCondition/FSxCPromotionGetPdtPmtHDCstLevInTmp';
+$route ['promotionStep4InsertCstLevConditionToTmp'] = 'document/promotion/cPromotionStep4CstLevCondition/FSaCPromotionInsertCstLevToTmp';
+$route ['promotionStepeUpdateCstLevConditionInTmp'] = 'document/promotion/cPromotionStep4CstLevCondition/FSxCPromotionUpdateCstLevInTmp';
+$route ['promotionStep4DeleteCstLevConditionInTmp'] = 'document/promotion/cPromotionStep4CstLevCondition/FSxCPromotionDeleteCstLevInTmp';
+
+// Step4 Promotion On Promotion Condition
+$route ['promotionStep4GetPnpConditionInTmp']           = 'document/promotion/cPromotionStep4PnpCondition/FSxCPromotionGetHDPnpInTmp';
+$route ['promotionStep4InsertPnpConditionToTmp']        = 'document/promotion/cPromotionStep4PnpCondition/FSaCPromotionInsertPnpToTmp';
+$route ['promotionStepeUpdatePnpConditionInTmp']        = 'document/promotion/cPromotionStep4PnpCondition/FSxCPromotionUpdatePnpInTmp';
+$route ['promotionStep4DeletePnpConditionInTmp']        = 'document/promotion/cPromotionStep4PnpCondition/FSxCPromotionDeletePnpInTmp';
 
 // Step5 Check and Confirm
 $route['promotionStep5GetCheckAndConfirmPage']          = 'document/promotion/cPromotionStep5CheckAndConfirm/FSxCPromotionGetCheckAndConfirmPage';
@@ -950,20 +967,23 @@ $route['docSMEventCancel']                              = 'document/adjuststocks
 $route['docSMEEventEditProductsFashion']                = 'document/adjuststocksum/cAdjustStockSum/FSaCSMEventEditProductsFashion';
 
 //ใบคืนสินค้า - ตู้สินค้า : Napat(Jame) 03/09/2020
-$route['docTVO/(:any)/(:any)']                         = 'document/TransferVendingOut/cTransferVendingOut/index/$1/$2';
-$route['docTVOPageList']                               = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageList';
-$route['docTVOPageDataTable']                          = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageDataTable';
-$route['docTVOPageAdd']                                = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageAdd';
-$route['docTVOPageEdit']                               = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageEdit';
-$route['docTVOEventAdd']                               = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventAdd';
-$route['docTVOEventEdit']                              = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventEdit';
-$route['docTVOEventMoveDTFromRefInt']                  = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventMoveDTFromRefInt';
-$route['docTVOEventInsertPdtLayoutToTmp']              = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventInsertPdtLayoutToTmp';
-$route['dcmTVOEventEditInline']                        = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOEventEditInline';
-$route['docTVOEventApprove']                           = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventApprove';
-$route['docTVOPageDataTablePdtLayout']                 = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOPageDataTablePdtLayout';
-$route['docTVOEventDeletePdtLayoutInTmp']              = 'document/TransferVendingOut/cTransferVendingOut/FSxCTVOEventDeletePdtLayoutInTmp';
-$route['docTVOEventCancleDoc']                         = 'document/TransferVendingOut/cTransferVendingOut/FStCTVOEventDocCancel';
+$route['docTVO/(:any)/(:any)']                          = 'document/TransferVendingOut/cTransferVendingOut/index/$1/$2';
+$route['docTVOPageList']                                = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageList';
+$route['docTVOPageDataTable']                           = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageDataTable';
+$route['docTVOPageAdd']                                 = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageAdd';
+$route['docTVOPageEdit']                                = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOPageEdit';
+$route['docTVOEventAdd']                                = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventAdd';
+$route['docTVOEventEdit']                               = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventEdit';
+$route['docTVOEventMoveDTFromRefInt']                   = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventMoveDTFromRefInt';
+$route['docTVOEventInsertPdtLayoutToTmp']               = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventInsertPdtLayoutToTmp';
+$route['dcmTVOEventEditInline']                         = 'document/TransferVendingOut/cTransferVendingOut/FSvCTVOEventEditInline';
+$route['docTVOEventApprove']                            = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventApprove';
+$route['docTVOPageDataTablePdtLayout']                  = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOPageDataTablePdtLayout';
+$route['docTVOEventDeletePdtLayoutInTmp']               = 'document/TransferVendingOut/cTransferVendingOut/FSxCTVOEventDeletePdtLayoutInTmp';
+$route['docTVOEventCancleDoc']                          = 'document/TransferVendingOut/cTransferVendingOut/FStCTVOEventDocCancel';
+$route['docTVOEventDelDTTempAll']                       = 'document/TransferVendingOut/cTransferVendingOut/FSaCTVOEventDelDTTempAll';
+
+
 /* ยังไม่ได้ตรวจสอบ อาจเป็น route ขยะ Napat(Jame) */
 $route['TopupVendingDelDoc']                           = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteDoc';
 $route['TopupVendingDelDocMulti']                      = 'document/topupVending/cTopupVending/FStTopUpVendingDeleteMultiDoc';

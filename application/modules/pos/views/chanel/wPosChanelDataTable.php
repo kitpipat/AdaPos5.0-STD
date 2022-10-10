@@ -13,16 +13,16 @@ if ($aDataList['rtCode'] == '1') {
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th class="xCNTextBold text-center" style="width:10%;"><?php echo language('common/main/main', 'tCMNChoose'); ?></th>
+                        <th class="xCNTextBold text-center" style="width:5%;"><?php echo language('common/main/main', 'tCMNChoose'); ?></th>
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelCode'); ?></th>
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelName'); ?></th>
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelSystem'); ?></th>
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelAgency'); ?></th>
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelBranch'); ?></th>
-                        <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelWahouse'); ?></th>
+                        <!-- <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelWahouse'); ?></th> -->
                         <th class="xCNTextBold text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelPriceGroup'); ?></th>
-                        <th class="xCNTextBold text-center" style="width:10%;"><?php echo language('common/main/main', 'tCMNActionDelete'); ?></th>
-                        <th class="xCNTextBold text-center" style="width:10%;"><?php echo language('common/main/main', 'tEdit'); ?></th>
+                        <th class="xCNTextBold text-center" style="width:5%;"><?php echo language('common/main/main', 'tCMNActionDelete'); ?></th>
+                        <th class="xCNTextBold text-center" style="width:5%;"><?php echo language('common/main/main', 'tEdit'); ?></th>
                     </tr>
                 </thead>
                 <tbody id="odvRGPList">
@@ -54,7 +54,7 @@ if ($aDataList['rtCode'] == '1') {
                                 <td class="text-left"><?php echo $aValue['rtChnAppName']; ?></td>
                                 <td class="text-left"><?php echo $aValue['rtChnAgnName']; ?></td>
                                 <td class="text-left"><?php echo $aValue['rtChnBchName']; ?></td>
-                                <td class="text-left"><?php echo $aValue['rtChnWahName']; ?></td>
+                                <!-- <td class="text-left"><?php echo $aValue['rtChnWahName']; ?></td> -->
                                 <td class="text-left"><?php echo $aValue['rtChnPplName']; ?></td>
                                 <td>
                                     <img class="xCNIconTable <?=$tClassDel?>" src="<?php echo  base_url() . '/application/modules/common/assets/images/icons/delete.png' ?>" <?=$tOnClickDel?> title="<?php echo language('common/main/main', 'tCMNActionDelete'); ?>">
@@ -146,9 +146,7 @@ if ($aDataList['rtCode'] == '1') {
                 <label class="xCNTextModalHeard"><?= language('common/main/main', 'tModalDelete') ?></label>
             </div>
             <div class="modal-body">
-                <span id="ospConfirmDelete"></span> <?= language('common/main/main', 'tModalDeleteSingle') ?> 
-
-
+                <span id="ospConfirmDelete"></span> <?= language('common/main/main', 'tModalDeleteMulti') ?> 
             </div>
             <div class="modal-footer">
                 <button id="osmConfirm" type="button" class="btn xCNBTNPrimery" onClick="JSxChnDeleteMutirecord('<?= $nCurrentPage ?>')"><?= language('common/main/main', 'tModalConfirm') ?></button>

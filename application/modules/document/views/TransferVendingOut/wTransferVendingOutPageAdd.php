@@ -173,7 +173,6 @@ $bIsCanCel 					= ($tXthStaDoc == "3") ? true : false;
 $bIsApvOrCanCel 			= ($bIsApv || $bIsCanCel);
 ?>
 
-
 <form class="contact100-form validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmTVOForm">
 	<input type="hidden" id="ohdBaseUrl" name="ohdBaseUrl" value="<?php echo base_url(); ?>">
 	<input type="hidden" id="ohdTVOAutStaEdit" name="ohdTVOAutStaEdit" value="<?php echo $nAutStaEdit; ?>">
@@ -356,11 +355,20 @@ $bIsApvOrCanCel 			= ($bIsApv || $bIsCanCel);
 							</div>
 						</div>
 
-						<!--ร้านค้า-->
+						<!--ร้านค้า / รูปแบบการจัดสินค้า -->
 						<div class="form-group <?= !FCNbGetIsShpEnabled() ? 'xCNHide' : '' ?>">
-							<label class="xCNLabelFrm"><?= language('document/TransferVendingOut/TransferVendingOut', 'tShop'); ?></label>
+							<label class="xCNLabelFrm"><?= language('document/TransferVendingOut/TransferVendingOut', 'tShopVD'); ?></label>
 							<div class="input-group">
-								<input name="oetTVOShpName" id="oetTVOShpName" class="form-control" value="<?php echo $tUserShpName; ?>" type="text" readonly="" placeholder="<?= language('document/TransferVendingOut/TransferVendingOut', 'tTFWShop') ?>" data-validate-required="<?= language('document/TransferVendingOut/TransferVendingOut', 'tTopUpVendingShpValidate') ?>">
+								<input 
+									name="oetTVOShpName"
+									id="oetTVOShpName"
+									class="form-control"
+									value="<?php echo $tUserShpName; ?>"
+									type="text"
+									readonly=""
+									placeholder="<?= language('document/TransferVendingOut/TransferVendingOut', 'tShopVD') ?>" 
+									data-validate-required="<?= language('document/TransferVendingOut/TransferVendingOut', 'tTopUpVendingShpValidate') ?>"
+								>
 								<input name="oetTVOShpCode" id="oetTVOShpCode" value="<?php echo $tUserShpCode; ?>" class="form-control xCNHide" type="text">
 								<span class="input-group-btn">
 									<button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTVOShp" type="button">
@@ -397,6 +405,12 @@ $bIsApvOrCanCel 			= ($bIsApv || $bIsCanCel);
 							<label class="xCNLabelFrm"><?= language('document/TransferVendingOut/TransferVendingOut', 'tVDOConditionWahFrom'); ?></label>
 							<input name="oetTVOWahCodeFrom" id="oetTVOWahCodeFrom" value="<?php echo $tWahCodeFrom; ?>" class="form-control xCNHide" type="text">
 							<input name="oetTVOWahNameFrom" id="oetTVOWahNameFrom" value="<?php echo $tWahNameFrom; ?>" class="form-control xCNApvOrCanCelDisabled" type="text" placeholder="<?= language('document/TransferVendingOut/TransferVendingOut', 'tVDOConditionWahFrom') ?>"  disabled>
+						</div>
+
+						<div class="row xCNMarginTop30px">
+							<div class="col-md-6 pull-right">
+								<button type="button" id="obtTVOLoadPdtLayout" class="btn btn-primary xCNApvOrCanCelDisabled" style="width:100%;font-size: 17px;">ตรวจสอบ</button>
+							</div>
 						</div>
 
 						<hr>
@@ -628,7 +642,7 @@ $bIsApvOrCanCel 			= ($bIsApv || $bIsCanCel);
 
 						<div class="form-group">
 							<label class="xCNLabelFrm"><?php echo language('document/TransferVendingOut/TransferVendingOut', 'tNote'); ?></label>
-							<textarea class="form-control xCNApvOrCanCelDisabled" id="otaTVORmk" name="otaTVORmk" rows="10" maxlength="200" style="resize: none;height:86px;"><?php echo $tXthRmk; ?></textarea>
+							<textarea class="form-control xCNApvOrCanCelDisabled" id="otaTVORmk" name="otaTVORmk" maxlength="200"><?php echo $tXthRmk; ?></textarea>
 						</div>
 						<div class="form-group">
 							<label class="fancy-checkbox">
@@ -779,6 +793,29 @@ $bIsApvOrCanCel 			= ($bIsApv || $bIsCanCel);
 				</button>
 				<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
 					<?php echo language('common/main/main', 'tModalCancel'); ?>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade xCNModalDelDTTemp" id="odvTVOPopupFoundDataInTblDT">
+	<input type="hidden" id="ohdTVOTypeClick" name="ohdTVOTypeClick">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header xCNModalHead">
+				<label class="xCNTextModalHeard"><?=language('document/document/document','tDocStawarning'); ?></label>
+			</div>
+			<div class="modal-body">
+				<p id="obpMsgApv"><?=language('document/adjuststockvd/adjuststockvd','มีข้อมูลรายการสินค้าเดิมในระบบ ท่านต้องการที่จะลบข้อมูลรายการสินค้า ใช่ หรือ ไม่ ?'); ?>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn xCNBTNPrimery"	onclick="JSxTVOEventConfirmDelDTTempAll()">
+					<?=language('common/main/main', 'tModalConfirm'); ?>
+				</button>
+				<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
+					<?=language('common/main/main', 'tModalCancel'); ?>
 				</button>
 			</div>
 		</div>

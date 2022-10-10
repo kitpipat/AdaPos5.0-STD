@@ -11,6 +11,7 @@
             $('form .xCNApvOrCanCelDisabledPmtPdtDt').attr('disabled', true);
             $('#otbPromotionStep1PmtPdtDtTable .xCNIconDel').addClass('xCNDocDisabled');
             $('#otbPromotionStep1PmtPdtDtTable .xCNIconDel').removeAttr('onclick', true);
+            $('.xWChangeLot').removeAttr('onclick', true);
         }else{
             $('form .xCNApvOrCanCelDisabledPmtPdtDt').attr('disabled', false);
             $('#otbPromotionStep1PmtPdtDtTable .xCNIconDel').removeClass('xCNDocDisabled');

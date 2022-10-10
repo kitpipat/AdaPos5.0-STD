@@ -114,22 +114,6 @@
 <script src="<?=base_url('application/modules/common/assets/js/jquery.mask.js')?>"></script>
 <script src="<?=base_url('application/modules/common/assets/src/jFormValidate.js')?>"></script>
 <script>
-
-    // Control Branch
-    var tSesUsrLevel        = '<?php echo $this->session->userdata("tSesUsrLevel"); ?>';
-    var nSesUsrBchCount     = <?php echo $this->session->userdata("nSesUsrBchCount"); ?>;
-    if( nSesUsrBchCount == 1 && tSesUsrLevel != "HQ" ){
-        $('#obtTXIBrowseBranch').attr('disabled',true);
-    }
-
-    var tUsrBchCodeDefault  = '<?php echo $this->session->userdata("tSesUsrBchCodeDefault"); ?>';
-    var tUsrBchNameDefault  = '<?php echo $this->session->userdata("tSesUsrBchNameDefault"); ?>';
-    if( tSesUsrLevel != "HQ" ){
-        $('#oetTXIBchCode').val(tUsrBchCodeDefault);
-        $('#oetTXIBchName').val(tUsrBchNameDefault);
-    }
-    
-
     //โหลดหน้าจอ Datatable
     JSxLoadContentDatatable(1);
     function JSxLoadContentDatatable(pnPage){
@@ -184,6 +168,20 @@
         $('#oetTXIToDocDate').datepicker('show');
     });
 
+    // Control Branch
+    var tSesUsrLevel        = '<?php echo $this->session->userdata("tSesUsrLevel"); ?>';
+    var nSesUsrBchCount     = <?php echo $this->session->userdata("nSesUsrBchCount"); ?>;
+    if( nSesUsrBchCount == 1 && tSesUsrLevel != "HQ" ){
+        $('#obtTXIBrowseBranch').attr('disabled',true);
+    }
+
+    var tUsrBchCodeDefault  = '<?php echo $this->session->userdata("tSesUsrBchCodeDefault"); ?>';
+    var tUsrBchNameDefault  = '<?php echo $this->session->userdata("tSesUsrBchNameDefault"); ?>';
+    if( tSesUsrLevel != "HQ" ){
+        $('#oetTXIBchCode').val(tUsrBchCodeDefault);
+        $('#oetTXIBchName').val(tUsrBchNameDefault);
+    }
+    
 
     $('#obtTXIBrowseBranch').click(function() {
         JSxCheckPinMenuClose();

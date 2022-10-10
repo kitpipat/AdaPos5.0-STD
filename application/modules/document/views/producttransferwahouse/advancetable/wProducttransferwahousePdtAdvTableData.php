@@ -7,7 +7,13 @@
       <table class="table table-striped xWPdtTableFont" id="otbDOCPdtTable">
         <thead>
           <tr class="xCNCenter">
-            <th><?= language('document/purchaseorder/purchaseorder','tPOTBChoose')?></th>
+            <!-- <th><?= language('document/purchaseorder/purchaseorder','tPOTBChoose')?></th> -->
+            <th class="xCNTWIBeHideMQSS">
+              <label class="fancy-checkbox" style="padding-left:7px">
+                <input id="ocbCheckAll" type="checkbox" class="ocbListItemAll" name="ocbCheckAll" onclick="FSxDOSelectAll(this)" >
+                <span class="">&nbsp;</span>
+              </label>
+            </th>
             <th><?= language('document/purchaseorder/purchaseorder','tPOTBNo')?></th>
             <?php foreach($aColumnShow as $HeaderColKey=>$HeaderColVal){?>
             <th nowrap title="<?php echo iconv_substr($HeaderColVal->FTShwNameUsr, 0,30, "UTF-8");?>">
@@ -65,6 +71,34 @@
                                   $tValidateType = '';
                               }
 
+                                if($tColumnName == 'FTXtdStaPrcStk' ) {
+                                  switch ($aDataTableVal['FTXtdStaPrcStk']) {
+                                    case '1':
+                                      switch ($aDataTableVal['FTXtdRmk']) {
+                                        case '1':
+                                          // $tDataCol = "<span class='xCNTextConfirm'>ยืนยันแล้ว</span>";
+                                          $tDataCol = "<span class='text-success'>ยืนยันแล้ว</span>";
+                                          break;
+                                        case '2':
+                                          // $tDataCol = "<span class='xCNTextConfirm'>ไม่ตรวจสอบสต็อค</span>";
+                                          $tDataCol = "<span class='text-success'>ไม่ตรวจสอบสต็อค</span>";
+                                          break;
+                                      }
+                                      break;
+                                    default:
+                                      switch ($aDataTableVal['FTXtdRmk']) {
+                                        case '1':
+                                          // $tDataCol = "<span class='xCNTextConfirm'>ยืนยันแล้ว</span>";
+                                          $tDataCol = "<span class='text-success'>ยืนยันแล้ว</span>";
+                                          break;
+                                        default:
+                                          // $tDataCol = "<span class='xCNTextWaitConfirm'>รอยืนยัน</span>";
+                                          $tDataCol = "<span class='text-warning'>รอยืนยัน</span>";
+                                          break;
+                                      }
+                                      break;
+                                  }    
+                                }
                               ?>
 
                               <td nowrap class="<?=$tAlignFormat?>">
@@ -98,6 +132,7 @@
                                           'nDTSeq'              => $aDataTableVal['FNXtdSeqNo'],
                                           'tDTBarCode'          => $aDataTableVal['FTXtdBarCode'],
                                           'tDTPunCode'          => $aDataTableVal['FTPunCode'],
+                                          'tDTXtdStaPrcStk'     => $aDataTableVal['FTXtdStaPrcStk'],
                                           'tNextFunc'           => 'FSvPDTEditPdtIntoTableDT',
                                           'tSpcControl'         => 0,                    //0:จำนวน //1:ตรวจนับครั้งที่หนึ่ง //2:ตรวจนับครั้งที่สอง //3:ตรวจนับย่อย
                                           'tStaEdit'            => ( $tXthStaApv == '1' || $tXthStaDoc == '3' ? '2' : '1' )
@@ -105,17 +140,18 @@
                                         // $aOption = json_encode($aOptionFashion);
                                       ?>
                                         <label class="<?=$tClassName?> xCNPdtFont xWShowInLine xWShowValue<?=$tColumnName?><?=$aDataTableVal['rtRowID']?>" 
-                                            tDocumentBranch="<?=$aOptionFashion['tDocumentBranch']?>" 
-                                            tDocumentNumber="<?=$aOptionFashion['tDocumentNumber']?>"  
-                                            tDocumentProduct="<?=$aOptionFashion['tDocumentProduct']?>"  
-                                            tDocumentDocKey="<?=$aOptionFashion['tDocumentDocKey']?>"  
-                                            nDTSeq="<?=$aOptionFashion['nDTSeq']?>"  
-                                            tDTBarCode="<?=$aOptionFashion['tDTBarCode']?>"  
-                                            tDTPunCode="<?=$aOptionFashion['tDTPunCode']?>"  
-                                            tNextFunc="<?=$aOptionFashion['tNextFunc']?>"  
-                                            tSpcControl="<?=$aOptionFashion['tSpcControl']?>"  
-                                            tStaEdit="<?=$aOptionFashion['tStaEdit']?>"  
-                                            onclick='JSxUpdateProductSerialandFashion(this)' ><?=$tDataCol?> <?=$tIconEdit?></label>
+                                            tDocumentBranch   ="<?=$aOptionFashion['tDocumentBranch']?>" 
+                                            tDocumentNumber   ="<?=$aOptionFashion['tDocumentNumber']?>"  
+                                            tDocumentProduct  ="<?=$aOptionFashion['tDocumentProduct']?>"  
+                                            tDocumentDocKey   ="<?=$aOptionFashion['tDocumentDocKey']?>"  
+                                            nDTSeq            ="<?=$aOptionFashion['nDTSeq']?>"  
+                                            tDTBarCode        ="<?=$aOptionFashion['tDTBarCode']?>"  
+                                            tDTPunCode        ="<?=$aOptionFashion['tDTPunCode']?>"  
+                                            tDTXtdStaPrcStk   ="<?=$aOptionFashion['FTXtdStaPrcStk']?>"  
+                                            tNextFunc         ="<?=$aOptionFashion['tNextFunc']?>"  
+                                            tSpcControl       ="<?=$aOptionFashion['tSpcControl']?>"  
+                                            tStaEdit          ="<?=$aOptionFashion['tStaEdit']?>"  
+                                            onclick           ='JSxUpdateProductSerialandFashion(this)' ><?=$tDataCol?> <?=$tIconEdit?></label>
                                     <?php } ?>
                                 <?php endif;?> 
                                 <!-- <?php if($DataVal->FTShwStaAlwEdit == 1){ ?>

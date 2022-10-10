@@ -25,15 +25,9 @@
                             <div class="demo-button xCNBtngroup" style="width:100%;">
                                 <button onclick="JSxTVOPageList()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tBack') ?></button>
                                 <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)) : ?>
-                                    <?php if($aAlwEvent['tAutStaPrint'] == 1 ) : ?>
                                     <button id="obtTVOVDPrint" onclick="JSxTVOPrintDoc()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCMNPrint') ?></button>
-                                    <?php endif; ?>
-                                    <?php if($aAlwEvent['tAutStaCancel'] == 1 ) : ?>
                                     <button id="obtTVOCancel" onclick="JSvTVOCancel(false)" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCancel') ?></button>
-                                    <?php endif; ?>
-                                    <?php if($aAlwEvent['tAutStaAppv'] == 1 ) : ?>
                                     <button id="obtTVOApprove" onclick="JSvTVOApprove(false)" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('common/main/main', 'tCMNApprove') ?></button>                                 
-                                    <?php endif; ?>
                                     <div class="btn-group">
                                         <button type="button" class="btn xWBtnGrpSaveLeft" onclick="$('#obtSubmitTVO').click()"> <?php echo language('common/main/main', 'tSave') ?></button>
                                         <?php echo $vBtnSave ?>

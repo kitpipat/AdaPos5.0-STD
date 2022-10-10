@@ -13,6 +13,7 @@
                 <th width="40%" class="text-left"><?php echo language('document/promotion/promotion', 'tPdtName'); ?></th>
                 <th width="15%" class="text-left"><?php echo language('document/promotion/promotion', 'tProductUnit'); ?></th>
                 <th width="15%" class="text-left"><?php echo language('document/promotion/promotion', 'tBarCode'); ?></th>
+                <th width="15%" class="text-left"><?php echo language('document/promotion/promotion', 'tNote'); ?></th>
                 <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
             </tr>
         </thead>
@@ -30,9 +31,28 @@
                             </td>
                             <td class="text-center"><?php echo $key+1; ?></td>
                             <td class="text-left xCNPromotionStep1PmtDtPmdRefCode"><?php echo $aValue['FTPmdRefCode']; ?></td>
-                            <td class="text-left xCNPromotionStep1PmtDtPmdRefName"><?php echo $aValue['FTPmdRefName']; ?></td>
+                            
+                                <td class="text-left xCNPromotionStep1PmtDtPmdRefName">
+                                <div>
+                                <span><?php echo $aValue['FTPmdRefName']; ?></span>
+                                <?php if($aValue['FTPdtStaLot'] == '1') {?>
+                                    <?php if(!isset($aValue['LotNumber'])){
+                                        $aValue['LotNumber'] = '0'; 
+                                    }?>
+                                    <div class='row'>
+                                        <div class="col-md-6">
+                                            <span class="xWCheckEffectLot" style='font-weight: 700!important;' data-effectlot="<?php echo $aValue['LotNumber'];?>"><?php echo language('document/promotion/promotion', 'tPMTLotEffective'); ?> <?php echo substr($aValue['LotNumber'],2); ?></span>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                        <a href="#"><span class="xWChangeLot" data-pdt-code="<?php echo $aValue['FTPmdRefCode'];?>" data-seq-no="<?php echo $aValue['FNPmdSeq']; ?>" onclick="JSxPromotionLotChange(this);"><?php echo language('document/promotion/promotion', 'tPMTLotChange'); ?></span></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                </div>
+                                </td>
                             <td class="text-left xCNPromotionStep1PmtDtPmdSubRefName"><?php echo $aValue['FTPmdSubRefName']; ?></td>
                             <td class="text-left xCNPromotionStep1PmtDtPmdBarCode"><?php echo $aValue['FTPmdBarCode']; ?></td>
+                            <td class="text-left xCNPromotionStep1PmtDtPmdRemark text-danger" style="color: red !important;"><?php echo $aValue['FTXtdRmk']; ?></td>
                             <td class="text-center">
                                 <img class="xCNIconTable xCNIconDel" src="<?= base_url('application/modules/common/assets/images/icons/delete.png') ?>">
                             </td>
@@ -83,5 +103,19 @@
         </div>
     </div>
 <?php } ?>
+
+<script>
+function JSxPromotionLotChange(evn){
+    $('#odvPromotionAddPmtGroupModal').modal('hide');
+    var tPdtCode = $(evn).data("pdt-code");
+    var tSeqNo   = $(evn).data("seq-no");
+    
+    var aLot = new Array();
+    var aLotSeq = new Array();
+    aLot.push(tPdtCode);
+    aLotSeq.push(tSeqNo);
+    JSvPromotionLoadModalShowPdtLotDT(aLot,aLotSeq,0);
+}
+</script>
 
 <?php include('script/jStep1PmtPdtDtTableTmp.php'); ?>

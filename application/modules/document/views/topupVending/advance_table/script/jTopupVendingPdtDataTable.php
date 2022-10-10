@@ -2,12 +2,20 @@
 
     $(document).ready(function(){
         if(!bIsApvOrCancel){
-            $('.xCNTopUpVendingQty').on('change keyup', function(event){
+            $('.xCNTopUpVendingQty').on('change keypress', function(event){
+                var tValue = $(this).val();
+                // console.log(event.type,event.keyCode);
+                if( tValue == '' ){
+                    $(this).val(0);
+                    return;
+                }
                 if(event.type == "change"){
                     JSxTopUpVendingPdtDataTableEditInline(this);
+                    return;
                 }
                 if(event.keyCode == 13) {
                     JSxTopUpVendingPdtDataTableEditInline(this);
+                    return;
                 } 
             });
         }
@@ -153,7 +161,7 @@
                 cache: false,
                 timeout: 0,
                 success: function(tResult) {
-                    console.log(tResult);
+                    // console.log(tResult);
                     $nCurrentPage = $('#odvTopupVendingPdtDataTable').find('.btn.xCNBTNNumPagenation.active').text();
                     JSxTopUpVendingGetPdtLayoutDataTableInTmp($nCurrentPage);
                 },

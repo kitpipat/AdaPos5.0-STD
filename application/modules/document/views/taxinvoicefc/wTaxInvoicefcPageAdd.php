@@ -115,6 +115,12 @@
                 <div id="odvTWIDataConditionREF" class="xCNMenuPanelData panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
 
+                        <!-- อ้างอิงเลขที่เอกสารภายต้นฉบับ กรณียกเลิกเอกสารกำกับภาษี -->
+                        <div class="form-group xWTaxRefAE">
+                            <label class="xCNLabelFrm"><?=language('document/taxinvoice/taxinvoice','อ้างอิงเอกสารต้นฉบับ');?></label>
+                            <input type="text" class="form-control" id="oetTAXRefAE" name="oetTAXRefAE" readonly value="">
+                        </div>
+
                         <!-- อ้างอิงเลขที่เอกสารภายใน -->
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXLabelFrmRefIntDoc');?></label>
@@ -251,6 +257,7 @@
                                                             <input name="oetBrowseBchName" id="oetBrowseBchName" class="form-control" value="<?=$tInputBchName?>" type="text" readonly="" 
                                                                     placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITablePDTBch') ?>">
                                                             <input name="oetBrowseBchCode" id="oetBrowseBchCode" value="<?=$tInputBchCode?>" class="form-control xCNHide xCNClearValue" type="text">
+                                                            <input name="oetInputBchCode" id="oetInputBchCode" value="<?=$tInputBchCode?>" class="form-control xCNHide xCNClearValue" type="text">
                                                             <span class="input-group-btn">
                                                                 <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseBCH" type="button">
                                                                     <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
@@ -262,9 +269,9 @@
                                             </div>
 
                                             <div class="col-lg-8 col-md-10 col-sm-10 xCNSelectTaxABB">
-                                                <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXABB'); ?></label>
+                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXABBFC'); ?></label>
                                                 <div class="input-group">
-                                                    <input name="oetTAXABBCode" maxlength="20" id="oetTAXABBCode" class="form-control xCNClearValue" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXABB') ?>" onkeypress="Javascript:if(event.keyCode==13) JSxSearchDocumentABB(event,this);">
+                                                    <input name="oetTAXABBCode" maxlength="20" id="oetTAXABBCode" class="form-control xCNClearValue" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXABBFC') ?>" onkeypress="Javascript:if(event.keyCode==13) JSxSearchDocumentABB(event,this);">
                                                     <span class="input-group-btn">
                                                         <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled disabled" type="button">
                                                             <img src="<?= base_url() . '/application/modules/common/assets/images/icons/scanner2.png' ?>">
@@ -287,9 +294,9 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-lg-11 col-md-10 col-sm-10">
-                                                <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer'); ?></label>
+                                                <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC'); ?></label>
                                                 <div class="input-group">
-                                                    <input name="oetTAXCusName" id="oetTAXCusName" class="form-control xCNClearValue" value="" type="text" readonly="" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer') ?>" >
+                                                    <input name="oetTAXCusName" id="oetTAXCusName" class="form-control xCNClearValue" value="" type="text" readonly="" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC') ?>" >
                                                     <input name="oetTAXCusCode" id="oetTAXCusCode" value="" class="form-control xCNHide xCNClearValue" type="text">
                                                     <span class="input-group-btn">
                                                         <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseCus" type="button">
@@ -317,8 +324,8 @@
                                                 <div class="row">
                                                     <div class="col-lg-6">
                                                         <div class="form-group">
-                                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerName'); ?></label>
-                                                            <input name="oetTAXCusNameCusABB"  autocomplete="off" id="oetTAXCusNameCusABB"  maxlength="200" class="form-control xCNClearValue" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerName') ?>" >
+                                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerNameFC'); ?></label>
+                                                            <input name="oetTAXCusNameCusABB"  autocomplete="off" id="oetTAXCusNameCusABB"  maxlength="200" class="form-control xCNClearValue" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerNameFC') ?>" >
                                                         </div>  
                                                     </div>
                                                     
@@ -503,7 +510,7 @@
 			<div class="modal-header xCNModalHead">
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                        <label class="xCNTextModalHeard" style="font-weight: bold; font-size: 20px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXShow')?><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXABB')?></label>
+                        <label class="xCNTextModalHeard" style="font-weight: bold; font-size: 20px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXShow')?><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXABBFC')?></label>
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
                         <button type="button" class="btn xCNBTNPrimery xCNBTNPrimery2Btn xCNConfrimABB" data-dismiss="modal" onclick="JSxSelectABB('SELECT','','')"><?=language('common/main/main', 'tModalConfirm'); ?></button>
@@ -619,7 +626,7 @@
                 <table class="table table-striped xCNTableAddressMoreOne">
                     <thead>
                         <tr>
-                            <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerName')?></th>
+                            <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerNameFC')?></th>
                             <th class="xCNTextBold" style="text-align:center; width:160px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXAddress1')?></th>
                             <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXAddress2')?></th>
                             <th class="xCNTextBold" style="text-align:center; width:80px;"><?=language('document/taxinvoicefc/taxinvoicefc', 'tTAXTelphone')?></th>
@@ -750,9 +757,9 @@
 
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="form-group">
-                                <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'tTAXCustomerName'); ?></label>
+                                <label class="xCNLabelFrm"><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC'); ?></label>
                                 <div class="input-group">
-                                    <input name="oetTAXModalCancelCstName" id="oetTAXModalCancelCstName" class="form-control xCNClearValue xWDisabledForCN" value="" type="text" placeholder="<?= language('document/taxinvoice/taxinvoice', 'tTAXCustomer') ?>" >
+                                    <input name="oetTAXModalCancelCstName" id="oetTAXModalCancelCstName" class="form-control xCNClearValue" value="" type="text" readonly="" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC') ?>" >
                                     <input name="oetTAXModalCancelCstCode" id="oetTAXModalCancelCstCode" value="" class="form-control xCNHide xCNClearValue" type="text">
                                     <span class="input-group-btn">
                                         <button class="btn xCNBtnBrowseAddOn xWDisabledForCN" id="obtTAXModalCancelBrowseCus" type="button">
@@ -769,6 +776,23 @@
                         </div>
 
                         <div class="col-lg-12">
+
+                            <div id="odvModalCancelInfoName" class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <!--ชื่อลูกค้า/ใบออกกำกับภาษี-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'tTAXCustomerName'); ?></label>
+                                        <input name="oetTAXModalCancelCstNameABB" id="oetTAXModalCancelCstNameABB" class="form-control xCNClearValue xWDisabledForCN" value="" type="text" placeholder="<?= language('document/taxinvoice/taxinvoice', 'tTAXCustomer') ?>" >
+                                    </div>  
+                                </div> 
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <!--เลขประจำตัวผู้เสียภาษี-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXNumber'); ?></label>
+                                        <input name="oetTAXModalCancelNumber" autocomplete="off" id="oetTAXModalCancelNumber" maxlength="20" class="form-control xCNClearValue xCNInputNumericWithDecimal" value="" type="text" placeholder="<?= language('document/taxinvoicefc/taxinvoicefc', 'tTAXNumber') ?>" >
+                                    </div> 
+                                </div>
+                            </div> 
 
                             <div id="odvModalCancelBusiness" class="row">
                                                   
@@ -1031,8 +1055,9 @@
         }else{
             var tDocumentNumber = ptDocumentNumber;
         }
-        var tBrowseBchCode = $('#oetBrowseBchCode').val();
-        console.log('FC','JSxRanderHDDT',tBrowseBchCode);
+        var tBrowseBchCode  = $('#oetBrowseBchCode').val();
+        var tInput          = $('#oetInputBchCode').val();
+        
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCLoadDatatable",
@@ -1088,6 +1113,7 @@
                     if(tTypePay == 1){ var tTypePay = 'เงินสด' }else{ var tTypePay = 'เครดิต' }
                     // $('#oetTAXTypepay').val(tTypePay);
                     // $('#oetTAXPos').val(tPoscode);
+                    $('#oetTAXRefAE').val('');
                     $('#oetTAXRefIntDoc').val(tRefInt);
                     $('#oetTAXRefIntDocDate').val(tRefIntDate);
                     $('#oetTAXRefExtDoc').val(tRefExt);
@@ -1164,7 +1190,7 @@
     //กรณีที่อยู่มากกว่า 1 
     function JSvRanderAddressMoreOne(oText,ptType){
         //มีที่อยู่มากกว่า 1
-        console.log(oText);
+        
         if(oText.length > 1){
             $('#odvTAXModalAddressMoreOne').modal('show');
                 $('#odvTAXModalAddressMoreOne .xCNTableAddressMoreOne tbody').html('');
@@ -1380,7 +1406,7 @@
         }
 
         var oOptionReturn       = {
-            Title   : ['document/taxinvoicefc/taxinvoicefc', 'tTAXCustomer'],
+            Title   : ['document/taxinvoicefc/taxinvoicefc', 'tTAXCustomerFC'],
             Table   : {Master:'TCNMCst', PK:'FTCstCode'},
             Join    : {
                 Table   : ['TCNMCst_L'],
@@ -1566,7 +1592,7 @@
             Timeout : 0,
             success : function (oResult) {
                 var aResult = JSON.parse(oResult);
-                // console.log(oResult, " .00");
+                
                 JSvRanderAddressMoreOne(aResult.aAddress,'TaxADD');
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -1580,7 +1606,6 @@
 <script>
 
     if('<?=$tTypePage?>' == 'Preview'){
-        console.log('Preview');
         $('.selectpicker').selectpicker();
 
         //Block ปุ๊ป หลังจากอนุมัติเเล้ว
@@ -1633,7 +1658,7 @@
     function JSxRanderHDDTPreview(){
         var tDocumentNumber = '<?=$tDocumentNumber?>';
         var tBrowseBchCode =  '<?=$tDocumentBchCode?>';
-        // console.log('FC','JSxRanderHDDTPreview',tBrowseBchCode);
+        
         $.ajax({
             type    : "POST",
             url     : "dcmTXFCLoadDatatableTax",
@@ -1648,8 +1673,6 @@
                 //HD
                 var aHD         = tHTML.aDetailHD;
                 if (aHD.rtCode == '1') {
-                    // console.log(tHTML.aDetailHD);
-                    // console.log('aHD', aHD);
 
                     var aHD         = aHD.raItems[0];
     
@@ -1678,6 +1701,7 @@
                     if(tTypePay == 1){ var tTypePay = 'เงินสด' }else{ var tTypePay = 'เครดิต' }
                     $('#oetTAXTypepay').val(tTypePay);
                     $('#oetTAXPos').val(tPoscode);
+                    $('#oetTAXRefAE').val(aHD.FTXshRefAE);
                     $('#oetTAXRefIntDoc').val(tRefInt);
                     $('#oetTAXRefIntDocDate').val(tRefIntDate);
                     $('#oetTAXRefExtDoc').val(tRefExt);
@@ -1695,9 +1719,7 @@
 
                 //ที่อยู่
                 if(tHTML.aDetailAddress != false){
-                    console.log('Address');
                     var aAddresss = tHTML.aDetailAddress[0];
-                    console.log(aAddresss);
                     var tAddStaHQ = '';
                     if(aAddresss.FTAddStaHQ != ''){
                         tAddStaHQ = aAddresss.FTAddStaHQ;
@@ -1741,7 +1763,6 @@
     function  JSxRanderDTPreview(pnPage){
         var tDocumentNumber = '<?=$tDocumentNumber?>';
         var tBrowseBchCode =  '<?=$tDocumentBchCode?>';
-        console.log('FC','JSxRanderDTPreview',tBrowseBchCode);
         var tSearchPDT      = $('#oetTAXSearchPDT').val();
         $.ajax({
             type    : "POST",
@@ -1751,7 +1772,6 @@
             Timeout : 0,
             success : function (oResult) {
                 var tHTML = JSON.parse(oResult);
-                // console.log(tHTML['tContentPDT']);
                 $('#odvContentTAX').html(tHTML['tContentPDT']);
                 JCNxCloseLoading();
             },
@@ -1836,7 +1856,9 @@
 
         // เตรียมข้อมูล
         var tTAXDocNo           = $('#oetTAXDocNo').val();
-        var tTAXCstName         = $('#oetTAXCusNameCusABB').val();
+        var tTAXCstName         = $('#oetTAXCusName').val();
+        var tTAXCusNameCusABB = $('#oetTAXCusNameCusABB').val();
+        var tTAXModalCancelNumber = $('#oetTAXNumber').val();
         var tTAXCstCode         = $('#oetTAXCusCode').val();
         var tAddress1           = $('#otxAddress1').val();
         var tAddress2           = $('#otxAddress2').val();
@@ -1844,39 +1866,11 @@
         var tFax                = $('#oetTAXFax').val();
         var tTAXTypeBusiness    = $('#ocmTAXTypeBusiness').val();
         var tTAXBusiness        = $('#ocmTAXBusiness').val();
-        // var tPvnName        = $('#oetFTAddV1PvnName').val();
-        // var tPvnCode        = $('#oetFTAddV1PvnCode').val();
-        // var tDstName        = $('#oetFTAddV1DstName').val();
-        // var tDstCode        = $('#oetFTAddV1DstCode').val();
-        // var tSubDistName    = $('#oetFTAddV1SubDistName').val();
-        // var tSubDistCode    = $('#oetFTAddV1SubDistCode').val();
-        // var tPostCode       = $('#oetFTAddV1PostCode').val();
-
-        // $('#oetTAXCusName').val(aAddresss.FTXshCstName);
-        // $('#ohdSeqInTableAddress').val(aAddresss.FNAddSeqNo);
-        // $('#ohdSeqAddress').val(aAddresss.FNAddSeqNo);
-        // $('#oetTAXCusNameCusABB').val(aAddresss.FTAddName);
-        // // $('#oetTAXNumber').val(aAddresss.FTAddTaxNo);
-        // $('#oetTAXNumber').val(aAddresss.FTXshAddrTax);
-        // $('#oetTAXNumberNew').val(aAddresss.FTAddTaxNo);
-        // $('#oetTAXNumberNew').val(aAddresss.oetTAXNumberNew);
-        // $('#ocmTAXTypeBusiness option[value='+aAddresss.FTAddStaBusiness+']').attr('selected','selected');
-        // // $('#ocmTAXBusiness option[value='+aAddresss.FTAddStaHQ+']').attr('selected','selected');
-        // $('#ocmTAXBusiness option[value='+tAddStaHQ+']').attr('selected','selected');
-        // $('.selectpicker').selectpicker('refresh');
-        // $('#oetTAXBranch').val(aAddresss.FTAddStaBchCode);
-        // // $('#oetTAXTel').val(aAddresss.FTAddTel);
-        // $('#oetTAXTel').val(aAddresss.FTXshCstTel);
-        // // $('#oetTAXFax').val(aAddresss.FTAddFax);
-        // $('#oetTAXFax').val(aAddresss.FTXshFax);
-        // // $('#otxAddress1').text(aAddresss.FTAddV2Desc1);
-        // // $('#otxAddress2').text(aAddresss.FTAddV2Desc2);
-        // $('#otxAddress1').text(aAddresss.FTXshDesc1);
-        // $('#otxAddress2').text(aAddresss.FTXshDesc2);
-
 
         $('#oetTAXModalCancelDocNo').val(tTAXDocNo);
         $('#oetTAXModalCancelCstName').val(tTAXCstName);
+        $('#oetTAXModalCancelCstNameABB').val(tTAXCusNameCusABB);
+        $('#oetTAXModalCancelNumber').val(tTAXModalCancelNumber);
         $('#oetTAXModalCancelCstCode').val(tTAXCstCode);
         $('#otxTAXModalCancelAddress1').val(tAddress1);
         $('#otxTAXModalCancelAddress2').val(tAddress2);
@@ -1884,13 +1878,8 @@
         $('#oetTAXModalCancelFax').val(tFax);
         $('#ocmTAXModalCancelTypeBusiness option[value='+tTAXTypeBusiness+']').attr('selected','selected');
         $('#ocmTAXModalCancelBusiness option[value='+tTAXBusiness+']').attr('selected','selected');
-        // $('#oetTAXModalCancelPvnName').val(tPvnName);
-        // $('#oetTAXModalCancelPvnCode').val(tPvnCode);
-        // $('#oetTAXModalCancelDstName').val(tDstName);
-        // $('#oetTAXModalCancelDstCode').val(tDstCode);
-        // $('#oetTAXModalCancelSubDistName').val(tSubDistName);
-        // $('#oetTAXModalCancelSubDistCode').val(tSubDistCode);
-        // $('#oetTAXModalCancelPostCode').val(tPostCode);
+        $('#oetTAXModalCancelNumber').attr('disabled',true);
+        
 
         var tTaxABBType = $("#oetTAXABBTypeDocuement").val();
         if( tTaxABBType == '5' ){  // CN-ABB
@@ -1902,7 +1891,7 @@
         }
 
         $('#obtTAXModalCancelBrowseAddress').attr('disabled',true);
-
+        // $('#obtTAXModalCancelBrowseCus').attr('disabled',true);
         $('#odvTAXModalCancelETax').modal('show');
     });
 
@@ -1911,7 +1900,7 @@
         $('#ofmTaxCancel').validate({
             rules: {
                 oetTAXModalCancelRsnName        : "required",
-                oetTAXModalCancelCstName        : "required",
+                oetTAXModalCancelCstNameABB        : "required",
                 // otxTAXModalCancelAddress1       : "required",
                 // oetTAXModalCancelPvnName        : "required",
                 // oetTAXModalCancelDstName        : "required",
@@ -1920,7 +1909,7 @@
             },
             messages: {
                 oetTAXModalCancelRsnName        : 'กรุณาเลือก เหตุผลการยกเลิก',
-                oetTAXModalCancelCstName        : 'กรุณากรอก ชื่อลูกค้า / ชื่อออกใบกำกับภาษี',
+                oetTAXModalCancelCstNameABB        : 'กรุณากรอก ชื่อลูกค้า / ชื่อออกใบกำกับภาษี',
                 // otxTAXModalCancelAddress1       : 'กรุณากรอก ที่อยู่ 1 สำหรับออกใบกำกับภาษี',
                 // oetTAXModalCancelPvnName        : 'กรุณาเลือก จังหวัด',
                 // oetTAXModalCancelDstName        : 'กรุณาเลือก อำเภอ/เขต',
@@ -1973,9 +1962,9 @@
     $('#obtTAXModalCancelBrowseRsn').off('click').on('click',function(){
 
         var tDocType = $('#oetTAXABBTypeDocuement').val();
-        var tRsnGrp  = '017';
+        var tRsnGrp  = '015';
         if( tDocType == '5' ){
-            tRsnGrp = '018';
+            tRsnGrp = '016';
         }
 
         oTAXModalBrowseReasonOption = oTAXReasonOption({
@@ -2007,6 +1996,7 @@
             tWhereCondition += " AND TCNMRsn.FTRsgCode = '"+tRsnGrp+"' ";
         }
         
+        console.log(tWhereCondition);
         var oOptionReturn       = {
             Title   : ['document/taxinvoice/taxinvoice', tTitleModal],
             Table   : {Master:'TCNMRsn', PK:'FTRsnCode'},

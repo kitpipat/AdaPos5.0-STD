@@ -87,6 +87,10 @@
                     JSxPromotionStep1GetPmtPdtDtInTmp(1, false);
                 }
 
+                if(tStaListType == "8"){
+                    JSxPromotionStep1GetPmtPriDtInTmp(1, true);
+                }
+
                 var aPdtCond = ["2","3","4","5","6","7"]
                 if(aPdtCond.includes(tStaListType.toString())){
                     /* if(JCNbPromotionStep1PmtDtHasExcludeTypeInTemp()){

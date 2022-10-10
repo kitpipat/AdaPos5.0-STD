@@ -2,7 +2,7 @@
 defined ( 'BASEPATH' ) or exit ( 'No direct script access allowed' );
 
 class mCoupontype extends CI_Model {
-    
+
     //Functionality : Search Recive By ID
     //Parameters : function parameters
     //Creator : 19/12/2019 Witsarut (Bell)
@@ -13,7 +13,7 @@ class mCoupontype extends CI_Model {
 
         $tCptCode   = $paData['FTCptCode'];
         $nLngID     = $paData['FNLngID'];
-        
+
         $tSQL = "SELECT
                         CPT.FTCptCode        AS rtCptCode,
                         CPT.FTCptStaUse      AS rtCptStaUse,
@@ -22,6 +22,7 @@ class mCoupontype extends CI_Model {
                         CPT.FTCptStaChkHQ    AS rtCptStaChkHQ,
                         CPTL.FTCptName       AS rtCptName,
                         CPTL.FTCptRemark     AS rtCptRemark,
+                        CPT.FTCptStaPartial AS rtStaPartial,
                         CPT.FTAgnCode        AS rtAgnCode,
                         AGN_L.FTAgnName      AS rtAgnName
 
@@ -29,7 +30,7 @@ class mCoupontype extends CI_Model {
                 LEFT JOIN TCNMAgency_L AGN_L ON CPT.FTAgnCode = AGN_L.FTAgnCode AND AGN_L.FNLngID = $nLngID
                 LEFT JOIN [TFNMCouponType_L] CPTL ON CPT.FTCptCode = CPTL.FTCptCode AND CPTL.FNLngID = $nLngID
                 WHERE 1=1 ";
-        
+
         if($tCptCode!= ""){
             $tSQL .= "AND CPT.FTCptCode = '$tCptCode'";
         }
@@ -53,7 +54,7 @@ class mCoupontype extends CI_Model {
         $aResult = json_decode($jResult, true);
         return $aResult;
     }
-    
+
     //Functionality : list Recive
     //Parameters : function parameters
     //Creator :   19/12/2019 Witsarut (Bell)
@@ -78,19 +79,19 @@ class mCoupontype extends CI_Model {
                                 CPT.FTCptStaChkHQ,
                                 CPTL.FTCptRemark
                             FROM [TFNMCouponType] CPT
-                            LEFT JOIN [TFNMCouponType_L] CPTL ON CPT.FTCptCode = CPTL.FTCptCode AND CPTL.FNLngID = $nLngID
+                            LEFT JOIN [TFNMCouponType_L] CPTL ON CPT.FTCptCode = CPTL.FTCptCode AND CPTL.FNLngID = ".$this->db->escape($nLngID)."
                             WHERE 1=1  ";
         if($tAgnCode != ''){
             $tSQL .= "AND CPT.FTAgnCode = '$tAgnCode' OR ISNULL(CPT.FTAgnCode,'') = ''";
         }
         @$tSearchList = $paData['tSearchAll'];
         if(@$tSearchList != ''){
-            $tSQL .= " AND (CPT.FTCptCode LIKE '%$tSearchList%'";
-            $tSQL .= "      OR CPTL.FTCptName LIKE '%$tSearchList%')";
+            $tSQL .= " AND (CPT.FTCptCode LIKE '%".$this->db->escape_like_str($tSearchList)."%'";
+            $tSQL .= "      OR CPTL.FTCptName LIKE '%".$this->db->escape_like_str($tSearchList)."%')";
         }
-        
+
         $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
-   
+
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
             $oList = $oQuery->result();
@@ -101,7 +102,7 @@ class mCoupontype extends CI_Model {
                 'raItems' => $oList,
                 'rnAllRow' => $nFoundRow,
                 'rnCurrentPage' => $paData['nPage'],
-                "rnAllPage"=> $nPageAll, 
+                "rnAllPage"=> $nPageAll,
                 'rtCode' => '1',
                 'rtDesc' => 'success',
             );
@@ -121,7 +122,7 @@ class mCoupontype extends CI_Model {
         }
         return $aResult;
     }
-    
+
     //Functionality : Update Creditcard
     //Parameters : function parameters
     //Creator :  19/12/2019 Witsarut (Bell)
@@ -141,6 +142,7 @@ class mCoupontype extends CI_Model {
             $this->db->set('FTLastUpdBy' , $paData['FTLastUpdBy']);
             $this->db->set('FTCreateBy' , $paData['FTCreateBy']);
             $this->db->set('FDLastUpdOn' , $paData['FDLastUpdOn']);
+            $this->db->set('FTCptStaPartial' , $paData['FTCptStaPartial']);
             $this->db->set('FTAgnCode', $paData['FTAgnCode']);
             $this->db->where('FTCptCode', $paData['FTCptCode']);
             $this->db->update('TFNMCouponType');
@@ -153,6 +155,7 @@ class mCoupontype extends CI_Model {
                 //Add Master
                 $this->db->insert('TFNMCouponType',array(
                     'FTCptCode'     => $paData['FTCptCode'],
+                    'FTCptStaPartial' => $paData['FTCptStaPartial'],
                     'FTCptStaUse'   => $paData['FTCptStaUse'],
                     'FTCptType'     => $paData['FTCptType'],
                     'FTCptStaChk'   => $paData['FTCptStaChk'],
@@ -240,7 +243,7 @@ class mCoupontype extends CI_Model {
                  FROM TFNMCouponType CPT
                  LEFT JOIN [TFNMCouponType_L] CPTL ON CPT.FTCptCode = CPTL.FTCptCode AND CPTL.FNLngID = $ptLngID
                  WHERE 1=1 ";
-        
+
         if($tAgnCode != ''){
             $tSQL .= "AND CPT.FTAgnCode = '$tAgnCode' OR ISNULL(CPT.FTAgnCode,'') = ''";
         }
@@ -249,7 +252,7 @@ class mCoupontype extends CI_Model {
             $tSQL .= " AND (CPT.FTCptCode LIKE '%$ptSearchList%'";
             $tSQL .= "      OR CPTL.FTCptName LIKE '%$ptSearchList%')";
         }
-        
+
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
             return $oQuery->result();
@@ -258,11 +261,11 @@ class mCoupontype extends CI_Model {
             return false;
         }
     }
-    
-    
+
+
     //Functionality : Checkduplicate
     //Parameters : function parameters
-    //Creator : 19/12/2019 Witsarut (Bell) 
+    //Creator : 19/12/2019 Witsarut (Bell)
     //Last Modified : -
     //Return : data
     //Return Type : Array
@@ -277,7 +280,7 @@ class mCoupontype extends CI_Model {
             return false;
         }
     }
-    
+
     //Functionality : Delete Voucher
     //Parameters : function parameters
     //Creator : 19/12/2019 Witsarut (Bell)
@@ -286,7 +289,7 @@ class mCoupontype extends CI_Model {
     public function FSnMCPTDel($paData){
         $this->db->where_in('FTCptCode', $paData['FTCptCode']);
         $this->db->delete('TFNMCouponType');
-        
+
         $this->db->where_in('FTCptCode', $paData['FTCptCode']);
         $this->db->delete('TFNMCouponType_L');
         if($this->db->affected_rows() > 0){
@@ -322,5 +325,5 @@ class mCoupontype extends CI_Model {
         }
         return $aResult;
     }
-    
+
 }

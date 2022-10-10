@@ -2,6 +2,8 @@
 date_default_timezone_set("Asia/Bangkok");
 if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
     $tRoute         = "dcmSPAEventEdit";
+    $tAgnCode       = $aSpaData['raItems']['FTAgnCode'];
+    $tAgnName       = $aSpaData['raItems']['FTAgnName'];
     $tBchCode       = $aSpaData['raItems']['FTBchCode'];
     $tMerCode       = '';
     $tMerName       = $aSpaData['raItems']['FTMerName'];
@@ -27,6 +29,7 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
     $nXphStaDocAct  = $aSpaData['raItems']['FNXphStaDocAct'];
     $tUsrCode       = $aSpaData['raItems']['FTUsrCode'];
     $tXphUsrApv     = $aSpaData['raItems']['FTXphUsrApv'];
+    $tXphUsrApvName = $aSpaData['raItems']['FTXphUsrApvName'];
     $tXphStaApv     = $aSpaData['raItems']['FTXphStaApv'];   //เปลี่ยนจาก FTXphUsrApv เป็น FTXphStaApv เนื่องจากตอนแรกไม่มี ฟิลส์ FTXphStaApv [ Napat(Jame) 05-09-2019 ]
     $tXphZneTo      = '';
     $tXphZneToName  = $aSpaData['raItems']['FTZneName'];
@@ -44,24 +47,18 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
     $nLngID         = $nLngID;
 
     $dXphDStopyear  = date('Y-m-d', strtotime("+1 year"));
-    // Create By Witsarut 27/08/2019
     if (isset($aResList['raItems']['rtCmpCode'])) {
         $tCmpCode  = $aResList['raItems']['rtCmpCode'];
     } else {
         $tCmpCode  = '';
     }
-
-    // Create By Witsarut 27/08/2019
-
-    if ($tXphStaApv == "") {
-        $tTextApv = language('document/salepriceadj/salepriceadj', 'tSpaXphUsrApv');
-    } else {
-        $tTextApv = language('document/salepriceadj/salepriceadj', 'tSpaXphUsrApv1');
-    }
     $tAgnCode               = $this->session->userdata("tSesUsrAgnCode");
+    $nStaUploadFile        = 2;
 } else {
 
     $tRoute         = "dcmSPAEventAdd";
+    $tAgnCode       = "";
+    $tAgnName       = "";
     $tBchCode       = "";
     $tMerCode       = "";
     $tMerName       = "";
@@ -124,6 +121,7 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
     $tAgnCode               = $this->session->userdata("tSesUsrAgnCode");
     $tSaleAdjBchCompCode      = $tBchCompCode;
     $tSaleAdjBchCompName      = $tBchCompName;
+    $nStaUploadFile        = 1;
 }
 
 $aParams = [
@@ -142,30 +140,57 @@ $aParams = [
 $nDecimalShow =  FCNxHGetOptionDecimalShow();
 
 
-$tUsrLevel 				= $this->session->userdata('tSesUsrLevel');
-if($tUsrLevel == 'SHP'){
-    $tUserMchCode 			= $this->session->userdata('tSesUsrMerCode');
-    $tUserMchName 			= $this->session->userdata('tSesUsrMerName');
-}else{
-    $tUserMchCode 			= "";
-    $tUserMchName 			= "";
+$tUsrLevel                 = $this->session->userdata('tSesUsrLevel');
+if ($tUsrLevel == 'SHP') {
+    $tUserMchCode             = $this->session->userdata('tSesUsrMerCode');
+    $tUserMchName             = $this->session->userdata('tSesUsrMerName');
+} else {
+    $tUserMchCode             = "";
+    $tUserMchName             = "";
 }
 
-if($tUsrLevel == 'SHP'){
-    $tUserShpCode 			= $this->session->userdata('tSesUsrShpCodeDefault');
-    $tUserShpName 			= $this->session->userdata('tSesUsrShpNameDefault');
-}else{
-    $tUserShpCode 			= "";
-    $tUserShpName 			= "";
+if ($tUsrLevel == 'SHP') {
+    $tUserShpCode             = $this->session->userdata('tSesUsrShpCodeDefault');
+    $tUserShpName             = $this->session->userdata('tSesUsrShpNameDefault');
+} else {
+    $tUserShpCode             = "";
+    $tUserShpName             = "";
 }
 
-$tWahCodeFrom 			= "";
-$tWahNameFrom 			= "";
+$tWahCodeFrom             = "";
+$tWahNameFrom             = "";
 
 $tUserBchCode = $this->session->userdata('tSesUsrBchCodeDefault');
 $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
+
+if ($tXphStaDoc == 3) {
+    $tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaDoc3'); //ยกเลิก
+    $tClassStaDoc = 'text-danger';
+} else {
+    if ($tXphStaApv == 1) {
+        $tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaApv1'); //อนุมัติแล้ว
+        $tClassStaDoc = 'text-success';
+    } else {
+        $tNewProcess = language('document/adjustmentcost/adjustmentcost', 'tADCStaApv'); //รออนุมัติ
+        $tClassStaDoc = 'text-warning';
+    }
+}
 ?>
 
+
+<!-- ** ========================== Start Tab ปุ่ม เปิด Side Bar =============================================== * -->
+<div class="xCNDivSideBarOpen xCNHide">
+    <div class="xCNAbsoluteClick" onclick="JCNxOpenDiv()"></div>
+    <div class="xCNAbsoluteOpen">
+        <div class="input-group-btn xCNDivSideBarOpenGroup">
+            <label class="xCNDivSideBarOpenWhite"><?php echo language('document/adjustmentcost/adjustmentcost', 'tDIDocumentInformation'); ?></label>
+            <button class="xCNDivSideBarOpenWhite">
+                <i class="fa fa-angle-double-down xCNDivSideBarOpenIcon" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+<!-- ** ========================== End Tab ปุ่ม เปิด Side Bar =============================================== * -->
 
 <input type="hidden" id="ohdDateStop" value="<?php echo $dXphDStopyear; ?>">
 <form class="contact100-form validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" id="ofmAddSpa">
@@ -183,11 +208,14 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
     <input type="text" class="xCNHide" id="ohdLangEdit" name="ohdLangEdit" maxlength="1" value="<?php echo $this->session->userdata("tLangEdit"); ?>">
     <input type="text" class="xCNHide" id="ohdXphStaApv" name="ohdXphStaApv" value="<?= $tXphStaApv ?>">
     <input type="hidden" class="xCNHide" id="nDecimalShow" name="nDecimalShow" value="<?= $nDecimalShow ?>">
-    <input type="hidden" id="ohdTextValidate" validatedateimpact="<?php echo language('document/salepriceadj/salepriceadj', 'tSpaValidDateStrImpact'); ?>" validatepdrcode="<?php echo language('document/salepriceadj/salepriceadj', 'tSpaValidXphPdtCode'); ?>" validatevalue="<?php echo language('document/salepriceadj/salepriceadj', 'tSpaValidXphPdtValue'); ?>">
+    <input type="hidden" id="ohdTextValidate" validatedateimpact="<?php echo language('document/salepriceadj/salepriceadj', 'tSpaValidDateStrImpact'); ?>" validatepdrcode="<?php echo language('document/salepriceadj/salepriceadj', 'tSpaValidXphPdtCode'); ?>" 
+    validatevalue="<?php echo language('document/salepriceadj/salepriceadj', 'tSpaValidXphPdtValue'); ?>"
+    validateBrowsepdt="<?php echo language('document/salepriceadj/salepriceadj', 'tPdtSelectAgnBch'); ?>">
 
     <button style="display:none" type="submit" id="obtSubmitSpa" onclick="JSoAddEditSpa('<?= $tRoute ?>')"></button>
     <div class="row">
-        <div class="col-md-4">
+        <div class="xWLeft col-xs-12 col-sm-3 col-md-3 col-lg-3" id="odvSideBar">
+            <!-- Class xWLeft กับ id odvSideBar  ใช้ในการควบคุม เปิดปิด Side Bar  -->
 
             <div class="panel panel-default" style="margin-bottom: 25px;">
                 <div id="odvHeadStatus" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
@@ -195,6 +223,11 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                     <a class="xCNMenuplus" role="button" data-toggle="collapse" href="#odvDataDoc" aria-expanded="true">
                         <i class="fa fa-plus xCNPlus"></i>
                     </a>
+                    <!-- ** ========================== Start ปุ่ม ปิด Side Bar =============================================== * -->
+                    <button onclick="JCNxCloseDiv()" class="xCNButtonSideBar">
+                        <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                    </button>
+                    <!-- ** ========================== End ปุ่ม ปิด Side Bar =============================================== * -->
                 </div>
                 <div id="odvDataDoc" class="panel-collapse collapse in" role="tabpanel" style="margin-top:10px;">
                     <div class="panel-body xCNPDModlue">
@@ -259,12 +292,37 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                             <div class="col-md-6">
                                 <label class="xCNLabelFrm"><?php echo language('document/salepriceadj/salepriceadj', 'tTBSpaXphUsrApv'); ?></label>
                             </div>
-                            <div class="col-md-6 text-right">
+                            <div class="col-md-6 text-right <?= $tClassStaDoc ?>">
                                 <input type="text" class="xCNHide" id="oetStaApv" name="oetStaApv" value="<?= $tXphStaApv ?>">
                                 <input type="text" class="xCNHide" id="oetUsrApv" name="oetUsrApv" value="<?= $tXphUsrApv ?>">
-                                <label><?= $tTextApv ?></label>
+                                <label><?= $tNewProcess ?></label>
                             </div>
                         </div>
+
+                        <?php if (isset($tXphDocNo) && !empty($tXphDocNo)) : ?>
+                            <!-- ผู้อนุมัติเอกสาร -->
+                            <div class="form-group" style="margin:0">
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                        <label class="xCNLabelFrm"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCApvBy'); ?></label>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
+                                        <input type="hidden" id="ohdADCApvCode" name="ohdADCApvCode" maxlength="20" value="<?php echo $tXphUsrApv ?>">
+                                        <label>
+
+                                            <?php
+                                            if ($tXphStaApv == "" || $tXphStaDoc == 3) {
+                                                $tUsrApv = language('document/salepriceadj/salepriceadj', 'tSpaStaEmtpy');
+                                            } else {
+                                                $tUsrApv = $tXphUsrApvName;
+                                            }
+                                            echo $tUsrApv
+                                            ?>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
 
                     </div>
                 </div>
@@ -290,13 +348,28 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                             $tSaleAdjDataInputBchName   = $tBchCompName;
                             $tDisabled  = '';
                             $tNameElmID = 'obtBrowseSaleAdjBCH';
+                            $tNameElmID2 = 'obtBrowseSaleAdjAgn';
                         } else {
                             $tSaleAdjDataInputBchCode       = $tBchCode;
                             $tSaleAdjDataInputBchName       = $tXphBchToName;
                             $tDisabled  = 'disabled';
                             $tNameElmID = '';
+                            $tNameElmID2 = '';
                         }
                         ?>
+                        <?php if($this->session->userdata("tSesUsrAgnCode")==''){ ?>
+                        <div class="form-group">
+                            <label class="xCNLabelFrm" style="margin-right: 10px; margin-top: 5px;"><?php echo language('document/salepriceadj/salepriceadj','tPdtFilterAgency'); ?></label>
+                            <div class="input-group">
+                                <input type="text" class="form-control xCNHide" id="oetSaleAdjAgnCode" name="oetSaleAdjAgnCode" value="<?=$tAgnCode?>">
+                                <input type="text" class="form-control xWPointerEventNone" id="oetSaleAdjAgnName" name="oetSaleAdjAgnName" value="<?=$tAgnName?>" readonly>
+                                <span class="input-group-btn">
+                                <button id="<?= @$tNameElmID2 ?>" type="button" class="btn xCNBtnBrowseAddOn <?= @$tDisabled ?>"><img class="xCNIconFind"></button>
+                                </span>
+                            </div>
+                        </div>
+                        <?php } ?>
+
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?php echo language('document/salepriceadj/salepriceadj', 'tSpaBRWBranch'); ?></label>
                             <div class="input-group">
@@ -311,15 +384,15 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                         </div>
 
                         <!-- <script>
-                            var tUsrLevel = '<?=$this->session->userdata('tSesUsrLevel')?>';
+                            var tUsrLevel = '<?= $this->session->userdata('tSesUsrLevel') ?>';
                             if( tUsrLevel == "SHP" ){
-                                var tSHPCount = '<?=$this->session->userdata("nSesUsrShpCount");?>';
+                                var tSHPCount = '<?= $this->session->userdata("nSesUsrShpCount"); ?>';
                                 if(tSHPCount < 2){
                                     $('#obtPIBrowseShop').attr('disabled',true);
                                 }
 
-                                $('#oetSalePriceShpCode').val('<?=$this->session->userdata("tSesUsrShpCodeDefault");?>');
-                                $('#oetSalePriceShpName').val('<?=$this->session->userdata("tSesUsrShpNameDefault");?>');
+                                $('#oetSalePriceShpCode').val('<?= $this->session->userdata("tSesUsrShpCodeDefault"); ?>');
+                                $('#oetSalePriceShpName').val('<?= $this->session->userdata("tSesUsrShpNameDefault"); ?>');
                             }
                         </script>
                         <div class="form-group">
@@ -342,6 +415,8 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                                 <!-- <option value=""><?= language('document/salepriceadj/salepriceadj', 'tSpaADDXphDocType') ?></option> -->
                                 <option value="1" <?= $tXphDocType == "1" ? "selected" : ""; ?>><?= language('document/salepriceadj/salepriceadj', 'tSpaADDXphDocType1') ?></option>
                                 <option value="2" <?= $tXphDocType == "2" ? "selected" : ""; ?>><?= language('document/salepriceadj/salepriceadj', 'tSpaADDXphDocType2') ?></option>
+                                <option value="3" <?= $tXphDocType == "3" ? "selected" : ""; ?>><?= language('document/salepriceadj/salepriceadj', 'tSpaADDXphDocType3') ?></option>
+                                <option value="4" <?= $tXphDocType == "4" ? "selected" : ""; ?>><?= language('document/salepriceadj/salepriceadj', 'tSpaADDXphDocType4') ?></option>
                             </select>
                         </div>
 
@@ -356,10 +431,9 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                                 <option id="optStaAdj5" value="5" <?= $tXphStaAdj == "5" ? "selected" : ""; ?>><?= language('document/salepriceadj/salepriceadj', 'tSpaADDXphStaAdj5') ?></option>
                             </select>
                         </div>
-
-
+                        
                         <div class="row">
-                            <div class="col-xs-5 col-md-4 col-lg-4">
+                            <div class="col-xs-6 col-md-6 col-lg-6">
                                 <div class="form-group form-inline">
                                     <div class="input-group" style="margin-right:0px;width:100%;">
                                         <input type="hidden" id="ohdValueType1" value="<?php echo language('document/salepriceadj/salepriceadj', 'tSpaADDValueType1') ?>">
@@ -381,7 +455,7 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                                 </select>
                             </div>
 
-                            <div class="col-xs-2 col-md-4 col-lg-4" style="margin-right:0px;margin-left:0px;text-align: center;">
+                            <div class="col-xs-6 col-md-6 col-lg-6" style="margin-right:0px;margin-left:0px;text-align: center;">
                                 <button type="button" id="obtAdjAll" class="btn btn-primary" style="width:100%;font-size: 17px;padding-left:10px;padding-right:10px;padding-top:5px;padding-bottom:2px;"><?= language('document/salepriceadj/salepriceadj', 'tSpaADDBtnAdjAll') ?></button>
                             </div>
                         </div>
@@ -578,31 +652,7 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                 <div id="odvDataOther" class="panel-collapse collapse" role="tabpanel" style="margin-top:10px;">
                     <div class="panel-body xCNPDModlue">
 
-                        <!-- <div class="form-group">
-                            <label class="xCNLabelFrm"><?= language('document/salepriceadj/salepriceadj', 'tSpaADDAggCode'); ?></label>
-                            <div class="input-group">
-                                <input name="oetAggCode" id="oetAggCode" class="form-control xCNHide" value="<?= $tAggCode ?>">
-                                <input name="oetAggName" id="oetAggName" class="form-control xWPointerEventNone xWRptConsCrdInput"  type="text" readonly="" value="<?= $tAggName ?>">
-                                <span class="input-group-btn">
-                                    <button class="btn xCNBtnBrowseAddOn" id="btnBrowseAgency" type="button">
-                                        <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
-                                    </button>
-                                </span>
-                            </div>
-                        </div> -->
-
-                        <div class="form-group">
-
-                            <input type="hidden" id="ocmXphPriType" name="ocmXphPriType" value="1">
-
-                            <!--
-                            <label class="xCNLabelFrm"><?= language('document/salepriceadj/salepriceadj', 'tSpaADDXphPriType'); ?></label>
-                            <select class="selectpicker form-control" id="ocmXphPriType" name="ocmXphPriType" maxlength="1">
-                                <option value="1" <?= $tXphPriType == "1" ? "selected" : ""; ?>><?= language('document/salepriceadj/salepriceadj', 'tPdtPriTBPriceRet'); ?></option>
-                                <option value="2" <?= $tXphPriType == "2" ? "selected" : ""; ?>><?= language('document/salepriceadj/salepriceadj', 'tPdtPriTBPriceWhs'); ?></option>
-                                <option value="3" <?= $tXphPriType == "3" ? "selected" : ""; ?>><?= language('document/salepriceadj/salepriceadj', 'tPdtPriTBPriceNet'); ?></option>
-                            </select>-->
-                        </div>
+                        <input type="hidden" id="ocmXphPriType" name="ocmXphPriType" value="1">
 
                         <div class="form-group">
                             <label class="fancy-checkbox">
@@ -620,14 +670,49 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                     </div>
                 </div>
             </div>
+
+            <!-- Panel ไฟลแนบ -->
+            <div class="panel panel-default" style="margin-bottom: 25px;">
+                <div id="odvSPAReferenceDoc" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
+                    <label class="xCNTextDetail1"><?php echo language('document/saleorder/saleorder', 'ไฟล์แนบ'); ?></label>
+                    <a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvSatSvDataFile" aria-expanded="true">
+                        <i class="fa fa-plus xCNPlus"></i>
+                    </a>
+                </div>
+                <div id="odvSatSvDataFile" class="xCNMenuPanelData panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="odvSPAShowDataTable">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+
+
+                    var oSPACallDataTableFile = {
+                        ptElementID     : 'odvSPAShowDataTable',
+                        ptBchCode       : $('#oetBchCode').val(),
+                        ptDocNo         : $('#oetXphDocNo').val(),
+                        ptDocKey        : 'TCNTPdtAdjPriHD',
+                        ptSessionID     : '<?= $this->session->userdata("tSesSessionID") ?>',
+                        pnEvent         : <?= $nStaUploadFile ?>,
+                        ptCallBackFunct : '',
+                        ptStaApv        : $('#ohdXphStaApv').val(),
+                        ptStaDoc        : $('#oetStaDoc').val()
+                        //JSxSoCallBackUploadFile -- ดูข้อมูลไฟล์แนบ
+                    }
+                    JCNxUPFCallDataTable(oSPACallDataTableFile);
+                </script>
+            </div>
         </div>
 
-        <div class="col-md-8">
+        <div class="xWRight col-xs-12 col-sm-9 col-md-9 col-lg-9">
+            <!-- Class xWRight ใช้ในการควบคุม เปิดปิด Side Bar  -->
             <div class="panel panel-default" style="margin-bottom: 25px;">
-                <div id="odvHeadStatus" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
-                    <label class="xCNTextDetail1"><?php echo language('document/salepriceadj/salepriceadj', 'tSpaTitlePdtPriList'); ?></label>
-                </div>
-                <div id="odvDataOther" class="panel-collapse collapse in" role="tabpanel" style="margin-top:10px;">
+                <div id="odvDataOther" class="panel-collapse collapse in" role="tabpanel">
                     <div class="panel-body xCNPDModlue">
 
                         <div class="row">
@@ -645,32 +730,32 @@ $tUserBchName = $this->session->userdata('tSesUsrBchNameDefault');
                                 </div>
                             </div>
 
-                            <div class="col-xs-12 col-md-8 col-lg-8 text-right" style="margin-top:25px;">
-                                <div class="form-group">
-                                    <div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
-                                        <button type="button" class="btn xCNBTNMngTable xCNImportBtn" style="margin-right:10px;" onclick="JSxOpenImportForm()">
-                                            <?= language('common/main/main', 'tImport') ?>
-                                        </button>
-                                    </div>
-                                    <div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
-                                        <button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
-                                            <?php echo language('common/main/main', 'tCMNOption') ?>
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" role="menu">
-                                            <li id="oliBtnDeleteAll" class="disabled">
-                                                <a href="javascript:;" data-toggle="modal" data-target="#odvModalDelSpaPdtPri"><?php echo language('common/main/main', 'tDelAll') ?></a>
-                                            </li>
-                                            <li id="oliBtnMngTable">
-                                                <a href="javascript:;" onclick="JSxOpenColumnFormSet()"><?php echo language('common/main/main', 'tModalAdvTable') ?></a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                            <?php if ($tXphStaApv != 1) { //ถ้าอนุมัติแล้วจะไม่เปิดชุดนี้
+                            ?>
+                                <div class="col-xs-12 col-md-8 col-lg-8 text-right" style="margin-top:25px;">
+                                    <div class="form-group">
+                                        <div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
+                                            <button type="button" class="btn xCNBTNMngTable xCNImportBtn" style="margin-right:10px;" onclick="JSxOpenImportForm()">
+                                                <?= language('common/main/main', 'tImport') ?>
+                                            </button>
+                                        </div>
+                                        <div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
+                                            <button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
+                                                <?php echo language('common/main/main', 'tCMNOption') ?>
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li id="oliBtnDeleteAll">
+                                                    <a data-toggle="modal" data-target="#odvModalDelSpaPdtPri"><?php echo language('common/main/main', 'tDelAll') ?></a>
+                                                </li>
+                                            </ul>
+                                        </div>
 
-                                    <input type="text" class="form-control" style="display: inline;width: 250px;margin-left: 10px;" id="oetSPAInsertScan" autocomplete="off" name="oetSPAInsertScan" maxlength="50" value="" onkeypress="Javascript:if(event.keyCode==13) JSxSPASearchFromBarcode(this);"  placeholder="<?php echo language('document/document/document','tDocScanBarPdt')?>" >
-                                    <button id="obtAddPdt" name="obtAddPdt" class="xCNBTNPrimeryPlus" type="button" style="margin-left:10px;margin-top: 0px;">+</button>
+                                        <input type="text" class="form-control" style="display: inline;width: 250px;margin-left: 10px;" id="oetSPAInsertScan" autocomplete="off" name="oetSPAInsertScan" maxlength="50" value="" onkeypress="Javascript:if(event.keyCode==13) JSxSPASearchFromBarcode(this);" placeholder="<?php echo language('document/document/document', 'tDocScanBarPdt') ?>">
+                                        <button id="obtAddPdt" name="obtAddPdt" class="xCNBTNPrimeryPlus" type="button" style="margin-left:10px;margin-top: 0px;">+</button>
+                                    </div>
                                 </div>
-                            </div>
+                            <?php } ?>
                         </div>
 
                         <section id="ostDataPdtPri"></section>

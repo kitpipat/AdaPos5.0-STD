@@ -75,22 +75,18 @@
         });
 
         if (tUserLoginLevel == 'HQ') {
-            // $('#obtBrowseTVOShp').attr('disabled', true);
-            // $('#obtBrowseTVOPos').attr('disabled', true);
-
             if (bIsAddPage) {
-                $('#obtBrowseTVOWah').attr('disabled', true);
-                $('#obtBrowseTVOShp').attr('disabled', true);
-                $('#obtBrowseTVOPos').attr('disabled', true);
+                $('#obtBrowseTVOShp').attr('disabled', false);
+                $('#obtBrowseTVOWah').attr('disabled', false);
+                $('#obtBrowseTVOPos').attr('disabled', false);
             } else {
                 $('#obtBrowseTVOWah').attr('disabled', false);
             }
         }
 
         if (tUserLoginLevel == 'BCH') {
-            $('#obtBrowseTVOShp').attr('disabled', true);
-            $('#obtBrowseTVOPos').attr('disabled', true);
-
+            $('#obtBrowseTVOShp').attr('disabled', false);
+            $('#obtBrowseTVOPos').attr('disabled', false);
             if (bIsAddPage) {
                 $('#obtBrowseTVOWah').attr('disabled', true);
             } else {
@@ -100,10 +96,9 @@
 
         if (tUserLoginLevel == 'SHP') {
             $('#obtBrowseTVOMER').attr('disabled', true);
-
             var tShpcount = '<?=$this->session->userdata("nSesUsrShpCount");?>';
             if(tShpcount < 2){
-                $('#obtBrowseTVOShp').attr('disabled',true);
+                $('#obtBrowseTVOShp').attr('disabled',false);
             }
                     
             if (bIsAddPage) {
@@ -150,313 +145,319 @@
     /*===== Begin Event Browse =========================================================*/
     // เลือกสาขา
     $("#obtBrowseTVOBCH").click(function() {
-        // JSxCheckPinMenuClose(); // Hidden Pin Menu
-        $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO)").remove();
-        // option Ship Address 
-
-        tUsrLevel = "<?=$this->session->userdata('tSesUsrLevel')?>";
-        tBchMulti = "<?=$this->session->userdata("tSesUsrBchCodeMulti"); ?>";
-        tSQLWhere = "";
-        if(tUsrLevel != "HQ"){
-            tSQLWhere = " AND TCNMBranch.FTBchCode IN ("+tBchMulti+") ";
+        var nStaChkDataDT   = $('#otbDOCPdtTable tbody .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
+            // option Ship Address 
+            tUsrLevel = "<?=$this->session->userdata('tSesUsrLevel')?>";
+            tBchMulti = "<?=$this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+            tSQLWhere = "";
+            if(tUsrLevel != "HQ"){
+                tSQLWhere = " AND TCNMBranch.FTBchCode IN ("+tBchMulti+") ";
+            }
+            window.oBrowseTVOBranch = {
+                Title: ['authen/user/user', 'tBrowseBCHTitle'],
+                Table: {
+                    Master: 'TCNMBranch',
+                    PK: 'FTBchCode'
+                },
+                Join: {
+                    Table: ['TCNMBranch_L'],
+                    On: ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits]
+                },
+                Where: {
+                    Condition: [tSQLWhere]
+                },
+                GrideView: {
+                    ColumnPathLang: 'authen/user/user',
+                    ColumnKeyLang: ['tBrowseBCHCode', 'tBrowseBCHName'],
+                    ColumnsSize: ['10%', '75%'],
+                    DataColumns: ['TCNMBranch.FTBchCode', 'TCNMBranch_L.FTBchName'],
+                    DataColumnsFormat: ['', ''],
+                    WidthModal: 50,
+                    Perpage: 10,
+                    OrderBy: ['TCNMBranch.FTBchCode'],
+                    SourceOrder: "ASC"
+                },
+                CallBack: {
+                    ReturnType: 'S',
+                    Value: ["oetTVOBCHCode", "TCNMBranch.FTBchCode"],
+                    Text: ["oetTVOBCHName", "TCNMBranch_L.FTBchName"]
+                },
+                NextFunc: {
+                    FuncName: 'JSxTVOCallbackBch',
+                    ArgReturn: ['FTBchCode']
+                },
+                RouteAddNew: 'branch',
+                BrowseLev: 1
+            };
+            JCNxBrowseData('oBrowseTVOBranch');
+        }else{
+            $('#odvTVOPopupFoundDataInTblDT #ohdTVOTypeClick').val('Bch');
+            $('#odvTVOPopupFoundDataInTblDT').modal('show');
         }
-
-        window.oBrowseTVOBranch = {
-            Title: ['authen/user/user', 'tBrowseBCHTitle'],
-            Table: {
-                Master: 'TCNMBranch',
-                PK: 'FTBchCode'
-            },
-            Join: {
-                Table: ['TCNMBranch_L'],
-                On: ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits]
-            },
-            Where: {
-                Condition: [tSQLWhere]
-            },
-            GrideView: {
-                ColumnPathLang: 'authen/user/user',
-                ColumnKeyLang: ['tBrowseBCHCode', 'tBrowseBCHName'],
-                ColumnsSize: ['10%', '75%'],
-                DataColumns: ['TCNMBranch.FTBchCode', 'TCNMBranch_L.FTBchName'],
-                DataColumnsFormat: ['', ''],
-                WidthModal: 50,
-                Perpage: 10,
-                OrderBy: ['TCNMBranch.FTBchCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetTVOBCHCode", "TCNMBranch.FTBchCode"],
-                Text: ["oetTVOBCHName", "TCNMBranch_L.FTBchName"]
-            },
-            NextFunc: {
-                FuncName: 'JSxTVOCallbackBch',
-                ArgReturn: ['FTBchCode']
-            },
-            RouteAddNew: 'branch',
-            BrowseLev: 1
-        };
-        JCNxBrowseData('oBrowseTVOBranch');
     });
 
     // เลือกกลุ่มธุรกิจ
     $("#obtBrowseTVOMER").click(function() {
-        // JSxCheckPinMenuClose(); // Hidden Pin Menu
-        $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO)").remove();
-        // option Ship Address 
-        window.oBrowseTVOMch = {
-            Title: ['company/warehouse/warehouse', 'tWAHBwsMchTitle'],
-            Table: {
-                Master: 'TCNMMerchant',
-                PK: 'FTMerCode'
-            },
-            Join: {
-                Table: ['TCNMMerchant_L'],
-                On: ['TCNMMerchant.FTMerCode = TCNMMerchant_L.FTMerCode AND TCNMMerchant_L.FNLngID = ' + nLangEdits]
-            },
-            Where: {
-                Condition: ["AND (SELECT COUNT(FTShpCode) FROM TCNMShop WHERE TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTMerCode = TCNMMerchant.FTMerCode AND TCNMShop.FTBchCode = '" + $("#oetTVOBCHCode").val() + "') != 0"]
-            },
-            GrideView: {
-                ColumnPathLang: 'company/warehouse/warehouse',
-                ColumnKeyLang: ['tWAHBwsMchCode', 'tWAHBwsMchNme'],
-                ColumnsSize: ['15%', '75%'],
-                WidthModal: 50,
-                DataColumns: ['TCNMMerchant.FTMerCode', 'TCNMMerchant_L.FTMerName'],
-                DataColumnsFormat: ['', ''],
-                Perpage: 10,
-                OrderBy: ['TCNMMerchant.FTMerCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetTVOMchCode", "TCNMMerchant.FTMerCode"],
-                Text: ["oetTVOMchName", "TCNMMerchant_L.FTMerName"],
-            },
-            NextFunc: {
-                FuncName: 'JSxTVOCallbackMer',
-                ArgReturn: ['FTMerCode', 'FTMerName']
-            },
-            BrowseLev: 1,
-            //DebugSQL : true
-        };
-        JCNxBrowseData('oBrowseTVOMch');
+        var nStaChkDataDT   = $('#otbDOCPdtTable tbody .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
+            // option Ship Address 
+            window.oBrowseTVOMch = {
+                Title: ['company/warehouse/warehouse', 'tWAHBwsMchTitle'],
+                Table: {
+                    Master: 'TCNMMerchant',
+                    PK: 'FTMerCode'
+                },
+                Join: {
+                    Table: ['TCNMMerchant_L'],
+                    On: ['TCNMMerchant.FTMerCode = TCNMMerchant_L.FTMerCode AND TCNMMerchant_L.FNLngID = ' + nLangEdits]
+                },
+                Where: {
+                    Condition: ["AND (SELECT COUNT(FTShpCode) FROM TCNMShop WHERE TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTMerCode = TCNMMerchant.FTMerCode AND TCNMShop.FTBchCode = '" + $("#oetTVOBCHCode").val() + "') != 0"]
+                },
+                GrideView: {
+                    ColumnPathLang: 'company/warehouse/warehouse',
+                    ColumnKeyLang: ['tWAHBwsMchCode', 'tWAHBwsMchNme'],
+                    ColumnsSize: ['15%', '75%'],
+                    WidthModal: 50,
+                    DataColumns: ['TCNMMerchant.FTMerCode', 'TCNMMerchant_L.FTMerName'],
+                    DataColumnsFormat: ['', ''],
+                    Perpage: 10,
+                    OrderBy: ['TCNMMerchant.FTMerCode'],
+                    SourceOrder: "ASC"
+                },
+                CallBack: {
+                    ReturnType: 'S',
+                    Value: ["oetTVOMchCode", "TCNMMerchant.FTMerCode"],
+                    Text: ["oetTVOMchName", "TCNMMerchant_L.FTMerName"],
+                },
+                NextFunc: {
+                    FuncName: 'JSxTVOCallbackMer',
+                    ArgReturn: ['FTMerCode', 'FTMerName']
+                },
+                BrowseLev: 1,
+                //DebugSQL : true
+            };
+            JCNxBrowseData('oBrowseTVOMch');
+        }else{
+            $('#odvTVOPopupFoundDataInTblDT #ohdTVOTypeClick').val('Mer');
+            $('#odvTVOPopupFoundDataInTblDT').modal('show');
+        } 
     });
 
     // เลือกร้านค้า
     $("#obtBrowseTVOShp").click(function() {
-        // JSxCheckPinMenuClose(); // Hidden Pin Menu
-        $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO)").remove();
-        // Option Shop
-        window.oBrowseTVOShp = {
-            Title: ['company/shop/shop', 'tSHPTitle'],
-            Table: {
-                Master: 'TCNMShop',
-                PK: 'FTShpCode'
-            },
-            Join: {
-                Table: ['TCNMShop_L', 'TCNMWaHouse_L'],
-                On: ['TCNMShop_L.FTShpCode = TCNMShop.FTShpCode AND TCNMShop.FTBchCode = TCNMShop_L.FTBchCode AND TCNMShop_L.FNLngID = ' + nLangEdits,
-                    'TCNMShop.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMShop.FTBchCode = TCNMWaHouse_L.FTBchCode AND TCNMWaHouse_L.FNLngID= ' + nLangEdits
-                ]
-            },
-            Where: {
-                Condition: [
-                    function() {
-                        var tSQL = "AND TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTBchCode = '" + $("#oetTVOBCHCode").val() + "' AND TCNMShop.FTMerCode = '" + $("#oetTVOMchCode").val() + "'";
-                        return tSQL;
-                    }
-                ]
-            },
-            GrideView: {
-                ColumnPathLang: 'company/branch/branch',
-                ColumnKeyLang: ['tBCHCode', 'tBCHName'],
-                ColumnsSize: ['25%', '75%'],
-                WidthModal: 50,
-                DataColumns: ['TCNMShop.FTShpCode', 'TCNMShop_L.FTShpName', 'TCNMShop.FTWahCode', 'TCNMWaHouse_L.FTWahName', 'TCNMShop.FTShpType', 'TCNMShop.FTBchCode'],
-                DataColumnsFormat: ['', '', '', '', '', ''],
-                DisabledColumns: [2, 3, 4, 5],
-                Perpage: 10,
-                OrderBy: ['TCNMShop_L.FTShpCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetTVOShpCode", "TCNMShop.FTShpCode"],
-                Text: ["oetTVOShpName", "TCNMShop_L.FTShpName"],
-            },
-            NextFunc: {
-                FuncName: 'JSxTVOCallbackShp',
-                ArgReturn: ['FTBchCode', 'FTShpCode', 'FTShpType', 'FTWahCode', 'FTWahName']
-            },
-            BrowseLev: 1
-
-
+        var nStaChkDataDT   = $('#otbDOCPdtTable tbody .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
+            // Option Shop
+            window.oBrowseTVOShp = {
+                Title: ['company/shop/shop', 'tSHPTitle_LAYOUT'],
+                Table: {
+                    Master: 'TCNMShop',
+                    PK: 'FTShpCode'
+                },
+                Join: {
+                    Table: ['TCNMShop_L', 'TCNMWaHouse_L'],
+                    On: ['TCNMShop_L.FTShpCode = TCNMShop.FTShpCode AND TCNMShop.FTBchCode = TCNMShop_L.FTBchCode AND TCNMShop_L.FNLngID = ' + nLangEdits,
+                        'TCNMShop.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMShop.FTBchCode = TCNMWaHouse_L.FTBchCode AND TCNMWaHouse_L.FNLngID= ' + nLangEdits
+                    ]
+                },
+                Where: {
+                    Condition: [
+                        function() {
+                            // Where Branch Shop
+                            var tBchCode        = $("#oetTVOBCHCode").val();
+                            var tWhereBchCode   = "";
+                            if(tBchCode != ""){
+                                tWhereBchCode   = " AND TCNMShop.FTBchCode = '" + $("#oetTVOBCHCode").val() + "' ";
+                            }
+                            // Where Merchant
+                            var tMerCode        = $('#oetTVOMchCode').val();
+                            var tWhereMerCode   = "";
+                            if(tMerCode != ""){
+                                tWhereMerCode   = " AND TCNMShop.FTMerCode = '" + $("#oetTVOMchCode").val() + "'";
+                            }
+                            var tSQL = "AND TCNMShop.FTShpStaActive = 1 "+tWhereBchCode+tWhereMerCode;
+                            return tSQL;
+                        }
+                    ]
+                },
+                GrideView: {
+                    ColumnPathLang: 'company/shop/shop',
+                    ColumnKeyLang: ['tShopCode_LAYOUT', 'tShopName_LAYOUT'],
+                    ColumnsSize: ['25%', '75%'],
+                    WidthModal: 50,
+                    DataColumns: ['TCNMShop.FTShpCode', 'TCNMShop_L.FTShpName', 'TCNMShop.FTWahCode', 'TCNMWaHouse_L.FTWahName', 'TCNMShop.FTShpType', 'TCNMShop.FTBchCode'],
+                    DataColumnsFormat: ['', '', '', '', '', ''],
+                    DisabledColumns: [2, 3, 4, 5],
+                    Perpage: 10,
+                    OrderBy: ['TCNMShop_L.FTShpCode'],
+                    SourceOrder: "ASC"
+                },
+                CallBack: {
+                    ReturnType: 'S',
+                    Value: ["oetTVOShpCode", "TCNMShop.FTShpCode"],
+                    Text: ["oetTVOShpName", "TCNMShop_L.FTShpName"],
+                },
+                NextFunc: {
+                    FuncName: 'JSxTVOCallbackShp',
+                    ArgReturn: ['FTBchCode', 'FTShpCode', 'FTShpType', 'FTWahCode', 'FTWahName']
+                },
+                BrowseLev: 1
+            }
+            JCNxBrowseData('oBrowseTVOShp');
+        }else{
+            $('#odvTVOPopupFoundDataInTblDT #ohdTVOTypeClick').val('Shp');
+            $('#odvTVOPopupFoundDataInTblDT').modal('show');
         }
-        JCNxBrowseData('oBrowseTVOShp');
     });
 
     // เลือกตู้
     $("#obtBrowseTVOPos").click(function() {
-        // JSxCheckPinMenuClose(); // Hidden Pin Menu
-        $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO)").remove();
-        // option Pos 
-        var bIsShopEnabled  = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
-        var tWahMasterTable = 'TVDMPosShop';
-        var tPK             = "FTPosCode"; 
-        var oJoinCondition  = {
-                Table: ['TCNMPos', 'TCNMPos_L', 'TCNMWaHouse', 'TCNMWaHouse_L'],
-                On: ['TVDMPosShop.FTPosCode = TCNMPos.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos.FTBchCode',
-                    'TVDMPosShop.FTPosCode = TCNMPos_L.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos_L.FTBchCode',
-                    'TVDMPosShop.FTPosCode = TCNMWaHouse.FTWahRefCode AND TCNMWaHouse.FTWahStaType = 6 AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
-                    'TCNMWaHouse.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits
-                ]
-            };
-        var aCondition = [
-                            function() {
-                                var tSQL = "AND TCNMPos.FTPosStaUse = 1 AND TVDMPosShop.FTShpCode = '" + $("#oetTVOShpCode").val() + "' AND TVDMPosShop.FTBchCode = '" + $("#oetTVOBCHCode").val() + "'";
-                                tSQL += " AND TCNMPos.FTPosType = '4'";
-                                return tSQL;
-                            }
-                        ];
-        var aDataColumns        = ['TVDMPosShop.FTPosCode', 'TCNMPos_L.FTPosName', 'TVDMPosShop.FTShpCode', 'TVDMPosShop.FTBchCode', 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'];
-        var aDataColumnsFormat  = ['', '', '', '', '', ''];
-        var aDisabledColumns    = [2, 3, 4, 5];
-        var aArgReturn          = ['FTBchCode', 'FTShpCode', 'FTPosCode', 'FTWahCode', 'FTWahName'];
-
-
-        /*if(bIsShopEnabled == 0){
-            tWahMasterTable = 'TCNMPos';
-            tPK = "FTPosCode"; 
-            oJoinCondition = {
-                Table: ['TCNMWaHouse', 'TCNMWaHouse_L'],
-                On: [   '   TCNMPos.FTPosCode = TCNMWaHouse.FTWahRefCode \
-                            AND TCNMWaHouse.FTWahStaType = 6 \
-                            AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
+        var nStaChkDataDT   = $('#otbDOCPdtTable tbody .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
+            // option Pos 
+            var bIsShopEnabled  = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
+            var tWahMasterTable = 'TVDMPosShop';
+            var tPK             = "FTPosCode"; 
+            var oJoinCondition  = {
+                    Table: ['TCNMPos', 'TCNMPos_L', 'TCNMWaHouse', 'TCNMWaHouse_L'],
+                    On: ['TVDMPosShop.FTPosCode = TCNMPos.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos.FTBchCode',
+                        'TVDMPosShop.FTPosCode = TCNMPos_L.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos_L.FTBchCode',
+                        'TVDMPosShop.FTPosCode = TCNMWaHouse.FTWahRefCode AND TCNMWaHouse.FTWahStaType = 6 AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
                         'TCNMWaHouse.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits
-                ]
-            };
-            aCondition = [
-                            function() {
-                                var tSQL = "AND TCNMPos.FTPosStaUse = 1 \
-                                            AND TCNMPos.FTBchCode = '" + $("#oetTVOBCHCode").val() + "'";
-                                tSQL += " AND TCNMPos.FTPosType = '4'";
-                                return tSQL;
-                            }
-                        ];
-            aDataColumns = ['TCNMPos.FTPosCode', 'TCNMPos.FTBchCode', 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'];
-            aDataColumnsFormat = ['', '', '', ''];
-            aDisabledColumns = [1, 2, 3, 4];
-            aArgReturn= ['FTBchCode', 'FTPosCode', 'FTWahCode', 'FTWahName'];
-        }*/
+                    ]
+                };
+            var aCondition = [
+                                function() {
+                                    var tSQL = "AND TCNMPos.FTPosStaUse = 1 AND TVDMPosShop.FTShpCode = '" + $("#oetTVOShpCode").val() + "' AND TVDMPosShop.FTBchCode = '" + $("#oetTVOBCHCode").val() + "'";
+                                    tSQL += " AND TCNMPos.FTPosType = '4'";
+                                    return tSQL;
+                                }
+                            ];
+            var aDataColumns        = ['TVDMPosShop.FTPosCode', 'TCNMPos_L.FTPosName', 'TVDMPosShop.FTShpCode', 'TVDMPosShop.FTBchCode', 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'];
+            var aDataColumnsFormat  = ['', '', '', '', '', ''];
+            var aDisabledColumns    = [2, 3, 4, 5];
+            var aArgReturn          = ['FTBchCode', 'FTShpCode', 'FTPosCode', 'FTWahCode', 'FTWahName'];
+            window.oBrowseTVOPos = {
+                Title   : ['pos/posshop/posshop', 'tPshTBPosCode'],
+                Table   : {
+                    Master  : tWahMasterTable,
+                    PK      : tPK
+                },
+                Join    : oJoinCondition,
+                Where   : {
+                    Condition       : aCondition
+                },
+                GrideView: {
+                    ColumnPathLang  : 'pos/posshop/posshop',
+                    ColumnKeyLang   : ['tPshBRWShopTBCode', 'tPshBRWPosTBName'],
+                    ColumnsSize     : ['25%', '75%'],
+                    WidthModal      : 50,
+                    DataColumns     : aDataColumns,
+                    DataColumnsFormat: aDataColumnsFormat,
+                    DisabledColumns : aDisabledColumns,
+                    Perpage         : 10,
+                    OrderBy         : [tWahMasterTable + '.FTPosCode'],
+                    SourceOrder     : "ASC"
+                },
+                CallBack: {
+                    ReturnType  : 'S',
+                    Value       : ["oetTVOPosCode", tWahMasterTable + ".FTPosCode"],
+                    Text        : ["oetTVOPosName", "TCNMPos_L.FTPosName"],
+                },
+                NextFunc: {
+                    FuncName    : 'JSxTVOCallbackPos',
+                    ArgReturn   : aArgReturn
+                },
+                /*BrowseLev: 1*/
 
-        window.oBrowseTVOPos = {
-            Title   : ['pos/posshop/posshop', 'tPshTBPosCode'],
-            Table   : {
-                Master  : tWahMasterTable,
-                PK      : tPK
-            },
-            Join    : oJoinCondition,
-            Where   : {
-                Condition       : aCondition
-            },
-            GrideView: {
-                ColumnPathLang  : 'pos/posshop/posshop',
-                ColumnKeyLang   : ['tPshBRWShopTBCode', 'tPshBRWPosTBName'],
-                ColumnsSize     : ['25%', '75%'],
-                WidthModal      : 50,
-                DataColumns     : aDataColumns,
-                DataColumnsFormat: aDataColumnsFormat,
-                DisabledColumns : aDisabledColumns,
-                Perpage         : 10,
-                OrderBy         : [tWahMasterTable + '.FTPosCode'],
-                SourceOrder     : "ASC"
-            },
-            CallBack: {
-                ReturnType  : 'S',
-                Value       : ["oetTVOPosCode", tWahMasterTable + ".FTPosCode"],
-                Text        : ["oetTVOPosName", "TCNMPos_L.FTPosName"],
-            },
-            NextFunc: {
-                FuncName    : 'JSxTVOCallbackPos',
-                ArgReturn   : aArgReturn
-            },
-            /*BrowseLev: 1*/
-
+            }
+            JCNxBrowseData('oBrowseTVOPos');
+        }else{
+            $('#odvTVOPopupFoundDataInTblDT #ohdTVOTypeClick').val('Pos');
+            $('#odvTVOPopupFoundDataInTblDT').modal('show');
         }
-        JCNxBrowseData('oBrowseTVOPos');
     });
 
     // เลือกคลังสินค้า
     $("#obtBrowseTVOWah").click(function() {
-        // JSxCheckPinMenuClose(); // Hidden Pin Menu
-        $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO)").remove();
-        // option warehouse 
-        var bIsShopEnabled = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
-        var tWahMasterTable = 'TCNMWaHouse';
-        var tPK = "FTWahCode"; 
-        var tPKName = "FTWahName"; 
-        if(bIsShopEnabled == 1){
-            tWahMasterTable = 'TCNMShpWah';
-            tPK = "FTWahCode"; 
-            tPKName = "FTWahName"; 
-        }
-        window.oBrowseTVOWah = {
-            Title: ['company/warehouse/warehouse', 'tWAHTitle'],
-            Table: {
-                Master  : tWahMasterTable,
-                PK      : tPK,
-                PKName  : tPKName
-            },
-            Join: {
-                Table: ["TCNMWaHouse_L"],
-                On: ["TCNMWaHouse_L.FTWahCode = "+tWahMasterTable+".FTWahCode AND TCNMWaHouse_L.FTBchCode = "+tWahMasterTable+".FTBchCode AND TCNMWaHouse_L.FNLngID = " + nLangEdits, ]
-            },
-            Where: {
-                Condition: [
-                    function() {
-                        var tSQL = "";
-                        if(bIsShopEnabled == 1){
-                            tSQL = " AND TCNMShpWah.FTBchCode = '" + $("#oetTVOBCHCode").val() + "'";
-                            tSQL += " AND TCNMShpWah.FTShpCode = '" + $('#oetTVOShpCode').val() + "'";
-                        } else {
-                            tSQL = " AND TCNMWaHouse.FTWahRefCode = '" + $("#oetTVOBCHCode").val() + "'";
+        var nStaChkDataDT   = $('#otbDOCPdtTable tbody .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
+            // option warehouse 
+            var bIsShopEnabled = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
+            var tWahMasterTable = 'TCNMWaHouse';
+            var tPK = "FTWahCode"; 
+            var tPKName = "FTWahName"; 
+            if(bIsShopEnabled == 1){
+                tWahMasterTable = 'TCNMShpWah';
+                tPK = "FTWahCode"; 
+                tPKName = "FTWahName"; 
+            }
+            window.oBrowseTVOWah = {
+                Title: ['company/warehouse/warehouse', 'tWAHTitle'],
+                Table: {
+                    Master  : tWahMasterTable,
+                    PK      : tPK,
+                    PKName  : tPKName
+                },
+                Join: {
+                    Table: ["TCNMWaHouse_L"],
+                    On: ["TCNMWaHouse_L.FTWahCode = "+tWahMasterTable+".FTWahCode AND TCNMWaHouse_L.FTBchCode = "+tWahMasterTable+".FTBchCode AND TCNMWaHouse_L.FNLngID = " + nLangEdits, ]
+                },
+                Where: {
+                    Condition: [
+                        function() {
+                            var tSQL = "";
+                            if(bIsShopEnabled == 1){
+                                tSQL = " AND TCNMShpWah.FTBchCode = '" + $("#oetTVOBCHCode").val() + "'";
+                                tSQL += " AND TCNMShpWah.FTShpCode = '" + $('#oetTVOShpCode').val() + "'";
+                            } else {
+                                tSQL = " AND TCNMWaHouse.FTWahRefCode = '" + $("#oetTVOBCHCode").val() + "'";
+                            }
+                            return tSQL;
                         }
-                        return tSQL;
-                    }
-                ]
-            },
-            GrideView: {
-                ColumnPathLang: 'company/warehouse/warehouse',
-                ColumnKeyLang: ['tWahCode', 'tWahName'],
-                DataColumns: [tWahMasterTable+'.FTWahCode', 'TCNMWaHouse_L.FTWahName'],
-                DataColumnsFormat: ['', ''],
-                ColumnsSize: ['15%', '75%'],
-                Perpage: 10,
-                WidthModal: 50,
-                OrderBy: ['TCNMWaHouse_L.FTWahName'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'M',
-                Value: ["oetTVOWahCode", tWahMasterTable+".FTWahCode"],
-                Text: ["oetTVOWahName", "TCNMWaHouse_L.FTWahName"],
-            },
-            NextFunc: {
-                FuncName: 'JSxTVOCallbackWah',
-                ArgReturn: []
-            },
-            RouteAddNew: 'warehouse',
-            BrowseLev: 1
+                    ]
+                },
+                GrideView: {
+                    ColumnPathLang: 'company/warehouse/warehouse',
+                    ColumnKeyLang: ['tWahCode', 'tWahName'],
+                    DataColumns: [tWahMasterTable+'.FTWahCode', 'TCNMWaHouse_L.FTWahName'],
+                    DataColumnsFormat: ['', ''],
+                    ColumnsSize: ['15%', '75%'],
+                    Perpage: 10,
+                    WidthModal: 50,
+                    OrderBy: ['TCNMWaHouse_L.FTWahName'],
+                    SourceOrder: "ASC"
+                },
+                CallBack: {
+                    ReturnType: 'M',
+                    Value: ["oetTVOWahCode", tWahMasterTable+".FTWahCode"],
+                    Text: ["oetTVOWahName", "TCNMWaHouse_L.FTWahName"],
+                },
+                NextFunc: {
+                    FuncName: 'JSxTVOCallbackWah',
+                    ArgReturn: []
+                },
+                RouteAddNew: 'warehouse',
+                BrowseLev: 1
+            }
+            JCNxBrowseData('oBrowseTVOWah');
+        }else{
+            $('#odvTVOPopupFoundDataInTblDT #ohdTVOTypeClick').val('Wah');
+            $('#odvTVOPopupFoundDataInTblDT').modal('show');
         }
-        JCNxBrowseData('oBrowseTVOWah');
     });
 
     // เลือกขนส่งโดย
     $("#obtSearchShipVia").click(function() {
         JSxCheckPinMenuClose(); // Hidden Pin Menu
-        $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO)").remove();
+        $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
         // option Ship Address 
         oTVOBrowseShipVia = {
             Title: ['document/producttransferwahouse/producttransferwahouse', 'tTFWShipViaModalTitle'],
@@ -516,9 +517,9 @@
         $('#obtBrowseTVOShp').attr('disabled', true);
         $('#obtBrowseTVOPos').attr('disabled', true);
         $('#obtBrowseTVOWah').attr('disabled', true);
-
         if (tBchCode != "") {
             $('#obtBrowseTVOMER').attr('disabled', false);
+            $('#obtBrowseTVOShp').attr('disabled', false);
         }
     }
 
@@ -528,7 +529,7 @@
         var tMerCode = $('#oetTVOMchCode').val();
 
         $('#obtBrowseTVOMER').attr('disabled', true);
-        $('#obtBrowseTVOShp').attr('disabled', true);
+        $('#obtBrowseTVOShp').attr('disabled', false);
         $('#obtBrowseTVOPos').attr('disabled', true);
         $('#obtBrowseTVOWah').attr('disabled', true);
 
@@ -583,7 +584,7 @@
         $('#oetTVOWahCode').val("");
         $('#oetTVOWahName').val("");
 
-        if (tBchCode != "" && tMerCode != "" && tShpCode != "") {
+        if (tBchCode != ""  && tShpCode != "") {
             if (tUserLoginLevel == "HQ") {
                 $('#obtBrowseTVOMER').attr('disabled', false);
                 $('#obtBrowseTVOShp').attr('disabled', false);
@@ -630,7 +631,7 @@
         var tWahCode = $('#oetTVOWahCode').val();
 
         $('#obtBrowseTVOMER').attr('disabled', true);
-        $('#obtBrowseTVOShp').attr('disabled', true);
+        $('#obtBrowseTVOShp').attr('disabled', false);
         $('#obtBrowseTVOPos').attr('disabled', true);
         $('#obtBrowseTVOWah').attr('disabled', true);
 
@@ -690,12 +691,13 @@
         var tPosCode = $('#oetTVOPosCode').val();
         var tWahCode = $('#oetTVOWahCode').val();
 
-        if (tBchCode != "" && tMerCode != "" && tShpCode != "" && tPosCode != "" && tWahCode != "") {
+        if (tBchCode != "" && tShpCode != "" && tPosCode != "" && tWahCode != "") {
             $('#obtTVOControlForm').attr('disabled', false);
         } else {
             $('#obtTVOControlForm').attr('disabled', true);
         }
     }
+
     /*===== End Callback Browse ========================================================*/
 
     $('#obtTVOControlForm').unbind().bind('click', function() {
@@ -871,9 +873,9 @@
                 oetTVODocTime: {
                     required: true
                 },
-                oetTVOMchName: {
-                    required: true
-                },
+                // oetTVOMchName: {
+                //     required: true
+                // },
                 oetTVOShpName: {
                     required: true
                 },
@@ -1178,76 +1180,79 @@
     // Create By : Napat(Jame) 08/09/2020
     $('#obtTVOBrowseRefInt').off('click');
     $('#obtTVOBrowseRefInt').on('click',function(){
-        $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO)").remove();
+        var nStaChkDataDT   = $('#otbDOCPdtTable tbody .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
+            var tSQLWhere = "";
+            tSQLWhere += " AND TVDTPdtTwxHD.FTBchCode = '" + $('#oetTVOBCHCode').val() + "' ";
+            tSQLWhere += " AND TVDTPdtTwxHD.FTXthStaApv = '1' AND ISNULL(TVDTPdtTwxHD.FTXthRefInt,'') = '' ";
+            tSQLWhere += " AND TVDTPdtTwxHD.FTXthDocType = '1' ";
+            if( $('#oetTVOMchCode').val() != "" ){
+                tSQLWhere += " AND TVDTPdtTwxHD.FTXthMerCode = '" + $('#oetTVOMchCode').val() + "' ";
+            }
 
-        var tSQLWhere = "";
-        tSQLWhere += " AND TVDTPdtTwxHD.FTBchCode = '" + $('#oetTVOBCHCode').val() + "' ";
-        tSQLWhere += " AND TVDTPdtTwxHD.FTXthStaApv = '1' AND ISNULL(TVDTPdtTwxHD.FTXthRefInt,'') = '' ";
-        tSQLWhere += " AND TVDTPdtTwxHD.FTXthDocType = '1' ";
+            if( $('#oetTVOShpCode').val() != "" ){
+                tSQLWhere += " AND ( TVDTPdtTwxHD.FTXthShopFrm = '" + $('#oetTVOShpCode').val() + "' OR TVDTPdtTwxHD.FTXthShopTo = '" + $('#oetTVOShpCode').val() + "' ) ";
+            }
 
-        if( $('#oetTVOMchCode').val() != "" ){
-            tSQLWhere += " AND TVDTPdtTwxHD.FTXthMerCode = '" + $('#oetTVOMchCode').val() + "' ";
+            if( $('#oetTVOPosCode').val() != "" ){
+                tSQLWhere += " AND ( TVDTPdtTwxHD.FTXthPosFrm = '" + $('#oetTVOPosCode').val() + "' OR TVDTPdtTwxHD.FTXthPosTo = '" + $('#oetTVOPosCode').val() + "' ) ";
+            }
+            window.oTVOBrowseRefInt = {
+                Title                   : ['document/topupVending/topupVending', 'tTitle'],
+                Table: {
+                    Master              : 'TVDTPdtTwxHD',
+                    PK                  : 'FTXthDocNo'
+                },
+                Join: {
+                    Table: ['TCNMMerchant_L','TCNMShop_L','TCNMPos_L','TCNMWaHouse','TCNMWaHouse_L','TCNMUser_L'],
+                    On: [
+                        " TVDTPdtTwxHD.FTXthMerCode = TCNMMerchant_L.FTMerCode  AND TCNMMerchant_L.FNLngID = " + nLangEdits,
+                        " TVDTPdtTwxHD.FTXthShopFrm = TCNMShop_L.FTShpCode      AND TVDTPdtTwxHD.FTBchCode = TCNMShop_L.FTBchCode   AND TCNMShop_L.FNLngID = " + nLangEdits,
+                        " TVDTPdtTwxHD.FTXthPosFrm  = TCNMPos_L.FTPosCode       AND TVDTPdtTwxHD.FTBchCode = TCNMPos_L.FTBchCode    AND TCNMPos_L.FNLngID  = " + nLangEdits,
+                        " TVDTPdtTwxHD.FTXthPosFrm  = TCNMWaHouse.FTWahRefCode  AND TCNMWaHouse.FTWahStaType = 6                    AND TVDTPdtTwxHD.FTBchCode = TCNMWaHouse.FTBchCode ",
+                        " TCNMWaHouse.FTWahCode     = TCNMWaHouse_L.FTWahCode   AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = " + nLangEdits,
+                        " TCNMUser_L.FTUsrCode      = TVDTPdtTwxHD.FTCreateBy   AND TCNMUser_L.FNLngID = " + nLangEdits,
+                    ]
+                },
+                Where: {
+                    Condition           : [ tSQLWhere ]
+                },
+                GrideView: {
+                    ColumnPathLang      : 'document/topupVending/topupVending',
+                    ColumnKeyLang       : ['tDocNo', 'tDocDate','tCreateBy'],
+                    ColumnsSize         : ['20%', '55%','25%'],
+                    DataColumns         : [ 'TVDTPdtTwxHD.FTXthDocNo', 'TVDTPdtTwxHD.FDXthDocDate', 'TCNMUser_L.FTUsrName',
+                                            'TVDTPdtTwxHD.FTXthMerCode','TCNMMerchant_L.FTMerName',
+                                            'TVDTPdtTwxHD.FTXthShopFrm','TCNMShop_L.FTShpName',
+                                            'TVDTPdtTwxHD.FTXthPosFrm','TCNMPos_L.FTPosName',
+                                            'TCNMWaHouse.FTWahCode','TCNMWaHouse_L.FTWahName'
+                                        ],
+                    DataColumnsFormat   : ['', '',''],
+                    DisabledColumns     : [3, 4, 5, 6, 7, 8, 9, 10],
+                    WidthModal          : 5,
+                    Perpage             : 10,
+                    OrderBy             : ['TVDTPdtTwxHD.FDCreateOn DESC'],
+                    // SourceOrder         : "DESC"
+                },
+                CallBack: {
+                    ReturnType          : 'S',
+                    Value               : ["oetTVOXthRefInt", "TVDTPdtTwxHD.FTXthDocNo"],
+                    Text                : ["oetTVOXthRefInt", "TVDTPdtTwxHD.FTXthDocNo"]
+                },
+                NextFunc: {
+                    FuncName            : 'JSxTVOCallBackRefInt',
+                    ArgReturn           : ['FTXthDocNo','FDXthDocDate','FTXthMerCode','FTMerName','FTXthShopFrm','FTShpName','FTXthPosFrm','FTPosName','FTWahCode','FTWahName']
+                },
+                RouteAddNew             : 'docTVO',
+                BrowseLev               : 1,
+                // DebugSQL                : true
+            };
+            JCNxBrowseData('oTVOBrowseRefInt');
+        }else{
+            $('#odvTVOPopupFoundDataInTblDT #ohdTVOTypeClick').val('RefIn');
+            $('#odvTVOPopupFoundDataInTblDT').modal('show');
         }
-
-        if( $('#oetTVOShpCode').val() != "" ){
-            tSQLWhere += " AND ( TVDTPdtTwxHD.FTXthShopFrm = '" + $('#oetTVOShpCode').val() + "' OR TVDTPdtTwxHD.FTXthShopTo = '" + $('#oetTVOShpCode').val() + "' ) ";
-        }
-
-        if( $('#oetTVOPosCode').val() != "" ){
-            tSQLWhere += " AND ( TVDTPdtTwxHD.FTXthPosFrm = '" + $('#oetTVOPosCode').val() + "' OR TVDTPdtTwxHD.FTXthPosTo = '" + $('#oetTVOPosCode').val() + "' ) ";
-        }
-
-        window.oTVOBrowseRefInt = {
-            Title                   : ['document/topupVending/topupVending', 'tTitle'],
-            Table: {
-                Master              : 'TVDTPdtTwxHD',
-                PK                  : 'FTXthDocNo'
-            },
-            Join: {
-                Table: ['TCNMMerchant_L','TCNMShop_L','TCNMPos_L','TCNMWaHouse','TCNMWaHouse_L','TCNMUser_L'],
-                On: [
-                    " TVDTPdtTwxHD.FTXthMerCode = TCNMMerchant_L.FTMerCode  AND TCNMMerchant_L.FNLngID = " + nLangEdits,
-                    " TVDTPdtTwxHD.FTXthShopFrm = TCNMShop_L.FTShpCode      AND TVDTPdtTwxHD.FTBchCode = TCNMShop_L.FTBchCode   AND TCNMShop_L.FNLngID = " + nLangEdits,
-                    " TVDTPdtTwxHD.FTXthPosFrm  = TCNMPos_L.FTPosCode       AND TVDTPdtTwxHD.FTBchCode = TCNMPos_L.FTBchCode    AND TCNMPos_L.FNLngID  = " + nLangEdits,
-                    " TVDTPdtTwxHD.FTXthPosFrm  = TCNMWaHouse.FTWahRefCode  AND TCNMWaHouse.FTWahStaType = 6                    AND TVDTPdtTwxHD.FTBchCode = TCNMWaHouse.FTBchCode ",
-                    " TCNMWaHouse.FTWahCode     = TCNMWaHouse_L.FTWahCode   AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = " + nLangEdits,
-                    " TCNMUser_L.FTUsrCode      = TVDTPdtTwxHD.FTCreateBy   AND TCNMUser_L.FNLngID = " + nLangEdits,
-                ]
-            },
-            Where: {
-                Condition           : [ tSQLWhere ]
-            },
-            GrideView: {
-                ColumnPathLang      : 'document/topupVending/topupVending',
-                ColumnKeyLang       : ['tDocNo', 'tDocDate','tCreateBy'],
-                ColumnsSize         : ['20%', '55%','25%'],
-                DataColumns         : [ 'TVDTPdtTwxHD.FTXthDocNo', 'TVDTPdtTwxHD.FDXthDocDate', 'TCNMUser_L.FTUsrName',
-                                        'TVDTPdtTwxHD.FTXthMerCode','TCNMMerchant_L.FTMerName',
-                                        'TVDTPdtTwxHD.FTXthShopFrm','TCNMShop_L.FTShpName',
-                                        'TVDTPdtTwxHD.FTXthPosFrm','TCNMPos_L.FTPosName',
-                                        'TCNMWaHouse.FTWahCode','TCNMWaHouse_L.FTWahName'
-                                      ],
-                DataColumnsFormat   : ['', '',''],
-                DisabledColumns     : [3, 4, 5, 6, 7, 8, 9, 10],
-                WidthModal          : 5,
-                Perpage             : 10,
-                OrderBy             : ['TVDTPdtTwxHD.FDCreateOn DESC'],
-                // SourceOrder         : "DESC"
-            },
-            CallBack: {
-                ReturnType          : 'S',
-                Value               : ["oetTVOXthRefInt", "TVDTPdtTwxHD.FTXthDocNo"],
-                Text                : ["oetTVOXthRefInt", "TVDTPdtTwxHD.FTXthDocNo"]
-            },
-            NextFunc: {
-                FuncName            : 'JSxTVOCallBackRefInt',
-                ArgReturn           : ['FTXthDocNo','FDXthDocDate','FTXthMerCode','FTMerName','FTXthShopFrm','FTShpName','FTXthPosFrm','FTPosName','FTWahCode','FTWahName']
-            },
-            RouteAddNew             : 'docTVO',
-            BrowseLev               : 1,
-            // DebugSQL                : true
-        };
-        JCNxBrowseData('oTVOBrowseRefInt');
     });
 
     // Browse RefInt Callback
@@ -1255,7 +1260,6 @@
     function JSxTVOCallBackRefInt(oParams){
         if( oParams != "NULL" ){
             var aResult = JSON.parse(oParams);
-            console.log(aResult);
 
             // วันที่เอกสารอ้างอิง
             $('#oetTVOXthRefIntDate').val(aResult[1].substr(0, 10));
@@ -1320,8 +1324,7 @@
         var tShpName = $('#oetTVOShpName').val();
         var tPosName = $('#oetTVOPosName').val();
         var tWahName = $('#oetTVOWahNameFrom').val();
-
-        if( tBchName == "" || tMerName == "" || tShpName == "" || tPosName == "" || tWahName == "" ){
+        if( tBchName == "" || tShpName == "" || tPosName == "" || tWahName == "" ){
             alert('เงื่อนไขไม่ครบถ้วน');
             if( tBchName == "" ){ $('#oetTVOBCHName').closest('.form-group').addClass("has-error"); }else{ $('#oetTVOBCHName').closest('.form-group').removeClass("has-error"); }
             if( tMerName == "" ){ $('#oetTVOMchName').closest('.form-group').addClass("has-error"); }else{ $('#oetTVOMchName').closest('.form-group').removeClass("has-error"); }
@@ -1331,7 +1334,7 @@
         }else{
 
             $('#oetTVOBCHName, #oetTVOMchName, #oetTVOShpName, #oetTVOPosName, #oetTVOWahNameFrom').closest('.form-group').removeClass("has-error");
-            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO)").remove();
+            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
 
             var tSQLWhere = "";
             tSQLWhere += " AND TVDMPdtLayout.FTBchCode = '" + $('#oetTVOBCHCode').val() + "' ";
@@ -1397,36 +1400,42 @@
 
     });
 
-    // Create By : Napat(Jame) 08/09/2020
-    function JSxTVOCallBackBrowseAddPdt(oParams){
-        if( oParams[0] !== null ){
-            var tPackDataPdt = "";
-            for(var i=0; i < oParams.length; i++){
-                var aResult = oParams[i];
-                if( i == ( oParams.length - 1 ) ){
-                    tPackDataPdt += "'"+aResult[0]+"'";
-                }else{
-                    tPackDataPdt += "'"+aResult[0]+"',";
-                }
+    $('#oetTVOBCHCode, #oetTVOShpCode, #oetTVOPosCode').off('change').on('change', function(){
+        // console.log('enter change event');
+        setTimeout(function() {
+            var tTVOBchCode = $('#oetTVOBCHCode').val();
+            var tTVOShpCode = $('#oetTVOShpCode').val();
+            var tTVOPosCode = $('#oetTVOPosCode').val();
+            // console.log(tTVOBchCode,tTVOShpCode,tTVOPosCode);
+            if( tTVOBchCode == "" || tTVOShpCode == "" || tTVOPosCode == "" ){
+                $('#obtTVOLoadPdtLayout').attr('disabled', true); //ปิดปุ่ม ตรวจสอบ
+            }else{
+                $('#obtTVOLoadPdtLayout').attr('disabled', false); //เปิดปุ่ม ตรวจสอบ
             }
+        }, 500);
+    });
 
+    $('#obtTVOLoadPdtLayout').off('click').on('click',function(){
+        var nStaChkDataDT   = $('#otbDOCPdtTable tbody .xCNTopUpVendingPdtLayoutRow').length;
+        if(nStaChkDataDT == 0){
+            $(".modal.fade:not(#odvTVOBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTVOPopupApv,#odvModalDelPdtTVO,#odvTVOPopupFoundDataInTblDT)").remove();
             JCNxOpenLoading();
             $.ajax({
                 type: "POST",
                 url: "docTVOEventInsertPdtLayoutToTmp",
                 data: {
-                    tDocNo          : $('#oetTVODocNo').val(),
-                    tBchCode        : $('#oetTVOBCHCode').val(),
-                    tMerCode        : $('#oetTVOMchCode').val(),
-                    tShpCode        : $('#oetTVOShpCode').val(),
-                    tWahCodeFrom    : $('#oetTVOWahCodeFrom').val(),
-                    tPackDataPdt    : tPackDataPdt
+                    tDocNo              : $('#oetTVODocNo').val(),
+                    tBchCode            : $('#oetTVOBCHCode').val(),
+                    tMerCode            : $('#oetTVOMchCode').val(),
+                    tShpCode            : $('#oetTVOShpCode').val(),
+                    tWahCodeFrom        : $('#oetTVOWahCodeFrom').val(),
+                    tPackDataPdt        : '',
+                    tStaClearPdtInTmp   : 'true'
                 },
                 cache: false,
                 timeout: 0,
                 success: function(oResult) {
                     var aResult = $.parseJSON(oResult);
-                    // console.log(aResult);
                     if (aResult['tCode'] == 1) {
                         JSxTVOGetPdtLayoutDataTableInTmp();
                     } else {
@@ -1439,7 +1448,55 @@
                 }
             });
         }else{
+            $('#odvTVOPopupFoundDataInTblDT #ohdTVOTypeClick').val('LoadPdt');
+            $('#odvTVOPopupFoundDataInTblDT').modal('show');
+        }
+    });
 
+    // Create By : Napat(Jame) 08/09/2020
+    function JSxTVOCallBackBrowseAddPdt(oParams){
+        if( oParams[0] !== null ){
+            var tPackDataPdt = "";
+            for(var i=0; i < oParams.length; i++){
+                var aResult = oParams[i];
+                if( i == ( oParams.length - 1 ) ){
+                    tPackDataPdt += "'"+aResult[0]+"'";
+                }else{
+                    tPackDataPdt += "'"+aResult[0]+"',";
+                }
+            }
+            JCNxOpenLoading();
+            $.ajax({
+                type: "POST",
+                url: "docTVOEventInsertPdtLayoutToTmp",
+                data: {
+                    tDocNo              : $('#oetTVODocNo').val(),
+                    tBchCode            : $('#oetTVOBCHCode').val(),
+                    tMerCode            : $('#oetTVOMchCode').val(),
+                    tShpCode            : $('#oetTVOShpCode').val(),
+                    tWahCodeFrom        : $('#oetTVOWahCodeFrom').val(),
+                    tPackDataPdt        : tPackDataPdt,
+                    tStaClearPdtInTmp   : 'false'
+                },
+                cache: false,
+                timeout: 0,
+                success: function(oResult) {
+                    var aResult = $.parseJSON(oResult);
+                    if ( aResult['tCode'] == '1' ) {
+                        // เคลียร์ input ที่เก็บรหัสสินค้า ตอนที่เลือกสินค้ามาจาก browse
+                        $('#oetTVOPdtCodeMulti').val('');
+                        $('#oetTVOPdtNameMulti').val('');
+                        JSxTVOGetPdtLayoutDataTableInTmp();
+                    } else {
+                        JCNxCloseLoading();
+                        FSvCMNSetMsgWarningDialog(aResult['tDesc']);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        }else{
         }
     }
 
@@ -1452,6 +1509,106 @@
             {"DocCode"      : $('#oetTVODocNo').val() } // เลขที่เอกสาร
         ];
         window.open("<?php echo base_url(); ?>formreport/Frm_SQL_SMBillReFundVD?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    }
+
+    // Delete DT Temp All Clear Data
+    // Create by : 17/02/2022 Wasin(Yoshi)
+    function JSxTVOEventConfirmDelDTTempAll(){
+        JCNxOpenLoading();
+        var tTypeClickEvent = $('#ohdTVOTypeClick').val();
+        var tDocCode        = $('#oetTVODocNo').val();
+        var tBchCode        = $('#oetTVOBCHCode').val();
+        var tMerCode        = $('#oetTVOMchCode').val();
+        var tShpCode        = $('#oetTVOShpCode').val();
+        var tPosCode        = $('#oetTVOPosCode').val();
+        $.ajax({
+            type    : "POST",
+            url     : "docTVOEventDelDTTempAll",
+            data    : {
+                'tDocCode'  : tDocCode,
+                'tBchCode'  : tBchCode,
+                'tMerCode'  : tMerCode,
+                'tShpCode'  : tShpCode,
+                'tPosCode'  : tPosCode,
+            },
+            success: function(tResult) {
+                var aDataReturn = JSON.parse(tResult);
+                if(aDataReturn['rtCode'] == '1'){
+                    $('#odvTVOPopupFoundDataInTblDT').modal('hide');
+                    $('.modal-backdrop').remove();
+                    $('.xCNTopUpVendingPdtLayoutRow').remove();
+                    JSxTVOGetPdtLayoutDataTableInTmp();
+                    // Check Case Click Event
+                    switch(tTypeClickEvent){
+                        case 'Bch':
+                            JSxTVOCallbackBch("NULL");
+                            setTimeout(function(){
+                                $( "#obtBrowseTVOBCH" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'Mer':
+                            JSxTVOCallbackMer("NULL");
+                            setTimeout(function(){
+                                $( "#obtBrowseTVOMER" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'Shp':
+                            JSxTVOCallbackShp("NULL");
+                            setTimeout(function(){
+                                $( "#obtBrowseTVOShp" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'Pos':
+                            var params  = "NULL";
+                            JSxTVOCallbackPos(params);
+                            setTimeout(function(){
+                                $( "#obtBrowseTVOPos" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'RefIn':
+                            $('#oetTVOWahCodeFrom').val('');
+                            $('#oetTVOWahNameFrom').val('');
+
+                            $('#oetTVOMchCode').val("");
+                            $('#oetTVOMchName').val("");
+
+                            $('#oetTVOShpCode').val("");
+                            $('#oetTVOShpName').val("");
+
+                            $('#oetTVOPosCode').val("");
+                            $('#oetTVOPosName').val("");
+
+                            $('#oetTVOWahCode').val("");
+                            $('#oetTVOWahName').val("");
+
+                            $('#obtBrowseTVOMER').attr('disabled', true);
+                            $('#obtBrowseTVOShp').attr('disabled', true);
+                            $('#obtBrowseTVOPos').attr('disabled', true);
+                            $('#obtBrowseTVOWah').attr('disabled', true);
+                            if (tBchCode != "") {
+                                $('#obtBrowseTVOMER').attr('disabled', false);
+                                $('#obtBrowseTVOShp').attr('disabled', false);
+                            }
+
+                            $('#oetTVOXthRefInt').val("");
+                            $('#oetTVOXthRefIntDate').val("");
+
+                            setTimeout(function(){
+                                $( "#obtTVOBrowseRefInt" ).trigger( "click" );
+                            },1000);
+                        break;
+                        case 'LoadPdt':
+                            setTimeout(function(){
+                                $( "#obtTVOLoadPdtLayout" ).trigger( "click" );
+                            },1000);
+                        break;
+                    }
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
     }
 
 </script>

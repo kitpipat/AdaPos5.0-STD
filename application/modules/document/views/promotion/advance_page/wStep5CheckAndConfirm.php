@@ -16,10 +16,10 @@
                     <div class="table-responsive">
                         <table class="table table-striped xWPdtTableFont" id="otbPromotionStep5CheckAndConfirm">
                             <thead style="visibility: hidden;">
-                                <tr>
+                                <!-- <tr>
                                     <th width="10%" class="text-center"></th>
                                     <th width="90%" class="text-left"></th>
-                                </tr>
+                                </tr> -->
                             </thead>
                             <tbody>
                                 <tr>
@@ -277,10 +277,10 @@
                     <div class="table-responsive">
                         <table class="table table-striped xWPdtTableFont" id="otbPromotionStep5CheckAndConfirm">
                             <thead>
-                                <tr>
-                                    <th width="10%" class="text-center"><?php echo language('document/promotion/promotion', 'tLabel21'); ?></th>
-                                    <th width="45%" class="text-left"><?php echo language('document/promotion/promotion', 'tJoining'); ?></th>
-                                    <th width="45%" class="text-left"><?php echo language('document/promotion/promotion', 'tExclude'); ?></th>
+                                <tr class="xCNPanelHeadColorWhite">
+                                    <th width="10%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tLabel21'); ?></th>
+                                    <th width="45%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tJoining'); ?></th>
+                                    <th width="45%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tExclude'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -336,7 +336,7 @@
                                     <td class="text-center"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelTitle'); ?></td>
                                     <td class="text-left">
                                         <?php if (empty($aPdtPmtHDChnInTmp)) { ?>
-                                            <label><?php echo language('document/promotion/promotion', 'tLabel23'); ?></label>
+                                            <label><?php echo language('document/promotion/promotion', 'tLabel59'); ?></label>
                                         <?php } ?>
 
                                         <?php foreach ($aPdtPmtHDChnInTmp as $aChn) { ?>
@@ -361,7 +361,7 @@
                                     <td class="text-center"><?php echo language('pos/poschannel/poschannel', 'tRcvLabelTitle'); ?></td>
                                     <td class="text-left">
                                         <?php if (empty($aPdtPmtHDRcvInTmp)) { ?>
-                                            <label><?php echo language('document/promotion/promotion', 'tLabel23'); ?></label>
+                                            <label><?php echo language('document/promotion/promotion', 'tLabel60'); ?></label>
                                         <?php } ?>
 
                                         <?php foreach ($aPdtPmtHDRcvInTmp as $aChn) { ?>
@@ -386,7 +386,7 @@
                                     <td class="text-center"><?php echo language('pos/poschannel/poschannel', 'tCstLabelTitle'); ?></td>
                                     <td class="text-left">
                                         <?php if (empty($aPdtPmtHDCstInTmp)) { ?>
-                                            <label><?php echo language('document/promotion/promotion', 'tLabel23'); ?></label>
+                                            <label><?php echo language('document/promotion/promotion', 'tLabel61'); ?></label>
                                         <?php } ?>
 
                                         <?php foreach ($aPdtPmtHDCstInTmp as $aChn) { ?>
@@ -402,6 +402,54 @@
                                                 continue;
                                             } ?>
                                             <label><?php echo $aChn['FTClvName']; ?></label><br>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-center"><?php echo language('pos/poschannel/poschannel', 'ระดับลูกค้า'); ?></td>
+                                    <td class="text-left">
+                                        <?php if (empty($aPdtPmtHDCstLevInTmp)) { ?>
+                                            <label><?php echo language('document/promotion/promotion', 'tLabel63'); ?></label>
+                                        <?php } ?>
+
+                                        <?php foreach ($aPdtPmtHDCstLevInTmp as $aCstLev) { ?>
+                                            <?php if ($aCstLev['FTPmhStaType'] != "1") {
+                                                continue;
+                                            } ?>
+                                            <label><?php echo $aCstLev['FTClvName']; ?></label><br>
+                                        <?php } ?>
+                                    </td>
+                                    <td class="text-left">
+                                        <?php foreach ($aPdtPmtHDCstLevInTmp as $aCstLev) { ?>
+                                            <?php if ($aCstLev['FTPmhStaType'] != "2") {
+                                                continue;
+                                            } ?>
+                                            <label><?php echo $aCstLev['FTClvName']; ?></label><br>
+                                        <?php } ?>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td class="text-center"><?php echo language('pos/poschannel/poschannel', 'tPnpLabelTitle'); ?></td>
+                                    <td class="text-left">
+                                        <?php if (empty($aPdtPmtHDPnpInTmp)) { ?>
+                                            <label><?php echo language('document/promotion/promotion', 'tLabel62'); ?></label>
+                                        <?php } ?>
+
+                                        <?php foreach ($aPdtPmtHDPnpInTmp as $aChn) { ?>
+                                            <?php if ($aChn['FTPmhStaType'] != "1") {
+                                                continue;
+                                            } ?>
+                                            <label><?php echo $aChn['FTPmhName']; ?></label><br>
+                                        <?php } ?>
+                                    </td>
+                                    <td class="text-left">
+                                        <?php foreach ($aPdtPmtHDPnpInTmp as $aChn) { ?>
+                                            <?php if ($aChn['FTPmhStaType'] != "2") {
+                                                continue;
+                                            } ?>
+                                            <label><?php echo $aChn['FTPmhName']; ?></label><br>
                                         <?php } ?>
                                     </td>
                                 </tr>

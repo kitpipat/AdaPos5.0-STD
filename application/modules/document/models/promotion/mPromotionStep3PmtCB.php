@@ -148,7 +148,6 @@ class mPromotionStep3PmtCB extends CI_Model
                 '' AS FTPbyStaCalSum,
                 '$tPbyStaBuyCond' AS FTPbyStaBuyCond,
                 PMTDT.FTPmdStaListType AS FTPbyStaPdtDT,
-                
                 (
                 CASE 
                     WHEN
@@ -169,9 +168,8 @@ class mPromotionStep3PmtCB extends CI_Model
                         ) = 0
                     THEN $nPercentDis
                     ELSE 0 
-                END      
+                END
                 ) AS FCPbyPerAvgDis,
-
                 0 AS FCPbyMinSetPri,
                 0 AS FCPbyMinValue,
                 0 AS FCPbyMaxValue,

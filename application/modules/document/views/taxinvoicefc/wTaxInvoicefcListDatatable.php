@@ -7,7 +7,8 @@
                         <th class="xCNTextBold" style="width:5%;"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXNum')?></th>
                         <th class="xCNTextBold" style="width:210px;"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXDocNo')?></th>
                         <th class="xCNTextBold" style="width:210px;"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXDocDate')?></th>
-                        <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXCustomerName')?></th>
+                        <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXCustomerNameFC')?></th>
+                        <th class="xCNTextBold" ><?=language('document/taxinvoicefc/taxinvoicefc','tTAXStaDoc')?></th>
                         <th class="xCNTextBold" style="width:90px;"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXPreview')?></th>
                     </tr>
                 </thead>
@@ -19,6 +20,38 @@
                                 <td class="text-left"><?=$aValue['FTXshDocNo']?></td>
                                 <td class="text-left"><?=$aValue['FDXshDocDate']?></td>
                                 <td class="text-left"><?=$aValue['FTAddName']?></td>
+                                <td class="text-left">
+                                    <?php
+                                        switch($aValue['FTXshStaDoc']){
+                                            case '1':
+                                                $tClassStaDoc   = 'text-success';
+                                                // $tXshStaDocName = "ใช้งาน"; /*สมบูรณ์*/
+                                                $tXshStaDocName = language('document/taxinvoicefc/taxinvoicefc','tTAXStaDoc1'); /*สมบูรณ์*/
+                                                break;
+                                            case '2':
+                                                $tClassStaDoc   = 'text-danger';
+                                                $tXshStaDocName = language('document/taxinvoicefc/taxinvoicefc','tTAXStaDoc2'); /*ไม่สมบูรณ์*/
+                                                break;
+                                            case '3':
+                                                $tClassStaDoc   = 'text-danger';
+                                                $tXshStaDocName = language('document/taxinvoicefc/taxinvoicefc','tTAXStaDoc2'); /*ยกเลิก(ไม่ใช้งาน)*/
+                                                break;
+                                            case '4':
+                                                $tClassStaDoc   = 'text-success';
+                                                $tXshStaDocName = language('document/taxinvoicefc/taxinvoicefc','tTAXStaDoc1'); /*ยกเลิก(ใช้งาน)*/
+                                                break;
+                                            case '5':
+                                                $tClassStaDoc   = 'text-danger';
+                                                $tXshStaDocName = language('document/taxinvoicefc/taxinvoicefc','tTAXStaDoc2'); /*แก้ไข*/
+                                                break;
+                                        }
+                                        // echo $tXshStaDocName;
+                                        
+                                    ?>
+                                    <label class="xCNTDTextStatus <?php echo $tClassStaDoc;?>">
+                                        <?php echo $tXshStaDocName ?>
+                                    </label>
+                                </td>
                                 <td class="text-center">
                                     <img class="xCNIconTable" onClick="JSvTAXLoadPageAddOrPreview('<?=$aValue['FTBchCode']?>','<?=$aValue['FTXshDocNo']?>')" src="<?=base_url().'/application/modules/common/assets/images/icons/find-24.png'?>" >
                                 </td>

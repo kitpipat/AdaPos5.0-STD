@@ -15,7 +15,8 @@ class mTaxinvoicefc extends CI_Model{
                                 FDXshDocDate,
                                 TaxHD.FTBchCode,
                                 FTPosCode,
-                                FTXshCstName AS FTAddName
+                                FTXshCstName AS FTAddName,
+								FTXshStaDoc AS FTXshStaDoc
                                
                             FROM TPSTTaxHD TaxHD WITH (NOLOCK)
                             LEFT JOIN TPSTTaxHDCst HDCst WITH (NOLOCK) ON TaxHD.FTXshDocno = HDCst.FTXshDocno AND TaxHD.FTBchCode = HDCST.FTBchCode 
@@ -426,7 +427,6 @@ class mTaxinvoicefc extends CI_Model{
                             AND HD.FDXshDocDate <= '".$tDocDate."'";
             }
     
-            // print_r($tSQL);
             //ค้นหาแบบพิเศษ
             @$tSearchPDT   = $paData['tSearchPDT'];
             $tSQL .= "  AND ((DT.FTXshDocNo LIKE '%$tSearchPDT%') 
@@ -445,7 +445,6 @@ class mTaxinvoicefc extends CI_Model{
                     GROUP BY S.FTPdtCode , S.FTXsdPdtName, S.FTPunName, S.FCXsdQty, S.FCXsdAmtB4DisChg, S.FCXsdDis , S.FCXsdNet,S.FTXshDocNo, 
                         S.FCXshTotal, S.FCXshVat, S.FCXshGrand ";
     
-            // print_r($tSQL);
             $oQuery = $this->db->query($tSQL);
     
     
@@ -662,7 +661,7 @@ class mTaxinvoicefc extends CI_Model{
         $cCmpVatRate        = FCNaHVATGetActiveVatCompany()['value'];
 
         $tDocno             = $this->FSaMTXFGetDTFTXshDocNo($tDocumentNumber);
-        // print_r($tDocno); exit;
+        
         if($tDocno != '' && $tDocno != false) {
                        
         $tSQL               = "SELECT
@@ -686,11 +685,12 @@ class mTaxinvoicefc extends CI_Model{
                                             END
                                         END
                                         ) FCXshVat,
-                                    SUM(CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshGrand,0) *-(1) ELSE  ISNULL(SALHD.FCXshGrand,0) END) AS FCXshGrand
+                                    SUM(CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshGrand,0) *-(1) ELSE  ISNULL(SALHD.FCXshGrand,0) END) AS FCXshGrand,
+                                    ISNULL(SALHD.FTXshDocVatFull, '') AS FTXshDocVatFull
                                     FROM
                                         TPSTSalHD SALHD WITH (NOLOCK)
                                     WHERE 1=1 AND FTXshDocNo in ($tDocno) 
-                                    GROUP BY SALHD.FTBchCode";
+                                    GROUP BY SALHD.FTBchCode, SALHD.FTXshDocVatFull";
             $oQuery = $this->db->query($tSQL);
     
             // print_r($tSQL);
@@ -1022,10 +1022,12 @@ class mTaxinvoicefc extends CI_Model{
         $tXshGndText        = $aPackData['tXshGndText'];
         $tCstCode           = $aPackData['tCstCode'];
         $tStaETax           = $aPackData['tStaETax'];
+        $tTAXApvType        = $aPackData['tTAXApvType'];
+        $tCurretTaxDocNo    = $aPackData['tCurretTaxDocNo'];
+
         // -- SUM (ISNULL(SALHD.FCXshVatable,0)) AS FCXshVatable, --  (FCXshAmtV + FCXshAmtNV - FCXshVat) = FCXshVatable
         // -- SUM (ISNULL(SALHD.FCXshVat,0)) AS FCXshVat,  --FCXshAmtV คำนวณให้ได้ FCXshVat
 
-        // print_r($tBrowseBchCode); exit;
         $cCmpVatRate        = FCNaHVATGetActiveVatCompany()['value'];
         //เพิ่มเติม
         $dDateCurrent       = date('Y-m-d H:i:s');
@@ -1035,114 +1037,154 @@ class mTaxinvoicefc extends CI_Model{
         $tReason            = $aPackData['tReason'];
 
         $tDocno             = $this->FSaMTXFGetDTFTXshDocNo($tABB);
-        
-        $tSQL       = " INSERT INTO TPSTTaxHD (
-                            FTBchCode,FTXshDocNo,FTShpCode,FNXshDocType,FDXshDocDate,
+        $tSQL2              = '';
+
+        if($tTAXApvType == '2' && $tTaxNumberFull != $tCurretTaxDocNo){
+            $tSQL   = " INSERT INTO TPSTTaxHD (
+                    FTBchCode,FTXshDocNo,FTShpCode,FNXshDocType,FDXshDocDate,
+                    FTXshCshOrCrd,FTXshVATInOrEx,FTDptCode,FTWahCode,
+                    FTPosCode,FTShfCode,FNSdtSeqNo,FTUsrCode,FTSpnCode,
+                    FTXshApvCode,FTCstCode,FTXshDocVatFull,FTXshRefExt,
+                    FDXshRefExtDate,FTXshRefInt,FDXshRefIntDate,FTXshRefAE,
+                    FNXshDocPrint,FTRteCode,FCXshRteFac,FCXshTotal,FCXshTotalNV,FCXshTotalNoDis,
+                    FCXshTotalB4DisChgV,FCXshTotalB4DisChgNV,FTXshDisChgTxt,FCXshDis,
+                    FCXshChg,FCXshTotalAfDisChgV,FCXshTotalAfDisChgNV,FCXshRefAEAmt,
+                    FCXshAmtV,FCXshAmtNV,FCXshVat,FCXshVatable,FTXshWpCode,FCXshWpTax,
+                    FCXshGrand,FCXshRnd,FTXshGndText,FCXshPaid,FCXshLeft,FTXshRmk,
+                    FTXshStaRefund,FTXshStaDoc,FTXshStaApv,FTXshStaPrcStk,
+                    FTXshStaPaid,FNXshStaDocAct,FNXshStaRef,FDLastUpdOn,
+                    FTLastUpdBy,FDCreateOn,FTCreateBy,FTXshStaETax,FTRsnCode
+                    ) SELECT FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,FTShpCode,FNXshDocType,'$dDocDateTime' AS FDXshDocDate,
                             FTXshCshOrCrd,FTXshVATInOrEx,FTDptCode,FTWahCode,
                             FTPosCode,FTShfCode,FNSdtSeqNo,FTUsrCode,FTSpnCode,
-                            FTXshApvCode,FTCstCode,FTXshDocVatFull,FTXshRefExt,
-                            FDXshRefExtDate,FTXshRefInt,FDXshRefIntDate,FTXshRefAE,
+                            '$tNameTask' AS FTXshApvCode,FTCstCode,'$tTaxNumberFull' AS FTXshDocVatFull,FTXshRefExt,
+                            FDXshRefExtDate,'$tCurretTaxDocNo' AS FTXshRefInt,FDXshRefIntDate,'$tCurretTaxDocNo' AS FTXshRefAE,
                             FNXshDocPrint,FTRteCode,FCXshRteFac,FCXshTotal,FCXshTotalNV,FCXshTotalNoDis,
                             FCXshTotalB4DisChgV,FCXshTotalB4DisChgNV,FTXshDisChgTxt,FCXshDis,
                             FCXshChg,FCXshTotalAfDisChgV,FCXshTotalAfDisChgNV,FCXshRefAEAmt,
                             FCXshAmtV,FCXshAmtNV,FCXshVat,FCXshVatable,FTXshWpCode,FCXshWpTax,
                             FCXshGrand,FCXshRnd,FTXshGndText,FCXshPaid,FCXshLeft,FTXshRmk,
                             FTXshStaRefund,FTXshStaDoc,FTXshStaApv,FTXshStaPrcStk,
-                            FTXshStaPaid,FNXshStaDocAct,FNXshStaRef,FDLastUpdOn,
-                            FTLastUpdBy,FDCreateOn,FTCreateBy,FTXshStaETax,FTRsnCode
-                            )  SELECT '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,'' AS FTShpCode,
-                            CASE WHEN FCXshTotal<0 THEN 5 WHEN FCXshTotal > 0 THEN 4 ELSE 0 END AS FNXshDocType,
-                            '$dDocDateTime' AS FDXshDocDate,'2' AS FTXshCshOrCrd,
-                            (SELECT FTCmpRetInOrEx FROM TCNMComp WHERE FTCmpCode= '00001') AS FTXshVATInOrEx,
-                            '' AS FTDptCode,'00001' AS FTWahCode,'00001' AS FTPosCode,'00001' AS FTShfCode,1 AS FNSdtSeqNo,
-                            '00001' AS FTUsrCode,'' AS FTSpnCode,'$tNameTask' AS FTXshApvCode,'$tCstCode' AS FTCstCode,
-                            '$tTaxNumberFull' AS FTXshDocVatFull,'$tABB' AS FTXshRefExt,GETDATE() AS FDXshRefExtDate,
-                            '' AS FTXshRefInt,'' AS FDXshRefIntDate,'' AS FTXshRefAE,0 AS FNXshDocPrint,
-                            (SELECT FTRteCode FROM TCNMComp WHERE FTCmpCode= '00001') AS FTRteCode,
-                            1 AS FCXshRteFac,FCXshTotal,FCXshTotalNV,FCXshTotalNoDis,FCXshTotalB4DisChgV,
-                            FCXshTotalB4DisChgNV,'' AS FTXshDisChgTxt,FCXshDis,FCXshChg,FCXshTotalAfDisChgV,
-                            FCXshTotalAfDisChgNV,FCXshRefAEAmt,FCXshAmtV,FCXshAmtNV,FCXshVat,
-                            FCXshVatable,'' AS FTXshWpCode,FCXshWpTax,FCXshGrand,FCXshRnd,'$tXshGndText' AS FTXshGndText,FCXshPaid,
-                            FCXshLeft,'$tRemark' AS FTXshRmk,'' AS FTXshStaRefund,'1' AS FTXshStaDoc,'1' AS FTXshStaApv,
-                            '1' AS FTXshStaPrcStk,'1' AS FTXshStaPaid,'1' AS FNXshStaDocAct,'' AS FNXshStaRef,
-                            '$dDateCurrent' AS FDLastUpdOn,'$tNameTask' AS FTLastUpdBy,'$dDateCurrent' AS FDCreateOn,
-                            '$tNameTask' AS FTCreateBy,'$tStaETax','$tReason'
-                            FROM (
-                            SELECT SALHD.FTBchCode,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotal,0) *-(1) ELSE ISNULL(SALHD.FCXshTotal,0) END) AS FCXshTotal,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalNV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalNV,0) END) AS FCXshTotalNV,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalNoDis,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalNoDis,0) END) AS FCXshTotalNoDis,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalB4DisChgV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalB4DisChgV,0) END) AS FCXshTotalB4DisChgV,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalB4DisChgNV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalB4DisChgNV,0) END) AS FCXshTotalB4DisChgNV,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalAfDisChgV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalAfDisChgV,0) END) AS FCXshTotalAfDisChgV,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalAfDisChgNV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalAfDisChgNV,0) END) AS FCXshTotalAfDisChgNV,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshRefAEAmt,0) *-(1) ELSE ISNULL(SALHD.FCXshRefAEAmt,0) END) AS FCXshRefAEAmt,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshAmtV,0) *-(1) ELSE ISNULL(SALHD.FCXshAmtV,0) END) AS FCXshAmtV, 
-                                SUM(
-                                    CASE WHEN SALHD.FNXshDocType = 9 THEN
-                                        CASE WHEN SALHD.FTXshVATInOrEx = '1' THEN 
-                                        ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate ) / (100 + $cCmpVatRate ) )  *-(1)
-                                        ELSE
-                                        ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate )  / 100 )  *-(1)
-                                        END
+                            FTXshStaPaid,FNXshStaDocAct,FNXshStaRef,'$dDateCurrent' AS FDLastUpdOn,
+                            '$tNameTask' AS FTLastUpdBy,'$dDateCurrent' AS FDCreateOn,'$tNameTask' AS FTCreateBy,FTXshStaETax,FTRsnCode
+                        FROM TPSTTaxHD 
+                        WHERE FTXshDocNo = '$tCurretTaxDocNo'";
+
+            $tSQL2  = "UPDATE TPSTTaxHD SET FTXshStaDoc = '5' , FDLastUpdOn = '$dDateCurrent' , FTLastUpdBy = '$tNameTask' 
+                        WHERE FTXshDocNo = '$tCurretTaxDocNo'";
+        }else{
+        $tSQL       = " INSERT INTO TPSTTaxHD (
+                        FTBchCode,FTXshDocNo,FTShpCode,FNXshDocType,FDXshDocDate,
+                        FTXshCshOrCrd,FTXshVATInOrEx,FTDptCode,FTWahCode,
+                        FTPosCode,FTShfCode,FNSdtSeqNo,FTUsrCode,FTSpnCode,
+                        FTXshApvCode,FTCstCode,FTXshDocVatFull,FTXshRefExt,
+                        FDXshRefExtDate,FTXshRefInt,FDXshRefIntDate,FTXshRefAE,
+                        FNXshDocPrint,FTRteCode,FCXshRteFac,FCXshTotal,FCXshTotalNV,FCXshTotalNoDis,
+                        FCXshTotalB4DisChgV,FCXshTotalB4DisChgNV,FTXshDisChgTxt,FCXshDis,
+                        FCXshChg,FCXshTotalAfDisChgV,FCXshTotalAfDisChgNV,FCXshRefAEAmt,
+                        FCXshAmtV,FCXshAmtNV,FCXshVat,FCXshVatable,FTXshWpCode,FCXshWpTax,
+                        FCXshGrand,FCXshRnd,FTXshGndText,FCXshPaid,FCXshLeft,FTXshRmk,
+                        FTXshStaRefund,FTXshStaDoc,FTXshStaApv,FTXshStaPrcStk,
+                        FTXshStaPaid,FNXshStaDocAct,FNXshStaRef,FDLastUpdOn,
+                        FTLastUpdBy,FDCreateOn,FTCreateBy,FTXshStaETax,FTRsnCode
+                        )  SELECT '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,'' AS FTShpCode,
+                        CASE WHEN FCXshTotal<0 THEN 5 WHEN FCXshTotal > 0 THEN 4 ELSE 0 END AS FNXshDocType,
+                        '$dDocDateTime' AS FDXshDocDate,'2' AS FTXshCshOrCrd,
+                        (SELECT FTCmpRetInOrEx FROM TCNMComp WHERE FTCmpCode= '00001') AS FTXshVATInOrEx,
+                        '' AS FTDptCode,'00001' AS FTWahCode,'00001' AS FTPosCode,'00001' AS FTShfCode,1 AS FNSdtSeqNo,
+                        '00001' AS FTUsrCode,'' AS FTSpnCode,'$tNameTask' AS FTXshApvCode,'$tCstCode' AS FTCstCode,
+                        '$tTaxNumberFull' AS FTXshDocVatFull,'$tABB' AS FTXshRefExt,GETDATE() AS FDXshRefExtDate,
+                        '' AS FTXshRefInt,'' AS FDXshRefIntDate,'' AS FTXshRefAE,0 AS FNXshDocPrint,
+                        (SELECT FTRteCode FROM TCNMComp WHERE FTCmpCode= '00001') AS FTRteCode,
+                        1 AS FCXshRteFac,FCXshTotal,FCXshTotalNV,FCXshTotalNoDis,FCXshTotalB4DisChgV,
+                        FCXshTotalB4DisChgNV,'' AS FTXshDisChgTxt,FCXshDis,FCXshChg,FCXshTotalAfDisChgV,
+                        FCXshTotalAfDisChgNV,FCXshRefAEAmt,FCXshAmtV,FCXshAmtNV,FCXshVat,
+                        FCXshVatable,'' AS FTXshWpCode,FCXshWpTax,FCXshGrand,FCXshRnd,'$tXshGndText' AS FTXshGndText,FCXshPaid,
+                        FCXshLeft,'$tRemark' AS FTXshRmk,'' AS FTXshStaRefund,'1' AS FTXshStaDoc,'1' AS FTXshStaApv,
+                        '1' AS FTXshStaPrcStk,'1' AS FTXshStaPaid,'1' AS FNXshStaDocAct,'' AS FNXshStaRef,
+                        '$dDateCurrent' AS FDLastUpdOn,'$tNameTask' AS FTLastUpdBy,'$dDateCurrent' AS FDCreateOn,
+                        '$tNameTask' AS FTCreateBy,'$tStaETax','$tReason'
+                        FROM (
+                        SELECT SALHD.FTBchCode,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotal,0) *-(1) ELSE ISNULL(SALHD.FCXshTotal,0) END) AS FCXshTotal,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalNV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalNV,0) END) AS FCXshTotalNV,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalNoDis,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalNoDis,0) END) AS FCXshTotalNoDis,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalB4DisChgV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalB4DisChgV,0) END) AS FCXshTotalB4DisChgV,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalB4DisChgNV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalB4DisChgNV,0) END) AS FCXshTotalB4DisChgNV,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalAfDisChgV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalAfDisChgV,0) END) AS FCXshTotalAfDisChgV,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshTotalAfDisChgNV,0) *-(1) ELSE ISNULL(SALHD.FCXshTotalAfDisChgNV,0) END) AS FCXshTotalAfDisChgNV,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshRefAEAmt,0) *-(1) ELSE ISNULL(SALHD.FCXshRefAEAmt,0) END) AS FCXshRefAEAmt,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshAmtV,0) *-(1) ELSE ISNULL(SALHD.FCXshAmtV,0) END) AS FCXshAmtV, 
+                            SUM(
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN
+                                    CASE WHEN SALHD.FTXshVATInOrEx = '1' THEN 
+                                    ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate ) / (100 + $cCmpVatRate ) )  *-(1)
                                     ELSE
-                                        CASE WHEN SALHD.FTXshVATInOrEx = '1' THEN 
-                                        ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate ) / (100 + $cCmpVatRate ) ) 
-                                        ELSE
-                                        ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate )  / 100 ) 
-                                        END
+                                    ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate )  / 100 )  *-(1)
                                     END
-                                ) FCXshVat,
-                                (   
-                               
-                                     ( SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshAmtV,0) *-(1) ELSE ISNULL(SALHD.FCXshAmtV,0) END ) - 
-                                                (
-                                                    SUM(
-                                                        CASE WHEN SALHD.FNXshDocType = 9 THEN
-                                                            CASE WHEN SALHD.FTXshVATInOrEx = '1' THEN 
-                                                            ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate ) / (100 + $cCmpVatRate ) )  *-(1)
-                                                            ELSE
-                                                            ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate )  / 100 )  *-(1)
-                                                            END
+                                ELSE
+                                    CASE WHEN SALHD.FTXshVATInOrEx = '1' THEN 
+                                    ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate ) / (100 + $cCmpVatRate ) ) 
+                                    ELSE
+                                    ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate )  / 100 ) 
+                                    END
+                                END
+                            ) FCXshVat,
+                            (   
+                            
+                                    ( SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshAmtV,0) *-(1) ELSE ISNULL(SALHD.FCXshAmtV,0) END ) - 
+                                            (
+                                                SUM(
+                                                    CASE WHEN SALHD.FNXshDocType = 9 THEN
+                                                        CASE WHEN SALHD.FTXshVATInOrEx = '1' THEN 
+                                                        ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate ) / (100 + $cCmpVatRate ) )  *-(1)
                                                         ELSE
-                                                            CASE WHEN SALHD.FTXshVATInOrEx = '1' THEN 
-                                                            ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate ) / (100 + $cCmpVatRate ) ) 
-                                                            ELSE
-                                                            ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate )  / 100 ) 
-                                                            END
+                                                        ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate )  / 100 )  *-(1)
                                                         END
-                                                    )
+                                                    ELSE
+                                                        CASE WHEN SALHD.FTXshVATInOrEx = '1' THEN 
+                                                        ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate ) / (100 + $cCmpVatRate ) ) 
+                                                        ELSE
+                                                        ( (ISNULL(SALHD.FCXshAmtV,0) * $cCmpVatRate )  / 100 ) 
+                                                        END
+                                                    END
                                                 )
-                                        ) + SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshAmtNV,0) *-(1) ELSE ISNULL(SALHD.FCXshAmtNV,0) END ) 
-                               
-                                  
-                                ) AS FCXshVatable,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshAmtNV,0) *-(1) ELSE ISNULL(SALHD.FCXshAmtNV,0) END) AS FCXshAmtNV, 
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshWpTax,0) *-(1) ELSE ISNULL(SALHD.FCXshWpTax,0) END) AS FCXshWpTax,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshDis,0) *-(1) ELSE ISNULL(SALHD.FCXshDis,0) END) AS FCXshDis,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshChg,0) *-(1) ELSE ISNULL(SALHD.FCXshChg,0) END) AS FCXshChg,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshGrand,0) *-(1) ELSE ISNULL(SALHD.FCXshGrand,0) END) AS FCXshGrand,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshRnd,0) *-(1) ELSE ISNULL(SALHD.FCXshRnd,0) END) AS FCXshRnd,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshPaid,0) *-(1) ELSE ISNULL(SALHD.FCXshPaid,0) END) AS FCXshPaid,
-                                SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshLeft,0) *-(1) ELSE ISNULL(SALHD.FCXshLeft,0) END) AS FCXshLeft
-                                FROM TPSTSalHD SALHD WITH (NOLOCK)
-                                -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1  FROM TPSTSalRC
-                                --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
-                                --             WHERE TFNMRcv.FTFmtCode = '011'
-                                --             GROUP BY FTBchCode,FTXshDocNo
-                                -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
-                                -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
-                                --             FROM TFNTCrdTopUpDT
-                                --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
-                                -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
-                                -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
-                                -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
-                                WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
-                                GROUP BY SALHD.FTBchCode
-                                ) AS SaleCard
-                                ";
+                                            )
+                                    ) + SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshAmtNV,0) *-(1) ELSE ISNULL(SALHD.FCXshAmtNV,0) END ) 
+                            
+                                
+                            ) AS FCXshVatable,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshAmtNV,0) *-(1) ELSE ISNULL(SALHD.FCXshAmtNV,0) END) AS FCXshAmtNV, 
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshWpTax,0) *-(1) ELSE ISNULL(SALHD.FCXshWpTax,0) END) AS FCXshWpTax,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshDis,0) *-(1) ELSE ISNULL(SALHD.FCXshDis,0) END) AS FCXshDis,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshChg,0) *-(1) ELSE ISNULL(SALHD.FCXshChg,0) END) AS FCXshChg,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshGrand,0) *-(1) ELSE ISNULL(SALHD.FCXshGrand,0) END) AS FCXshGrand,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshRnd,0) *-(1) ELSE ISNULL(SALHD.FCXshRnd,0) END) AS FCXshRnd,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshPaid,0) *-(1) ELSE ISNULL(SALHD.FCXshPaid,0) END) AS FCXshPaid,
+                            SUM (CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(SALHD.FCXshLeft,0) *-(1) ELSE ISNULL(SALHD.FCXshLeft,0) END) AS FCXshLeft
+                            FROM TPSTSalHD SALHD WITH (NOLOCK)
+                            -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1  FROM TPSTSalRC
+                            --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
+                            --             WHERE TFNMRcv.FTFmtCode = '011'
+                            --             GROUP BY FTBchCode,FTXshDocNo
+                            -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
+                            -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
+                            --             FROM TFNTCrdTopUpDT
+                            --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
+                            -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
+                            -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
+                            -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
+                            WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
+                            GROUP BY SALHD.FTBchCode
+                            ) AS SaleCard
+                            ";
+        }
+        // exit;
 
         $this->db->query($tSQL);
+        if($tSQL2 != '') {
+            $this->db->query($tSQL2);
+        }
     }
 
     // TPSTSalHDDis -> TPSTTaxHDDis
@@ -1150,8 +1192,36 @@ class mTaxinvoicefc extends CI_Model{
         $tABB               = $aPackData['tDocABB'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
+        $tTAXApvType        = $aPackData['tTAXApvType'];
+        $tCurretTaxDocNo    = $aPackData['tCurretTaxDocNo'];
 
         $tDocno             = $this->FSaMTXFGetDTFTXshDocNo($tABB);
+
+        if($tTAXApvType == '2' && $tTaxNumberFull != $tCurretTaxDocNo){
+            $tSQL   = " INSERT INTO TPSTTaxHDDis (
+                            FTBchCode,FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FTXhdRefCode,FCXhdAmt
+                        ) SELECT FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FTXhdRefCode,FCXhdAmt
+                        FROM TPSTTaxHDDis
+                        WHERE FTXshDocNo = '$tCurretTaxDocNo'";
+        }else {
+            $tSQL   = " INSERT INTO TPSTTaxHDDis (
+                        FTBchCode,FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FTXhdRefCode,FCXhdAmt
+                    ) SELECT 
+                    '$tBrowseBchCode' AS FTBchCode, '$tTaxNumberFull' AS FTXshDocNo,GETDATE() AS FDXhdDateIns, FTXhdDisChgTxt, FTXhdDisChgType, FCXhdTotalAfDisChg, FCXhdDisChg, FTXhdRefCode, FCXhdAmt
+                    FROM (
+                        SELECT 
+                            SUM(CAST(HDDis.FTXhdDisChgTxt AS float)) AS FTXhdDisChgTxt,
+                            HDDis.FTXhdDisChgType, 
+                            SUM(CAST(HDDis.FCXhdTotalAfDisChg AS float)) AS FCXhdTotalAfDisChg, 
+                            SUM(CAST(HDDis.FCXhdDisChg AS float)) AS FCXhdDisChg,
+                            HDDis.FTXhdRefCode, 
+                            SUM(CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(HDDis.FCXhdAmt,0) *-(1) ELSE ISNULL(HDDis.FCXhdAmt,0) END) AS FCXhdAmt
+                        FROM TPSTSalHDDis HDDis 
+                        LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON HDDis.FTBchCode = SALHD.FTBchCode AND HDDis.FTXshDocNo = SALHD.FTXshDocNo
+                        WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
+                        GROUP BY HDDis.FTXhdDisChgType,HDDis.FTXhdRefCode
+                    ) AS SaleCard";
+        }
 
         // $tSQL       = " INSERT INTO TPSTTaxHDDis (
         //                     FTBchCode,FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FTXhdRefCode,FCXhdAmt
@@ -1173,23 +1243,6 @@ class mTaxinvoicefc extends CI_Model{
         //                 -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
         //                 WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
         //                      ";
-        $tSQL       = " INSERT INTO TPSTTaxHDDis (
-                            FTBchCode,FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FTXhdRefCode,FCXhdAmt
-                        ) SELECT 
-                        '$tBrowseBchCode' AS FTBchCode, '$tTaxNumberFull' AS FTXshDocNo,GETDATE() AS FDXhdDateIns, FTXhdDisChgTxt, FTXhdDisChgType, FCXhdTotalAfDisChg, FCXhdDisChg, FTXhdRefCode, FCXhdAmt
-                        FROM (
-                            SELECT 
-                                SUM(CAST(HDDis.FTXhdDisChgTxt AS float)) AS FTXhdDisChgTxt,
-                                HDDis.FTXhdDisChgType, 
-                                SUM(CAST(HDDis.FCXhdTotalAfDisChg AS float)) AS FCXhdTotalAfDisChg, 
-                                SUM(CAST(HDDis.FCXhdDisChg AS float)) AS FCXhdDisChg,
-                                HDDis.FTXhdRefCode, 
-                                SUM(CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(HDDis.FCXhdAmt,0) *-(1) ELSE ISNULL(HDDis.FCXhdAmt,0) END) AS FCXhdAmt
-                            FROM TPSTSalHDDis HDDis 
-                            LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON HDDis.FTBchCode = SALHD.FTBchCode AND HDDis.FTXshDocNo = SALHD.FTXshDocNo
-                            WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
-                            GROUP BY HDDis.FTXhdDisChgType,HDDis.FTXhdRefCode
-                        ) AS SaleCard";
         $this->db->query($tSQL);
     }
 
@@ -1198,64 +1251,92 @@ class mTaxinvoicefc extends CI_Model{
         $tABB               = $aPackData['tDocABB'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
+        $tTAXApvType        = $aPackData['tTAXApvType'];
+        $tCurretTaxDocNo    = $aPackData['tCurretTaxDocNo'];
 
         $tDocno             = $this->FSaMTXFGetDTFTXshDocNo($tABB);
 
-        $tSQL       = " INSERT INTO TPSTTaxDT (
-                            FTBchCode,FTXshDocNo,FNXsdSeqNo,FTPdtCode,FTXsdPdtName,
-                            FTPunCode,FTPunName,FTPplCode,FCXsdFactor,FTXsdBarCode,
-                            FTSrnCode,FTXsdVatType,FTVatCode,FCXsdVatRate,FTXsdSaleType,
-                            FCXsdSalePrice,FCXsdQty,FCXsdQtyAll,FCXsdSetPrice,FCXsdAmtB4DisChg,FTXsdDisChgTxt,
-                            FCXsdDis,FCXsdChg,FCXsdNet,FCXsdNetAfHD,
-                            FCXsdVat,FCXsdVatable,FCXsdWhtAmt,FTXsdWhtCode,
-                            FCXsdWhtRate,FCXsdCostIn,FCXsdCostEx,FTXsdStaPdt,
-                            FCXsdQtyLef,FCXsdQtyRfn,FTXsdStaPrcStk,FTXsdStaAlwDis,
-                            FNXsdPdtLevel,FTXsdPdtParent,FCXsdQtySet,FTPdtStaSet,
-                            FTXsdRmk,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
-                        ) SELECT 
-                            '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',ROW_NUMBER() OVER(ORDER BY SALDT.FTXshDocNo) AS FNXsdSeqNo,FTPdtCode,FTXsdPdtName,
-                            FTPunCode,FTPunName,FTPplCode,FCXsdFactor,FTXsdBarCode,
-                            FTSrnCode,FTXsdVatType,FTVatCode,FCXsdVatRate,FTXsdSaleType,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdSalePrice,0) *-(1) ELSE ISNULL(FCXsdSalePrice,0) END FCXsdSalePrice ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQty,0) *-(1) ELSE ISNULL(FCXsdQty,0) END FCXsdQty ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtyAll,0) *-(1) ELSE ISNULL(FCXsdQtyAll,0) END FCXsdQtyAll ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdSetPrice,0) *-(1) ELSE ISNULL(FCXsdSetPrice,0) END FCXsdSetPrice ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdAmtB4DisChg,0) *-(1) ELSE ISNULL(FCXsdAmtB4DisChg,0) END FCXsdAmtB4DisChg ,
-                            FTXsdDisChgTxt,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdDis,0) *-(1) ELSE ISNULL(FCXsdDis,0) END FCXsdDis ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdChg,0) *-(1) ELSE ISNULL(FCXsdChg,0) END FCXsdChg ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdNet,0) *-(1) ELSE ISNULL(FCXsdNet,0) END FCXsdNet ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdNetAfHD,0) *-(1) ELSE ISNULL(FCXsdNetAfHD,0) END FCXsdNetAfHD ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdVat,0) *-(1) ELSE ISNULL(FCXsdVat,0) END FCXsdVat ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdVatable,0) *-(1) ELSE ISNULL(FCXsdVatable,0) END FCXsdVatable ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdWhtAmt,0) *-(1) ELSE ISNULL(FCXsdWhtAmt,0) END FCXsdWhtAmt ,
-                            FTXsdWhtCode,
-                            FCXsdWhtRate,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdCostIn,0) *-(1) ELSE ISNULL(FCXsdCostIn,0) END FCXsdCostIn ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdCostEx,0) *-(1) ELSE ISNULL(FCXsdCostEx,0) END FCXsdCostEx ,
-                            FTXsdStaPdt,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtyLef,0) *-(1) ELSE ISNULL(FCXsdQtyLef,0) END FCXsdQtyLef ,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtyRfn,0) *-(1) ELSE ISNULL(FCXsdQtyRfn,0) END FCXsdQtyRfn ,
-                            FTXsdStaPrcStk,FTXsdStaAlwDis,
-                            FNXsdPdtLevel,FTXsdPdtParent,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtySet,0) *-(1) ELSE ISNULL(FCXsdQtySet,0) END FCXsdQtySet ,
-                            FTPdtStaSet,
-                            FTXsdRmk,SALDT.FDLastUpdOn,SALDT.FTLastUpdBy,SALDT.FDCreateOn,SALDT.FTCreateBy 
-                        FROM TPSTSalDT SALDT
-                        LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON SALDT.FTBchCode = SALHD.FTBchCode AND SALDT.FTXshDocNo = SALHD.FTXshDocNo
-                        -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1 FROM TPSTSalRC
-                        --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
-                        --             WHERE TFNMRcv.FTFmtCode = '011'
-                        --             GROUP BY FTBchCode,FTXshDocNo
-                        -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
-                        -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
-                        --             FROM TFNTCrdTopUpDT
-                        --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
-                        -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
-                        -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
-                        -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
-                        WHERE SALDT.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
-                         ";
+        if($tTAXApvType == '2' && $tTaxNumberFull != $tCurretTaxDocNo){
+            $tSQL       = " INSERT INTO TPSTTaxDT (
+                FTBchCode,FTXshDocNo,FNXsdSeqNo,FTPdtCode,FTXsdPdtName,
+                FTPunCode,FTPunName,FTPplCode,FCXsdFactor,FTXsdBarCode,
+                FTSrnCode,FTXsdVatType,FTVatCode,FCXsdVatRate,FTXsdSaleType,
+                FCXsdSalePrice,FCXsdQty,FCXsdQtyAll,FCXsdSetPrice,FCXsdAmtB4DisChg,FTXsdDisChgTxt,
+                FCXsdDis,FCXsdChg,FCXsdNet,FCXsdNetAfHD,
+                FCXsdVat,FCXsdVatable,FCXsdWhtAmt,FTXsdWhtCode,
+                FCXsdWhtRate,FCXsdCostIn,FCXsdCostEx,FTXsdStaPdt,
+                FCXsdQtyLef,FCXsdQtyRfn,FTXsdStaPrcStk,FTXsdStaAlwDis,
+                FNXsdPdtLevel,FTXsdPdtParent,FCXsdQtySet,FTPdtStaSet,
+                FTXsdRmk,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+            ) SELECT FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,FNXsdSeqNo,FTPdtCode,FTXsdPdtName,
+                    FTPunCode,FTPunName,FTPplCode,FCXsdFactor,FTXsdBarCode,
+                    FTSrnCode,FTXsdVatType,FTVatCode,FCXsdVatRate,FTXsdSaleType,
+                    FCXsdSalePrice,FCXsdQty,FCXsdQtyAll,FCXsdSetPrice,FCXsdAmtB4DisChg,FTXsdDisChgTxt,
+                    FCXsdDis,FCXsdChg,FCXsdNet,FCXsdNetAfHD,
+                    FCXsdVat,FCXsdVatable,FCXsdWhtAmt,FTXsdWhtCode,
+                    FCXsdWhtRate,FCXsdCostIn,FCXsdCostEx,FTXsdStaPdt,
+                    FCXsdQtyLef,FCXsdQtyRfn,FTXsdStaPrcStk,FTXsdStaAlwDis,
+                    FNXsdPdtLevel,FTXsdPdtParent,FCXsdQtySet,FTPdtStaSet,
+                    FTXsdRmk,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+                FROM TPSTTaxDT
+                WHERE FTXshDocNo = '$tCurretTaxDocNo'";
+        }else {
+            $tSQL       = " INSERT INTO TPSTTaxDT (
+                                FTBchCode,FTXshDocNo,FNXsdSeqNo,FTPdtCode,FTXsdPdtName,
+                                FTPunCode,FTPunName,FTPplCode,FCXsdFactor,FTXsdBarCode,
+                                FTSrnCode,FTXsdVatType,FTVatCode,FCXsdVatRate,FTXsdSaleType,
+                                FCXsdSalePrice,FCXsdQty,FCXsdQtyAll,FCXsdSetPrice,FCXsdAmtB4DisChg,FTXsdDisChgTxt,
+                                FCXsdDis,FCXsdChg,FCXsdNet,FCXsdNetAfHD,
+                                FCXsdVat,FCXsdVatable,FCXsdWhtAmt,FTXsdWhtCode,
+                                FCXsdWhtRate,FCXsdCostIn,FCXsdCostEx,FTXsdStaPdt,
+                                FCXsdQtyLef,FCXsdQtyRfn,FTXsdStaPrcStk,FTXsdStaAlwDis,
+                                FNXsdPdtLevel,FTXsdPdtParent,FCXsdQtySet,FTPdtStaSet,
+                                FTXsdRmk,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+                            ) SELECT 
+                                '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',ROW_NUMBER() OVER(ORDER BY SALDT.FTXshDocNo) AS FNXsdSeqNo,FTPdtCode,FTXsdPdtName,
+                                FTPunCode,FTPunName,FTPplCode,FCXsdFactor,FTXsdBarCode,
+                                FTSrnCode,FTXsdVatType,FTVatCode,FCXsdVatRate,FTXsdSaleType,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdSalePrice,0) *-(1) ELSE ISNULL(FCXsdSalePrice,0) END FCXsdSalePrice ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQty,0) *-(1) ELSE ISNULL(FCXsdQty,0) END FCXsdQty ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtyAll,0) *-(1) ELSE ISNULL(FCXsdQtyAll,0) END FCXsdQtyAll ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdSetPrice,0) *-(1) ELSE ISNULL(FCXsdSetPrice,0) END FCXsdSetPrice ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdAmtB4DisChg,0) *-(1) ELSE ISNULL(FCXsdAmtB4DisChg,0) END FCXsdAmtB4DisChg ,
+                                FTXsdDisChgTxt,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdDis,0) *-(1) ELSE ISNULL(FCXsdDis,0) END FCXsdDis ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdChg,0) *-(1) ELSE ISNULL(FCXsdChg,0) END FCXsdChg ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdNet,0) *-(1) ELSE ISNULL(FCXsdNet,0) END FCXsdNet ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdNetAfHD,0) *-(1) ELSE ISNULL(FCXsdNetAfHD,0) END FCXsdNetAfHD ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdVat,0) *-(1) ELSE ISNULL(FCXsdVat,0) END FCXsdVat ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdVatable,0) *-(1) ELSE ISNULL(FCXsdVatable,0) END FCXsdVatable ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdWhtAmt,0) *-(1) ELSE ISNULL(FCXsdWhtAmt,0) END FCXsdWhtAmt ,
+                                FTXsdWhtCode,
+                                FCXsdWhtRate,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdCostIn,0) *-(1) ELSE ISNULL(FCXsdCostIn,0) END FCXsdCostIn ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdCostEx,0) *-(1) ELSE ISNULL(FCXsdCostEx,0) END FCXsdCostEx ,
+                                FTXsdStaPdt,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtyLef,0) *-(1) ELSE ISNULL(FCXsdQtyLef,0) END FCXsdQtyLef ,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtyRfn,0) *-(1) ELSE ISNULL(FCXsdQtyRfn,0) END FCXsdQtyRfn ,
+                                FTXsdStaPrcStk,FTXsdStaAlwDis,
+                                FNXsdPdtLevel,FTXsdPdtParent,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtySet,0) *-(1) ELSE ISNULL(FCXsdQtySet,0) END FCXsdQtySet ,
+                                FTPdtStaSet,
+                                FTXsdRmk,SALDT.FDLastUpdOn,SALDT.FTLastUpdBy,SALDT.FDCreateOn,SALDT.FTCreateBy 
+                            FROM TPSTSalDT SALDT
+                            LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON SALDT.FTBchCode = SALHD.FTBchCode AND SALDT.FTXshDocNo = SALHD.FTXshDocNo
+                            -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1 FROM TPSTSalRC
+                            --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
+                            --             WHERE TFNMRcv.FTFmtCode = '011'
+                            --             GROUP BY FTBchCode,FTXshDocNo
+                            -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
+                            -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
+                            --             FROM TFNTCrdTopUpDT
+                            --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
+                            -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
+                            -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
+                            -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
+                            WHERE SALDT.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
+                            ";
+        }
         $this->db->query($tSQL);
     }
 
@@ -1264,32 +1345,44 @@ class mTaxinvoicefc extends CI_Model{
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
         $tABB               = $aPackData['tDocABB'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
+        $tTAXApvType        = $aPackData['tTAXApvType'];
+        $tCurretTaxDocNo    = $aPackData['tCurretTaxDocNo'];
         
         $tDocno             = $this->FSaMTXFGetDTFTXshDocNo($tABB);
 
-        $tSQL       = " INSERT INTO TPSTTaxDTDis (
-                            FTBchCode,FTXshDocNo,FNXsdSeqNo,FDXddDateIns,FNXddStaDis,
-                            FTXddDisChgTxt,FTXddDisChgType,FCXddNet,FCXddValue,FTXddRefCode
-                        ) SELECT 
-                            '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',DENSE_RANK() OVER (ORDER BY DTDis.FTXshDocNo, DTDis.FNXsdSeqNo) AS FNXsdSeqNo,FDXddDateIns,FNXddStaDis,
-                            FTXddDisChgTxt,FTXddDisChgType,FCXddNet,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(DTDis.FCXddValue,0) *-(1) ELSE ISNULL(DTDis.FCXddValue,0) END FCXddValue,
-                            FTXddRefCode
-                        FROM TPSTSalDTDis DTDis
-                        LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON DTDis.FTBchCode = SALHD.FTBchCode AND DTDis.FTXshDocNo = SALHD.FTXshDocNo
-                        -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1 FROM TPSTSalRC
-                        --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
-                        --             WHERE TFNMRcv.FTFmtCode = '011'
-                        --             GROUP BY FTBchCode,FTXshDocNo
-                        -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
-                        -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
-                        --             FROM TFNTCrdTopUpDT
-                        --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
-                        -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
-                        -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
-                        -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
-                        WHERE DTDis.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
-                        ";
+        if($tTAXApvType == '2' && $tTaxNumberFull != $tCurretTaxDocNo){
+            $tSQL       = " INSERT INTO TPSTTaxDTDis (
+                                FTBchCode,FTXshDocNo,FNXsdSeqNo,FDXddDateIns,FNXddStaDis,
+                                FTXddDisChgTxt,FTXddDisChgType,FCXddNet,FCXddValue,FTXddRefCode
+                            ) SELECT FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,FNXsdSeqNo,FDXddDateIns,FNXddStaDis,
+                                    FTXddDisChgTxt,FTXddDisChgType,FCXddNet,FCXddValue,FTXddRefCode
+                                FROM TPSTTaxDTDis
+                                WHERE FTXshDocNo = '$tCurretTaxDocNo'";
+        }else{
+            $tSQL       = " INSERT INTO TPSTTaxDTDis (
+                                FTBchCode,FTXshDocNo,FNXsdSeqNo,FDXddDateIns,FNXddStaDis,
+                                FTXddDisChgTxt,FTXddDisChgType,FCXddNet,FCXddValue,FTXddRefCode
+                            ) SELECT 
+                                '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',DENSE_RANK() OVER (ORDER BY DTDis.FTXshDocNo, DTDis.FNXsdSeqNo) AS FNXsdSeqNo,FDXddDateIns,FNXddStaDis,
+                                FTXddDisChgTxt,FTXddDisChgType,FCXddNet,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(DTDis.FCXddValue,0) *-(1) ELSE ISNULL(DTDis.FCXddValue,0) END FCXddValue,
+                                FTXddRefCode
+                            FROM TPSTSalDTDis DTDis
+                            LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON DTDis.FTBchCode = SALHD.FTBchCode AND DTDis.FTXshDocNo = SALHD.FTXshDocNo
+                            -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1 FROM TPSTSalRC
+                            --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
+                            --             WHERE TFNMRcv.FTFmtCode = '011'
+                            --             GROUP BY FTBchCode,FTXshDocNo
+                            -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
+                            -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
+                            --             FROM TFNTCrdTopUpDT
+                            --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
+                            -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
+                            -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
+                            -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
+                            WHERE DTDis.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
+                            ";
+        }
         $this->db->query($tSQL);
     }
 
@@ -1299,6 +1392,8 @@ class mTaxinvoicefc extends CI_Model{
         $tBrowseBchCode         = $aPackData['tBrowseBchCode'];
         $tTaxBchCode            = $aPackData['tTaxBchCode'];
         $tTaxNumberFull         = $aPackData['tTaxNumberFull'];
+        $tTAXApvType            = $aPackData['tTAXApvType'];
+        $tCurretTaxDocNo        = $aPackData['tCurretTaxDocNo'];
 
         //ถ้าไปเจอลูกค้า จะ move ลงตาราง Tax เลย
         // $tSQL       = "SELECT ISNULL(FTCstCode,'') AS FTCstCode FROM TPSTSalHD SAL WITH (NOLOCK)  WHERE FTXshDocNo = '$tABB'";
@@ -1307,8 +1402,34 @@ class mTaxinvoicefc extends CI_Model{
         // $tCstCode   = $aResult[0]->FTCstCode;
         // if($tCstCode == '' || $tCstCode == null){
 
-            $tCusCodeForm   = $aPackData['tCstCode'];
-            $tCstName       = $aPackData['tCstName'];
+        $tCusCodeForm   = $aPackData['tCstCode'];
+        $tCstName       = $aPackData['tCstName'];
+        $tCstNameABB       = $aPackData['tCstNameABB'];
+
+        if($tTAXApvType == '2' && $tTaxNumberFull != $tCurretTaxDocNo){
+            if( $tCstName == '' ||  $tCstName == null){
+                //ไม่มีการเลือกลูกค้า และ ไม่มีลูกค้าอยู่ใน ABB
+                $tSQL       = " INSERT INTO TPSTTaxHDCst (
+                                    FTBchCode,
+                                    FTXshDocNo,
+                                    FTXshCstName
+                                ) SELECT 
+                                    '$tBrowseBchCode' AS FTBchCode,
+                                    '$tTaxNumberFull',
+                                    'ลูกค้าทั่วไป' ";
+            }else{
+                //ในหน้าจอมีการเลือกลูกค้า
+                $tSQL       = " INSERT INTO TPSTTaxHDCst (
+                                    FTBchCode,
+                                    FTXshDocNo,
+                                    FTXshCstName
+                                ) SELECT 
+                                    '$tBrowseBchCode' AS FTBchCode,
+                                    '$tTaxNumberFull',
+                                    '$tCstNameABB' ";
+            }
+        }else {
+
             if( $tCusCodeForm == '' ||  $tCusCodeForm == null){
                 //ไม่มีการเลือกลูกค้า และ ไม่มีลูกค้าอยู่ใน ABB
                 $tSQL       = " INSERT INTO TPSTTaxHDCst (
@@ -1330,7 +1451,9 @@ class mTaxinvoicefc extends CI_Model{
                                     '$tTaxNumberFull',
                                     '$tCstName' ";
             }
-            $this->db->query($tSQL);
+        }
+
+        $this->db->query($tSQL);
         // }else{
         //     $tCstName   = $aPackData['tCstName'];
         //     $tSQL       = " INSERT INTO TPSTTaxHDCst (
@@ -1351,46 +1474,64 @@ class mTaxinvoicefc extends CI_Model{
         $tABB               = $aPackData['tDocABB'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
+        $tTAXApvType            = $aPackData['tTAXApvType'];
+        $tCurretTaxDocNo        = $aPackData['tCurretTaxDocNo'];
 
         $tDocno             = $this->FSaMTXFGetDTFTXshDocNo($tABB);
 
-        $tSQL       = " INSERT INTO TPSTTaxPD (
-                            FTBchCode,FTXshDocNo,FTPmhDocNo,FNXsdSeqNo,
-                            FTPmdGrpName,FTPdtCode,FTPunCode,FCXsdQty,FCXsdQtyAll,
-                            FCXsdSetPrice,FCXsdNet,FCXpdGetQtyDiv,FTXpdGetType,FCXpdGetValue,
-                            FCXpdDis,FCXpdPerDisAvg,FCXpdDisAvg,FCXpdPoint,FTXpdStaRcv,FTPplCode,
-                            FTXpdCpnText,FTCpdBarCpn
-                        ) SELECT 
-                            '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',FTPmhDocNo,ROW_NUMBER() OVER(ORDER BY SalPD.FTXshDocNo) AS FNXsdSeqNo,
-                            FTPmdGrpName,FTPdtCode,FTPunCode,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQty,0) *-(1) ELSE ISNULL(FCXsdQty,0) END FCXsdQty,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtyAll,0) *-(1) ELSE ISNULL(FCXsdQtyAll,0) END FCXsdQtyAll,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdSetPrice,0) *-(1) ELSE ISNULL(FCXsdSetPrice,0) END FCXsdSetPrice,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdNet,0) *-(1) ELSE ISNULL(FCXsdNet,0) END FCXsdNet,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdGetQtyDiv,0) *-(1) ELSE ISNULL(FCXpdGetQtyDiv,0) END FCXpdGetQtyDiv,
-                            FTXpdGetType,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdGetValue,0) *-(1) ELSE ISNULL(FCXpdGetValue,0) END FCXpdGetValue,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdDis,0) *-(1) ELSE ISNULL(FCXpdDis,0) END FCXpdDis,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdPerDisAvg,0) *-(1) ELSE ISNULL(FCXpdPerDisAvg,0) END FCXpdPerDisAvg,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdDisAvg,0) *-(1) ELSE ISNULL(FCXpdDisAvg,0) END FCXpdDisAvg,
-                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdPoint,0) *-(1) ELSE ISNULL(FCXpdPoint,0) END FCXpdPoint,
-                            FTXpdStaRcv,FTPplCode,
-                            FTXpdCpnText,FTCpdBarCpn
-                        FROM TPSTSalPD SalPD
-                        LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON SalPD.FTBchCode = SALHD.FTBchCode AND SalPD.FTXshDocNo = SALHD.FTXshDocNo
-                        -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1 FROM TPSTSalRC
-                        --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
-                        --             WHERE TFNMRcv.FTFmtCode = '011'
-                        --             GROUP BY FTBchCode,FTXshDocNo
-                        -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
-                        -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
-                        --             FROM TFNTCrdTopUpDT
-                        --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
-                        -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
-                        -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
-                        -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
-                        WHERE SalPD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
-                         ";
+        if($tTAXApvType == '2' && $tTaxNumberFull != $tCurretTaxDocNo){
+            $tSQL       = " INSERT INTO TPSTTaxPD (
+                                FTBchCode,FTXshDocNo,FTPmhDocNo,FNXsdSeqNo,
+                                FTPmdGrpName,FTPdtCode,FTPunCode,FCXsdQty,FCXsdQtyAll,
+                                FCXsdSetPrice,FCXsdNet,FCXpdGetQtyDiv,FTXpdGetType,FCXpdGetValue,
+                                FCXpdDis,FCXpdPerDisAvg,FCXpdDisAvg,FCXpdPoint,FTXpdStaRcv,FTPplCode,
+                                FTXpdCpnText,FTCpdBarCpn
+                            ) SELECT FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,FTPmhDocNo,FNXsdSeqNo,
+                                    FTPmdGrpName,FTPdtCode,FTPunCode,FCXsdQty,FCXsdQtyAll,
+                                    FCXsdSetPrice,FCXsdNet,FCXpdGetQtyDiv,FTXpdGetType,FCXpdGetValue,
+                                    FCXpdDis,FCXpdPerDisAvg,FCXpdDisAvg,FCXpdPoint,FTXpdStaRcv,FTPplCode,
+                                    FTXpdCpnText,FTCpdBarCpn
+                                FROM TPSTTaxPD
+                                WHERE FTXshDocNo = '$tCurretTaxDocNo'";
+        }else{
+            $tSQL       = " INSERT INTO TPSTTaxPD (
+                                FTBchCode,FTXshDocNo,FTPmhDocNo,FNXsdSeqNo,
+                                FTPmdGrpName,FTPdtCode,FTPunCode,FCXsdQty,FCXsdQtyAll,
+                                FCXsdSetPrice,FCXsdNet,FCXpdGetQtyDiv,FTXpdGetType,FCXpdGetValue,
+                                FCXpdDis,FCXpdPerDisAvg,FCXpdDisAvg,FCXpdPoint,FTXpdStaRcv,FTPplCode,
+                                FTXpdCpnText,FTCpdBarCpn
+                            ) SELECT 
+                                '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',FTPmhDocNo,ROW_NUMBER() OVER(ORDER BY SalPD.FTXshDocNo) AS FNXsdSeqNo,
+                                FTPmdGrpName,FTPdtCode,FTPunCode,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQty,0) *-(1) ELSE ISNULL(FCXsdQty,0) END FCXsdQty,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdQtyAll,0) *-(1) ELSE ISNULL(FCXsdQtyAll,0) END FCXsdQtyAll,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdSetPrice,0) *-(1) ELSE ISNULL(FCXsdSetPrice,0) END FCXsdSetPrice,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXsdNet,0) *-(1) ELSE ISNULL(FCXsdNet,0) END FCXsdNet,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdGetQtyDiv,0) *-(1) ELSE ISNULL(FCXpdGetQtyDiv,0) END FCXpdGetQtyDiv,
+                                FTXpdGetType,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdGetValue,0) *-(1) ELSE ISNULL(FCXpdGetValue,0) END FCXpdGetValue,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdDis,0) *-(1) ELSE ISNULL(FCXpdDis,0) END FCXpdDis,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdPerDisAvg,0) *-(1) ELSE ISNULL(FCXpdPerDisAvg,0) END FCXpdPerDisAvg,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdDisAvg,0) *-(1) ELSE ISNULL(FCXpdDisAvg,0) END FCXpdDisAvg,
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXpdPoint,0) *-(1) ELSE ISNULL(FCXpdPoint,0) END FCXpdPoint,
+                                FTXpdStaRcv,FTPplCode,
+                                FTXpdCpnText,FTCpdBarCpn
+                            FROM TPSTSalPD SalPD
+                            LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON SalPD.FTBchCode = SALHD.FTBchCode AND SalPD.FTXshDocNo = SALHD.FTXshDocNo
+                            -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1 FROM TPSTSalRC
+                            --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
+                            --             WHERE TFNMRcv.FTFmtCode = '011'
+                            --             GROUP BY FTBchCode,FTXshDocNo
+                            -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
+                            -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
+                            --             FROM TFNTCrdTopUpDT
+                            --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
+                            -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
+                            -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
+                            -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
+                            WHERE SalPD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
+                            ";
+        }
         $this->db->query($tSQL);
     }
 
@@ -1399,6 +1540,8 @@ class mTaxinvoicefc extends CI_Model{
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
         $tABB               = $aPackData['tDocABB'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
+        $tTAXApvType            = $aPackData['tTAXApvType'];
+        $tCurretTaxDocNo        = $aPackData['tCurretTaxDocNo'];
 
         //เพิ่มเติม
         $dDateCurrent       = date('Y-m-d H:i:s');
@@ -1408,12 +1551,27 @@ class mTaxinvoicefc extends CI_Model{
 
         $tDocno             = $this->FSaMTXFGetDTFTXshDocNo($tABB);
 
-        $tSQL       = " INSERT INTO TPSTTaxRC (
+        if($tTAXApvType == '2' && $tTaxNumberFull != $tCurretTaxDocNo){
+            $tSQL   = " INSERT INTO TPSTTaxRC (
                             FTBchCode,FTXshDocNo,FNXrcSeqNo,FTRcvCode,FTRcvName,
                             FTXrcRefNo1,FTXrcRefNo2,FDXrcRefDate,FTXrcRefDesc,FTBnkCode,
                             FTRteCode,FCXrcRteFac,FCXrcFrmLeftAmt,FCXrcUsrPayAmt,FCXrcDep,
                             FCXrcNet,FCXrcChg,FTXrcRmk,FTPhwCode,FTXrcRetDocRef,
                             FTXrcStaPayOffline,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+                        ) SELECT FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,FNXrcSeqNo,FTRcvCode,FTRcvName,
+                                FTXrcRefNo1,FTXrcRefNo2,FDXrcRefDate,FTXrcRefDesc,FTBnkCode,
+                                FTRteCode,FCXrcRteFac,FCXrcFrmLeftAmt,FCXrcUsrPayAmt,FCXrcDep,
+                                FCXrcNet,FCXrcChg,FTXrcRmk,FTPhwCode,FTXrcRetDocRef,
+                                FTXrcStaPayOffline,'$dDateCurrent' AS FDLastUpdOn,'$tNameTask' AS FTLastUpdBy,FDCreateOn,FTCreateBy
+                        FROM TPSTTaxRC
+                        WHERE FTXshDocNo = '$tCurretTaxDocNo'";
+        }else {
+            $tSQL   = " INSERT INTO TPSTTaxRC (
+                            FTBchCode,FTXshDocNo,FNXrcSeqNo,FTRcvCode,FTRcvName,
+                            FTXrcRefNo1,FTXrcRefNo2,FDXrcRefDate,FTXrcRefDesc,FTBnkCode,
+                            FTRteCode,FCXrcRteFac,FCXrcFrmLeftAmt,FCXrcUsrPayAmt,FCXrcDep,
+                            FCXrcNet,FCXrcChg,FTXrcRmk,FTPhwCode,FTXrcRetDocRef,
+                            FTXrcStaPayOffline, FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
                         ) SELECT 
                             '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',ROW_NUMBER() OVER(ORDER BY SALRC.FTXshDocNo) AS FNXrcSeqNo,FTRcvCode,FTRcvName,
                             SALRC.FTXrcRefNo1,FTXrcRefNo2,FDXrcRefDate,FTXrcRefDesc,FTBnkCode,
@@ -1440,6 +1598,7 @@ class mTaxinvoicefc extends CI_Model{
                         -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
                         WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
                          ";
+        }
         $this->db->query($tSQL);
     }
 
@@ -1448,29 +1607,41 @@ class mTaxinvoicefc extends CI_Model{
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
         $tABB               = $aPackData['tDocABB'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
+        $tTAXApvType            = $aPackData['tTAXApvType'];
+        $tCurretTaxDocNo        = $aPackData['tCurretTaxDocNo'];
         
         $tDocno             = $this->FSaMTXFGetDTFTXshDocNo($tABB);
-        $tSQL       = " INSERT INTO TPSTTaxRD (
-                            FTBchCode,FTXshDocNo,FNXrdSeqNo,FTRdhDocType,FNXrdRefSeq,FTXrdRefCode,FCXrdPdtQty,FNXrdPntUse
-                        ) SELECT 
-                        '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',FNXrdSeqNo,FTRdhDocType,ROW_NUMBER() OVER(ORDER BY SALRD.FTXshDocNo) AS FNXrdRefSeq,FTXrdRefCode,
-                        CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXrdPdtQty,0) *-(1) ELSE ISNULL(FCXrdPdtQty,0) END FCXrdPdtQty,
-                        CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FNXrdPntUse,0) *-(1) ELSE ISNULL(FNXrdPntUse,0) END FNXrdPntUse
-                        FROM TPSTSalRD SALRD
-                        LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON SALRD.FTBchCode = SALHD.FTBchCode AND SALRD.FTXshDocNo = SALHD.FTXshDocNo
-                        -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1 FROM TPSTSalRC
-                        --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
-                        --             WHERE TFNMRcv.FTFmtCode = '011'
-                        --             GROUP BY FTBchCode,FTXshDocNo
-                        -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
-                        -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
-                        --             FROM TFNTCrdTopUpDT
-                        --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
-                        -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
-                        -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
-                        -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
-                        WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
-                         ";
+
+        if($tTAXApvType == '2' && $tTaxNumberFull != $tCurretTaxDocNo){
+            $tSQL       = " INSERT INTO TPSTTaxRD (
+                                FTBchCode,FTXshDocNo,FNXrdSeqNo,FTRdhDocType,FNXrdRefSeq,FTXrdRefCode,FCXrdPdtQty,FNXrdPntUse
+                            ) SELECT FTBchCode,'$tTaxNumberFull' AS FTXshDocNo,FNXrdSeqNo,FTRdhDocType,FNXrdRefSeq,FTXrdRefCode,FCXrdPdtQty,FNXrdPntUse
+                            FROM TPSTTaxRD
+                            WHERE FTXshDocNo = '$tCurretTaxDocNo'";
+        }else{
+
+            $tSQL       = " INSERT INTO TPSTTaxRD (
+                                FTBchCode,FTXshDocNo,FNXrdSeqNo,FTRdhDocType,FNXrdRefSeq,FTXrdRefCode,FCXrdPdtQty,FNXrdPntUse
+                            ) SELECT 
+                            '$tBrowseBchCode' AS FTBchCode,'$tTaxNumberFull',FNXrdSeqNo,FTRdhDocType,ROW_NUMBER() OVER(ORDER BY SALRD.FTXshDocNo) AS FNXrdRefSeq,FTXrdRefCode,
+                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FCXrdPdtQty,0) *-(1) ELSE ISNULL(FCXrdPdtQty,0) END FCXrdPdtQty,
+                            CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(FNXrdPntUse,0) *-(1) ELSE ISNULL(FNXrdPntUse,0) END FNXrdPntUse
+                            FROM TPSTSalRD SALRD
+                            LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON SALRD.FTBchCode = SALHD.FTBchCode AND SALRD.FTXshDocNo = SALHD.FTXshDocNo
+                            -- LEFT JOIN ( SELECT DISTINCT FTBchCode,FTXshDocNo,MIN(FTXrcRefNo1) AS FTXrcRefNo1 FROM TPSTSalRC
+                            --             LEFT JOIN TFNMRcv ON TPSTSalRC.FTRcvCode = TFNMRcv.FTRcvCode
+                            --             WHERE TFNMRcv.FTFmtCode = '011'
+                            --             GROUP BY FTBchCode,FTXshDocNo
+                            -- ) SRC ON SRC.FTXshDocNo = SALHD.FTXshDocNo AND SRC.FTBchCode = SALHD.FTBchCode
+                            -- LEFT JOIN (SELECT DISTINCT TFNTCrdTopUpDT.FTBchCode,TFNTCrdTopUpDT.FTCrdCode,TFNTCrdTopUpDT.FTXshDocNo,TFNMCard.FDCrdResetDate
+                            --             FROM TFNTCrdTopUpDT
+                            --             LEFT JOIN TFNMCard ON TFNTCrdTopUpDT.FTCrdCode = TFNMCard.FTCrdCode
+                            -- ) TOPUPDT ON TOPUPDT.FTCrdCode = SRC.FTXrcRefNo1
+                            -- WHERE 1 = 1 AND TOPUPDT.FTXshDocNo = '$tABB' AND TOPUPDT.FTBchCode = '$tBrowseBchCode' AND ISNULL(FTXshDocVatFull, '') = '' 
+                            -- AND SALHD.FDXshDocDate > TOPUPDT.FDCrdResetDate
+                            WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
+                            ";
+        }
         $this->db->query($tSQL);
     }
 
@@ -1634,7 +1805,6 @@ class mTaxinvoicefc extends CI_Model{
                   AND Tax.FNLngID = $nLngID ";
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
-            // print_r(['FF', $tSQL]); exit;
             $tStatusFound = 'Found'; //found -> update address
         }else{
             $tStatusFound = 'NotFound'; //not found -> insert address
@@ -1705,7 +1875,6 @@ class mTaxinvoicefc extends CI_Model{
             //     $this->db->set('FTAddV1PvnCode','');
             //     $this->db->set('FTAddV1PostCode','');
             // }
-            // print_r([$aPackData, $FTAddTaxNo, $nLngID]); exit;
 
             $this->db->where('FTAddTaxNo',$FTAddTaxNo);
             $this->db->where('FNLngID',$nLngID);
@@ -1740,7 +1909,6 @@ class mTaxinvoicefc extends CI_Model{
         $aPackData['FTAddTaxNo'] = $FTAddTaxNo;
         $aPackData['FDCreateOn'] = $FDCreateOn;
         $aPackData['FTCreateBy'] = $FTCreateBy;
-        // print_r([$aPackData, $FTAddTaxNo, $tTaxNumberFull]); exit;
         // $this->db->set('FTBchCode',$tBrowseBchCode);
         // $this->db->set('FTXshDocNo',$tTaxNumberFull);
         $this->db->insert('TPSTTaxHDAddress',$aPackData);
@@ -1851,21 +2019,21 @@ class mTaxinvoicefc extends CI_Model{
         }
     }
 
-    public function FSaMTXFUpdateWhenApprove($aSet){
-        // $FTAddName          = $aSet['FTAddName'];
-        // $FTAddTel           = $aSet['FTAddTel'];
-        // $FTAddFax           = $aSet['FTAddFax'];
-        // $FTAddV2Desc1       = $aSet['FTAddV2Desc1'];
-        // $FTAddV2Desc2       = $aSet['FTAddV2Desc2'];
-        // $dDateCurrent       = date('Y-m-d H:i:s');
-        // $tNameTask          = $this->session->userdata('tSesUsername');
-        // $FNAddSeqNo         = $aWhere['FNAddSeqNo'];
-        // $tDocumentNo        = $aSet['tDocumentNo'];
-        // $tBrowseBchCode        = $aSet['tBrowseBchCode'];
-        // $nLngID             = $this->session->userdata("tLangEdit");
+    public function FSaMTXFUpdateWhenApprove($aWhere,$aSet,$ptType){
+        $FTAddName          = $aSet['FTAddName'];
+        $FTAddTel           = $aSet['FTAddTel'];
+        $FTAddFax           = $aSet['FTAddFax'];
+        $FTAddV2Desc1       = $aSet['FTAddV2Desc1'];
+        $FTAddV2Desc2       = $aSet['FTAddV2Desc2'];
+        $dDateCurrent       = date('Y-m-d H:i:s');
+        $tNameTask          = $this->session->userdata('tSesUsername');
+        $FNAddSeqNo         = $aWhere['FNAddSeqNo'];
+        $tDocumentNo        = $aSet['tDocumentNo'];
+        $tBrowseBchCode        = $aSet['tBrowseBchCode'];
+        $nLngID             = $this->session->userdata("tLangEdit");
 
 
-        // if($ptType == 'UPDATEADDRESS'){
+        if($ptType == 'UPDATEADDRESS'){
         //     // $tSQL   = " UPDATE TCNMTaxAddress_L 
         //     //         SET FTAddName = '$FTAddName' , 
         //     //             FTAddTel = '$FTAddTel' ,
@@ -1875,79 +2043,79 @@ class mTaxinvoicefc extends CI_Model{
         //     //             FDLastUpdOn = '$dDateCurrent' , 
         //     //             FTLastUpdBy = '$tNameTask' 
         //     //         WHERE FNAddSeqNo = '$FNAddSeqNo' ";
-        // }else{
+        }else{
 
-        //     $tNumberTax             = $aSet['tNumberTax'];
-        //     $tNumberTaxNew          = $aSet['tNumberTaxNew'];
-        //     $tTypeBusiness          = $aSet['tTypeBusiness'];
-        //     $tBusiness              = $aSet['tBusiness'];
-        //     $tBchCode               = $aSet['tBchCode'];
-        //     $tCstCode               = $aSet['tCstCode'];
-        //     $tCstName               = $aSet['tCstName'];
+            $tNumberTax             = $aSet['tNumberTax'];
+            $tNumberTaxNew          = $aSet['tNumberTaxNew'];
+            $tTypeBusiness          = $aSet['tTypeBusiness'];
+            $tBusiness              = $aSet['tBusiness'];
+            $tBchCode               = $aSet['tBchCode'];
+            $tCstCode               = $aSet['tCstCode'];
+            $tCstName               = $aSet['tCstName'];
 
-        //     $tSQLFind   = "SELECT TOP 1 FNAddSeqNo FROM TCNMTaxAddress_L WHERE FTAddTaxNo = '$tNumberTax' ";
-        //     $oQuery     = $this->db->query($tSQLFind);
-        //     if ($oQuery->num_rows() > 0) {
-        //         $tFindAddress   = 1;
+            $tSQLFind   = "SELECT TOP 1 FNAddSeqNo FROM TCNMTaxAddress_L WHERE FTAddTaxNo = '$tNumberTax' ";
+            $oQuery     = $this->db->query($tSQLFind);
+            if ($oQuery->num_rows() > 0) {
+                $tFindAddress   = 1;
         //         $aResult        = $oQuery->result();
         //         $nSeqLast       = $aResult[0]->FNAddSeqNo;
-        //     }else{
-        //         $tFindAddress   = 0;
-        //     }
+            }else{
+                $tFindAddress   = 0;
+            }
 
-        //     if($tFindAddress == 1){
+            if($tFindAddress == 1){
 
-        //         if($tCstCode == '' || $tCstCode == null){
-        //             $tSQL       = " UPDATE TPSTTaxHDCst SET FTXshAddrTax = '$nSeqLast' WHERE FTXshDocNo = '$tDocumentNo' AND FTBchCode='$tBrowseBchCode' ";
-        //         }else{
-        //             $tSQL       = " UPDATE TPSTTaxHDCst SET FTXshAddrTax = '$nSeqLast' , FTXshCstName  = '$tCstName' WHERE FTXshDocNo = '$tDocumentNo' AND FTBchCode='$tBrowseBchCode' ";
-        //         }
+                if($tCstCode == '' || $tCstCode == null){
+                    $tSQL       = " UPDATE TPSTTaxHDCst SET FTXshAddrTax = '$tNumberTax' WHERE FTXshDocNo = '$tDocumentNo' AND FTBchCode='$tBrowseBchCode' ";
+                }else{
+                    $tSQL       = " UPDATE TPSTTaxHDCst SET FTXshAddrTax = '$tNumberTax' , FTXshCstName  = '$tCstName' WHERE FTXshDocNo = '$tDocumentNo' AND FTBchCode='$tBrowseBchCode' ";
+                }
 
-        //         $tSQLADD    = " UPDATE TCNMTaxAddress_L 
-        //                         SET FTAddName = '$FTAddName' , 
-        //                             FTAddTel = '$FTAddTel' ,
-        //                             FTAddFax  = '$FTAddFax' ,
-        //                             FTAddV2Desc1 = '$FTAddV2Desc1',
-        //                             FTAddV2Desc2 = '$FTAddV2Desc2',
-        //                             FDLastUpdOn = '$dDateCurrent' , 
-        //                             FTAddStaHQ = '$tBusiness',
-        //                             FTAddStaBchCode = '$tBchCode',
-        //                             FTAddStaBusiness =  '$tTypeBusiness',
-        //                             FTLastUpdBy = '$tNameTask' 
-        //                         WHERE FNAddSeqNo = '$nSeqLast' ";
-        //         $this->db->query($tSQLADD);
-        //     }else{  
-        //         //Insert
-        //         $tSQLIns = "INSERT INTO TCNMTaxAddress_L (
-        //             FTAddTaxNo , FNLngID , 
-        //             FTCstCode , FTAddName , FTAddVersion ,
-        //             FTAddV2Desc1 , FTAddV2Desc2 , FTAddStaBusiness ,
-        //             FTAddStaHQ , FTAddStaBchCode , FTAddTel , FTAddFax ,
-        //             FDLastUpdOn , FTLastUpdBy , FDCreateOn , FTCreateBy 
-        //         )
-        //         VALUES (
-        //             '$tNumberTax' , '$nLngID' , 
-        //             '$tCstCode' , '$FTAddName' , '2' ,
-        //             '$FTAddV2Desc1' , '$FTAddV2Desc2' , '$tTypeBusiness' ,
-        //             '$tBusiness' , '$tBchCode' , '$FTAddTel' , '$FTAddFax' ,
-        //             '$dDateCurrent' , '$tNameTask' , '$dDateCurrent' , '$tNameTask' 
-        //         )";
-        //         $this->db->query($tSQLIns);
+                $tSQLADD    = " UPDATE TCNMTaxAddress_L 
+                                SET FTAddName = '$FTAddName' , 
+                                    FTAddTel = '$FTAddTel' ,
+                                    FTAddFax  = '$FTAddFax' ,
+                                    FTAddV2Desc1 = '$FTAddV2Desc1',
+                                    FTAddV2Desc2 = '$FTAddV2Desc2',
+                                    FDLastUpdOn = '$dDateCurrent' , 
+                                    FTAddStaHQ = '$tBusiness',
+                                    FTAddStaBchCode = '$tBchCode',
+                                    FTAddStaBusiness =  '$tTypeBusiness',
+                                    FTLastUpdBy = '$tNameTask' 
+                                WHERE FNAddSeqNo = '$tNumberTax' ";
+                $this->db->query($tSQLADD);
+            }else{  
+                //Insert
+                $tSQLIns = "INSERT INTO TCNMTaxAddress_L (
+                    FTAddTaxNo , FNLngID ,
+                    FTCstCode , FTAddName , FTAddVersion ,
+                    FTAddV2Desc1 , FTAddV2Desc2 , FTAddStaBusiness ,
+                    FTAddStaHQ , FTAddStaBchCode , FTAddTel , FTAddFax ,
+                    FDLastUpdOn , FTLastUpdBy , FDCreateOn , FTCreateBy
+                )
+                VALUES (
+                    '$tNumberTax' , '$nLngID' ,
+                    '$tCstCode' , '$FTAddName' , '2' ,
+                    '$FTAddV2Desc1' , '$FTAddV2Desc2' , '$tTypeBusiness' ,
+                    '$tBusiness' , '$tBchCode' , '$FTAddTel' , '$FTAddFax' ,
+                    '$dDateCurrent' , '$tNameTask' , '$dDateCurrent' , '$tNameTask'
+                )";
+                $this->db->query($tSQLIns);
 
-        //         //หาข้อมูลว่า SEQ ที่เพิ่มเข้าไปใช้อะไร
-        //         $tSQL       = "SELECT TOP 1 FNAddSeqNo FROM TCNMTaxAddress_L WHERE FTAddTaxNo = '$tNumberTax' ORDER BY FNAddSeqNo DESC";
-        //         $oQuery     = $this->db->query($tSQL);
-        //         $aResult    = $oQuery->result();
-        //         $nSeqLast   = $aResult[0]->FNAddSeqNo;
+                //หาข้อมูลว่า SEQ ที่เพิ่มเข้าไปใช้อะไร
+                // $tSQL       = "SELECT TOP 1 FNAddSeqNo FROM TCNMTaxAddress_L WHERE FTAddTaxNo = '$tNumberTax' ORDER BY FNAddSeqNo DESC";
+                // $oQuery     = $this->db->query($tSQL);
+                // $aResult    = $oQuery->result();
+                // $nSeqLast   = $aResult[0]->FNAddSeqNo;
 
-        //         if($tCstCode == '' || $tCstCode == null){
-        //             $tSQL       = " UPDATE TPSTTaxHDCst SET FTXshAddrTax = '$nSeqLast' WHERE FTXshDocNo = '$tDocumentNo' AND FTBchCode='$tBrowseBchCode' ";
-        //         }else{
-        //             $tSQL       = " UPDATE TPSTTaxHDCst SET FTXshAddrTax = '$nSeqLast' , FTXshCstName  = '$tCstName' WHERE FTXshDocNo = '$tDocumentNo' AND FTBchCode='$tBrowseBchCode' ";
-        //         }
-        //     }
-        // };
-        // $this->db->query($tSQL);
+                if($tCstCode == '' || $tCstCode == null){
+                    $tSQL       = " UPDATE TPSTTaxHDCst SET FTXshAddrTax = '$tNumberTax' WHERE FTXshDocNo = '$tDocumentNo' AND FTBchCode='$tBrowseBchCode' ";
+                }else{
+                    $tSQL       = " UPDATE TPSTTaxHDCst SET FTXshAddrTax = '$tNumberTax' , FTXshCstName  = '$tCstName' WHERE FTXshDocNo = '$tDocumentNo' AND FTBchCode='$tBrowseBchCode' ";
+                }
+            }
+        };
+        $this->db->query($tSQL);
 
               // $FTAddName          = $aSet['FTAddName'];
         // $FTAddTel           = $aSet['FTAddTel'];
@@ -2403,7 +2571,7 @@ class mTaxinvoicefc extends CI_Model{
         }
     }
 
-    public function FSxMTAXUpdAddrABBFullTax($aPackData){
+    public function FSxMTXFUpdAddrABBFullTax($aPackData){
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
         $dDocDateTime       = $aPackData['dDocDate'] .' '. $aPackData['dDocTime'];
@@ -2429,12 +2597,26 @@ class mTaxinvoicefc extends CI_Model{
         $this->db->query($tSQL);
     }
 
-    public function FSxMTAXUpdateReference($aPackData){
+      // TPSTSalDTSN -> TPSTTaxDTSN
+      public function FSaMTXFMoveSalDTSN_TaxDTSN($aPackData){
+        $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
+        $tABB               = $aPackData['tDocABB'];
+        $tBranch            = $aPackData['tBrowseBchCode'];
+
+        $tSQL       = " INSERT INTO TPSTTaxDTSN ( FTBchCode,FTXshDocNo,FNXsdSeqNo,FTPdtSerial,FTXsdStaRet,FTPdtBatchID )
+                        SELECT '$tBranch','$tTaxNumberFull',FNXsdSeqNo,FTPdtSerial,FTXsdStaRet,FTPdtBatchID
+                        FROM TPSTSalDTSN WITH(NOLOCK) 
+                        WHERE FTXshDocNo = '$tABB' AND FTBchCode = '$tBranch' ";
+        $this->db->query($tSQL);
+    }
+
+    public function FSxMTXFUpdateReference($aPackData){
         $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
         $tCurretTaxDocNo    = $aPackData['tCurretTaxDocNo'];
         $tOriginTaxDocNo    = $aPackData['tOriginTaxDocNo'];
         $dDocDateTime       = $aPackData['dDocDate'] .' '. $aPackData['dDocTime'];
+
 
         if( $tOriginTaxDocNo == "" ){
             $tOriginTaxDocNo = $tCurretTaxDocNo;
@@ -2463,112 +2645,39 @@ class mTaxinvoicefc extends CI_Model{
         $this->db->update('TPSTTaxHD');
     }
 
-    public function FSxMTAXUpdAddrCNFullTax($aPackData){
-        $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
-        $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
-        $tCurretTaxDocNo    = $aPackData['tCurretTaxDocNo'];
-        $tOriginTaxDocNo    = $aPackData['tOriginTaxDocNo'];
-        $dDocDateTime       = $aPackData['dDocDate'] .' '. $aPackData['dDocTime'];
-        $bStaInsert         = false;
+    // Create By : Napat(Jame) 16/09/2021
+    // อัพเดทกรณีอนุมัติส่ง iNet ไม่สำเร็จ และ User เข้ามาแก้ไขข้อมูล Address
+    public function FSxMTXFUpdAddrAndCst($paDataHDAddress,$paDataHDCst,$paWhereCondition){
 
-        // // เช็คว่าเป็นการยกเลิกครั้งที่ 1 หรือไม่ ?
-        // $tSQL = " SELECT FTXshRefInt FROM TPSTTaxHD WITH(NOLOCK) WHERE FTXshDocNo = '$tCurretTaxDocNo' AND FTXshStaDoc = '1' ";
-        // $oQuery = $this->db->query($tSQL);
-        // if( $oQuery->num_rows() > 0 ){
-        //     $tXshRefInt = $oQuery->row_array()['FTXshRefInt']; // ถ้าเป็นการยกเลิกครั้งที่ 1 ให้ดึงเลขที่ ABB Full Tax จาก RefInt ได้เลย
-        //     $tSQLDocNoEdit = "      SELECT HD.FTXshDocNo
-        //                             FROM TPSTTaxHD HD WITH(NOLOCK)
-        //                             WHERE HD.FTXshStaDoc = '4'
-        //                             /*AND HD.FTXshRefAE = '$tXshRefInt'*/
-        //                             AND ( HD.FTXshRefAE = '$tXshRefInt' OR HD.FTXshRefInt = '$tXshRefInt' )
-        //                             AND HD.FTBchCode = '$tBrowseBchCode' 
-        //                      ";
-        // }else{
-        //     // ถ้าไม่ใช่การยกเลิกครั้งที่ 1 เอาเลขที่ใบลดหนี้ต้นฉบับ(FTXshRefAE) ไปหาเลขที่ใบ ABB Full Tax ที่แก้ไขล่าสุด
-        //     $tSQLDocNoEdit = "      SELECT HD.FTXshDocNo
-        //                             FROM TPSTTaxHD CN WITH(NOLOCK)
-        //                             INNER JOIN TPSTTaxHD HD WITH(NOLOCK) ON /*HD.FTXshRefAE = CN.FTXshRefInt*/ ( HD.FTXshRefAE = CN.FTXshRefInt OR HD.FTXshRefInt = CN.FTXshRefInt ) AND HD.FTBchCode = CN.FTBchCode
-        //                             WHERE HD.FTXshStaDoc = '4'
-        //                             AND CN.FTXshDocNo = '$tOriginTaxDocNo'
-        //                             AND CN.FTBchCode = '$tBrowseBchCode'
-        //                      ";
-        // }
+        // Update HD Address
+        $this->db->where($paWhereCondition);
+        $this->db->update('TPSTTaxHDAddress',$paDataHDAddress);
 
-        $tSQL = "   SELECT
-                        CNTAX.FTXshRefExt,
-                        CNABB.FTXshRefInt,
-                        ABB.FTXshDocVatFull
-                    FROM TPSTTaxHD			CNTAX WITH(NOLOCK)
-                    INNER JOIN TPSTSalHD	CNABB WITH(NOLOCK) ON CNTAX.FTXshRefExt = CNABB.FTXshDocNo AND CNTAX.FTBchCode = CNABB.FTBchCode
-                    INNER JOIN TPSTSalHD	  ABB WITH(NOLOCK) ON CNABB.FTXshRefInt = ABB.FTXshDocNo AND CNABB.FTBchCode = ABB.FTBchCode
-                    WHERE CNTAX.FTXshDocNo = '$tCurretTaxDocNo'
-                      AND CNTAX.FTBchCode  = '$tBrowseBchCode' 
-                ";
+        // Update HD Cst
+        $this->db->where($paWhereCondition);
+        $this->db->update('TPSTTaxHDCst',$paDataHDCst);
 
-        $oQuery = $this->db->query($tSQL);
-        if( $oQuery->num_rows() > 0 ){
-            $bStaInsert = true;
-            $tXshDocNoFullTax = $oQuery->row_array()['FTXshDocVatFull'];
-        }
-
-        if( $bStaInsert ){
-
-            $tUserCode = $this->session->userdata("tSesUserCode");
-            $nFNLngID  = $this->session->userdata("tLangEdit");
-
-            $this->db->where('FTBchCode',$tBrowseBchCode);
-            $this->db->where('FTXshDocNo',$tTaxNumberFull);
-            $this->db->delete('TPSTTaxHDAddress');
-
-            $tSQL = "   INSERT INTO TPSTTaxHDAddress ( FTBchCode, FTXshDocNo, FTAddTaxNo, FTAddName, 
-                        FTAddRmk, FTAddCountry, FTAreCode, FTZneCode, FTAddVersion, FTAddV1No, FTAddV1Soi, 
-                        FTAddV1Village, FTAddV1Road, FTAddV1SubDist, FTAddV1DstCode, FTAddV1PvnCode, 
-                        FTAddV1PostCode, FTAddV2Desc1, FTAddV2Desc2, FTAddWebsite, FTAddLongitude, FTAddLatitude, 
-                        FTAddStaBusiness, FTAddStaHQ, FTAddStaBchCode, FTAddTel, FTAddFax, FTAddRefNo, FDLastUpdOn, 
-                        FTLastUpdBy, FDCreateOn, FTCreateBy ) 
-
-                        SELECT FTBchCode, '$tTaxNumberFull', FTAddTaxNo, FTAddName, 
-                        FTAddRmk, FTAddCountry, FTAreCode, FTZneCode, FTAddVersion, FTAddV1No, FTAddV1Soi, 
-                        FTAddV1Village, FTAddV1Road, FTAddV1SubDist, FTAddV1DstCode, FTAddV1PvnCode, 
-                        FTAddV1PostCode, FTAddV2Desc1, FTAddV2Desc2, FTAddWebsite, FTAddLongitude, FTAddLatitude, 
-                        FTAddStaBusiness, FTAddStaHQ, FTAddStaBchCode, FTAddTel, FTAddFax, FTAddRefNo, '$dDocDateTime', 
-                        FTLastUpdBy, '$dDocDateTime', FTCreateBy 
-                        FROM TPSTTaxHDAddress WITH(NOLOCK)
-                        WHERE FTXshDocNo = '$tXshDocNoFullTax'
-                          AND FTBchCode = '$tBrowseBchCode'
-                    ";
-            $this->db->query($tSQL);
-
-            // เอาที่อยู่ล่าสุดของ abb-fulltax ไปอัพเดที่ master tax address
-            $tSQL = "   UPDATE TADRL
-                        SET TADRL.FTAddName         = FULLTAX.FTAddName,
-                            TADRL.FTAddV1SubDist    = FULLTAX.FTAddV1SubDist,
-                            TADRL.FTAddV1DstCode    = FULLTAX.FTAddV1DstCode,
-                            TADRL.FTAddV1PvnCode    = FULLTAX.FTAddV1PvnCode,
-                            TADRL.FTAddV1PostCode   = FULLTAX.FTAddV1PostCode,
-                            TADRL.FTAddV2Desc1      = FULLTAX.FTAddV2Desc1,
-                            TADRL.FTAddV2Desc2      = FULLTAX.FTAddV2Desc2,
-                            TADRL.FDLastUpdOn       = '$dDocDateTime',
-                            TADRL.FTLastUpdBy       = '$tUserCode'
-                        FROM TCNMTaxAddress_L TADRL
-                        INNER JOIN TPSTTaxHDAddress FULLTAX ON TADRL.FTAddTaxNo = FULLTAX.FTAddTaxNo
-                        WHERE FULLTAX.FTBchCode  = '$tBrowseBchCode'
-                          AND FULLTAX.FTXshDocNo = '$tXshDocNoFullTax' 
-                          AND TADRL.FNLngID      = $nFNLngID ";
-            $this->db->query($tSQL);
-
-            // อัพเดทชื่อลูกค้า จากที่อยู่ล่าสุดของ abb-fulltax
-            $tSQL = "   UPDATE CNCST
-                        SET CNCST.FTXshCstName = FULLCST.FTXshCstName
-                        FROM TPSTTaxHDCst CNCST
-                        INNER JOIN TPSTTaxHDCst FULLCST ON FULLCST.FTXshDocNo = '$tXshDocNoFullTax' AND CNCST.FTBchCode = FULLCST.FTBchCode
-                        WHERE CNCST.FTBchCode   = '$tBrowseBchCode'
-                          AND CNCST.FTXshDocNo  = '$tTaxNumberFull' 
-                    ";
-            $this->db->query($tSQL);
-
-        }
     }
+
+    // Create By : Napat(Jame) 16/09/2021
+    // เช็คสถานะส่งไป iNet ของ ABB ถ้าไม่สมบูรณ์ ให้ส่งใหม่อีกครั้ง
+    public function FSbMTXFChkStaABBETaxApv($paWhereABB){
+        $tSQL = "   SELECT HD.FTXshETaxStatus FROM TPSTSalHD HD WITH(NOLOCK) 
+                    WHERE HD.FTXshDocNo = '".$paWhereABB['FTXshDocNo']."'
+                      AND HD.FTBchCode = '".$paWhereABB['FTBchCode']."'
+                      AND ISNULL(HD.FTXshETaxStatus,'3') = '3'
+                ";
+        $oQuery = $this->db->query($tSQL);
+        // echo $this->db->last_query();
+        if( $oQuery->num_rows() > 0 ){
+            $bReturn = true;
+        }else{
+            $bReturn = false;
+        }
+        return $bReturn;
+    }
+
+
 
 
 }

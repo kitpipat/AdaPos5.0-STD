@@ -15,7 +15,7 @@
                         <tr class="xCNCenter">
                             <th nowrap class="xCNTextBold" style="width:10%;"><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDCstPriCode')?></th>
                             <th nowrap class="xCNTextBold" style="width:60%;"><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDCstPriName')?></th>
-                            <th></th>
+                            <th nowrap class="xCNTextBold" style="width:5%;"><?php echo language('common/main/main','tCMNActionDelete')?></th>
                         </tr>
                     </thead>
                     <tbody id="otbCouponHDCstPriInclude">
@@ -49,7 +49,7 @@
                         <tr class="xCNCenter">
                             <th nowrap class="xCNTextBold" style="width:10%;"><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDCstPriCode')?></th>
                             <th nowrap class="xCNTextBold" style="width:60%;"><?php echo language('document/couponsetup/couponsetup','tCPHTabCouponHDCstPriName')?></th>
-                            <th></th>
+                            <th nowrap class="xCNTextBold" style="width:5%;"><?php echo language('common/main/main','tCMNActionDelete')?></th>
                         </tr>
                     </thead>
                     <tbody id="otbCouponHDCstPriExclude">

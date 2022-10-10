@@ -18,6 +18,7 @@ $bIsUseSubRef = !empty($aPdtCond['tSubTable']);
                 <?php if($bIsUseSubRef) { ?>
                 <th width="30%" class="text-left"><?php echo $aPdtCond['tSubRefNTitle']; ?></th>
                 <?php } ?>
+                <th width="15%" class="text-left"><?php echo language('document/promotion/promotion', 'tNote'); ?></th>
                 <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
             </tr>
         </thead>
@@ -35,7 +36,24 @@ $bIsUseSubRef = !empty($aPdtCond['tSubTable']);
                             </td>
                             <td class="text-center"><?php echo $key+1; ?></td>
                             <td class="text-left"><?php echo $aValue['FTPmdRefCode']; ?></td>
-                            <td class="text-left"><?php echo $aValue['FTPmdRefName']; ?></td>
+                            <td class="text-left">
+                                <div>
+                                <span><?php echo $aValue['FTPmdRefName']; ?></span>
+                                <?php if($aValue['CheckLOT'] != '' && isset($aValue['CheckLOT'])) {?>
+                                    <?php if(!isset($aValue['LotNumber'])){
+                                        $aValue['LotNumber'] = '0'; 
+                                    }?>
+                                    <div class='row'>
+                                        <div class="col-md-6">
+                                            <span class="xWCheckEffectLot" style='font-weight: 700!important;' data-effectlot="<?php echo $aValue['LotNumber'];?>"><?php echo language('document/promotion/promotion', 'tPMTLotEffective'); ?> <?php echo substr($aValue['LotNumber'],2); ?></span>
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                        <a href="#"><span class="xWChangeLot" data-table="<?php echo $aPdtCond['tTable'];?>" data-pdt-code="<?php echo $aValue['FTPmdRefCode'];?>" data-seq-no="<?php echo $aValue['FNPmdSeq']; ?>" onclick="JSxPromotionLotChangeBch(this);"><?php echo language('document/promotion/promotion', 'tPMTLotChange'); ?></span></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                                </div>
+                            </td>
                             <?php if($bIsUseSubRef) { ?>
                             <td class="text-left">
                                 <div class="input-group">
@@ -121,6 +139,7 @@ $bIsUseSubRef = !empty($aPdtCond['tSubTable']);
                                 </script>
                             </td>
                             <?php } ?>
+                            <td class="text-left xCNPromotionStep1PmtDtPmdRemark text-danger" style="color: red !important;"><?php echo $aValue['FTXtdRmk']; ?></td>
                             <td class="text-center">
                                 <img class="xCNIconTable xCNIconDel" src="<?= base_url('application/modules/common/assets/images/icons/delete.png') ?>">
                             </td>
@@ -171,5 +190,25 @@ $bIsUseSubRef = !empty($aPdtCond['tSubTable']);
         </div>
     </div>
 <?php } ?>
+
+<script>
+function JSxPromotionLotChangeBch(evn){
+    $('#odvPromotionAddPmtGroupModal').modal('hide');
+    var tPdtCode = $(evn).data("pdt-code");
+    var tSeqNo   = $(evn).data("seq-no");
+    var tTable   = $(evn).data("table");
+    var tSubref  = $('#oetPromotionPmtModelCode'+tSeqNo).val();
+    
+    var aLot = new Array();
+    var aLotSeq = new Array();
+    aLot.push(tPdtCode);
+    aLotSeq.push(tSeqNo);
+    JSvPromotionLoadModalShowBrandLotDT(tTable,aLot,aLotSeq,0,'',tSubref);
+}
+
+$(".xCNModelCode").change(function (e) { 
+    JSxPromotionStep1PmtBrandDtDataLotDeleteBySeq($(this).parent().parent().parent().data('seq-no'));
+});
+</script>
 
 <?php include('script/jStep1PmtBrandDtTableTmp.php'); ?>

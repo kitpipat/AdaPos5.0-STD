@@ -69,6 +69,8 @@ $lang['tCPHLabelFrmCouponMsg2']         = "Message shown on Coupon 2";
 $lang['tCPHLabelFrmCouponDisType1']     = "Baht discount";
 $lang['tCPHLabelFrmCouponDisType2']     = "Percen discount";
 $lang['tCPHLabelFrmCouponDisType3']     = "Use Price Group";
+$lang['tCPHLabelFrmCouponDisType4']     = "Use Price Adjustment";
+$lang['tCPHTabCouponHDDocref']          = "Price Adjustment";
 $lang['tCPHLabelFrmCouponDisValue']     = "Coupon value";
 $lang['tCPHLabelFrmCouponDateStart']    = "Start date";
 $lang['tCPHLabelFrmCouponDateStop']     = "Expire Date";
@@ -78,6 +80,8 @@ $lang['tCPHLabelFrmCouponAlwMaxUse']    = "Number of license";
 $lang['tCPHLabelFrmCouponCond']         = "Conditions Shown Coupon";
 $lang['tCPHLabelFrmCouponStaClosed']    = "Stop Using";
 $lang['tCPHLabelFrmCouponStaChkMember'] = "Check Customer";
+$lang['tCPHTabCouponHDCopy']            = "Copy Doc";
+
 // Panel Setting Special 
 $lang['tCPHLabelFrmSettingSpecial']     = "SettingSpecial";
 $lang['tCPHLabelFrmCouponBranchTo']     = "Effective Branch";
@@ -149,6 +153,7 @@ $lang['tCPHTabCouponHDPdtPunCode'] = "Unit";
 $lang['tCPHTabCouponHDPdtName'] = "Product Name";
 
 $lang['tCPHTabCouponHDCstPriSelect'] = "Please Select Price Group";
+$lang['tCPHTabCouponHDDocRef'] = "Please Select Adjustment Price";
 $lang['tCPHTabCouponHDBchSelect'] = "Select Price Group";
 $lang['tCPHTabCouponHDPdtSelect'] = "Select Product";
 

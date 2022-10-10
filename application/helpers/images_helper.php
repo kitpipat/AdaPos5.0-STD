@@ -1,6 +1,9 @@
 <?php
 //Move File Image From system/temp To Folder destination
 //10/04/2018 Krit(Copter)
+
+use function PHPSTORM_META\exitPoint;
+
 function FCNnHAddImgObj($paImgData){
 	// print_r($paImgData);
 	$ci = &get_instance();
@@ -88,7 +91,6 @@ function FCNnHAddImgObj($paImgData){
 				}else{
 					$oQuery = array();
 				}
-				// print_r($oQuery);
 
 				// พบรูปภาพที่อยู่ในเบส
 				if( FCNnHSizeOf($oQuery) > 0 ){
@@ -136,7 +138,12 @@ function FCNnHAddImgObj($paImgData){
 							}
 						}else{														// ไม่มีรูปภาพใหม่ ที่ต้องอัพโหลด
 							$ci->db->trans_commit();											
-							return false;
+							// return false;
+							$aReturn = array(
+								'nStaEvent'   => 1,
+								'tStaMessg'   => 'Not Edit Image'
+							);
+							return $aReturn;
 						}
 					}
 

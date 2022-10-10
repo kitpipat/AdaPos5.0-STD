@@ -1,4 +1,3 @@
-
 <?php if ($aDataList['rtCode'] == 1) { ?>
     <?php foreach ($aDataList['raItems'] as $key => $aValue) { ?>
         <?php // echo $aValue['FTPmdGrpName']; ?>
@@ -8,6 +7,7 @@
         <?php if($tGroupType == "1") { ?>
             <div
             data-grpname="<?php echo $aValue['FTPmdGrpName']; ?>" 
+            data-stalisttype="<?php echo $aValue['FTPmdStaListType']; ?>" 
             class="xCNPromotionStep2GroupNameType1Item alert alert-success" 
             role="alert" 
             style="min-width: 60%; width: fit-content; z-index: 100;">
@@ -97,12 +97,16 @@
                     "ui-droppable-active": "xCNPromotionStep2ActiveBackground"
                 },
                 drop: function(event, ui) {
+
                     if(JSbPromotionConditionBuyIsRange()){ // เงื่อนไขการซื้อเป็นช่่วงบังคับให้มี กลุ่ม Get
                         JSxPromotionStep2GroupNameType1ToGroupBuy(ui.draggable.clone());
                         JSxPromotionStep2GroupNameType1ToGroupGet(ui.draggable.clone());
                     }
                     if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
-                        JSxPromotionStep2GroupNameType1ToGroupBuy(ui.draggable.clone());
+                        var tGetType = JSxPromotionStep2GroupNameType1ToGroupBuy(ui.draggable.clone());
+                        if(tGetType == '8'){
+                            JSxPromotionStep2GroupNameType1ToGroupGet(ui.draggable.clone());
+                        }
                     }
                 }
             });
@@ -119,7 +123,10 @@
                         JSxPromotionStep2GroupNameType1ToGroupGet(ui.draggable.clone());
                     }
                     if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
-                        JSxPromotionStep2GroupNameType1ToGroupGet(ui.draggable.clone());
+                        var tGetType = JSxPromotionStep2GroupNameType1ToGroupGet(ui.draggable.clone());
+                        if(tGetType == '8'){
+                            JSxPromotionStep2GroupNameType1ToGroupBuy(ui.draggable.clone());
+                        }
                     }
                 }
             });
@@ -150,6 +157,8 @@
         function JSxPromotionStep2GroupNameType1ToGroupBuy(item) {
             // console.log('JSxPromotionStep2GroupNameType1ToGroupBuy: ', item);
             var tGroupName =  item.data('grpname');
+            var tListType =  item.data('stalisttype');
+
             if(!JSbPromotionStep2IsDupInBuy(tGroupName)){
                 $('.xCNPromotionStep2GroupBuy').append(item);
 
@@ -157,7 +166,7 @@
                     JSvPromotionStep3InsertPmtCBAndPmtCGToTemp(tGroupName, false);
                 }
                 if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
-                    JSvPromotionStep3InsertPmtCBToTemp(tGroupName);
+                    JSvPromotionStep3InsertPmtCBToTemp(tGroupName,tListType);
                 }
 
             }
@@ -174,8 +183,16 @@
             if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
                 $('.xCNPromotionStep2GroupBuy .xCNPromotionStep2GroupNameType1Item .close').unbind().bind('click', function(){
                     var tGroupName = $(this).parents(".xCNPromotionStep2GroupNameType1Item").data('grpname');
-                    JSvPromotionStep3DeletePmtCBInTemp(tGroupName);
-                    $(this).parents(".xCNPromotionStep2GroupNameType1Item").remove();
+                    var tStaListType = $(this).parents(".xCNPromotionStep2GroupNameType1Item").data('stalisttype');
+                    if(tStaListType == '8'){
+                        JSvPromotionStep3DeletePmtCBInTemp(tGroupName);
+                        JSvPromotionStep3DeletePmtCGInTemp(tGroupName);
+                        $(".xCNPromotionStep2GroupBuy .xCNPromotionStep2GroupNameType1Item[data-grpname='" + tGroupName + "']").remove();
+                        $(".xCNPromotionStep2GroupGet .xCNPromotionStep2GroupNameType1Item[data-grpname='" + tGroupName + "']").remove();  
+                    }else{
+                        JSvPromotionStep3DeletePmtCBInTemp(tGroupName);
+                        $(this).parents(".xCNPromotionStep2GroupNameType1Item").remove();
+                    } 
                 });
             }
 
@@ -194,16 +211,18 @@
                     $(this).parents(".xCNPromotionStep2GroupNameType1Item").remove();
                 });
             } */
+            return tListType;
         }
 
         function JSxPromotionStep2GroupNameType1ToGroupGet(item) {
             // console.log('JSxPromotionStep2GroupNameType1ToGroupGet: ', item);
             var tGroupName =  item.data('grpname');
+            var tListType =  item.data('stalisttype');
             if(!JSbPromotionStep2IsDupInGet(tGroupName)){
                 $('.xCNPromotionStep2GroupGet').append(item);
 
                 if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
-                    JSvPromotionStep3InsertPmtCGToTemp(tGroupName);
+                    JSvPromotionStep3InsertPmtCGToTemp(tGroupName,tListType);
                 }
 
             }
@@ -220,8 +239,16 @@
             if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
                 $('.xCNPromotionStep2GroupGet .xCNPromotionStep2GroupNameType1Item .close').unbind().bind('click', function(){
                     var tGroupName = $(this).parents(".xCNPromotionStep2GroupNameType1Item").data('grpname');
-                    JSvPromotionStep3DeletePmtCGInTemp(tGroupName);
-                    $(this).parents(".xCNPromotionStep2GroupNameType1Item").remove();
+                    var tStaListType = $(this).parents(".xCNPromotionStep2GroupNameType1Item").data('stalisttype');
+                    if(tStaListType == '8'){
+                        JSvPromotionStep3DeletePmtCBInTemp(tGroupName);
+                        JSvPromotionStep3DeletePmtCGInTemp(tGroupName);
+                        $(".xCNPromotionStep2GroupBuy .xCNPromotionStep2GroupNameType1Item[data-grpname='" + tGroupName + "']").remove();
+                        $(".xCNPromotionStep2GroupGet .xCNPromotionStep2GroupNameType1Item[data-grpname='" + tGroupName + "']").remove();  
+                    }else{
+                        JSvPromotionStep3DeletePmtCGInTemp(tGroupName);
+                        $(this).parents(".xCNPromotionStep2GroupNameType1Item").remove();
+                    } 
                 });    
             }
 
@@ -240,6 +267,7 @@
                     $(this).parents(".xCNPromotionStep2GroupNameType1Item").remove();
                 });    
             } */
+            return tListType;
         }
 
         /* function recycleImage( item ) {

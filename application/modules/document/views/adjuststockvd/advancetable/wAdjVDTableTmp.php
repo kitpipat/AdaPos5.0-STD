@@ -2,10 +2,10 @@
     <table class="table table-striped xWPdtTableFont" id="otbDOCPdtTable">
         <thead>
             <tr class="xCNCenter ">
-                <th width="8%" class="text-center othShowChkbox">
+                <th width="5%" class="text-center othShowChkbox">
                     <label class="fancy-checkbox">
                         <input type="checkbox" class="ocbHeadCheckBox" name="oetAllCheck" id="oetAllCheck">
-                        <span style="font-family: THSarabunNew-Bold; font-weight: 500;"><?=language('document/TopupVending/TopupVending', 'tTBChoose');?></span>
+                        <span></span>
                     </label>
                 </th>
                 <th><?= language('document/adjuststockvd/adjuststockvd', 'tADJVDTBNo'); ?></th>

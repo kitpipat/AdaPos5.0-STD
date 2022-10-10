@@ -9,9 +9,6 @@
 				<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
 					<ol id="oliMenuNav" class="breadcrumb">
 						<?php FCNxHADDfavorite('chanel/0/0');?> 
-						<!-- <li id="oliChnTitle" class="xCNLinkClick" onclick="JSvCallPageChanel('')"><?php echo language('pos/slipMessage/slipmessage','tSMGTitle'); ?></li>
-						<li id="oliChnTitleAdd" class="active"><a><?php echo language('pos/slipMessage/slipmessage','tSMGTitleAdd'); ?></a></li>
-                        <li id="oliChnTitleEdit" class="active"><a><?php echo language('pos/slipMessage/slipmessage','tSMGTitleEdit'); ?></a></li> -->
                         <li id="oliChnTitle" class="xCNLinkClick" onclick="JSvCallPageChanel('')"><?php echo language('pos/poschannel/poschannel', 'tCHNTitle'); ?></li>
 						<li id="oliChnTitleAdd" class="active"><a><?php echo language('pos/poschannel/poschannel', 'tCHNTitleAdd'); ?></a></li>
 						<li id="oliChnTitleEdit" class="active"><a><?php echo language('pos/poschannel/poschannel', 'tCHNTitleEdit'); ?></a></li>
@@ -23,7 +20,7 @@
 					</div>
 					<div id="odvBtnAddEdit">
 						<button onclick="JSvCallPageChanel()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tBack'); ?></button>
-						<div class="btn-group">
+						<div id="odvChnBtnSave" class="btn-group">
 							<button type="submit" class="btn xWBtnGrpSaveLeft" onclick="$('#obtSubmitChanel').click()"> <?php echo language('common/main/main', 'tSave'); ?></button>
 							<?php echo $vBtnSave; ?>
 						</div>
@@ -61,5 +58,4 @@
 	<div id="odvContentPageChanel" class="modal-body xCNModalBodyAdd">
 	</div>
 <?php endif;?>
-<script src="<?= base_url('application/modules/common/assets/js/jquery-ui-sortable.min.js')?>"></script>
 <script src="<?= base_url('application/modules/pos/assets/src/chanel/jPosChanel.js')?>"></script>

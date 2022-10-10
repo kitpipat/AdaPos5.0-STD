@@ -38,10 +38,12 @@ $lang['tADJVDTBType']      = "ประเภท";
 $lang['tADJVDTBValue']     = "มูลค่า";
 
 //Form Search
-$lang['tADJVDAllBranch']   = "สาขาทั้งหมด";
-$lang['tADJVDShop']        = "ร้านค้า";
-$lang['tADJVDBranch']      = "สาขา";
-$lang['tADJVDPos']         = "เครื่องจุดขาย";
+$lang['tADJVDAllBranch']    = "สาขาทั้งหมด";
+$lang['tADJVDShop']         = "ร้านค้า";
+$lang['tADJVDBranch']       = "สาขา";
+$lang['tADJVDPos']          = "ตู้สินค้า";
+$lang['tADJVDPosWah']       = "คลังตู้สินค้า";
+$lang['tADJVDShopVD']       = "รูปแบบการจัดสินค้า";
 
 //$lang Modal Browse Address
 $lang['tBrowseADDTitle']        = "ข้อมูลที่อยู่";

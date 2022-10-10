@@ -77,7 +77,7 @@
     $route ['adMessageEventAdd']                        = 'pos/admessage/cAdMessage/FSaADVAddEvent';
     $route ['adMessagePageEdit']                        = 'pos/admessage/cAdMessage/FSvADVEditPage';
     $route ['adMessageEventEdit']                       = 'pos/admessage/cAdMessage/FSaADVEditEvent';
-    $route ['adMessageDeleteMulti']                     = 'pos/admessage/cAdMessage/FSoADVDeleteMulti';
+    // $route ['adMessageDeleteMulti']                     = 'pos/admessage/cAdMessage/FSoADVDeleteMulti';
     $route ['adMessageDelete']                          = 'pos/admessage/cAdMessage/FSoADVDelete';
     $route ['adMessageUniqueValidate/(:any)']           = 'pos/admessage/cAdMessage/FStADVUniqueValidate/$1';
     $route ['adMessageUniqueFileNameValidate/(:any)']   = 'pos/admessage/cAdMessage/FStADVUniqueFileNameValidate/$1';
@@ -130,16 +130,28 @@
     $route['posregCancelData']             = "pos/posregister/cPosRegister/FSvPRGCancelData";
 
     //ช่องทองขาย
-    //Create By Worakorn 28/12/2020
+    //Edit By IcePun 08/09/2022
     $route['chanel/(:any)/(:any)']         = 'pos/chanel/cPosChanel/index/$1/$2';
     $route['chanelList']                   = 'pos/chanel/cPosChanel/FSvCCHNListPage';
     $route['chanelDataTable']              = 'pos/chanel/cPosChanel/FSvCCHNDataList';
-    $route ['chanelPageAdd']               = 'pos/chanel/cPosChanel/FSvCHNAddPage';
-    $route ['chanelEventAdd']              = 'pos/chanel/cPosChanel/FSaCHNAddEvent';
-    $route ['chanelPageEdit']              = 'pos/chanel/cPosChanel/FSvCHNEditPage';
-    $route ['chanelEventEdit']             = 'pos/chanel/cPosChanel/FSaCHNEditEvent';
-    $route ['chanelDeleteMulti']           = 'pos/chanel/cPosChanel/FSoCHNDeleteMulti';
-    $route ['chanelDelete']                = 'pos/chanel/cPosChanel/FSoCHNDelete';
-    $route ['chanelUniqueValidate/(:any)'] = 'pos/chanel/cPosChanel/FStCHNUniqueValidate/$1';
+    $route['chanelPageAdd']                = 'pos/chanel/cPosChanel/FSvCHNAddPage';
+    $route['chanelEventAdd']               = 'pos/chanel/cPosChanel/FSaCHNAddEvent';
+    $route['chanelPageEdit']               = 'pos/chanel/cPosChanel/FSvCHNEditPage';
+    $route['chanelEventEdit']              = 'pos/chanel/cPosChanel/FSaCHNEditEvent';
+    $route['chanelDeleteMulti']            = 'pos/chanel/cPosChanel/FSoCHNDeleteMulti';
+    $route['chanelDelete']                 = 'pos/chanel/cPosChanel/FSoCHNDelete';
+    $route['chanelUniqueValidate/(:any)']  = 'pos/chanel/cPosChanel/FStCHNUniqueValidate/$1';
+    $route['chanelEventChkSpcWah']         = 'pos/chanel/cPosChanel/FSaCHNEventChkSpcWah';
+    $route['chanelEventClearSpcWah']       = 'pos/chanel/cPosChanel/FSaCHNEventClearSpcWah';
+
+    
+    // Channel Spc Wah
+    // Create By : Napat(Jame) 13/06/2022 (ยกมาจาก KPC)
+    $route['chanelPageSpcWah']             = 'pos/chanel/cPosChanel/FSvCCHNPageSpcWah';
+    $route['chanelPageSpcWahAdd']          = 'pos/chanel/cPosChanel/FSvCCHNPageSpcWahAdd';
+    $route['chanelEventSpcWahAdd']         = 'pos/chanel/cPosChanel/FSaCCHNEventSpcWahAdd';
+    $route['chanelPageSpcWahEdit']         = 'pos/chanel/cPosChanel/FSvCCHNPageSpcWahEdit';
+    $route['chanelEventSpcWahEdit']        = 'pos/chanel/cPosChanel/FSaCCHNEventSpcWahEdit';
+    $route['chanelEventSpcWahDel']         = 'pos/chanel/cPosChanel/FSaCCHNEventSpcWahDel';
 
      

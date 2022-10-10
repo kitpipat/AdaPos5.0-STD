@@ -14,6 +14,7 @@ $("document").ready(function(){
                 JCNxShowMsgSessionExpired();
             }
         });
+        $("#obtCPHSubmitFromDoc").removeAttr("disabled");
 
         // Event Click Button Add Page
         $('#obtCPHCallPageAdd').unbind().click(function(){
@@ -40,29 +41,30 @@ $("document").ready(function(){
             var nStaSession = JCNxFuncChkSessionExpired();
             if(typeof(nStaSession) !== "undefined" && nStaSession == 1) {
                 let nValueBchInc = JSnCPhCheckBchInc();
-                if($('#ohdCPHSesUsrBchCount').val()==0){  //ถ้าเห็น HQ ไม่ต้องเช็ค
+                if($('#ohdCPHSesUsrBchCount').val()==0){  //ถ้าเป็น HQ ไม่ต้องเช็ค
                     nValueBchInc = 1;
                 }
+
                 if(nValueBchInc>0){
-                let nDupData = JSnCPHCheckDupCoupon();
-                if(nDupData==0){
-                $tRoute  = $('#ohdCPHRouteEvent').val();
-                JSxCPHAddEditDocument($tRoute);
+                    let nDupData = JSnCPHCheckDupCoupon();
+                    if(nDupData==0){
+                        $tRoute  = $('#ohdCPHRouteEvent').val();
+                        JSxCPHAddEditDocument($tRoute);
+                    }else{
+                        FSvCMNSetMsgErrorDialog('Coupon Duplicate');
+                    }
                 }else{
-                    FSvCMNSetMsgErrorDialog('Coupon Duplicate');
-                    // alert('Coupon Duplicate');
+                    $('#oetCPHBchCodeTo').val('');
+                    $('#oetCPHBchNameTo').val('');
+                    $('#oetCPHMerCodeTo').val('');
+                    $('#oetCPHMerNameTo').val('');
+                    $('#oetCPHShpCodeTo').val('');
+                    $('#oetCPHShpNameTo').val('');
+                    $('#ohdCPHcouponModalTypeInclude').val(1);
+                    $("#odvCPHCouponHDBch").modal({backdrop: "static", keyboard: false});
+                    $("#odvCPHCouponHDBch").modal({show: true});
                 }
-            }else{
-                $('#oetCPHBchCodeTo').val('');
-                $('#oetCPHBchNameTo').val('');
-                $('#oetCPHMerCodeTo').val('');
-                $('#oetCPHMerNameTo').val('');
-                $('#oetCPHShpCodeTo').val('');
-                $('#oetCPHShpNameTo').val('');
-                $('#ohdCPHcouponModalTypeInclude').val(1);
-                $("#odvCPHCouponHDBch").modal({backdrop: "static", keyboard: false});
-                 $("#odvCPHCouponHDBch").modal({show: true});
-            }
+
             }else{
                 JCNxShowMsgSessionExpired();
             }
@@ -82,7 +84,19 @@ $("document").ready(function(){
         $('#obtCPHApproveDoc').unbind().click(function(){
             var nStaSession = JCNxFuncChkSessionExpired();
             if(typeof(nStaSession) !== "undefined" && nStaSession == 1) {
-                JSxCPHApproveDocument(false);
+                $tRoute  = $('#ohdCPHRouteEvent').val();
+                JSxCPHAddEditDocument($tRoute,'approve');
+                // JSxCPHApproveDocument(false);
+            }else{
+                JCNxShowMsgSessionExpired();
+            }
+        });
+
+         // Event Click Appove Document
+         $('#obtCPHCopy').unbind().click(function(){
+            var nStaSession = JCNxFuncChkSessionExpired();
+            if(typeof(nStaSession) !== "undefined" && nStaSession == 1) {
+                JSxCPHCopyDocument(false);
             }else{
                 JCNxShowMsgSessionExpired();
             }
@@ -162,6 +176,7 @@ function JSxCPHNavDefultDocument(){
         $("#obtCPHApproveDoc").hide();
         $("#obtCPHCancelDoc").hide();
         $('#obtCPHPrint').hide();
+        $('#obtCPHCopy').hide();
         // Button Hide/Show
         $('#odvCPHBtnGrpAddEdit').hide();
         $('#odvCPHBtnGrpInfo').show();
@@ -239,6 +254,7 @@ function JSvCPHCallPageDataTable(pnPage){
         timeout: 0,
         success: function (oResult){
             var aReturnData = JSON.parse(oResult);
+            console.log(aReturnData);
             if (aReturnData['nStaEvent'] == '1') {
                 JSxCPHNavDefultDocument();
                 $('#ostCPHDataTableDocument').html(aReturnData['tCPHViewDataTableList']);
@@ -280,6 +296,7 @@ function JSvCPHCallPageAddDocument(){
                     $("#obtCPHApproveDoc").hide();
                     $("#obtCPHCancelDoc").hide();
                     $('#obtCPHPrint').hide();
+                    $('#obtCPHCopy').hide();
                     $('#odvCPHBtnGrpInfo').hide();
                     // Show Title Menu And Button
                     $('#oliCPHTitleAdd').show();
@@ -514,21 +531,29 @@ function JStCPHFindObjectByKey(array, key, value) {
 //Creator : 26/12/2019 Saharat(Golf)
 //Return : -
 //Return Type : -
-function JSxCPHAddEditDocument(ptRoute) {
-    let tCPHFrmCptCode = $('#oetCPHFrmCptCode').val();
-    let tCPHHDCstPriCode = $('#oetCPHHDCstPriCode').val();
-    let nCPHLabelFrmCphDisType = $('#ostCPHFrmCphDisType').val();
+function JSxCPHAddEditDocument(ptRoute,ptType = '') {
+    var tCPHFrmCptCode          = $('#oetCPHFrmCptCode').val();
+    var tCPHHDCstPriCode        = $('#oetCPHHDCstPriCode').val();
+    var nCPHLabelFrmCphDisType  = $('#ostCPHFrmCphDisType').val();
+    var tCPHHDDocrefCode        = $('#oetCPHHDDocrefCode').val();
     if(tCPHHDCstPriCode == '' && nCPHLabelFrmCphDisType == 3){
         $tTextMessage   = $('#oetCPHHDCstPriCode').attr('validatedata');
         FSvCMNSetMsgWarningDialog($tTextMessage);
         return false;
     }
+    
+    if(tCPHHDCstPriCode == '' && nCPHLabelFrmCphDisType == 4){
+        if (tCPHHDDocrefCode == '') {
+            $tTextMessage   = $('#oetCPHHDDocrefCode').attr('validatedata');
+            FSvCMNSetMsgWarningDialog($tTextMessage);
+            return;
+        }
+    }
 
     if(tCPHFrmCptCode != undefined && tCPHFrmCptCode != ''){
-        let nCountDataInTableDT = $('#odvCPHDataPanelDetail #otbCPHDataDetailDT tbody .xWCPHDataDetailItems').length;
-        if(nCountDataInTableDT > 0){
 
-
+        var nCountDataInTableDT = $('#odvCPHDataPanelDetail #otbCPHDataDetailDT tbody .xWCPHDataDetailItems').length;  
+        if(nCountDataInTableDT > 0 || $('#ohdCPHStaChkHQ').val() == '3' || $('#ohdCPHStaChk').val() == '2' ){
             var aDataDetailItems    = [];
             $('#odvCPHDataPanelDetail #otbCPHDataDetailDT tbody .xWCPHDataDetailItems').each(function(){
                 let fimageold       = $(this).data('imageold');
@@ -542,12 +567,12 @@ function JSxCPHAddEditDocument(ptRoute) {
                     'FNCpdAlwMaxUse'    : tcpdalwmaxuse
                 });
             });
-            $('#ohdCPHDetailItems').val(JSON.stringify(aDataDetailItems));
+            $('#ohdDetailItems').val(JSON.stringify(aDataDetailItems));
             // JCNxOpenLoading();
             $.ajax({
                 type: "POST",
                 url: ptRoute,
-                data: $('#ofmCouponSetupAddEditForm').serialize()  ,
+                data: $('#ofmCouponSetupAddEditForm').serialize() ,
                 cache: false,
                 timeout: 0,
                 success: function(tResult) {
@@ -555,40 +580,42 @@ function JSxCPHAddEditDocument(ptRoute) {
                     if(aDataReturn['nStaEvent'] == '1'){
                         var nCouponStaCallBack  = aDataReturn['nStaCallBack'];
                         var tCouponCoderReturn  = aDataReturn['tCodeReturn'];
-                        switch(nCouponStaCallBack){
-                            case 1 :
-                                JSvCPHCallPageEditDocument(tCouponCoderReturn);
-                            break;
-                            case 2 :
-                                JSvCPHCallPageAddDocument();
-                            break;
-                            case 3 :
-                                JSvCPHCallPageList();
-                            break;
-                            default :
-                                JSvCPHCallPageEditDocument(tCouponCoderReturn);
+                        if(ptType == 'approve'){
+                            JSxCPHApproveDocument(false);
+                        }else{
+                            switch(nCouponStaCallBack){
+                                case 1 :
+                                    JSvCPHCallPageEditDocument(tCouponCoderReturn);
+                                break;
+                                case 2 :
+                                    JSvCPHCallPageAddDocument();
+                                break;
+                                case 3 :
+                                    JSvCPHCallPageList();
+                                break;
+                                default :
+                                    JSvCPHCallPageEditDocument(tCouponCoderReturn);
+                            }
                         }
+                        $("#obtCPHSubmitFromDoc").removeAttr("disabled");
                         JCNxImgWarningMessage(aDataReturn['aImgReturn']);
                     }else{
                         JCNxResponseError(aDataReturn['tStaMessg']);
+                        $("#obtCPHSubmitFromDoc").removeAttr("disabled");
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxResponseError(jqXHR, textStatus, errorThrown);
                 }
             });
-            }else{
-                $tTextMessage   = $('#ohdCPHMsgNotFoundDT').val()
-                FSvCMNSetMsgWarningDialog($tTextMessage);
-            }
         }else{
-            $tTextMessage   = $('#ohdCPHMsgNotFoundCpt').val()
+            $tTextMessage   = $('#ohdCPHMsgNotFoundDT').val()
             FSvCMNSetMsgWarningDialog($tTextMessage);
         }
-    // }else{
-    //     $tTextMessage   = $('#oetCPHHDCstPriCode').attr('validatedata');
-    //     FSvCMNSetMsgWarningDialog($tTextMessage);
-    // }
+    }else{
+        $tTextMessage   = $('#ohdCPHMsgNotFoundCpt').val()
+        FSvCMNSetMsgWarningDialog($tTextMessage);
+    }
 }
 
 //Functionality : Call Coupon Page Edit
@@ -636,6 +663,7 @@ function JSxCPHControlObjAndBtn(){
       $("#obtCPHCancelDoc").show();
       $('#oliCPHTitleEdit').show();
       $('#obtCPHPrint').show();
+      $('#obtCPHCopy').show();
     }else {
       $("#oliCPHTitleAdd").show();
     }
@@ -663,6 +691,8 @@ function JSxCPHControlObjAndBtn(){
         // Disabled Button
         $("#obtCPHCancelDoc").hide();
         $("#obtCPHApproveDoc").hide();
+        // $('#obtCPHCopy').hide();
+
         // Disable Input
         $('.xCNInputWhenStaCancelDoc:input').prop('readonly',true);
         $('#otbCPHDataDetailDT tbody td .xWCpdAlwMaxUse').prop('readonly',true);
@@ -673,6 +703,7 @@ function JSxCPHControlObjAndBtn(){
         $('#ostCPHFrmCphDisType').css('pointer-events','none');
         $('#ostCPHFrmCphDisType').selectpicker('destroy');
         $("#obtCPHBrowseHDCstPri").attr("disabled", true);
+        $("#obtCPHBrowseDocref").attr("disabled", true);
     }
 
     // Check Status Appove Success
@@ -685,6 +716,8 @@ function JSxCPHControlObjAndBtn(){
         $("#obtCPHCancelDoc").hide();
         $("#obtCPHApproveDoc").hide();
         $('#odvCPHBtnGrpSave').hide();
+        // $('#obtCPHCopy').hide();
+
         // Disable Input
         $('.xCNInputWhenStaCancelDoc:input').prop('readonly',true);
         $('#otbCPHDataDetailDT tbody td .xWCpdAlwMaxUse').prop('readonly',true);
@@ -732,6 +765,42 @@ function JSxCPHApproveDocument(pbIsConfirm){
     }else{
         $('#odvCPHModalAppoveDoc').modal({backdrop:'static',keyboard:false});
         $("#odvCPHModalAppoveDoc").modal("show");
+    }
+}
+
+// Functionality: Copy Doc
+// Parameters: Event Click Save Document
+// Creator: 15/03/2022 Off
+// LastUpdate: 15/03/2022 Off
+// Return: Set Status Submit By Button In Input Hidden
+// ReturnType: None
+function JSxCPHCopyDocument(pbIsConfirm){
+    if(pbIsConfirm){
+        $("#odvCPHModalCopyDoc").modal("hide");
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+        JCNxOpenLoading();
+        var tDocumentNumber =  $('#oetCPHDocNo').val();
+        var tBchCode        =  $('#ohdCPHUsrBchCode').val();
+        $.ajax({
+            type    : "POST",
+            url     : "dcmCouponSetupEvenCopy",
+            data    : {tDocumentNumber : tDocumentNumber  , tBchCode : tBchCode},
+            timeout: 0,
+            success: function(oDataReturn){
+                FSvCMNSetMsgSucessDialog('คัดลอกเอกสารสำเร็จ');
+                setTimeout(function () {
+                    JSvCPHCallPageList();
+                }, 500);
+                JCNxCloseLoading();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                (jqXHR, textStatus, errorThrown);
+            }
+        });
+    }else{
+        $('#odvCPHModalCopyDoc').modal({backdrop:'static',keyboard:false});
+        $("#odvCPHModalCopyDoc").modal("show");
     }
 }
 

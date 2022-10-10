@@ -217,6 +217,12 @@ function JSnAddEditAdMessage(ptRoute) {
             }
 
             var oFormData = new FormData();
+            oFormData.append('mediaSeq', JSON.stringify(JSaGetMediaFileSort()));
+            $('.xWImgCanvas').each(function(i) {
+                // aPdtImg.push( $(this).val() );
+                oFormData.append('aPdtImg['+i+']', $(this).val() );
+            });
+
             if (JCNbIsMediaType()) {
                 var oMediaItems = $('#odvAdvMediaContainer .xWAdvItem.change-file');
                 var aPdtMedKey = [];
@@ -1164,6 +1170,15 @@ function JSaGetMediaNoChangeFileSort() {
     return aSeq;
 }
 
+function JSaGetMediaFileSort() {
+    var oMediaItems = $('#ohdAdvMediaContainer .xWAdvItem').not('.change-file').find('.xWAdvMedia');
+    var aSeq = [];
+    oMediaItems.each((pnIndex, poElement) => {
+        aSeq[pnIndex] = { 'id': $(poElement).attr('media-id')};
+    });
+    return aSeq;
+}
+
 /**
  * Functionality : Get sequence media changed file
  * Parameters : -
@@ -1208,8 +1223,9 @@ function JSaGetMediaChangeFileSortOfOld() {
  */
 function JSxSelectAdType(poElement, poEvent) {
     try {
+
         // Reset all input field
-        JSxResetInputFiled();
+        // JSxResetInputFiled();
         let tAdTypeId = $(poElement).val();
         // console.log('tAdTypeId: ' + typeof tAdTypeId);
         switch (tAdTypeId) {

@@ -399,11 +399,39 @@ class cAdMessage extends MX_Controller {
                 'FTAgnCode'         => $this->input->post('oetAdvAgnCode')
             );
             
+            // exit;
+            // print_r($aDataMaster);
             $this->db->trans_begin();
-
+            
             // Add or update ad message
             $this->mAdMessage->FSaMADVAddUpdateMaster($aDataMaster);
             $this->mAdMessage->FSaMADVAddUpdateLang($aDataMaster);
+            
+            $aChkImg = $this->input->post('aPdtImg');
+            if($this->input->post('adTypeId') != '6' && $aChkImg != '') {
+                $aData = array(
+                    'tImgRefID'     => $this->input->post('oetAdvCode'),
+                    'tImgTable'    => 'TCNMAdMsg',
+                    'tTableDel'    => 'TCNMImgObj',
+
+                );
+                FSnHDelectImageInDB($aData);
+            }
+
+            //ถ้ามีการเปลี่ยนประเภทจากวิดีโอหรือเสียง เป็นอย่างอื่น จะมาทำการลบ media เก่าที่เคยสร้างไว้ทิ้ง
+            if($this->input->post('adTypeId') != '3' && $this->input->post('adTypeId') != '5') { 
+                // echo "Seq";
+                $aSeq       = json_decode($this->input->post('mediaSeq'));     // media เก่า
+                foreach($aSeq as $aSeq){
+                    $this->mAdMessage->FSnMADVDelMediaByID($aSeq->id, $aDataMaster); // Remove record
+                }
+    
+                // print_r($aMediaOldForRemove);
+                // echo "<pre>";
+                // print_r($aSeq);
+                // exit;
+            }
+
 
             // Add or update media
             if($this->FCNbIsMediaType('all', $aDataMaster['FTAdvType'])){ // 3: video, 5: sound
@@ -598,6 +626,7 @@ class cAdMessage extends MX_Controller {
                     'tStaMessg'		=> 'Success Add Event'
                 );
             }
+
             echo json_encode($aReturn);
 
     }
@@ -699,34 +728,34 @@ class cAdMessage extends MX_Controller {
      * Return : Status Event Delete And Status Call Back Event
      * Return Type : object
      */
-    public function FSoADVDeleteMulti(){
-        $tAdvCode = $this->input->post('tAdvCode');
-        $aAdvCode = json_decode($tAdvCode);
+    // public function FSoADVDeleteMulti(){
+    //     $tAdvCode = $this->input->post('tAdvCode');
+    //     $aAdvCode = json_decode($tAdvCode);
 
-        $aUrlPathServer 	= explode('/index.php',$_SERVER['SCRIPT_FILENAME']);
-		$tPathFullComputer	= str_replace('\\', "/", $aUrlPathServer[0]. "/application/modules/common/assets/system/systemimage/admessage");
-        foreach($aAdvCode as $oAdvCode){
-            $aAdv = [
-                'FTAdvCode'     => $oAdvCode,
-                'FTMedTable'    => 'TCNMAdMsg'
-            ];
-            $this->mAdMessage->FSnMADVDelMaster($aAdv);
-            $this->mAdMessage->FSnMADVDelMedia($aAdv);
+    //     $aUrlPathServer 	= explode('/index.php',$_SERVER['SCRIPT_FILENAME']);
+	// 	$tPathFullComputer	= str_replace('\\', "/", $aUrlPathServer[0]. "/application/modules/common/assets/system/systemimage/admessage");
+    //     foreach($aAdvCode as $oAdvCode){
+    //         $aAdv = [
+    //             'FTAdvCode'     => $oAdvCode,
+    //             'FTMedTable'    => 'TCNMAdMsg'
+    //         ];
+    //         $this->mAdMessage->FSnMADVDelMaster($aAdv);
+    //         $this->mAdMessage->FSnMADVDelMedia($aAdv);
 
-            $tDir = $tPathFullComputer.'/'.$aAdv['FTAdvCode'];
-            if(is_dir($tDir)){
-                $folder_path = $tDir;
-                $files = glob($folder_path.'/*');
-                foreach($files as $file) { 
-                    if(is_file($file)){
-                        unlink($file);
-                    }
-                }
-                rmdir($folder_path);
-            }
-        }
-        echo json_encode($aAdvCode);
-    }
+    //         $tDir = $tPathFullComputer.'/'.$aAdv['FTAdvCode'];
+    //         if(is_dir($tDir)){
+    //             $folder_path = $tDir;
+    //             $files = glob($folder_path.'/*');
+    //             foreach($files as $file) { 
+    //                 if(is_file($file)){
+    //                     unlink($file);
+    //                 }
+    //             }
+    //             rmdir($folder_path);
+    //         }
+    //     }
+    //     echo json_encode($aAdvCode);
+    // }
     
     /**
      * Functionality : Delete vat rate
@@ -752,35 +781,35 @@ class cAdMessage extends MX_Controller {
         $aResDelMaster      = $this->mAdMessage->FSnMADVDelMaster($aDataMaster);
         $aResDelMedia       = $this->mAdMessage->FSnMADVDelMedia($aDataMaster);
 
-        $aUrlPathServer 	= explode('/index.php',$_SERVER['SCRIPT_FILENAME']);
-        $tPathFullComputer	= str_replace('\\', "/", $aUrlPathServer[0]. "/application/modules/common/assets/system/systemimage/admessage");
-        if(is_array($aDataMaster['FTAdvCode'])){
-            foreach($aDataMaster['FTAdvCode'] as $tAdvCode){
-                $tDir = $tPathFullComputer.'/'.$tAdvCode;
-                if(is_dir($tDir)){
-                    $folder_path = $tDir;
-                    $files = glob($folder_path.'/*');
-                    foreach($files as $file) { 
-                        if(is_file($file)){
-                            unlink($file);
-                        }
-                    }
-                    rmdir($folder_path);
-                }
-            }
-        }else{
-            $tDir = $tPathFullComputer.'/'.$aDataMaster['FTAdvCode'];
-            if(is_dir($tDir)){
-                $folder_path = $tDir;
-                $files = glob($folder_path.'/*');
-                foreach($files as $file) { 
-                    if(is_file($file)){
-                        unlink($file);
-                    }
-                }
-                rmdir($folder_path);
-            }
-        }
+        // $aUrlPathServer 	= explode('/index.php',$_SERVER['SCRIPT_FILENAME']);
+        // $tPathFullComputer	= str_replace('\\', "/", $aUrlPathServer[0]. "/application/modules/common/assets/system/systemimage/admessage");
+        // if(is_array($aDataMaster['FTAdvCode'])){
+        //     foreach($aDataMaster['FTAdvCode'] as $tAdvCode){
+        //         $tDir = $tPathFullComputer.'/'.$tAdvCode;
+        //         if(is_dir($tDir)){
+        //             $folder_path = $tDir;
+        //             $files = glob($folder_path.'/*');
+        //             foreach($files as $file) { 
+        //                 if(is_file($file)){
+        //                     unlink($file);
+        //                 }
+        //             }
+        //             rmdir($folder_path);
+        //         }
+        //     }
+        // }else{
+        //     $tDir = $tPathFullComputer.'/'.$aDataMaster['FTAdvCode'];
+        //     if(is_dir($tDir)){
+        //         $folder_path = $tDir;
+        //         $files = glob($folder_path.'/*');
+        //         foreach($files as $file) { 
+        //             if(is_file($file)){
+        //                 unlink($file);
+        //             }
+        //         }
+        //         rmdir($folder_path);
+        //     }
+        // }
         
         // $aResDelMedia        = $this->mAdMessage->FSnMADVDelMedia($aDataMaster);
         $aReturn    = array(

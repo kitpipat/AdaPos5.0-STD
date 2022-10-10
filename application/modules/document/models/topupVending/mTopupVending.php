@@ -1448,4 +1448,28 @@ class mTopupVending extends CI_Model
         $this->db->where('FTXthDocKey', $paData['FTXthDocKey']);
         $this->db->delete('TCNTDocDTTmp');
     }
+
+    // ลบข้อมูลรายการสินค้า DTTemp
+    public function FSxMTVDDelDataInDT($paParams){
+        $this->db->where('FTSessionID', $paParams['FTSessionID']);
+        $this->db->where('FTXthDocKey', $paParams['FTXthDocKey']);
+        $this->db->where('FTXthDocNo', $paParams['FTXthDocNo']);
+        $this->db->delete('TCNTDocDTTmp');
+        if($this->db->affected_rows() > 0) {
+            $aStatus = array(
+                'rtCode'    => '1',
+                'rtDesc'    => 'Delete DT Success',
+            );
+        }else{
+            $aStatus = array(
+                'rtCode'    => '905',
+                'rtDesc'    => 'Error Cannot Delete DT.',
+            );
+        }
+        return $aStatus;
+    }
+
+
+
+
 }

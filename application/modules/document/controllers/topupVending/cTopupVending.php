@@ -1022,4 +1022,21 @@ class cTopupVending extends MX_Controller
         ];
         $this->mTopupVending->FSxMTVDDelPdtTopupZero($aParams);
     }
+
+
+
+    // Functionality : ลบข้อมูล Table DT Temp
+    // Creator : 17/02/2022 Wasin (Yoshi)
+    public function FSxCTUVTopupVendingDeleteDelDTTemp(){
+        $tSessionID = $this->session->userdata("tSesSessionID");
+        $aDataDelDT = array(
+            'FTBchCode'     => $this->input->post('tBchCode'),
+            'FTXthDocKey'   => 'TVDTPdtTwxHD',
+            'FTXthDocNo'    => 'VWDOCTEMP',
+            'FTSessionID'   => $tSessionID,
+        );
+        $aStaDelete = $this->mTopupVending->FSxMTVDDelDataInDT($aDataDelDT);
+        echo json_encode($aStaDelete);
+    }
+
 }

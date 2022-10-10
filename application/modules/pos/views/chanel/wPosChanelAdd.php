@@ -1,5 +1,8 @@
 <?php
 if ($aResult['rtCode'] == "1") {
+    $tMenuTabDisable    = "";
+    $tMenuTabToggle     = "tab";
+
     $tChnCode = $aResult['raHDItems']['rtChnCode'];
     $tChnName = $aResult['raHDItems']['rtChnName'];
     $tChnRefCode = $aResult['raHDItems']['rtChnRefCode'];
@@ -14,15 +17,16 @@ if ($aResult['rtCode'] == "1") {
     $tChnWahCode = $aResult['raHDItems']['rtChnWahCode'];
     $tChnWahName = $aResult['raHDItems']['rtChnWahName'];
     $tChnStaUse = $aResult['raHDItems']['rtChnStaUse'];
-
+    $tChnWahDO = $aResult['raHDItems']['rtChnWahDO'];
+    $tChnWahDOName = $aResult['raHDItems']['rtChnWahDOName'];
+    $tChnStaUseDO = $aResult['raHDItems']['rtChnStaUseDO'];
+    $tChnStaAlwSNPL = $aResult['raHDItems']['rtChnStaAlwSNPL'];
     $tChnSeq = $aResult['raHDItems']['rtChnSeq'];
-
-
-
-
-    // $tTCGStaUse = $aResult['raHDItems']['FTChnStaUse'];
     $tRoute = "chanelEventEdit";
 } else {
+    $tMenuTabDisable    = " disabled xCNCloseTabNav";
+    $tMenuTabToggle     = "false";
+
     $tChnCode = "";
     $tChnName = "";
     $tChnRefCode = "";
@@ -38,6 +42,10 @@ if ($aResult['rtCode'] == "1") {
     $tChnWahCode = "";
     $tChnWahName = "";
     $tChnStaUse = 1;
+    $tChnWahDO = "";
+    $tChnWahDOName = "";
+    $tChnStaUseDO = "";
+    $tChnStaAlwSNPL = "";
 
     $tChnSeq = "";
 
@@ -110,171 +118,265 @@ $tEndReceiptPlaceholder = "End of Receipt";
 </style>
 <div class="panel panel-headline">
     <div class="panel-body">
-        <form class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmAddChanel">
-            <button style="display:none" type="submit" id="obtSubmitChanel" onclick="JSnAddEditChanel('<?= $tRoute ?>')"></button>
-            <div class="panel-body" style="padding-top:20px !important;">
-                <div class="row">
-                    <div class="col-xs-12 col-md-5 col-lg-5">
 
-                        <input type="hidden" class="input100 xCNHide" id="oetChnSeq" name="oetChnSeq"  value="<?php echo $tChnSeq; ?>">
-                        <input type="hidden" class="input100 xCNHide" id="oetChnUsrLoginLevel" name="oetChnUsrLoginLevel"  value="<?php echo $this->session->userdata("tSesUsrLoginLevel"); ?>">
-                        
-
-
-                        <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelCode'); ?></label>
-                        <div class="form-group" id="odvSlipmessageAutoGenCode">
-                            <div class="validate-input">
-                                <label class="fancy-checkbox">
-                                    <input type="checkbox" id="ocbSlipmessageAutoGenCode" name="ocbSlipmessageAutoGenCode" checked="true" value="1">
-                                    <span><?php echo language('common/main/main', 'tGenerateAuto'); ?></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="odvSlipmessageCodeForm">
-                            <input type="hidden" id="ohdCheckDuplicateChnCode" name="ohdCheckDuplicateChnCode" value="1">
-                            <div class="validate-input">
-                                <input type="text" class="form-control xCNInputWithoutSpcNotThai" maxlength="5" id="oetChnCode" name="oetChnCode" data-is-created="<?php echo $tChnCode; ?>" placeholder="<?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelCode'); ?>" autocomplete="off" value="<?php echo $tChnCode; ?>" data-validate-required="<?php echo language('pos/poschannel/poschannel', 'tCHNValidCode') ?>" data-validate-dublicateCode="<?php echo language('pos/poschannel/poschannel', 'tCHNValidCodeDup'); ?>">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="validate-input">
-                                <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelName'); ?></label>
-
-                                <input type="text" class="form-control" maxlength="100" id="oetChnName" name="oetChnName" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelName'); ?>" value="<?php echo $tChnName; ?>" data-validate-required="<?php echo language('pos/poschannel/poschannel', 'tCHNValidName'); ?>">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('pos/poschannel/poschannel', 'tCHNLabelSystem'); ?></label>
-                            <div class="input-group">
-                                <input type="text" class="form-control xCNHide" id="oetChnAppCode" name="oetChnAppCode" value="<?php echo $tChnAppCode; ?>">
-                                <input type="text" class="form-control xWPointerEventNone" id="oetChnAppName" name="oetChnAppName" placeholder="" value="<?php echo $tChnAppName; ?>" data-validate-required="<?php echo language('pos/poschannel/poschannel', 'tCHNInputValidApp') ?>" readonly>
-                                <span class="input-group-btn">
-                                    <button id="oimChnBrowseApp" type="button" class="btn xCNBtnBrowseAddOn"><img class="xCNIconFind"></button>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelAgency'); ?></label>
-                            <div class="input-group">
-                                <input type="text" id="oetChnAgnCode" class="form-control xCNHide" name="oetChnAgnCode" value="<?php echo $tChnAgnCode; ?>">
-                                <input type="text" id="oetChnAgnName" class="form-control" name="oetChnAgnName" value="<?php echo $tChnAgnName; ?>" data-validate-required="กรุณากรอกตัวแทนขาย" readonly>
-                                <span class="input-group-btn">
-                                    <?php
-                                    // Last Update : 21/05/2020 nale  ถ้าเข้ามาเป็น User ระดับ HQ ให้เลือก Agency ได้
-                                    if (!empty($this->session->userdata('tSesUsrAgnCode')) || $this->session->userdata('nSesUsrBchCount') > 0) {
-                                        $tDisableBrowseAgency = 'disabled';
-                                    } else {
-                                        $tDisableBrowseAgency = '';
-                                    }
-                                    ?>
-                                    <button id="obtBrowseAgency" type="button" class="btn xCNBtnBrowseAddOn" <?php echo @$tDisableBrowseAgency; ?>>
-                                        <img class="xCNIconFind">
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelBranch'); ?></label>
-                            <div class="input-group">
-                                <input type="text" class="input100 xCNHide" id="oetWahBchCodeCreated" name="oetWahBchCodeCreated" maxlength="5" value="<?php echo $tChnBchCode; ?>">
-                                <input class="form-control xWPointerEventNone" type="text" id="oetWahBchNameCreated" name="oetWahBchNameCreated" value="<?php echo $tChnBchName; ?>" data-validate-required="<?php echo language('company/warehouse/warehouse', 'tWAHValidbch') ?>" readonly>
-                                <span class="input-group-btn xWConditionSearchPdt">
-                                    <button id="obtWahBrowseBchCreated" type="button" class="btn xCNBtnBrowseAddOn" <?php echo ($this->session->userdata("nSesUsrBchCount") == 1 && $this->session->userdata("tSesUsrLoginLevel") != "HQ" && $this->session->userdata("tSesUsrLoginLevel") != "AGN" ) ? 'disabled' : ''; ?>>
-                                        <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="form-group" id="odvWarehouse">
-                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelWahouse'); ?></label>
-                            <div class="input-group">
-                                <input class="form-control xCNHide" id="oetBchWahCode" name="oetBchWahCode" maxlength="5" value="<?php echo $tChnWahCode; ?>">
-                                <input class="form-control xWPointerEventNone" type="text" id="oetBchWahName" name="oetBchWahName" value="<?php echo $tChnWahName; ?>" readonly>
-                                <span class="input-group-btn">
-                                    <button id="obtBchBrowseWah" type="button" class="btn xCNBtnBrowseAddOn">
-                                        <img src="<?php echo  base_url() . 'application/modules/common/assets/images/icons/find-24.png' ?>">
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class='form-group'>
-                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelPriceGroup'); ?></label>
-                            <div class='input-group'>
-                                <input type='text' class='form-control xCNHide xWRddAllInput' id='oetChnPplCode' name='oetChnPplCode' maxlength='5' value="<?php echo $tChnPplCode; ?>">
-                                <input type='text' class='form-control xWPointerEventNone xWCPHAllInput' id='oetChnPplName' name='oetChnPplName' value="<?php echo $tChnPplName; ?>" readonly>
-                                <span class='input-group-btn'>
-                                    <button id='obtChnBrowsePpl' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="validate-input">
-                                <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelRefCode'); ?></label>
-                                <input type="text" class="form-control" maxlength="20" id="oetChnRefCode" name="oetChnRefCode" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'tCHNLabelRefCode'); ?>" value="<?php echo $tChnRefCode; ?>">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="fancy-checkbox">
-                                <?php
-                                if (isset($tChnStaUse) && $tChnStaUse == 1) {
-                                    $tChecked   = 'checked';
-                                } else {
-                                    $tChecked   = '';
-                                }
-                                ?>
-                                <input type="checkbox" id="ocbChnStatusUse" name="ocbChnStatusUse" <?php echo $tChecked; ?>>
-                                <span> <?php echo language('common/main/main', 'tStaUse'); ?></span>
-                            </label>
-                        </div>
-                    </div>
+        <div id="odvPdtRowNavMenu" class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="custom-tabs-line tabs-line-bottom left-aligned">
+                    <ul class="nav" role="tablist">
+                        <li id="oliChnInfo1" class="xWMenu active xCNStaHideShow">
+                            <a role="tab" data-toggle="tab" data-target="#odvChnContentInfo1" aria-expanded="true"><?php echo language('pos/poschannel/poschannel', 'ข้อมูลหลัก') ?></a>
+                        </li>
+                        <li id="oliChnInfo2" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisable; ?>">
+                            <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvChnContentInfo2" aria-expanded="false"><?php echo language('pos/poschannel/poschannel', 'กำหนดคลัง') ?></a>
+                        </li>
+                    </ul>
                 </div>
-
             </div>
-        </form>
+        </div>
+
+        <div id="odvPdtRowContentMenu" class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="tab-content">
+
+                    <!-- Tab Content Info 1 -->
+                    <div id="odvChnContentInfo1" class="tab-pane fade active in">
+                        <form class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmAddChanel">
+                            <button style="display:none" type="submit" id="obtSubmitChanel" onclick="JSnAddEditChanel('<?= $tRoute ?>')"></button>
+                            <div class="panel-body" style="padding-top:20px !important;">
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-5 col-lg-5">
+
+                                        <input type="hidden" class="input100 xCNHide" id="oetChnSeq" name="oetChnSeq"  value="<?php echo $tChnSeq; ?>">
+                                        <input type="hidden" class="input100 xCNHide" id="oetChnUsrLoginLevel" name="oetChnUsrLoginLevel"  value="<?php echo $this->session->userdata("tSesUsrLoginLevel"); ?>">
+                                        
+
+
+                                        <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelCode'); ?></label>
+                                        <div class="form-group" id="odvSlipmessageAutoGenCode">
+                                            <div class="validate-input">
+                                                <label class="fancy-checkbox">
+                                                    <input type="checkbox" id="ocbSlipmessageAutoGenCode" name="ocbSlipmessageAutoGenCode" checked="true" value="1">
+                                                    <span><?php echo language('common/main/main', 'tGenerateAuto'); ?></span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group" id="odvSlipmessageCodeForm">
+                                            <input type="hidden" id="ohdCheckDuplicateChnCode" name="ohdCheckDuplicateChnCode" value="1">
+                                            <div class="validate-input">
+                                                <input type="text" class="form-control xCNInputWithoutSpcNotThai" maxlength="5" id="oetChnCode" name="oetChnCode" data-is-created="<?php echo $tChnCode; ?>" placeholder="<?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelCode'); ?>" autocomplete="off" value="<?php echo $tChnCode; ?>" data-validate-required="<?php echo language('pos/poschannel/poschannel', 'tCHNValidCode') ?>" data-validate-dublicateCode="<?php echo language('pos/poschannel/poschannel', 'tCHNValidCodeDup'); ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="validate-input">
+                                                <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelName'); ?></label>
+
+                                                <input type="text" class="form-control" maxlength="70" id="oetChnName" name="oetChnName" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelName'); ?>" value="<?php echo $tChnName; ?>" data-validate-required="<?php echo language('pos/poschannel/poschannel', 'tCHNValidName'); ?>">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('pos/poschannel/poschannel', 'tCHNLabelSystem'); ?></label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control xCNHide" id="oetChnAppCode" name="oetChnAppCode" value="<?php echo $tChnAppCode; ?>">
+                                                <input type="text" class="form-control xWPointerEventNone" id="oetChnAppName" name="oetChnAppName" placeholder="" value="<?php echo $tChnAppName; ?>" data-validate-required="<?php echo language('pos/poschannel/poschannel', 'tCHNInputValidApp') ?>" readonly>
+                                                <span class="input-group-btn">
+                                                    <button id="oimChnBrowseApp" type="button" class="btn xCNBtnBrowseAddOn"><img class="xCNIconFind"></button>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group <?php if (!FCNbGetIsAgnEnabled()) : echo 'xCNHide'; endif; ?>">
+                                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelAgency'); ?></label>
+                                            <div class="input-group">
+                                                <input type="text" id="oetChnAgnCode" class="form-control xCNHide" name="oetChnAgnCode" value="<?php echo $tChnAgnCode; ?>">
+                                                <input type="text" id="oetChnAgnName" class="form-control" name="oetChnAgnName" value="<?php echo $tChnAgnName; ?>" data-validate-required="กรุณากรอกตัวแทนขาย" readonly>
+                                                <span class="input-group-btn">
+                                                    <?php
+                                                    // Last Update : 21/05/2020 nale  ถ้าเข้ามาเป็น User ระดับ HQ ให้เลือก Agency ได้
+                                                    if (!empty($this->session->userdata('tSesUsrAgnCode')) || $this->session->userdata('nSesUsrBchCount') > 0) {
+                                                        $tDisableBrowseAgency = 'disabled';
+                                                    } else {
+                                                        $tDisableBrowseAgency = '';
+                                                    }
+                                                    ?>
+                                                    <button id="obtBrowseAgency" type="button" class="btn xCNBtnBrowseAddOn" <?php echo @$tDisableBrowseAgency; ?>>
+                                                        <img class="xCNIconFind">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelBranch'); ?></label>
+                                            <div class="input-group">
+                                                <input type="text" class="input100 xCNHide" id="oetWahBchCodeCreated" name="oetWahBchCodeCreated" maxlength="5" value="<?php echo $tChnBchCode; ?>">
+                                                <input class="form-control xWPointerEventNone" type="text" id="oetWahBchNameCreated" name="oetWahBchNameCreated" value="<?php echo $tChnBchName; ?>" data-validate-required="<?php echo language('company/warehouse/warehouse', 'tWAHValidbch') ?>" readonly>
+                                                <span class="input-group-btn xWConditionSearchPdt">
+                                                    <button id="obtWahBrowseBchCreated" type="button" class="btn xCNBtnBrowseAddOn" <?php echo ($this->session->userdata("nSesUsrBchCount") == 1 && $this->session->userdata("tSesUsrLoginLevel") != "HQ" && $this->session->userdata("tSesUsrLoginLevel") != "AGN" ) ? 'disabled' : ''; ?>>
+                                                        <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- <div class="form-group" id="odvWarehouse">
+                                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelWahouse'); ?></label>
+                                            <div class="input-group">
+                                                <input class="form-control xCNHide" id="oetBchWahCode" name="oetBchWahCode" maxlength="5" value="<?php echo $tChnWahCode; ?>">
+                                                <input class="form-control xWPointerEventNone" type="text" id="oetBchWahName" name="oetBchWahName" value="<?php echo $tChnWahName; ?>" readonly>
+                                                <span class="input-group-btn">
+                                                    <button id="obtBchBrowseWah" type="button" class="btn xCNBtnBrowseAddOn">
+                                                        <img src="<?php echo  base_url() . 'application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div> -->
+
+                                        <!-- แยกคลังขาย / คลังส่ง -->
+                                        <!-- <input type="hidden" id="ohdWahType" value=""> -->
+
+                                        <!-- <div class="form-group" id="odvDeliveryWarehouse">
+                                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelDeliveryWahouse'); ?></label>
+                                            <div class="input-group">
+                                                <input class="form-control xCNHide" id="oetDeliveryWahCode" name="oetDeliveryWahCode" maxlength="5" value="<?php echo $tChnWahDO; ?>">
+                                                <input class="form-control xWPointerEventNone" type="text" id="oetDeliveryWahName" name="oetDeliveryWahName" value="<?php echo $tChnWahDOName; ?>" readonly>
+                                                <span class="input-group-btn">
+                                                    <button id="obtDeliveryBrowseWah" type="button" class="btn xCNBtnBrowseAddOn">
+                                                        <img src="<?php echo  base_url() . 'application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div> -->
+
+                                        <div class='form-group'>
+                                            <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelPriceGroup'); ?></label>
+                                            <div class='input-group'>
+                                                <input type='text' class='form-control xCNHide xWRddAllInput' id='oetChnPplCode' name='oetChnPplCode' maxlength='5' value="<?php echo $tChnPplCode; ?>">
+                                                <input type='text' class='form-control xWPointerEventNone xWCPHAllInput' id='oetChnPplName' name='oetChnPplName' value="<?php echo $tChnPplName; ?>" readonly>
+                                                <span class='input-group-btn'>
+                                                    <button id='obtChnBrowsePpl' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="validate-input">
+                                                <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'tCHNLabelRefCode'); ?></label>
+                                                <input type="text" class="form-control" maxlength="20" id="oetChnRefCode" name="oetChnRefCode" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'tCHNLabelRefCode'); ?>" value="<?php echo $tChnRefCode; ?>">
+                                            </div>
+                                        </div>
+
+                                        <!-- รับ S/N ในใบจัด -->
+                                        <div class="form-group"> 
+                                            <label class="fancy-checkbox"> 
+                                                <?php if (isset($tChnStaAlwSNPL) && $tChnStaAlwSNPL == 1) {
+                                                    $tChecked   = 'checked'; 
+                                                } else {
+                                                    $tChecked   = ''; 
+                                                } ?> 
+                                                <input type="checkbox" id="ocbChnStaAlwSNPL" name="ocbChnStaAlwSNPL" <?php echo $tChecked; ?>> 
+                                                    <span> <?php echo language('company/warehouse/warehouse', 'tPosStaAlwSNPL'); ?></span> 
+                                            </label> 
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="fancy-checkbox">
+                                                <?php
+                                                if (isset($tChnStaUseDO) && $tChnStaUseDO == 1) {
+                                                    $tChecked   = 'checked';
+                                                } else {
+                                                    $tChecked   = '';
+                                                }
+                                                ?>
+                                                <input type="checkbox" id="ocbChnStaUseDO" name="ocbChnStaUseDO" <?php echo $tChecked; ?>>
+                                                <span> <?php echo language('pos/poschannel/poschannel', 'tCHNStaUseTransDoc'); ?></span>
+                                            </label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="fancy-checkbox">
+                                                <?php
+                                                if (isset($tChnStaUse) && $tChnStaUse == 1) {
+                                                    $tChecked   = 'checked';
+                                                } else {
+                                                    $tChecked   = '';
+                                                }
+                                                ?>
+                                                <input type="checkbox" id="ocbChnStatusUse" name="ocbChnStatusUse" <?php echo $tChecked; ?>>
+                                                <span> <?php echo language('common/main/main', 'tStaUse'); ?></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>                
+                    </div>
+                    <!-- Tab Content Info 1 -->
+
+                    <!-- Tab Content Info 2 -->
+                    <div id="odvChnContentInfo2" class="tab-pane fade">
+
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <label class="xCNLabelFrm" style="color: #1866ae !important; cursor:pointer;"><?php echo language('pos/poschannel/poschannel', 'tCHNTitle'); ?> : <?=$tChnName?></label>
+                                <label class="xCNLabelFrm xWCSWPageEdit" style="color: #aba9a9 !important;display: none;"> / <?php echo language('common/main/main', 'tEdit') ?> </label>
+                                <label class="xCNLabelFrm xWCSWPageAdd" style="color: #aba9a9 !important;display: none;"> / <?php echo language('common/main/main', 'tAdd') ?> </label>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right xWCSWBtnAdd">
+                                <button id="obtChnSpcWahAdd" class="xCNBTNPrimeryPlus" type="button">+</button>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right xWCSWPageAddEdit" style="display: none;">
+                                <button type="button" onclick="JSvCHNPageSpcWah();" class="btn" style="background-color: #D4D4D4; color: #000000;"><?php echo language('common/main/main', 'tCancel') ?></button>
+                                <button type="button" id="obtCSWClickSave" style="background-color: rgb(23, 155, 253); color: white;" class="btn"> <?php echo  language('common/main/main', 'tSave') ?></button>
+                            </div>
+                        </div>
+
+                        <div id="odvChnSpcWahContentDataTable"></div>
+
+                    </div>
+                    <!-- Tab Content Info 2 -->
+
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
-
-<script type="text/html" id="oscSlipHeadRowTemplate">
-    <div class="form-group xWChnItemSelect" id="{0}">
-        <div class="input-group validate-input">
-            <span class="input-group-btn">
-                <div class="btn xWChnMoveIcon" type="button"><i class="icon-move fa fa-arrows"></i></div>
-            </span>
-            <input type="text" class="form-control xWChnDyForm" maxlength="50" id="oetChnSlipHead{0}" name="oetChnSlipHead[{0}]" value="" placeholder="<?php echo $tHeadReceiptPlaceholder; ?> {0}" data-validate="<?php echo language('pos/slipMessage/slipmessage', 'tSMGValidHead'); ?>">
-            <span class="input-group-btn">
-                <button class="btn pull-right xWChnBtn xWChnBtnDelete" onclick="JSxChanelDeleteRowHead(this, event)"><?php echo language('pos/slipMessage/slipmessage', 'tSMGDeleteRow'); ?></button>
-            </span>
-        </div>
-    </div>
-</script>
-<script type="text/html" id="oscSlipEndRowTemplate">
-    <div class="form-group xWChnItemSelect" id="{0}">
-        <div class="input-group validate-input">
-            <span class="input-group-btn">
-                <div class="btn xWChnMoveIcon" type="button"><i class="icon-move fa fa-arrows"></i></div>
-            </span>
-            <input type="text" class="form-control xWChnDyForm" maxlength="50" id="oetChnSlipEnd{0}" name="oetChnSlipEnd[{0}]" value="" placeholder="<?php echo $tEndReceiptPlaceholder; ?> {0}">
-            <span class="input-group-btn">
-                <button class="btn pull-right xWChnBtn xWChnBtnDelete" onclick="JSxChanelDeleteRowEnd(this, event)"><?php echo language('pos/slipMessage/slipmessage', 'tSMGDeleteRow'); ?></button>
-            </span>
-        </div>
-    </div>
-</script>
 
 <script src="<?= base_url('application/modules/common/assets/js/jquery.mask.js') ?>"></script>
 <script src="<?= base_url('application/modules/common/assets/src/jFormValidate.js') ?>"></script>
 <?php include 'script/jPosChanelAdd.php'; ?>
 
 <script type="text/javascript">
+
+
+    $('#obtCSWClickSave').off('click').on('click', function(){
+        $('#obtCSWSubmit').click();
+    });
+
+    $('#obtChnSpcWahAdd').off('click').on('click', function(){
+        JSvCHNPageSpcWahAdd();
+    });
+
+    $('.xCNStaHideShow').off('click').on('click', function(){
+        var tMenuID = $(this).attr('id');
+        var tStaDis = $(this).hasClass('disabled');
+        if( !tStaDis ){
+            switch(tMenuID){
+                case 'oliChnInfo1':
+                    $('#odvChnBtnSave').show();
+                    break;
+                case 'oliChnInfo2':
+                    $('#odvChnBtnSave').hide();
+                    JSvCHNPageSpcWah();
+                    break;
+            }
+        }
+    });
+
     $(function() {
         if (JCNbChanelIsCreatePage()) { // For create page
 
@@ -622,9 +724,27 @@ $tEndReceiptPlaceholder = "End of Receipt";
 
     $('#obtBchBrowseWah').click(function() {
         JSxCheckPinMenuClose();
+        $('#ohdWahType').val("");
+        $('#ohdWahType').val("1");
         var tPOSBchCodeParam = $('#oetWahBchCodeCreated').val();
         window.oBrowsePosOption = undefined;
         oBrowsePosOption = oBrowsePosBch({
+            'tReturnInputCode': 'oetBchWahCode',
+            'tReturnInputName': 'oetBchWahName',
+            'tPOSBchCodeParam': tPOSBchCodeParam
+        });
+        JCNxBrowseData('oBrowsePosOption');
+    });
+
+    $('#obtDeliveryBrowseWah').click(function() {
+        JSxCheckPinMenuClose();
+        $('#ohdWahType').val("");
+        $('#ohdWahType').val("2");
+        var tPOSBchCodeParam = $('#oetWahBchCodeCreated').val();
+        window.oBrowsePosOption = undefined;
+        oBrowsePosOption = oBrowsePosBch({
+            'tReturnInputCode': 'oetDeliveryWahCode',
+            'tReturnInputName': 'oetDeliveryWahName',
             'tPOSBchCodeParam': tPOSBchCodeParam
         });
         JCNxBrowseData('oBrowsePosOption');
@@ -633,20 +753,23 @@ $tEndReceiptPlaceholder = "End of Receipt";
     // Add warehouse
     var oBrowsePosBch = function(poDataFnc) {
         var tPOSBchCodeParam = poDataFnc.tPOSBchCodeParam;
-
-        // var tPosType = $('#ocmPosType').val();
+        let tInputWahCode = poDataFnc.tReturnInputCode;
+        let tInputWahName = poDataFnc.tReturnInputName;
         var tBchCode = $('#oetWahBchCodeCreated').val();
+        var nWahType = $('#ohdWahType').val();
         var tWhereSraType = '';
-        // if (tPosType == 1) {
-        //     var tWhereSraType = "AND TCNMWaHouse.FTWahStaType = '2' AND (TCNMWaHouse.FTWahRefCode = '' OR TCNMWaHouse.FTWahRefCode IS NULL)";
-        // } else {
-        //     var tWhereSraType = "AND TCNMWaHouse.FTWahStaType = '6' AND (TCNMWaHouse.FTWahRefCode = '' OR TCNMWaHouse.FTWahRefCode IS NULL)";
-        // }
+        var tWhereWahType = '';
 
         if ($("#oetWahBchCodeCreated").val() != "") {
             tWhereSraType += " AND TCNMWaHouse.FTBchCode = '" + tBchCode + "'";
         } else {
-            tWhereSraType += " AND TCNMWaHouse.FTBchCode = '99999'";
+            tWhereSraType += "";
+        }
+
+        if (nWahType != "") {
+            tWhereWahType += " AND TCNMWaHouse.FTWahStaType = '" + nWahType + "'";
+        } else {
+            tWhereWahType += "";
         }
 
         var oOptionReturn = {
@@ -660,7 +783,7 @@ $tEndReceiptPlaceholder = "End of Receipt";
                 On: ['TCNMWaHouse_L.FTWahCode = TCNMWaHouse.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode  AND TCNMWaHouse_L.FNLngID = ' + nLangEdits, ]
             },
             Where: {
-                Condition: [tWhereSraType]
+                Condition: [tWhereSraType,tWhereWahType]
             },
             GrideView: {
                 ColumnPathLang: 'company/warehouse/warehouse',
@@ -676,17 +799,12 @@ $tEndReceiptPlaceholder = "End of Receipt";
 
             CallBack: {
                 ReturnType: 'S',
-                Value: ["oetBchWahCode", "TCNMWaHouse.FTWahCode"],
-                Text: ["oetBchWahName", "TCNMWaHouse_L.FTWahName"],
-            },
-            NextFunc: {
-                FuncName: 'JSxValidFormAddEditSaleMachineTapGeneral',
-                ArgReturn: []
+                Value: [tInputWahCode, "TCNMWaHouse.FTWahCode"],
+                Text: [tInputWahName, "TCNMWaHouse_L.FTWahName"],
             },
 
             RouteFrom: 'chanel',
             RouteAddNew: 'warehouse',
-            // BrowseLev: nStaPosBrowseType,
         }
         return oOptionReturn;
     }

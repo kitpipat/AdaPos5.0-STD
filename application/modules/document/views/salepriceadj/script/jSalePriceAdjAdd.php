@@ -1,35 +1,49 @@
 <script type="text/javascript">
-    var nLangEdits = <?=$this->session->userdata("tLangEdit")?>;
+    var nLangEdits = <?= $this->session->userdata("tLangEdit") ?>;
     var tUsrBchCode = $('#oetBchCode').val();
     var tFTZneChain = "";
 
-    $('#oimSearchSpaPdtPri').click(function(){
+    $('#oimSearchSpaPdtPri').click(function() {
         JCNxOpenLoading();
         JSvSpaPdtPriDataTable();
+        // var value   = $("#oetSearchSpaPdtPri").val().toLowerCase();
+        // $("#otbSpaDataList tbody tr ").filter(function () {
+        //     tText   = $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        // });
+
     });
 
-    $('#oetSearchSpaPdtPri').keypress(function(event){
-        if(event.keyCode == 13){
-            event.preventDefault();
+    $('#oetSearchSpaPdtPri').keyup(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
             JCNxOpenLoading();
             JSvSpaPdtPriDataTable();
         }
     });
 
+    // $('#oetSearchSpaPdtPri').keyup(function(event) {
+    //     JSvSpaPdtPriDataTable(1,1);
+    //     // var value   = $("#oetSearchSpaPdtPri").val().toLowerCase();
+    //     // $("#otbSpaDataList tbody tr ").filter(function () {
+    //     //     tText   = $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    //     // });
+    // });
+
+
+
+
+
     //Added by Napat(Jame) 15/11/2562
     //แก้ปัญหาเวลากด enter แล้วชอบเด้งไปปุ่ม submit
-    $(":input").keypress(function(event){
-        if(event.keyCode == 13){
+    $(":input").keypress(function(event) {
+        if (event.keyCode == 13) {
             event.preventDefault();
         }
     });
 
-    $(document).ready(function(){
-
+    $(document).ready(function() {
         JSxCheckSwitchDocType();
-
-        $('#oetXphDocNo').attr('readonly',true);
-
+        $('#oetXphDocNo').attr('readonly', true);
         /*===========================================================================*/
         var tLangCode = $("#ohdLangEdit").val();
         var tUsrBchCode = $("#oetBchCode").val();
@@ -40,7 +54,7 @@
         var tPrefix = 'RESAJP';
         var tStaDelMQ = $("#oetStaDelQname").val();
         var tStaApv = $("#oetStaApv").val();
-        var tQName = tPrefix + '_' + tDocNo + '_' +tUsrApv;
+        var tQName = tPrefix + '_' + tDocNo + '_' + tUsrApv;
 
         // MQ Message Config
         var poDocConfig = {
@@ -69,35 +83,19 @@
 
         // Update Status For Delete Qname Parameter
         var poUpdateStaDelQnameParams = {
-            ptDocTableName : "TCNTPdtAdjPriHD",
+            ptDocTableName: "TCNTPdtAdjPriHD",
             ptDocFieldDocNo: "FTXphDocNo",
             ptDocFieldStaApv: "FTXphStaPrcDoc",
             ptDocFieldStaDelMQ: "FTXphStaDelMQ",
             ptDocStaDelMQ: "1",
-            ptDocNo : tDocNo
+            ptDocNo: tDocNo
         };
 
-        //if ((JCNbCardShiftOutIsUpdatePage() && JSbSPAIsStaApv('2')) && (tUsrCode == tUsrApv)) {
-        // if ((tDocNo != "" && tStaPrcDoc == "2") && (tUsrCode == tStaApv)){ // 2 = Processing and user approved
-        // if ((tDocNo != "" && tStaPrcDoc == "2") && (tUsrCode == tStaApv)){
-        // alert('tStaApv: ' + tStaPrcDoc);
-
-        // console.log('tDocNo'+tDocNo);
-        // console.log('tStaPrcDoc'+tStaPrcDoc);
-        // console.log('tUsrCode'+tUsrCode);
-        // console.log('tStaApv'+tUsrApv);
-
-        if((tDocNo != "" && tStaPrcDoc == "2") && (tUsrCode == tUsrApv)){
+        if ((tDocNo != "" && tStaPrcDoc == "2") && (tUsrCode == tUsrApv)) {
             FSxCMNRabbitMQMessage(poDocConfig, poMqConfig, poUpdateStaDelQnameParams, poCallback);
         }
-        // else{
 
-        //     alert('Not Show Mag \ntDocNo: ' + tDocNo + '\ntUsrCode: ' + tUsrCode + ' = ' + tStaApv + '\nJSbSPAIsStaApv: ' + tStaPrcDoc);
-
-        // }
-
-
-        if(tStaApv != "" && tStaDelMQ == ""){ // Qname removed ?
+        if (tStaApv != "" && tStaDelMQ == "") { // Qname removed ?
             // alert('Q Delete');
             // Delete Queue Name Parameter
             var poDelQnameParams = {
@@ -109,49 +107,45 @@
             FSxCMNRabbitMQDeleteQname(poDelQnameParams);
             FSxCMNRabbitMQUpdateStaDeleteQname(poUpdateStaDelQnameParams);
         }
-        // else{
-
-        //     alert('Not Q Delete');
-
-        // }
+        
         /*===========================================================================*/
 
         // if(tUsrBchCode==""){ JSxGetBchComp(); } // Get Bch from Company
 
         $('.selectpicker').selectpicker();
 
-        $('#obtAddPdt').click(function(){
+        $('#obtAddPdt').click(function() {
             JSxCheckPinMenuClose(); // Hide Menu Pin
             JSvPDTBrowseList();
         });
 
-        $('#ocbStaAutoGenCode').click(function(){
+        $('#ocbStaAutoGenCode').click(function() {
             JSxSPACheckAutoGenerate();
         });
 
-        $('#obtBtnSpaCancel').click(function(){
+        $('#obtBtnSpaCancel').click(function() {
             JSxSPAUpdateStaDocCancel();
         });
 
 
-        $('#obtAdjAll').click(function(){
+        $('#obtAdjAll').click(function() {
             JSxSpaAdjAll();
         });
 
         // DATE
-        $('#obtXphDocDate').click(function(){
+        $('#obtXphDocDate').click(function() {
             event.preventDefault();
             $('#oetXphDocDate').datepicker('show');
         });
-        $('#obtXphDStart').click(function(){
+        $('#obtXphDStart').click(function() {
             event.preventDefault();
             $('#oetXphDStart').datepicker('show');
         });
-        $('#obtXphDStop').click(function(){
+        $('#obtXphDStop').click(function() {
             event.preventDefault();
             $('#oetXphDStop').datepicker('show');
         });
-        $('#obtXphRefIntDate').click(function(){
+        $('#obtXphRefIntDate').click(function() {
             event.preventDefault();
             $('#oetXphRefIntDate').datepicker('show');
         });
@@ -159,200 +153,152 @@
         $('.xCNTimePicker').datetimepicker({
             format: 'HH:mm',
         });
-        $('#obtXphDocTime').click(function(){
+        $('#obtXphDocTime').click(function() {
             event.preventDefault();
             $('#oetXphDocTime').datetimepicker('show');
         });
-        $('#obtXphTStart').click(function(){
+        $('#obtXphTStart').click(function() {
             event.preventDefault();
             $('#oetXphTStart').datetimepicker('show');
         });
-        $('#obtXphTStop').click(function(){
+        $('#obtXphTStop').click(function() {
             event.preventDefault();
             $('#oetXphTStop').datetimepicker('show');
         });
 
         JSxCheckDocType($('#ocmXphDocType').val());
-        var dDateStop   = $('#ohdDateStop').val();
-        $('#ocmXphDocType').change(function(){
+        var dDateStop = $('#ohdDateStop').val();
+        $('#ocmXphDocType').change(function() {
             JSxCheckDocType(this.value);
             JSxCheckSwitchDocType();
             $('#oetXphDStop').val(dDateStop);
         });
 
         /*================= ตรวจสอบ DocType 18/10/2019 Saharat(GolF) =======================*/
-        function JSxCheckSwitchDocType(){
+        function JSxCheckSwitchDocType() {
             var tXphDocType = $('#ocmXphDocType').val();
-            var dXphDStart  = $('#oetXphDStart').val();
+            var dXphDStart = $('#oetXphDStart').val();
             switch (tXphDocType) {
                 case "1":
                     $('#odvXphTStop').hide();
                     $('#odvXphDStop').hide();
                     $('#oetCheckDate').val('1');
-                break;
+                    break;
                 case "2":
                     $('#odvXphTStop').show();
                     $('#odvXphDStop').show();
                     $('#oetCheckDate').val('2');
-                break;
+                    break;
+                    case "3":
+                    $('#odvXphTStop').hide();
+                    $('#odvXphDStop').hide();
+                    $('#oetCheckDate').val('1');
+                    break;
+                    case "4":
+                    $('#odvXphTStop').hide();
+                    $('#odvXphDStop').hide();
+                    $('#oetCheckDate').val('1');
+                    break;
             }
         }
         /*==================================================================================*/
 
-        $('#btnBrowseZone').click(function(){
+        $('#btnBrowseZone').click(function() {
             var tBchTo = $('#oetXphBchTo').val();
-            if(tBchTo!=""){
+            if (tBchTo != "") {
                 oCmpBrowseZone.Where.Condition = [" AND FTZneRefCode = " + tBchTo + " AND FTZneTable = 'TCNMBranch'"];
-            }else{
+            } else {
                 oCmpBrowseZone.Where.Condition = [""];
             }
             JCNxBrowseData('oCmpBrowseZone');
         });
 
-        $('#btnBrowseAgency').unbind().click(function(){
+        $('#btnBrowseAgency').unbind().click(function() {
             var nStaSession = JCNxFuncChkSessionExpired();
-            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
                 JSxCheckPinMenuClose(); // Hide Menu Pin
                 JCNxBrowseData('oCmpBrowseAgency');
-            }else{
+            } else {
                 JCNxShowMsgSessionExpired();
             }
         });
 
-        $('#btnBrowseMerchant').unbind().click(function(){
+        $('#btnBrowseMerchant').unbind().click(function() {
             var nStaSession = JCNxFuncChkSessionExpired();
-            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
                 JSxCheckPinMenuClose(); // Hide Menu Pin
                 JCNxBrowseData('oCmpBrowseMerchant');
-            }else{
+            } else {
                 JCNxShowMsgSessionExpired();
             }
         });
 
-        $('#btnBrowseBranch').unbind().click(function(){
+        $('#btnBrowseBranch').unbind().click(function() {
             var nStaSession = JCNxFuncChkSessionExpired();
-            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
                 JSxCheckPinMenuClose(); // Hide Menu Pin
                 JCNxBrowseData('oCmpBrowseBranch');
-            }else{
+            } else {
                 JCNxShowMsgSessionExpired();
             }
         });
 
-        $('#btnBrowseMerChrant').unbind().click(function(){
+        $('#btnBrowseMerChrant').unbind().click(function() {
             var nStaSession = JCNxFuncChkSessionExpired();
-            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
                 JSxCheckPinMenuClose(); // Hide Menu Pin
                 JCNxBrowseData('oCmpBrowseMerChrant');
-            }else{
+            } else {
                 JCNxShowMsgSessionExpired();
             }
         });
 
-        $('#btnBrowseShop').unbind().click(function(){
+        $('#btnBrowseShop').unbind().click(function() {
             var nStaSession = JCNxFuncChkSessionExpired();
-            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
                 JSxCheckPinMenuClose(); // Hide Menu Pin
                 JCNxBrowseData('oCmpBrowseShop');
-            }else{
+            } else {
                 JCNxShowMsgSessionExpired();
             }
         });
 
-        $('#btnBrowsePdtPriList').unbind().click(function(){
+        $('#btnBrowsePdtPriList').unbind().click(function() {
             var nStaSession = JCNxFuncChkSessionExpired();
-            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
                 JSxCheckPinMenuClose(); // Hide Menu Pin
                 JCNxBrowseData('oCmpBrowsePdtPriList');
-            }else{
+            } else {
                 JCNxShowMsgSessionExpired();
             }
         });
 
-        $('#obtBrowseSaleAdjBCH').unbind().click(function(){
-            var nStaSession = JCNxFuncChkSessionExpired();
-            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
-                JSxCheckPinMenuClose(); // Hide Menu Pin
-                JCNxBrowseData('oBrowseSaleAdj_BCH');
-            }else{
-                JCNxShowMsgSessionExpired();
-            }
-        });
+        // $('#obtBrowseSaleAdjBCH').unbind().click(function() {
+        //     var nStaSession = JCNxFuncChkSessionExpired();
+        //     if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+        //         JSxCheckPinMenuClose(); // Hide Menu Pin
+        //         JCNxBrowseData('oBrowseSaleAdj_BCH');
+        //     } else {
+        //         JCNxShowMsgSessionExpired();
+        //     }
+        // });
 
         //เนลแก้ไขให้เลือกวันที่น้อยกว่าวันปัจจุบัน
         $('.xCNDatePicker').datepicker({
             format: 'yyyy-mm-dd',
             autoclose: true,
             todayHighlight: true,
-            startDate:'1900-01-01',
+            startDate: '1900-01-01',
         });
 
-        // $('.xCNStartDatePicker').datepicker({
-        //     format: 'yyyy-mm-dd',
-        //     autoclose: true,
-        //     todayHighlight: true,
-        //     startDate: new Date(),
-        // });
-        // $('.xCNStopDatePicker').datepicker({
-        //     format: 'yyyy-mm-dd',
-        //     autoclose: true,
-        //     todayHighlight: true,
-        //     startDate: new Date(),
-        // });
-
-
-        // $('.xWRelationshipDate').click(function(){
-        //     // JSxSPACheckRelationshipDate(this.id);
-
-        //     var dStart = $('#oetXphDStart').val();
-
-        //     if(dStart != ""){
-        //         console.log('1');
-        //         $('.xCNStopDatePicker').datepicker('destroy');
-
-        //         $('.xCNStopDatePicker').datepicker({
-        //             format: 'yyyy-mm-dd',
-        //             autoclose: true,
-        //             todayHighlight: true,
-        //             startDate: dStart,
-        //         });
-        //         // $('.xCNStopDatePicker').datepicker("refresh");
-
-        //     }
-        //     $(this.id).datepicker('show');
-
-        // });
-
-        // $('.xCNDatePicker').datepicker({
-        //     format: 'yyyy-mm-dd',
-        //     autoclose: true,
-        //     todayHighlight: true,
-        //     startDate: new Date(),
-        // }).on('changeDate', function(e) {
-        //     $('.xCNStopDatePicker').datepicker({
-        //         format: 'yyyy-mm-dd',
-        //         autoclose: true,
-        //         startDate: e.date,
-        //     });
-        // });
-
-        // $('.xCNStartDatePicker')
-        // $('.xCNStopDatePicker').datepicker({
-        //     format: 'yyyy-mm-dd',
-        //     autoclose: true,
-        //     todayHighlight: true,
-        //     startDate: new Date(),
-        // });
-
-        // $('#oetXphDStart').data('DateTimePicker').getStartDate('03/14/2019');
-        // $('#oetXphDStart').datepicker('getStartDate', '2019-03-14');
+        
 
     });
 
-    $('#obtBtnSpaApv').click(function(){
+    $('#obtBtnSpaApv').click(function() {
         JSxSPAApprove(false);
     });
-    $('#obtSalePriAdjPopupApvConfirm').click(function(){
+    $('#obtSalePriAdjPopupApvConfirm').click(function() {
         $("#oetStaPrcDoc").val(2);
         JSxSPAApprove(true);
     });
@@ -362,114 +308,119 @@
     var nCountBch = "<?php echo $this->session->userdata("nSesUsrBchCount"); ?>";
     var tWhere = "";
 
-    if(nCountBch == 1){
-        $('#obtBrowseSaleAdjBCH').attr('disabled',true);
+    if (nCountBch == 1) {
+        $('#obtBrowseSaleAdjBCH').attr('disabled', true);
     }
-    if(tUsrLevel != "HQ"){
-        tWhere = " AND TCNMBranch.FTBchCode IN ("+tBchCodeMulti+") ";
-    }else{
+    if (tUsrLevel != "HQ") {
+        tWhere = " AND TCNMBranch.FTBchCode IN (" + tBchCodeMulti + ") ";
+    } else {
         tWhere = "";
     }
 
     var oBrowseSaleAdj_BCH = {
-        Title   : ['company/branch/branch','tBCHTitle'],
-        Table   : {Master:'TCNMBranch',PK:'FTBchCode',PKName:'FTBchName'},
-        Join    : {
-            Table   : ['TCNMBranch_L','TCNMWaHouse_L'],
-            On      : ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID ='+nLangEdits,
-                        'TCNMBranch.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMBranch.FTBchCode = TCNMWaHouse_L.FTBchCode AND TCNMWaHouse_L.FNLngID ='+nLangEdits,
+        Title: ['company/branch/branch', 'tBCHTitle'],
+        Table: {
+            Master: 'TCNMBranch',
+            PK: 'FTBchCode',
+            PKName: 'FTBchName'
+        },
+        Join: {
+            Table: ['TCNMBranch_L', 'TCNMWaHouse_L'],
+            On: ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID =' + nLangEdits,
+                'TCNMBranch.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMBranch.FTBchCode = TCNMWaHouse_L.FTBchCode AND TCNMWaHouse_L.FNLngID =' + nLangEdits,
             ]
         },
-        Where:{
-            Condition : [tWhere]
+        Where: {
+            Condition: [tWhere]
         },
-        GrideView:{
-            ColumnPathLang : 'company/branch/branch',
-            ColumnKeyLang : ['tBCHCode','tBCHName',''],
-            ColumnsSize     : ['15%','75%',''],
-            WidthModal      : 50,
-            DataColumns  : ['TCNMBranch.FTBchCode','TCNMBranch_L.FTBchName','TCNMWaHouse_L.FTWahCode','TCNMWaHouse_L.FTWahName'],
-            DataColumnsFormat : ['',''],
-            DisabledColumns   : [2,3],
-            Perpage   : 5,
-            OrderBy   : ['TCNMBranch_L.FTBchName'],
-            SourceOrder  : "ASC"
+        GrideView: {
+            ColumnPathLang: 'company/branch/branch',
+            ColumnKeyLang: ['tBCHCode', 'tBCHName', ''],
+            ColumnsSize: ['15%', '75%', ''],
+            WidthModal: 50,
+            DataColumns: ['TCNMBranch.FTBchCode', 'TCNMBranch_L.FTBchName', 'TCNMWaHouse_L.FTWahCode', 'TCNMWaHouse_L.FTWahName'],
+            DataColumnsFormat: ['', ''],
+            DisabledColumns: [2, 3],
+            Perpage: 5,
+            OrderBy: ['TCNMBranch_L.FTBchCode DESC']
         },
-        CallBack:{
-            ReturnType : 'S',
-            Value  : ["oetBchCode","TCNMBranch.FTBchCode"],
-            Text  : ["oetSaleAdjBchName","TCNMBranch_L.FTBchName"],
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetBchCode", "TCNMBranch.FTBchCode"],
+            Text: ["oetSaleAdjBchName", "TCNMBranch_L.FTBchName"],
         },
     }
 
     var oCmpBrowseZone = {
-        Title : ['document/salepriceadj/salepriceadj','tSpaBRWZoneTitle'],
-        Table:{Master:'TCNMZoneObj',PK:'FNZneID'},
-        Join :{
-            Table           : ['TCNMZone_L'],
-            On              : ['TCNMZone_L.FTZneChain = TCNMZoneObj.FTZneChain AND TCNMZone_L.FNLngID = '+nLangEdits]
+        Title: ['document/salepriceadj/salepriceadj', 'tSpaBRWZoneTitle'],
+        Table: {
+            Master: 'TCNMZoneObj',
+            PK: 'FNZneID'
         },
-        Where:{
-            Condition : []
+        Join: {
+            Table: ['TCNMZone_L'],
+            On: ['TCNMZone_L.FTZneChain = TCNMZoneObj.FTZneChain AND TCNMZone_L.FNLngID = ' + nLangEdits]
         },
-        GrideView:{
-            ColumnPathLang	: 'document/salepriceadj/salepriceadj',
-            ColumnKeyLang	: ['tSpaBRWZoneTBCode','tSpaBRWZoneTBName'],
-            ColumnsSize     : ['10%','75%'],
-            DataColumns		: ['TCNMZone_L.FTZneCode','TCNMZone_L.FTZneName','TCNMZoneObj.FNZneID'],
-            DisabledColumns : [2],
-            DataColumnsFormat : ['',''],
-            WidthModal      : 50,
-            Perpage			: 10,
-            OrderBy			: ['TCNMZoneObj.FTCreateBy'],
-            SourceOrder		: "DESC"
+        Where: {
+            Condition: []
         },
-        CallBack:{
-            ReturnType	: 'S',
-            Value       : ["oetZneChain","TCNMZoneObj.FTZneChain"],
-            Text		: ["oetZneName","TCNMZone_L.FTZneName"],
+        GrideView: {
+            ColumnPathLang: 'document/salepriceadj/salepriceadj',
+            ColumnKeyLang: ['tSpaBRWZoneTBCode', 'tSpaBRWZoneTBName'],
+            ColumnsSize: ['10%', '75%'],
+            DataColumns: ['TCNMZone_L.FTZneCode', 'TCNMZone_L.FTZneName', 'TCNMZoneObj.FNZneID'],
+            DisabledColumns: [2],
+            DataColumnsFormat: ['', ''],
+            WidthModal: 50,
+            Perpage: 10,
+            OrderBy: ['TCNMZoneObj.FTCreateBy'],
+            SourceOrder: "DESC"
         },
-        // DebugSQL : true
-        // NextFunc:{
-        //     FuncName:'JSxSetCondition',
-        //     ArgReturn:['FTZneChain']
-        // },
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetZneChain", "TCNMZoneObj.FTZneChain"],
+            Text: ["oetZneName", "TCNMZone_L.FTZneName"],
+        },
     }
 
     var oCmpBrowseBranch = {
-        Title : ['document/salepriceadj/salepriceadj','tSpaBRWBranchTitle'],
-        Table:{Master:'TCNMBranch',PK:'FTBchCode'},
-        Join :{
-            Table:	['TCNMBranch_L'],
-            On:['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = '+nLangEdits,]
+        Title: ['document/salepriceadj/salepriceadj', 'tSpaBRWBranchTitle'],
+        Table: {
+            Master: 'TCNMBranch',
+            PK: 'FTBchCode'
         },
-        GrideView:{
-            ColumnPathLang	: 'document/salepriceadj/salepriceadj',
-            ColumnKeyLang	: ['tSpaBRWBranchTBCode','tSpaBRWBranchTBName'],
-            ColumnsSize     : ['10%','75%'],
-            DataColumns		: ['TCNMBranch.FTBchCode','TCNMBranch_L.FTBchName'],
-            DataColumnsFormat : ['',''],
-            WidthModal      : 50,
-            Perpage			: 10,
-            OrderBy			: ['TCNMBranch.FTCreateBy'],
-            SourceOrder		: "DESC"
+        Join: {
+            Table: ['TCNMBranch_L'],
+            On: ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits, ]
         },
-        CallBack:{
-            ReturnType	: 'S',
-            Value       : ["oetXphBchTo","TCNMBranch.FTBchCode"],
-            Text		: ["oetBchName","TCNMBranch_L.FTBchName"],
+        GrideView: {
+            ColumnPathLang: 'document/salepriceadj/salepriceadj',
+            ColumnKeyLang: ['tSpaBRWBranchTBCode', 'tSpaBRWBranchTBName'],
+            ColumnsSize: ['10%', '75%'],
+            DataColumns: ['TCNMBranch.FTBchCode', 'TCNMBranch_L.FTBchName'],
+            DataColumnsFormat: ['', ''],
+            WidthModal: 50,
+            Perpage: 10,
+            OrderBy: ['TCNMBranch.FTCreateBy'],
+            SourceOrder: "DESC"
+        },
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetXphBchTo", "TCNMBranch.FTBchCode"],
+            Text: ["oetBchName", "TCNMBranch_L.FTBchName"],
         },
         NextFunc: {
-                    FuncName: 'JSxSetAfterSElectBrach',
-                    ArgReturn: ['FTBchCode', 'FTBchName']
+            FuncName: 'JSxSetAfterSElectBrach',
+            ArgReturn: ['FTBchCode', 'FTBchName']
         },
         // DebugSQL : true
     }
     var tOldBranchSelect = $("#oetXphBchTo").val();
-    function JSxSetAfterSElectBrach(paBranchInfor){
+
+    function JSxSetAfterSElectBrach(paBranchInfor) {
         var aData = JSON.parse(paBranchInfor);
-        if(aData[0]!=tOldBranchSelect){
-            if($("#oetXphBchTo").val()!=""){
+        if (aData[0] != tOldBranchSelect) {
+            if ($("#oetXphBchTo").val() != "") {
                 $("#oetXphMerCode").val("");
                 $("#oetMerName").val("");
             }
@@ -479,152 +430,319 @@
     }
 
     var oCmpBrowseMerChrant = {
-        Title : ['merchant/merchant/merchant','tMerchantTitle'],
-        Table:{Master:'TCNMMerchant_L',PK:'FTMerCode'},
+        Title: ['merchant/merchant/merchant', 'tMerchantTitle'],
+        Table: {
+            Master: 'TCNMMerchant_L',
+            PK: 'FTMerCode'
+        },
         Where: {
-                Condition: [
-                    function(){
-                        var tSQL = "";
-                        if($("#oetXphBchTo").val()!=""){
-                            tSQL += "AND (SELECT COUNT(FTShpCode) FROM TCNMShop WHERE TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTMerCode = TCNMMerchant_L.FTMerCode AND TCNMShop.FTBchCode = '" + $("#oetXphBchTo").val() + "') != 0";
-                        }
-                        return tSQL;
+            Condition: [
+                function() {
+                    var tSQL = "";
+                    if ($("#oetXphBchTo").val() != "") {
+                        tSQL += "AND (SELECT COUNT(FTShpCode) FROM TCNMShop WHERE TCNMShop.FTShpStaActive = 1 AND TCNMShop.FTMerCode = TCNMMerchant_L.FTMerCode AND TCNMShop.FTBchCode = '" + $("#oetXphBchTo").val() + "') != 0";
                     }
-                ]
+                    return tSQL;
+                }
+            ]
         },
-        GrideView:{
-            ColumnPathLang	: 'merchant/merchant/merchant',
-            ColumnKeyLang	: ['tMCNTBCode','tMCNTBName'],
-            ColumnsSize     : ['10%','75%'],
-            DataColumns		: ['TCNMMerchant_L.FTMerCode','TCNMMerchant_L.FTMerName'],
-            DataColumnsFormat : ['',''],
-            WidthModal      : 50,
-            Perpage			: 10,
-            OrderBy			: ['TCNMMerchant_L.FTMerCode'],
-            SourceOrder		: "Desc"
+        GrideView: {
+            ColumnPathLang: 'merchant/merchant/merchant',
+            ColumnKeyLang: ['tMCNTBCode', 'tMCNTBName'],
+            ColumnsSize: ['10%', '75%'],
+            DataColumns: ['TCNMMerchant_L.FTMerCode', 'TCNMMerchant_L.FTMerName'],
+            DataColumnsFormat: ['', ''],
+            WidthModal: 50,
+            Perpage: 10,
+            OrderBy: ['TCNMMerchant_L.FTMerCode'],
+            SourceOrder: "Desc"
         },
-        CallBack:{
-            ReturnType	: 'S',
-            Value       : ["oetXphMerCode","TCNMMerchant_L.FTMerCode"],
-            Text		: ["oetMerName","TCNMMerchant_L.FTMerName"],
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetXphMerCode", "TCNMMerchant_L.FTMerCode"],
+            Text: ["oetMerName", "TCNMMerchant_L.FTMerName"],
         },
         // DebugSQL : true
     }
 
     var oCmpBrowsePdtPriList = {
-        Title : ['document/salepriceadj/salepriceadj','tSpaBRWPdtPriListTitle'],
-        Table:{Master:'TCNMPdtPriList',PK:'FTPplCode'},
-        Join :{
-            Table:	['TCNMPdtPriList_L'],
-            On:['TCNMPdtPriList_L.FTPplCode = TCNMPdtPriList.FTPplCode AND TCNMPdtPriList_L.FNLngID = '+nLangEdits,]
+        Title: ['document/salepriceadj/salepriceadj', 'tSpaBRWPdtPriListTitle'],
+        Table: {
+            Master: 'TCNMPdtPriList',
+            PK: 'FTPplCode'
         },
-        Where :{
-               Condition : ["AND TCNMPdtPriList.FTAgnCode = '<?php echo $tAgnCode; ?>'"],
+        Join: {
+            Table: ['TCNMPdtPriList_L'],
+            On: ['TCNMPdtPriList_L.FTPplCode = TCNMPdtPriList.FTPplCode AND TCNMPdtPriList_L.FNLngID = ' + nLangEdits, ]
         },
-        GrideView:{
-            ColumnPathLang	: 'document/salepriceadj/salepriceadj',
-            ColumnKeyLang	: ['tSpaBRWPdtPriListTBCode','tSpaBRWPdtPriListTBName'],
-            ColumnsSize     : ['15%','85%'],
-            DataColumns		: ['TCNMPdtPriList.FTPplCode','TCNMPdtPriList_L.FTPplName'],
-            DataColumnsFormat : ['',''],
-            WidthModal      : 50,
-            Perpage			: 10,
-            OrderBy			: ['TCNMPdtPriList.FDCreateON'],
-            SourceOrder		: "Desc"
+        Where: {
+            Condition: ["AND TCNMPdtPriList.FTAgnCode = '<?php echo $tAgnCode; ?>'"],
         },
-        CallBack:{
-            ReturnType	: 'S',
-            Value       : ["oetPplCode","TCNMPdtPriList.FTPplCode"],
-            Text		: ["oetPplName","TCNMPdtPriList_L.FTPplName"],
-        }
+        GrideView: {
+            ColumnPathLang: 'document/salepriceadj/salepriceadj',
+            ColumnKeyLang: ['tSpaBRWPdtPriListTBCode', 'tSpaBRWPdtPriListTBName'],
+            ColumnsSize: ['15%', '85%'],
+            DataColumns: ['TCNMPdtPriList.FTPplCode', 'TCNMPdtPriList_L.FTPplName'],
+            DataColumnsFormat: ['', ''],
+            WidthModal: 50,
+            Perpage: 10,
+            OrderBy: ['TCNMPdtPriList.FDCreateON'],
+            SourceOrder: "Desc"
+        },
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetPplCode", "TCNMPdtPriList.FTPplCode"],
+            Text: ["oetPplName", "TCNMPdtPriList_L.FTPplName"],
+        },
     }
 
     var oCmpBrowseAgency = {
-        Title : ['document/salepriceadj/salepriceadj','tSpaBRWAgencyTitle'],
-        Table:{Master:'TCNMAgencyGrp',PK:'FTAggCode'},
-        Join :{
-            Table:	['TCNMAgencyGrp_L'],
-            On:['TCNMAgencyGrp_L.FTAggCode = TCNMAgencyGrp.FTAggCode AND TCNMAgencyGrp_L.FNLngID = '+nLangEdits,]
+        Title: ['document/salepriceadj/salepriceadj', 'tSpaBRWAgencyTitle'],
+        Table: {
+            Master: 'TCNMAgencyGrp',
+            PK: 'FTAggCode'
         },
-        GrideView:{
-            ColumnPathLang	: 'document/salepriceadj/salepriceadj',
-            ColumnKeyLang	: ['tSpaBRWAgencyTBCode','tSpaBRWAgencyTBName'],
-            ColumnsSize     : ['10%','75%'],
-            DataColumns		: ['TCNMAgencyGrp.FTAggCode','TCNMAgencyGrp_L.FTAggName'],
-            DataColumnsFormat : ['',''],
-            WidthModal      : 50,
-            Perpage			: 10,
-            OrderBy			: ['TCNMAgencyGrp.FDCreateON'],
-            SourceOrder		: "DESC"
+        Join: {
+            Table: ['TCNMAgencyGrp_L'],
+            On: ['TCNMAgencyGrp_L.FTAggCode = TCNMAgencyGrp.FTAggCode AND TCNMAgencyGrp_L.FNLngID = ' + nLangEdits, ]
         },
-        CallBack:{
-            ReturnType	: 'S',
-            Value       : ["oetAggCode","TCNMAgencyGrp.FTAggCode"],
-            Text		: ["oetAggName","TCNMAgencyGrp_L.FTAggName"],
+        GrideView: {
+            ColumnPathLang: 'document/salepriceadj/salepriceadj',
+            ColumnKeyLang: ['tSpaBRWAgencyTBCode', 'tSpaBRWAgencyTBName'],
+            ColumnsSize: ['10%', '75%'],
+            DataColumns: ['TCNMAgencyGrp.FTAggCode', 'TCNMAgencyGrp_L.FTAggName'],
+            DataColumnsFormat: ['', ''],
+            WidthModal: 50,
+            Perpage: 10,
+            OrderBy: ['TCNMAgencyGrp.FDCreateON'],
+            SourceOrder: "DESC"
+        },
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetAggCode", "TCNMAgencyGrp.FTAggCode"],
+            Text: ["oetAggName", "TCNMAgencyGrp_L.FTAggName"],
         }
     }
 
     var oCmpBrowseMerchant = {
-        Title : ['document/salepriceadj/salepriceadj','tSpaBRWMRCTitle'],
-        Table:{Master:'TCNMMerchant',PK:'FTMerCode'},
-        Join :{
-            Table:	['TCNMMerchant_L'],
-            On:['TCNMMerchant_L.FTMerCode = TCNMMerchant.FTMerCode AND TCNMMerchant_L.FNLngID = '+nLangEdits,]
+        Title: ['document/salepriceadj/salepriceadj', 'tSpaBRWMRCTitle'],
+        Table: {
+            Master: 'TCNMMerchant',
+            PK: 'FTMerCode'
         },
-        GrideView:{
-            ColumnPathLang	: 'document/salepriceadj/salepriceadj',
-            ColumnKeyLang	: ['tSpaBRWMRCTBCode','tSpaBRWMRCTBName'],
-            ColumnsSize     : ['10%','75%'],
-            DataColumns		: ['TCNMMerchant.FTMerCode','TCNMMerchant_L.FTMerName'],
-            DataColumnsFormat : ['',''],
-            WidthModal      : 50,
-            Perpage			: 10,
-            OrderBy			: ['TCNMMerchant.FDCreateON'],
-            SourceOrder		: "DESC"
+        Join: {
+            Table: ['TCNMMerchant_L'],
+            On: ['TCNMMerchant_L.FTMerCode = TCNMMerchant.FTMerCode AND TCNMMerchant_L.FNLngID = ' + nLangEdits, ]
         },
-        CallBack:{
-            ReturnType	: 'S',
-            Value       : ["oetMerCode","TCNMMerchant.FTMerCode"],
-            Text		: ["oetMerName","TCNMMerchant_L.FTMerName"],
+        GrideView: {
+            ColumnPathLang: 'document/salepriceadj/salepriceadj',
+            ColumnKeyLang: ['tSpaBRWMRCTBCode', 'tSpaBRWMRCTBName'],
+            ColumnsSize: ['10%', '75%'],
+            DataColumns: ['TCNMMerchant.FTMerCode', 'TCNMMerchant_L.FTMerName'],
+            DataColumnsFormat: ['', ''],
+            WidthModal: 50,
+            Perpage: 10,
+            OrderBy: ['TCNMMerchant.FDCreateON'],
+            SourceOrder: "DESC"
+        },
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetMerCode", "TCNMMerchant.FTMerCode"],
+            Text: ["oetMerName", "TCNMMerchant_L.FTMerName"],
         }
     }
 
     /*===== Begin Import Excel =========================================================*/
-    function JSxOpenImportForm(){
-
-        var tNameModule = 'AdjPrice';
-        var tTypeModule = 'document';
-        var tAfterRoute = 'JSxImportExcelCallback'; // call func
-        var tFlagClearTmp = '1' // null = ไม่สนใจ 1 = ลบหมดเเล้วเพิ่มใหม่ 2 = เพิ่มต่อเนื่อง
-
+    function JSxOpenImportForm() {
+        var tNameModule     = 'AdjPrice';
+        var tTypeModule     = 'document';
+        var tAfterRoute     = 'JSxImportExcelCallback'; // call func
+        var tFlagClearTmp   = '1' // null = ไม่สนใจ 1 = ลบหมดเเล้วเพิ่มใหม่ 2 = เพิ่มต่อเนื่อง
         var aPackdata = {
-        'tNameModule' : tNameModule,
-        'tTypeModule' : tTypeModule,
-        'tAfterRoute' : tAfterRoute,
-        'tFlagClearTmp' : tFlagClearTmp
+            'tNameModule': tNameModule,
+            'tTypeModule': tTypeModule,
+            'tAfterRoute': tAfterRoute,
+            'tFlagClearTmp': tFlagClearTmp
         };
-
         JSxImportPopUp(aPackdata);
     }
 
-    function JSxImportExcelCallback(){
+    function JSxImportExcelCallback() {
         JCNxOpenLoading();
-        setTimeout(function(){
+        setTimeout(function() {
             JSvSpaPdtPriDataTable();
         }, 50);
     }
+
     /*===== End Import Excel ===========================================================*/
 
     //Functionality : Print Document
-    function JSvADJPricePrintDoc(){
-        var aInfor = [
-            {"Lang"         : '<?=FCNaHGetLangEdit(); ?>'}, // Lang ID
-            {"ComCode"      : '<?=FCNtGetCompanyCode(); ?>'}, // Company Code
-            {"BranchCode"   : '<?=FCNtGetAddressBranch($tBchCode); ?>' }, // สาขาที่ออกเอกสาร
-            {"DocCode"      : $('#oetXphDocNo').val()  }, // เลขที่เอกสาร
-            {"DocBchCode"   : '<?=$tBchCode;?>' }
+    function JSvADJPricePrintDoc() {
+        var aInfor = [{
+                "Lang": '<?= FCNaHGetLangEdit(); ?>'
+            }, // Lang ID
+            {
+                "ComCode": '<?= FCNtGetCompanyCode(); ?>'
+            }, // Company Code
+            {
+                "BranchCode": '<?= FCNtGetAddressBranch($tBchCode); ?>'
+            }, // สาขาที่ออกเอกสาร
+            {
+                "DocCode": $('#oetXphDocNo').val()
+            }, // เลขที่เอกสาร
+            {
+                "DocBchCode": '<?= $tBchCode; ?>'
+            }
         ];
-        window.open($("#ohdBaseUrl").val()+"formreport/Frm_SQL_ALLMPdtBillAdjustPrice?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        window.open($("#ohdBaseUrl").val() + "formreport/Frm_SQL_ALLMPdtBillAdjustPrice?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
     }
+
+     // Event Click Browse Multi Branch
+    $('#obtBrowseSaleAdjBCH').unbind().click(function(){
+
+        var nRowPdt = $('.xWShowValueFTPdtCode1').length;
+        if(nRowPdt>0){
+            $('#odvModalDelSpaPdtPriOnChgBch').attr('data-frmclick',2);
+            $('#odvModalDelSpaPdtPriOnChgBch').modal('show');
+        }else{
+                JSxADJPriceBrowsBranch();
+        }
+
+    });
+
+    // Event Click Browse Multi Branch
+    function JSxADJPriceBrowsBranch(){
+        let nStaSession = JCNxFuncChkSessionExpired();
+        if(typeof(nStaSession) !== "undefined" && nStaSession == 1) {
+            JSxCheckPinMenuClose(); // Hidden Pin Menu
+            var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
+            var tBchCodeMulti = "<?php echo $this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+            var nCountBch = "<?php echo $this->session->userdata("nSesUsrBchCount"); ?>";
+            var tWhere = "";
+
+            if(nCountBch == 1){
+                $('#obtBrowseSaleAdjBCH').attr('disabled',true);
+            }
+            if(tUsrLevel != "HQ"){
+                tWhere = " AND TCNMBranch.FTBchCode IN ("+tBchCodeMulti+") ";
+            }else{
+                tWhere = "";
+            }
+
+            var tSaleAdjAgnCode = $('#oetSaleAdjAgnCode').val();
+
+            if(tSaleAdjAgnCode != ''){
+                tWhere      += " AND (TCNMBranch.FTAgnCode  ='"+tSaleAdjAgnCode+"' )";
+            }
+
+            window.oBrowseSaleAdj_BCH   = undefined;
+            window.oBrowseSaleAdj_BCH = {
+                Title   : ['company/branch/branch','tBCHTitle'],
+                Table   : {Master:'TCNMBranch',PK:'FTBchCode',PKName:'FTBchName'},
+                Join    : {
+                    Table   : ['TCNMBranch_L','TCNMWaHouse_L'],
+                    On      : ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID ='+nLangEdits,
+                                'TCNMBranch.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMBranch.FTBchCode = TCNMWaHouse_L.FTBchCode AND TCNMWaHouse_L.FNLngID ='+nLangEdits,
+                    ]
+                },
+                Where:{
+                    Condition : [tWhere]
+                },
+                GrideView:{
+                    ColumnPathLang : 'company/branch/branch',
+                    ColumnKeyLang : ['tBCHCode','tBCHName',''],
+                    ColumnsSize     : ['15%','75%',''],
+                    WidthModal      : 50,
+                    DataColumns  : ['TCNMBranch.FTBchCode','TCNMBranch_L.FTBchName','TCNMWaHouse_L.FTWahCode','TCNMWaHouse_L.FTWahName'],
+                    DataColumnsFormat : ['',''],
+                    DisabledColumns   : [2,3],
+                    Perpage   : 5,
+                    OrderBy   : ['TCNMBranch_L.FTBchName'],
+                    SourceOrder  : "ASC"
+                },
+                CallBack:{
+                    ReturnType : 'S',
+                    Value  : ["oetBchCode","TCNMBranch.FTBchCode"],
+                    Text  : ["oetSaleAdjBchName","TCNMBranch_L.FTBchName"],
+                },
+            }
+            JCNxBrowseData('oBrowseSaleAdj_BCH');
+        }else{
+            JCNxShowMsgSessionExpired();
+        }
+
+    }
+
+    // Event Click Browse Multi Branch
+    $('#obtBrowseSaleAdjAgn').unbind().click(function(){
+        var nRowPdt = $('.xWShowValueFTPdtCode1').length;
+        if(nRowPdt>0){
+            $('#odvModalDelSpaPdtPriOnChgBch').attr('data-frmclick',1);
+            $('#odvModalDelSpaPdtPriOnChgBch').modal('show');
+        }else{
+            JSxADJPriceBrowsAgency();
+        }
+    });
+
+     // Event Click Browse Multi Branch
+    function JSxADJPriceBrowsAgency(){
+        let nStaSession = JCNxFuncChkSessionExpired();
+            if(typeof(nStaSession) !== "undefined" && nStaSession == 1) {
+                JSxCheckPinMenuClose(); // Hidden Pin Menu
+                var tSesUsrAgnCode = "<?=$this->session->userdata('tSesUsrAgnCode')?>";
+                                // ********** Check Data Branch **********
+                let tTextWhereInBranch      = '';
+                if(tSesUsrAgnCode != ''){
+                    var tSesUsrAgnCode = "<?=$this->session->userdata('tSesUsrAgnCode')?>";
+                    tTextWhereInBranch      = " AND (TCNMAgency.FTAgnCode  ='"+tSesUsrAgnCode+"' )";
+                }
+
+                window.oSMTSALBrowseAgnOption   = undefined;
+                oSMTSALBrowseAgnOption          = {
+                    Title   : ['ticket/agency/agency','tAggTitle'],
+                    Table   : {Master:'TCNMAgency',PK:'FTAgnCode'},
+                    Join    : {
+                        Table   : ['TCNMAgency_L'],
+                        On      : ['TCNMAgency_L.FTAgnCode = TCNMAgency.FTAgnCode AND TCNMAgency_L.FNLngID = '+nLangEdits]
+                    },
+                    Where :{
+                        Condition : [tTextWhereInBranch]
+                    },
+                    GrideView:{
+                        ColumnPathLang  	: 'ticket/agency/agency',
+                        ColumnKeyLang	    : ['tAggCode','tAggName'],
+                        ColumnsSize         : ['15%','75%'],
+                        WidthModal          : 50,
+                        DataColumns		    : ['TCNMAgency.FTAgnCode','TCNMAgency_L.FTAgnName'],
+                        DataColumnsFormat   : ['',''],
+                        Perpage			: 10,
+                        OrderBy			    : ['TCNMAgency_L.FTAgnCode ASC'],
+                    },
+                    NextFunc:{
+                        FuncName:'JSxSAJPSetBrowsBch',
+                        ArgReturn:['FTAgnCode']
+                    },
+                    CallBack:{
+                        ReturnType	: 'S',
+                        Value		: ['oetSaleAdjAgnCode','TCNMAgency.FTAgnCode'],
+                        Text		: ['oetSaleAdjAgnName','TCNMAgency_L.FTAgnName']
+                    },
+           
+                };
+                JCNxBrowseData('oSMTSALBrowseAgnOption');
+            }else{
+                JCNxShowMsgSessionExpired();
+            }
+        }
+
+        //หลังจากเลือกตัวแทนขายแล้วต้องเคลียสาขาใหม่
+        function JSxSAJPSetBrowsBch(ptParam){
+
+            if(ptParam!='NULL'){     
+                $('#oetBchCode').val('');
+                $('#oetSaleAdjBchName').val('');
+            }
+
+        }
 
 </script>
