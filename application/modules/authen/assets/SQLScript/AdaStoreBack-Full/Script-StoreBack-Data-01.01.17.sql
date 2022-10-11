@@ -740,3 +740,34 @@ IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '0
 	UPDATE TSysReport SET FTRptFilterCol = '1,3,4,16,17' WHERE FTRptCode = '004001001'
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.15', getdate() , 'ปรับฟิวเตอร์รายงานข้อมูลการใช้บัตร', 'Ice')
 END
+
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.16') BEGIN
+
+	IF NOT EXISTS(SELECT FTShwTblDT, FTShwFedShw FROM TSysShwDT WHERE FTShwTblDT='TCNTPdtTwxDT' AND FTShwFedShw = 'FTXtdStaPrcStk') BEGIN
+		INSERT INTO [TSysShwDT] ([FTShwTblDT], [FNShwSeq], [FTShwFedShw], [FTShwFedStaUsed], [FTShwFedSetByDef], [FTShwFedSetByUsr], [FNShwColWidth], [FTShwStaAlwEdit]) 
+		VALUES ('TCNTPdtTwxDT', 15, 'FTXtdStaPrcStk', '1', '1', '1', '0', '0')
+	END
+
+	IF NOT EXISTS(SELECT FTShwTblDT, FTShwFedShw FROM TSysShwDT_L WHERE FTShwTblDT='TCNTPdtTwxDT' AND FTShwFedShw = 'FTXtdStaPrcStk') BEGIN
+		INSERT INTO [TSysShwDT_L] ([FTShwTblDT], [FNShwSeq], [FTShwFedShw], [FNLngID], [FTShwNameDef], [FTShwNameUsr]) 
+		VALUES ('TCNTPdtTwxDT', 15, 'FTXtdStaPrcStk', '1', 'สถานะสต็อค', 'สถานะสต็อค')
+		
+		INSERT INTO [TSysShwDT_L] ([FTShwTblDT], [FNShwSeq], [FTShwFedShw], [FNLngID], [FTShwNameDef], [FTShwNameUsr]) 
+		VALUES ('TCNTPdtTwxDT', 15, 'FTXtdStaPrcStk', '2', 'Stock Status', 'Stock Status')
+	END
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.16', getdate() , 'เพิ่มข้อมูลตั้งต้นเอกสาร', 'Nattakit K.')
+END
+GO
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.17') BEGIN
+INSERT INTO  [TSysMenuList] ([FTGmnCode], [FTMnuParent], [FTMnuCode], [FTLicPdtCode], [FNMnuSeq], [FTMnuCtlName], [FNMnuLevel], [FTMnuStaPosHpm], [FTMnuStaPosFhn], [FTMnuStaSmartHpm], [FTMnuStaSmartFhn], [FTMnuStaMoreHpm], [FTMnuStaMoreFhn], [FTMnuType], [FTMnuStaAPIPos], [FTMnuStaAPISmart], [FTMnuStaUse], [FTMnuPath], [FTGmnModCode], [FTMnuImgPath]) VALUES ('ARS', 'ARS', 'ARS014', 'SB-ARARS014', '4', 'cstMngCredit/0/0', '1', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '1', 'Y', 'Y', '1', '', 'AD', '');
+INSERT INTO  [TSysMenuList_L] ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) VALUES ('ARS014', '1', 'จัดการวงเงินเครดิต', 'NULL');
+INSERT INTO  [TSysMenuList_L] ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) VALUES ('ARS014', '2', 'Change Customer Credit', 'NULL');
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.17', getdate() , 'เพิ่ม จัดการวงเงินเครดิต', 'Nattakit K.')
+END
+
