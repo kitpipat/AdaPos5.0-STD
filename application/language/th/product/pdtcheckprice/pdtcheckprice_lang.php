@@ -36,3 +36,9 @@ $lang['tPCPSearchDisplay']        =   "เรียงลำดับตาม";
 $lang['tPCPSearchDisplay1']       =   "สินค้า";
 $lang['tPCPSearchDisplay2']       =   "กลุ่มราคา";
 
+
+$lang['tPCPPriceType']          =   "ประเภทราคา";
+$lang['tPCPPriceTypeSub']       =   "ประเภทการปรับ";
+$lang['tPCPPdtPriceAfter']       =   "ราคาหลังปรับ";
+
+

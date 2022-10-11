@@ -19,7 +19,7 @@
                     <tr class="xCNCenter">
                         <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXNum')?></th>
 						<th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXBusiness2')?></th>
-                        <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXABB')?></th>
+                        <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXABBFC')?></th>
                         <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXDocumentDate')?></th>
                         <th class="xCNTextBold"><?=language('document/taxinvoicefc/taxinvoicefc','tTAXDocumentPOS')?></th>
                     </tr>

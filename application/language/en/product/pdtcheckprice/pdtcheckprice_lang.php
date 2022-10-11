@@ -36,3 +36,6 @@ $lang['tPCPSearchDisplay']        =   "Filters";
 $lang['tPCPSearchDisplay1']       =   "Products";
 $lang['tPCPSearchDisplay2']       =   "Price Group";
 
+$lang['tPCPPriceType']              =   "Price Type";
+$lang['tPCPPriceTypeSub']           =   "Type";
+$lang['tPCPPdtPriceAfter']          =   "ราคาหลังปรับ";

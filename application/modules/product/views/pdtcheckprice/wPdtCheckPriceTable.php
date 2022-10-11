@@ -17,7 +17,13 @@
                         <th class="text-center"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPdtTimeStop'); ?></th>
                         <th class="text-center"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPdtDocNo'); ?></th>
                         <th class="text-center"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPdtPrice'); ?></th>
-                        <?php if($tDisplayType == '1'){ echo "<th class='text-center'>".language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplName')."</th>"; } ?>
+                        <th class="text-center"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPriceTypeSub'); ?></th>
+                        <th class="text-center"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPriceType'); ?></th>
+                        <th class="text-center"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPdtPriceAfter'); ?></th>
+                        <?php if ($tDisplayType == '1') {
+                            echo "<th class='text-center'>" . language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplName') . "</th>";
+                        } ?>
+                        <th class="text-center" style="width:15%;"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'หมายเหตุ'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,6 +34,18 @@
                                 $FTPplName = language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplNameAll');;
                             }else{
                                 $FTPplName = $aValue['FTPplName'];
+                            }
+
+                            if ($aValue['FTXphDocType'] == 1) {
+                                $tXphDocType = 'Base Price';
+                            } else if ($aValue['FTXphDocType'] == 2) {
+                                $tXphDocType = 'Price Off';
+                            } else if($aValue['FTXphDocType'] == 3){
+                                $tXphDocType = 'Promotion';
+                            } else if($aValue['FTXphDocType'] == 4){
+                                $tXphDocType = 'Coupon';
+                            } else {
+                                $tXphDocType = '';
                             }
                         ?>
                     <tr>
@@ -40,8 +58,25 @@
                         <td class="text-center"><?php echo $aValue['FTXphTStart'];?></td>
                         <td class="text-center"><?php echo $aValue['FTXphTStop'];?></td>
                         <td><?php echo $aValue['FTXphDocNo'];?></td>
-                        <td class="text-right"><?php  echo number_format($aValue['FCXpdPriceRet'],$nOptDecimalShow);?></td>
-                        <?php if($tDisplayType == '1'){ echo "<td>".$FTPplName."</td>"; } ?>
+                        <?php if($aValue['FTXphStaAdj'] == '1') {
+                                        echo "<td class='text-right'>" . number_format($aValue['FCXpdPriceRet'], $nOptDecimalShow) . "</td>";
+                                    }elseif($aValue['FTXphStaAdj'] == '2'){
+                                        echo "<td class='text-right'>"."-" . number_format($aValue['FCXpdPriceRet'], 0) . "%"."</td>";
+                                    }elseif($aValue['FTXphStaAdj'] == '3'){
+                                        echo "<td class='text-right'>"."-" . number_format($aValue['FCXpdPriceRet'], $nOptDecimalShow) ."</td>";
+                                    }elseif($aValue['FTXphStaAdj'] == '4'){
+                                        echo "<td class='text-right'>" . number_format($aValue['FCXpdPriceRet'], 0) . "%"."</td>";
+                                    }elseif($aValue['FTXphStaAdj'] == '5'){
+                                        echo "<td class='text-right'>" . number_format($aValue['FCXpdPriceRet'], $nOptDecimalShow) ."</td>";
+                                    }
+                                ?>
+                                <td class="text-left"><?php echo language('document/salepriceadj/salepriceadj', 'tSpaADDXphStaAdj'.$aValue['FTXphStaAdj']) ?></td>
+                                <td class="text-left"><?php echo $tXphDocType; ?></td>
+                                <td class="text-right"><?php echo number_format($aValue['SumPrice'], $nOptDecimalShow); ?></td>
+                                <?php if ($tDisplayType == '1') {
+                                    echo "<td>" . $FTPplName . "</td>";
+                                } ?>
+                                <td class="text-left"><?php echo $aValue['FTXphRmk']; ?></td>
                     </tr>
                     <?php endforeach;?>
                     <?php }else{?>

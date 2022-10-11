@@ -58,6 +58,7 @@ $lang['tAllBranch']   = "สาขาทั้งหมด";
 $lang['tShop']        = "ร้านค้า";
 $lang['tBranch']      = "สาขา";
 $lang['tPos']         = "เครื่องจุดขาย";
+$lang['tShopVD']        = "รูปแบบการจัดสินค้า";
 
 //$lang Modal Browse Address
 $lang['tBrowseADDTitle']        = "ข้อมูลที่อยู่";
