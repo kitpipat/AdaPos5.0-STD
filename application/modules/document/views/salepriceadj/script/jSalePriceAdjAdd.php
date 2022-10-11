@@ -600,13 +600,13 @@
      // Event Click Browse Multi Branch
     $('#obtBrowseSaleAdjBCH').unbind().click(function(){
 
-        var nRowPdt = $('.xWShowValueFTPdtCode1').length;
-        if(nRowPdt>0){
-            $('#odvModalDelSpaPdtPriOnChgBch').attr('data-frmclick',2);
-            $('#odvModalDelSpaPdtPriOnChgBch').modal('show');
-        }else{
+        // var nRowPdt = $('.xWShowValueFTPdtCode1').length;
+        // if(nRowPdt>0){
+        //     $('#odvModalDelSpaPdtPriOnChgBch').attr('data-frmclick',2);
+        //     $('#odvModalDelSpaPdtPriOnChgBch').modal('show');
+        // }else{
                 JSxADJPriceBrowsBranch();
-        }
+        // }
 
     });
 
@@ -620,9 +620,9 @@
             var nCountBch = "<?php echo $this->session->userdata("nSesUsrBchCount"); ?>";
             var tWhere = "";
 
-            if(nCountBch == 1){
-                $('#obtBrowseSaleAdjBCH').attr('disabled',true);
-            }
+            // if(nCountBch == 1){
+            //     $('#obtBrowseSaleAdjBCH').attr('disabled',true);
+            // }
             if(tUsrLevel != "HQ"){
                 tWhere = " AND TCNMBranch.FTBchCode IN ("+tBchCodeMulti+") ";
             }else{

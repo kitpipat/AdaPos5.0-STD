@@ -20,3 +20,4 @@ $lang['tBNKRemark']     = "Remark";
 //Form Validate
 $lang['tBNKValidCode']          = 'Please Enter Code';
 $lang['tBNKValidName']          = 'Please Enter Name';
+$lang['tBnkNoData']     = "No data";

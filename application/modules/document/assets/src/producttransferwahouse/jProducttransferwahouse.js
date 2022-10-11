@@ -425,6 +425,7 @@ async function JSxTFWChkStkB4ApvDoc(pbIsConfirm){
             'tNextFunc' : 'JSnTFWApprove'
         };
         var aChkStkB4ApvDoc = await JCNaChkStkB4ApvDoc(aParams);
+        console.log(aChkStkB4ApvDoc)
         if( aChkStkB4ApvDoc['nStaEvent'] == 1 ){
             return;
         }else{
@@ -449,7 +450,7 @@ async function JSxTFWChkStkB4ApvDoc(pbIsConfirm){
  * Return Type : -
  */
 function JSnTFWApprove(pbIsConfirm) {
-
+    console.log('JSnTFWApprove');
     var nStaSession = JCNxFuncChkSessionExpired();
     if (typeof nStaSession !== "undefined" && nStaSession == 1) {
         try {

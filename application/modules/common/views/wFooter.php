@@ -613,6 +613,32 @@ require_once('././././config_deploy.php');
 	</div>
 </div>
 
+<style>
+    #odvModalChkStkB4ApvDoc .modal-body {
+        max-height: calc(100vh - 210px);
+        overflow-y: auto;
+    }
+</style>
+
+<!-- Modal ตรวจสอบเอกสารสินค้าคงคลังรออนุมัติ -->
+<div class="modal fade" id="odvModalChkStkB4ApvDoc" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="xCNHeardModal modal-title" style="display:inline-block"><?= language('common/main/main', 'tModalWarning') ?></h5>
+            </div>
+            <div class="modal-body" style="padding-bottom: 30px;">
+                <div id="odvSection1"></div>
+                <div id="odvSection2"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn" data-dismiss="modal" id="obtConfirmChkStkB4ApvDoc"><?php echo language('common/main/main', 'tModalConfirm') ?></button>
+                <button class="btn xCNBTNDefult xCNBTNDefult2Btn" data-dismiss="modal"><?php echo language('common/main/main', 'tModalCancel') ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="odvAddForiteAppendDiv"></div>
 
 <script>

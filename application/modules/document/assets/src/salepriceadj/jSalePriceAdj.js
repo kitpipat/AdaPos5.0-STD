@@ -468,6 +468,7 @@ function JSoAddEditSpa(ptRoute) {
                     oetXphDStop: "required",
                     oetXphTStart: "required",
                     oetXphTStop: "required",
+                    oetSaleAdjBchName: "required",
 
                 },
                 messages: {
@@ -481,6 +482,7 @@ function JSoAddEditSpa(ptRoute) {
                     oetXphDStop: $('#oetXphDStop').data('validate'),
                     oetXphTStart: $('#oetXphTStart').data('validate'),
                     oetXphTStop: $('#oetXphTStop').data('validate'),
+                    oetSaleAdjBchName: $('#oetSaleAdjBchName').data('validate'),
                 },
                 errorElement: "em",
                 errorPlacement: function(error, element) {
@@ -1804,7 +1806,6 @@ function JSxSPACheckRelationshipDate(tID) {
 
 //Function Disabled Input On User Approve
 function JSxDisableInput() {
-
     var tUsrApv = $('#oetStaApv').val();
     var tStaDoc = $('#oetStaDoc').val();
     var tStaPrcDoc = $('#oetStaPrcDoc').val();

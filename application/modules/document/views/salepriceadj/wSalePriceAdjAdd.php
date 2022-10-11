@@ -371,7 +371,7 @@ if ($tXphStaDoc == 3) {
                         <?php } ?>
 
                         <div class="form-group">
-                            <label class="xCNLabelFrm"><?php echo language('document/salepriceadj/salepriceadj', 'tSpaBRWBranch'); ?></label>
+                            <label class="xCNLabelFrm"><span style = "color:red;">*</span><?php echo language('document/salepriceadj/salepriceadj', 'tSpaBRWBranch'); ?></label>
                             <div class="input-group">
                                 <input type="text" class="orm-control xCNHide xCNInputWithoutSpcNotThai xCNInputWithoutSingleQuote" id="oetBchCode" name="oetBchCode" maxlength="5" value="<?php echo $tSaleAdjDataInputBchCode; ?>">
                                 <input type="text" class="form-control xWPointerEventNone" id="oetSaleAdjBchName" name="oetSaleAdjBchName" maxlength="100" placeholder="<?php echo language('document/salepriceadj/salepriceadj', 'tSpaBRWBranch'); ?>" value="<?php echo $tSaleAdjDataInputBchName; ?>" readonly>
