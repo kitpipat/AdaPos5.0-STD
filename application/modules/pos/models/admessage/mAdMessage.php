@@ -242,6 +242,7 @@ class mAdMessage extends CI_Model {
         try{
             // Update Master
             // $this->db->set('FNAdvSeqNo', "(SELECT TOP 1 (FNAdvSeqNo + 1) FROM TCNMAdMsg WHERE FNAdvSeqNo IS NOT NULL ORDER BY FNAdvSeqNo DESC)", FALSE);
+            $this->db->set('FTAdvType', $paData['FTAdvType']);
             $this->db->set('FTAdvStaUse', $paData['FTAdvStaUse']);
             $this->db->set('FDAdvStart' , $paData['FDAdvStart']);
             $this->db->set('FDAdvStop'  , $paData['FDAdvStop']);
@@ -636,7 +637,6 @@ class mAdMessage extends CI_Model {
      * Return Type : array
      */
     public function FSnMADVDelMediaByID($pnID, $paData){
-        
         $this->db->where('FTMedRefID', $paData['FTAdvCode']);
         $this->db->where('FNMedID', $pnID);
         $this->db->delete('TCNMMediaObj');
@@ -700,5 +700,5 @@ class mAdMessage extends CI_Model {
             'rtDesc' => 'success',
         );
     }
-       
+
 }

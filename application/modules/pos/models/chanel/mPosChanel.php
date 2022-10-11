@@ -22,22 +22,26 @@ class mPosChanel extends CI_Model
         //  query
         $tHDSQL =   "SELECT
                         CHN.FTChnCode   AS rtChnCode,
-                       CHNL.FTChnName AS rtChnName,
-                       CHNS.FTBchCode AS rtChnBchCode,
-                       BCHL.FTBchName AS rtChnBchName,
-                       CHNS.FTAgnCode AS rtChnAgnCode,
-                       AGNL.FTAgnName AS rtChnAgnName,
-                       CHN.FTAppCode AS rtChnAppCode,
-                       APPL.FTAppName AS rtChnAppName,
-                       CHN.FTPplCode AS rtChnPplCode,
-                       PPLL.FTPplName AS rtChnPplName,
-                       CHN.FTChnStaUse AS rtChnStaUse,
-                    --    CHN.FTChnGroup AS rtChnGroup,
-                       CHN.FTWahCode AS rtChnWahCode,
-                       WAHL.FTWahName AS rtChnWahName,
-                       CHN.FTChnRefCode AS rtChnRefCode,
-                       CHN.FDCreateOn,
-                       CHN.FNChnSeq   AS rtChnSeq
+                        CHNL.FTChnName AS rtChnName,
+                        CHNS.FTBchCode AS rtChnBchCode,
+                        BCHL.FTBchName AS rtChnBchName,
+                        CHNS.FTAgnCode AS rtChnAgnCode,
+                        AGNL.FTAgnName AS rtChnAgnName,
+                        CHN.FTAppCode AS rtChnAppCode,
+                        APPL.FTAppName AS rtChnAppName,
+                        CHN.FTPplCode AS rtChnPplCode,
+                        PPLL.FTPplName AS rtChnPplName,
+                        CHN.FTChnStaUse AS rtChnStaUse,
+                        CHN.FTWahCode AS rtChnWahCode,
+                        WAHL.FTWahName AS rtChnWahName,
+                        CHN.FTChnRefCode AS rtChnRefCode,
+                        CHN.FDCreateOn,
+                        CHN.FNChnSeq   AS rtChnSeq,
+                        CHN.FTChnWahDO AS rtChnWahDO,
+                        WAHLDO.FTWahName AS rtChnWahDOName,
+                        CHN.FTChnStaUseDO AS rtChnStaUseDO,
+                        CHN.FTChnStaAlwSNPL AS rtChnStaAlwSNPL
+
                             FROM [TCNMChannel] CHN WITH(NOLOCK)
                     LEFT JOIN   TCNMChannel_L CHNL WITH(NOLOCK) ON CHN.FTChnCode = CHNL.FTChnCode AND CHNL.FNLngID = $nLngID
                     LEFT JOIN   TCNMChannelSpc CHNS WITH(NOLOCK) ON CHN.FTChnCode = CHNS.FTChnCode
@@ -46,45 +50,14 @@ class mPosChanel extends CI_Model
                     LEFT JOIN   TSysApp_L APPL WITH(NOLOCK) ON CHN.FTAppCode = APPL.FTAppCode  AND APPL.FNLngID = $nLngID
                     LEFT JOIN   TCNMPdtPriList_L PPLL WITH(NOLOCK) ON CHN.FTPplCode = PPLL.FTPplCode AND PPLL.FNLngID = $nLngID
                     LEFT JOIN   TCNMWaHouse_L WAHL WITH(NOLOCK) ON CHNS.FTBchCode =  WAHL.FTBchCode AND CHN.FTWahCode = WAHL.FTWahCode AND WAHL.FNLngID = $nLngID
-                    WHERE 1=1 
-                    
-                    AND CHN.FTChnCode = '$tChnCode'";
+                    LEFT JOIN   TCNMWaHouse_L WAHLDO WITH(NOLOCK) ON WAHLDO.FTWahCode =  CHN.FTChnWahDO AND WAHLDO.FNLngID = $nLngID
+                    WHERE CHN.FTChnCode = '$tChnCode'";
         $oHDQuery = $this->db->query($tHDSQL);
-
-        // Head of receipt and End of receipt query
-        // $tDTSQL =   "SELECT
-        //                 SMGDT.FTSmgName  AS rtSmgName,
-        //                 SMGDT.FTSmgType AS rtSmgType,
-        //                 SMGDT.FNSmgSeq AS rtSmgSeq
-        //             FROM [TCNMSlipMsgDT_L] SMGDT
-        //             WHERE 1=1 
-        //             AND SMGDT.FNLngID = $nLngID
-        //             AND SMGDT.FTSmgCode = '$tDstCode' ORDER BY SMGDT.FNSmgSeq";
-        // $oDTQuery = $this->db->query($tDTSQL);
-
         if ($oHDQuery->num_rows() > 0) { // Have slip
 
             $oHDDetail = $oHDQuery->result();
-            // $oDTDetail = $oDTQuery->result();
-
-            // Prepare Head of receipt and End of receipt data
-            // $aDTHeadItems = [];
-            // $aDTEndItems = [];
-            // foreach ($oDTDetail as $nIndex => $oItem) {
-            //     if ($oItem->rtSmgType == 1) { // Head of receipt type
-            //         $aDTHeadItems[] = $oItem->rtSmgName;
-            //     }
-
-            //     if ($oItem->rtSmgType == 2) { // End of receipt type
-            //         $aDTEndItems[] = $oItem->rtSmgName;
-            //     }
-            // }
-
-            // Found
             $aResult = array(
                 'raHDItems'   => $oHDDetail[0],
-                // 'raDTHeadItems' => $aDTHeadItems,
-                // 'raDTEndItems' => $aDTEndItems,
                 'rtCode'    => '1',
                 'rtDesc'    => 'success',
             );
@@ -124,7 +97,7 @@ class mPosChanel extends CI_Model
             if( isset($tSesUsrAgnCode) && !empty($tSesUsrAgnCode) ){
                 $tWhereCondition .= " AND ( CHNS.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(CHNS.FTAgnCode,'') = '' ) ";
             }
-            
+
             if( isset($tSesUsrBchCodeMulti) && !empty($tSesUsrBchCodeMulti) ){
                 $tWhereCondition .= " AND ( CHNS.FTBchCode IN ($tSesUsrBchCodeMulti) OR ISNULL(CHNS.FTBchCode,'') = '' ) ";
             }
@@ -194,7 +167,7 @@ class mPosChanel extends CI_Model
 
         $tFullQuery  = $tSQL1.$tSQL2.$tSQL3;
         $tCountQuery = $tSQL2;
-        // print_r($tSQL);
+        // print_r($tFullQuery);
 
         $oQuery = $this->db->query($tFullQuery);
         // echo $this->db->last_query();exit;
@@ -299,6 +272,9 @@ class mPosChanel extends CI_Model
                 $this->db->set('FTWahCode', $paData['FTWahCode']);
                 $this->db->set('FDLastUpdOn', $paData['FDLastUpdOn']);
                 $this->db->set('FTLastUpdBy', $paData['FTLastUpdBy']);
+                $this->db->set('FTChnWahDO', $paData['FTChnWahDO']);
+                $this->db->set('FTChnStaUseDO', $paData['FTChnStaUseDO']);
+                $this->db->set('FTChnStaAlwSNPL', $paData['FTChnStaAlwSNPL']);
                 $this->db->where('FTChnCode', $paData['FTChnCode']);
                 $this->db->update('TCNMChannel');
 
@@ -307,7 +283,7 @@ class mPosChanel extends CI_Model
                 $this->db->where('FTChnCode', $paData['FTChnCode']);
                 $this->db->update('TCNMChannel_L');
 
-                if ($paData['FTAgnCode'] != '' || $paData['FTBchCode'] != '') {
+                if ( $paData['FTAgnCode'] != '' || $paData['FTBchCode'] != '' || $paData['FTAppCode'] != '' ) {
                     $this->db->select('FTChnCode');
                     $this->db->from('TCNMChannelSpc');
                     $this->db->where('FTChnCode', $paData['FTChnCode']);
@@ -328,6 +304,9 @@ class mPosChanel extends CI_Model
                             'FTBchCode'     => $paData['FTBchCode'],
                         ));
                     }
+                }else{
+                    $this->db->where('FTChnCode', $paData['FTChnCode']);
+                    $this->db->delete('TCNMChannelSpc');
                 }
 
                 if ($this->db->affected_rows() > 0) {
@@ -355,6 +334,9 @@ class mPosChanel extends CI_Model
                     'FTCreateBy'    => $paData['FTCreateBy'],
                     'FDLastUpdOn'   => $paData['FDLastUpdOn'],
                     'FTLastUpdBy'   => $paData['FTLastUpdBy'],
+                    'FTChnWahDO'   => $paData['FTChnWahDO'],
+                    'FTChnStaUseDO'   => $paData['FTChnStaUseDO'],
+                    'FTChnStaAlwSNPL' => $paData['FTChnStaAlwSNPL']
                     // 'FTChnGroup'   => $paData['FTChnGroup'],
                 ));
                 $this->db->insert('TCNMChannel_L', array(
@@ -443,38 +425,53 @@ class mPosChanel extends CI_Model
      */
     public function FSnMCHNDelHD($paData)
     {
-        
+        $this->db->trans_begin();
         // $this->db->where_in('FTBchCode', $paData['FTBchCode']);
-        $this->db->where_in('FTChnCode', $paData['FTChnCode']);
+        $this->db->where('FTChnCode', $paData['FTChnCode']);
+        $this->db->delete('TCNMChannel');
+
+        // $this->db->where_in('FTBchCode', $paData['FTBchCode']);
+        $this->db->where('FTChnCode', $paData['FTChnCode']);
         $this->db->delete('TCNMChannel_L');
 
-        $this->db->where_in('FTChnCode', $paData['FTChnCode']);
+        $this->db->where('FTChnCode', $paData['FTChnCode']);
         $this->db->delete('TCNMChannelSpc');
 
-        // $this->db->where_in('FTBchCode', $paData['FTBchCode']);
-        $this->db->where_in('FTChnCode', $paData['FTChnCode']);
-        $this->db->delete('TCNMChannel');
-        if ($this->db->affected_rows() > 0) {
-            // Success
-            $aStatus = array(
-                'rtCode' => '1',
-                'rtDesc' => 'success',
-            );
-        } else {
-            // Ploblem
+        $this->db->where('FTChnCode', $paData['FTChnCode']);
+        $this->db->delete('TCNMChannelSpcWah');
+        
+        // print_r($this->db->affected_rows());
+        // exit();
+        // if ($this->db->affected_rows() > 0) {
+        //     // Success
+        //     $aStatus = array(
+        //         'rtCode' => '1',
+        //         'rtDesc' => 'success',
+        //     );
+        // } else {
+        //     // Ploblem
+        //     $aStatus = array(
+        //         'rtCode' => '905',
+        //         'rtDesc' => 'cannot Delete Item.',
+        //     );
+        // }
+        // $jStatus = json_encode($aStatus);
+        // $aStatus = json_decode($jStatus, true);
+        // return $aStatus;
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
             $aStatus = array(
                 'rtCode' => '905',
-                'rtDesc' => 'cannot Delete Item.',
+                'rtDesc' => 'Delete Unsuccess.',
+            );
+        }else{
+            $this->db->trans_commit();
+            $aStatus = array(
+                'rtCode' => '1',
+                'rtDesc' => 'Delete Success.',
             );
         }
-        $jStatus = json_encode($aStatus);
-        $aStatus = json_decode($jStatus, true);
         return $aStatus;
-
-        // return $aStatus = array(
-        //     'rtCode' => '1',
-        //     'rtDesc' => 'success',
-        // );
     }
 
     /**
@@ -539,37 +536,53 @@ class mPosChanel extends CI_Model
     public function  FSaMChnDeleteMultiple($paDataDelete)
     {
         // print_r($paDataDelete); die();
-
+        $this->db->trans_begin();
         // $this->db->where_in('FTBchCode', $paDataDelete['FTBchCode']);
         $this->db->where_in('FTChnCode', $paDataDelete['FTChnCode']);
         $this->db->delete('TCNMChannel');
-
 
         // $this->db->where_in('FTBchCode', $paDataDelete['FTBchCode']);
         $this->db->where_in('FTChnCode', $paDataDelete['FTChnCode']);
         $this->db->delete('TCNMChannel_L');
 
-
         $this->db->where_in('FTChnCode', $paDataDelete['FTChnCode']);
         $this->db->delete('TCNMChannelSpc');
 
+        $this->db->where_in('FTChnCode', $paDataDelete['FTChnCode']);
+        $this->db->delete('TCNMChannelSpcWah');
 
-        if ($this->db->affected_rows() > 0) {
-            //Success
-            $aStatus   = array(
-                'rtCode' => '1',
-                'rtDesc' => 'success',
-            );
-        } else {
-            //Ploblem
+        if($this->db->trans_status() === FALSE){
+            $this->db->trans_rollback();
             $aStatus = array(
                 'rtCode' => '905',
-                'rtDesc' => 'cannot Delete Item.',
+                'rtDesc' => 'Delete Unsuccess.',
+            );
+        }else{
+            $this->db->trans_commit();
+            $aStatus = array(
+                'rtCode' => '1',
+                'rtDesc' => 'Delete Success.',
             );
         }
-        $jStatus = json_encode($aStatus);
-        $aStatus = json_decode($jStatus, true);
         return $aStatus;
+
+
+        // if ($this->db->affected_rows() == 0) {
+        //     //Success
+        //     $aStatus   = array(
+        //         'rtCode' => '1',
+        //         'rtDesc' => 'success',
+        //     );
+        // } else {
+        //     //Ploblem
+        //     $aStatus = array(
+        //         'rtCode' => '1',
+        //         'rtDesc' => 'cannot Delete Item.',
+        //     );
+        // }
+        // $jStatus = json_encode($aStatus);
+        // $aStatus = json_decode($jStatus, true);
+        // return $aStatus;
     }
 
     //Functionality : Count Seq
@@ -589,4 +602,194 @@ class mPosChanel extends CI_Model
             return FALSE;
         }
     }
+
+    // Create By : Napat(Jame) 13/06/2022
+    public function FSaMCHNGetDataSpcWah($paSearch){
+
+        $tType      = $paSearch['tType'];
+        $tChnCode   = $paSearch['tChnCode'];
+        $nLngID     = $paSearch['FNLngID'];
+
+        $tSesUsrLevel        = $this->session->userdata("tSesUsrLevel");
+        $tSesUsrBchCodeMulti = $this->session->userdata("tSesUsrBchCodeMulti");
+
+        if( $tType == 'List' ){
+            $aRowLen    = FCNaHCallLenData($paSearch['nRow'], $paSearch['nPage']);
+            $tSQL1 = " SELECT c.* FROM( SELECT  ROW_NUMBER() OVER(ORDER BY FTAgnCode,FTBchCode,FTWahCode ASC) AS rtRowID,* FROM ( ";
+        }
+
+        $tSQL2 = "   SELECT 
+                        AGNL.FTAgnName,
+                        BCHL.FTBchName,
+                        WAHL.FTWahName,
+                        CSW.FTAgnCode,
+                        CSW.FTBchCode,
+                        CSW.FTWahCode,
+                        CSW.FTChnCode,
+                        CSW.FTChnStaDoc 
+                    FROM TCNMChannelSpcWah CSW WITH(NOLOCK)
+                    LEFT JOIN TCNMAgency_L AGNL WITH(NOLOCK) ON AGNL.FTAgnCode = CSW.FTAgnCode AND AGNL.FNLngID = $nLngID 
+                    LEFT JOIN TCNMBranch_L BCHL WITH(NOLOCK) ON BCHL.FTBchCode = CSW.FTBchCode AND BCHL.FNLngID = $nLngID
+                    LEFT JOIN TCNMWaHouse_L WAHL WITH(NOLOCK) ON WAHL.FTWahCode = CSW.FTWahCode AND WAHL.FTBchCode = CSW.FTBchCode AND WAHL.FNLngID = $nLngID 
+                    WHERE CSW.FTChnCode = '$tChnCode' ";
+
+        if( $tSesUsrLevel != "HQ" ){
+            $tSQL2 .= " AND CSW.FTBchCode IN ($tSesUsrBchCodeMulti) ";
+        }
+
+        if( isset($paSearch['tBchCode']) && !empty($paSearch['tBchCode']) ){
+            $tSQL2 .= " AND CSW.FTBchCode = '".$paSearch['tBchCode']."' ";
+        }
+
+        if( isset($paSearch['tWahCode']) && !empty($paSearch['tWahCode']) ){
+            $tSQL2 .= " AND CSW.FTWahCode = '".$paSearch['tWahCode']."' ";
+        }
+
+        if( $tType == 'List' ){
+            $tSQL3 = " ) Base) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1] ";
+            $tMainQuery  = $tSQL1.$tSQL2.$tSQL3;
+        }else{
+            $tMainQuery  = $tSQL2;
+        }
+
+        $oMainQuery = $this->db->query($tMainQuery);
+        if( $tType == 'List' ){
+            if( $oMainQuery->num_rows() > 0 ){
+                $oPageQuery = $this->db->query($tSQL2);
+                $nFoundRow  = $oPageQuery->num_rows();
+                $nPageAll   = ceil($nFoundRow / $paSearch['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
+                $aResult = array(
+                    'aItems'        => $oMainQuery->result_array(),
+                    'nAllRow'       => $nFoundRow,
+                    'nCurrentPage'  => $paSearch['nPage'],
+                    'nAllPage'      => $nPageAll,
+                    'tCode'         => '1',
+                    'tDesc'         => 'success',
+                );
+            }else{
+                $aResult = array(
+                    'nAllRow'       => 0,
+                    'nCurrentPage'  => $paSearch['nPage'],
+                    "nAllPage"      => 0,
+                    'tCode'         => '800',
+                    'tDesc'         => 'data not found.',
+                );
+            }
+        }else{
+            if( $oMainQuery->num_rows() > 0 ){
+                $aResult = array(
+                    'aItems'        => $oMainQuery->result_array(),
+                    'tCode'         => '1',
+                    'tDesc'         => 'success',
+                );
+            }else{
+                $aResult = array(
+                    'tCode'         => '800',
+                    'tDesc'         => 'data not found.',
+                );
+            }
+        }
+        return $aResult;
+    }
+
+    
+    // Create By : Napat(Jame) 13/06/2022
+    public function FSxMCHNEventSpcWahAdd($paData){
+        $this->db->insert('TCNMChannelSpcWah', $paData);
+    }
+
+    // Create By : Napat(Jame) 13/06/2022
+    public function FSxMCHNEventUpdDate($paData){
+        $dDate          =  date('Y-m-d H:i:s');
+        $tSesUsername   = $this->session->userdata("tSesUsername");
+
+        $this->db->set('FDLastUpdOn', $dDate);
+        $this->db->set('FTLastUpdBy', $tSesUsername);
+        $this->db->where('FTChnCode', $paData['FTChnCode']);
+        $this->db->update('TCNMChannel');
+    }
+
+    // Create By : Napat(Jame) 13/06/2022
+    public function FSaMCHNEventSpcWahChkDup($paData){
+        $tSQL = "   SELECT 1 FROM TCNMChannelSpcWah WITH(NOLOCK) 
+                    WHERE FTChnCode = '".$paData['FTChnCode']."' 
+                      AND FTBchCode = '".$paData['FTBchCode']."' 
+                      AND FTWahCode = '".$paData['FTWahCode']."' ";
+        $oQuery = $this->db->query($tSQL);
+        if( $oQuery->num_rows() > 0 ){
+            $aResult = array(
+                'tCode'    => '1',
+                'tDesc'    => 'duplicate data',
+            );
+        }else{
+            $aResult = array(
+                'tCode' => '800',
+                'tDesc' => 'no duplicate',
+            );
+        }
+        return $aResult;
+    }
+    
+    // Create By : Napat(Jame) 13/06/2022
+    public function FSaMCHNEventGetDataSpcWahByPK($paData){
+        $tSQL = "   SELECT 1 FROM TCNMChannelSpcWah WITH(NOLOCK) 
+                    WHERE FTChnCode = '".$paData['FTChnCode']."' 
+                      AND FTBchCode = '".$paData['FTBchCode']."' 
+                      AND FTWahCode = '".$paData['FTWahCode']."' ";
+        $oQuery = $this->db->query($tSQL);
+        if( $oQuery->num_rows() > 0 ){
+            $aResult = array(
+                'tCode'    => '1',
+                'tDesc'    => 'duplicate data',
+            );
+        }else{
+            $aResult = array(
+                'tCode' => '800',
+                'tDesc' => 'no duplicate',
+            );
+        }
+        return $aResult;
+    }
+
+    // Create By : Napat(Jame) 13/06/2022
+    public function FSxMCHNEventSpcWahEdit($paDataSearch,$paDataEdit){
+        $this->db->where($paDataSearch);
+        $this->db->update('TCNMChannelSpcWah', $paDataEdit);
+    }
+
+    // Create By : Napat(Jame) 13/06/2022
+    public function FSxMCHNEventSpcWahDel($paDataDel){
+        $this->db->where($paDataDel);
+        $this->db->delete('TCNMChannelSpcWah');
+    }
+
+    // Create By : Napat(Jame) 14/06/2022
+    public function FSaMCHNEventChkSpcWah($paData){
+        $tSQL = "   SELECT 1 FROM TCNMChannelSpcWah WITH(NOLOCK) 
+                    WHERE ( FTBchCode != '".$paData['FTBchCode']."' OR FTAgnCode != '".$paData['FTAgnCode']."' )
+                      AND FTChnCode = '".$paData['FTChnCode']."' ";
+        $oQuery = $this->db->query($tSQL);
+        if( $oQuery->num_rows() > 0 ){
+            $aResult = array(
+                'tCode'    => '1',
+                'tDesc'    => 'found data',
+            );
+        }else{
+            $aResult = array(
+                'tCode' => '800',
+                'tDesc' => 'not found data',
+            );
+        }
+        return $aResult;
+    }
+
+    // Create By : Napat(Jame) 14/06/2022
+    public function FSxMCHNEventClearSpcWah($paData){
+        $tSQL = "   DELETE FROM TCNMChannelSpcWah
+                    WHERE ( FTBchCode != '".$paData['FTBchCode']."' OR FTAgnCode != '".$paData['FTAgnCode']."' )
+                      AND FTChnCode = '".$paData['FTChnCode']."' ";
+        $this->db->query($tSQL);
+    }
+    
+    
 }
