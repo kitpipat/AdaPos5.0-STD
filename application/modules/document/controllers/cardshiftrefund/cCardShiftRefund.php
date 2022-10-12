@@ -350,22 +350,22 @@ class cCardShiftRefund extends MX_Controller
      */
     public function FSvCardShiftRefundDataSourceListByFile()
     {
-        $nPage = $this->input->post('nPageCurrent');
-        $tSearchAll = $this->input->post('tSearchAll');
-        $aCardTypeRange = json_decode($this->input->post('tCardTypeRange'));
-        $aCardNumberRange = json_decode($this->input->post('tCardNumberRange'));
-        $aCardNumber = json_decode($this->input->post('tCardNumber'));
-        $aNotInCardNumber = json_decode($this->input->post('tNotInCardNumber'));
-        $tSetEmpty = $this->input->post('tSetEmpty');
-        $tStaShift = $this->input->post('tStaShift');
-        $tIsTemp = $this->input->post('tIsTemp');
-        $tIsDataOnly = $this->input->post('tIsDataOnly');
-        $tStaPrcDoc = $this->input->post('tStaPrcDoc');
-        $tDocNo = $this->input->post('tDocNo');
-        $tStaDoc = $this->input->post('tStaDoc');
-        $tStaType = $this->input->post('tStaType');
-        $tLastIndex = $this->input->post('tLastIndex');
-        $tBchCode = $this->input->post('tBchCode');
+        $nPage                  = $this->input->post('nPageCurrent');
+        $tSearchAll             = $this->input->post('tSearchAll');
+        $aCardTypeRange         = json_decode($this->input->post('tCardTypeRange'));
+        $aCardNumberRange       = json_decode($this->input->post('tCardNumberRange'));
+        $aCardNumber            = json_decode($this->input->post('tCardNumber'));
+        $aNotInCardNumber       = json_decode($this->input->post('tNotInCardNumber'));
+        $tSetEmpty              = $this->input->post('tSetEmpty');
+        $tStaShift              = $this->input->post('tStaShift');
+        $tIsTemp                = $this->input->post('tIsTemp');
+        $tIsDataOnly            = $this->input->post('tIsDataOnly');
+        $tStaPrcDoc             = $this->input->post('tStaPrcDoc');
+        $tDocNo                 = $this->input->post('tDocNo');
+        $tStaDoc                = $this->input->post('tStaDoc');
+        $tStaType               = $this->input->post('tStaType');
+        $tLastIndex             = $this->input->post('tLastIndex');
+        $tBchCode               = $this->input->post('tBchCode');
 
         if ($nPage == '' || $nPage == null) {
             $nPage = 1;
@@ -564,24 +564,24 @@ class cCardShiftRefund extends MX_Controller
     public function FSaCardShiftRefundAddEvent()
     {
         $aDataMaster = array(
-            'tIsAutoGenCode' => $this->input->post('ocbCardShiftRefundAutoGenCode'),
-            'FTXshDocNo' => $this->input->post('oetCardShiftRefundCode'),
-            'FDXshDocDate' => $this->input->post('oetCardShiftRefundDocDate') . ' ' . date('H:i:s'),
-            'FNXshDocType' => "11", // Take refund card
-            'FTBchCode' => $this->input->post('ohdCardShiftRefundUsrBchCode'),
-            'FTUsrCode' => $this->input->post("ohdCardShiftRefundUserCreatedCode"),
-            'FNXshCardQty' => FSnSelectCountResult('TFNTCrdTopUpTmp'),
-            'FCXshTotal' => empty($this->input->post('oetCardShiftRefundTotalValue')) ? 0 : $this->input->post('oetCardShiftRefundTotalValue'),
-            'aCardCode' => json_decode($this->input->post('aCardCode')),
-            'FTXshApvCode' => $this->input->post('ohdCardShiftRefundApvCode'),
-            'FTXshStaPrcDoc' => $this->input->post('ohdCardShiftRefundCardStaPrcDoc'),
-            'FTXshStaDoc' => empty($this->input->post('hdCardShiftRefundCardStaDoc')) ? "1" : $this->input->post('hdCardShiftRefundCardStaDoc'),
-            'FNXshStaDocAct' => empty($this->input->post('hdCardShiftRefundCardStaDoc')) ? 1 : $this->input->post('hdCardShiftRefundCardStaDoc'),
-            'FTLastUpdBy' => $this->session->userdata('tSesUsername'),
-            'FDLastUpdOn' => date('Y-m-d H:i:s'),
-            'FTCreateBy' => $this->session->userdata('tSesUsername'),
-            'FDCreateOn' => date('Y-m-d H:i:s'),
-            'FNLngID' => $this->session->userdata("tLangEdit")
+            'tIsAutoGenCode'    => $this->input->post('ocbCardShiftRefundAutoGenCode'),
+            'FTXshDocNo'        => $this->input->post('oetCardShiftRefundCode'),
+            'FDXshDocDate'      => $this->input->post('oetCardShiftRefundDocDate') . ' ' . date('H:i:s'),
+            'FNXshDocType'      => "11", // Take refund card
+            'FTBchCode'         => $this->input->post('ohdCardShiftRefundUsrBchCode'),
+            'FTUsrCode'         => $this->input->post("ohdCardShiftRefundUserCreatedCode"),
+            'FNXshCardQty'      => FSnSelectCountResult('TFNTCrdTopUpTmp'),
+            'FCXshTotal'        => empty($this->input->post('oetCardShiftRefundTotalValue')) ? 0 : $this->input->post('oetCardShiftRefundTotalValue'),
+            'aCardCode'         => json_decode($this->input->post('aCardCode')),
+            'FTXshApvCode'      => $this->input->post('ohdCardShiftRefundApvCode'),
+            'FTXshStaPrcDoc'    => $this->input->post('ohdCardShiftRefundCardStaPrcDoc'),
+            'FTXshStaDoc'       => empty($this->input->post('hdCardShiftRefundCardStaDoc')) ? "1" : $this->input->post('hdCardShiftRefundCardStaDoc'),
+            'FNXshStaDocAct'    => empty($this->input->post('hdCardShiftRefundCardStaDoc')) ? 1 : $this->input->post('hdCardShiftRefundCardStaDoc'),
+            'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+            'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+            'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+            'FDCreateOn'        => date('Y-m-d H:i:s'),
+            'FNLngID'           => $this->session->userdata("tLangEdit")
         );
 
         // Setup DocNo

@@ -97,3 +97,6 @@ $lang['tValidCardShifRefund']   = "Please enter document number";
 
 $lang['tCardShiftRefundFrom']     = "From";
 $lang['tCardShiftRefundTo']     = "To";
+
+$lang['tCardShiftRefundCheckCardStatus1'] = "Are you sure to save this document?";
+$lang['tCardShiftRefundCheckCardStatus2'] = "The system will save only the cards with success status.";
