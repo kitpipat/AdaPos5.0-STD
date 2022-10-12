@@ -27,6 +27,7 @@
     $lang['tMainCardNewCodeMaxOverLenght']     = "The new card code is too long";
     $lang['tMainWaitingForProcessing']  = "Waiting for processing";
     $lang['tMainEmptyRecordAlert']  = "Could not find card information. Can not continue";
+    $lang['tMainEmptyUnSuccessRecordAlert']          = "Unsuccess card status. Can not continue";
     $lang['tMainProcessing'] = "Processing";
     $lang['tMainDocNoOverLength']  = "Document number is too long";
     $lang['tMainDocNoDup']  = "Repeat document number";
@@ -97,4 +98,7 @@
     $lang['tDocumentQtyCardSuccess']     = "Total Card (Success/Total)";
     
     $lang['tExcelTopupPmtAmt']        = "Promotion";
+
+    $lang['tCheckCardStatus1'] = "Are you sure to save this document?";
+    $lang['tCheckCardStatus2'] = "The system will save only the cards with success status.";
 

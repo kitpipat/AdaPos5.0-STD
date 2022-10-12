@@ -778,7 +778,6 @@ class mCardShiftRefund extends CI_Model
             AND CRDDT.FTXshDocNo = '$tCardShiftRefundDocNo'
         ";
 
-        print_r($tSQL);
         $oQuery = $this->db->query($tSQL);
 
         if ($oQuery->num_rows() > 0) {

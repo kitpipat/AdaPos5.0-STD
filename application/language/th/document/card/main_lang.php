@@ -28,6 +28,7 @@
     $lang['tMainWaitingForProcessing']      = "รอประมวลผล";
     $lang['tMainProcessing']                = "กำลังประมวลผล";
     $lang['tMainEmptyRecordAlert']          = "ไม่พบข้อมูลบัตรไม่สามารถดำเนินการต่อได้";
+    $lang['tMainEmptyUnSuccessRecordAlert']          = "สถานะบัตรไม่สมบูรณ์ไม่สามารถดำเนินการต่อได้";
     $lang['tMainSystemIsInProgress']        = "ระบบกำลังดำเนินการ";
     $lang['tMainHideProcessProgress']       = "ซ่อนสถานะประมวลผล";
     $lang['tMainDocNoOverLength']  = "เลขที่เอกสารยาวเกินไป";
@@ -97,5 +98,9 @@
     $lang['tDocumentQtyCardSuccess']     = "จำนวนบัตร (สำเร็จ/ทั้งหมด)";
     $lang['tExcelTopupPmtAmt']        = "มูลค่าโปรโมชั่น";  
     $lang['tExcelTopCouponRev']       = "จำนวนคูปอง";
+
+    
+    $lang['tCheckCardStatus1'] = "คุณต้องการที่จะบันทึกเอกสารนี้หรือไม่?";
+    $lang['tCheckCardStatus2'] = "ระบบจะบันทึกเฉพาะบัตรที่มีสถานะสมบูรณ์";
 
 

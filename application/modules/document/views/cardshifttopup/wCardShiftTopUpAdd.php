@@ -581,6 +581,27 @@ if($aResult['rtCode'] == "1"){
 </div>
 <!-- End Modal Delete Table Temp -->
 
+<div class="modal fade" id="odvCardShiftTopupModalCheckCardStatus">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header xCNModalHead">
+                <label class="xCNTextModalHeard"><?php echo language('document/card/main', 'tCheckCardStatus1')?></label>
+			</div>
+			<div class="modal-body">
+                <?php echo language('document/card/main', 'tCheckCardStatus2'); ?>
+			</div>
+			<div class="modal-footer">
+				<button id="obtCardShiftTopupModalCheckCardStatusConfirm" type="button" class="btn xCNBTNPrimery">
+					<?php echo language('common/main/main', 'tModalConfirm'); ?>
+				</button>
+				<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
+					<?php echo language('common/main/main', 'tModalCancel'); ?>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <input type="hidden" id="ohdCardShiftTopUpVat" value="<?php echo $nVateRate; ?>">
 <script id="oscCardShiftTopUpTotalTopUpTemplate" type="text/html">
 <tr id="otrCardShiftTopUpTotalVat" style="display: none;">

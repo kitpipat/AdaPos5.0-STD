@@ -240,8 +240,8 @@ if($aResult['rtCode'] == "1"){
                                 }
                             </script>
                             <div class="form-group">
-                                <label class="xCNLabelFrm"><?= language('document/topupvending/topupvending', 'tBCH'); ?></label>
-                                <div class="input-group">
+                                <label class="xCNLabelFrm"><span style = "color:red;">*</span><?= language('document/topupvending/topupvending', 'tBCH'); ?></label>
+                                <div class="input-group"> 
                                     <input name="oetBCHName_cardshiftrefund" id="oetBCHName_cardshiftrefund" class="form-control" value="<?=$tUserBchName?>" type="text" readonly="">
                                     <input name="oetBCHCode_cardshiftrefund" id="oetBCHCode_cardshiftrefund" value="<?=$tUserBchCode?>" class="form-control xCNHide" type="text">
                                     <span class="input-group-btn">
@@ -593,6 +593,30 @@ if($aResult['rtCode'] == "1"){
 	</div>
 </div>
 <!-- End Modal Delete Table Temp -->
+
+
+<div class="modal fade" id="odvCardShiftRefundModalCheckCardStatus">
+	<div class="modal-dialog">
+		<div class="modal-content">
+            <div class="modal-header xCNModalHead">
+                <label class="xCNTextModalHeard"><?php echo language('document/card/main', 'tCheckCardStatus1')?></label>
+            </div>
+            <div class="modal-body">
+                <?php echo language('document/card/main', 'tCheckCardStatus2'); ?>
+            </div>
+			<div class="modal-footer">
+				<!-- แก้ -->
+				<button id="obtCardShiftRefundModalCheckCardStatusConfirm" class="btn xCNBTNPrimery" type="button">
+					<?php echo language('common/main/main', 'tModalConfirm')?>
+				</button>
+				<!-- แก้ -->
+				<button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal">
+					<?php echo language('common/main/main', 'tModalCancel')?>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <input type="hidden" id="ohdCardShiftRefundVat" value="<?php echo $nVateRate; ?>">
 <script id="oscCardShiftRefundTotalTopUpTemplate" type="text/html">
