@@ -2090,6 +2090,7 @@ GO
 
 /****** End From DB:FitAuto Date 15/09/2022 By:Ice PHP ******/
 
+
 IF EXISTS
 (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'SP_RPTxDailySaleByInvByPdt1001002')and OBJECTPROPERTY(id, N'IsProcedure') = 1)
 DROP PROCEDURE [dbo].[SP_RPTxDailySaleByInvByPdt1001002] 
@@ -2736,4 +2737,8 @@ BEGIN TRY
 	
 END TRY
 
-/****** End From DB:FitAuto Date 15/09/2022 By:Ice PHP ******/
+BEGIN CATCH 
+	SET @FNResult= -1
+	--PRINT @tSqlIns
+END CATCH	
+GO
