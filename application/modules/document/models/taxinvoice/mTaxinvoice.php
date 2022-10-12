@@ -1038,7 +1038,7 @@ class mTaxinvoice extends CI_Model{
         $dDateCurrent       = date('Y-m-d H:i:s');
         $tNameTask          = $this->session->userdata('tSesUsername');
 
-        $tSQL       = " UPDATE TPSTSalHD SET FTXshDocVatFull = '$tTaxNumberFull' , FDLastUpdOn = '$dDateCurrent' , FTLastUpdBy = '$tNameTask' WHERE FTXshDocNo = '$tABB' ";
+        $tSQL       = " UPDATE TPSTSalHD WITH(ROWLOCK) SET FTXshDocVatFull = '$tTaxNumberFull' , FDLastUpdOn = '$dDateCurrent' , FTLastUpdBy = '$tNameTask' WHERE FTXshDocNo = '$tABB' AND FTBchCode = '$tBrowseBchCode' ";
         $this->db->query($tSQL);
 
         $tSQL       = " UPDATE TPSTTaxHD SET
