@@ -1,5 +1,8 @@
 <?php
 
+$version = '2022.1.4';
+
+
 // Error handlers
 
 function stiErrorHandler($errNo, $errStr, $errFile, $errLine) {
@@ -27,6 +30,7 @@ require_once 'mssql.php';
 require_once 'firebird.php';
 require_once 'postgresql.php';
 require_once 'oracle.php';
+require_once 'odbc.php';
 
 
 // You can configure the security level as you required.
@@ -61,7 +65,7 @@ class StiResult {
 }
 
 class StiRequest {
-	public $event = null;
+	public $command = null;
 	public $connectionString = null;
 	public $queryString = null;
 	public $database = null;
@@ -84,9 +88,9 @@ class StiRequest {
 			return StiResult::error($message);
 		}
 		
-		if (isset($obj->command)) $this->event = $obj->command;
-		if ($this->event != 'TestConnection' && $this->event != 'ExecuteQuery')
-			return StiResult::error('Unknown event ['.$this->event.']');
+		if (isset($obj->command)) $this->command = $obj->command;
+		if ($this->command != 'TestConnection' && $this->command != 'ExecuteQuery')
+			return StiResult::error('Unknown command ['.$this->command.']');
 		
 		if (isset($obj->connectionString)) $this->connectionString = $obj->connectionString;
 		if (isset($obj->queryString)) $this->queryString = $obj->queryString;
@@ -118,6 +122,7 @@ function getDataAdapter($request) {
 		case 'Firebird': $dataAdapter = new StiFirebirdAdapter(); break;
 		case 'PostgreSQL': $dataAdapter = new StiPostgreSqlAdapter(); break;
 		case 'Oracle': $dataAdapter = new StiOracleAdapter(); break;
+		case 'ODBC': $dataAdapter = new StiOdbcAdapter(); break;
 	}
 	
 	if (isset($dataAdapter)) {
@@ -135,10 +140,14 @@ $request = new StiRequest();
 $result = $request->parse();
 if ($result->success) {
 	$result = getDataAdapter($request);
+	$dataAdapter = $result->object;
 	if ($result->success) {
-		$result = $request->event == 'TestConnection'
-			? $result->object->test()
-			: $result->object->execute($request->queryString);
+		$result = $request->command == 'TestConnection'
+			? $dataAdapter->test()
+			: $dataAdapter->execute($request->queryString);
+		$result->handlerVersion = $version;
+		$result->adapterVersion = $dataAdapter->version;
+		$result->checkVersion = $dataAdapter->checkVersion;
 	}
 }
 
