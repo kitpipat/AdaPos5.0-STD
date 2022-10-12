@@ -4277,3 +4277,66 @@ GO
 /****** End From DB:Fit Auto Date 06/10/2022 By:Ice PHP ******/
 
 
+
+
+IF OBJECT_ID(N'TARTRcvDepositHDDocRef') IS NULL BEGIN
+	CREATE TABLE [dbo].[TARTRcvDepositHDDocRef](
+		[FTBchCode] [varchar](20) NOT NULL,
+		[FTXshDocNo] [varchar](20) NOT NULL,
+		[FTXshRefDocNo] [varchar](20) NOT NULL,
+		[FTXshRefType] [varchar](1) NOT NULL,
+		[FTXshRefKey] [varchar](10) NULL,
+		[FDXshRefDocDate] [datetime] NULL,
+	 CONSTRAINT [PK_TARTRcvDepositHDDocRef] PRIMARY KEY CLUSTERED 
+	(
+		[FTBchCode] ASC,
+		[FTXshDocNo] ASC,
+		[FTXshRefDocNo] ASC,
+		[FTXshRefType] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+
+	EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'รหัสสาขา ที่สร้างเอกสาร' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TARTRcvDepositHDDocRef', @level2type=N'COLUMN',@level2name=N'FTBchCode'
+	EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'เลขที่เอกสาร' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TARTRcvDepositHDDocRef', @level2type=N'COLUMN',@level2name=N'FTXshDocNo'
+	EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'เลขที่เอกสารอ้างอิง' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TARTRcvDepositHDDocRef', @level2type=N'COLUMN',@level2name=N'FTXshRefDocNo'
+	EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'ประเภทการอ้างอิงเอกสาร 1: อ้างอิงถึง(ภายใน),2:ถูกอ้างอิง(ภายใน),3: อ้างอิง ภายนอก' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TARTRcvDepositHDDocRef', @level2type=N'COLUMN',@level2name=N'FTXshRefType'
+	EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'กรณีType เดียวกันมีรายการมากกว่า 1 กลุ่ม /กำหนด Key เองได้' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TARTRcvDepositHDDocRef', @level2type=N'COLUMN',@level2name=N'FTXshRefKey'
+	EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'วันที่เอกสารอ้างอิง' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TARTRcvDepositHDDocRef', @level2type=N'COLUMN',@level2name=N'FDXshRefDocDate'
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FTPdtCode') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FTPdtCode VARCHAR(20)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FTPunCode') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FTPunCode VARCHAR(5)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FTPunName') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FTPunName VARCHAR(50)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FCXsdFactor') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FCXsdFactor DECIMAL(18,4)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FTXsdBarCode') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FTXsdBarCode VARCHAR(25)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FCXsdSalePrice') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FCXsdSalePrice DECIMAL(18,4)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FCXsdQty') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FCXsdQty DECIMAL(18,4)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FCXsdQtyAll') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FCXsdQtyAll DECIMAL(18,4)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTRcvDepositDT' AND COLUMN_NAME = 'FCXsdSetPrice') BEGIN
+	ALTER TABLE TARTRcvDepositDT ADD FCXsdSetPrice DECIMAL(18,4)
+END
+GO
