@@ -2736,8 +2736,4 @@ BEGIN TRY
 	
 END TRY
 
-BEGIN CATCH 
-	SET @FNResult= -1
-	--PRINT @tSqlIns
-END CATCH	
-GO
+/****** End From DB:FitAuto Date 15/09/2022 By:Ice PHP ******/
