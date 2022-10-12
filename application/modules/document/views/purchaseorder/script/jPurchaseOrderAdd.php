@@ -1649,41 +1649,15 @@ function JSxPOClearDTTmp(ptDataDisTmp){
             $('#oetPOFrmWahName').val('');
         }else{
             var tResult = JSON.parse(ptData);
-            //เช็คค่าเก่ากับค่าใหม่ ก่อนจะเเจ้งเตือนให้ล้างค่า
-            if($('#oetPOFrmBchCode').data('bchcodeold') == tResult[0]){
-               
-            }else{
-                nRowCount = $('#otbPODocPdtAdvTableList >tbody >tr').length;
-                if(nRowCount > 1){
-                    if($('#otbPODocPdtAdvTableList >tbody >tr > td').hasClass('xWPITextNotfoundDataPdtTable') == true){
-                        $('#oetPOFrmBchCode').val(tResult[0]);
-                        $('#oetPOFrmBchName').val(tResult[1]);
-                    }else{
-                        //แจ้งเตือนว่ามีการเปลี่ยนค่า
-                        $('#odvPOModalChangeBCH').modal('show');
-                        $('#obtChangeBCH').on("click",function() {
-                            JCNxOpenLoading();
-                            $.ajax({
-                                type: "POST",
-                                url: "docPOClearDataDocTemp",
-                                data: {
-                                    'ptPODocNo' : $("#oetPODocNo").val()
-                                },
-                                cache: false,
-                                Timeout: 0,
-                                success: function (oResult){
-                                    JSvPOLoadPdtDataTableHtml();
-                                    $('#oetPOFrmBchCode').val(tResult[0]);
-                                    $('#oetPOFrmBchName').val(tResult[1]);
-                                },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                                }
-                            });
-                        });
-                    }
-                }
+            
+            var rtDocBchCode = tResult[0];
+            var oUpdChgBch = {
+                rtDocBchCode : tResult[0],
+                rtDocNo      : $('#oetPODocNo').val(),
+                rtDocKey     : 'TAPTPoHD'
             }
+            JSxCNEventChangeDocBranch(oUpdChgBch);
+            JSvPOLoadPdtDataTableHtml();
 
             $('#oetPOFrmWahCode').val(tResult[2]);
             $('#oetPOFrmWahName').val(tResult[3]);
