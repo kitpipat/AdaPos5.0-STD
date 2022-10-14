@@ -189,12 +189,25 @@ class mCouponSetup extends CI_Model {
         $tSesUsrAgnCode  = $this->session->userdata('tSesUsrAgnCode');
         $tSQL   .=  ") Base"; 
         $tSQL   .=  ") A  LEFT JOIN TCNMBranch BCH WITH (NOLOCK) ON A.FTBchCode = BCH.FTBchCode";
+            // ต้นหารหัสเอกสาร,ชือสาขา,วันที่เอกสาร
+        if(isset($tSearchList) && !empty($tSearchList)){
+            $tSQL   .=  "   WHERE (
+                    (A.FTCphDocNo LIKE '%$tSearchList%') 
+                    OR (A.FTBchName LIKE '%$tSearchList%') 
+                    OR (CONVERT(VARCHAR(10),A.FDCphDocDate,103) LIKE '%$tSearchList%')
+                    OR (A.FTCpnName LIKE '%$tSearchList%') 
+            )";
+        }
+
         if($this->session->userdata('tSesUsrLevel')!='HQ'){
         //$tSQL   .= " WHERE BCH.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(BCH.FTAgnCode,'') = '' ";
         }
+
+
         $tSQL   .= ") AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
         
         $oQuery = $this->db->query($tSQL);
+        // echo $this->db->last_query();
         if($oQuery->num_rows() > 0){
             $oDataList          = $oQuery->result_array();
             $aDataCountAllRow   = $this->FSnMCPHCountPageDocListAll($paDataCondition);
@@ -260,7 +273,11 @@ class mCouponSetup extends CI_Model {
 
         $tSQL   =   "   SELECT COUNT(DISTINCT A.FTCphDocNo) AS counts FROM 
                         (
-                            SELECT BCH.FTAgnCode ,CPHD.FTCphDocNo
+                            SELECT BCH.FTAgnCode ,CPHD.FTCphDocNo,
+                            CPHD.FTBchCode,
+                                    BCHL.FTBchName,
+                                    CPHDL.FTCpnName,
+                                    CONVERT(VARCHAR(10),CPHD.FDCreateOn,103) AS FDCphDocDate
                         FROM TFNTCouponHD CPHD WITH(NOLOCK)
                         LEFT JOIN TFNTCouponHD_L CPHDL WITH(NOLOCK) ON CPHD.FTCphDocNo = CPHDL.FTCphDocNo
                         LEFT JOIN TCNMBranch BCH WITH(NOLOCK) ON BCH.FTBchCode = CPHD.FTBchCode
@@ -404,12 +421,25 @@ class mCouponSetup extends CI_Model {
                 $tSQL  .=")";
         }
         
+
+
         $tSesUsrAgnCode  = $this->session->userdata('tSesUsrAgnCode');
         $tSQL   .=  ") A  ";
+                            // ต้นหารหัสเอกสาร,ชือสาขา,วันที่เอกสาร
+    if(isset($tSearchList) && !empty($tSearchList)){
+        $tSQL   .=  "   WHERE (
+                (A.FTCphDocNo LIKE '%$tSearchList%') 
+                OR (A.FTBchName LIKE '%$tSearchList%') 
+                OR (CONVERT(VARCHAR(10),A.FDCphDocDate,103) LIKE '%$tSearchList%')
+                OR (A.FTCpnName LIKE '%$tSearchList%') 
+        )";
+    }
         if($this->session->userdata('tSesUsrLevel')!='HQ'){
         //$tSQL   .= " WHERE A.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(A.FTAgnCode,'') = ''";
         }
         
+
+
         $oQuery = $this->db->query($tSQL);
         if($oQuery->num_rows() > 0) {
             $aDetail        = $oQuery->row_array();
