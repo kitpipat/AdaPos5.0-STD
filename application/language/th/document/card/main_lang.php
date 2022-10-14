@@ -4,7 +4,7 @@
     $lang['tMainDelete']    = "ลบ";
     $lang['tMainEdit']      = "แก้ไข";
     $lang['tMainSuccess']   = "สมบูรณ์";
-    $lang['tMainUnSuccess'] = "ไม่สมบูรณ์";
+    $lang['tMainUnSuccess'] = "ไม่สมบูรณ์ บัตรถูกเบิกไปแล้ว";
     $lang['tMainChooseReason'] = "** กรุณาเลือกเหตุผลในการเปลี่ยนบัตร";
     $lang['tMainSuccessProcessed'] = "ประมวลผลสำเร็จ";
     $lang['tMainUnsuccessProcessed'] = "ประมวลผลไม่สำเร็จ";
