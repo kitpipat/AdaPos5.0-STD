@@ -564,7 +564,7 @@ class mTaxinvoicefc extends CI_Model{
                                     AND  DT.FTCrdCode = '".$oCrdCode[$i]->FTCrdCode."'  
                                     AND  HD.FDXshDocDate <=  '".$tDocDate."' 
                             ) CE
-                            WHERE CE.FNTxnCESeq  = 2 ),'1999-01-01')
+                            WHERE CE.FNTxnCESeq  = 1 ),'1999-01-01')
                     AND HD.FDXshDocDate <= '".$tDocDate."'" ;
         }
 

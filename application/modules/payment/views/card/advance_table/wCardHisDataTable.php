@@ -15,8 +15,8 @@
             <?php if ($aDataList['rtCode'] == 1) { ?>
                 <?php foreach (array_reverse($aDataList['raItems']) as $key => $aValue) { ?>
                     <?php
-                        // 1: เติมเงิน 2: ยกเลิกเติมเงิน 3: ตัดจ่าย(ขาย) 5: แลกคืน
-                        $aPayType = ["2","5","3"];
+                        // 1:เติมเงิน, 2:ยกเลิกเติมเงิน, 3:ตัดจ่าย(ขาย), 4:ยกเลิกตัดจ่าย(คืน), 5:แลกคืน, 6:เบิกบัตร, 7:คืนบัตร, 8:โอนเงินออก, 9:โอนเงินเข้า ,10:ล้างบัตร,11:ปรับสถานะ,12:บัตรใหม่
+                        $aPayType = ["2","3","5","8","10"];
                         if(in_array($aValue['FTTxnDocType'],$aPayType)){
                             $cTxnValue = '-'.number_format($aValue['FCTxnValue'],$nOptDecimalShow);
                             $cBalance = number_format((floatval($aValue['FCTxnPmt']) + floatval($aValue['FCTxnCrdValue'])) - floatval($aValue['FCTxnValue']),$nOptDecimalShow);

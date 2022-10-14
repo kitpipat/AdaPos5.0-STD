@@ -62,6 +62,12 @@ if ($aDataList['rtCode'] == '1') {
                                 $tStaDoc = language('common/main/main','tStaDoc');
                             }
 
+                            // หยุดรายการชั่วคราว 0: เปิดใช้  1: หยุด
+                            if( $aValue['FTPmhStaClosed'] == '1' ){
+                                $tClassStaDoc   = 'text-danger';
+                                $tStaDoc = language('sale/promotiontopup/promotiontopup','tPausedTemporarily');
+                            }
+
                             // FTPmhStaPrcDoc
                             // if ($aValue['FTPmhStaPrcDoc'] == 1) {
                             //     $tClassPrcStk = 'text-success';
