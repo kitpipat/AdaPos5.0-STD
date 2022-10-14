@@ -113,7 +113,7 @@ class mReport extends CI_Model {
                     ";
             if( $tUsrLoginLevel != "HQ" ){
                 if( $bIsHaveAgn ){
-                    $tSQL .= " AND RSPC.FTAgnCode = '$tUsrAgnCode' ";
+                    $tSQL .= " AND (RSPC.FTAgnCode = '$tUsrAgnCode' OR ISNULL(RSPC.FTAgnCode,'') = '' ) ";
                 }else{
                     $tSQL .= " AND ISNULL(RSPC.FTAgnCode,'') = '' ";
                 }
@@ -240,7 +240,7 @@ class mReport extends CI_Model {
                     ";
             if( $tUsrLoginLevel != "HQ" ){
                 if( $bIsHaveAgn ){
-                    $tSQL .= " AND RSPC.FTAgnCode = '$tUsrAgnCode' ";
+                    $tSQL .= " AND (RSPC.FTAgnCode = '$tUsrAgnCode' OR ISNULL(RSPC.FTAgnCode,'') = '' )";
                 }else{
                     $tSQL .= " AND ISNULL(RSPC.FTAgnCode,'') = '' ";
                 }

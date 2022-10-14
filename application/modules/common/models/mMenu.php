@@ -71,7 +71,7 @@ class mMenu extends CI_Model {
                          
         if( $tUsrLoginLevel != "HQ" ){
             if( $bIsHaveAgn ){ 
-                $tSQLChkRptSpc .= " AND RSPC.FTAgnCode = '$tUsrAgnCode' ";
+                $tSQLChkRptSpc .= " AND (RSPC.FTAgnCode = '$tUsrAgnCode' OR ISNULL(RSPC.FTAgnCode,'') = '') ";
             }else{
                 $tSQLChkRptSpc .= " AND ISNULL(RSPC.FTAgnCode,'') = '' ";
             }
@@ -88,7 +88,7 @@ class mMenu extends CI_Model {
                 $tSQLChkRptSpc .= " AND ( RSPC.FTShpCode IN ($tUsrShpCodeMulti) OR ( ISNULL(RSPC.FTShpCode,'') = '' ) ) ";
             }
         }
-
+  
         $oQueryChkRptSpc = $this->db->query($tSQLChkRptSpc);
         if ( $oQueryChkRptSpc->num_rows() > 0 ){
             // ตรวจสอบวันหมดอายุของแพ็คเพจหลัก
