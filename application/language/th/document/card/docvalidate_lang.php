@@ -41,6 +41,6 @@ $lang['tErrorNewCardIsDup']             = "รหัสบัตรใหม่�
 
 
 $lang['tErrorCtyStaShiftDefault']          = "เบิกปกติ";
-$lang['tErrorCtyStaShiftAuto']             = "เบิกอัติโนมัติ";
+$lang['tErrorCtyStaShiftAuto']             = "เบิกอัตโนมัติ";
      
 

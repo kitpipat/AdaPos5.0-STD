@@ -253,7 +253,7 @@
                 ]
             },
             Where: {
-                Condition: ["AND ( ( (TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '1') ) AND (TFNMCard.FTCrdStaActive = '1') AND (CONVERT(date, TFNMCard.FDCrdExpireDate) > CONVERT(date, GETDATE())) )" + tNotIn + tWhereInCard + tWhereCardByAgenCode]
+                Condition: ["AND ( ( (TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '1') ) AND (TFNMCard.FTCrdStaActive = '1') AND (CONVERT(datetime, TFNMCard.FDCrdExpireDate) > CONVERT(datetime, GETDATE())) )" + tNotIn + tWhereInCard + tWhereCardByAgenCode]
             },
             GrideView: {
                 ColumnPathLang: 'payment/card/card',
@@ -307,7 +307,6 @@
         var nFromCard = $('#oetCardShiftOutFromCardTypeCode').val();
         var nToCard = $('#oetCardShiftOutToCardTypeCode').val();
 
-
         var tWhereInCard = "";
 
         if (nFromCard != '' || nToCard != '') {
@@ -334,7 +333,7 @@
                 ]
             },
             Where: {
-                Condition: ["AND ( ( (TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '1') ) AND (TFNMCard.FTCrdStaActive = '1') AND (CONVERT(date, TFNMCard.FDCrdExpireDate) > CONVERT(date, GETDATE())) )" + tNotIn + tWhereInCard + tWhereCardByAgenCode]
+                Condition: ["AND ( ( (TFNMCardType.FTCtyStaShift = '1') AND (TFNMCard.FTCrdStaShift = '1') ) AND (TFNMCard.FTCrdStaActive = '1') AND (CONVERT(datetime, TFNMCard.FDCrdExpireDate) > CONVERT(datetime, GETDATE())) )" + tNotIn + tWhereInCard + tWhereCardByAgenCode]
             },
             GrideView: {
                 ColumnPathLang: 'payment/card/card',
@@ -359,7 +358,8 @@
             },*/
             // RouteFrom : 'cardShiftOut',
             RouteAddNew: 'card',
-            BrowseLev: nStaCardShiftOutBrowseType
+            BrowseLev: nStaCardShiftOutBrowseType,
+            // DebugSQL : true
         };
         return oOptions;
     };
@@ -411,7 +411,8 @@
             },
             // RouteFrom : 'cardShiftOut',
             RouteAddNew: 'card',
-            BrowseLev: nStaCardShiftOutBrowseType
+            BrowseLev: nStaCardShiftOutBrowseType,
+            // DebugSQL : true
         };
         return oOptions;
     };

@@ -226,6 +226,7 @@ class mCheckProductPrice extends CI_Model
                     AND PDT.FTPdtStaActive ='1' 
                     AND ( CONVERT(VARCHAR(10),GETDATE(),121) BETWEEN CONVERT(VARCHAR(10), PDT.FDPdtSaleStart, 121) AND CONVERT(VARCHAR(10), PDT.FDPdtSaleStop, 121) )
                     AND PSZ.FTPdtStaAlwSale = '1'
+                    AND ADJP_HD.FTXphStaApv = '1'
                     $tWhere
                 ";
         // $tSQL3 = " ) C ) B WHERE B.FNRowID > $aRowLen[0] AND B.FNRowID <= $aRowLen[1] ";

@@ -112,8 +112,11 @@
         var tReturnCode = poDataFnc.tReturnCode;
         var tReturnName = poDataFnc.tReturnName;
         var tAgnCode    = poDataFnc.tAgnCode;
+        var tWhereCondition = ''
 
-        // var tWhereCondition = " AND TCNMBranch.FTAgnCode = '"+tAgnCode+"' ";
+        if (tAgnCode) {
+            tWhereCondition = " AND TCNMBranch.FTAgnCode = '"+tAgnCode+"' ";
+        }
 
         var oOptionReturn = {
             Title: ['company/branch/branch', 'tBCHTitle'],
@@ -127,9 +130,9 @@
                     'TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits
                 ]
             },
-            // Where: {
-            //     Condition: [ tWhereCondition ]
-            // },
+            Where: {
+                Condition: [ tWhereCondition ]
+            },
             GrideView: {
                 ColumnPathLang: 'company/branch/branch',
                 ColumnKeyLang: ['tBCHCode', 'tBCHName'],

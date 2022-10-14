@@ -4,7 +4,7 @@
     $lang['tMainDelete']    = "Delete";
     $lang['tMainEdit']      = "Edit";
     $lang['tMainSuccess']   = "Success";
-    $lang['tMainUnSuccess'] = "Unsuccess";
+    $lang['tMainUnSuccess'] = "Unsuccess Card Used";
     $lang['tMainChooseReason'] = "Please select reason";
     $lang['tMainSuccessProcessed'] = "Success processed";
     $lang['tMainUnsuccessProCessed'] = "Unsuccess processed";
