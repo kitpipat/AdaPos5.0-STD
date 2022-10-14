@@ -876,3 +876,9 @@ $route['rptRptSaleByPtyAnime']               = 'report/reportsalebypty/Rptsaleby
 $route['rptRptSaleByPtyAnimeClickPage']      = 'report/reportsalebypty/Rptsalebyptyanime_controller/FSvCCallRptViewBeforePrintClickPage';
 $route['rptRptSaleByPtyAnimeCallExportFile'] = 'report/reportsalebypty/Rptsalebyptyanime_controller/FSvCCallRptExportFile';
 /** =================================================================================================================================================== */
+
+/** ========================================= รายงาน - ข้อมูลการใช้แพ็คเกจ ======================================================================== */
+$route['rptPackageUsageInfo']               = 'report/reportpackageusageinfo/Rptpackageusageinfo_controller/index';
+$route['rptPackageUsageInfoClickPage']      = 'report/reportpackageusageinfo/Rptpackageusageinfo_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptPackageUsageInfoCallExportFile'] = 'report/reportpackageusageinfo/Rptpackageusageinfo_controller/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */

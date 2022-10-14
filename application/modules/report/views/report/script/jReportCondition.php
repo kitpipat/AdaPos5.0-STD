@@ -2514,6 +2514,69 @@
         }
     });
 
+    // จาก Coupon
+    $('#obtRptBrowseCouponFrom').unbind().click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            window.oRptCouponOptionFrom = undefined;
+            oRptCouponOptionFrom = oRptCouponOption({
+                'tReturnInputCode': 'oetRptCouponCodeFrom',
+                'tReturnInputName': 'oetRptCouponNameFrom',
+                'tNextFuncName': 'JSxRptConsNextFuncBrowseCup',
+                'aArgReturn': ['FTCpdBarCpn', 'FTCpnName']
+            });
+            JCNxBrowseData('oRptCouponOptionFrom');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+    // ถึง Coupon
+    $('#obtRptBrowseCouponTo').unbind().click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            window.oRptCouponOptionTo = undefined;
+            oRptCouponOptionTo = oRptCouponOption({
+                'tReturnInputCode': 'oetRptCouponCodeTo',
+                'tReturnInputName': 'oetRptCouponNameTo',
+                'tNextFuncName': 'JSxRptConsNextFuncBrowseCup',
+                'aArgReturn': ['FTCpdBarCpn', 'FTCpnName']
+            });
+            JCNxBrowseData('oRptCouponOptionTo');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    function JSxRptConsNextFuncBrowseCup(poDataNextFunc) {
+
+        if (typeof(poDataNextFunc) != 'undefined' && poDataNextFunc != "NULL") {
+            var aDataNextFunc = JSON.parse(poDataNextFunc);
+            tPdtCode = aDataNextFunc[0];
+            tPdtName = aDataNextFunc[1];
+        }
+
+        // ประกาศตัวแปร สินค้า
+        var tRptCupCodeFrom, tRptCupNameFrom, tRptCupCodeTo, tRptCupNameTo
+        tRptCupCodeFrom = $('#oetRptCouponCodeFrom').val();
+        tRptCupNameFrom = $('#oetRptCouponNameFrom').val();
+        tRptCupCodeTo = $('#oetRptCouponCodeTo').val();
+        tRptCupNameTo = $('#oetRptCouponNameTo').val();
+
+        // เช็คข้อมูลถ้ามีการ Browse จากสินค้า ให้ default ถึงร้านค้า เป็นข้อมูลเดียวกัน
+        if ((typeof(tRptCupCodeFrom) !== 'undefined' && tRptCupCodeFrom != "") && (typeof(tRptCupCodeTo) !== 'undefined' && tRptCupCodeTo == "")) {
+            $('#oetRptCouponCodeTo').val(tPdtCode);
+            $('#oetRptCouponNameTo').val(tPdtName);
+        }
+
+        // เช็คข้อมูลถ้ามีการ Browse ถึงร้านค้า default จากสินค้า เป็นข้อมูลเดียวกัน
+        if ((typeof(tRptCupCodeTo) !== 'undefined' && tRptCupCodeTo != "") && (typeof(tRptCupCodeFrom) !== 'undefined' && tRptCupCodeFrom == "")) {
+            $('#oetRptCouponCodeFrom').val(tPdtCode);
+            $('#oetRptCouponNameFrom').val(tPdtName);
+        }
+
+    }
     // Clck Button Warehouse From-To
     $('#obtRptBrowseWahFrom').unbind().click(function() {
         var nStaSession = JCNxFuncChkSessionExpired();
@@ -6329,5 +6392,83 @@ var oRptClvBrows = function(poReturnInput) {
             JSxUncheckinCheckbox('oetRptStyCodeTo');
 
         }
+    }
+
+     // คูปอง
+     var oRptCouponOption = function(poReturnInputCoupon) {
+        var tConditionWhere = " AND TFNTCouponHD.FTCphStaApv = '1' ";
+
+
+        let tBchCodeSess = $('#oetRptBchCodeSelect').val();
+        let tBchcode = tBchCodeSess.replace(/,/g, "','");
+        // let tWhereFilter = '';
+        if (tBchCodeSess != '' && tBchCodeSess != undefined) {
+            tConditionWhere += " AND TFNTCouponDT.FTBchCode IN ('','" + tBchcode + "')";
+        }
+
+
+        let tCouponNextFuncName = poReturnInputCoupon.tNextFuncName;
+        let aCouponArgReturn = poReturnInputCoupon.aArgReturn;
+        let tCouponInputReturnCode = poReturnInputCoupon.tReturnInputCode;
+        let tCouponInputReturnName = poReturnInputCoupon.tReturnInputName;
+        var tSesUsrLevel = '<?= $this->session->userdata('tSesUsrLevel') ?>';
+        var tWhere = '';
+        if (tSesUsrLevel != 'HQ') {
+            var tUserLoginBchCode = "<?= $this->session->userdata('tSesUsrBchCodeMulti') ?>";
+            var tSesUsrAgnCode = '<?= $this->session->userdata('tSesUsrAgnCode') ?>';
+
+            // ของเดิม วัดคอมเม้นไว้ มันมีเรื่องของ ตัวแทนขาย ไม่ได้ใช้ใน Fitauto
+            // tWhere = "AND (TFNTCouponHD.FTCphStaApv = 1 AND ((ISNULL(TFNTCouponHDBch.FTCphAgnTo, '') = '') OR (TFNTCouponHDBch.FTCphAgnTo IN(" + tSesUsrAgnCode + ") AND TFNTCouponHDBch.FTCphStaType = 1) OR (TFNTCouponHDBch.FTCphAgnTo NOT IN(" + tSesUsrAgnCode + ") AND TFNTCouponHDBch.FTCphStaType = 2))) AND (TFNTCouponHD.FTCphStaApv = 1 AND ((ISNULL(TFNTCouponHDBch.FTCphBchTo, '') = '') OR (TFNTCouponHDBch.FTCphBchTo IN(" + tUserLoginBchCode + ") AND TFNTCouponHDBch.FTCphStaType = 1) OR (TFNTCouponHDBch.FTCphBchTo NOT IN(" + tUserLoginBchCode + ") AND TFNTCouponHDBch.FTCphStaType = 2)))";
+            // tWhere = "AND (TFNTCouponHD.FTCphStaApv = 1 AND TFNTCouponHDBch.FTCphStaType = 1 OR TFNTCouponHDBch.FTCphStaType = 2 ) AND (TFNTCouponHD.FTCphStaApv = 1 AND ((ISNULL(TFNTCouponHDBch.FTCphBchTo, '') = '') OR (TFNTCouponHDBch.FTCphBchTo IN(" + tUserLoginBchCode + ") AND TFNTCouponHDBch.FTCphStaType = 1) OR (TFNTCouponHDBch.FTCphBchTo NOT IN(" + tUserLoginBchCode + ") AND TFNTCouponHDBch.FTCphStaType = 2)))";
+            twhere = "TFNTCouponDT.FTCphBchTo NOT IN(" + tUserLoginBchCode + ")";
+        }
+
+
+        let oRptCouponOption = {
+            Title: ['coupon/coupon/coupon', 'tCPNTitle'],
+            Table: {
+                Master: 'TFNTCouponDT',
+                PK: 'FTCpdBarCpn',
+            },
+            Join: {
+                Table: ['TFNTCouponHD_L','TFNTCouponHD'],
+                On: ['TFNTCouponDT.FTCphDocNo = TFNTCouponHD_L.FTCphDocNo AND TFNTCouponHD_L.FNLngID = ' + nLangEdits,
+                     'TFNTCouponHD.FTCphDocNo = TFNTCouponDT.FTCphDocNo'
+            ]
+            },
+            Where: {
+                Condition: [
+                    function() {
+                        tSQL = tWhere;
+                        tSQL += " AND (TFNTCouponHD.FTCphStaApv = '1')";
+                        tSQL += tConditionWhere
+                        return tSQL;
+                    }
+                ]
+            },
+            GrideView: {
+                ColumnPathLang: 'coupon/coupon/coupon',
+                ColumnKeyLang: ['tCPNTBCpnCode', 'tCPNTBCpnName'],
+                ColumnsSize: ['15%', '75%'],
+                WidthModal: 50,
+                DataColumns: ['TFNTCouponDT.FTCpdBarCpn', 'TFNTCouponHD_L.FTCpnName'],
+                // DistinctField: [0],
+                DataColumnsFormat: ['', ''],
+                Perpage: 5,
+                OrderBy: ['TFNTCouponDT.FTCpdBarCpn'],
+                SourceOrder: "ASC"
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: [tCouponInputReturnCode, "TFNTCouponDT.FTCpdBarCpn"],
+                Text: [tCouponInputReturnName, "TFNTCouponHD_L.FTCpnName"],
+            },
+            NextFunc: {
+                FuncName: tCouponNextFuncName,
+                ArgReturn: aCouponArgReturn
+            },
+            // DebugSQL:true,
+        };
+        return oRptCouponOption;
     }
 </script>

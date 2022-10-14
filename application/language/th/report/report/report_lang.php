@@ -2555,3 +2555,17 @@ $lang['tRptSalebyPtySalAmtTotal'] = 'ยอดขายรวม';
 $lang['tRptSalebyPtyBalCostTotal'] = 'มูลค่าทุนคงเหลือหน้าร้าน';
 $lang['tRptSalebyPtyBalSalTotal'] = 'มูลค่าขายคงเหลือหน้าร้าน';
 
+
+//รายงาน - ข้อมูลการใช้แพ็คเกจ
+$lang['tRptTitlePackUsage'] = "รายงาน - ข้อมูลการใช้แพ็คเกจ";
+$lang['tRptPKUCopCode'] = "เลขรหัสคูปอง";
+$lang['tRptPKUCopname'] = "ชื่อคูปอง";
+$lang['tRptPKUPos'] = "จุดขายที่ใช้งาน";
+$lang['tRptPKUTypeName'] = "ประเภทการใช้งาน";
+$lang['tRptPKUValues'] = "มูลค่าที่ใช้/ครั้ง";
+$lang['tRptPKUTotalVal'] = "รวมมูลค่า";
+$lang['tRptPKUActive'] = "จำนวนที่ใช้งาน";
+$lang['tRptPKURemaining'] = "จำนวนคงเหลือ";
+$lang['tRptCouponFrom'] = "จากคูปอง";
+$lang['tRptCouponTo']   = "ถึงคูปอง";
+

@@ -2090,3 +2090,17 @@ $lang['tRptSalebyPtyCostTotal'] = 'Total capital';
 $lang['tRptSalebyPtySalAmtTotal'] = 'Total sales';
 $lang['tRptSalebyPtyBalCostTotal'] = 'Remaining capital value in front of the store';
 $lang['tRptSalebyPtyBalSalTotal'] = 'Storefront remaining sales value';
+
+//รายงาน - ข้อมูลการใช้แพ็คเกจ
+$lang['tRptTitlePackUsage'] = "Report - Package Usage Information";
+$lang['tRptPKUCopCode'] = "Coupon Code";
+$lang['tRptPKUCopname'] = "Coupon name";
+$lang['tRptPKUPos'] = "Active POS";
+$lang['tRptPKUTypeName'] = "Type Of Use";
+$lang['tRptPKUValues'] = "Used Value/time";
+$lang['tRptPKUTotalVal'] = "Total Value";
+$lang['tRptPKUActive'] = "Active Count";
+$lang['tRptPKURemaining'] = "Remaining Amount";
+$lang['tRptCouponFrom'] = "From Coupon";
+$lang['tRptCouponTo']   = "To Coupon";
+

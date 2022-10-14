@@ -2790,6 +2790,36 @@ if (FCNnHSizeOf($aCheckFltGroup) == 0) {
                                         break;
                                     }
 
+                                    case '88': { // คูปอง
+                                        if ($aRptFilValue['FTRptFltStaFrm'] == '1') {
+                                            $tCoditionReportFrom .= "
+                                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                                    <div class='xCNInputNewUIBrowse'>
+                                                        <div class='input-group' style='width: 100%;'>
+                                                            <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptCouponCodeFrom' name='oetRptCouponCodeFrom' maxlength='5'>
+                                                            <input type='text' class='form-control xWPointerEventNone xWRptAllInput xCNInputNewUI' id='oetRptCouponNameFrom' name='oetRptCouponNameFrom' readonly>
+                                                            <span class='input-group-btn'>
+                                                                <button id='obtRptBrowseCouponFrom' type='button' class='btn xCNButtonNewUI'> <img class='xCNIconFind'></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>";
+                                        }
+                                        if ($aRptFilValue['FTRptFltStaTo'] == '1') {
+                                            $tCoditionReportTo .= "
+                                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                                    <div class='xCNInputNewUIBrowse'>
+                                                        <div class='input-group' style='width: 100%;'>
+                                                            <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptCouponCodeTo' name='oetRptCouponCodeTo' maxlength='5'>
+                                                            <input type='text' class='form-control xWPointerEventNone xWRptAllInput xCNInputNewUI' id='oetRptCouponNameTo' name='oetRptCouponNameTo' readonly>
+                                                            <span class='input-group-btn'>
+                                                                <button id='obtRptBrowseCouponTo' type='button' class='btn xCNButtonNewUI'> <img class='xCNIconFind'></button>
+                                                            </span>
+                                                        </div>
+                                                    </div>";
+                                        }
+                                        break;
+                                    }
+
                             }
                             ?>
 
