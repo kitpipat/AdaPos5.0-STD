@@ -78,11 +78,12 @@
                                 <label class="text-right xCNPdtFont xWShowValuePuncode <?php echo $DataTableVal['FNXtdSeqNo']?>"><?php echo $DataTableVal['FTPunName']?>
 
                                     <?php }else{ ?>
-                                    <select class="form-control xWSelectDis" id="ocmXphPuncode" name="ocmXphPuncode" maxlength="20" seq="<?=$DataTableVal['FNXtdSeqNo']?>" onchange="JSxEditPun(value,this);">
+                                    <!-- <select class="form-control xWSelectDis" id="ocmXphPuncode" name="ocmXphPuncode" maxlength="20" seq="<?=$DataTableVal['FNXtdSeqNo']?>" onchange="JSxEditPun(value,this);">
                                         <?php foreach($aAllpunCode as $nKeypun => $aValPun){ ?>
                                         <option id="optStaAdj1" value="<?php echo $aValPun ?>" <?= $aValPun == $DataTableVal['FTPunCode'] ? "selected" : ""; ?> ><?php echo $aAllpunName[$nKeypun] ?></option>
                                         <?php } ?>
-                                    </select>
+                                    </select> -->
+                                    <label class="text-left xCNPdtFont xWShowValueFTPunName<?php echo $DataTableVal['FNXtdSeqNo']?>"><?php echo $DataTableVal['FTPunName']?></label>
                                     <?php } ?>
                                     <!-- <label class="text-left xCNPdtFont xWShowValueFTPunName<?php echo $DataTableVal['FNXtdSeqNo']?>"><?php echo $DataTableVal['FTPunName']?></label> -->
                                 </td>

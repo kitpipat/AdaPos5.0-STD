@@ -37,5 +37,5 @@ $lang['tErrorNewCardIsDup'] = "The new card code is the same as the other card. 
 
 
 $lang['tErrorCtyStaShiftDefault']          = "เบิกปกติ";
-$lang['tErrorCtyStaShiftAuto']             = "เบิกอัติโนมัติ";
+$lang['tErrorCtyStaShiftAuto']             = "เบิกอัตโนมัติ";
 
