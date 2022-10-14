@@ -415,6 +415,8 @@ class cPromotionTopup extends MX_Controller
             $aDataMasterHD = array(
                 // HD
                 'FTPmhStaClosed'       => ($this->input->post('ocbPTUPmhStaClosed') == "1") ? '1' : '0',
+                'FDLastUpdOn'          => date('Y-m-d H:i:s'),
+                'FTLastUpdBy'          => $tUserLoginCode,
             );
         }else{
             $aDataMasterHD = array(

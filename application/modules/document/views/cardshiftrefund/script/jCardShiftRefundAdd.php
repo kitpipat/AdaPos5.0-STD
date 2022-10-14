@@ -2043,9 +2043,9 @@
         var tUsrBchCode = $("#ohdCardShiftRefundUsrBchCode").val();
         var tDocNo = $("#oetCardShiftRefundCode").val();
         var aInfor = [
-            {"Lang"         : tLangCode},
-            {"ComCode"      : '<?php echo FCNtGetCompanyCode(); ?>'},
-            {"BranchCode"   : tUsrBchCode},
+            {"Lang"         : '<?= FCNaHGetLangEdit(); ?>'},
+            {"ComCode"      : '<?= FCNtGetCompanyCode(); ?>'},
+            {"BranchCode"   : '<?= FCNtGetAddressBranch($tUserBchCode); ?>'},
             {"DocCode"      : tDocNo}
         ];
         window.open('<?php echo base_url(); ?>'+"formreport/Frm_SQL_FCCardRefundCash?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');

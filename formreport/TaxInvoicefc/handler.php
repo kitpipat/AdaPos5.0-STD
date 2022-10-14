@@ -1,5 +1,6 @@
 <?php
 require_once "stimulsoft/helper.php";
+require_once('../../config_deploy.php');
 
 // Please configure the security level as you required.
 // By default is to allow any requests from any domains.
@@ -15,7 +16,8 @@ $handler->onPrepareVariables = function ($args) {
 
 $handler->onBeginProcessData = function ($args) {
 	if ($args->connection == "SaleInv")
-		$args->connectionString = "Data Source=147.50.143.134,33435;Initial Catalog=AdaStorebackSTD;Integrated Security=False;User ID=sa;Password=Ad@soft2016";
+		// $args->connectionString = "Data Source=147.50.143.134,33435;Initial Catalog=AdaStorebackSTD;Integrated Security=False;User ID=sa;Password=Ad@soft2016";
+		$args->connectionString = "Data Source=".DATABASE_IP.";Initial Catalog=".BASE_DATABASE.";Integrated Security=False;User ID=".DATABASE_USERNAME.";Password=".DATABASE_PASSWORD.";";
 
 	return StiResult::success();
 };
