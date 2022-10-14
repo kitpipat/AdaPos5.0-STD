@@ -771,3 +771,12 @@ INSERT INTO  [TSysMenuList_L] ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) 
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.17', getdate() , 'เพิ่ม จัดการวงเงินเครดิต', 'Nattakit K.')
 END
 
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.18') BEGIN
+UPDATE TSysRcvFmt 
+SET FTFmtStaUsed = '2'
+WHERE FTFmtCode = '005'
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.18', getdate() , 'Update TsysRcvFmt แก้เรื่อง เงินโอน', 'Zen')
+END
