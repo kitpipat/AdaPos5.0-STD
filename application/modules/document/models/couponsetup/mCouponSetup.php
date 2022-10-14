@@ -200,7 +200,7 @@ class mCouponSetup extends CI_Model {
         }
 
         if($this->session->userdata('tSesUsrLevel')!='HQ'){
-        $tSQL   .= " WHERE BCH.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(BCH.FTAgnCode,'') = '' ";
+        // $tSQL   .= " AND BCH.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(BCH.FTAgnCode,'') = '' ";
         }
 
 
@@ -435,7 +435,7 @@ class mCouponSetup extends CI_Model {
         )";
     }
         if($this->session->userdata('tSesUsrLevel')!='HQ'){
-        $tSQL   .= " WHERE A.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(A.FTAgnCode,'') = ''";
+        // $tSQL   .= " AND A.FTAgnCode = '$tSesUsrAgnCode' OR ISNULL(A.FTAgnCode,'') = ''";
         }
         
 
