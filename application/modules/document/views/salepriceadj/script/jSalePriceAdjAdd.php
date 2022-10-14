@@ -631,7 +631,7 @@
 
             var tSaleAdjAgnCode = $('#oetSaleAdjAgnCode').val();
 
-            if(tSaleAdjAgnCode != ''){
+            if(tSaleAdjAgnCode != '' && tSaleAdjAgnCode!=undefined){
                 tWhere      += " AND (TCNMBranch.FTAgnCode  ='"+tSaleAdjAgnCode+"' )";
             }
 
