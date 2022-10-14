@@ -4340,3 +4340,30 @@ IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TARTR
 	ALTER TABLE TARTRcvDepositDT ADD FCXsdSetPrice DECIMAL(18,4)
 END
 GO
+
+
+
+
+/****** Object:  Table [dbo].[TRPTPackageCpnHisTmp]    Script Date: 14/10/2565 10:10:50 ******/
+DROP TABLE IF EXISTS [dbo].[TRPTPackageCpnHisTmp]
+GO
+/****** Object:  Table [dbo].[TRPTPackageCpnHisTmp]    Script Date: 14/10/2565 10:10:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRPTPackageCpnHisTmp](
+	[FTCpnNo] [varchar](50) NULL,
+	[FTCpnName] [varchar](255) NULL,
+	[FTPosName] [varchar](255) NULL,
+	[FTXshDocNo] [varchar](20) NULL,
+	[FTXshDocType] [varchar](100) NULL,
+	[FTUsrName] [varchar](150) NULL,
+	[FDXshDocDate] [datetime] NULL,
+	[FCXshCpnAmt] [numeric](18, 4) NULL,
+	[FCXshCpnAmtTatal] [numeric](18, 4) NULL,
+	[FCXshCpnQtyUse] [numeric](18, 4) NULL,
+	[FCXshCpnQtyLeft] [numeric](18, 4) NULL,
+	[FTUsrSessID] [varchar](150) NULL
+) ON [PRIMARY]
+GO
