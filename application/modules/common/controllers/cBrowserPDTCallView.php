@@ -625,7 +625,7 @@ class cBrowserPDTCallView extends MX_Controller
         //-------------------แสดงสินค้าตาม Agen-------------------
         $tAgenCode = $paData['tAgenCode'];
         if ($tAgenCode != '') {
-            $tFilter .= " AND Products.FTAgnCode = '$tAgenCode' ";
+            // $tFilter .= " AND Products.FTAgnCode = '$tAgenCode' ";
         }
 
         //-------------------สินค้าเคลื่อนไหว-------------------

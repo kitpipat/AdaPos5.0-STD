@@ -777,6 +777,9 @@ IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '0
 UPDATE TSysRcvFmt 
 SET FTFmtStaUsed = '2'
 WHERE FTFmtCode = '005'
+UPDATE TSysRcvFmt 
+SET FTFmtStaUsed = '2'
+WHERE FTFmtCode IN ('005','003','006','007','008','009','010','014','015','016','017','018','019','024','025','026','027','028')
 --ทุกครั้งที่รันสคริปใหม่
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.18', getdate() , 'Update TsysRcvFmt แก้เรื่อง เงินโอน', 'Zen')
 END
