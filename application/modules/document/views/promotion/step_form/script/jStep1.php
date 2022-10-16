@@ -47,6 +47,7 @@
         });
 
         $('#obtPromotionStep1AddGroupNameBtn').on('click', function(){
+            $('#obtPmtStep1Add').attr('disabled', false);
             $("#ohdPromotionBrandCodeTmp").val("");
             $("#ohdPromotionBrandNameTmp").val("");
             $('#oetPromotionGroupNameTmp').val("");
@@ -957,6 +958,7 @@
     Return Type : view
     */
     function JCNvPromotionStep1ConfirmToSave(bLoadingGet) {
+        $('#obtPmtStep1Add').attr('disabled', true);
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
             var blotflag = '0';
@@ -964,12 +966,14 @@
                 var tChecklot = $(this).data("effectlot");
                 if(tChecklot == '0'){
                     blotflag = '1';
+                    $('#obtPmtStep1Add').attr('disabled', false);
                     return;
                 }
             });
             $(".xCNPromotionStep1PmtDtPmdRemark").each(function (indexInArray, valueOfElement) { 
                 if($(this).text() != ''){
                     blotflag = '2';
+                    $('#obtPmtStep1Add').attr('disabled', false);
                     return;
                 }
             });
@@ -977,12 +981,14 @@
             if(blotflag == '1'){
                 var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg31'); ?>'; // กรุณาเพิ่มล็อตให้ครบก่อน
                 FSvCMNSetMsgWarningDialog(tWarningMessage);
+                $('#obtPmtStep1Add').attr('disabled', false);
                 return;
             }
 
             if(blotflag == '2'){
                 var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg33'); ?>'; // กรุณาเพิ่มล็อตให้ครบก่อน
                 FSvCMNSetMsgWarningDialog(tWarningMessage);
+                $('#obtPmtStep1Add').attr('disabled', false);
                 return;
             }
             var tIsShopAll = ""; 
@@ -991,6 +997,7 @@
                 if(JCNbPromotionStep1PmtDtTableIsEmpty()){
                     var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg10'); ?>'; // กรุณาเพิ่มรายการก่อนบันทึก
                     FSvCMNSetMsgWarningDialog(tWarningMessage);
+                    $('#obtPmtStep1Add').attr('disabled', false);
                     return;
                 }
             }else{
@@ -1002,10 +1009,9 @@
             if(tGroupNameTmp === ''){
                 var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg11'); ?>'; // กรุณาตั้งชื่อกลุ่มก่อนบันทึก
                 FSvCMNSetMsgWarningDialog(tWarningMessage);
+                $('#obtPmtStep1Add').attr('disabled', false);
                 return;
             }
-
-
 
             /*===== Begin Group Name Duplicate Check ===================================*/
             var tPmtGroupNameTmp = $('#oetPromotionGroupNameTmp').val();
@@ -1037,6 +1043,7 @@
                 if(bIsGroupNameDup){
                     var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg12'); ?> "' + tGroupNameTmp + '" <?php echo language('document/promotion/promotion','tWarMsg13'); ?>';
                     FSvCMNSetMsgWarningDialog(tWarningMessage);
+                    $('#obtPmtStep1Add').attr('disabled', false);
                     return;
                 }
             }

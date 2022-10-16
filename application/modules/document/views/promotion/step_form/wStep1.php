@@ -37,7 +37,7 @@
                             <button onclick="JCNvPromotionStep1BtnCancelCreateGroupName()" type="button" class="btn xCNBTNDefult" data-dismiss="modal" style="margin-right:10px;">
                                 <?php echo language('common/main/main', 'tCancel'); ?>
                             </button>
-                            <button onclick="JCNvPromotionStep1ConfirmToSave()" type="button" class="btn xCNBTNPrimery xCNAddPmtGroupModalCanCelDisabled">
+                            <button id="obtPmtStep1Add" onclick="JCNvPromotionStep1ConfirmToSave()" type="button" class="btn xCNBTNPrimery xCNAddPmtGroupModalCanCelDisabled">
                                 <?php echo language('common/main/main', 'tSave'); ?>
                             </button>
                         </div>
