@@ -30,7 +30,7 @@
                                     <button id="obtPromotionCancel" onclick="JSvPromotionCancel(false)" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCancel') ?></button>
                                     <button id="obtPromotionApprove" onclick="JSvPromotionApprove(false)" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('common/main/main', 'tCMNApprove') ?></button>                                 
                                     <div class="btn-group">
-                                        <button type="button" class="btn xWBtnGrpSaveLeft" onclick="$('#obtPromotionSubmit').click()"> <?php echo language('common/main/main', 'tSave') ?></button>
+                                        <button id="obtPromotionSave" type="button" class="btn xWBtnGrpSaveLeft" onclick="$('#obtPromotionSubmit').click()"> <?php echo language('common/main/main', 'tSave') ?></button>
                                         <?php echo $vBtnSave ?>
                                     </div>
                                 <?php endif; ?>
