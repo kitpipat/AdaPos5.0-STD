@@ -204,10 +204,10 @@ class cCardShiftRefund extends MX_Controller
 
         if ($tStaPrcDoc == "" && $tStaDoc == "") {
             // Validate document temp
-            //(5)
-            FSnHRefunChkCrdCodeFoundInDB($paParams);
             //(4)
             FSnHRefunChkCrdCodeNotDupTemp($paParams);
+            //(5)
+            FSnHRefunChkCrdCodeFoundInDB($paParams);
             //(8)
             FSnHRefunChkStaShiftInCard($paParams);
             //(9)
@@ -219,10 +219,10 @@ class cCardShiftRefund extends MX_Controller
         } else {
             if ($tStaPrcDoc == "" && $tStaDoc == "1") { // Document pending status(approve) or complete status(doc status)
                 // Validate document temp
-                //(5)
-                FSnHRefunChkCrdCodeFoundInDB($paParams);
                 //(4)
                 FSnHRefunChkCrdCodeNotDupTemp($paParams);
+                //(5)
+                FSnHRefunChkCrdCodeFoundInDB($paParams);
                 //(8)
                 FSnHRefunChkStaShiftInCard($paParams);
                 //(9)
