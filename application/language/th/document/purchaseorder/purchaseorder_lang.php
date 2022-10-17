@@ -307,3 +307,25 @@ $lang['tPONotFoundPdtCodeAndBarcodeImpList']   = "ไม่พบรหัสส
 
 $lang['tPONoQtyImpList']   = "ไม่อนุญาตระบุสินค้าจำนวน 0 ชิ้น";
 $lang['tPONoQtyImpListDesc']   = "ไม่อนุญาตระบุสินค้าจำนวน 0 ชิ้น กรุณาตรวจสอบ";
+
+$lang['tPOPanelBranchFrom'] = "สาขาต้นทาง";
+$lang['tPOPanelBranchTo']   = "สาขาปลายทาง";
+$lang['tPOPanelAgency']     = "ตัวแทนขาย / แฟรนไชส์";
+$lang['tPOPanelSupplier']   = "ผู้จำหน่าย";
+$lang['tPOPanelDelevery']   = "ขนส่ง";
+$lang['tPOPanelQtyFooter']  = "รายการสินค้าที่สั่งซื้อรวมทั้งสิ้น";
+$lang['tPOItems']           = "รายการ";
+
+$lang['tPORefIntDocFilter']                  = "กรอง";
+$lang['tPORefIntDocDateFrm']                 = "วันที่เอกสาร";
+$lang['tPORefIntDocDateTo']                  = "ถึงวันที่เอกสาร";
+
+$lang['tPORefIntDocStatus']                  = "สถานะเอกสาร";
+
+$lang['tPORefIntDocPrsTital']                  = "อ้างอิงเอกสารใบขอซื้อ";
+
+
+
+$lang['tPOLabelBranchCreate']   = "จากสาขา";
+$lang['tPOLabelBranchTo']       = "ไปยังสาขา";
+$lang['tPOLabelSplNameTo']      = "ขอซื้่อไปยัง	";

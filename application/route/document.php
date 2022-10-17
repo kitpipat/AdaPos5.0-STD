@@ -878,6 +878,33 @@ $route['docTransferBchOutGetPdtColumnList']    = 'document/transfer_branch_out/c
 $route['docTransferBchOutUpdatePdtColumn']     = 'document/transfer_branch_out/cTransferBchOutPdt/FStCTransferBchOutUpdatePdtColumn';
 $route['docTBOEventAddPdtIntoDTFhnTemp']       = 'document/transfer_branch_out/cTransferBchOutPdt/FSoCTBOEventAddPdtIntoDTFhnTemp';
 
+// ========================================= ใบมัดจำ - DepositDoc =========================================== //
+$route['dcmDPS/(:any)/(:any)']                       = 'document/depositdoc/Deposit_controller/index/$1/$2';
+$route['dcmDPSFormSearchList']                       = 'document/depositdoc/Deposit_controller/FSvCDPSFormSearchList';
+$route['dcmDPSDataTable']                            = 'document/depositdoc/Deposit_controller/FSoCDPSDataTable';
+$route['dcmDPSPageAdd']                              = 'document/depositdoc/Deposit_controller/FSoCDPSAddPage';
+$route['dcmDPSEventAdd']                             = 'document/depositdoc/Deposit_controller/FSoCDPSAddEventDoc';
+$route['dcmDPSEventEdit']                            = 'document/depositdoc/Deposit_controller/FSoCDPSEditEventDoc';
+$route['dcmDPSClearDataDocTemp']                     = 'document/depositdoc/Deposit_controller/FSoCDPSClearDataInDocTemp';
+$route['dcmDPSPocessAddDisTmpCst']                   = 'document/saleorder/cSaleOrderDisChgModal/FSoCSOPocessAddDisTmpCst';
+$route['dcmDPSPdtAdvanceTableLoadData']              = 'document/depositdoc/Deposit_controller/FSoCDPSPdtAdvTblLoadData';
+$route['dcmDPSAddPdtIntoDTDocTemp']                  = 'document/depositdoc/Deposit_controller/FSoCDPSAddPdtIntoDocDTTemp';
+$route['dcmDPSAddPdtSOIntoDTDocTemp']                = 'document/depositdoc/Deposit_controller/FSoCDPSAddPdtSOIntoDocDTTemp';
+$route['dcmDPSEditPdtIntoDTDocTemp']                 = 'document/depositdoc/Deposit_controller/FSoCDPSEditPdtIntoDocDTTemp';
+$route['dcmDPSChkHavePdtForDocDTTemp']               = 'document/depositdoc/Deposit_controller/FSoCDPSChkHavePdtForDocDTTemp';
+$route['dcmDPSPageEdit']                             = 'document/depositdoc/Deposit_controller/FSoCDPSEditPage';
+$route['dcmDPSCancelDocument']                       = 'document/depositdoc/Deposit_controller/FSvCDPSCancelDocument';
+$route['dcmDPSApproveDocument']                      = 'document/depositdoc/Deposit_controller/FSvCDPSApproveDocument';
+$route['dcmDPSApprovePaidDocument']                  = 'document/depositdoc/Deposit_controller/FSvCDPSApprovePaidDocument';
+$route['dcmDPSEventDelete']                          = 'document/depositdoc/Deposit_controller/FSoCDPSDeleteEventDoc';
+$route['dcmDPSRemovePdtInDTTmp']                     = 'document/depositdoc/Deposit_controller/FSvCDPSRemovePdtInDTTmp';
+$route['dcmDPSRemovePdtInDTTmpMulti']                = 'document/depositdoc/Deposit_controller/FSvCDPSRemovePdtInDTTmpMulti';
+$route['dcmDPSCallRefIntDocQT']                      = 'document/depositdoc/Deposit_controller/FSoCDPSCallRefIntDoc';
+$route['dcmDPSCallRefIntDocDataTable']               = 'document/depositdoc/Deposit_controller/FSoCDPSCallRefIntDocDataTable';
+$route['dcmDPSCallRefIntDocDetailDataTableQT']       = 'document/depositdoc/Deposit_controller/FSoCDPSCallRefIntDocDetailDataTable';
+$route['dcmDPSCallRefIntDocInsertDTToTempQT']        = 'document/depositdoc/Deposit_controller/FSoCDPSCallRefIntDocInsertDTToTemp';
+$route['dcmDPSFindeDataCstBehideRefIn']              = 'document/depositdoc/Deposit_controller/FSoCDPSFindCstBehideRefIn';
+
 //ใบรับโอน - สาขา เนลว์ 20/03/2020
 $route['docTBI/(:any)/(:any)/(:any)']          = 'document/transferreceiptbranch/cTransferreceiptbranch/index/$1/$2/$3';
 $route['docTBIPageList']                       = 'document/transferreceiptbranch/cTransferreceiptbranch/FSxCTBIPageList';
