@@ -555,7 +555,7 @@
                         JSxTAXSubscribeMQ(oReturn.tTaxNumberFull);
                     }else{
                         var tTaxNumberFull    = oReturn.tTaxNumberFull;
-                        FSvCMNSetMsgSucessDialog('สร้างเอกสารใบกำกับภาษีสมบูรณ์');
+                        FSvCMNSetMsgWarningDialog('สร้างเอกสารใบกำกับภาษีสมบูรณ์');
                         JSvTAXLoadPageAddOrPreview(tBrowseBchCode,tTaxNumberFull);
                     }
                     

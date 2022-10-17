@@ -15,12 +15,13 @@ class mTaxinvoicefc extends CI_Model{
                                 FDXshDocDate,
                                 TaxHD.FTBchCode,
                                 FTPosCode,
-                                FTXshCstName AS FTAddName,
+                                TaxAdd.FTAddName AS FTAddName,
 								FTXshStaDoc AS FTXshStaDoc
                                
                             FROM TPSTTaxHD TaxHD WITH (NOLOCK)
                             LEFT JOIN TPSTTaxHDCst HDCst WITH (NOLOCK) ON TaxHD.FTXshDocno = HDCst.FTXshDocno AND TaxHD.FTBchCode = HDCST.FTBchCode 
                             LEFT JOIN TCNMTaxAddress_L TaxAddr WITH (NOLOCK) ON HDCst.FTXshAddrTax = TaxAddr.FNAddSeqNo
+                            INNER JOIN TPSTTaxHDAddress TaxAdd WITH ( NOLOCK ) ON TaxHD.FTXshDocno = TaxAdd.FTXshDocno
                             WHERE 1=1 AND ISNULL(FTXshDocVatFull,'') <> ''  ";
 
         // if($this->session->userdata("tSesUsrLevel") == 'BCH' || $this->session->userdata("tSesUsrLevel") == 'SHP'){
@@ -1982,7 +1983,7 @@ class mTaxinvoicefc extends CI_Model{
                     CST_L.FTCstName         AS FTXshCstName,
                    -- HDADR.FTAddName,
                     HDCST.FTXshCstEmail,
-                    HDCST.FTXshCstName AS FTAddName,
+                    HDADR.FTAddName,
                     HDADR.FTAddStaBusiness,
                     HDADR.FTAddStaHQ,
                     HDADR.FTAddStaBchCode

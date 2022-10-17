@@ -323,7 +323,7 @@ class cTaxinvoicefc extends MX_Controller
         );
         
         $aGetBCHABB = $this->mTaxinvoicefc->FSaMTXFGetHD($aWhere);
-        
+        // print_r($aGetBCHABB);
         //วิ่งเข้าไปหาเลขที่เอกสาร ที่MQ ก่อน
         if( (isset($aGetBCHABB['raItems'][0]['FTXshDocVatFull']) && $aGetBCHABB['raItems'][0]['FTXshDocVatFull'] == '') || $tTAXApvType == '2' ) {
         // if (isset($aGetBCHABB['raItems'])) {
@@ -695,6 +695,7 @@ class cTaxinvoicefc extends MX_Controller
         // $aGetDT     = $this->mTaxinvoicefc->FSaMTXFGetDT($aWhere);
         $aGetHD     = $this->mTaxinvoicefc->FSaMTXFGetHDTax($aWhere);
         $aAddress   = $this->mTaxinvoicefc->FSaMTXFGetAddressTax($aWhere);
+        $aGetHD['raItems'][0]['FDXshDocDate'] = date_format(date_create($aGetHD['raItems'][0]['FDXshDocDate']),'Y-m-d H:i:s');
         $aPackData  = array(
             // 'aGetDT'        => $aGetDT,
             'aGetHD'        => $aGetHD,
