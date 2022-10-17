@@ -37,18 +37,24 @@ class cWarehouse extends MX_Controller
 	//Last Modified : 05/09/2019 Saharat(Golf)
 	//Return : Status ReasonEdit
 	//Return Type : array
-	public function FSaCWAHEditEvent()
-	{
+	public function FSaCWAHEditEvent(){
 		try {
-			$tWahCode = $this->input->post('oetWahCode');
-			$tWahName = $this->input->post('oetWahName');
-			$tWahStaType =	$this->input->post('ocmWahStaType');
-			$tWahStaChkStk = $this->input->post('ocmWahStaChkStk');
-			$tWahStaPrcStk = $this->input->post('ocmWahStaPrcStk');
-			$tBchCodeCreate = $this->input->post('oetWahBchCodeCreated');
-			$tBchCodeRef = $this->input->post('oetWAHBchCode');
-			$tSpnCodeRef = $this->input->post('oetWahSpnCode');
-			$tPosCodeRef = $this->input->post('oetWahPosCode');
+			$tWahCode 				= $this->input->post('oetWahCode');
+			$tWahName 				= $this->input->post('oetWahName');
+			$tWahStaType 			= $this->input->post('ocmWahStaType');
+			$tWahStaChkStk 			= $this->input->post('ocmWahStaChkStk');
+			$tWahStaPrcStk 			= $this->input->post('ocmWahStaPrcStk');
+			$tBchCodeCreate 		= $this->input->post('oetWahBchCodeCreated');
+			$tBchCodeRef 			= $this->input->post('oetWAHBchCode');
+			$tSpnCodeRef 			= $this->input->post('oetWahSpnCode');
+			$tPosCodeRef 			= $this->input->post('oetWahPosCode');
+			
+			$FTWahStaAlwCntStk 		= ($this->input->post('ocbWahCheckCntStk') == "1") ? '1' : '2'; // สถานะอนุญาต ตรวจสอบสต๊อกคงเหลือ(สำหรับขาย) 0: อนุญาติ  1: ไม่อนุญาติ
+			$FTWahStaAlwCostAmt 	= ($this->input->post('ocbWahCheckCostAmt') == "1") ? '1' : '2'; // สถานะอนุญาต คำนวณมูลค่าสินค้า  0: อนุญาติ  1: ไม่อนุญาติ
+
+			$FTWahStaAlwPLFrmTBO	= ($this->input->post('ocbWahCheckAlwPLFrmTBO')		== "1") ? '1' : '2'; // สถานะอนุญาต ใช้ใบจัดจากใบจ่ายโอน 1:อนุญาต 2:ไม่อนุญาต
+			$FTWahStaAlwPLFrmSale	= ($this->input->post('ocbWahCheckAlwPLFrmSale') 	== "1") ? '1' : '2'; // สถานะอนุญาต ใช้ใบจัดจากใบขาย 1:อนุญาต 2:ไม่อนุญาต
+			$FTWahStaAlwPLFrmSO		= ($this->input->post('ocbWahCheckAlwPLFrmSO')		== "1") ? '1' : '2'; // สถานะอนุญาต ใช้ใบจัดจากใบสั่งขาย 1:อนุญาต 2:ไม่อนุญาต
 
 			// echo $tWahStaType;
 			// die();
@@ -61,7 +67,7 @@ class cWarehouse extends MX_Controller
 					// $tWahRefCode = $tBchCodeRef;
 					$tWahRefCode = $tPosCodeRef;
 					break;
-				/* case '3':
+					/* case '3':
 					$tWahRefCode = $this->input->post('oetWAHBchCode');
 				break; */
 				case '4':
@@ -78,25 +84,25 @@ class cWarehouse extends MX_Controller
 					$tWahRefCode = $this->input->post('oetWahRefCode');
 			}
 
-			// Check  Status Allow Count Stock Sale
-			$nWahStaAlwCntStk	= (!empty($this->input->post('ocbWahStaAlwCntStk')))? '1' : '0';
-			// Check  Status Allow Cost Amount 
-			$nWahStaAlwCostAmt	= (!empty($this->input->post('ocbWahStaAlwCostAmt')))? '1' : '0';
-
-			$aDataMaster = array(
-				'FTWahCode' => $tWahCode,
-				'FTWahName' => $tWahName,
-				'FTWahStaType' => $tWahStaType,
-				'FTBchCode' => $tBchCodeCreate,
-				'FTBchCodeOld' => $this->input->post('oetWAHBchCodeOld'),
-				'FTWahRefCode' => $tWahRefCode,
-				'FNLngID' => $this->session->userdata("tLangEdit"),
-				'FDLastUpdOn' => date('Y-m-d H:i:s'),
-				'FTLastUpdBy' => $this->session->userdata('tSesUsername'),
-				'FTWahStaChkStk' => $tWahStaChkStk,
-				'FTWahStaPrcStk' => $tWahStaPrcStk,
-				'FTWahStaAlwCntStk'		=> $nWahStaAlwCntStk,
-				'FTWahStaAlwCostAmt'	=> $nWahStaAlwCostAmt
+			$aDataMaster	= array(
+				'FTWahCode' 			=> $tWahCode,
+				'FTWahName' 			=> $tWahName,
+				'FTWahStaType' 			=> $tWahStaType,
+				'FTBchCode' 			=> $tBchCodeCreate,
+				'FTBchCodeOld' 			=> $this->input->post('oetWAHBchCodeOld'),
+				'FTWahRefCode' 			=> $tWahRefCode,
+				'FNLngID' 				=> $this->session->userdata("tLangEdit"),
+				'FDLastUpdOn' 			=> date('Y-m-d H:i:s'),
+				'FTLastUpdBy' 			=> $this->session->userdata('tSesUsername'),
+				'FTWahStaChkStk' 		=> $tWahStaChkStk,
+				'FTWahStaPrcStk' 		=> $tWahStaPrcStk,
+				'FTWahStaAlwCntStk' 	=> $FTWahStaAlwCntStk,
+				'FTWahStaAlwCostAmt' 	=> $FTWahStaAlwCostAmt,
+				// Check Status Allow
+				'FTWahStaAlwPLFrmTBO'	=> $FTWahStaAlwPLFrmTBO,
+				'FTWahStaAlwPLFrmSale'	=> $FTWahStaAlwPLFrmSale,
+				'FTWahStaAlwPLFrmSO'	=> $FTWahStaAlwPLFrmSO,
+				'FTWahStaAlwSNPL'		=> $FTWahStaAlwPLFrmSO,
 			);
 
 			$this->db->trans_begin();
@@ -131,17 +137,23 @@ class cWarehouse extends MX_Controller
 	//Last Modified: 26/03/2019 Wasin(Yoshi)
 	//Return: Status Warehouse Add
 	//ReturnType: array
-	public function FSaCWAHAddEvent()
-	{
+	public function FSaCWAHAddEvent(){
 		try {
-			$tIsAutoGenCode	= $this->input->post('ocbWahAutoGenCode');
-			$FTWahStaType =	$this->input->post('ocmWahStaType');
-			$tWahStaChkStk = $this->input->post('ocmWahStaChkStk');
-			$tWahStaPrcStk = $this->input->post('ocmWahStaPrcStk');
-			$tBchCodeCreate = $this->input->post('oetWahBchCodeCreated');
-			$tBchCodeRef = $this->input->post('oetWAHBchCode');
-			$tSpnCodeRef = $this->input->post('oetWahSpnCode');
-			$tPosCodeRef = $this->input->post('oetWahPosCode');
+			$tIsAutoGenCode		= $this->input->post('ocbWahAutoGenCode');
+			$FTWahStaType 		=	$this->input->post('ocmWahStaType');
+			$tWahStaChkStk 		= $this->input->post('ocmWahStaChkStk');
+			$tWahStaPrcStk 		= $this->input->post('ocmWahStaPrcStk');
+			$tBchCodeCreate 	= $this->input->post('oetWahBchCodeCreated');
+			$tBchCodeRef 		= $this->input->post('oetWAHBchCode');
+			$tSpnCodeRef 		= $this->input->post('oetWahSpnCode');
+			$tPosCodeRef 		= $this->input->post('oetWahPosCode');
+
+			$FTWahStaAlwCntStk	= ($this->input->post('ocbWahCheckCntStk') == "1") 	? '1' : '2'; // สถานะอนุญาต ตรวจสอบสต๊อกคงเหลือ(สำหรับขาย) 0: อนุญาติ  1: ไม่อนุญาติ
+			$FTWahStaAlwCostAmt = ($this->input->post('ocbWahCheckCostAmt') == "1") ? '1' : '2'; // สถานะอนุญาต คำนวณมูลค่าสินค้า  0: อนุญาติ  1: ไม่อนุญาติ
+			
+			$FTWahStaAlwPLFrmTBO	= ($this->input->post('ocbWahCheckAlwPLFrmTBO')		== "1") ? '1' : '2'; // สถานะอนุญาต ใช้ใบจัดจากใบจ่ายโอน 1:อนุญาต 2:ไม่อนุญาต
+			$FTWahStaAlwPLFrmSale	= ($this->input->post('ocbWahCheckAlwPLFrmSale') 	== "1") ? '1' : '2'; // สถานะอนุญาต ใช้ใบจัดจากใบขาย 1:อนุญาต 2:ไม่อนุญาต
+			$FTWahStaAlwPLFrmSO		= ($this->input->post('ocbWahCheckAlwPLFrmSO')		== "1") ? '1' : '2'; // สถานะอนุญาต ใช้ใบจัดจากใบสั่งขาย 1:อนุญาต 2:ไม่อนุญาต
 
 			// Setup Warehouse Code
 			$tWahCode = "";
@@ -160,16 +172,6 @@ class cWarehouse extends MX_Controller
 			} else {
 				$tWahCode = $this->input->post('oetWahCode');
 			}
-
-			/* if ($tIsAutoGenCode == '1') {
-				// Call Auto Gencode Helper
-				$aGenCode = FCNaHGenCodeV5('TCNMWaHouse', '0', $tBchCodeCreate);
-				if ($aGenCode['rtCode'] == '1') {
-					$tWahCode = $aGenCode['rtWahCode'];
-				}
-			} else {
-				$tWahCode = $this->input->post('oetWahCode');
-			} */
 
 			$tWahRefCode = "";
 			switch ($FTWahStaType) {
@@ -197,36 +199,27 @@ class cWarehouse extends MX_Controller
 					$tWahRefCode = $this->input->post('oetWahRefCode');
 			}
 
-			/* if($FTWahStaType =='2'){
-				$tWahRefCode  = $this->input->post('oetWAHBchCode');
-			}else if($FTWahStaType =='4'){
-				$tWahRefCode  = null;
-			}else{
-				$tWahRefCode = $this->input->post('oetWahRefCode');
-			} */
-
-			// Check  Status Allow Count Stock Sale
-			$nWahStaAlwCntStk	= (!empty($this->input->post('ocbWahStaAlwCntStk')))? '1' : '0';
-			// Check  Status Allow Cost Amount 
-			$nWahStaAlwCostAmt	= (!empty($this->input->post('ocbWahStaAlwCostAmt')))? '1' : '0';
-
 			$aDataMaster = array(
-				'FTWahCode' => $tWahCode,
-				'FTWahStaType' => $FTWahStaType,
-				'FTBchCode' => $tBchCodeCreate,
-				'FTWahRefCode' => $tWahRefCode,
-				'FDLastUpdOn' => date('Y-m-d H:i:s'),
-				'FTLastUpdBy' => $this->session->userdata('tSesUsername'),
-				'FDCreateOn' => date('Y-m-d H:i:s'),
-				'FTCreateBy' => $this->session->userdata('tSesUsername'),
-				'FNLngID' => $this->session->userdata("tLangEdit"),
-				'FTWahName'	=> $this->input->post('oetWahName'),
-				'FTWahStaChkStk' => $tWahStaChkStk,
-				'FTWahStaPrcStk' => $tWahStaPrcStk,
-				'FTWahStaAlwCntStk'		=> $nWahStaAlwCntStk,
-				'FTWahStaAlwCostAmt'	=> $nWahStaAlwCostAmt
+				'FTWahCode' 			=> $tWahCode,
+				'FTWahStaType'			=> $FTWahStaType,
+				'FTBchCode' 			=> $tBchCodeCreate,
+				'FTWahRefCode' 			=> $tWahRefCode,
+				'FDLastUpdOn' 			=> date('Y-m-d H:i:s'),
+				'FTLastUpdBy' 			=> $this->session->userdata('tSesUsername'),
+				'FDCreateOn' 			=> date('Y-m-d H:i:s'),
+				'FTCreateBy' 			=> $this->session->userdata('tSesUsername'),
+				'FNLngID' 				=> $this->session->userdata("tLangEdit"),
+				'FTWahName'				=> $this->input->post('oetWahName'),
+				'FTWahStaChkStk' 		=> $tWahStaChkStk,
+				'FTWahStaPrcStk' 		=> $tWahStaPrcStk,
+				'FTWahStaAlwCntStk' 	=> $FTWahStaAlwCntStk,
+				'FTWahStaAlwCostAmt' 	=> $FTWahStaAlwCostAmt,
+				// Check Status Allow
+				'FTWahStaAlwPLFrmTBO'	=> $FTWahStaAlwPLFrmTBO,
+				'FTWahStaAlwPLFrmSale'	=> $FTWahStaAlwPLFrmSale,
+				'FTWahStaAlwPLFrmSO'	=> $FTWahStaAlwPLFrmSO,
+				'FTWahStaAlwSNPL'		=> $FTWahStaAlwPLFrmSO,
 			);
-
 			$this->db->trans_begin();
 
 			$this->mWarehouse->FSaMWAHAdd($aDataMaster);

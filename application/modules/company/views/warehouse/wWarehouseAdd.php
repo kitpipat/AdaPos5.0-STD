@@ -21,6 +21,15 @@ if (@$nResult['rtCode'] == '1') { // Edit Page
 	$tStaUsrLevel = $tStaUsrLevel;
 	$tUsrBchCode = $tUsrBchCode;
 
+	$tWahCheckCntStk 	= $nResult['roItem']['rtWahStaAlwCntStk'];
+	$tWahCheckCostAmt	= $nResult['roItem']['rtWahStaAlwCostAmt'];
+
+
+	$tWahCheckAlwPLFrmTBO	= $nResult['roItem']['FTWahStaAlwPLFrmTBO'];
+	$tWahCheckAlwPLFrmSale	= $nResult['roItem']['FTWahStaAlwPLFrmSale'];
+	$tWahCheckAlwPLFrmSO	= $nResult['roItem']['FTWahStaAlwPLFrmSO'];
+	$tWahCheckAlwSNPL 		= $nResult['roItem']['FTWahStaAlwSNPL'];
+
 	switch ($tWahStaType) {
 		case "1": { // 1:มาตรฐาน
 				$tWahRefCode = $tBchCodeRef;
@@ -61,6 +70,12 @@ if (@$nResult['rtCode'] == '1') { // Edit Page
 	$tWahStaType = "2";
 	$tWahCode = "";
 	$tWahName = "";
+	$tWahCheckCntStk 	= '1';
+	$tWahCheckCostAmt 	= '1';
+	$tWahCheckAlwPLFrmTBO	= '1';
+	$tWahCheckAlwPLFrmSale	= '1';
+	$tWahCheckAlwPLFrmSO	= '1';
+
 
 	//issue 19/10/2563 ถ้าเข้ามาแบบ HQ สาขาไม่ต้อง default
 	if($this->session->userdata("tSesUsrLevel") == 'HQ'){
@@ -87,6 +102,8 @@ if (@$nResult['rtCode'] == '1') { // Edit Page
 
 	$tWahStaAlwCntStk	= '1';
 	$tWahStaAlwCostAmt	= '1';
+
+	
 }
 
 $nLangEdit = $this->session->userdata("tLangEdit");
@@ -252,18 +269,37 @@ $bIsShpEnabled = FCNbGetIsShpEnabled();
 						<option value="3" <?php echo ($tWahStaChkStk == "3") ? 'selected' : ''; ?>><?=language('company/warehouse/warehouse', 'tPosCheckOnline') ?></option>
 					</select>
 				</div>
-				<!-- สถานะอนุญาต ตรวจสต๊อกคงเหลือ(สำหรับขาย) -->
 				<div class="form-group">
 					<label class="fancy-checkbox">
-						<input type="checkbox" id="ocbWahStaAlwCntStk" name="ocbWahStaAlwCntStk" <?=($tWahStaAlwCntStk == '1')? 'checked' : '';?>>
-						<span><?php echo language('company/warehouse/warehouse', 'tWahStaAlwCntStk') ?></span>
+						<input type="checkbox" id="ocbWahCheckCntStk" value="1" name="ocbWahCheckCntStk" <?php echo $tWahCheckCntStk == "1" ? 'checked' : ''; ?>>
+						<span><?php echo language('company/warehouse/warehouse', 'tPosCheckCostAmt') ?></span>
 					</label>
 				</div>
-				<!-- สถานะอนุญาต คำนวนมูลค่าสินค้า -->
+
 				<div class="form-group">
 					<label class="fancy-checkbox">
-						<input type="checkbox" id="ocbWahStaAlwCostAmt" name="ocbWahStaAlwCostAmt" <?=($tWahStaAlwCostAmt == '1')? 'checked' : '';?>>
-						<span><?php echo language('company/warehouse/warehouse', 'tWahStaAlwCostAmt') ?></span>
+						<input type="checkbox" id="ocbWahCheckCostAmt" value="1" name="ocbWahCheckCostAmt" <?php echo $tWahCheckCostAmt == "1" ? 'checked' : ''; ?>>
+						<span><?php echo language('company/warehouse/warehouse', 'tPosCheckCntStk') ?></span>
+					</label>
+				</div>
+				<div class="form-group">
+					<label class="fancy-checkbox">
+						<input type="checkbox" id="ocbWahCheckAlwPLFrmTBO" name="ocbWahCheckAlwPLFrmTBO" value="1" <?php echo $tWahCheckAlwPLFrmTBO == "1" ? 'checked' : ''; ?>>
+						<span><?php echo language('company/warehouse/warehouse', 'tPosCheckAlwPLFrmTBO') ?></span>
+					</label>
+				</div>
+
+				<div class="form-group">
+					<label class="fancy-checkbox">
+						<input type="checkbox" id="ocbWahCheckAlwPLFrmSale" name="ocbWahCheckAlwPLFrmSale" value="1" <?php echo $tWahCheckAlwPLFrmSale == "1" ? 'checked' : ''; ?>>
+						<span><?php echo language('company/warehouse/warehouse', 'tPosCheckAlwPLFrmSale') ?></span>
+					</label>
+				</div>
+
+				<div class="form-group">
+					<label class="fancy-checkbox">
+						<input type="checkbox" id="ocbWahCheckAlwPLFrmSO" name="ocbWahCheckAlwPLFrmSO" value="1" <?php echo $tWahCheckAlwPLFrmSO == "1" ? 'checked' : ''; ?>>
+						<span><?php echo language('company/warehouse/warehouse', 'tPosCheckAlwPLFrmSO') ?></span>
 					</label>
 				</div>
 			</div>

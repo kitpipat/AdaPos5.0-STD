@@ -118,71 +118,67 @@ class mWarehouse extends CI_Model
 	//Last Modified : -
 	//Return : data
 	//Return Type : Array
-	public function FSaMWAHSearchByID($paData)
-	{
-		$tWahCode = $paData['FTWahCode'];
-		$tBchCode = $paData['FTBchCode'];
-		$nLngID = $paData['FNLngID'];
-
+	public function FSaMWAHSearchByID($paData){
+		$tWahCode	= $paData['FTWahCode'];
+		$tBchCode 	= $paData['FTBchCode'];
+		$nLngID 	= $paData['FNLngID'];
 		if (@$tWahCode) {
 			$tSQL = "
 				SELECT DISTINCT
-					WAH.FTBchCode   	AS rtBchCode,
-					BCHL.FTBchName		AS rtBchName,
-					WAH.FTWahCode   	AS rtWahCode,
-					WAH.FTWahStaType 	AS rtWahStaType,
-					WAH.FTWahRefCode 	AS rtWahRefCode,
-					WAH.FTWahStaChkStk 	AS rtWahStaChkStk,
-					WAH.FTWahStaPrcStk 	AS rtWahStaPrcStk,
-					WAH.FTWahStaAlwCntStk	AS rtWahStaAlwCntStk,
-					WAH.FTWahStaAlwCostAmt	AS rtWahStaAlwCostAmt,
-					WAHL.FTWahName  	AS rtWahName,
-					BCHLR.FTBchCode  	AS rtBchCodeRef,
-					BCHLR.FTBchName  	AS rtBchNameRef,
-					SHPLR.FTShpCode		AS rtShpCodeRef,
-					SHPLR.FTShpName  	AS rtShpNameRef,
-					SPNLR.FTSpnCode		AS rtSpnCodeRef,
-					SPNLR.FTSpnName  	AS rtSpnNameRef,
-					POSLR.FTPosCode		AS rtPosCodeRef,
-					POSLR.FTPosName		AS rtPosNameRef
+					WAH.FTBchCode   			AS rtBchCode,
+					BCHL.FTBchName				AS rtBchName,
+					WAH.FTWahCode   			AS rtWahCode,
+					WAH.FTWahStaType 			AS rtWahStaType,
+					WAH.FTWahRefCode 			AS rtWahRefCode,
+					WAH.FTWahStaChkStk 			AS rtWahStaChkStk,
+					WAH.FTWahStaPrcStk 			AS rtWahStaPrcStk,
+					WAH.FTWahStaAlwCntStk 		AS rtWahStaAlwCntStk,
+					WAH.FTWahStaAlwCostAmt 		AS rtWahStaAlwCostAmt,
+					WAH.FTWahStaAlwPLFrmTBO		AS FTWahStaAlwPLFrmTBO,
+					WAH.FTWahStaAlwPLFrmSale	AS FTWahStaAlwPLFrmSale,
+					WAH.FTWahStaAlwPLFrmSO		AS FTWahStaAlwPLFrmSO,
+					WAH.FTWahStaAlwSNPL 		AS FTWahStaAlwSNPL,
+					WAHL.FTWahName  			AS rtWahName,
+					BCHLR.FTBchCode  			AS rtBchCodeRef,
+					BCHLR.FTBchName  			AS rtBchNameRef,
+					SHPLR.FTShpCode				AS rtShpCodeRef,
+					SHPLR.FTShpName  			AS rtShpNameRef,
+					SPNLR.FTSpnCode				AS rtSpnCodeRef,
+					SPNLR.FTSpnName  			AS rtSpnNameRef,
+					POSLR.FTPosCode				AS rtPosCodeRef,
+					POSLR.FTPosName				AS rtPosNameRef
 				FROM [TCNMWaHouse] WAH WITH (NOLOCK)
-				LEFT JOIN TCNMWaHouse_L WAHL WITH (NOLOCK) ON WAH.FTWahCode   = WAHL.FTWahCode AND WAH.FTBchCode = WAHL.FTBchCode  AND WAHL.FNLngID = $nLngID
-				LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON WAH.FTBchCode = BCHL.FTBchCode  AND BCHL.FNLngID = $nLngID
-				LEFT JOIN TCNMBranch_L BCHLR WITH (NOLOCK) ON WAH.FTWahRefCode = BCHLR.FTBchCode  AND BCHLR.FNLngID = $nLngID
-				LEFT JOIN TCNMShop_L SHPLR WITH (NOLOCK) ON WAH.FTWahRefCode = SHPLR.FTShpCode AND  WAH.FTBchCode = SHPLR.FTBchCode  AND SHPLR.FNLngID = $nLngID
-				LEFT JOIN TCNMSpn_L SPNLR WITH (NOLOCK) ON WAH.FTWahRefCode = SPNLR.FTSpnCode  AND SPNLR.FNLngID = $nLngID
-				LEFT JOIN TCNMPos_L POSLR WITH (NOLOCK) ON WAH.FTWahRefCode = POSLR.FTPosCode AND WAH.FTBchCode  = POSLR.FTBchCode 
-				WHERE WAH.FTWahCode = '$tWahCode' AND WAH.FTBchCode='$tBchCode'  
+				LEFT JOIN TCNMWaHouse_L WAHL WITH (NOLOCK) ON WAH.FTWahCode = WAHL.FTWahCode AND WAH.FTBchCode 	= WAHL.FTBchCode  AND WAHL.FNLngID	= ".$this->db->escape($nLngID)."
+				LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON WAH.FTBchCode = BCHL.FTBchCode  AND BCHL.FNLngID	= ".$this->db->escape($nLngID)."
+				LEFT JOIN TCNMBranch_L BCHLR WITH (NOLOCK) ON WAH.FTWahRefCode = BCHLR.FTBchCode  AND BCHLR.FNLngID	= ".$this->db->escape($nLngID)."
+				LEFT JOIN TCNMShop_L SHPLR WITH (NOLOCK) ON WAH.FTWahRefCode = SHPLR.FTShpCode AND  WAH.FTBchCode	= SHPLR.FTBchCode  AND SHPLR.FNLngID = ".$this->db->escape($nLngID)."
+				LEFT JOIN TCNMSpn_L SPNLR WITH (NOLOCK) ON WAH.FTWahRefCode = SPNLR.FTSpnCode  AND SPNLR.FNLngID 	= ".$this->db->escape($nLngID)."
+				LEFT JOIN TCNMPos_L POSLR WITH (NOLOCK) ON WAH.FTWahRefCode = POSLR.FTPosCode AND WAH.FTBchCode  	= POSLR.FTBchCode
+				WHERE WAH.FTWahCode = ".$this->db->escape($tWahCode)." AND WAH.FTBchCode = ".$this->db->escape($tBchCode)."
 			";
-
-			$oQuery = $this->db->query($tSQL);
-
+			$oQuery	= $this->db->query($tSQL);
 			if ($oQuery->num_rows() > 0) {
-				$aDetail = $oQuery->result();
+				$aDetail	= $oQuery->result();
 			} else {
 				//No Data
-				$aDetail = '';
+				$aDetail 	= '';
 			}
 		}
-
 		if (@$aDetail) {
-
-			$aResult = array(
-				'roItem' => $aDetail[0],
-				'rtCode' => '1',
-				'rtDesc' => 'success',
+			$aResult	= array(
+				'roItem'	=> $aDetail[0],
+				'rtCode' 	=> '1',
+				'rtDesc' 	=> 'success',
 			);
 		} else {
 			//Not Found
-			$aResult = array(
-				'rtCode' => '800',
-				'rtDesc' => 'data not found.',
+			$aResult 	= array(
+				'rtCode'	=> '800',
+				'rtDesc' 	=> 'data not found.',
 			);
 		}
-		$jResult = json_encode($aResult);
-		$aResult = json_decode($jResult, true);
-
-
+		$jResult	= json_encode($aResult);
+		$aResult 	= json_decode($jResult, true);
 		return $aResult;
 	}
 
@@ -342,66 +338,62 @@ class mWarehouse extends CI_Model
 	//Return Type : Array
 	public function FSaMWAHAdd($paData)
 	{
-		$tStaDup = $this->FSnMBCHCheckduplicate($paData['FTWahCode'], $paData['FTBchCode']); //ส่งค่าไปหา duplicate
-		$nStaDup = $tStaDup[0]->counts;
-
+		$tStaDup	= $this->FSnMBCHCheckduplicate($paData['FTWahCode'], $paData['FTBchCode']); //ส่งค่าไปหา duplicate
+		$nStaDup	= $tStaDup[0]->counts;
 		if ($nStaDup == 0) {
-
 			$this->db->insert('TCNMWaHouse', array(
-
-				'FTWahCode' 	=> $paData['FTWahCode'],
-				'FTWahStaType' 	=> $paData['FTWahStaType'],
-				'FTWahRefCode' 	=> $paData['FTWahRefCode'],
-				'FTBchCode' 	=> $paData['FTBchCode'],
-				'FTWahStaChkStk' => $paData['FTWahStaChkStk'],
-				'FTWahStaPrcStk' => $paData['FTWahStaPrcStk'],
-				'FTWahStaAlwCntStk'  => $paData['FTWahStaAlwCntStk'],
-				'FTWahStaAlwCostAmt' => $paData['FTWahStaAlwCostAmt'],
-				'FDCreateOn' 	=> $paData['FDCreateOn'],
-				'FTCreateBy' 	=> $paData['FTCreateBy'],
-				'FDLastUpdOn'	=> $paData['FDLastUpdOn'],
-				'FTLastUpdBy'	=> $paData['FTLastUpdBy'],
-
+				'FTWahCode' 			=> $paData['FTWahCode'],
+				'FTWahStaType' 			=> $paData['FTWahStaType'],
+				'FTWahRefCode' 			=> $paData['FTWahRefCode'],
+				'FTBchCode' 			=> $paData['FTBchCode'],
+				'FTWahStaChkStk' 		=> $paData['FTWahStaChkStk'],
+				'FTWahStaPrcStk' 		=> $paData['FTWahStaPrcStk'],
+				'FDCreateOn' 			=> $paData['FDCreateOn'],
+				'FTCreateBy' 			=> $paData['FTCreateBy'],
+				'FDLastUpdOn'			=> $paData['FDLastUpdOn'],
+				'FTLastUpdBy'			=> $paData['FTLastUpdBy'],
+				'FTWahStaAlwCntStk'		=> $paData['FTWahStaAlwCntStk'],
+				'FTWahStaAlwCostAmt'	=> $paData['FTWahStaAlwCostAmt'],
+				'FTWahStaAlwPLFrmTBO'	=> $paData['FTWahStaAlwPLFrmTBO'],
+				'FTWahStaAlwPLFrmSale'	=> $paData['FTWahStaAlwPLFrmSale'],
+				'FTWahStaAlwPLFrmSO'	=> $paData['FTWahStaAlwPLFrmSO'],
+				'FTWahStaAlwSNPL'		=> $paData['FTWahStaAlwSNPL'],
 			));
-
 			if ($this->db->affected_rows() > 0) {
-				$nID = $this->db->insert_id();
-
-				$StaAddLang = $this->FSnMWahAddLang($paData); // Add Language
-
+				$nID 		= $this->db->insert_id();
+				$StaAddLang	= $this->FSnMWahAddLang($paData); // Add Language
 				if ($StaAddLang != '1') {
 					//Ploblem
-					$aStatus = array(
-						'rtCode' => '905',
-						'rtDesc' => 'cannot insert database.',
+					$aStatus	= array(
+						'rtCode'	=> '905',
+						'rtDesc' 	=> 'cannot insert database.',
 					);
-					$jStatus = json_encode($aStatus);
-					$aStatus = json_decode($jStatus, true);
+					$jStatus	= json_encode($aStatus);
+					$aStatus 	= json_decode($jStatus, true);
 				} else {
 					//Success
-					$aStatus = array(
-						'rtCode' => '1',
-						'rtDesc' => 'success',
+					$aStatus 	= array(
+						'rtCode'	=> '1',
+						'rtDesc' 	=> 'success',
 					);
-					$jStatus = json_encode($aStatus);
-					$aStatus = json_decode($jStatus, true);
+					$jStatus	= json_encode($aStatus);
+					$aStatus 	= json_decode($jStatus, true);
 				}
 			} else {
-				$aStatus = array(
-					'rtCode' => '905',
-					'rtDesc' => 'cannot insert database.',
+				$aStatus 	= array(
+					'rtCode'	=> '905',
+					'rtDesc' 	=> 'cannot insert database.',
 				);
 			}
 		} else {
 			//Duplicate
-			$aStatus = array(
-				'rtCode' => '801',
-				'rtDesc' => 'data is duplicate.',
+			$aStatus 	= array(
+				'rtCode'	=> '801',
+				'rtDesc' 	=> 'data is duplicate.',
 			);
 			$jStatus = json_encode($aStatus);
 			$aStatus = json_decode($jStatus, true);
 		}
-
 		return $aStatus;
 	}
 
@@ -524,35 +516,34 @@ class mWarehouse extends CI_Model
 	//Last Modified : -
 	//Return : response
 	//Return Type : Array
-	public function FSaMWAHUpdate($paData)
-	{
-		$tStaDup = $this->FSnMBCHCheckduplicate($paData['FTWahCode'], $paData['FTBchCode']);
-		$nStaDup = $tStaDup[0]->counts;
-
+	public function FSaMWAHUpdate($paData){
+		$tStaDup	= $this->FSnMBCHCheckduplicate($paData['FTWahCode'], $paData['FTBchCode']);
+		$nStaDup 	= $tStaDup[0]->counts;
 		if ($paData['FTBchCode'] == $paData['FTBchCodeOld']) {
-			$nStaDup = 0;
+			$nStaDup	= 0;
 		}
 		if ($nStaDup == 0) {
 			$this->db->where('FTWahCode', $paData['FTWahCode']);
 			$this->db->where('FTBchCode', $paData['FTBchCodeOld']);
 			$this->db->update('TCNMWaHouse', array(
-				'FTWahStaType' => $paData['FTWahStaType'],
-				'FTWahRefCode' => $paData['FTWahRefCode'],
-				// 'FTBchCode' => $paData['FTBchCode'],
-				'FTWahStaChkStk' => $paData['FTWahStaChkStk'],
-				'FTWahStaPrcStk' => $paData['FTWahStaPrcStk'],
-				'FTWahStaAlwCntStk'	=> $paData['FTWahStaAlwCntStk'],
-				'FTWahStaAlwCostAmt' => $paData['FTWahStaAlwCostAmt'],
-				'FDLastUpdOn' => $paData['FDLastUpdOn'],
-				'FTLastUpdBy' => $paData['FTLastUpdBy']
+				'FTWahStaType' 			=> $paData['FTWahStaType'],
+				'FTWahRefCode' 			=> $paData['FTWahRefCode'],
+				'FTWahStaChkStk' 		=> $paData['FTWahStaChkStk'],
+				'FTWahStaPrcStk' 		=> $paData['FTWahStaPrcStk'],
+				'FTWahStaAlwCntStk' 	=> $paData['FTWahStaAlwCntStk'],
+				'FTWahStaAlwCostAmt' 	=> $paData['FTWahStaAlwCostAmt'],
+
+				'FTWahStaAlwPLFrmTBO'	=> $paData['FTWahStaAlwPLFrmTBO'],
+				'FTWahStaAlwPLFrmSale'	=> $paData['FTWahStaAlwPLFrmSale'],
+				'FTWahStaAlwPLFrmSO'	=> $paData['FTWahStaAlwPLFrmSO'],
+				'FTWahStaAlwSNPL' 		=> $paData['FTWahStaAlwSNPL'],
+
+				'FDLastUpdOn' 			=> $paData['FDLastUpdOn'],
+				'FTLastUpdBy' 			=> $paData['FTLastUpdBy']
 			));
-
 			if ($this->db->affected_rows() > 0) {
-
 				$StaUpdLang = $this->FSnMWAHUpdateLang($paData); // Add Language
-
 				if ($StaUpdLang != 1) { // หาภาษาที่จะแก้ไขไม่เจอ
-
 					$StaAddLang = $this->FSnMWahAddLang($paData);
 					if ($StaAddLang != 1) {
 						$aStatus = array(
@@ -590,7 +581,6 @@ class mWarehouse extends CI_Model
 		$aStatus = json_decode($jStatus, true);
 		return $aStatus;
 	}
-
 	//Functionality : Update Lang Branch
 	//Parameters : function parameters
 	//Creator : 09/03/2018 Krit(Copter)
