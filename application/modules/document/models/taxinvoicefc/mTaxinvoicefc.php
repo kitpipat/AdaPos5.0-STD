@@ -1208,19 +1208,30 @@ class mTaxinvoicefc extends CI_Model{
             $tSQL   = " INSERT INTO TPSTTaxHDDis (
                         FTBchCode,FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FTXhdRefCode,FCXhdAmt
                     ) SELECT 
-                    '$tBrowseBchCode' AS FTBchCode, '$tTaxNumberFull' AS FTXshDocNo,GETDATE() AS FDXhdDateIns, FTXhdDisChgTxt, FTXhdDisChgType, FCXhdTotalAfDisChg, FCXhdDisChg, FTXhdRefCode, FCXhdAmt
+                    '$tBrowseBchCode' AS FTBchCode, '$tTaxNumberFull' AS FTXshDocNo,GETDATE() AS FDXhdDateIns, FTXhdDisChgTxt,CASE WHEN FCXhdAmt >0 THEN 3 ELSE 1 END AS FTXhdDisChgType, FCXhdTotalAfDisChg, FCXhdDisChg, FTXhdRefCode, ABS(FCXhdAmt) AS FCXhdAmt
                     FROM (
                         SELECT 
-                            SUM(CAST(HDDis.FTXhdDisChgTxt AS float)) AS FTXhdDisChgTxt,
-                            HDDis.FTXhdDisChgType, 
+                           SUM (
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN 
+                                    CASE WHEN HDDis.FTXhdDisChgType= 3 OR HDDis.FTXhdDisChgType= 4 THEN  ISNULL(HDDis.FCXhdAmt, 0) *- (1) ELSE ISNULL(HDDis.FCXhdAmt, 0) END
+                                ELSE
+                                    CASE WHEN HDDis.FTXhdDisChgType = 3 OR HDDis.FTXhdDisChgType= 4 THEN ISNULL(HDDis.FCXhdAmt, 0)  ELSE ISNULL(HDDis.FCXhdAmt, 0) *-(1) END
+                                END
+                            ) AS FTXhdDisChgTxt,
                             SUM(CAST(HDDis.FCXhdTotalAfDisChg AS float)) AS FCXhdTotalAfDisChg, 
                             SUM(CAST(HDDis.FCXhdDisChg AS float)) AS FCXhdDisChg,
-                            HDDis.FTXhdRefCode, 
-                            SUM(CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(HDDis.FCXhdAmt,0) *-(1) ELSE ISNULL(HDDis.FCXhdAmt,0) END) AS FCXhdAmt
+                            '' AS FTXhdRefCode, 
+                            SUM(
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN 
+                                    CASE WHEN HDDis.FTXhdDisChgType= 3 OR HDDis.FTXhdDisChgType= 4 THEN  ISNULL(HDDis.FCXhdAmt, 0) *- (1) ELSE ISNULL(HDDis.FCXhdAmt, 0) END
+                                ELSE
+                                    CASE WHEN HDDis.FTXhdDisChgType = 3 OR HDDis.FTXhdDisChgType= 4 THEN ISNULL(HDDis.FCXhdAmt, 0)  ELSE ISNULL(HDDis.FCXhdAmt, 0) *-(1) END
+                                END
+                            ) AS FCXhdAmt
                         FROM TPSTSalHDDis HDDis 
                         LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON HDDis.FTBchCode = SALHD.FTBchCode AND HDDis.FTXshDocNo = SALHD.FTXshDocNo
                         WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
-                        GROUP BY HDDis.FTXhdDisChgType,HDDis.FTXhdRefCode
+                        GROUP BY HDDis.FTBchCode
                     ) AS SaleCard";
         }
 
