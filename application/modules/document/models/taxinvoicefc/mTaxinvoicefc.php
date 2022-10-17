@@ -393,7 +393,7 @@ class mTaxinvoicefc extends CI_Model{
             // print_r($oCrdCode);
     
             $tSQL       = " SELECT ROW_NUMBER() OVER(ORDER BY FTXshDocNo DESC) AS FNRowID, S.FTPdtCode , S.FTXsdPdtName, S.FTPunName, S.FCXsdQty, S.FCXsdAmtB4DisChg, S.FCXsdDis , S.FCXsdNet, 
-                                SUM(FCXrcNet) AS FCXrcNet , S.FTXshDocNo, S.FCXshTotal, S.FCXshVat, S.FCXshGrand 
+                                S.FCXrcNet AS FCXrcNet , S.FTXshDocNo, S.FCXshTotal, S.FCXshVat, S.FCXshGrand 
                             FROM (
                                 SELECT c.* FROM(
                                     SELECT  ROW_NUMBER() OVER(ORDER BY FTXshDocNo DESC) AS FNRowID,* FROM
@@ -401,7 +401,16 @@ class mTaxinvoicefc extends CI_Model{
     
             for($i = 0; $i < count($oCrdCode); $i++) {
                 $tUnion = ($i == 0) ? '' : ' UNION ';
-                $tSQL .= $tUnion."SELECT DT.FTPdtCode , DT.FTXsdPdtName, DT.FTPunName,DT.FCXsdQty,DT.FCXsdAmtB4DisChg ,DT.FCXsdDis,DT.FCXsdNet, RC.FCXrcNet, DT.FTXshDocNo, HD.FCXshTotal, HD.FCXshVat, HD.FCXshGrand
+                $tSQL .= $tUnion."SELECT DT.FTPdtCode , DT.FTXsdPdtName, DT.FTPunName,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN DT.FCXsdQty *-(1)  ELSE  DT.FCXsdQty END AS FCXsdQty ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN DT.FCXsdAmtB4DisChg *-(1)  ELSE  DT.FCXsdAmtB4DisChg END  AS FCXsdAmtB4DisChg ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN DT.FCXsdDis *-(1)  ELSE  DT.FCXsdDis END AS FCXsdDis ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN DT.FCXsdNet *-(1)  ELSE  DT.FCXsdNet END AS FCXsdNet ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN RC.FCXrcNet *-(1)  ELSE  RC.FCXrcNet END  AS FCXrcNet ,
+                                    DT.FTXshDocNo,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN HD.FCXshTotal *-(1)  ELSE  HD.FCXshTotal END FCXshTotal ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN HD.FCXshVat *-(1)  ELSE  HD.FCXshVat END FCXshVat ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN HD.FCXshGrand *-(1)  ELSE  HD.FCXshGrand END FCXshGrand 
                             FROM TPSTSalDT DT 
                             INNER JOIN TPSTSalRC RC WITH(NOLOCK) ON DT.FTBchCode = RC.FTBchCode AND DT.FTXshDocNo = RC.FTXshDocNo
                             INNER JOIN TPSTSalHD HD WITH(NOLOCK) ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo
@@ -442,9 +451,8 @@ class mTaxinvoicefc extends CI_Model{
                         )";
     
             $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]
-                    )S 
-                    GROUP BY S.FTPdtCode , S.FTXsdPdtName, S.FTPunName, S.FCXsdQty, S.FCXsdAmtB4DisChg, S.FCXsdDis , S.FCXsdNet,S.FTXshDocNo, 
-                        S.FCXshTotal, S.FCXshVat, S.FCXshGrand ";
+                    ) S 
+                ";
     
             $oQuery = $this->db->query($tSQL);
     
