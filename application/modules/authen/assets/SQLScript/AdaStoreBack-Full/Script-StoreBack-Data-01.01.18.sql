@@ -783,3 +783,10 @@ WHERE FTFmtCode IN ('005','003','006','007','008','009','010','014','015','016',
 --ทุกครั้งที่รันสคริปใหม่
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.18', getdate() , 'Update TsysRcvFmt แก้เรื่อง เงินโอน', 'Zen')
 END
+
+
+
+IF NOT EXISTS(SELECT FTSysCode FROM TPSMFuncDT WHERE FTLicPdtCode = 'SF-VS059KB051') BEGIN
+ INSERT [dbo].[TPSMFuncDT] ([FTGhdCode], [FTSysCode], [FTLicPdtCode], [FNGdtPage], [FNGdtDefSeq], [FNGdtUsrSeq], [FNGdtBtnSizeX], [FNGdtBtnSizeY], [FTGdtCallByName], [FTGdtStaUse], [FNGdtFuncLevel], [FTGdtSysUse]) VALUES (N'059', N'KB051', N'SF-VS059KB051', 1, 9, 9, 1, 1, N'C_KBDxStoreDebit', N'1', 1, N'1')
+END
+GO

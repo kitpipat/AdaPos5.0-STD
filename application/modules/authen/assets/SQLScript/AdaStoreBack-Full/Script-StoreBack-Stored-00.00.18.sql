@@ -3671,3 +3671,57 @@ BEGIN CATCH
  SET @FNResult= -1
 END CATCH
 GO
+
+
+
+IF EXISTS
+(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_SETnResetExpired')and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE [dbo].STP_SETnResetExpired
+GO
+CREATE PROCEDURE [dbo].[STP_SETnResetExpired] 
+	@ptBchCode VARCHAR(5) NUll,
+	@ptCrdCode VARCHAR(20)  NUll,
+	@ptPosCode VARCHAR(5)  NUll,
+	@pcCrdValue NUMERIC(18,4) NULL,
+	@ptDocNoRef VARCHAR(20) NUll
+   ,@FNResult INT OUT 
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	19/11/2020		Em		create  
+05.02.00	17/10/2022		Zen		Update Fifo
+----------------------------------------------------------------------*/
+DECLARE @tTrans varchar(20)
+SET @tTrans = 'CardChkOut'  
+BEGIN TRY  
+	BEGIN TRANSACTION @tTrans
+
+	INSERT INTO TFNTCrdTopUp WITH(ROWLOCK)
+	(
+		FTBchCode,FTTxnDocType,FTCrdCode
+		,FDTxnDocDate,FCTxnValue,FTTxnStaPrc
+		,FTTxnPosCode,FCTxnCrdValue,FTTxnDocNoRef
+	)
+	VALUES
+	(
+		@ptBchCode ,'10',@ptCrdCode 
+		,GETDATE(),@pcCrdValue,'1'
+		,@ptPosCode,@pcCrdValue,@ptDocNoRef
+	)
+
+	-- Update Master Card
+	UPDATE TFNMCardBal WITH (ROWLOCK) SET
+	FCCrdValue= 0
+	WHERE FTCrdCode=@ptCrdCode
+
+	DELETE TFNTCrdTopUpFifo WHERE FTCrdCode = @ptCrdCode
+
+    COMMIT TRANSACTION @tTrans 
+END TRY 
+BEGIN CATCH 
+	ROLLBACK TRANSACTION @tTrans 
+	SELECT ERROR_MESSAGE()
+END CATCH
+
+GO
