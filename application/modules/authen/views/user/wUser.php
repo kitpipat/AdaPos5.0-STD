@@ -2,6 +2,7 @@
 <input id="oetUsrCallBackOption" type="hidden" value="<?php echo $tUsrBrowseOption ?>">
 <input id="oetUsrLoginLevel" type="hidden" value="<?php echo $this->session->userdata("tSesUsrLoginLevel"); ?>">
 <input id="oetUsrBchCount" type="hidden" value="<?php echo $this->session->userdata("nSesUsrBchCount"); ?>">
+<input id="oetUsrUserCode" type="hidden" value="<?php echo $this->session->userdata('tSesUserCode') ?>">
 
 <div id="odvUsrMainMenu" class="main-menu">
     <div class="xCNMrgNavMenu">
@@ -61,7 +62,9 @@
 <div class="main-content">
     <div id="odvContentPageUser"></div>
 </div>
+
 <script src="<?php echo base_url('application/modules/authen/assets/src/user/jUser.js'); ?>"></script>
+
 
 
 

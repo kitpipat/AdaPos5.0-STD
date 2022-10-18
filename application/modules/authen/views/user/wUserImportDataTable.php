@@ -42,6 +42,8 @@
 
 <div class="row">
     <div class="col-md-12">
+        <input type="hidden" id="ohdUSRImpCountInsert">
+        <input type="hidden" id="ohdUSRImpCountUpdate">
         <div class="table-responsive">
             <table class="table table-striped nowrap" id="otdTableUSR" style="width:100%;">
                 <thead>
@@ -177,7 +179,173 @@ function JSxRenderDataTable(){
                     'nPageNumber'           : data.draw - 1,
                     'tSearch'               : $('#oetUSRImpSearchAll').val()
                 },
-            }).success(function(response) {
+                success : function(response){
+                    var oRender = [];   
+                
+                    if(response.recordsTotal == 0){
+                        oRender = [];
+                        var draw            = 1;
+                        var recordsTotal    = 0;
+                        var recordsFiltered = 0;
+                    }else{
+                        for (var i=data.start, ien=data.start+data.length; i<ien ; i++ ) {
+                            if(response.data.aResult[i] != null){
+                                if( response.data.aResult[i].FTTmpRemark == 'AutoGen'){
+                                    var FTUsrCode       = "รอตรวจสอบรหัสผู้ใช้";
+                                }else{
+                                    var FTUsrCode       = response.data.aResult[i].FTUsrCode;
+                                }
+                                var FNTmpSeq        = response.data.aResult[i].FNTmpSeq;
+                                var FTUsrName       = response.data.aResult[i].FTUsrName;
+                                var FTBchCode       = (response.data.aResult[i].FTBchCode == '') ? 'N/A'  : response.data.aResult[i].FTBchCode;
+                                var FTBchName       = (response.data.aResult[i].FTBchName == '') ? 'N/A'  : response.data.aResult[i].FTBchName;
+                                var FTRolCode       = (response.data.aResult[i].FTRolCode == '') ? 'N/A'  : response.data.aResult[i].FTRolCode;
+                                var FTRolName       = (response.data.aResult[i].FTRolName == '') ? 'N/A'  : response.data.aResult[i].FTRolName;
+                                var FTMerCode       = (response.data.aResult[i].FTMerCode == '') ? 'N/A'  : response.data.aResult[i].FTMerCode;
+                                var FTMerName       = (response.data.aResult[i].FTMerName == '') ? 'N/A'  : response.data.aResult[i].FTMerName;
+                                var FTAgnCode       = (response.data.aResult[i].FTAgnCode == '') ? 'N/A'  : response.data.aResult[i].FTAgnCode;
+                                var FTAgnName       = (response.data.aResult[i].FTAgnName == '') ? 'N/A'  : response.data.aResult[i].FTAgnName;
+                                var FTShpCode       = (response.data.aResult[i].FTShpCode == '') ? 'N/A'  : response.data.aResult[i].FTShpCode;
+                                var FTShpName       = (response.data.aResult[i].FTShpName == '') ? 'N/A'  : response.data.aResult[i].FTShpName;
+                                var FTDptCode       = (response.data.aResult[i].FTDptCode == '') ? 'N/A'  : response.data.aResult[i].FTDptCode;
+                                var FTDptName       = (response.data.aResult[i].FTDptName == '') ? 'N/A'  : response.data.aResult[i].FTDptName;
+                                var FTUsrTel        = (response.data.aResult[i].FTUsrTel == '') ? 'N/A'  : response.data.aResult[i].FTUsrTel;
+                                var FTUsrEmail      = (response.data.aResult[i].FTUsrEmail == '') ? 'N/A'  : response.data.aResult[i].FTUsrEmail;
+                                var FTTmpRemark     = response.data.aResult[i].FTTmpRemark;
+                                var FTTmpStatus     = response.data.aResult[i].FTTmpStatus;
+
+                                if(FTTmpStatus != 1){
+                                    var tStyleList  = "color:red !important; font-weight:bold;"; 
+                                }else{
+                                    var tStyleList  = '';
+                                }
+
+                                var aRemark         = FTTmpRemark.split("$&");
+                                if(typeof aRemark[0] !== 'undefined'){
+                                    if(aRemark[0] == '' || aRemark[0] == null){
+
+                                    }else{
+                                        if(aRemark[0].indexOf('[') !== -1){
+                                            aRemarkIndex = aRemark[0].split("[");
+                                            aRemarkIndex = aRemarkIndex[1].split("]");
+                                            switch(aRemarkIndex[0]){
+                                                case '0':
+                                                    //ผู้ใช้
+                                                    FTUsrCode       = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '1':
+                                                    //ชื่อ
+                                                    FTUsrName       = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '2':
+                                                    //สาขา
+                                                    FTBchCode       = aRemark[2];
+                                                    FTBchName       = 'N/A';
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '3':
+                                                    //กลุ่มสิทธิ
+                                                    FTRolCode       = aRemark[2];
+                                                    FTRolName       = 'N/A';
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '4':
+                                                    //ตัวแทนขาย
+                                                    FTAgnCode       = aRemark[2];
+                                                    FTAgnName       = 'N/A';
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '5':
+                                                    //กลุ่มธุรกิจ
+                                                    FTMerCode       = aRemark[2];
+                                                    FTMerName       = 'N/A';
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '6':
+                                                    //ร้านค้า
+                                                    FTShpCode       = aRemark[2];
+                                                    FTShpName       = 'N/A';
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '7':
+                                                    //แผนก
+                                                    FTDptCode       = aRemark[2];
+                                                    FTDptName       = 'N/A';
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '8':
+                                                    //เบอร์
+                                                    FTUsrTel        = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '9':
+                                                    //อีเมล
+                                                    FTUsrEmail      = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                        
+                                var tIDCheckbox     = "ocbListItem" + FNTmpSeq;
+                                var tCheckBoxDelete = "<label class='fancy-checkbox' style='text-align: center;'>";
+                                    tCheckBoxDelete += "<input id='"+tIDCheckbox+"' type='checkbox' class='ocbListItem' name='ocbListItem[]' data-code='"+FTUsrCode+"' data-name='"+FTUsrName+"' data-seq='"+FNTmpSeq+"'>";
+                                    tCheckBoxDelete += "<span>&nbsp;</span>";
+                                    tCheckBoxDelete += "</label>";
+                                var FTTmpRemark     = "<label style='"+tStyleList+"'>"+FTTmpRemark+"<label>";
+                                var tNameShowDelete = FTUsrName.replace(/\s/g, '');
+                                var oEventDelete    = "onClick=JSxUSRDeleteImportList('"+FNTmpSeq+"','"+FTUsrCode+"','"+tNameShowDelete+"')";
+                                var tImgDelete      = "<img style='display: block; margin: 0px auto;' class='xCNIconTable xCNIconDel' "+oEventDelete+" src='<?=base_url().'/application/modules/common/assets/images/icons/delete.png'?>'>";
+
+                                oRender.push([ 
+                                    tCheckBoxDelete , 
+                                    FTUsrCode , 
+                                    FTUsrName , 
+                                    FTBchCode , 
+                                    // FTBchName , 
+                                    FTRolCode , 
+                                    // FTRolName ,
+                                    FTAgnCode ,
+                                    // FTAgnName ,
+                                    FTMerCode ,
+                                    // FTMerName ,
+                                    FTShpCode ,
+                                    // FTShpName ,
+                                    FTDptCode ,
+                                    // FTDptName ,
+                                    FTUsrTel ,
+                                    FTUsrEmail ,
+                                    FTTmpRemark ,
+                                    tImgDelete
+                                ]);
+
+                                var draw            = data.draw;
+                                var recordsTotal    = response.recordsTotal;
+                                var recordsFiltered = response.recordsFiltered;
+                            }
+                        }
+                    }
+
+                    setTimeout( function () {
+                        callback( {
+                            draw            : data.draw,
+                            data            : oRender,
+                            recordsTotal    : recordsTotal,
+                            recordsFiltered : recordsFiltered
+                        });
+                        JSxControlCheckBoxDeleteAll();
+                    }, 50);
+                    
+                    setTimeout(function(){
+                        JCNxCloseLoading();
+                    }, 100)
+                }
+            });
+
+            /*}).success(function(response) {
                 var oRender = [];   
                 
                 if(response.recordsTotal == 0){
@@ -188,8 +356,11 @@ function JSxRenderDataTable(){
                 }else{
                     for (var i=data.start, ien=data.start+data.length; i<ien ; i++ ) {
                         if(response.data.aResult[i] != null){
-
-                            var FTUsrCode       = response.data.aResult[i].FTUsrCode;
+                            if( response.data.aResult[i].FTTmpRemark == 'AutoGen'){
+                                var FTUsrCode       = "รอตรวจสอบรหัสผู้ใช้";
+                            }else{
+                                var FTUsrCode       = response.data.aResult[i].FTUsrCode;
+                            }
                             var FNTmpSeq        = response.data.aResult[i].FNTmpSeq;
                             var FTUsrName       = response.data.aResult[i].FTUsrName;
                             var FTBchCode       = (response.data.aResult[i].FTBchCode == '') ? 'N/A'  : response.data.aResult[i].FTBchCode;
@@ -339,7 +510,7 @@ function JSxRenderDataTable(){
                 }, 100)
             }).fail(function(err){
                 console.error('error...', err)
-            })
+            })*/
         },
         scrollY         : "38vh",
         scrollX         : true,
@@ -380,9 +551,17 @@ function JSxUSRImportMoveMaster(){
         timeout : 0,
         success : function(oResult){
             $('#odvModalImportFile').modal('hide');
-            setTimeout(function() {
-                JSvUserDataTable();
-            }, 500);
+
+            var nInsert   = $('#ohdUSRImpCountInsert').val();
+            var nUpdate   = $('#ohdUSRImpCountUpdate').val();
+            var nCountAll = nInsert + nUpdate;
+            if( nCountAll > 0 ){
+                FSvCMNSetMsgSucessDialog('<p class="text-left">นำเข้าข้อมูลผู้ใช้สำเร็จ</p>');
+                setTimeout(function() {
+                    JSvUserDataTable();
+                }, 500);
+            }
+            
         },
         error: function(jqXHR, textStatus, errorThrown) {
             JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -496,6 +675,16 @@ function JSxUSRImportTGetItemAll(){
             var TYPESIX = oResult[0].TYPESIX;
             var TYPEONE = oResult[0].TYPEONE;
             var ITEMALL = oResult[0].ITEMALL;
+
+            $('#ohdUSRImpCountInsert').val(TYPEONE);
+            $('#ohdUSRImpCountUpdate').val(TYPESIX);
+
+            var nCountAll = TYPEONE + TYPESIX;
+            if( nCountAll > 0 ){
+                $('#obtIMPConfirm').attr('disabled',false);
+            }else{
+                $('#obtIMPConfirm').attr('disabled',true);
+            }
 
             var tTextShow = "รอการนำเข้า " + TYPEONE + ' / ' + ITEMALL + ' รายการ - อัพเดทข้อมูล ' + TYPESIX + ' / ' + ITEMALL + ' รายการ';
             $('#ospTextSummaryImport').text(tTextShow);

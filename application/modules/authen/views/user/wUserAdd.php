@@ -67,7 +67,6 @@
         // $tPwdNew        = '';
         $dGetDataNow    = $aResult['dGetDataNow'];
         $dGetDataFuture = $aResult['dGetDataFuture'];
-
         // Add Page
         // Create By Napat(Jame) 12/05/2020
         $tTypeBch = ($this->session->userdata("nSesUsrBchCount") > 1 ? 'Multi' : 'Default');
@@ -119,9 +118,9 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="custom-tabs-line tabs-line-bottom left-aligned">        
-                    <ul class="nav" role="tablist"> 
-                        <!-- ข้อมูลทั่วไป -->   
+                <div class="custom-tabs-line tabs-line-bottom left-aligned">
+                    <ul class="nav" role="tablist">
+                        <!-- ข้อมูลทั่วไป -->
                         <li id="oliUsrloginDetail" class="xWMenu active" data-menutype="DT">
                             <a role="tab" data-toggle="tab" data-target="#odvUsrloginContentInfoDT" aria-expanded="true"><?php echo language('authen/user/user','tTabNormal')?></a>
                         </li>
@@ -129,8 +128,8 @@
                         <!---ข้อมูลล็อกอิน-->
                         <!-- Witsarut Add 10/08/2019 14: 00 -->
                                 <!-- ตรวจสอบโหมดการเรียก Page
-                                    ถ้าเป็นโหมดเพิ่ม ($aResult['rtCode'] == '99') ให้ปิด Tab ข้อมูลล็อกอิน 
-                                    ถ้าเป็นโหมดแก้ไข ($aResult['rtCode'] = 1) ให้เปิด Tab ข้อมูลล็อกอิน 
+                                    ถ้าเป็นโหมดเพิ่ม ($aResult['rtCode'] == '99') ให้ปิด Tab ข้อมูลล็อกอิน
+                                    ถ้าเป็นโหมดแก้ไข ($aResult['rtCode'] = 1) ให้เปิด Tab ข้อมูลล็อกอิน
                                 -->
                         <?php
                             if($aResult['rtCode'] == '99'){
@@ -143,11 +142,11 @@
                                 <a role="tab" data-toggle="tab" data-target="#odvUsrloginData" aria-expanded="true"><?php echo language('authen/user/user','tDetailLogin')?></a>
                             </li>
                         <?php } ?>
-                    </ul>    
+                    </ul>
                 </div>
             </div>
         </div>
-    
+
         <div id="odvPdtRowContentMenu" class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <!-- Tab Content Detail -->
@@ -174,33 +173,33 @@
                                                                 <span> <?php echo language('common/main/main', 'tGenerateAuto'); ?></span>
                                                             </label>
                                                         </div>
-                                                    </div>                                    
+                                                    </div>
 
                                                     <div class="form-group" id="odvUserCodeForm">
                                                     <input type="hidden" id="ohdCheckDuplicateUsrCode" name="ohdCheckDuplicateUsrCode" value="1">
                                                         <div class="validate-input">
-                                                            <input 
-                                                                type="text" 
-                                                                class="form-control xCNGenarateCodeTextInputValidate" 
-                                                                maxlength="20" 
-                                                                id="oetUsrCode" 
+                                                            <input
+                                                                type="text"
+                                                                class="form-control xCNGenarateCodeTextInputValidate"
+                                                                maxlength="20"
+                                                                id="oetUsrCode"
                                                                 name="oetUsrCode"
                                                                 placeholder="<?= language('authen/user/user','tUSRCode')?>"
-                                                                value="<?php echo $tUsrCode; ?>" 
+                                                                value="<?php echo $tUsrCode; ?>"
                                                                 data-is-created="<?php echo $tUsrCode; ?>"
                                                                 data-validate-required = "<?= language('common/main/main','tValidCode')?><?= language('authen/user/user','tUSRCode')?>"
                                                                 data-validate-dublicateCode = "<?= language('common/main/main','tValidCode')?><?= language('authen/user/user','tUSRCode')?>">
                                                         </div>
                                                     </div>
-                                
+
                                                 </div>
                                                 <!-- end รหัสผู้ใช้ -->
-                                                
+
                                                 <!-- ชื่อผู้ใช้ -->
                                                 <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">
                                                     <div class="form-group">
                                                         <label class="xCNLabelFrm"><span style="color:red">*</span><?= language('authen/user/user','tUSRName')?></label>
-                                                            <input class="form-control" maxlength="100" type="text" id="oetUsrName" name="oetUsrName" 
+                                                            <input class="form-control" maxlength="50" type="text" id="oetUsrName" name="oetUsrName"
                                                             placeholder="<?= language('authen/user/user','tUSRName')?>"
                                                             value="<?=$tUsrName?>"
                                                             data-validate-required = "<?= language('common/main/main','tUSRVldUser')?>"
@@ -209,13 +208,13 @@
                                                     </div>
                                                 </div>
                                                 <!-- End ชื่อผู้ใช้ -->
-                                                        
+
                                                 <!-- อีเมล์ -->
                                                 <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">
                                                     <div class="form-group">
-                                                        <label class="xCNLabelFrm"><span style="color:red">*</span><?= language('authen/user/user','tUSREmail')?></label>
-                                                            <input class="form-control" maxlength="100" type="email" id="oetUsrEmail" name="oetUsrEmail" placeholder="<?= language('authen/user/user','tUSREmail')?>" 
-                                                            data-validate-required ="<?php echo language('authen/user/user','tUSRVldEmail')?>" value="<?=$tUsrEmail?>">
+                                                        <label class="xCNLabelFrm"><?= language('authen/user/user','tUSREmail')?></label>
+                                                            <input class="form-control" maxlength="50" type="email" id="oetUsrEmail" name="oetUsrEmail" placeholder="<?= language('authen/user/user','tUSREmail')?>"
+                                                            value="<?=$tUsrEmail?>">
                                                     </div>
                                                 </div>
                                                 <!-- end อีเมล์ -->
@@ -233,12 +232,12 @@
                                                 <!-- end เบอร์โทร -->
 
                                                 <!-- Agency -->
-                                                <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12 <?php if( !FCNbGetIsAgnEnabled()) : echo 'xCNHide';  endif;?>">           
+                                                <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12 <?php if( !FCNbGetIsAgnEnabled()) : echo 'xCNHide';  endif;?>">
                                                     <div class="form-group">
                                                         <label class="xCNLabelFrm"><?php echo language('authen/user/user','tUSRAgency')?></label>
                                                         <div class="input-group">
                                                             <input type="text" class="form-control xCNHide" id="oetUsrAgnCode" name="oetUsrAgnCode" value="<?=@$tUsrAgnCode?>">
-                                                            <input type="text" class="form-control xWPointerEventNone" id="oetUsrAgnName" name="oetUsrAgnName" 
+                                                            <input type="text" class="form-control xWPointerEventNone" id="oetUsrAgnName" name="oetUsrAgnName"
                                                                 data-validate-required = "<?php echo  language('authen/user/user','tUsrValiAgency');?>"
                                                                 placeholder="<?php echo language('authen/user/user','tUSRAgency')?>"
                                                                 value="<?=@$tUsrAgnName?>" readonly>
@@ -253,7 +252,7 @@
                                                 <!-- end Agency -->
 
                                                 <!-- สาขา -->
-                                                <?php 
+                                                <?php
                                                     $tDisabledButton = "";
                                                     // echo "tSesUsrLevel: ".$this->session->userdata("tSesUsrLevel")."<br>";
                                                     // echo "tSesUsrLoginLevel: ".$this->session->userdata("tSesUsrLoginLevel")."<br>";
@@ -267,20 +266,20 @@
                                                         if( $this->session->userdata("tSesUserCode") == $tUsrCode ){
                                                             $tDisabledButton = "disabled";
                                                         }
-                                                        
+
                                                     }
                                                     // echo "tSesUserCode: ".$this->session->userdata("tSesUserCode")."<br>";
                                                     // echo "tUsrCode: ".$tUsrCode."<br>";
-                                                    
+
                                                     // echo $tDisabledButton;
                                                 ?>
-                                                <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">           
+                                                <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">
                                                     <div class="form-group" style="margin-bottom: 0px;">
                                                             <label class="xCNLabelFrm"><?php echo language('authen/user/user','tUSRBranch')?></label>
                                                             <div class="input-group">
-                                                                <input  type="text" class="form-control xCNHide" id="oetBranchCode" name="oetBranchCode" 
-                                                                        value="<?php echo $tBchCode?>" 
-                                                                        placeholder="<?php echo language('authen/user/user','tUSRBranch')?>" 
+                                                                <input  type="text" class="form-control xCNHide" id="oetBranchCode" name="oetBranchCode"
+                                                                        value="<?php echo $tBchCode?>"
+                                                                        placeholder="<?php echo language('authen/user/user','tUSRBranch')?>"
                                                                         data-validate-required = "<?php echo  language('authen/user/user','tUSRVldBchMore');?>"
                                                                         readonly
                                                                 >
@@ -293,20 +292,20 @@
                                                         </div>
                                                     </div>
 
-                                                    <div style="white-space:nowrap;width:100%;overflow-x:auto;margin-bottom: 10px;"> 
+                                                    <div style="white-space:nowrap;width:100%;overflow-x:auto;margin-bottom: 10px;">
                                                         <div id="odvBranchShow" style="margin-bottom: 10px;margin-top: 10px;">
                                                             <?php if(isset($aResUsrGroup['raItems']) && !empty($aResUsrGroup['raItems'])){ ?>
-                                                                <?php 
+                                                                <?php
                                                                     $tBchName = "";
-                                                                    foreach ($aResUsrGroup['raItems'] AS $key => $aValue) { 
-                                                                        
-                                                                        if( !empty($aValue['FTBchName']) && strpos($tBchName, $aValue['FTBchName']) !== 0 ){ // เช็คค่าซ้ำ 
+                                                                    foreach ($aResUsrGroup['raItems'] AS $key => $aValue) {
+
+                                                                        if( !empty($aValue['FTBchName']) && strpos($tBchName, $aValue['FTBchName']) !== 0 ){ // เช็คค่าซ้ำ
                                                                             $tBchName .= $aValue['FTBchName'];
                                                                 ?>
                                                                             <span class="label label-info m-r-5"><?=$aValue['FTBchName'];?></span>
                                                                 <?php
-                                                                        } 
-                                                                    } 
+                                                                        }
+                                                                    }
                                                                 ?>
                                                             <?php }else{ ?>
                                                                 <?php if(!empty($tBchName)){ ?>
@@ -329,7 +328,7 @@
                                                             <input type="text" class="form-control xCNHide" id="oetRoleCode" name="oetRoleCode" value="<?php echo $tRolCode?>">
                                                             <input type="text" class="form-control xWPointerEventNone" id="oetRoleName" name="oetRoleName"
                                                                 placeholder="<?php echo language('authen/user/user','tUSRRoleGroup')?>"
-                                                                value="<?php echo $tRolName?>" 
+                                                                value="<?php echo $tRolName?>"
                                                                 placeholder="<?= language('authen/user/user','tUSRRole')?>"
                                                                 data-validate-required = "<?php echo  language('authen/user/user','tCRDValiUser');?>" readonly>
                                                             <span class="input-group-btn">
@@ -357,7 +356,7 @@
                                                         <label class="xCNLabelFrm"><?php echo language('authen/user/user','tUSRDepart')?></label>
                                                             <div class="input-group">
                                                                 <input type="text" class="form-control xCNHide" id="oetDepartCode" name="oetDepartCode" value="<?php echo $tDptCode?>">
-                                                                <input type="text" class="form-control xWPointerEventNone" id="oetDepartName" name="oetDepartName" 
+                                                                <input type="text" class="form-control xWPointerEventNone" id="oetDepartName" name="oetDepartName"
                                                                 placeholder="<?php echo language('authen/user/user','tUSRDepart')?>"
                                                                 value="<?php echo $tDptName?>" readonly>
                                                                 <span class="input-group-btn">
@@ -370,14 +369,14 @@
                                                 </div>
                                                 <!-- end หน่วยงาน -->
 
-                                                <!-- Merchant -->  
+                                                <!-- Merchant -->
                                                 <!-- ซ่อนไว้ -->
-                                                <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12 "> 
+                                                <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12 ">
                                                     <div class="form-group <?php if( !FCNbGetIsShpEnabled()) : echo 'xCNHide';  endif;?>">
                                                         <label class="xCNLabelFrm"><?php echo language('authen/user/user','tUSRMerchant')?></label>
                                                         <div class="input-group">
                                                             <input type="text" class="form-control xCNHide" id="oetUsrMerCode" name="oetUsrMerCode" value="<?=$tMerCode?>">
-                                                            <input type="text" class="form-control xWPointerEventNone" id="oetUsrMerName" name="oetUsrMerName" 
+                                                            <input type="text" class="form-control xWPointerEventNone" id="oetUsrMerName" name="oetUsrMerName"
                                                                 data-validate-required = "<?php echo  language('authen/user/user','tCRDValiMerchant');?>"
                                                                 placeholder="<?php echo language('authen/user/user','tUSRMerchant')?>"
                                                                 value="<?php echo $tMerName?>" readonly>
@@ -390,14 +389,14 @@
                                                     </div>
                                                 </div>
                                                 <!-- end Merchant -->
-                                                
+
                                                 <!-- ร้านค้า -->
-                                                <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12"> 
+                                                <div class="col-lg-8 col-md-8 col-xs-12 col-sm-12">
                                                     <div class="form-group <?php if(!FCNbGetIsShpEnabled()) : echo 'xCNHide';  endif;?>" style="margin-bottom: 0px;">
                                                         <label class="xCNLabelFrm"><?php echo language('authen/user/user','tUSRShop')?></label>
                                                         <div class="input-group">
                                                             <input type="text" class="form-control xCNHide" id="oetShopCode" name="oetShopCode" value="<?php echo $tShpCode?>" placeholder="<?php echo language('authen/user/user','tUSRShop')?>" readonly>
-                                                            <input type="text" class="form-control " id="oetShopName" name="oetShopName" 
+                                                            <input type="text" class="form-control " id="oetShopName" name="oetShopName"
                                                                 placeholder="<?php echo language('authen/user/user','tUSRShop')?>"
                                                                 value="<?php echo $tShpName?>" readonly>
                                                             <span class="input-group-btn">
@@ -422,7 +421,7 @@
                                                             <?php } ?>
                                                         </div>
                                                     </div>
-                                                             
+
                                                 </div><br><br>
                                                 <!-- end ร้านค้า -->
 
@@ -442,13 +441,13 @@
 
                             </form>
                         </div>
-                    </div> 
+                    </div>
                 <!--  End Tab Content Detail -->
                 <!-- Tab LoinData  -->
                     <div id="odvUsrloginData" class="tab-pane fade"></div>
-                <!-- End Tab LoinData  -->      
-            </div>   
-        </div>    
+                <!-- End Tab LoinData  -->
+            </div>
+        </div>
     </div>
 </div>
 
@@ -471,5 +470,3 @@
 <script src="<?= base_url('application/modules/common/assets/js/jquery.mask.js')?>"></script>
 <script src="<?= base_url('application/modules/common/assets/src/jFormValidate.js')?>"></script>
 <?php include 'script/jUserAdd.php'; ?>
-
-

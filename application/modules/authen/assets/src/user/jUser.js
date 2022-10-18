@@ -5,13 +5,74 @@ $('ducument').ready(function() {
     localStorage.removeItem('LocalItemData');
     JSxCheckPinMenuClose(); /*Check เปิดปิด Menu ตาม Pin*/
     JSxUSRNavDefult();
-    if (nStaUsrBrowseType != 1) {
-        JSvCallPageUserList();
-    } else {
-        JSvCallPageUserAdd();
+    switch (nStaUsrBrowseType) {
+        case '1':
+            JSvCallPageUserAdd()
+        break;
+
+        case '2':
+            var tUsrCode = $("#oetUsrUserCode").val();
+            JSvCallPageUserEdit(tUsrCode);
+        break;
+
+        default:
+            JSvCallPageUserList();
+        break;
     }
 });
-
+function JSxEmailNotThai(ptKeyword,pnOption) {
+  //console.log(ptKeyword);
+  var tInputVal = ptKeyword;
+  if (tInputVal=='') {
+    $(this).val("");
+  }else {
+    var tCharacterReg = "^[ก-๙]+$";
+    var nNum = tInputVal.length;
+    var aRes = tInputVal.split("");
+    var tNewText = "";
+    for (var i = 0; i < aRes.length; i++) {
+      if (aRes[i] != '' && !aRes[i].match(tCharacterReg)) {
+        tNewText+=aRes[i];
+      }
+    }
+    $("#oetRoleUsrEmail"+pnOption+"").val(tNewText);
+  }
+}
+function JSxPhoneNotThai(ptKeyword,pnOption) {
+  //console.log(ptKeyword);
+  var tInputVal = ptKeyword;
+  if (tInputVal=='') {
+    $(this).val("");
+  }else {
+    var tCharacterReg = "^[ก-๙]+$";
+    var nNum = tInputVal.length;
+    var aRes = tInputVal.split("");
+    var tNewText = "";
+    for (var i = 0; i < aRes.length; i++) {
+      if (aRes[i] != '' && !aRes[i].match(tCharacterReg)) {
+        tNewText+=aRes[i];
+      }
+    }
+    $("#oetRoleUsrPhone"+pnOption+"").val(tNewText);
+  }
+}
+// $('.xCNInputWithoutSpcNotThai').on("keyup blur", function(event) {
+//     var tInputVal = $(this).val();
+//     if (tInputVal=='') {
+//       $(this).val("");
+//     }else {
+//       var tCharacterReg = "^[ก-๙]+$";
+//       var nNum = tInputVal.length;
+//       var aRes = tInputVal.split("");
+//       var tNewText = "";
+//       for (var i = 0; i < aRes.length; i++) {
+//         if (aRes[i] != '' && !aRes[i].match(tCharacterReg)) {
+//           tNewText+=aRes[i];
+//         }
+//       }
+//       $(this).val(tNewText);
+//     }
+// });
 ///function : Function Clear Defult Button User
 //Parameters : documet ready and Function Parameter
 //Last Update: 02/07/2018 wasin [ปรับรองรับการเพิ่มข้อมูลผ่านหน้า Browse]
@@ -38,7 +99,7 @@ function JSxUSRNavDefult() {
     }
 }
 
-///function : Call User Page list  
+///function : Call User Page list
 //Parameters : Document Ready And Event Call Back
 //Creator :	01/06/2018 wasin
 //Return : View Html user List
@@ -107,8 +168,8 @@ function JSvUserDataTable(pnPage) {
     }
 }
 
-//Functionality : Call Page User Add  
-//Parameters : Event Button Click Call Function 
+//Functionality : Call Page User Add
+//Parameters : Event Button Click Call Function
 //Creator : 04/06/2018 wasin
 //Return : View
 //Return Type : View
@@ -147,7 +208,7 @@ function JSvCallPageUserAdd() {
     }
 }
 
-//Functionality : Call User Page Edit  
+//Functionality : Call User Page Edit
 //Parameters : Event Button Click Event
 //Creator : 04/06/2018 wasin
 //Return : View
@@ -206,7 +267,7 @@ function JSxUSRCheckDrumpData(){
             // $('#obtUSRModalAlertConfirm').off('click');
             // $('#obtUSRModalAlertConfirm').on('click',function(){
                 $('#obtUsrNewAddEdit').click();
-            // }); 
+            // });
 
         }else if(tBchCode != "" && tMerCode != "" && tShpCode == ""){
             var tMsg = "คุณต้องการสร้างผู้ใช้ให้สามารถเข้าใช้งานได้ทุกร้านค้าภายไต้กลุ่มธุรกิจที่ได้กำหนดใช่หรือไม่ ?";
@@ -273,7 +334,6 @@ function JSnAddEditUser(ptRoute) {
                     "dublicateCode": {}
                 },
                 oetUsrName      : {"required" :{}},
-                oetUsrEmail     : {"required" :{}},
                 oetRoleName     : {"required" :{}},
                 oetBranchCode   : {
                     "required" : {
@@ -295,10 +355,6 @@ function JSnAddEditUser(ptRoute) {
                 oetUsrName : {
                     "required"      : $('#oetUsrName').attr('data-validate-required'),
                     "dublicateCode" : $('#oetUsrName').attr('data-validate-dublicateCode')
-                },
-                oetUsrEmail : {
-                    "required"      : $('#oetUsrEmail').attr('data-validate-required'),
-                    "dublicateCode" : $('#oetUsrEmail').attr('data-validate-dublicateCode')
                 },
                 oetRoleName : {
                     "required"      : $('#oetRoleName').attr('data-validate-required'),
@@ -443,7 +499,7 @@ function JStCheckUserCode() {
                         alert('ไม่พบระบบจะ Gen ใหม่');
                         JStGenerateUserCode();
                     }
-                
+
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     (jqXHR, textStatus, errorThrown);
@@ -455,7 +511,7 @@ function JStCheckUserCode() {
     }
 }
 
-//Functionality : Event Delete 
+//Functionality : Event Delete
 //Parameters : Event Click Button
 //Creator : 07/06/2018 wasin
 //Return : Status Delete
@@ -472,7 +528,7 @@ function JSnUserDel(pnPage,ptName,tIDCode,ptConfirm) {
             $('#odvModalDelUser').modal('show');
             $('#ospConfirmDelete').html($('#oetTextComfirmDeleteSingle').val() + tIDCode + ' ( ' + ptName + ' ) '+ptConfirm );
             $('#osmConfirm').on('click', function(evt) {
-                
+
                 JCNxOpenLoading();
                 $.ajax({
                     type: "POST",
@@ -507,7 +563,7 @@ function JSnUserDel(pnPage,ptName,tIDCode,ptConfirm) {
     }
 }
 
-//Functionality : Event Delete All 
+//Functionality : Event Delete All
 //Parameters : Buttom Event Click
 //Creator : 14/05/2018 wasin
 //Return : Status Delete
@@ -589,7 +645,7 @@ function JSvClickPage(ptPage) {
 //Functionality: Function Chack And Show Button Delete All
 //Parameters: LocalStorage Data
 //Creator: 11/10/2018 wasin
-//Return: - 
+//Return: -
 //Return Type: -
 function JSxShowButtonChoose() {
     var aArrayConvert = [JSON.parse(localStorage.getItem("LocalItemData"))];
@@ -648,7 +704,7 @@ function findObjectByKey(array, key, value) {
 // ReturnType: boolean
 function JSbUsrIsCreatePage(){
     try{
-        const tUsrCode = $('#oetUsrCode').data('is-created');    
+        const tUsrCode = $('#oetUsrCode').data('is-created');
         var bStatus = false;
         if(tUsrCode == ""){ // No have data
             bStatus = true;
@@ -705,7 +761,7 @@ function JSxUsrVisibleComponent(ptComponent, pbVisible, ptEffect){
 // ReturnType: boolean
 function JSbUsrIsCreatePage(){
     try{
-        const tUsrCode = $('#oetUsrCode').data('is-created');    
+        const tUsrCode = $('#oetUsrCode').data('is-created');
         var bStatus = false;
         if(tUsrCode == ""){ // No have data
             bStatus = true;
@@ -757,3 +813,128 @@ function JSxUsrVisibleComponent(ptComponent, pbVisible, ptEffect){
 
 
 
+
+
+//Functionality : Check User Code In DB
+//Parameters : Event Enter Input Code
+//Creator : 07/06/2018 wasin
+//Return : Status,Message
+//Return Type : String
+function JStUserRoleNext() {
+    console.log('asdasdasdasdasdad');
+    var nStaSession = JCNxFuncChkSessionExpired();
+    var tHTML = '';
+    var nlen = $('.xWCountNum').length;
+    if(nlen > 0){
+        var nCount = 0;
+        var tBase = $('#ohdBaseurl').val();
+        $('#otbUrsRoldList').hide();
+        $('#otbUrsRoldAll').show();
+        $('#oimUsrSend').show();
+        $('#oimUsrNext').hide();
+        $('#oimAddBrowse').hide();
+        $('#oliUsrModal_step1').removeClass( "active" );
+        $('#oliUsrModal_step2').addClass( "active" );
+        $('#oimUsrBack').attr("disabled", false);
+        $('#ohdChkbrowse').val("2");
+        $( ".xCNBtnBrowseAddOn" ).each(function() {
+            $(this).addClass("disabled");
+        });
+        $( ".xWCountNum" ).each(function() {
+            var nLoop   = $(this).val();
+            var nRoleId = $(this).attr("roleid");
+            var tAgsID = $(this).attr("AgsID");
+            var tBranchID = $(this).attr("BranchID");
+            var tMerchantID = $(this).attr("MerchantID");
+            var tShopID = $(this).attr("ShopID");
+            var nRoleName = $('#otdRoleName'+nRoleId).text();
+             tHTML += "<tr><th nowrap='' class='xCNTextBold' colspan='99'>"+nRoleName+"</th></tr>"
+            for(ni=1;ni<=nLoop;ni++){
+                tHTML += "<tr><td>"+ni+"</td>";
+                tHTML += "<td id='otdRoleName'>"+nRoleName+"</td>";
+                tHTML += "<td><input type='text' class='form-control' id='oetRoleUsrName["+nCount+"]' maxlength='100' name='oetRoleUsrName["+nCount+"]'></td>"
+                tHTML += "<td><input type='email' onkeyup='JSxEmailNotThai($(this).val(),"+nCount+")' class='form-control' id='oetRoleUsrEmail"+nCount+"' maxlength='100' name='oetRoleUsrEmail["+nCount+"]'></td>"
+                tHTML += "<td><div class='input-group'><input class='form-control xCNHide xWAdvanceSeach' type='text' id='oetDepartID"+nCount+"' name='oetDepartID["+nCount+"]' maxlength='5'>"
+                tHTML += "<input class='form-control xCNHide xWAdvanceSeach' type='text' id='oetRoldID["+nCount+"]' name='oetRoldID["+nCount+"]' maxlength='5' value='"+nRoleId+"'>"
+                tHTML += "<input class='form-control xCNHide xWAdvanceSeach' type='text' id='oetAgsID["+nCount+"]' name='oetAgsID["+nCount+"]' maxlength='5' value='"+tAgsID+"'>"
+                tHTML += "<input class='form-control xCNHide xWAdvanceSeach' type='text' id='oetBranchID["+nCount+"]' name='oetBranchID["+nCount+"]' maxlength='5' value='"+tBranchID+"'>"
+                tHTML += "<input class='form-control xCNHide xWAdvanceSeach' type='text' id='oetMerchantID["+nCount+"]' name='oetMerchantID["+nCount+"]' maxlength='5' value='"+tMerchantID+"'>"
+                tHTML += "<input class='form-control xCNHide xWAdvanceSeach' type='text' id='oetShopID["+nCount+"]' name='oetShopID["+nCount+"]' maxlength='5' value='"+tShopID+"'>"
+                tHTML += "<input type='text' class='form-control xWPointerEventNone xWAdvanceSeach' id='oetDepartName"+nCount+"' name='oetDepartName["+nCount+"]' maxlength='100' placeholder='' readonly>"
+                tHTML += "<span class='input-group-btn'><button id='oimBrowseDepart' type='button' class='btn xWBrowseDepart xCNBtnBrowseAddOn' option='"+nCount+"'>"
+                tHTML += "<img src='"+tBase+"/application/modules/common/assets/images/icons/find-24.png'>"
+                tHTML += "</button></span></div></td>"
+                tHTML += "<td><input type='text' class='form-control' onkeyup='JSxPhoneNotThai($(this).val(),"+nCount+")'  id='oetRoleUsrPhone"+nCount+"' maxlength='50' name='oetRoleUsrPhone["+nCount+"]'></td></tr>"
+                nCount++;
+            }
+        });
+        $('#otbUrsRoldAll > tbody:last').append(tHTML);
+    }else{
+        FSvCMNSetMsgErrorDialog('<p class="text-left">ยังไม่ได้เลือก กลุ่มสิทธิ์</p>');
+        JStUserRoleBack()
+    }
+}
+
+//Functionality : Check User Code In DB
+//Parameters : Event Enter Input Code
+//Creator : 07/06/2018 wasin
+//Return : Status,Message
+//Return Type : String
+function JStUserRoleBack() {
+    var nStaSession = JCNxFuncChkSessionExpired();
+
+    $('#otbUrsRoldList').show();
+    $('#odvUrsRoldAll').empty();
+    $('#otbUrsRoldAll').hide();
+    $('#oimUsrSend').hide();
+    $('#oimUsrNext').show();
+    $('#oimAddBrowse').show();
+    $('#ohdChkbrowse').val("1");
+    $('#oimUsrBack').attr("disabled", true);
+    $('#oliUsrModal_step1').addClass( "active" );
+    $('#oliUsrModal_step2').removeClass( "active" );
+    $( ".xCNBtnBrowseAddOn" ).each(function() {
+        $(this).removeClass("disabled");
+    });
+}
+
+
+//Functionality : Call Excel
+//Parameters : Call Excel
+//Creator : 15/06/2021 Off
+//Return :
+//Return Type :
+function JStUserRoleSend() {
+    $("#ofmExportExcel").valid();
+    $('#ofmExportExcel').submit();
+    $('#odvModalCondition').modal('hide');
+    $('.modal-backdrop').remove();
+    setTimeout(function() {
+        JSvUserDataTable();
+    }, 500);
+};
+
+//Functionality : Export Excel UserLogin
+//Parameters : Export Excel UserLogin
+//Creator : 27/08/2021 Off
+//Return :
+//Return Type :
+function JStUserExportMulti() {
+    $("#ofmExportExcelUsr").valid();
+    $('#ofmExportExcelUsr').submit();
+    $('#odvModalCondition').modal('hide');
+    $('.modal-backdrop').remove();
+    setTimeout(function() {
+        JSvUserDataTable();
+    }, 500);
+};
+
+
+$(document).on("click", ".xCNIconDelRow", function(e) {
+    $(this).parent().parent().empty();
+    var nCount = 1;
+    $( ".xWcount" ).each(function() {
+        $(this).text(nCount);
+        nCount++;
+    });
+});

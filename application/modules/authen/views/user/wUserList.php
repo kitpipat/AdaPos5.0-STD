@@ -21,6 +21,11 @@
                             <label class="xCNLabelFrm hidden-xs hidden-sm"></label>
                             <div >
                                 <?php if($aAlwEventUser['tAutStaFull'] == 1 || ($aAlwEventUser['tAutStaAdd'] == 1)){ ?>
+                                    <button type="submit" id="oimExportExcelURS" name="oimExportExcelURS" class="btn xCNBTNImportFile" data-toggle="modal" data-target="#odvModalExcelUrs">
+                                        <?php echo language('authen/user/user', 'tUsrImport'); ?>
+                                    </button>
+
+
                                     <button type="button" id="odvEventImportFileUSR" class="btn xCNBTNImportFile"><?= language('common/main/main','tImport')?></button>
                                 <?php } ?>
 
@@ -32,6 +37,9 @@
                                     <ul class="dropdown-menu" role="menu">
                                         <li id="oliBtnDeleteAll" class="disabled">
                                             <a data-toggle="modal" data-target="#odvModalDelUser"><?php echo language('common/main/main', 'tDelAll') ?></a>
+                                        </li>
+                                        <li id="oliBtnCondition">
+                                            <a data-toggle="modal" data-target="#odvModalCondition"><?php echo language('authen/user/user', 'tUsrCreateCondit') ?></a>
                                         </li>
                                     </ul>
                                 </div>

@@ -1,5 +1,15 @@
 <?php
 defined ( 'BASEPATH' ) or exit ( 'No direct script access allowed' );
+
+include APPPATH .'libraries/spout-3.1.0/src/Spout/Autoloader/autoload.php';
+use Box\Spout\Writer\Common\Creator\WriterEntityFactory;
+use Box\Spout\Common\Entity\Row;
+use Box\Spout\Common\Entity\Style\Border;
+use Box\Spout\Writer\Common\Creator\Style\BorderBuilder;
+use Box\Spout\Common\Entity\Style\Color;
+use Box\Spout\Writer\Common\Creator\Style\StyleBuilder;
+use Box\Spout\Common\Entity\Style\CellAlignment;
+
 class cUser extends MX_Controller {
 
     public function __construct() {
@@ -8,6 +18,12 @@ class cUser extends MX_Controller {
         $this->load->model('authen/login/mLogin');
         $this->load->library('password/PasswordStorage');
         date_default_timezone_set("Asia/Bangkok");
+        
+        // Test XSS Load Helper Security
+        $this->load->helper("security");
+        if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
+            echo "ERROR XSS Filter";
+        }
     }
 
     public function index($nUsrBrowseType,$tUsrBrowseOption){
@@ -817,6 +833,227 @@ class cUser extends MX_Controller {
         $aResult  = $this->mUser->FSaMUSRGetTempDataAtAll();
 		echo json_encode($aResult);
     }
+
+
+
+    //Functionality : Call Import User Excel
+    //Parameters : Call Import User Excel
+    //Creator : 27/08/2021 Off
+    //Last Modified : -
+    //Return : Excel
+    //Return Type : -
+    public function FSvCUSRCallRptRenderExcel(){
+        $aDataReportParams = array();
+        foreach($this->input->post('oetRoleUsrName') as $nkey => $avalue){
+            $aDataReportParams[$nkey]['tUrsName'] = $avalue;
+            $aDataReportParams[$nkey]['tBranhCode'] = $this->input->post('oetBranchID')[$nkey];
+            $aDataReportParams[$nkey]['tRoldCode'] = $this->input->post('oetRoldID')[$nkey];
+            $aDataReportParams[$nkey]['tAgsCode'] = $this->input->post('oetAgsID')[$nkey];
+            $aDataReportParams[$nkey]['tMerchantCode'] = $this->input->post('oetMerchantID')[$nkey];
+            $aDataReportParams[$nkey]['tShopCode'] = $this->input->post('oetShopID')[$nkey];
+            $aDataReportParams[$nkey]['tDepartCode'] = $this->input->post('oetDepartID')[$nkey];
+            $aDataReportParams[$nkey]['tPhone'] = $this->input->post('oetRoleUsrPhone')[$nkey];
+            $aDataReportParams[$nkey]['tEmail'] = $this->input->post('oetRoleUsrEmail')[$nkey];
+        }
+
+        $tFileName = 'UserRole_'.date('YmdHis').'.xlsx';
+        $oWriter = WriterEntityFactory::createXLSXWriter();
+
+        $oWriter->openToBrowser($tFileName); // stream data directly to the browser
+
+        $oSheet = $oWriter->getCurrentSheet();
+        $oSheet->setName('User2');
+        // #c6e0b4
+        // setShouldWrapText(true)->
+    //  ===========================================================================================
+
+
+
+        $oStyleColums = (new StyleBuilder())
+            ->setBackgroundColor(Color::LIGHT_GREEN)
+            ->build();
+
+        $aCells = [
+            WriterEntityFactory::createCell('*User Code [Text 20] (ห้ามซ้ำ)', (new StyleBuilder())->setFontColor(Color::RED)->build()),
+            WriterEntityFactory::createCell('*Name [Text 100]', (new StyleBuilder())->setFontColor(Color::BLUE)->build()),
+            WriterEntityFactory::createCell('Branch Code (Plant) : Text[5]'),
+            WriterEntityFactory::createCell('Role : Text[5]'),
+            WriterEntityFactory::createCell('Agency Code (AD/SaleOrg) : Text[10]'),
+            WriterEntityFactory::createCell('Merchant Text[10]'),
+            WriterEntityFactory::createCell('Shop Text[5]'),
+            WriterEntityFactory::createCell('Depart Code [Text 5]'),
+            WriterEntityFactory::createCell('Telephone [50]'),
+            WriterEntityFactory::createCell('Email [100]'),
+        ];
+
+        /** add a row at a time */
+        $singleRow = WriterEntityFactory::createRow($aCells,$oStyleColums);
+        $oWriter->addRow($singleRow);
+
+        $oStyle = (new StyleBuilder())
+                ->setCellAlignment(CellAlignment::RIGHT)
+                ->build();
+
+                    foreach ($aDataReportParams as $nKey => $aValue) {
+                   $values= [
+                            WriterEntityFactory::createCell(NULL),
+                            WriterEntityFactory::createCell($aValue['tUrsName']),
+                            WriterEntityFactory::createCell($aValue['tBranhCode']),
+                            WriterEntityFactory::createCell($aValue['tRoldCode']),
+                            WriterEntityFactory::createCell($aValue['tAgsCode']),
+                            WriterEntityFactory::createCell($aValue['tMerchantCode']),
+                            WriterEntityFactory::createCell($aValue['tShopCode']),
+                            WriterEntityFactory::createCell($aValue['tDepartCode']),
+                            WriterEntityFactory::createCell($aValue['tPhone']),
+                            WriterEntityFactory::createCell($aValue['tEmail']),
+                    ];
+                    $aRow = WriterEntityFactory::createRow($values);
+                    $oWriter->addRow($aRow);
+                }
+    $oWriter->close();
+    }
+
+
+    //Functionality : Call Export UserLogin Excel
+    //Parameters : Call Export UserLogin Excel
+    //Creator : 27/08/2021 Off
+    //Last Modified : -
+    //Return : Excel
+    //Return Type : -
+    public function FSvCUSRExportUserLoginExcel(){
+        $aData = array(
+            'tUsrAgnCode'         => $this->input->post('oetExcelAgencyID'),
+            'tUsrBchCode'         => $this->input->post('oetExcelBranchID'),
+            'tUsrMerCode'         => $this->input->post('oetExcelMerchantID'),
+            'tUsrShpCode'         => $this->input->post('oetExcelShopID'),
+            'dDateFrm'            => $this->input->post('oetUSRAdvSearcDocDateFrom'),
+            'dDateTo'            => $this->input->post('oetUSRAdvSearcDocDateTo'),
+            'FNLngID'             => $this->session->userdata("tLangEdit"),
+        );
+        $aTestExcel  = $this->mUser->FSaMUSRGetUserLoginDetail($aData);
+        $aDataReportParams = array();
+        foreach($aTestExcel['raItemsDetail'] as $nkey => $avalue){
+            $aDataReportParams[$nkey]['FTUsrCode'] = $avalue['FTUsrCode'];
+            $aDataReportParams[$nkey]['FTUsrLogin'] = $avalue['FTUsrLogin'];
+            $aDataReportParams[$nkey]['FTUsrLoginPwd'] = FCNtHAES128Decrypt($avalue['FTUsrLoginPwd']);
+            $aDataReportParams[$nkey]['FDUsrPwdStart'] = $avalue['FDUsrPwdStart'];
+            $aDataReportParams[$nkey]['FDUsrPwdExpired'] = $avalue['FDUsrPwdExpired'];
+            $aDataReportParams[$nkey]['FTUsrLogType'] = $avalue['FTUsrLogType'];
+            $aDataReportParams[$nkey]['FTUsrStaActive'] = $avalue['FTUsrStaActive'];
+        }
+
+        $aDataReportParams2 = array();
+        foreach($aTestExcel['raItems'] as $nkey => $avalue){
+            $aDataReportParams2[$nkey]['FTUsrCode'] = $avalue['FTUsrCode'];
+            $aDataReportParams2[$nkey]['FTUsrName'] = $avalue['FTUsrName'];
+            $aDataReportParams2[$nkey]['FTUsrEmail'] = $avalue['FTUsrEmail'];
+            $aDataReportParams2[$nkey]['FTUsrTel'] = $avalue['FTUsrTel'];
+            $aDataReportParams2[$nkey]['FTAgnName'] = $avalue['FTAgnName'];
+            $aDataReportParams2[$nkey]['FTBchName'] = $avalue['FTBchName'];
+            $aDataReportParams2[$nkey]['FTRolName'] = $avalue['FTRolName'];
+            $aDataReportParams2[$nkey]['FTDptName'] = $avalue['FTDptName'];
+            $aDataReportParams2[$nkey]['FTMerName'] = $avalue['FTMerName'];
+            $aDataReportParams2[$nkey]['FTShpName'] = $avalue['FTShpName'];
+            $aDataReportParams2[$nkey]['FDCreateOn'] = $avalue['FDCreateOn'];
+        }
+        $tFileName = 'UserLogin_'.date('YmdHis').'.xlsx';
+        $oWriter = WriterEntityFactory::createXLSXWriter();
+
+        $oWriter->openToBrowser($tFileName); // stream data directly to the browser
+
+        $oSheet = $oWriter->getCurrentSheet();
+        
+        $oSheet->setName('ข้อมูลทั่วไป');
+
+    //  ============================= Sheet ที่1 ==============================================================
+
+        $oStyleColums = (new StyleBuilder())
+            ->setBackgroundColor(Color::LIGHT_GREEN)
+            ->build();
+
+        $aCells = [
+            WriterEntityFactory::createCell('รหัสผู้ใช้'),
+            WriterEntityFactory::createCell('ชื่อผู้ใช้'),
+            WriterEntityFactory::createCell('อีเมล'),
+            WriterEntityFactory::createCell('เบอร์'),
+            WriterEntityFactory::createCell('ตัวแทนขาย'),
+            WriterEntityFactory::createCell('สาขา'),
+            WriterEntityFactory::createCell('กลุ่มสิทธ์'),
+            WriterEntityFactory::createCell('หน่วยงาน'),
+            WriterEntityFactory::createCell('กลุ่มธุรกิจ'),
+            WriterEntityFactory::createCell('ร้านค้า'),
+            WriterEntityFactory::createCell('วันที่สร้าง'),
+            // WriterEntityFactory::createCell('วันที่นำเข้า'),
+        ];
+
+        /** add a row at a time */
+        $singleRow = WriterEntityFactory::createRow($aCells,$oStyleColums);
+        $oWriter->addRow($singleRow);
+
+        $oStyle = (new StyleBuilder())
+                ->setCellAlignment(CellAlignment::RIGHT)
+                ->build();
+
+        foreach ($aDataReportParams2 as $nKey => $aValue) {
+        $values= [
+                WriterEntityFactory::createCell($aValue['FTUsrCode']),
+                WriterEntityFactory::createCell($aValue['FTUsrName']),
+                WriterEntityFactory::createCell($aValue['FTUsrEmail']),
+                WriterEntityFactory::createCell($aValue['FTUsrTel']),
+                WriterEntityFactory::createCell($aValue['FTAgnName']),
+                WriterEntityFactory::createCell($aValue['FTBchName']),
+                WriterEntityFactory::createCell($aValue['FTRolName']),
+                WriterEntityFactory::createCell($aValue['FTDptName']),
+                WriterEntityFactory::createCell($aValue['FTMerName']),
+                WriterEntityFactory::createCell($aValue['FTShpName']),
+                WriterEntityFactory::createCell($aValue['FDCreateOn']),
+        ];
+        $aRow = WriterEntityFactory::createRow($values);
+        $oWriter->addRow($aRow);
+    }
+
+        // ====================================== Sheet ที่2  ============================================================================
+        $onewSheet = $oWriter->addNewSheetAndMakeItCurrent();
+        $onewSheet->setName('ข้อมูลล็อกอิน');
+        $onewSheet = $oWriter->getCurrentSheet();
+
+        
+        $oStyleColums = (new StyleBuilder())
+            ->setBackgroundColor(Color::LIGHT_GREEN)
+            ->build();
+
+        $aCells = [
+            WriterEntityFactory::createCell('รหัสผู้ใช้'),
+            WriterEntityFactory::createCell('ชื่อเข้าใช้งาน'),
+            WriterEntityFactory::createCell('วันที่เริ่้มใช้งาน'),
+            WriterEntityFactory::createCell('วันที่หมดอายุ'),
+            WriterEntityFactory::createCell('ประเภทข้อมูลล็อกอิน'),
+            WriterEntityFactory::createCell('สถานะใช้งาน'),
+        ];
+
+        /** add a row at a time */
+        $singleRow = WriterEntityFactory::createRow($aCells,$oStyleColums);
+        $oWriter->addRow($singleRow);
+
+        $oStyle = (new StyleBuilder())
+                ->setCellAlignment(CellAlignment::RIGHT)
+                ->build();
+
+        foreach ($aDataReportParams as $nKey => $aValue) {
+        $values= [
+                WriterEntityFactory::createCell($aValue['FTUsrCode']),
+                WriterEntityFactory::createCell($aValue['FTUsrLogin']),
+                WriterEntityFactory::createCell($aValue['FDUsrPwdStart']),
+                WriterEntityFactory::createCell($aValue['FDUsrPwdExpired']),
+                WriterEntityFactory::createCell($aValue['FTUsrLogType']),
+                WriterEntityFactory::createCell($aValue['FTUsrStaActive']),
+        ];
+        $aRow = WriterEntityFactory::createRow($values);
+        $oWriter->addRow($aRow);
+    }
+    $oWriter->close();
+    }
+
 }
 
 

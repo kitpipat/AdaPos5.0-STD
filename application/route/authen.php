@@ -27,6 +27,8 @@ $route ['userEventAdd']                 = 'authen/user/cUser/FSoUSRAddEvent';
 $route ['userEventEdit']                = 'authen/user/cUser/FSoUSREditEvent';
 $route ['userEventDelete']              = 'authen/user/cUser/FSoUSRDeleteEvent';
 $route ['userEventGetRoleUsr']          = 'authen/user/cUser/FSoUSREventGetRoleUsr';
+$route ['userEventExcel']               = 'authen/user/cUser/FSvCUSRCallRptRenderExcel';
+$route ['userEventExportUserExcel']     = 'authen/user/cUser/FSvCUSRExportUserLoginExcel';
 
 // Import User
 $route ['userPageImportDataTable']      = 'authen/user/cUser/FSaCUSRImportDataTable';

@@ -33,7 +33,7 @@
         }
 
         // ถ้ามีหลาย Branch ปิด Browse Merchant , Shop
-        var nCountBchMulti = $("#odvBranchShow").children("span").size();
+        var nCountBchMulti  = $("#odvBranchShow").children("span").length;
         if(nCountBchMulti > 1){
             // $('#obtUsrBrowseMerchant').attr("disabled", true);
             $('#oimBrowseShop').attr("disabled", true);
@@ -397,7 +397,7 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
                     // DisabledColumns	: [2,3],
                     WidthModal      : 50,
                     Perpage			: 10,
-                    OrderBy			: ['TCNMBranch.FDCreateOn DESC'],
+                    OrderBy			: ['TCNMBranch.FTBchCode DESC'],
                 },
                 NextFunc : {
                     FuncName  : tBranchNextFunc,
@@ -730,9 +730,9 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
 // ************************************************************************************
     var tStaUsrLevel    = '<?php  echo $this->session->userdata("tSesUsrLevel"); ?>';
     if (tStaUsrLevel=="HQ") {
-      tCondition = " AND ISNULL(TCNMUsrDepart.FTAgnCode,'') ='' OR ISNULL(TCNMUsrDepart.FTAgnCode,'') !='' ";
+      tCondition = " AND TCNMUsrDepart.FTAgnCode ='' OR TCNMUsrDepart.FTAgnCode !='' ";
     }else {
-      tCondition = " AND ISNULL(TCNMUsrDepart.FTAgnCode,'') ='<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>' ";
+      tCondition = " AND TCNMUsrDepart.FTAgnCode ='<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>' AND TCNMUsrDepart.FTAgnCode !='' ";
     }
     // Option Department
     var oBrowseDepart = {

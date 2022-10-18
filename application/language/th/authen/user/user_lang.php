@@ -29,6 +29,7 @@ $lang['tUSRShop']       = "ร้านค้า";
 $lang['tUSRDateStart']  = "วันที่เริ่มใช้งาน";
 $lang['tUSRDateStop']   = "วันหมดอายุ";
 $lang['tUSRRemark']     = "หมายเหตุ";
+$lang['tUsrImport']     = "ส่งออก";
 //Browse Depart
 $lang['tBrowseDPTTitle']    = "ข้อมูลแผนก";
 $lang['tBrowseDPTCode']     = "รหัสแผนก";
