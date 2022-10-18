@@ -555,9 +555,20 @@
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
 
+            var tCountData = '';
+            var tCountSuccess = '';
             if (JCNnCardShiftReturnCountDataSourceRow() == 0) { // Check Card Empty
                 FSvCMNSetMsgWarningDialog('<?php echo language('document/card/main', 'tMainEmptyRecordAlert'); ?>');
                 return;
+            }else{
+                tCountData = JCNnCardShiftReturnCountDataSourceRow()
+                tCountSuccess = tCountData.split(" ");
+                // console.log('check card not em', tCountSuccess)
+                if(tCountSuccess[0] == 0) {
+                    console.log('check card not success', tCountSuccess)
+                    FSvCMNSetMsgWarningDialog('<?php echo language('document/card/main', 'tMainEmptyUnSuccessRecordAlert'); ?>');
+                    return;
+                }
             }
 
             // From Validate
@@ -581,26 +592,53 @@
                 },
                 submitHandler: function(form) {
                     var aCardCode = JSaCardShiftReturnGetDataSourceCode(false);
-                    $.ajax({
-                        type: "POST",
-                        url: ptRoute,
-                        data: $('#ofmAddCardShiftReturnMainForm').serialize() + "&aCardCode=" + JSON.stringify(aCardCode),
-                        cache: false,
-                        timeout: 0,
-                        success: function(tResult) {
-                            try {
-                                var oResult = JSON.parse(tResult);
-                                if (oResult.nStaEvent == '1') {
-                                    JSvCardShiftReturnCallPageCardShiftReturnEdit(oResult.tCodeReturn);
-                                } else {
-                                    FSvCMNSetMsgErrorDialog(oResult.tStaMessg);
+                    if(tCountSuccess[0] != tCountSuccess[2]) {
+                        $('#odvCardShiftReturnModalCheckCardStatus').modal('show');
+                        $('#obtCardShiftReturnModalCheckCardStatusConfirm').unbind().click(function(evt) {
+                            $('#odvCardShiftReturnModalCheckCardStatus').modal('hide');
+                            $.ajax({
+                                type: "POST",
+                                url: ptRoute,
+                                data: $('#ofmAddCardShiftReturnMainForm').serialize() + "&aCardCode=" + JSON.stringify(aCardCode),
+                                cache: false,
+                                timeout: 0,
+                                success: function(tResult) {
+                                    try {
+                                        var oResult = JSON.parse(tResult);
+                                        if (oResult.nStaEvent == '1') {
+                                            JSvCardShiftReturnCallPageCardShiftReturnEdit(oResult.tCodeReturn);
+                                        } else {
+                                            FSvCMNSetMsgErrorDialog(oResult.tStaMessg);
+                                        }
+                                    } catch (err) {}
+                                },
+                                error: function(jqXHR, textStatus, errorThrown) {
+                                    JCNxCardShiftReturnResponseError(jqXHR, textStatus, errorThrown);
                                 }
-                            } catch (err) {}
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            JCNxCardShiftReturnResponseError(jqXHR, textStatus, errorThrown);
-                        }
-                    });
+                            });
+                        });
+                    }else{
+                        $.ajax({
+                            type: "POST",
+                            url: ptRoute,
+                            data: $('#ofmAddCardShiftReturnMainForm').serialize() + "&aCardCode=" + JSON.stringify(aCardCode),
+                            cache: false,
+                            timeout: 0,
+                            success: function(tResult) {
+                                try {
+                                    var oResult = JSON.parse(tResult);
+                                    if (oResult.nStaEvent == '1') {
+                                        JSvCardShiftReturnCallPageCardShiftReturnEdit(oResult.tCodeReturn);
+                                    } else {
+                                        FSvCMNSetMsgErrorDialog(oResult.tStaMessg);
+                                    }
+                                } catch (err) {}
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                JCNxCardShiftReturnResponseError(jqXHR, textStatus, errorThrown);
+                            }
+                        });
+                    }
                 },
                 errorElement: "em",
                 errorPlacement: function(error, element) {

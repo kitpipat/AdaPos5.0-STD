@@ -525,6 +525,29 @@ if($aResult['rtCode'] == "1"){
 </div>
 <!-- End Modal Delete Table Temp -->
 
+<div class="modal fade" id="odvCardShiftOutModalCheckCardStatus">
+	<div class="modal-dialog">
+		<div class="modal-content">
+            <div class="modal-header xCNModalHead">
+                <label class="xCNTextModalHeard"><?php echo language('document/card/main', 'tCheckCardStatus1')?></label>
+            </div>
+            <div class="modal-body">
+                <?php echo language('document/card/main', 'tCheckCardStatus2'); ?>
+            </div>
+			<div class="modal-footer">
+				<!-- แก้ -->
+				<button id="obtCardShiftOutModalCheckCardStatusConfirm" class="btn xCNBTNPrimery" type="button">
+					<?php echo language('common/main/main', 'tModalConfirm')?>
+				</button>
+				<!-- แก้ -->
+				<button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal">
+					<?php echo language('common/main/main', 'tModalCancel')?>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script src="<?php echo base_url('application/modules/common/assets/js/jquery.mask.js'); ?>"></script>
 <script src="<?php echo base_url('application/modules/common/assets/src/jFormValidate.js'); ?>"></script>
 <?php include "script/jCardShiftOutAdd.php"; ?>

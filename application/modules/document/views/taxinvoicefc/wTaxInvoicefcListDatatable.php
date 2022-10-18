@@ -18,7 +18,7 @@
                             <tr class="text-center xCNTextDetail2">  
                                 <td class="text-left"><?=$aValue['FNRowID']?></td>
                                 <td class="text-left"><?=$aValue['FTXshDocNo']?></td>
-                                <td class="text-left"><?=$aValue['FDXshDocDate']?></td>
+                                <td class="text-left"><?php echo date_format(date_create($aValue['FDXshDocDate']),'Y-m-d H:i:s'); ?></td>
                                 <td class="text-left"><?=$aValue['FTAddName']?></td>
                                 <td class="text-left">
                                     <?php

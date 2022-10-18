@@ -112,6 +112,7 @@
                 JCNxPromotionStep1ControlExcept(tStaType);
                 /*===== End Group Type Control =========================================*/
 
+                $('#obtPmtStep1Add').attr('disabled', false);
                 $('#odvPromotionAddPmtGroupModal').modal({backdrop:'static', keyboard:false, show:true});
             },
             error: function(jqXHR, textStatus, errorThrown) {

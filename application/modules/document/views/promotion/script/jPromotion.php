@@ -179,7 +179,7 @@
             url: "promotionCallPageAdd",
             data: {},
             cache: false,
-            timeout: 5000,
+            timeout: 0,
             success: function(tResult) {
                 nIndexInputEditInlineForVD = 0;
                 if (nPromotionStaBrowseType == 1) {
@@ -199,7 +199,7 @@
                     $("#obtPromotionPrint").hide();
                     $("#oliPromotionTitleDetail").hide();
                 }
-
+                $('#obtPromotionSave').attr('disabled', false);
                 $("#odvPromotionContentPage").html(tResult);
                 JCNxCloseLoading();
             },
@@ -270,7 +270,7 @@
                         }
                         localStorage.tChkSubmitOrEdit = '0';
                     }
-
+                    $('#obtPromotionSave').attr('disabled', false);
                     JCNxLayoutControll();
                     JCNxCloseLoading();
                 },

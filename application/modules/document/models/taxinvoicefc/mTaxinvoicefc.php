@@ -15,12 +15,13 @@ class mTaxinvoicefc extends CI_Model{
                                 FDXshDocDate,
                                 TaxHD.FTBchCode,
                                 FTPosCode,
-                                FTXshCstName AS FTAddName,
+                                TaxAdd.FTAddName AS FTAddName,
 								FTXshStaDoc AS FTXshStaDoc
                                
                             FROM TPSTTaxHD TaxHD WITH (NOLOCK)
                             LEFT JOIN TPSTTaxHDCst HDCst WITH (NOLOCK) ON TaxHD.FTXshDocno = HDCst.FTXshDocno AND TaxHD.FTBchCode = HDCST.FTBchCode 
                             LEFT JOIN TCNMTaxAddress_L TaxAddr WITH (NOLOCK) ON HDCst.FTXshAddrTax = TaxAddr.FNAddSeqNo
+                            INNER JOIN TPSTTaxHDAddress TaxAdd WITH ( NOLOCK ) ON TaxHD.FTXshDocno = TaxAdd.FTXshDocno
                             WHERE 1=1 AND ISNULL(FTXshDocVatFull,'') <> ''  ";
 
         // if($this->session->userdata("tSesUsrLevel") == 'BCH' || $this->session->userdata("tSesUsrLevel") == 'SHP'){
@@ -392,7 +393,7 @@ class mTaxinvoicefc extends CI_Model{
             // print_r($oCrdCode);
     
             $tSQL       = " SELECT ROW_NUMBER() OVER(ORDER BY FTXshDocNo DESC) AS FNRowID, S.FTPdtCode , S.FTXsdPdtName, S.FTPunName, S.FCXsdQty, S.FCXsdAmtB4DisChg, S.FCXsdDis , S.FCXsdNet, 
-                                SUM(FCXrcNet) AS FCXrcNet , S.FTXshDocNo, S.FCXshTotal, S.FCXshVat, S.FCXshGrand 
+                                S.FCXrcNet AS FCXrcNet , S.FTXshDocNo, S.FCXshTotal, S.FCXshVat, S.FCXshGrand 
                             FROM (
                                 SELECT c.* FROM(
                                     SELECT  ROW_NUMBER() OVER(ORDER BY FTXshDocNo DESC) AS FNRowID,* FROM
@@ -400,7 +401,16 @@ class mTaxinvoicefc extends CI_Model{
     
             for($i = 0; $i < count($oCrdCode); $i++) {
                 $tUnion = ($i == 0) ? '' : ' UNION ';
-                $tSQL .= $tUnion."SELECT DT.FTPdtCode , DT.FTXsdPdtName, DT.FTPunName,DT.FCXsdQty,DT.FCXsdAmtB4DisChg ,DT.FCXsdDis,DT.FCXsdNet, RC.FCXrcNet, DT.FTXshDocNo, HD.FCXshTotal, HD.FCXshVat, HD.FCXshGrand
+                $tSQL .= $tUnion."SELECT DT.FTPdtCode , DT.FTXsdPdtName, DT.FTPunName,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN DT.FCXsdQty *-(1)  ELSE  DT.FCXsdQty END AS FCXsdQty ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN DT.FCXsdAmtB4DisChg *-(1)  ELSE  DT.FCXsdAmtB4DisChg END  AS FCXsdAmtB4DisChg ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN DT.FCXsdDis *-(1)  ELSE  DT.FCXsdDis END AS FCXsdDis ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN DT.FCXsdNet *-(1)  ELSE  DT.FCXsdNet END AS FCXsdNet ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN RC.FCXrcNet *-(1)  ELSE  RC.FCXrcNet END  AS FCXrcNet ,
+                                    DT.FTXshDocNo,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN HD.FCXshTotal *-(1)  ELSE  HD.FCXshTotal END FCXshTotal ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN HD.FCXshVat *-(1)  ELSE  HD.FCXshVat END FCXshVat ,
+                                    CASE WHEN HD.FNXshDocType = 9 THEN HD.FCXshGrand *-(1)  ELSE  HD.FCXshGrand END FCXshGrand 
                             FROM TPSTSalDT DT 
                             INNER JOIN TPSTSalRC RC WITH(NOLOCK) ON DT.FTBchCode = RC.FTBchCode AND DT.FTXshDocNo = RC.FTXshDocNo
                             INNER JOIN TPSTSalHD HD WITH(NOLOCK) ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo
@@ -441,9 +451,8 @@ class mTaxinvoicefc extends CI_Model{
                         )";
     
             $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]
-                    )S 
-                    GROUP BY S.FTPdtCode , S.FTXsdPdtName, S.FTPunName, S.FCXsdQty, S.FCXsdAmtB4DisChg, S.FCXsdDis , S.FCXsdNet,S.FTXshDocNo, 
-                        S.FCXshTotal, S.FCXshVat, S.FCXshGrand ";
+                    ) S 
+                ";
     
             $oQuery = $this->db->query($tSQL);
     
@@ -564,7 +573,7 @@ class mTaxinvoicefc extends CI_Model{
                                     AND  DT.FTCrdCode = '".$oCrdCode[$i]->FTCrdCode."'  
                                     AND  HD.FDXshDocDate <=  '".$tDocDate."' 
                             ) CE
-                            WHERE CE.FNTxnCESeq  = 1 ),'1999-01-01')
+                            WHERE CE.FNTxnCESeq  = 2 ),'1999-01-01')
                     AND HD.FDXshDocDate <= '".$tDocDate."'" ;
         }
 
@@ -1091,8 +1100,8 @@ class mTaxinvoicefc extends CI_Model{
                         CASE WHEN FCXshTotal<0 THEN 5 WHEN FCXshTotal > 0 THEN 4 ELSE 0 END AS FNXshDocType,
                         '$dDocDateTime' AS FDXshDocDate,'2' AS FTXshCshOrCrd,
                         (SELECT FTCmpRetInOrEx FROM TCNMComp WHERE FTCmpCode= '00001') AS FTXshVATInOrEx,
-                        '' AS FTDptCode,'00001' AS FTWahCode,'00001' AS FTPosCode,'00001' AS FTShfCode,1 AS FNSdtSeqNo,
-                        '00001' AS FTUsrCode,'' AS FTSpnCode,'$tNameTask' AS FTXshApvCode,'$tCstCode' AS FTCstCode,
+                        '' AS FTDptCode,'' AS FTWahCode,'' AS FTPosCode,'' AS FTShfCode,1 AS FNSdtSeqNo,
+                        '$tNameTask' AS FTUsrCode,'' AS FTSpnCode,'$tNameTask' AS FTXshApvCode,'$tCstCode' AS FTCstCode,
                         '$tTaxNumberFull' AS FTXshDocVatFull,'$tABB' AS FTXshRefExt,GETDATE() AS FDXshRefExtDate,
                         '' AS FTXshRefInt,'' AS FDXshRefIntDate,'' AS FTXshRefAE,0 AS FNXshDocPrint,
                         (SELECT FTRteCode FROM TCNMComp WHERE FTCmpCode= '00001') AS FTRteCode,
@@ -1207,19 +1216,30 @@ class mTaxinvoicefc extends CI_Model{
             $tSQL   = " INSERT INTO TPSTTaxHDDis (
                         FTBchCode,FTXshDocNo,FDXhdDateIns,FTXhdDisChgTxt,FTXhdDisChgType,FCXhdTotalAfDisChg,FCXhdDisChg,FTXhdRefCode,FCXhdAmt
                     ) SELECT 
-                    '$tBrowseBchCode' AS FTBchCode, '$tTaxNumberFull' AS FTXshDocNo,GETDATE() AS FDXhdDateIns, FTXhdDisChgTxt, FTXhdDisChgType, FCXhdTotalAfDisChg, FCXhdDisChg, FTXhdRefCode, FCXhdAmt
+                    '$tBrowseBchCode' AS FTBchCode, '$tTaxNumberFull' AS FTXshDocNo,GETDATE() AS FDXhdDateIns, FTXhdDisChgTxt,CASE WHEN FCXhdAmt >0 THEN 3 ELSE 1 END AS FTXhdDisChgType, FCXhdTotalAfDisChg, FCXhdDisChg, FTXhdRefCode, ABS(FCXhdAmt) AS FCXhdAmt
                     FROM (
                         SELECT 
-                            SUM(CAST(HDDis.FTXhdDisChgTxt AS float)) AS FTXhdDisChgTxt,
-                            HDDis.FTXhdDisChgType, 
+                           SUM (
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN 
+                                    CASE WHEN HDDis.FTXhdDisChgType= 3 OR HDDis.FTXhdDisChgType= 4 THEN  ISNULL(HDDis.FCXhdAmt, 0) *- (1) ELSE ISNULL(HDDis.FCXhdAmt, 0) END
+                                ELSE
+                                    CASE WHEN HDDis.FTXhdDisChgType = 3 OR HDDis.FTXhdDisChgType= 4 THEN ISNULL(HDDis.FCXhdAmt, 0)  ELSE ISNULL(HDDis.FCXhdAmt, 0) *-(1) END
+                                END
+                            ) AS FTXhdDisChgTxt,
                             SUM(CAST(HDDis.FCXhdTotalAfDisChg AS float)) AS FCXhdTotalAfDisChg, 
                             SUM(CAST(HDDis.FCXhdDisChg AS float)) AS FCXhdDisChg,
-                            HDDis.FTXhdRefCode, 
-                            SUM(CASE WHEN SALHD.FNXshDocType = 9 THEN ISNULL(HDDis.FCXhdAmt,0) *-(1) ELSE ISNULL(HDDis.FCXhdAmt,0) END) AS FCXhdAmt
+                            '' AS FTXhdRefCode, 
+                            SUM(
+                                CASE WHEN SALHD.FNXshDocType = 9 THEN 
+                                    CASE WHEN HDDis.FTXhdDisChgType= 3 OR HDDis.FTXhdDisChgType= 4 THEN  ISNULL(HDDis.FCXhdAmt, 0) *- (1) ELSE ISNULL(HDDis.FCXhdAmt, 0) END
+                                ELSE
+                                    CASE WHEN HDDis.FTXhdDisChgType = 3 OR HDDis.FTXhdDisChgType= 4 THEN ISNULL(HDDis.FCXhdAmt, 0)  ELSE ISNULL(HDDis.FCXhdAmt, 0) *-(1) END
+                                END
+                            ) AS FCXhdAmt
                         FROM TPSTSalHDDis HDDis 
                         LEFT JOIN TPSTSalHD SALHD WITH (NOLOCK) ON HDDis.FTBchCode = SALHD.FTBchCode AND HDDis.FTXshDocNo = SALHD.FTXshDocNo
                         WHERE SALHD.FTXshDocNo IN ($tDocno) AND ISNULL(FTXshDocVatFull, '') = '' 
-                        GROUP BY HDDis.FTXhdDisChgType,HDDis.FTXhdRefCode
+                        GROUP BY HDDis.FTBchCode
                     ) AS SaleCard";
         }
 
@@ -1982,7 +2002,7 @@ class mTaxinvoicefc extends CI_Model{
                     CST_L.FTCstName         AS FTXshCstName,
                    -- HDADR.FTAddName,
                     HDCST.FTXshCstEmail,
-                    HDCST.FTXshCstName AS FTAddName,
+                    HDADR.FTAddName,
                     HDADR.FTAddStaBusiness,
                     HDADR.FTAddStaHQ,
                     HDADR.FTAddStaBchCode

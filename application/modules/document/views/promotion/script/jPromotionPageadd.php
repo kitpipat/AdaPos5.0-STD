@@ -890,6 +890,9 @@
      * Return Type : -
      */
     function JSxPromotionSave() {
+
+        $('#obtPromotionSave').attr('disabled', true);
+        
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
@@ -906,7 +909,7 @@
                 url: "<?php echo $tRoute; ?>",
                 data: $("#ofmPromotionForm").serialize(),
                 cache: false,
-                timeout: 5000,
+                timeout: 0,
                 dataType: "JSON",
                 success: function(oResult) {
                     switch (oResult.nStaCallBack) {

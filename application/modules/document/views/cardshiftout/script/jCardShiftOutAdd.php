@@ -512,9 +512,20 @@
             var nStaSession = JCNxFuncChkSessionExpired(); // Get Sesstion Expired
             if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) { // Sesstion Check
 
+                var tCountData = '';
+                var tCountSuccess = '';
                 if (JCNnCardShiftOutCountDataSourceRow() == 0) { // Check Card Empty
                     FSvCMNSetMsgWarningDialog('<?php echo language('document/card/main', 'tMainEmptyRecordAlert'); ?>');
                     return;
+                }else{
+                    tCountData = JCNnCardShiftOutCountDataSourceRow()
+                    tCountSuccess = tCountData.split(" ");
+                    // console.log('check card not em', tCountSuccess)
+                    if(tCountSuccess[0] == 0) {
+                        console.log('check card not success', tCountSuccess)
+                        FSvCMNSetMsgWarningDialog('<?php echo language('document/card/main', 'tMainEmptyUnSuccessRecordAlert'); ?>');
+                        return;
+                    }
                 }
 
                 // From Validate
@@ -540,26 +551,53 @@
                     },
                     submitHandler: function(form) {
                         var aCardCode = JSaCardShiftOutGetDataSourceCode(false);
-                        $.ajax({
-                            type: "POST",
-                            url: ptRoute,
-                            data: $('#ofmAddCardShiftOutMainForm').serialize() + "&aCardCode=" + JSON.stringify(aCardCode),
-                            cache: false,
-                            timeout: 0,
-                            success: function(tResult) {
-                                try {
-                                    var oResult = JSON.parse(tResult);
-                                    if (oResult.nStaEvent == '1') {
-                                        JSvCardShiftOutCallPageCardShiftOutEdit(oResult.tCodeReturn);
-                                    } else {
-                                        FSvCMNSetMsgErrorDialog(oResult.tStaMessg);
+                        if(tCountSuccess[0] != tCountSuccess[2]) {
+                            $('#odvCardShiftOutModalCheckCardStatus').modal('show');
+                            $('#obtCardShiftOutModalCheckCardStatusConfirm').unbind().click(function(evt) {
+                                $('#odvCardShiftOutModalCheckCardStatus').modal('hide');
+                                $.ajax({
+                                    type: "POST",
+                                    url: ptRoute,
+                                    data: $('#ofmAddCardShiftOutMainForm').serialize() + "&aCardCode=" + JSON.stringify(aCardCode),
+                                    cache: false,
+                                    timeout: 0,
+                                    success: function(tResult) {
+                                        try {
+                                            var oResult = JSON.parse(tResult);
+                                            if (oResult.nStaEvent == '1') {
+                                                JSvCardShiftOutCallPageCardShiftOutEdit(oResult.tCodeReturn);
+                                            } else {
+                                                FSvCMNSetMsgErrorDialog(oResult.tStaMessg);
+                                            }
+                                        } catch (err) {}
+                                    },
+                                    error: function(jqXHR, textStatus, errorThrown) {
+                                        JCNxCardShiftOutResponseError(jqXHR, textStatus, errorThrown);
                                     }
-                                } catch (err) {}
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                JCNxCardShiftOutResponseError(jqXHR, textStatus, errorThrown);
-                            }
-                        });
+                                });
+                            });
+                        }else{
+                            $.ajax({
+                                type: "POST",
+                                url: ptRoute,
+                                data: $('#ofmAddCardShiftOutMainForm').serialize() + "&aCardCode=" + JSON.stringify(aCardCode),
+                                cache: false,
+                                timeout: 0,
+                                success: function(tResult) {
+                                    try {
+                                        var oResult = JSON.parse(tResult);
+                                        if (oResult.nStaEvent == '1') {
+                                            JSvCardShiftOutCallPageCardShiftOutEdit(oResult.tCodeReturn);
+                                        } else {
+                                            FSvCMNSetMsgErrorDialog(oResult.tStaMessg);
+                                        }
+                                    } catch (err) {}
+                                },
+                                error: function(jqXHR, textStatus, errorThrown) {
+                                    JCNxCardShiftOutResponseError(jqXHR, textStatus, errorThrown);
+                                }
+                            });
+                        }
                     },
                     errorElement: "em",
                     errorPlacement: function(error, element) {

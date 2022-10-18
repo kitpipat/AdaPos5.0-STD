@@ -87,7 +87,7 @@ class mRptTopUp extends CI_Model {
                 c.*
             FROM(
                 SELECT
-                    ROW_NUMBER() OVER(ORDER BY FTTxnPosCode ASC,FDTxnDocDate ASC) AS rtRowID, *
+                    ROW_NUMBER() OVER(ORDER BY FTCrdCode ASC,FDTxnDocDate ASC) AS rtRowID, *
                 FROM(
                     SELECT
                     TMP.FTTxnPosCode,
@@ -108,7 +108,7 @@ class mRptTopUp extends CI_Model {
                     CONCAT(TMP.FTCrdCode,';',TMP.FTCtyName) AS FTCtyName, 
                     CONCAT(TMP.FTCrdCode,';',TMP.FTDptName) AS FTDptName
                 FROM TFCTRptCrdTmp TMP WITH (NOLOCK)
-                WHERE 1=1 AND TMP.FTComName = '$tCompName' AND TMP.FTRptName = '$tRptCode'
+                WHERE TMP.FTComName = '$tCompName' AND TMP.FTRptName = '$tRptCode'
 
             ) Base ) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1]
 

@@ -3341,3 +3341,387 @@ BEGIN CATCH
 END CATCH
 GO
 
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'SP_RPTxTopUp')and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE [dbo].[SP_RPTxTopUp]
+GO
+
+CREATE PROCEDURE [dbo].[SP_RPTxTopUp]
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptName Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+
+  --สาขา
+	@ptBchL Varchar(8000), --สาขา Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+
+
+  --กลุ่มธุรกิจ
+	@ptMerL Varchar(8000), --กลุ่มธุรกิจ Condition IN
+	@ptMerF Varchar(5),
+	@ptMerT Varchar(5),
+
+  --ร้านค้า
+	@ptShpL Varchar(8000), --ร้านค้า Condition IN
+	@ptShpF Varchar(5),
+	@ptShpT Varchar(5),
+
+
+	--เครื่องจุดขาย
+	@ptPosL Varchar(8000), --กรณี Condition IN
+	@ptPosF Varchar(20),
+	@ptPosT Varchar(20),
+
+
+	@ptCrdF Varchar(30),
+	@ptCrdT Varchar(30),
+	@ptUserIdF Varchar(30),
+	@ptUserIdT Varchar(30),
+	@ptCrdActF Varchar(1), --ʶҹкѵÍ
+	@ptCrdActT Varchar(1),
+	@ptDocDateF Varchar(10),
+	@ptDocDateT Varchar(10),
+	@FNResult INT OUTPUT 
+AS
+--------------------------------------
+-- Watcharakorn 
+-- Create 19/06/2019
+-- Last Update : Napat(Jame) 17/10/2022 ไม่เอา checkout type 5
+-- @pnLngID À҉ҍ
+-- @tRptName ªר̓҂§ҹ
+-- @tRptName ªר̓҂§ҹ
+-- @pnCrdF ¨ҡºѵà
+-- @pnCrdT ¶֧ˁ҂ŢºѵÍ
+-- @ptUserIdF ¨ҡËъ¾¹ѡ§ҹ,
+-- @ptUserIdT ¶֧Ëъ¾¹ѡ§ҹ,
+ --@ptCrdActF Varchar(5), --»Ð7ºѵÍ
+ --@ptCrdActT Varchar(5),
+-- @ptDocDateF ¨ҡǑ¹·ը
+-- @ptDocDateT ¶֧Ǒ¹·ը
+-- @FNResult
+--------------------------------------
+BEGIN TRY
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptName Varchar(100)
+	DECLARE @tSql VARCHAR(8000)
+	DECLARE @tSqlIns VARCHAR(8000)
+	DECLARE @tSql1 nVARCHAR(Max)
+	DECLARE @tSql2 VARCHAR(8000)
+	DECLARE @tCrdF Varchar(30)
+	DECLARE @tCrdT Varchar(30)
+	DECLARE @tUserIdF Varchar(30)
+	DECLARE @tUserIdT Varchar(30)
+	DECLARE @tCrdActF Varchar(1) --»Ð7ºѵÍ
+	DECLARE @tCrdActT Varchar(1)
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+
+	--SET @nLngID = 1
+	--SET @nComName = 'Ada062'
+	--SET @tRptName = 'TopUp'
+	--SET @tCrdF = '2019030500'
+	--SET @tCrdT = '2019030600'
+	--SET @tUserIdF = '2019030551'
+	--SET @tUserIdT = '2019030800'
+	--SET @tCrdActF = '1'
+	--SET @tCrdActT = '3'
+	--SET @tDocDateF = '2019-01-01'
+	--SET @tDocDateT = '2019-06-30'
+
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tRptName = @ptRptName
+	SET @tCrdF = @ptCrdF
+	SET @tCrdT = @ptCrdT
+	SET @tUserIdF =  @ptUserIdF
+	SET @tUserIdT =  @ptUserIdT
+	SET @tCrdActF = @ptCrdActF
+	SET @tCrdActT = @ptCrdActT
+	SET @tDocDateF = @ptDocDateF
+	SET @tDocDateT = @ptDocDateT
+	SET @FNResult= 0
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+	--Set ¤蒣˩ Paraleter ¡óՠT ໧¹¤蒇蒧˃׍ null
+	IF @tCrdF = null
+	BEGIN
+		SET @tCrdF = ''
+	END 
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tCrdT = null OR @tCrdT =''
+	BEGIN
+		SET @tCrdT = @tCrdF
+	END 
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+
+	if @tCrdActF = null 
+	BEGIN
+		SET @tCrdActF = ''
+	END
+	IF @tCrdActT = null or @tCrdActF = ''
+	BEGIN 
+		SET @tCrdActT = @tCrdActF
+	END 
+
+	IF @tUserIdF = null
+	BEGIN
+		SET @tUserIdF = ''
+	END
+
+	IF @tUserIdT = null OR @tUserIdT = ''
+	BEGIN
+		SET @tUserIdT = @tUserIdF
+	END
+
+SET @tSql1 = ''
+
+	IF @pnFilterType = '1'
+	BEGIN
+		IF (@ptBchF <> '' AND @ptBchT <> '')
+		BEGIN
+			SET @tSql1 +=' AND CT.FTBchCode BETWEEN ''' + @ptBchF + ''' AND ''' + @ptBchT + ''''
+		END
+
+		IF (@ptMerF <> '' AND @ptMerT <> '')
+		BEGIN
+			SET @tSql1 +=' AND SHP.FTMerCode BETWEEN ''' + @ptMerF + ''' AND ''' + @ptMerT + ''''
+		END
+
+		IF (@ptShpF <> '' AND @ptShpT <> '')
+		BEGIN
+			SET @tSql1 +=' AND CT.FTShpCode BETWEEN ''' + @ptShpF + ''' AND ''' + @ptShpT + ''''
+		END
+
+		IF (@ptPosF <> '' AND @ptPosT <> '')
+		BEGIN
+			SET @tSql1 +=' AND CT.FTTxnPosCode BETWEEN ''' + @ptPosF + ''' AND ''' + @ptPosT + ''''
+		END
+
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN
+		IF (@ptBchL <> '' )
+		BEGIN
+			SET @tSql1 +=' AND CT.FTBchCode IN (' + @ptBchL + ')'
+		END
+
+		IF (@ptMerL <> '')
+		BEGIN
+			SET @tSql1 += ' AND SHP.FTMerCode IN (' + @ptMerL + ')'
+		END	
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSql1 += ' AND CT.FTPosCode IN (' + @ptShpL + ')'
+		END	
+
+		IF (@ptPosL <> '')
+		BEGIN
+			SET @tSql1 += ' AND CT.FTTxnPosCode IN (' + @ptPosL + ')'
+		END	
+		--IF (@ptPosL <> '')
+		--BEGIN
+		--	SET @tSql1 += ' AND HD.FTPosCode IN (' + @ptPosL + ')'
+		--END		
+	END
+
+
+	DELETE FROM TFCTRptCrdTmp WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptName = '' + @tRptName + '' --ź¢鍁م Temp ¢ͧःרͧ·ը¨кѹ·֡¢́مŧ Temp
+	SET @tSQL = 'INSERT INTO TFCTRptCrdTmp' 
+	SET @tSQL +='('
+	SET @tSQL +='FTComName,FTRptName,FTTxnPosCode,FDTxnDocDate,FTTxnDocType,FTTxnDocNoRef,FTCrdCode,FDCrdExpireDate,FTCdtRmk,FTCrdName,'
+	SET @tSQL +='FTCrdStaActive,FTCrdHolderID,FTUsrName,FCTxnCrdValue,FCTxnValue,FCTxnValAftTrans,FTCtyName,FTDptName'
+	SET @tSQL +=')'
+	SET @tSQL +=' SELECT '''+ @nComName + '''  AS FTComName, '''+ @tRptName +'''AS FTRptName,'
+	SET @tSQL +='FTTxnPosCode,FDTxnDocDate,FTTxnDocType,FTTxnDocNoRef,FTCrdCode,FDCrdExpireDate,FTCdtRmk,FTCrdName,'
+	SET @tSQL +='FTCrdStaActive,FTCrdHolderID,FTUsrName,FCTxnCrdValue,FCTxnValue,FCTxnValAftTrans,FTCtyName,FTDptName'
+	SET @tSQL +=' FROM'
+		SET @tSQL +=' ('
+		 SET @tSQL +=' SELECT A.FTTxnPosCode,A.FDTxnDocDate,A.FTTxnDocType,A.FTTxnDocNoRef,A.FTCrdCode,CRDX.FDCrdExpireDate,A.FTCdtRmk,CRDL.FTCrdName,'
+		 SET @tSQL +=' CTYL.FTCtyName,DPL.FTDptName,CRD.FTCrdStaActive, CRD.FTCrdHolderID,USRL.FTUsrName,A.FCTxnCrdValue,A.FCTxnValue,'
+		 --SET @tSQL +=' A.FCTxnCrdValue + A.FCTxnValue AS FCTxnValAftTrans'
+		 SET @tSQL +=' CASE
+						WHEN A.FTTxnDocType IN (''1'',''4'',''9'') THEN A.FCTxnCrdValue + A.FCTxnValue 
+						WHEN A.FTTxnDocType IN (''2'',''3'',''5'',''8'',''10'') THEN A.FCTxnCrdValue - A.FCTxnValue
+						ELSE 0
+					  END AS FCTxnValAftTrans '
+		 SET @tSQL +=' FROM'
+			SET @tSQL +=' ('
+ 			-- SET @tSQL +=' SELECT ISNULL(CT.FTTxnPosCode, ''N/A'') AS FTTxnPosCode, CT.FDTxnDocDate, CT.FTCrdCode, CT.FCTxnValue, '''' AS FTCdtRmk, CT.FTTxnDocType, CT.FTTxnDocNoRef, CT.FCTxnCrdValue'
+			 --SET @tSQL +=' FROM dbo.TFNTCrdHis AS CT WITH (NOLOCK) '
+    --   SET @tSQL += ' LEFT JOIN TCNMShop AS SHP WITH (NOLOCK) ON CT.FTShpCode = SHP.FTShpCode AND CT.FTBchCode = SHP.FTBchCode'
+			 --SET @tSQL += ' WHERE 1=1'
+    --   SET @tSQL += @tSql1
+			 --IF (@tCrdF <> '' AND @tCrdT <> '')
+			 --BEGIN
+			 --	SET @tSQL +=' AND FTCrdCode BETWEEN ''' + @tCrdF + ''' AND ''' + @tCrdT + ''''
+			 --END
+ 
+ 			-- IF (@tDocDateF <> '' AND @tDocDateT <> '')
+ 			-- BEGIN
+			 --	SET @tSQL +=' AND CONVERT(VARCHAR(10),FDTxnDocDate, 121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+			 --END
+
+			 /* Napat(Jame) 17/10/2022 ไม่เอา checkout type 5 จาก TFNTCrdSale */
+			 --SET @tSQL +=' SELECT 
+				--				CT.FTTxnPosCode, 
+				--				CT.FDTxnDocDate, 
+				--				CT.FTCrdCode, 
+				--				CT.FCTxnValue, 
+				--				'''' AS FTCdtRmk, 
+				--				CT.FTTxnDocType, 
+				--				CT.FTTxnDocNoRef, 
+				--				CT.FCTxnCrdValue,
+				--				CTHD.FTCreateBy
+				--		   FROM TFNTCrdSale CT WITH(NOLOCK)
+				--		   LEFT JOIN TFNTCrdTopUpHD CTHD WITH(NOLOCK) ON CT.FTTxnDocNoRef = CTHD.FTXshDocNo 
+				--		   WHERE 1=1 AND ISNULL(CTHD.FTCreateBy,'''') <> '''' '
+			 --SET @tSQL += @tSql1
+			 --IF (@tCrdF <> '' AND @tCrdT <> '')
+			 --BEGIN
+				-- SET @tSQL +=' AND CT.FTCrdCode BETWEEN ''' + @tCrdF + ''' AND ''' + @tCrdT + ''''
+			 --END
+
+			 --IF (@tDocDateF <> '' AND @tDocDateT <> '')
+			 --BEGIN
+				-- SET @tSQL +=' AND CONVERT(VARCHAR(10),CT.FDTxnDocDate, 121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+			 --END
+			 --SET @tSQL +=' UNION ALL'
+
+			 SET @tSQL +=' SELECT CT.FTTxnPosCode,CT.FDTxnDocDate,CT.FTCrdCode,CT.FCTxnValue,'''' AS FTCdtRmk, CT.FTTxnDocType,' 
+			 SET @tSQL +=' CT.FTTxnDocNoRef, CT.FCTxnCrdValue,'
+			 SET @tSQL +=' CASE
+							WHEN ISNULL(CTHD.FTCreateBy,'''') <> '''' THEN CTHD.FTCreateBy
+							WHEN ISNULL(CSHD.FTCreateBy,'''') <> '''' THEN CSHD.FTCreateBy
+						   END AS FTCreateBy '
+			 SET @tSQL +=' FROM TFNTCrdTopUp CT WITH (NOLOCK) '
+			 SET @tSQL +=' LEFT JOIN TFNTCrdTopUpHD CTHD WITH(NOLOCK) ON CT.FTTxnDocNoRef = CTHD.FTXshDocNo '
+			 SET @tSQL +=' LEFT JOIN TFNTCrdShiftHD CSHD WITH(NOLOCK) ON CT.FTTxnDocNoRef = CSHD.FTXshDocNo '
+			 SET @tSQL +=' LEFT JOIN TCNMShop AS SHP WITH (NOLOCK) ON CT.FTShpCode = SHP.FTShpCode AND CT.FTBchCode = SHP.FTBchCode'
+			 /* Napat(Jame) 17/10/2022 ไม่เอา checkout type 5 */
+			 SET @tSQL +=' WHERE CT.FTTxnDocType <> ''5'' AND ( ISNULL(CTHD.FTCreateBy,'''') <> '''' OR ISNULL(CSHD.FTCreateBy,'''') <> '''' )'
+			 SET @tSQL += @tSql1
+			 IF (@tCrdF <> '' AND @tCrdT <> '')
+			 BEGIN
+				 SET @tSQL +=' AND CT.FTCrdCode BETWEEN ''' + @tCrdF + ''' AND ''' + @tCrdT + ''''
+			 END
+
+			 IF (@tDocDateF <> '' AND @tDocDateT <> '')
+			 BEGIN
+				 SET @tSQL +=' AND CONVERT(VARCHAR(10),CT.FDTxnDocDate, 121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+			 END
+
+			SET @tSQL +=' ) AS A LEFT OUTER JOIN'
+		 SET @tSQL +=' dbo.TFNTCrdTopUpHD AS TOPHD WITH (NOLOCK) ON A.FTTxnDocNoRef = TOPHD.FTXshDocNo LEFT OUTER JOIN'
+		 SET @tSQL +=' dbo.TFNMCard AS CRD WITH (NOLOCK) ON A.FTCrdCode = CRD.FTCrdCode LEFT OUTER JOIN'
+		 SET @tSQL +=' dbo.TFNMCard_L AS CRDL WITH (NOLOCK) ON CRD.FTCrdCode = CRDL.FTCrdCode AND CRDL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' LEFT OUTER JOIN'
+		 SET @tSQL +=' dbo.TFNMCardType_L AS CTYL WITH (NOLOCK) ON CRD.FTCtyCode = CTYL.FTCtyCode AND CTYL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' LEFT OUTER JOIN'
+		 SET @tSQL +=' dbo.TCNMUsrDepart_L AS DPL WITH (NOLOCK) ON CRD.FTDptCode = DPL.FTDptCode AND DPL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+		 SET @tSQL +=' LEFT OUTER JOIN dbo.TCNMUser_L AS USRL WITH (NOLOCK) ON A.FTCreateBy = USRL.FTUsrCode  AND USRL.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+		 SET @tSQL +=' LEFT OUTER JOIN ' 
+		 SET @tSQL +=' dbo.TFNMCard AS CRDX WITH (NOLOCK) ON A.FTCrdCode = CRDX.FTCrdCode'
+		 SET @tSQL +=' WHERE (A.FTTxnDocType IN (''1'',''3'',''4'',''5''))'
+		SET @tSQL +=' ) TopUp'
+		SET @tSql += ' WHERE 1=1'
+		IF (@tCrdF <> '' AND @tCrdT <> '')
+		BEGIN
+			SET @tSQL +=' AND FTCrdCode BETWEEN ''' + @tCrdF + ''' AND ''' + @tCrdT + ''''
+		END
+
+		IF (@tDocDateF <> '' AND @tDocDateT <> '')
+		BEGIN
+			SET @tSQL +=' AND CONVERT(VARCHAR(10),FDTxnDocDate, 121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+		END
+		IF @tUserIdF <> '' AND @tUserIdT <> ''
+		BEGIN
+			SET @tSQL += ' AND FTCrdHolderID BETWEEN ''' + @tUserIdF + ''' AND ''' + @tUserIdT +''''
+		END
+
+		IF @tCrdActF <> '' AND @tCrdActT <> ''
+		BEGIN
+			SET  @tSQL += ' AND FTCrdStaActive BETWEEN '''+ @tCrdActF +''' AND '''+ @tCrdActT +''''
+		END  
+	--PRINT @tSQL
+	execute(@tSQL)
+	
+	RETURN SELECT * FROM TFCTRptCrdTmp WHERE FTComName = ''+ @nComName + '' AND FTRptName = ''+ @tRptName +''
+	
+END TRY
+
+BEGIN CATCH 
+ SET @FNResult= -1
+END CATCH
+GO
+
+
+
+IF EXISTS
+(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_SETnResetExpired')and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE [dbo].STP_SETnResetExpired
+GO
+CREATE PROCEDURE [dbo].[STP_SETnResetExpired] 
+	@ptBchCode VARCHAR(5) NUll,
+	@ptCrdCode VARCHAR(20)  NUll,
+	@ptPosCode VARCHAR(5)  NUll,
+	@pcCrdValue NUMERIC(18,4) NULL,
+	@ptDocNoRef VARCHAR(20) NUll
+   ,@FNResult INT OUT 
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	19/11/2020		Em		create  
+05.02.00	17/10/2022		Zen		Update Fifo
+----------------------------------------------------------------------*/
+DECLARE @tTrans varchar(20)
+SET @tTrans = 'CardChkOut'  
+BEGIN TRY  
+	BEGIN TRANSACTION @tTrans
+
+	INSERT INTO TFNTCrdTopUp WITH(ROWLOCK)
+	(
+		FTBchCode,FTTxnDocType,FTCrdCode
+		,FDTxnDocDate,FCTxnValue,FTTxnStaPrc
+		,FTTxnPosCode,FCTxnCrdValue,FTTxnDocNoRef
+	)
+	VALUES
+	(
+		@ptBchCode ,'10',@ptCrdCode 
+		,GETDATE(),@pcCrdValue,'1'
+		,@ptPosCode,@pcCrdValue,@ptDocNoRef
+	)
+
+	-- Update Master Card
+	UPDATE TFNMCardBal WITH (ROWLOCK) SET
+	FCCrdValue= 0
+	WHERE FTCrdCode=@ptCrdCode
+
+	DELETE TFNTCrdTopUpFifo WHERE FTCrdCode = @ptCrdCode
+
+    COMMIT TRANSACTION @tTrans 
+END TRY 
+BEGIN CATCH 
+	ROLLBACK TRANSACTION @tTrans 
+	SELECT ERROR_MESSAGE()
+END CATCH
+
+GO

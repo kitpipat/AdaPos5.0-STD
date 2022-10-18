@@ -487,7 +487,9 @@ class mCardShiftTopUp extends CI_Model
                 'FTXshStaDoc' => $paData['FTXshStaDoc'],
                 'FNXshStaDocAct' => $paData['FNXshStaDocAct'],
                 'FDCreateOn' => $paData['FDCreateOn'],
-                'FTCreateBy' => $paData['FTCreateBy']
+                'FTCreateBy' => $paData['FTCreateBy'],
+                'FDLastUpdOn' => $paData['FDLastUpdOn'],
+                'FTLastUpdBy' => $paData['FTLastUpdBy'],
             ));
             if ($this->db->affected_rows() > 0) {
                 $aStatus = array(

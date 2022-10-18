@@ -150,12 +150,12 @@ class cCardShiftTopUp extends MX_Controller
 
         if ($tStaPrcDoc == "" and $tStaDoc == "") {
             // Validate document temp
-            //(5)
-            FSnHTopUpChkCrdCodeFoundInDB($paParams);
 
             //(4)
             FSnHTopUpChkCrdCodeNotDupTemp($paParams);
 
+            //(5)
+            FSnHTopUpChkCrdCodeFoundInDB($paParams);
 
             //(9)
             FSnHTopUpChkStaActiveInCard($paParams);
@@ -163,19 +163,17 @@ class cCardShiftTopUp extends MX_Controller
             //(12)
             FSnHTopUpChkCardExpireDate($paParams);
 
-            
             //(8)
             FSnHTopUpChkStaShiftInCard($paParams);
         } else {
             if ($tStaPrcDoc == "" and $tStaDoc == "1") { // Document pending status(approve) or complete status(doc status)
                 // Validate document temp
-                //(5)
-                FSnHTopUpChkCrdCodeFoundInDB($paParams);
-
+                
                 //(4)
                 FSnHTopUpChkCrdCodeNotDupTemp($paParams);
 
-                
+                //(5)
+                FSnHTopUpChkCrdCodeFoundInDB($paParams);
 
                 //(9)
                 FSnHTopUpChkStaActiveInCard($paParams);

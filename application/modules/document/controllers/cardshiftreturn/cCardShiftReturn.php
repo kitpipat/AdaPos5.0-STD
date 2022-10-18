@@ -150,28 +150,22 @@ class cCardShiftReturn extends MX_Controller {
         $paParams['nCrdStaActive']  = 1;
 
         if($tStaPrcDoc == "" AND $tStaDoc == ""){
-            //(5)
-            FSnHReturnCrdChkCrdCodeFoundInDB($paParams);
-
             //(4)
             FSnHReturnCrdChkCrdCodeNotDupTemp($paParams);
-
+            //(5)
+            FSnHReturnCrdChkCrdCodeFoundInDB($paParams);
             //(8)
             FSnHReturnCrdChkStaShiftInCard($paParams);
-
             //(9)
             // FSnHReturnCrdChkStaActiveInCard($paParams);
         }else{
             if($tStaPrcDoc == "" AND $tStaDoc == "1"){ // Document pending status(approve) or complete status(doc status)
-                //(5)
-                FSnHReturnCrdChkCrdCodeFoundInDB($paParams);
-
                 //(4)
                 FSnHReturnCrdChkCrdCodeNotDupTemp($paParams);
-
+                //(5)
+                FSnHReturnCrdChkCrdCodeFoundInDB($paParams);
                 //(8)
                 FSnHReturnCrdChkStaShiftInCard($paParams);
-
                 //(9)
                 // FSnHReturnCrdChkStaActiveInCard($paParams);
             }

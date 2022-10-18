@@ -18,33 +18,39 @@ function FSnHRefunChkCrdCodeFoundInDB($paParams){
 
     //  Where Seq In Table Edit InLine
     if(isset($tSeqNo) && !empty($tSeqNo)){
-        $tWhereSltSeqNo = " AND FNXsdSeqNo = '$tSeqNo'";
-        $tWhereUpdSeqNo = " AND FNXsdSeqNo = '$tSeqNo'";
+        $tWhereSltSeqNo = " AND CTT.FNXsdSeqNo = '$tSeqNo'";
+        // $tWhereUpdSeqNo = " AND FNXsdSeqNo = '$tSeqNo'";
     }else{
         $tWhereSltSeqNo = "";
-        $tWhereUpdSeqNo = "";
+        // $tWhereUpdSeqNo = "";
     }
 
     $tErrorNotFoundCardCode = language('document/card/docvalidate','tErrorNotFoundCardCode'); // Add validate for lang (golf) 08/01/2019
 
-    $tSQL = " 
-        UPDATE TFNTCrdTopUpTmp SET FTXsdStaCrd = 2 , FTXsdRmk = '$tErrorNotFoundCardCode'
-            WHERE FTCrdCode
-            NOT IN(
-                SELECT  DISTINCT C1.FTCrdCode FROM TFNTCrdTopUpTmp C1
-                INNER JOIN(
-                    SELECT CTT.FTCrdCode AS FTCrdCodeTemp , ISNULL(CRD.FTCrdCode,CRD.FTCrdCode) AS FTCrdCode
-                    FROM TFNTCrdTopUpTmp CTT
-                    LEFT JOIN  TFNMCard CRD WITH (NOLOCK) ON CTT.FTCrdCode = CRD.FTCrdCode
-                    WHERE 1=1
-                    AND CTT.FTSessionID = '".$tSessionID."'
-                ) C2 ON C1.FTCrdCode = C2.FTCrdCode
-                ".$tWhereSltSeqNo."
-            ) 
-    ";
+    // $tSQL = " 
+    //     UPDATE TFNTCrdTopUpTmp SET FTXsdStaCrd = 2 , FTXsdRmk = '$tErrorNotFoundCardCode'
+    //         WHERE FTCrdCode
+    //         NOT IN(
+    //             SELECT  DISTINCT C1.FTCrdCode FROM TFNTCrdTopUpTmp C1
+    //             INNER JOIN(
+    //                 SELECT CTT.FTCrdCode AS FTCrdCodeTemp , ISNULL(CRD.FTCrdCode,CRD.FTCrdCode) AS FTCrdCode
+    //                 FROM TFNTCrdTopUpTmp CTT
+    //                 LEFT JOIN  TFNMCard CRD WITH (NOLOCK) ON CTT.FTCrdCode = CRD.FTCrdCode
+    //                 WHERE 1=1
+    //                 AND CTT.FTSessionID = '".$tSessionID."'
+    //             ) C2 ON C1.FTCrdCode = C2.FTCrdCode
+    //             ".$tWhereSltSeqNo."
+    //         ) 
+    // ";
 
-    $tSQL .= $tWhereUpdSeqNo;
-    $tSQL .= " AND FTXsdStaCrd = '1' AND FTSessionID = '$tSessionID'";
+    // $tSQL .= $tWhereUpdSeqNo;
+    // $tSQL .= " AND FTXsdStaCrd = '1' AND FTSessionID = '$tSessionID'";
+    $tSQL = "   UPDATE TFNTCrdTopUpTmp 
+                SET TFNTCrdTopUpTmp.FTXsdStaCrd = '2', TFNTCrdTopUpTmp.FTXsdRmk = '$tErrorNotFoundCardCode'
+                FROM TFNTCrdTopUpTmp CTT WITH(NOLOCK)
+                LEFT JOIN TFNMCard CRD WITH (NOLOCK) ON CTT.FTCrdCode = CRD.FTCrdCode
+                WHERE CTT.FTXsdStaCrd = '1' AND CTT.FTSessionID = '".$tSessionID."' AND CRD.FTCrdCode IS NULL ";
+    $tSQL   .= $tWhereSltSeqNo;
     
     $ci->db->query($tSQL);
     
@@ -132,39 +138,48 @@ function FSnHRefunChkStaShiftInCard($paParams){
     // Where Seq In Table Edit InLine
     if(isset($tSeqNo) && !empty($tSeqNo)){
         $tWhereSltSeqNo = " AND CTT.FNXsdSeqNo = '$tSeqNo'";
-        $tWhereUpdSeqNo = " AND FNXsdSeqNo = '$tSeqNo'";
+        // $tWhereUpdSeqNo = " AND FNXsdSeqNo = '$tSeqNo'";
     }else{
         $tWhereSltSeqNo = "";
-        $tWhereUpdSeqNo = "";
+        // $tWhereUpdSeqNo = "";
     }
 
     // StatusShift = 1: สถานะบัตรยังไม่ถูกเบิก , 2: สถานะบัตรถูกเบิกไปแล้ว
-        $tRmkError = "";
-    if(!empty($bStaCardShift) && $bStaCardShift === TRUE){
+    //     $tRmkError = "";
+    // if(!empty($bStaCardShift) && $bStaCardShift === TRUE){
         $tRmkError = language('document/card/docvalidate', 'tErrorStaCrdShiftNotWithdrawned'); // Add validate for lang (jame) 08/01/2019
-        $tWhereStaCrdShift = " AND CRD.FTCrdStaShift = '1'";
-    }else if(!empty($bStaCardShift) && $bStaCardShift === FALSE){
-        $tRmkError = language('document/card/docvalidate', 'tErrorStaCrdShiftWithdrawned'); // Add validate for lang (jame) 08/01/2019
-        $tWhereStaCrdShift = " AND CRD.FTCrdStaShift = '2'";
-    }else{
-        $tRmkError = ''; // Add validate for lang (Copter) 08/01/2019
-        $tWhereStaCrdShift = "";
-    }
+    //     $tWhereStaCrdShift = " AND CRD.FTCrdStaShift = '1'";
+    // }else if(!empty($bStaCardShift) && $bStaCardShift === FALSE){
+        // $tRmkError = language('document/card/docvalidate', 'tErrorStaCrdShiftWithdrawned'); // Add validate for lang (jame) 08/01/2019
+        // $tWhereStaCrdShift = " AND CRD.FTCrdStaShift = '2'";
+    // }else{
+        // $tRmkError = ''; // Add validate for lang (Copter) 08/01/2019
+        // $tWhereStaCrdShift = "";
+    // }
+
+    $tSQL = " UPDATE TFNTCrdTopUpTmp 
+                SET TFNTCrdTopUpTmp.FTXsdStaCrd = '2', TFNTCrdTopUpTmp.FTXsdRmk = '$tRmkError'
+                FROM TFNTCrdTopUpTmp CTT WITH(NOLOCK)
+                INNER JOIN TFNMCard CRD WITH (NOLOCK) ON CTT.FTCrdCode = CRD.FTCrdCode
+                INNER JOIN TFNMCardType CTY WITH (NOLOCK) ON CRD.FTCtyCode = CTY.FTCtyCode
+                WHERE CTT.FTXsdStaCrd = '1' AND CTT.FTSessionID = '".$tSessionID."' AND (CTY.FTCtyStaShift = '1' AND CRD.FTCrdStaShift = '1')
+                ";
+    $tSQL   .= $tWhereSltSeqNo;
     
-    $tSQL = " 
-        UPDATE TFNTCrdTopUpTmp SET FTXsdStaCrd = '2', FTXsdRmk = '$tRmkError'
-            WHERE FTCrdCode 
-            NOT IN (
-                SELECT ISNULL(CRD.FTCrdCode,CRD.FTCrdCode) AS FTCrdCode
-                FROM TFNTCrdTopUpTmp CTT
-                LEFT JOIN TFNMCard CRD WITH (NOLOCK) ON CTT.FTCrdCode = CRD.FTCrdCode
-                WHERE 1=1 
-    ";
-    $tSQL .= $tWhereSltSeqNo;
-    $tSQL .= $tWhereStaCrdShift;
-    $tSQL .= " ) ";
-    $tSQL .= $tWhereUpdSeqNo;
-    $tSQL .= " AND FTXsdStaCrd = '1' AND FTSessionID = '$tSessionID'";
+    // $tSQL = " 
+    //     UPDATE TFNTCrdTopUpTmp SET FTXsdStaCrd = '2', FTXsdRmk = '$tRmkError'
+    //         WHERE FTCrdCode 
+    //         NOT IN (
+    //             SELECT ISNULL(CRD.FTCrdCode,CRD.FTCrdCode) AS FTCrdCode
+    //             FROM TFNTCrdTopUpTmp CTT
+    //             LEFT JOIN TFNMCard CRD WITH (NOLOCK) ON CTT.FTCrdCode = CRD.FTCrdCode
+    //             WHERE 1=1 
+    // ";
+    // $tSQL .= $tWhereSltSeqNo;
+    // $tSQL .= $tWhereStaCrdShift;
+    // $tSQL .= " ) ";
+    // $tSQL .= $tWhereUpdSeqNo;
+    // $tSQL .= " AND FTXsdStaCrd = '1' AND FTSessionID = '$tSessionID'";
 
     $oQuery = $ci->db->query($tSQL);
 
