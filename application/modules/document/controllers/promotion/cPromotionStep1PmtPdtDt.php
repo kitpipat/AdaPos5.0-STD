@@ -217,7 +217,7 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
                 ];
                 $aResultToTmp = $this->mPromotionStep1PmtPdtDt->FSaMPmtPdtDtToTemp($aPmtPdtDtToTempParams);
                 $aCheckStalotPdt[$nKey]['tPdtCode'] = $aPackData['PDTCode'];
-                $aCheckStalotPdt[$nKey]['nStaLot'] = $aPackData['nStaLot'];
+                $aCheckStalotPdt[$nKey]['nStaLot'] = @$aPackData['nStaLot'];
                 $aCheckStalotPdt[$nKey]['nSeqno'] = $aResultToTmp['nSeqno'];
             }
         }
