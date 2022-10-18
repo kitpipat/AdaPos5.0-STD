@@ -50,6 +50,7 @@ $lang['tPOSNameDevice']                 = "Device Name";
 $lang['tPOSModelPrinter']               = "Printer Name";
 $lang['tPOSModelBaudrate']              = "Baud Rate";
 $lang['tPOSModelRFID']                  = "RFID Name";
+$lang['tPOSModelMifare']                = "Mifare Name";
 $lang['tPOSModelEDC']                   = "EDC Name";
 $lang['tPOSModelDevice']                = "Printer Name";
 $lang['tPOSConTypeDevice']              = "Connect Type";
@@ -82,6 +83,7 @@ $lang['tPOSDrawer']         = "Drawer";
 $lang['tPOSHWEDC']          = "EDC Machine";
 $lang['tPOSHWMagReader']    = "Magnetic Stripe Reader";
 $lang['tPOSHWRFIDReader']   = "RFID Reader";
+$lang['tPOSHWMifareReader'] = "Mifare Reader";
 $lang['tPOSHWBotRate']      = "Baud Rate";
 
 $lang['tBrowseEDC']         = "EDC Machine";
@@ -91,6 +93,7 @@ $lang['tBrowseBankCodeEDC'] = "Bank Name";
 $lang['tBrowseCodeBank']    = "Bank Code";
 
 $lang['tBrowseRFID']        = "RFID Device";
+$lang['tBrowseMifare']      = "Mifare Device";
 $lang['tBrowseCodeRFID']    = "Code";
 $lang['tBrowseNameRFID']    = "Name";
 

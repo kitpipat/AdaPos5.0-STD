@@ -35,3 +35,4 @@ $lang['tBrowsePrnName']               = "Port Name";
 $lang['tSprBTNDelete']               = "Delete";
 $lang['tSprBTNEdit']                 = "Edit";
 $lang['tSprValidCheckCode']          = "This Printer code is already in the system. Please check again";
+$lang['tPOSNFC']                     = "NFC";

@@ -14,7 +14,7 @@ $lang['tCTYExpireMonth']        = "Card Life";
 $lang['tCTYExpireYear']         = "Card Life";
 
 $lang['tCTYExpireDate']         = "Expired Type";
-$lang['TCTYStaAlwRet']          = "Allow";
+$lang['TCTYStaAlwRet']          = "Allow Return Card";
 $lang['tCTYDelete']             = "Delete";
 $lang['tCTYEdit']               = "Edit";
 
@@ -62,7 +62,7 @@ $lang['tCTYFrmCrdStaReuse']             = "การนำไปใช้";
 $lang['tCTYFrmCrdStaReuseTypeDefault']  = "ใช้ซ้ำได้";
 $lang['tCTYFrmCrdStaReuseTypeOneTime']  = "ใช้ครั้งเดียว";
 
-$lang['tCTYFrmTAStaResetDefault']       = "ไม่ล้างข้อมูลก่อนเติมเงินอัติโนมัติ";
-$lang['tCTYFrmTAStaReset']              = "ล้างข้อมูลก่อนเติมเงินอัติโนมัติ";
-$lang['tCTYFrmTAAlwReturnDefault']      = "ไม่อนุญาตคืนยอดเติมเงินอัติโนมัติ";
-$lang['tCTYFrmTAAlwReturn']             = "อนุญาตคืนยอดเติมเงินอัติโนมัติ";
+$lang['tCTYFrmTAStaResetDefault']       = "ไม่ล้างข้อมูลก่อนเติมเงินอัตโนมัติ";
+$lang['tCTYFrmTAStaReset']              = "ล้างข้อมูลก่อนเติมเงินอัตโนมัติ";
+$lang['tCTYFrmTAAlwReturnDefault']      = "ไม่อนุญาตคืนยอดเติมเงินอัตโนมัติ";
+$lang['tCTYFrmTAAlwReturn']             = "อนุญาตคืนยอดเติมเงินอัตโนมัติ";

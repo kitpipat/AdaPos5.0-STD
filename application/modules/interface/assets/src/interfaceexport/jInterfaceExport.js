@@ -9,6 +9,33 @@ $('document').ready(function() {
     // console.log(JCNtAES128EncryptData('Ad@soft2016',tKey,tIV));
 });
 
+//function : Call InterfaceExport Page list  
+//Parameters : Document Redy And Event Button
+//Creator :	07/11/2018 witsarut
+//Return : View
+//Return Type : View
+function JSvCallPageInterFaceExportIndex() {
+    
+    localStorage.tStaPageNow = 'JSvBCHCallPageBranchList';
+    JCNxOpenLoading();
+    $.ajax({
+        type: 'GET',
+        url: "interfaceexport/0/0",
+        cache: false,
+        timeout: 0,
+        success: function(tResult) {
+            $('.odvMainContent').html(tResult);
+
+            // Chk Status Favorite
+            JSxChkStaDisFavorite("interfaceexport/0/0");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
+    })
+    JCNxCloseLoading();
+}
+
 //function : CheckSuccessProgress 
 //Parameters : 
 //Creator :	05/03/2020 Napat(Jame)

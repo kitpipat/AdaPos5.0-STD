@@ -125,7 +125,7 @@
                         <input type="text" class="form-control xCNInputNumericWithDecimal text-right" id="oetCtyDeposit" name="oetCtyDeposit" value="<?php echo $tCtyDeposit;?>" 
                         data-validate="<?php echo language('payment/cardtype/cardtype','tCTYValidDeposit')?>"> <!-- เปลี่ยนชื่อ Class เพิ่ม DataValidate --> <!-- onclick="JCNdValidateComma('oetCtyDeposit',3,'FC');" onfocusout="JCNdValidatelength8Decimal('oetCtyDeposit','FC',3,'<?php echo $nOptDecimalShow?>')" -->
                     </div>
-                    <!-- ยอดเติมเงินอัติโนมัติ -->
+                    <!-- ยอดเติมเงินอัตโนมัติ -->
     		        <div class="form-group">
                         <label class="xCNLabelFrm"><?php echo language('payment/cardtype/cardtype','tCTYTopupAuto')?></label> <!-- เปลี่ยนชื่อ Class -->
                         <input type="text" class="form-control xCNInputNumericWithDecimal text-right" id="oetCtyTopupAuto" name="oetCtyTopupAuto" value="<?php echo $tCtyTopupAuto;?>" 

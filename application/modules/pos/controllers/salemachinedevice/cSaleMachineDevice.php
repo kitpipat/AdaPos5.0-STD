@@ -169,19 +169,10 @@ class cSaleMachineDevice extends MX_Controller {
             
         // }else{
             if($nTypePrinter == 6){ //RFID
-                $tFTPhwConnType = $this->input->post('ocmPhwConnType');
-                $tFTPhwCodeRef  = $this->input->post('oetCodePrinter');
-                $tFTPhwConnRef  = '-';
-                $tFTPhwCustom   = $this->input->post('oetBaudRate');
-
-            }else{ //เครื่องพิมพ์ + บัตรเครดิต
-                $tFTPhwCodeRef  = $this->input->post('oetCodePrinter');
                 // $tFTPhwConnType = $this->input->post('ocmShwPrinter');
+                $tFTPhwCodeRef  = $this->input->post('oetCodePrinter');
                 $tFTPhwConnType = $this->input->post('ocmPhwConnType');
 
-
-                //1:Printer 2:Com Port 3: TCP 4: BT
-                //FTPhwConnRef
                 if($tFTPhwConnType == '2' || $tFTPhwConnType == 2){
                     $tFTPhwConnRef  = $this->input->post('ocmComport');
                 }else if($tFTPhwConnType == '3' || $tFTPhwConnType == 3){
@@ -191,6 +182,26 @@ class cSaleMachineDevice extends MX_Controller {
                 }else{
                     $tFTPhwConnRef  = '-';
                 }
+
+                $tFTPhwCustom   = $this->input->post('oetBaudRate');
+            }else{ //เครื่องพิมพ์ + บัตรเครดิต
+                $tFTPhwCodeRef  = $this->input->post('oetCodePrinter');
+                // $tFTPhwConnType = $this->input->post('ocmShwPrinter');
+                $tFTPhwConnType = $this->input->post('ocmPhwConnType');
+
+                //1:Printer 2:Com Port 3: TCP 4: BT
+                //FTPhwConnRef
+           
+                if($tFTPhwConnType == '2' || $tFTPhwConnType == 2){
+                    $tFTPhwConnRef  = $this->input->post('ocmComport');
+                }else if($tFTPhwConnType == '3' || $tFTPhwConnType == 3){
+                    $tFTPhwConnRef  = $this->input->post('oetPhwConRef');
+                }else if($tFTPhwConnType == '4' || $tFTPhwConnType == 4){
+                    $tFTPhwConnRef  = $this->input->post('oetBluetooth');
+                }else{
+                    $tFTPhwConnRef  = '-';
+                }
+
                 if($nTypePrinter == 1){ //เครื่องพิมพ์
                     $tFTPhwCustom = $this->input->post('oetHiddenPrnType');
                 }else{
@@ -270,9 +281,20 @@ class cSaleMachineDevice extends MX_Controller {
         // }
         
             if($nTypePrinter == 6){ //RFID
-                $tFTPhwConnType = $this->input->post('ocmShwPrinter');
+                // $tFTPhwConnType = $this->input->post('ocmShwPrinter');
                 $tFTPhwCodeRef  = $this->input->post('oetCodePrinter');
-                $tFTPhwConnRef  = '-';
+                $tFTPhwConnType = $this->input->post('ocmPhwConnType');
+
+                if($tFTPhwConnType == '2' || $tFTPhwConnType == 2){
+                    $tFTPhwConnRef  = $this->input->post('ocmComport');
+                }else if($tFTPhwConnType == '3' || $tFTPhwConnType == 3){
+                    $tFTPhwConnRef  = $this->input->post('oetPhwConRef');
+                }else if($tFTPhwConnType == '4' || $tFTPhwConnType == 4){
+                    $tFTPhwConnRef  = $this->input->post('oetBluetooth');
+                }else{
+                    $tFTPhwConnRef  = '-';
+                }
+
                 $tFTPhwCustom   = $this->input->post('oetBaudRate');
             }else{ //เครื่องพิมพ์ + บัตรเครดิต
                 $tFTPhwCodeRef  = $this->input->post('oetCodePrinter');
@@ -314,8 +336,9 @@ class cSaleMachineDevice extends MX_Controller {
                 'FDLastUpdOn'       => date('Y-m-d H:i:s'),
                 'FTLastUpdBy'       => $this->session->userdata('tSesUsername')
         );
-
+        // echo '<pre>';
         // print_r($aDataSaleMachineDevice);
+        // echo '</pre>';
         // exit;
         $this->db->trans_begin();
         $this->mSaleMachineDevice->FSaMPHWAddUpdateMaster($aDataSaleMachineDevice);

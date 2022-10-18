@@ -319,7 +319,8 @@ function JSxValidationFormPhw(pFnSubmitName, ptRoute) {
 
                         if ($("#ocmShwPrinter").val() == 1 ||
                             $("#ocmShwPrinter").val() == 4 ||
-                            $("#ocmShwPrinter").val() == 6) {
+                            $("#ocmShwPrinter").val() == 6 ||
+                            $("#ocmShwPrinter").val() == 9){
                             return true;
                         } else {
                             return false;
@@ -465,7 +466,7 @@ function JSvCallPageSaleMachineDeviceEdit(ptPhwCode,ptBchCode) {
 
         
             $('#odvMachineContentPage').html(tResult);
-            $('#odvConnType').show();
+            // $('#odvConnType').show();
             $('#odvBtnMacPhwSearch').hide();
             $('#odvMngTableList').hide();
             $('#oetPhwCode').addClass('xCNDisable');
@@ -534,7 +535,8 @@ function JSoAddEditSaleMachineDevice(ptRoute) {
 
                             if ($("#ocmShwPrinter").val() == 1 ||
                                 $("#ocmShwPrinter").val() == 4 ||
-                                $("#ocmShwPrinter").val() == 6) {
+                                $("#ocmShwPrinter").val() == 6 ||
+                                $("#ocmShwPrinter").val() == 9) {
                                 return true;
                             } else {
                                 return false;

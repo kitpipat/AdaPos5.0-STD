@@ -52,6 +52,7 @@ $lang['tPOSNameDevice']         = "ชื่ออุปกรณ์";
 $lang['tPOSModelPrinter']       = "ชื่อเครื่องพิมพ์";
 $lang['tPOSModelBaudrate']      = "อัตราบอด";
 $lang['tPOSModelRFID']          = "ชื่ออุปกรณ์ RFID";
+$lang['tPOSModelMifare']        = "ชื่ออุปกรณ์ Mifare";
 $lang['tPOSModelEDC']           = "ชื่อเครื่องอ่านบัตรเครดิต";
 $lang['tPOSModelDevice']        = "ชื่อเครื่องพิมพ์";
 $lang['tPOSConTypeDevice']      = "ประเภทการเชื่อมต่อ";
@@ -87,6 +88,7 @@ $lang['tPOSDrawer']             = "ลิ้นชัก";
 $lang['tPOSHWEDC']              = "เครื่องอ่านบัตรเครดิด";
 $lang['tPOSHWMagReader']        = "เครื่องอ่านแถบแม่เหล็ก";
 $lang['tPOSHWRFIDReader']       = "เครื่องอ่าน RFID";
+$lang['tPOSHWMifareReader']     = "เครื่องอ่าน Mifare";
 $lang['tPOSHWBotRate']          = "BotRate";
 
 $lang['tBrowseEDC']              = "เครื่องอ่านบัตรเครดิต";
@@ -96,6 +98,7 @@ $lang['tBrowseBankCodeEDC']      = "ชื่อธนาคาร";
 $lang['tBrowseCodeBank']         = "รหัสธนาคาร";
 
 $lang['tBrowseRFID']             = "อุปกรณ์ RFID";
+$lang['tBrowseMifare']           = "อุปกรณ์ Mifare";
 $lang['tBrowseCodeRFID']         = "รหัส";
 $lang['tBrowseNameRFID']         = "ชื่อ";
 

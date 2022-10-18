@@ -29,7 +29,7 @@
 			<div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
 				<ol id="oliMenuNav" class="breadcrumb">
 					<?php FCNxHADDfavorite('interfaceexport/0/0');?> 
-					<li id="oliInterfaceExportTitle" class="xCNLinkClick" style="cursor:pointer" ><?php echo language('interface/interfaceexport/interfaceexport','tITFXTitle') ?></li>
+					<li id="oliInterfaceExportTitle" class="xCNLinkClick" onclick="JSvCallPageInterFaceExportIndex()" style="cursor:pointer" ><?php echo language('interface/interfaceexport/interfaceexport','tITFXTitle') ?></li>
 				</ol>
 			</div>
 			
@@ -159,7 +159,7 @@
 
 												</div>
 											</div>
-												<?php if($aDataConfigUI[$aData['FNApiGrpSeq']]=='1'){ ?>
+											<?php if($aData['FNApiGrpSeq'] == '1'){ ?>
 											<div class="row">
 												<div class="col-md-2"><?=language('interface/interfaceexport/interfaceexport','tITFXFilterDocSal');?></div>
 												<div class="col-md-10">

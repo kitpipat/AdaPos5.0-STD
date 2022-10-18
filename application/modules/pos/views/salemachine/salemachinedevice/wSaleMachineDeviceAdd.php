@@ -156,10 +156,14 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                                     <option value='6' show='#odvModelPrinter,#odvConnType,#odvReferConn,#odvRefer' hide='#odvRefer' <?= (isset($tShwCode) && !empty($tShwCode) && $tShwCode == '6') ? "selected" : "" ?>>
                                         <?= language('pos/salemachine/salemachine', 'tPOSHWRFIDReader') ?>
                                     </option>
+                                    <!-- Mifare -->
+                                    <option value='9' show='#odvModelPrinter,#odvConnType,#odvReferConn,#odvRefer' hide='#odvConnType,#odvRefer,#odvReferConn' <?= (isset($tShwCode) && !empty($tShwCode) && $tShwCode == '9') ? "selected" : "" ?>>
+                                        <?= language('pos/salemachine/salemachine', 'tPOSHWMifareReader') ?>
+                                    </option>
                                 </select>
                             </div>
 
-                            <!-- ชื่อเครื่องพิมพ์ ชื่อEDC ชื่อRFID -->
+                            <!-- ชื่อเครื่องพิมพ์ ชื่อEDC ชื่อRFID ชื่อ mifare-->
                             <div class="form-group" id="odvModelPrinter">
                                 <label class="xCNLabelFrm" id="odlPrinterName"><?php echo language('pos/salemachine/salemachine', 'tPOSModelPrinter') ?></label>
                                 <div class="input-group">
@@ -174,6 +178,9 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                                     } else if ($tShwCode == '4') { //EDC
                                         $tName  = $tNameEDC;
                                         $tValue = $tPhwCodePrinter;
+                                    } else if ($tShwCode == '9') { //EDC
+                                        $tName  = $tPhwCodePrinter;
+                                        $tValue = $tPhwCodePrinter;
                                     } else {
                                         $tName  = '';
                                         $tValue = '';
@@ -181,7 +188,7 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                                     ?>
 
                                     <input type="text" class="form-control xCNHide" id="oetCodePrinter" name="oetCodePrinter" value="<?php echo $tValue; ?>" data-validate="<?php echo  language('pos/salemachine/salemachine', 'tPOSNameDevice'); ?>">
-                                    <input type="text" class="form-control" id="oetNamePrinter" name="oetNamePrinter" value="<?php echo $tName; ?>" data-validate-required="กรุณาระบุอุปกรณ์" readonly>
+                                    <input type="text" class="form-control" id="oetNamePrinter" name="oetNamePrinter" value="<?php echo $tShwNamePrinter; ?>" data-validate-required="กรุณาระบุอุปกรณ์" readonly>
                                     <input type="hidden" class="form-control" id="oetHiddenPrnType" name="oetHiddenPrnType" value="<?= $tFTPhwCustom ?>">
                                     <span class="input-group-btn">
                                         <button id="obtBrowsePrinter" type="button" class="btn xCNBtnBrowseAddOn">
@@ -194,7 +201,7 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                             <!-- ประเภทการเชื่อมต่อ FTPhwConnType -->
                             <div class="form-group" id="odvConnType">
                                 <label class="xCNLabelFrm"><?= language('pos/salemachine/salemachine', 'tPOSConTypeDevice') ?></label>
-                                <select class="selectpicker form-control" id="ocmPhwConnType" name="ocmPhwConnType" data-live-search="true">
+                                <select class="selectpicker form-control" id="ocmPhwConnType" name="ocmPhwConnType" data-live-search="true" title="Nothing selected">
                                     <!-- <option value="">ประเภทการเชื่อมต่อ</option>  -->
                                     <option value='1' <?= (isset($tConnType) && !empty($tConnType) && $tConnType == '1') ? "selected" : "" ?>>
                                         <?= language('pos/salemachine/salemachine', 'tPOSPrinter') ?>
@@ -319,7 +326,7 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
 
 <script src="<?php echo  base_url('application/modules/common/assets/js/jquery.mask.js') ?>"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function($) {
         //####### เข้ามาแบบ edit #######
         var tTypeOption = '<?= $tShwCode ?>';
         if (tTypeOption == '2' || tTypeOption == '3' || tTypeOption == '5') {
@@ -329,6 +336,41 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
             $(hide).slideUp(0);
         }
 
+        //Mifare
+        if (tTypeOption == '9') {
+            // $('#odvRefer').show();
+            $('#odlPrinterName').text('<?php echo language('pos/salemachine/salemachine', 'tPOSModelMifare') ?>');
+            $('#obtBrowsePrinter').click(function() {
+                // Create By Witsarut 04/10/2019
+                JSxCheckPinMenuClose();
+                // Create By Witsarut 04/10/2019
+                JCNxBrowseData('oCmpBrowsePortMifare');
+            });
+
+            // $('#odvModelPrinter').show();
+            // $('#odvConnType').hide();
+            // $('#odvReferConn').hide();
+
+
+            // $("#ocmPhwConnType option").each(function() {
+            //     $(this).remove();
+            // });
+            // $('#ocmPhwConnType').append('<option value="6"><?= language('pos/setprinter/Setprinter', 'tPOSNFC') ?></option>');
+            // var tOption = '<?= $tConnType ?>';
+            // if(tOption){
+            //     $('#ocmPhwConnType option[value=' + tOption + ']').attr('selected', 'selected');
+            // }
+            // $("#ocmPhwConnType").selectpicker("refresh");
+            // $("#ocmPhwConnType").selectpicker("refresh");
+
+            $('#odvTypeComport').hide();
+            $('#odvTypeTCP').hide();
+            $('#odvTypeBluetooth').hide();
+            $('#odvConnType').hide();
+         
+            $('#odvRefer').hide();
+
+        }
 
         //RFID
         if (tTypeOption == '6') {
@@ -355,7 +397,9 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
             var tOption = '<?= $tConnType ?>';
             // alert(tTypeOption);
             // alert(tOption);
-            $('#ocmPhwConnType option[value=' + tOption + ']').attr('selected', 'selected');
+            if(tOption){
+                $('#ocmPhwConnType option[value=' + tOption + ']').attr('selected', 'selected');
+            }
             $("#ocmPhwConnType").selectpicker("refresh");
             if (tOption == '2') { //comport
                 $('#odvTypeTCP').hide();
@@ -396,7 +440,9 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
             $('#ocmPhwConnType').append('<option value="4"><?= language('pos/setprinter/Setprinter', 'tPOSBt') ?></option>');
             $('#ocmPhwConnType').append('<option value="5"><?= language('pos/setprinter/Setprinter', 'USB') ?></option>');
             var tOption = '<?= $tConnType ?>';
-            $('#ocmPhwConnType option[value=' + tOption + ']').attr('selected', 'selected');
+            if(tOption){
+                $('#ocmPhwConnType option[value=' + tOption + ']').attr('selected', 'selected');
+            }
             $("#ocmPhwConnType").selectpicker("refresh");
             if (tOption == '2') { //comport
                 $('#odvTypeTCP').hide();
@@ -431,7 +477,9 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
             });
             // alert('1');
             var tOption = '<?= $tConnType ?>';
-            $('#ocmPhwConnType option[value=' + tOption + ']').attr('selected', 'selected');
+            if(tOption){
+                $('#ocmPhwConnType option[value=' + tOption + ']').attr('selected', 'selected');
+            }
             $("#ocmPhwConnType").selectpicker("refresh");
             if (tOption == '2') { //comport
                 $('#odvTypeTCP').hide();
@@ -571,10 +619,10 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
         RouteAddNew: 'setprinter',
         BrowseLev: $('#oetPosStaBrowse').val()
     }
+    
 
     //Browse EDC
     var nLangEdits = <?php echo $this->session->userdata("tLangEdit"); ?>;
-
     var oCmpBrowsePortEDC = {
         FormName: "Edc",
         AddNewRouteName: "Edc",
@@ -623,7 +671,44 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
             On: ['TSysPortPrn_L.FTSppCode = TSysPortPrn.FTSppCode AND TSysPortPrn_L.FNLngID = ' + nLangEdits, ]
         },
         Where: {
-            Condition: ["AND TSysPortPrn.FTSppType  = 'BRD' "]
+            Condition: ["AND TSysPortPrn.FTSppType  = 'BRD' AND FTSppStaUse = '1'"]
+        },
+        GrideView: {
+            ColumnPathLang: 'pos/salemachine/salemachine',
+            ColumnKeyLang: ['tBrowseCodeRFID', 'tBrowseNameRFID', 'tBrowseRFID'],
+            ColumnsSize: ['10%', '75%'],
+            DataColumns: ['TSysPortPrn.FTSppCode', 'TSysPortPrn_L.FTSppName', 'TSysPortPrn.FTSppRef'],
+            DataColumnsFormat: ['', '', ''],
+            DisabledColumns: [2],
+            WidthModal: 50,
+            // Perpage			: 10,
+            // OrderBy			: ['TSysPortPrn.FTSppCode'],
+            // SourceOrder		: "ASC"
+            Perpage: 10,
+            OrderBy: ['TSysPortPrn.FDCreateOn DESC'],
+        },
+        // DebugSQL : true,
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetCodePrinter", "TSysPortPrn.FTSppCode"],
+            Text: ["oetNamePrinter", "TSysPortPrn_L.FTSppName"],
+        },
+
+    }
+    //Browse Mifare
+    var nLangEdits = <?php echo $this->session->userdata("tLangEdit"); ?>;
+    var oCmpBrowsePortMifare = {
+        Title: ['pos/salemachine/salemachine', 'tBrowseMifare'],
+        Table: {
+            Master: 'TSysPortPrn',
+            PK: 'FTSppCode'
+        },
+        Join: {
+            Table: ['TSysPortPrn_L'],
+            On: ['TSysPortPrn_L.FTSppCode = TSysPortPrn.FTSppCode AND TSysPortPrn_L.FNLngID = ' + nLangEdits, ]
+        },
+        Where: {
+            Condition: ["AND TSysPortPrn.FTSppType  = 'BRD' AND FTSppStaUse = '1'"]
         },
         GrideView: {
             ColumnPathLang: 'pos/salemachine/salemachine',
@@ -757,6 +842,10 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                 $('#tPHWConnType').text('<?php echo language('pos/salemachine/salemachine', 'tPOSConRefRFIDReader'); ?>');
                 JSxConditionByShwPrint('6');
                 break;
+            case '9': //RFID
+                $('#tPHWConnType').text('<?php echo language('pos/salemachine/salemachine', 'tPOSConRefRFIDReader'); ?>');
+                JSxConditionByShwPrint('9');
+                break;
             default:
                 $('#tPHWConnType').text('<?php echo language('pos/salemachine/salemachine', 'tPOSConRef'); ?>');
         }
@@ -876,12 +965,40 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
                 $('#ocmPhwConnType').append('<option value="5"><?= language('pos/setprinter/Setprinter', 'USB') ?></option>');
                 $("#ocmPhwConnType").selectpicker("refresh");
 
-                $('#odvTypeComport').show();
+                $('#odvTypeComport').hide();
                 $('#odvTypeTCP').hide();
                 $('#odvTypeBluetooth').hide();
                 $('#odvConnType').show();
                 break;
-            default:
+
+            case '9': //Mifare
+                //Label
+                $('#odlPrinterName').text('<?php echo language('pos/salemachine/salemachine', 'tPOSModelMifare') ?>');
+
+                //Browse
+                $("#obtBrowsePrinter").unbind("click");
+                $("#obtBrowsePrinter").bind("click", function() {
+                    // Create By Witsarut 04/10/2019
+                    JSxCheckPinMenuClose();
+                    // Create By Witsarut 04/10/2019
+                    JCNxBrowseData('oCmpBrowsePortRFID');
+
+                });
+
+                //Select
+                $("#ocmPhwConnType option").each(function() {
+                    $(this).remove();
+                });
+
+                // $('#ocmPhwConnType').append('<option value="6"><?= language('pos/setprinter/Setprinter', 'tPOSNFC') ?></option>');
+                $("#ocmPhwConnType").selectpicker("refresh");
+
+                $('#odvTypeComport').hide();
+                $('#odvTypeTCP').hide();
+                $('#odvTypeBluetooth').hide();
+                $('#odvConnType').Show();
+                break;
+                default:
 
         }
     }

@@ -47,6 +47,8 @@
                                         $tConnType = "BT";   
                                     }else if($aValue['rtConnType'] == "5"){
                                         $tConnType = "USB";   
+                                    }else if($aValue['rtConnType'] == "6"){
+                                        $tConnType = "NFC";   
                                     }
                                     else{
                                         $tConnType = "N/A";   

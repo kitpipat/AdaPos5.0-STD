@@ -416,7 +416,7 @@ class mSaleMachineDevice extends CI_Model {
                             $tSQL = "UPDATE TCNMPosHW SET
                                         FNPhwSeq = '".($nI+1)."'
                                     WHERE FTPhwCode = '".$aResult[$nI]["FTPhwCode"]."'
-                                    AND FTBchCode = '$paData[FTBchCode][$i]'
+                                    AND FTBchCode = '".$paData['FTBchCode'][$i]."'
                                     ";
                             $this->db->query($tSQL);
                         }

@@ -36,3 +36,5 @@ $lang['tSprBTNDelete']               = "ลบ";
 $lang['tSprBTNEdit']                 = "แก้ไข";
 
 $lang['tSprValidCheckCode']          = "รหัสปริ้นเตอร์นี้มีในระบบแล้วกรุณาครวจสอบอีกครั้ง";
+$lang['tPOSNFC']                     = "NFC";
+
