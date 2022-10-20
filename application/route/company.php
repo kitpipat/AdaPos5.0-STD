@@ -93,6 +93,16 @@
     $route ['warehouseEventEdit']           = 'company/warehouse/cWarehouse/FSaCWAHEditEvent';
     $route ['warehouseEventDelete']         = 'company/warehouse/cWarehouse/FSaCWAHDeleteEvent';
 
+    // Branch (สาขา) - แท็บผู้จำหน่าย
+    $route ['branchSettingSPL']                         = 'company/branch/cBranchSetSPL/index';
+    $route ['branchSettingSPLList']                     = 'company/branch/cBranchSetSPL/FSvCSPLList';
+    $route ['branchSettingSPLDataTable']                = 'company/branch/cBranchSetSPL/FSvCSPLDataTable';
+    $route ['branchSettingSPLPageEdit']                 = 'company/branch/cBranchSetSPL/FSvCSPLPageEdit';
+    $route ['branchSettingSPLEventAdd']                 = 'company/branch/cBranchSetSPL/FSaCSPLAddEvent';
+    $route ['branchSettingSPLEventEdit']                = 'company/branch/cBranchSetSPL/FSaCSPLEditEvent';
+    $route ['branchSettingSPLEventDelete']              = 'company/branch/cBranchSetSPL/FSaCSPLDeleteEvent';
+    $route ['branchSettingSPLEventDeleteMulti']         = 'company/branch/cBranchSetSPL/FSaCSPLDeleteEventMulti';
+
     // GP By Product
     $route ['CmpShopGpByProductMain']               = 'company/shopgpbypdt/cShopGpByPdt/FSvCShopGpByPdtMainPage';
     $route ['CmpShopGpByProductDataTable']          = 'company/shopgpbypdt/cShopGpByPdt/FSvCShopGpByPdtDataList';

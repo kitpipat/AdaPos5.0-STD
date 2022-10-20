@@ -363,6 +363,10 @@
                             // *** Click Tab ที่อยู่
                             JCNvCallBCHContentAddress();
                         break;
+                        case 'SPL':
+                            // *** Click Tab ผู้จำหน่าย
+                            JCNvCallSPLContent();
+                        break;
                         default:
                             return;
                     }   
@@ -432,6 +436,32 @@
         }
 	}
 
+     //โหลดข้อมูล ผู้จำหน่าย
+     function JCNvCallSPLContent(){
+        var ptBchCode       = '<?php echo $tBchCode;?>';
+        var ptAgnCode       = '<?php echo $tBchAgnCode;?>';
+        var nStaSession     = JCNxFuncChkSessionExpired();
+        if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            $.ajax({
+                type    : "POST",
+                url     : 'branchSettingSPL',
+                data    : {
+                    tBchCode    : ptBchCode ,
+                    tAgnCode    : ptAgnCode
+                },
+                cache   : false,
+                timeout : 0,
+                success : function (tResult){
+                    $('#odvBranchDataSPL').html(tResult);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        }else{
+            JCNxShowMsgSessionExpired();
+        }
+    }
 
 
 
