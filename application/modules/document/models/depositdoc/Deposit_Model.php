@@ -2499,11 +2499,11 @@ class Deposit_Model extends CI_Model {
         $this->db->update('TARTSoHD');
 
         // Delete Doc Ref ใบเครม
-        $this->db->where('FTPchDocNo',$ptRefInDocNo);
-        $this->db->where('FTXshRefDocNo',$ptDataDocNo);
-        $this->db->where('FTXshRefType',2);
-        $this->db->where('FTXshRefKey','DPS');
-        $this->db->delete('TCNTPdtClaimHDDocRef');
+        // $this->db->where('FTPchDocNo',$ptRefInDocNo);
+        // $this->db->where('FTXshRefDocNo',$ptDataDocNo);
+        // $this->db->where('FTXshRefType',2);
+        // $this->db->where('FTXshRefKey','DPS');
+        // $this->db->delete('TCNTPdtClaimHDDocRef');
 
         if ($this->db->affected_rows() > 0) {
             $aStatus = array(

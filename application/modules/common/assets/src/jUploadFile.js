@@ -214,9 +214,11 @@ function JCNxUPFInsertDataFile(poParam){
     var oFileData           = new FormData();
     $('.xFileUpload'+ptDocKeyElement).each(function(x){
         let tElementID = $(this).attr('id');
-        if(document.getElementById(tElementID).files[0]!=undefined){
-            oFileData.append("ofiles[]", document.getElementById(tElementID).files[0]);
-            nCheckFileUpLoad++;
+        if(document.getElementById(tElementID).files != null){
+            if(document.getElementById(tElementID).files[0] != "undefined"){
+                oFileData.append("ofiles[]", document.getElementById(tElementID).files[0]);
+                nCheckFileUpLoad++;
+            }
         }
     });
     oFileData.append("tBchCode", tBchCode);
