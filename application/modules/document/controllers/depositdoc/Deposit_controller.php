@@ -194,8 +194,9 @@ class Deposit_controller extends MX_Controller {
             }else{
                 $tSOPplCode = '';
             }
-
+            //ล้างค่าใน Temp
             $this->Deposit_Model->FSaMDPSDeletePDTInTmp($aWhereClearTemp);
+
             $this->Deposit_Model->FSxMDPSClearDataInDocTemp($aWhereClearTemp);
 
             $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
@@ -392,6 +393,9 @@ class Deposit_controller extends MX_Controller {
             $aDataDocHD = $this->Deposit_Model->FSaMDPSGetDataDocHD($aDataWhere);
             // Move Data DT TO DTTemp
             $this->Deposit_Model->FSxMDPSMoveDTToDTTemp($aDataWhere);
+
+            // Move Data HDDocRef TO HDRefTemp
+            $this->Deposit_Model->FSxMDPSMoveHDRefToHDRefTemp($aDataWhere);
 
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
@@ -1044,6 +1048,7 @@ class Deposit_controller extends MX_Controller {
     // ReturnType: Object
     public function FSoCDPSAddEventDoc() {
         try {
+
             $aDataDocument      = $this->input->post();
             $tDPSAutoGenCode    = (isset($aDataDocument['ocbDPSStaAutoGenCode'])) ? 1 : 0;
             $tDPSDocNo          = (isset($aDataDocument['oetDPSDocNo'])) ? $aDataDocument['oetDPSDocNo'] : '';
@@ -1165,6 +1170,11 @@ class Deposit_controller extends MX_Controller {
             } else {
                 $aDataWhere['FTXshDocNo'] = $tDPSDocNo;
             }
+
+            // echo '<pre>';
+            // print_r($aDataWhere);
+            // echo '</pre>';
+            // exit;
             // Add Update Document HD
             $this->Deposit_Model->FSxMDPSAddUpdateHD($aDataMaster, $aDataWhere, $aTableAddUpdate);
 
@@ -1176,6 +1186,9 @@ class Deposit_controller extends MX_Controller {
 
             // Move Doc DTTemp To DT
             $this->Deposit_Model->FSaMDPSMoveDtTmpToDt($aDataWhere, $aTableAddUpdate);
+
+            // [Move] Doc TCNTDocHDRefTmp To TARTSqHDDocRef
+            $this->Deposit_Model->FSxMDPSMoveHDRefTmpToHDRef($aDataWhere, $aTableAddUpdate);
 
             if($this->input->post('ocmDPSSelectBrowse') == '1'){
                 $tRefInDocNo    = $tRefin;
@@ -1870,7 +1883,82 @@ class Deposit_controller extends MX_Controller {
     }
 
 
+    // ค่าอ้างอิงเอกสาร - โหลดข้อมูล
+    public function FSoDPSPageHDDocRef(){
+        try {
+            $tDocNo = $this->input->post('ptDocNo');
+            $aDataWhere = [
+                'tTableHDDocRef'    => 'TARTSqHDDocRef',
+                'tTableTmpHDRef'    => 'TCNTDocHDRefTmp',
+                'FTXthDocNo'        => $tDocNo,
+                'FTXthDocKey'       => 'TARTRcvDepositHD',
+                'FTSessionID'       => $this->session->userdata('tSesSessionID')
+            ];
 
+            $aDataDocHDRef = $this->Deposit_Model->FSaMDPSGetDataHDRefTmp($aDataWhere);
+            $aDataConfig = array(
+                'aDataDocHDRef' => $aDataDocHDRef
+            );
+            $tViewPageHDRef = $this->load->view('document/depositdoc/wDepositDocRef', $aDataConfig, true);
+            $aReturnData = array(
+                'tViewPageHDRef'    => $tViewPageHDRef,
+                'nStaEvent'         => '1',
+                'tStaMessg'         => 'Success'
+            );
+        } catch (Exception $Error) {
+            $aReturnData = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
+            );
+        }
+        echo json_encode($aReturnData);
+    }
+    // ค่าอ้างอิงเอกสาร - เพิ่ม หรือ เเก้ไข
+    public function FSoDPSEventAddEditHDDocRef(){
+        try {
+       
+            $aDataWhere = [
+                'FTXthDocNo'        => $this->input->post('ptDPSDocNo'),
+                'FTXthDocKey'       => 'TARTRcvDepositHD',
+                'FTSessionID'       => $this->session->userdata('tSesSessionID'),
+                'tQTRefDocNoOld'    => $this->input->post('ptRefDocNoOld'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+            ];
+            $aDataAddEdit = [
+                'FTXthRefDocNo'     => $this->input->post('ptRefDocNo'),
+                'FTXthRefType'      => $this->input->post('ptRefType'),
+                'FTXthRefKey'       => $this->input->post('ptRefKey'),
+                'FDXthRefDocDate'   => $this->input->post('pdRefDocDate'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+            ];
+   
+            $aReturnData = $this->Deposit_Model->FSaMDPSAddEditHDRefTmp($aDataWhere,$aDataAddEdit);
+        } catch (Exception $Error) {
+            $aReturnData = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
+            );
+        }
+        echo json_encode($aReturnData);
+    }
+    // ค่าอ้างอิงเอกสาร - ลบ
+    public function FSoDPSEventDelHDDocRef(){
+        try {
+            $aData = [
+                'FTXthDocNo'        => ($this->input->post('ptDocNo')) ? $this->input->post('ptDocNo') : '',
+                'FTXthRefDocNo'     => $this->input->post('ptRefDocNo'),
+                'FTXthDocKey'       => 'TARTSqHD',
+                'FTSessionID'       => $this->session->userdata('tSesSessionID')
+            ];
+            $aReturnData = $this->Deposit_Model->FSaMDSPDelHDDocRef($aData);
+        } catch (Exception $Error) {
+            $aReturnData = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
+            );
+        }
+        echo json_encode($aReturnData);
+    }
 
 }
 

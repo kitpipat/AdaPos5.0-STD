@@ -904,6 +904,10 @@ $route['dcmDPSCallRefIntDocDataTable']               = 'document/depositdoc/Depo
 $route['dcmDPSCallRefIntDocDetailDataTableQT']       = 'document/depositdoc/Deposit_controller/FSoCDPSCallRefIntDocDetailDataTable';
 $route['dcmDPSCallRefIntDocInsertDTToTempQT']        = 'document/depositdoc/Deposit_controller/FSoCDPSCallRefIntDocInsertDTToTemp';
 $route['dcmDPSFindeDataCstBehideRefIn']              = 'document/depositdoc/Deposit_controller/FSoCDPSFindCstBehideRefIn';
+$route['docDPSPageHDDocRef']                         = 'document/depositdoc/Deposit_controller/FSoDPSPageHDDocRef';
+$route['docDPSEventAddEditHDDocRef']                 = 'document/depositdoc/Deposit_controller/FSoDPSEventAddEditHDDocRef';
+$route['docDPSEventDelHDDocRef']                     = 'document/depositdoc/Deposit_controller/FSoDPSEventDelHDDocRef';
+
 
 //ใบรับโอน - สาขา เนลว์ 20/03/2020
 $route['docTBI/(:any)/(:any)/(:any)']          = 'document/transferreceiptbranch/cTransferreceiptbranch/index/$1/$2/$3';

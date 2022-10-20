@@ -475,7 +475,7 @@ if (empty($tSOBchCode) && empty($tSOShopCode)) {
             <?php include('panel/wPanelPayment.php'); ?>
 
             <!-- Panel อ้างอิงเอกสารภายใน และ ภายนอก-->
-            <?php include('panel/wPanelReference.php'); ?>
+            <?php //include('panel/wPanelReference.php'); ?>
 
             <!-- Panel อื่นๆ -->
             <?php include('panel/wPanelOther.php'); ?>
@@ -531,156 +531,196 @@ if (empty($tSOBchCode) && empty($tSOShopCode)) {
             <div class="row">
                 <!-- ตารางรายการสินค้า -->
                 <div id="odvSODataPanelDetailPDT" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <div class="panel panel-default" style="margin-bottom:25px;position:relative;min-height:500px;">
-                        <div class="panel-collapse collapse in" role="tabpanel" data-grpname="Condition">
+                    <div class="panel panel-default" style="margin-bottom:25px; position:relative; min-height:200px;">
+                        <div class="panel-collapse collapse in" role="tabpanel">
                             <div class="panel-body">
-                                <div class="row p-t-10">
+
+                                <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <label class="xCNLabelFrm"><?php echo language('customer/customer/customer', 'tCSTTitle'); ?></label>
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control xCNHide" id="oetSOFrmCstCode" name="oetSOFrmCstCode" value="<?php echo $tSOCstCode; ?>">
-                                                <input type="text" class="form-control" id="oetSOFrmCstName" name="oetSOFrmCstName" value="<?php echo $tSOCstName; ?>" placeholder="<?php echo language('document/saleorder/saleorder', 'tSOCstCode') ?>" readonly>
-                                                <span class="input-group-btn">
-                                                    <button id="obtDPSBrowseCustomer" type="button" class="btn xCNBtnBrowseAddOn" <?= $tBrowseDisabled; ?>>
-                                                        <img class="xCNIconFind">
-                                                    </button>
-                                                </span>
-                                            </div>
+                                        <div class="custom-tabs-line tabs-line-bottom left-aligned">
+                                            <ul class="nav" role="tablist">
+
+                                                <!-- สินค้า -->
+                                                <li class="xWMenu active xCNStaHideShow" style="cursor:pointer;">
+                                                    <a role="tab" data-toggle="tab" data-target="#odvDPSContentProduct" aria-expanded="true">ข้อมูลสินค้า</a>
+                                                </li>
+
+                                                <!-- อ้างอิง -->
+                                                <li class="xWMenu xCNStaHideShow" style="cursor:pointer;">
+                                                    <a role="tab" data-toggle="tab" data-target="#odvDPSContentHDRef" aria-expanded="false">เอกสารอ้างอิง</a>
+                                                </li>
+
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row p-t-10 p-r-10">
-
-                                    <!--ค้นหา-->
-                                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control xCNInputWithoutSingleQuote" id="oetSearchPdtHTML" name="oetSearchPdtHTML" onkeyup="JSvDPSSearchPdtHTML()" placeholder="<?php echo language('common/main/main', 'tPlaceholder'); ?>">
-                                                <span class="input-group-btn">
-                                                    <button id="oimMngPdtIconSearch" class="btn xCNBtnSearch" type="button" onclick="JSvDPSSearchPdtHTML()">
-                                                        <img class="xCNIconBrowse" src="<?php echo base_url() . '/application/modules/common/assets/images/icons/search-24.png' ?>">
-                                                    </button>
-                                                </span>
+                                <div class="tab-content">
+                                    <!-- สินค้า -->
+                                    <div id="odvDPSContentProduct" class="tab-pane fade active in" style="padding: 0px !important;">
+                                       <div class="row p-t-10">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <label class="xCNLabelFrm"><?php echo language('customer/customer/customer', 'tCSTTitle'); ?></label>
+                                                <div class="form-group">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control xCNHide" id="oetSOFrmCstCode" name="oetSOFrmCstCode" value="<?php echo $tSOCstCode; ?>">
+                                                        <input type="text" class="form-control" id="oetSOFrmCstName" name="oetSOFrmCstName" value="<?php echo $tSOCstName; ?>" placeholder="<?php echo language('document/saleorder/saleorder', 'tSOCstCode') ?>" readonly>
+                                                        <span class="input-group-btn">
+                                                            <button id="obtDPSBrowseCustomer" type="button" class="btn xCNBtnBrowseAddOn" <?= $tBrowseDisabled; ?>>
+                                                                <img class="xCNIconFind">
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="row p-t-10 p-r-10">
 
-                                    <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 text-right">
-                                        <div class="row">
-                                            <!--แสดงคอลัมน์-->
-                                            <div class="col-xs-12 col-sm-5 col-md-4 col-lg-4">
-                                                <div id="odvSOMngAdvTableList" class="btn-group xCNDropDrownGroup">
-                                                    <!-- <button id="obtSOAdvTablePdtDTTemp" type="button" class="btn xCNBTNMngTable m-r-20"><?php echo language('common/main/main', 'tModalAdvTable') ?></button> -->
-                                                </div>
-                                            </div>
-                                            <!--ตัวเลือก-->
-                                            <div class="col-xs-12 col-sm-5 col-md-7 col-lg-7 text-right">
-                                                <div id="odvSOMngDelPdtInTableDT" class="btn-group xCNDropDrownGroup">
-                                                    <button type="button" class="btn xCNBTNMngTable xWDropdown" data-toggle="dropdown">
-                                                        <?php echo language('common/main/main', 'tCMNOption') ?>
-                                                        <span class="caret"></span>
-                                                    </button>
-                                                    <ul class="dropdown-menu" role="menu">
-                                                        <li id="oliDPSBtnDeleteMulti" class="disabled">
-                                                            <a data-toggle="modal" data-target="#odvDPSModalDelPdtInDTTempMultiple"><?php echo language('common/main/main', 'tDelAll') ?></a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <!--เพิ่มจากอ้างอิงใบขาย-->
-                                            <!-- <button type="button" id="obtDPSDocQTPdt" class="xCNBTNDefult xCNDocBrowseSO">อ้างอิงใบเสนอราคา</button> -->
-                                            <!--เพิ่มจากอ้างอิงใบขาย-->
-                                            <!-- <button type="button" id="obtDPSDocSOPdt" class="xCNBTNDefult xCNDocBrowseSO">อ้างอิงใบสั่งขาย</button> -->
-                                            <!--เพิ่มสินค้าแบบปกติ-->
-
-                                            <!-- <button type="button" id="obtDPSDocBrowsePdt" class="xCNBTNDefult xCNDocBrowsePdt">+ เพิ่มรายการเงินมัดจำ</button> -->
-                                            <div class="col-xs-12 col-sm-2 col-md-1 col-lg-1">
+                                            <!--ค้นหา-->
+                                            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                                 <div class="form-group">
-                                                    <div style="position: absolute;right: 15px;top:-5px;">
-                                                        <button type="button" id="obtDPSDocBrowsePdt" class="xCNBTNPrimeryPlus xCNDocBrowsePdt xCNHideWhenCancelOrApprove">+</button>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control xCNInputWithoutSingleQuote" id="oetSearchPdtHTML" name="oetSearchPdtHTML" onkeyup="JSvDPSSearchPdtHTML()" placeholder="<?php echo language('common/main/main', 'tPlaceholder'); ?>">
+                                                        <span class="input-group-btn">
+                                                            <button id="oimMngPdtIconSearch" class="btn xCNBtnSearch" type="button" onclick="JSvDPSSearchPdtHTML()">
+                                                                <img class="xCNIconBrowse" src="<?php echo base_url() . '/application/modules/common/assets/images/icons/search-24.png' ?>">
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8 text-right">
+                                                <div class="row">
+                                                    <!--แสดงคอลัมน์-->
+                                                    <div class="col-xs-12 col-sm-5 col-md-4 col-lg-4">
+                                                        <div id="odvSOMngAdvTableList" class="btn-group xCNDropDrownGroup">
+                                                            <!-- <button id="obtSOAdvTablePdtDTTemp" type="button" class="btn xCNBTNMngTable m-r-20"><?php echo language('common/main/main', 'tModalAdvTable') ?></button> -->
+                                                        </div>
+                                                    </div>
+                                                    <!--ตัวเลือก-->
+                                                    <div class="col-xs-12 col-sm-5 col-md-7 col-lg-7 text-right">
+                                                        <div id="odvSOMngDelPdtInTableDT" class="btn-group xCNDropDrownGroup">
+                                                            <button type="button" class="btn xCNBTNMngTable xWDropdown" data-toggle="dropdown">
+                                                                <?php echo language('common/main/main', 'tCMNOption') ?>
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu" role="menu">
+                                                                <li id="oliDPSBtnDeleteMulti" class="disabled">
+                                                                    <a data-toggle="modal" data-target="#odvDPSModalDelPdtInDTTempMultiple"><?php echo language('common/main/main', 'tDelAll') ?></a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <!--เพิ่มจากอ้างอิงใบขาย-->
+                                                    <!-- <button type="button" id="obtDPSDocQTPdt" class="xCNBTNDefult xCNDocBrowseSO">อ้างอิงใบเสนอราคา</button> -->
+                                                    <!--เพิ่มจากอ้างอิงใบขาย-->
+                                                    <!-- <button type="button" id="obtDPSDocSOPdt" class="xCNBTNDefult xCNDocBrowseSO">อ้างอิงใบสั่งขาย</button> -->
+                                                    <!--เพิ่มสินค้าแบบปกติ-->
+
+                                                    <!-- <button type="button" id="obtDPSDocBrowsePdt" class="xCNBTNDefult xCNDocBrowsePdt">+ เพิ่มรายการเงินมัดจำ</button> -->
+                                                    <div class="col-xs-12 col-sm-2 col-md-1 col-lg-1">
+                                                        <div class="form-group">
+                                                            <div style="position: absolute;right: 15px;top:-5px;">
+                                                                <button type="button" id="obtDPSDocBrowsePdt" class="xCNBTNPrimeryPlus xCNDocBrowsePdt xCNHideWhenCancelOrApprove">+</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row p-t-10" id="odvSODataPdtTableDTTemp">
+
+                                        </div>
+                                        <!--ส่วนสรุปท้ายบิล-->
+                                        <div class="row" id="odvRowDataEndOfBill">
+                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading mark-font" id="odvDataTextBath"></div>
+                                                </div>
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="pull-left mark-font"><?= language('document/depositdoc/depositdoc', 'tDPSVatAndRmk'); ?></div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div style='padding: 10px 10px 0px 10px;'>
+                                                        <!-- หมายเหตุ -->
+                                                        <div class="form-group">
+                                                            <textarea class="" id="oetDPSHdRemark" name="oetDPSHdRemark" maxlength="200"><?= @$tDPSHDRemark; ?></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-heading">
+                                                        <div class="pull-left mark-font"><?= language('document/saleorder/saleorder', 'tSOTBVatRate'); ?></div>
+                                                        <div class="pull-right mark-font"><?= language('document/saleorder/saleorder', 'tSOTBAmountVat'); ?></div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                    <div class="panel-body">
+                                                        <ul class="list-group" id="oulDPSDataListVat">
+                                                        </ul>
+                                                    </div>
+                                                    <div class="panel-heading">
+                                                        <label class="pull-left mark-font"><?= language('document/saleorder/saleorder', 'tSOTBTotalValVat'); ?></label>
+                                                        <label class="pull-right mark-font" id="olbVatSum">0.00</label>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- End Of Bill -->
+                                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-body">
+                                                        <ul class="list-group">
+                                                            <li class="list-group-item">
+                                                                <label class="pull-left mark-font"><?= language('document/saleorder/saleorder', 'tSOTBSumFCXtdNet'); ?></label>
+                                                                <input type="text" id="olbSumFCXtdNetAlwDis" style="display:none;"></label>
+                                                                <label class="pull-right mark-font" id="olbSumFCXtdNet">0.00</label>
+                                                                <div class="clearfix"></div>
+                                                            </li>
+                                                            <li class="list-group-item" style='display:none'>
+                                                                <label class="pull-left"><?= language('document/saleorder/saleorder', 'tSOTBDisChg'); ?>
+                                                                    <button type="button" class="xCNBTNPrimeryDisChgPlus" onclick="JCNvSOMngDocDisChagHD(this)" style="float: right; margin-top: 3px; margin-left: 5px;">+</button>
+                                                                </label>
+                                                                <label class="pull-left" style="margin-left: 5px;" id="olbDisChgHD"></label>
+                                                                <label class="pull-right" id="olbSumFCXtdAmt">0.00</label>
+                                                                <div class="clearfix"></div>
+                                                            </li>
+                                                            <li class="list-group-item xCNHide">
+                                                                <label class="pull-left"><?= language('document/saleorder/saleorder', 'tSOTBSumFCXtdNetAfHD'); ?></label>
+                                                                <label class="pull-right" id="olbSumFCXtdNetAfHD">0.00</label>
+                                                                <div class="clearfix"></div>
+                                                            </li>
+                                                            <li class="list-group-item">
+                                                                <label class="pull-left"><?= language('document/saleorder/saleorder', 'tSOTBSumFCXtdVat'); ?></label>
+                                                                <label class="pull-right" id="olbSumFCXtdVat">0.00</label>
+                                                                <input type="hidden" name="ohdSumFCXtdVat" id="ohdSumFCXtdVat" value="0.00">
+                                                                <div class="clearfix"></div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="panel-heading">
+                                                        <label class="pull-left mark-font"><?= language('document/saleorder/saleorder', 'tSOTBFCXphGrand'); ?></label>
+                                                        <label class="pull-right mark-font" id="olbCalFCXphGrand">0.00</label>
+                                                        <div class="clearfix"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row p-t-10" id="odvSODataPdtTableDTTemp">
 
-                                </div>
-                                <!--ส่วนสรุปท้ายบิล-->
-                                <div class="row" id="odvRowDataEndOfBill">
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading mark-font" id="odvDataTextBath"></div>
-                                        </div>
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <div class="pull-left mark-font"><?= language('document/depositdoc/depositdoc', 'tDPSVatAndRmk'); ?></div>
-                                                <div class="clearfix"></div>
-                                            </div>
-                                            <div style='padding: 10px 10px 0px 10px;'>
-                                                <!-- หมายเหตุ -->
-                                                <div class="form-group">
-                                                    <textarea class="" id="oetDPSHdRemark" name="oetDPSHdRemark" maxlength="200"><?= @$tDPSHDRemark; ?></textarea>
+                                    <!-- อ้างอิง -->
+                                    <div id="odvDPSContentHDRef" class="tab-pane fade" style="padding: 0px !important;">
+                                        <div class="row p-t-15">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
+                                                <div style="margin-top:-2px;">
+                                                    <button type="button" id="obtDPSAddDocRef" class="xCNBTNPrimeryPlus xCNDocBrowsePdt xCNHideWhenCancelOrApprove">+</button>
                                                 </div>
                                             </div>
-                                            <div class="panel-heading">
-                                                <div class="pull-left mark-font"><?= language('document/saleorder/saleorder', 'tSOTBVatRate'); ?></div>
-                                                <div class="pull-right mark-font"><?= language('document/saleorder/saleorder', 'tSOTBAmountVat'); ?></div>
-                                                <div class="clearfix"></div>
-                                            </div>
-                                            <div class="panel-body">
-                                                <ul class="list-group" id="oulDPSDataListVat">
-                                                </ul>
-                                            </div>
-                                            <div class="panel-heading">
-                                                <label class="pull-left mark-font"><?= language('document/saleorder/saleorder', 'tSOTBTotalValVat'); ?></label>
-                                                <label class="pull-right mark-font" id="olbVatSum">0.00</label>
-                                                <div class="clearfix"></div>
-                                            </div>
+                                            <div id="odvQTTableHDRef"></div>
+
                                         </div>
-                                    </div>
-                                    <!-- End Of Bill -->
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <div class="panel panel-default">
-                                            <div class="panel-body">
-                                                <ul class="list-group">
-                                                    <li class="list-group-item">
-                                                        <label class="pull-left mark-font"><?= language('document/saleorder/saleorder', 'tSOTBSumFCXtdNet'); ?></label>
-                                                        <input type="text" id="olbSumFCXtdNetAlwDis" style="display:none;"></label>
-                                                        <label class="pull-right mark-font" id="olbSumFCXtdNet">0.00</label>
-                                                        <div class="clearfix"></div>
-                                                    </li>
-                                                    <li class="list-group-item" style='display:none'>
-                                                        <label class="pull-left"><?= language('document/saleorder/saleorder', 'tSOTBDisChg'); ?>
-                                                            <button type="button" class="xCNBTNPrimeryDisChgPlus" onclick="JCNvSOMngDocDisChagHD(this)" style="float: right; margin-top: 3px; margin-left: 5px;">+</button>
-                                                        </label>
-                                                        <label class="pull-left" style="margin-left: 5px;" id="olbDisChgHD"></label>
-                                                        <label class="pull-right" id="olbSumFCXtdAmt">0.00</label>
-                                                        <div class="clearfix"></div>
-                                                    </li>
-                                                    <li class="list-group-item xCNHide">
-                                                        <label class="pull-left"><?= language('document/saleorder/saleorder', 'tSOTBSumFCXtdNetAfHD'); ?></label>
-                                                        <label class="pull-right" id="olbSumFCXtdNetAfHD">0.00</label>
-                                                        <div class="clearfix"></div>
-                                                    </li>
-                                                    <li class="list-group-item">
-                                                        <label class="pull-left"><?= language('document/saleorder/saleorder', 'tSOTBSumFCXtdVat'); ?></label>
-                                                        <label class="pull-right" id="olbSumFCXtdVat">0.00</label>
-                                                        <input type="hidden" name="ohdSumFCXtdVat" id="ohdSumFCXtdVat" value="0.00">
-                                                        <div class="clearfix"></div>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="panel-heading">
-                                                <label class="pull-left mark-font"><?= language('document/saleorder/saleorder', 'tSOTBFCXphGrand'); ?></label>
-                                                <label class="pull-right mark-font" id="olbCalFCXphGrand">0.00</label>
-                                                <div class="clearfix"></div>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -689,6 +729,85 @@ if (empty($tSOBchCode) && empty($tSOShopCode)) {
         </div>
     </div>
 </form>
+
+
+<!-- ===========================================  อ้างอิงเอกสารภายใน (ภายใน หรือ ภายนอก) =========================================== -->
+<div id="odvDPSModalAddDocRef" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="ofmDPSFormAddDocRef" class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data">
+                <div class="modal-header xCNModalHead">
+                    <label class="xCNTextModalHeard"><?php echo language('common/main/main', 'อ้างอิงเอกสาร') ?></label>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control xCNHide" id="oetDPSRefDocNoOld" name="oetQTRefDocNoOld">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('common/main/main', 'ประเภทการอ้างอิงเอกสาร'); ?></label>
+                                <select class="selectpicker form-control" id="ocbQTRefType" name="ocbQTRefType">
+                                    <!-- <option value="1" selected><?php echo language('common/main/main', 'อ้างอิงภายใน'); ?></option> -->
+                                    <option value="3"><?php echo language('common/main/main', 'อ้างอิงภายนอก'); ?></option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12 xWShowRefInt">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('common/main/main', 'เอกสาร'); ?></label>
+                                <select class="selectpicker form-control" id="ocbQTRefDoc" name="ocbQTRefDoc">
+                                    <option value="1" selected><?php echo language('common/main/main', 'ใบรับรถ'); ?></option>
+                                    <option value="2"><?php echo language('common/main/main', 'ใบสั่งงาน'); ?></option>
+                                </select>
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12 xWShowRefInt">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('common/main/main', 'เลขที่เอกสารอ้างอิง') ?></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control xCNHide xCNInputWithoutSpcNotThai xCNInputWithoutSingleQuote" id="oetDPSDocRefInt" name="oetDPSDocRefInt" maxlength="20" value="">
+                                    <input type="text" class="form-control xWPointerEventNone" id="oetDPSDocRefIntName" name="oetDPSDocRefIntName" maxlength="20" placeholder="<?php echo language('common/main/main', 'เลขที่เอกสารอ้างอิง') ?>" value="" readonly>
+                                    <span class="input-group-btn">
+                                        <button id="obtQTBrowseRefDoc" type="button" class="btn xCNBtnBrowseAddOn">
+                                            <img src="<?php echo  base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12 xWShowRefExt">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><span class="text-danger">*</span><?php echo language('common/main/main', 'เลขที่เอกสารอ้างอิง'); ?></label>
+                                <input type="text" class="form-control" id="oetDPSRefDocNo" name="oetDPSRefDocNo" placeholder="<?php echo language('common/main/main', 'เลขที่เอกสารอ้างอิง'); ?>" maxlength="20" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('document/expenserecord/expenserecord', 'วันที่เอกสารอ้างอิง'); ?></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetDPSRefDocDate" name="oetDPSRefDocDate" placeholder="YYYY-MM-DD" autocomplete="off">
+                                    <span class="input-group-btn">
+                                        <button id="obtDPSRefDocDate" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12 xWShowRefExt">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('common/main/main', 'ค่าอ้างอิง'); ?></label>
+                                <input type="text" class="form-control" id="oetDPSRefKey" name="oetDPSRefKey" placeholder="<?php echo language('common/main/main', 'ค่าอ้างอิง'); ?>" maxlength="10" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="obtDPSConfirmAddDocRef" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="submit"><?php echo language('common/main/main', 'tModalConfirm') ?></button>
+                    <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button" data-dismiss="modal"><?php echo language('common/main/main', 'tModalCancel') ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- =================================================================== View Modal Shipping Purchase Invoice  =================================================================== -->
 <div id="odvSOBrowseShipAdd" class="modal fade">

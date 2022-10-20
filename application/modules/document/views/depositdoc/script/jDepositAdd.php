@@ -2186,4 +2186,152 @@
 function JSxSoCallBackUploadFile(ptParam){
     console.log(ptParam);
 }
+
+//////////////////////////////////////////////////////////////// อ้างอิงเอกสาร //////////////////////////////////////////////////////////////////
+
+$(document).ready(function(){
+    JSxQTEventCheckShowHDDocRef();
+
+    //อ้างอิงเอกสาร
+    FSxQTCallPageHDDocRef();
+});
+
+ //เมื่อเปลี่ยน ประเภท (ภายใน หรือ ภายนอก)
+ $('#ocbQTRefType').off('change').on('change',function(){
+    $(this).selectpicker('refresh');
+    JSxQTEventCheckShowHDDocRef();
+});
+
+//Default โชว์ panel ตามประเภท (ภายใน หรือ ภายนอก)
+function JSxQTEventCheckShowHDDocRef(){
+    var tQTRefType = $('#ocbQTRefType').val();
+    if( tQTRefType == '1' ){
+        $('.xWShowRefExt').hide();
+        $('.xWShowRefInt').show();
+    }else{
+        $('.xWShowRefInt').hide();
+        $('.xWShowRefExt').show();
+    }
+}
+
+//โหลด Table อ้างอิงเอกสารทั้งหมด
+function FSxQTCallPageHDDocRef(){
+    var tDocNo  = "";
+    // if ($("#ohdTQRoute").val() == "docQuotationEventEdit") {
+    //     tDocNo = $('#ohdTQDocNo').val();
+    // }
+    if ($("#ohdDPSRoute").val() == "dcmDPSEventEdit") {
+        tDocNo = $("#oetDPSDocNo").val();
+    }
+    $.ajax({
+        type    : "POST",
+        url     : "docDPSPageHDDocRef",
+        data:{
+            'ptDocNo' : tDocNo
+        },
+        cache   : false,
+        timeout : 0,
+        success: function(oResult){
+            var aResult = JSON.parse(oResult);
+            if( aResult['nStaEvent'] == 1 ){
+            $('#odvQTTableHDRef').html(aResult['tViewPageHDRef']);
+                JCNxCloseLoading();
+            }else{
+                var tMessageError = aResult['tStaMessg'];
+                FSvCMNSetMsgErrorDialog(tMessageError);
+                JCNxCloseLoading();
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
+    });
+}
+
+//กดเพิ่มเอกสารอ้างอิง (ภายใน ภายนอก)
+$('#obtDPSAddDocRef').off('click').on('click',function(){
+    $('#ofmDPSFormAddDocRef').validate().destroy();
+    JSxQTEventClearValueInFormHDDocRef();
+    $('#odvDPSModalAddDocRef').modal('show');
+});
+
+//เคลียร์ค่า
+function JSxQTEventClearValueInFormHDDocRef(){
+    $('#oetDPSRefDocNo').val('');
+    $('#oetDPSRefDocDate').val('');
+    $('#oetDPSDocRefInt').val('');
+    $('#oetDPSDocRefIntName').val('');
+    $('#oetDPSRefKey').val('');
+}
+
+//กดยืนยันบันทึกลง Temp
+$('#ofmDPSFormAddDocRef').off('click').on('click',function(){
+        $('#ofmDPSFormAddDocRef').validate().destroy();
+        $('#ofmDPSFormAddDocRef').validate({
+            focusInvalid    : false,
+            onclick         : false,
+            onfocusout      : false,
+            onkeyup         : false,
+            rules           : {
+                oetDPSRefDocNo    : {"required" : true}
+            },
+            messages: {
+                oetDPSRefDocNo    : {"required" : 'กรุณากรอกเลขที่เอกสารอ้างอิง'}
+            },
+            errorElement: "em",
+            errorPlacement: function (error, element) {
+                error.addClass("help-block");
+                if(element.prop("type") === "checkbox") {
+                    error.appendTo(element.parent("label"));
+                }else{
+                    var tCheck  = $(element.closest('.form-group')).find('.help-block').length;
+                    if(tCheck == 0) {
+                        error.appendTo(element.closest('.form-group')).trigger('change');
+                    }
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).closest('.form-group').addClass("has-error");
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).closest('.form-group').removeClass("has-error");
+            },
+            submitHandler: function (form){
+                JCNxOpenLoading();
+
+                if($('#ocbDPSRefType').val() == 1){ //อ้างอิงเอกสารภายใน
+                    var tDocNoRef = $('#oetDPSDocRefInt').val();
+                }else{ //อ้างอิงเอกสารภายนอก
+                    var tDocNoRef = $('#oetDPSRefDocNo').val();
+                }
+
+                $.ajax({
+                    type    : "POST",
+                    url     : "docDPSEventAddEditHDDocRef",
+                    data    : {
+                        'ptRefDocNoOld'     : $('#oetDPSRefDocNoOld').val(),
+                        'ptDPSDocNo'         : $('#oetDPSDocNo').val(),
+                        'ptRefType'         : $('#ocbQTRefType').val(),
+                        'ptRefDocNo'        : tDocNoRef,
+                        'pdRefDocDate'      : $('#oetDPSRefDocDate').val(),
+                        'ptRefKey'          : $('#oetDPSRefKey').val()
+                    },
+                    cache: false,
+                    timeout: 0,
+                    success: function(oResult){
+                        JSxQTEventClearValueInFormHDDocRef();
+                        $('#odvDPSModalAddDocRef').modal('hide');
+
+                        FSxQTCallPageHDDocRef();
+                        JCNxCloseLoading();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(jqXHR);
+                        console.log(textStatus);
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    }
+                });
+            },
+        });
+    });
 </script>

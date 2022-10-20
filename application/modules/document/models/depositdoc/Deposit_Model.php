@@ -236,6 +236,10 @@ class Deposit_Model extends CI_Model {
         $this->db->where_in('FTXshDocNo',$tDataDocNo);
         $this->db->delete('TARTRcvDepositDT');
 
+        // Document HD DocRef
+        $this->db->where_in('FTXshDocNo',$tDataDocNo);
+        $this->db->delete('TARTRcvDepositHDDocRef');
+
         if($this->db->trans_status() === FALSE){
             $this->db->trans_rollback();
             $aStaDelDoc     = array(
@@ -1234,6 +1238,13 @@ class Deposit_Model extends CI_Model {
             'FTBchCode'     => $paDataWhere['FTBchCode']
         ));
 
+        // Update DocNo Into TCNTDocHDRefTmp
+        $this->db->where('FTXthDocNo','');
+        $this->db->where('FTXthDocKey','TARTRcvDepositHD');
+        $this->db->where('FTSessionID',$paDataWhere['FTSessionID']);
+        $this->db->update('TCNTDocHDRefTmp',array(
+            'FTXthDocNo'    => $paDataWhere['FTXshDocNo']
+        ));
         return;
     }
 
@@ -2419,6 +2430,10 @@ class Deposit_Model extends CI_Model {
         $tSessionID = $this->session->userdata('tSesSessionID');
         $this->db->where_in('FTSessionID', $tSessionID);
         $this->db->delete('TCNTDocDTTmp');
+
+        $this->db->where_in('FTSessionID', $tSessionID);
+        $this->db->delete('TCNTDocHDRefTmp');
+        
         if($this->db->affected_rows() > 0){
             $aStatus = array(
                 'rtCode' => '1',
@@ -2705,4 +2720,160 @@ class Deposit_Model extends CI_Model {
         return $aResult;
     }
 
+
+    //ย้ายข้อมูลจาก TempHDDocRef => ตารางจริง
+    public function FSxMDPSMoveHDRefTmpToHDRef($paDataWhere,$paTableAddUpdate){
+        $tBchCode     = $paDataWhere['FTBchCode'];
+        $tDocNo       = $paDataWhere['FTXshDocNo'];
+        $tSessionID   = $this->session->userdata('tSesSessionID');
+
+        if(isset($tDocNo) && !empty($tDocNo)){
+            $this->db->where('FTBchCode',$tBchCode);
+            $this->db->where('FTXshDocNo',$tDocNo);
+            $this->db->delete('TARTSqHDDocRef');
+        }
+
+        $tSQL   =   "   INSERT INTO TARTRcvDepositHDDocRef (FTBchCode, FTXshDocNo, FTXshRefDocNo, FTXshRefType, FTXshRefKey, FDXshRefDocDate) ";
+        $tSQL   .=  "   SELECT
+                            '$tBchCode' AS FTBchCode,
+                            FTXthDocNo,
+                            FTXthRefDocNo,
+                            FTXthRefType,
+                            FTXthRefKey,
+                            FDXthRefDocDate
+                        FROM TCNTDocHDRefTmp WITH (NOLOCK)
+                        WHERE FTXthDocNo  = '$tDocNo'
+                          AND FTXthDocKey = '".$paTableAddUpdate['tTableHD']."'
+                          AND FTSessionID = '$tSessionID' ";
+        $this->db->query($tSQL);
+    }
+
+    //ข้อมูล HDDocRef
+    public function FSxMDPSMoveHDRefToHDRefTemp($paData){
+
+        $FTXshDocNo     = $paData['FTXthDocNo'];
+        $FTSessionID    = $this->session->userdata('tSesSessionID');
+
+        // Delect Document DTTemp By Doc No
+        $this->db->where('FTXthDocKey','TARTRcvDepositHD');
+        $this->db->where('FTSessionID',$FTSessionID);
+        $this->db->delete('TCNTDocHDRefTmp');
+
+        $tSQL = "   INSERT INTO TCNTDocHDRefTmp (FTXthDocNo, FTXthRefDocNo, FTXthRefType, FTXthRefKey, FDXthRefDocDate, FTXthDocKey, FTSessionID , FDCreateOn)";
+        $tSQL .= "  SELECT
+                        FTXshDocNo,
+                        FTXshRefDocNo,
+                        FTXshRefType,
+                        FTXshRefKey,
+                        FDXshRefDocDate,
+                        'TARTRcvDepositHD' AS FTXthDocKey,
+                        '$FTSessionID' AS FTSessionID,
+                        CONVERT(DATETIME,'".date('Y-m-d H:i:s')."') AS FDCreateOn
+                    FROM TARTRcvDepositHDDocRef
+                    WHERE FTXshDocNo = '$FTXshDocNo' ";
+        $this->db->query($tSQL);
+    }
+
+    // แท็บค่าอ้างอิงเอกสาร - โหลด
+    public function FSaMDPSGetDataHDRefTmp($paData){
+
+        $tTableTmpHDRef = $paData['tTableTmpHDRef'];
+        $FTXthDocNo     = $paData['FTXthDocNo'];
+        $FTXthDocKey    = $paData['FTXthDocKey'];
+        $FTSessionID    = $paData['FTSessionID'];
+
+        $tSQL = "   SELECT FTXthDocNo, FTXthRefDocNo, FTXthRefType, FTXthRefKey, FDXthRefDocDate
+                    FROM $tTableTmpHDRef
+                    WHERE FTXthDocNo  = '$FTXthDocNo'
+                      AND FTXthDocKey = '$FTXthDocKey'
+                      AND FTSessionID = '$FTSessionID'
+                 ";
+        $oQuery = $this->db->query($tSQL);
+        if ( $oQuery->num_rows() > 0 ){
+            $aResult    = array(
+                'aItems'   => $oQuery->result_array(),
+                'tCode'    => '1',
+                'tDesc'    => 'found data',
+            );
+        }else{
+            $aResult    = array(
+                'tCode'    => '800',
+                'tDesc'    => 'data not found.',
+            );
+        }
+        return $aResult;
+
+    }
+
+    // แท็บค่าอ้างอิงเอกสาร - เพิ่ม
+    public function FSaMDPSAddEditHDRefTmp($paDataWhere,$paDataAddEdit){
+
+        $tRefDocNo = ( empty($paDataWhere['tQTRefDocNoOld']) ? $paDataAddEdit['FTXthRefDocNo'] : $paDataWhere['tQTRefDocNoOld'] );
+
+        $tSQL = " SELECT FTXthRefDocNo FROM TCNTDocHDRefTmp
+                  WHERE FTXthDocNo    = '".$paDataWhere['FTXthDocNo']."'
+                    AND FTXthDocKey   = '".$paDataWhere['FTXthDocKey']."'
+                    AND FTSessionID   = '".$paDataWhere['FTSessionID']."'
+                    AND FTXthRefDocNo = '".$tRefDocNo."' ";
+        $oQuery = $this->db->query($tSQL);
+        $this->db->trans_begin();
+        if ( $oQuery->num_rows() > 0 ){
+            $this->db->where('FTXthRefDocNo',$tRefDocNo);
+            $this->db->where('FTXthDocNo',$paDataWhere['FTXthDocNo']);
+            $this->db->where('FTXthDocKey',$paDataWhere['FTXthDocKey']);
+            $this->db->where('FTSessionID',$paDataWhere['FTSessionID']);
+            $this->db->update('TCNTDocHDRefTmp',$paDataAddEdit);
+        }else{
+            $aDataAdd = array_merge($paDataAddEdit,array(
+                'FTXthDocNo'  => $paDataWhere['FTXthDocNo'],
+                'FTXthDocKey' => $paDataWhere['FTXthDocKey'],
+                'FTSessionID' => $paDataWhere['FTSessionID'],
+                'FDCreateOn'  => $paDataWhere['FDCreateOn'],
+            ));
+            $this->db->insert('TCNTDocHDRefTmp',$aDataAdd);
+        }
+
+        if ( $this->db->trans_status() === FALSE ) {
+            $this->db->trans_rollback();
+            $aResult = array(
+                'nStaEvent' => '800',
+                'tStaMessg' => 'Add/Edit HDDocRef Error'
+            );
+        } else {
+            $this->db->trans_commit();
+            $aResult = array(
+                'nStaEvent' => '1',
+                'tStaMessg' => 'Add/Edit HDDocRef Success'
+            );
+        }
+        return $aResult;
+    }
+
+     // แท็บค่าอ้างอิงเอกสาร - ลบ
+     public function FSaMDSPDelHDDocRef($paData){
+        $tQTDocNo       = $paData['FTXthDocNo'];
+        $tQTRefDocNo    = $paData['FTXthRefDocNo'];
+        $tQTDocKey      = $paData['FTXthDocKey'];
+        $tQTSessionID   = $paData['FTSessionID'];
+
+        $this->db->where('FTSessionID',$tQTSessionID);
+        $this->db->where('FTXthDocKey',$tQTDocKey);
+        $this->db->where('FTXthRefDocNo',$tQTRefDocNo);
+        $this->db->where('FTXthDocNo',$tQTDocNo);
+        $this->db->delete('TCNTDocHDRefTmp');
+        if ( $this->db->trans_status() === FALSE ) {
+            $this->db->trans_rollback();
+            $aResult = array(
+                'nStaEvent' => '800',
+                'tStaMessg' => 'Delete HD Doc Ref Error'
+            );
+        } else {
+            $this->db->trans_commit();
+            $aResult = array(
+                'nStaEvent' => '1',
+                'tStaMessg' => 'Delete HD Doc Ref Success'
+            );
+        }
+        return $aResult;
+    }
 }

@@ -84,6 +84,11 @@ $lang['tDocDateTo']                             = "To date document";
 
 $lang['tDocStaAct']                             = "Status Active";
 
+$lang['tDocRefType']                       = 'N/A';
+$lang['tDocRefType1']                      = 'Internal Reference';
+$lang['tDocRefType2']                      = 'Internally Referenced';
+$lang['tDocRefType3']                      = 'External Reference';
+
 
 
 
