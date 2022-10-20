@@ -383,7 +383,7 @@ function JSoDPSDelDocSingle(ptCurrentPage, ptDPSDocNo, ptDPSRefInCode){
                             var tHtmlError = $(jqXHR.responseText);
                             var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
                             var tLogDocNo   = ptDPSDocNo;
-                            JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                            // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
                         }else{
                             //JCNxSendMQPageNotFound(jqXHR,ptDPSDocNo);
                         }
@@ -422,7 +422,7 @@ function JSoDPSDelDocMultiple(){
         $.ajax({
             type: "POST",
             url: "dcmDPSEventDelete",
-            data: {'tDataDocNo': tDataDocNo,
+            data: {'tDataDocNo': aNewIdDelete,
             'tDPSRefInCode': tDPSRefInCode},
             cache: false,
             timeout: 0,
@@ -452,7 +452,7 @@ function JSoDPSDelDocMultiple(){
                     var tHtmlError = $(jqXHR.responseText);
                     var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
                     var tLogDocNo   = tDataDocNo;
-                    JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                    // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
                 }else{
                     //JCNxSendMQPageNotFound(jqXHR,tDataDocNo);
                 }
@@ -685,6 +685,7 @@ function JCNvDPSBrowsePdt(){
     var tSOPplCode = $('#ohdSOPplCodeCst').val();
     // }
 
+
     //อนุญาต "ซื้อ" ที่หน่วย และ อนุญาต "ซื้อ" ที่บาร์โค๊ด
     var aWhereItem      = [];
     tPDTAlwSale         = ' AND (PPCZ.FTPdtStaAlwSale = 1 ';
@@ -698,6 +699,12 @@ function JCNvDPSBrowsePdt(){
 
     tPDTAlwSale         = " OR ISNULL(PBAR.FTBarStaAlwSale,null) = null ) ";
     aWhereItem.push(tPDTAlwSale);
+
+    tPdtDepCode = $('#ohdPdtDep').val();
+    if(tPdtDepCode){
+        tPDTDep             = " AND Products.FTPdtCode = '" +tPdtDepCode+ "'";
+        aWhereItem.push(tPDTDep);
+    }
 
     var aMulti = [];
     $.ajax({
@@ -1009,7 +1016,7 @@ function JSxSOValidateDocCodeDublicate(){
                 var tErrorStatus  = '900'
                 var tHtmlError = 'Data Duplicate'
                 var tLogDocNo   = $('#oetDPSDocNo').val();
-                JCNxPackDataToMQLog(tHtmlError,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                // JCNxPackDataToMQLog(tHtmlError,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -1022,7 +1029,7 @@ function JSxSOValidateDocCodeDublicate(){
                 var tLogDocNo   = tDocNo;
                 var tHtmlError = $(jqXHR.responseText);
                 var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
-                JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
             }else{
                 //JCNxSendMQPageNotFound(jqXHR,tDocNo);
             }
@@ -1128,7 +1135,7 @@ function JSxDPSSubmitEventByButton(ptType = ''){
                                             var tHtmlError = $(jqXHR.responseText);
                                             var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
                                             var tLogDocNo   = tDPSDocNo;
-                                            JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                                            // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
                                         }else{
                                             //JCNxSendMQPageNotFound(jqXHR,tDPSDocNo);
                                         }
@@ -1167,7 +1174,7 @@ function JSxDPSSubmitEventByButton(ptType = ''){
                             var tHtmlError = $(jqXHR.responseText);
                             var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
                             var tLogDocNo   = tSODocNo;
-                            JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                            // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
                         }else{
                             //JCNxSendMQPageNotFound(jqXHR,tSODocNo);
                         }
@@ -1191,7 +1198,7 @@ function JSxDPSSubmitEventByButton(ptType = ''){
                 var tHtmlError = $(jqXHR.responseText);
                 var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
                 var tLogDocNo   = tSODocNo;
-                JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
             }else{
                 //JCNxSendMQPageNotFound(jqXHR,tSODocNo);
             }
@@ -1246,7 +1253,7 @@ function JSvDPSCallPageEditDoc(ptDPSDocNo){
                     var tHtmlError = $(jqXHR.responseText);
                     var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
                     var tLogDocNo   = ptDPSDocNo;
-                    JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                    // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
                 }else{
                     //JCNxSendMQPageNotFound(jqXHR,ptDPSDocNo);
                 }
@@ -1419,7 +1426,7 @@ function JSnDPSCancelDocument(pbIsConfirm){
                     var tHtmlError = $(jqXHR.responseText);
                     var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
                     var tLogDocNo   = tDPSDocNo;
-                    JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                    // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
                 }else{
                     //JCNxSendMQPageNotFound(jqXHR,tDPSDocNo);
                 }
@@ -1544,7 +1551,7 @@ function JSxDPSDepositDocument(pbIsConfirm){
                     var tHtmlError = $(jqXHR.responseText);
                     var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
                     var tLogDocNo   = tDPSDocNo;
-                    JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
+                    // JCNxPackDataToMQLog(tMsgErrorBody,tErrorStatus,tDisplayEvent,tLogFunction,tLogDocNo);
                 }else{
                     //JCNxSendMQPageNotFound(jqXHR,tDPSDocNo);
                 }

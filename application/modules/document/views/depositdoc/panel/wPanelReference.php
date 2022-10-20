@@ -13,8 +13,8 @@
                 <label class="xCNLabelFrm"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCRefInt'); ?></label>
                 <select class="selectpicker xWDPSDisabledOnApv form-control xControlForm" id="ocmDPSSelectBrowse" name="ocmDPSSelectBrowse" maxlength="1">
                     <option value="0"><?php echo language('document/bookingorder/bookingorder', 'tTWXRefSODoc'); ?></option>
-                    <option value="1"><?php echo language('document/bookingorder/bookingorder', 'tTWXRefQTDoc'); ?></option>
-                    <option value="2"><?php echo language('document/bookingorder/bookingorder', 'tTWXRefClMDoc'); ?></option>
+                    <!-- <option value="1"><?php echo language('document/bookingorder/bookingorder', 'tTWXRefQTDoc'); ?></option>
+                    <option value="2"><?php echo language('document/bookingorder/bookingorder', 'tTWXRefClMDoc'); ?></option> -->
                 </select>
             </div>
             <div class="form-group">

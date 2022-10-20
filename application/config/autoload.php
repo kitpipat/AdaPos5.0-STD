@@ -97,6 +97,18 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
+
+// $tRabbitHelper = '';
+// if(defined('RABBITSSL')){
+//     if(RABBITSSL == true || RABBITSSL == 1){ //กรณีต้องการ connect MQ แบบ SSL
+//         $tRabbitHelper = 'rabbitMQSSL';
+//     }else{
+//         $tRabbitHelper = 'rabbitMQ';
+//     }
+// }else{
+//     $tRabbitHelper = 'rabbitMQ';
+// }
+
 $autoload['helper'] = array(
     'fn',
     'url',
@@ -112,6 +124,7 @@ $autoload['helper'] = array(
     'docdatacolumn',
     'array',
     'address',
+    // $tRabbitHelper,
     'rabbitMQ',
     'lockermq',
     'rptrabbitmq',
@@ -148,6 +161,7 @@ $autoload['helper'] = array(
     'AES128',
     'count',
     'getaddressbranch',
+    'getaddresscustomer',
     'fashion',
     'excel'
 );

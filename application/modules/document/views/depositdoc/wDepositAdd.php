@@ -1,6 +1,8 @@
 <?php
 $tSesUsrLevel   = $this->session->userdata('tSesUsrLevel');
 $nAddressVersion = FCNaHAddressFormat('TCNMCst');
+
+$tPdtDepCode = @$tPdtDep['raItems']['FTSysStaUsrValue'];
 if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == '1') {
     $aDataDocHD             = @$aDataDocHD['raItems'];
     // print_r($aDataDocHD);
@@ -315,6 +317,8 @@ if (empty($tSOBchCode) && empty($tSOShopCode)) {
     <input type="hidden" id="ohdSesUsrLevel" name="ohdSesUsrLevel" value="<?= $this->session->userdata('tSesUsrLevel') ?>">
     <input type="hidden" id="ohdSesUsrBchCom" name="ohdSesUsrBchCom" value="<?= $this->session->userdata('tSesUsrBchCom') ?>">
     <input type="hidden" id="ohdSOValidatePdt" name="ohdSOValidatePdt" value="<?= language('document/saleorder/saleorder', 'tSOPleaseSeletedPDTIntoTable') ?>">
+
+    <input type="hidden" id="ohdPdtDep" name="ohdPdtDep" value="<?php echo $tPdtDepCode; ?>">
 
     <button style="display:none" type="submit" id="obtDPSSubmitDocument" onclick="JSxDPSAddEditDocument()"></button>
     <div class="row">
@@ -656,7 +660,7 @@ if (empty($tSOBchCode) && empty($tSOShopCode)) {
                                                         <label class="pull-right" id="olbSumFCXtdAmt">0.00</label>
                                                         <div class="clearfix"></div>
                                                     </li>
-                                                    <li class="list-group-item">
+                                                    <li class="list-group-item xCNHide">
                                                         <label class="pull-left"><?= language('document/saleorder/saleorder', 'tSOTBSumFCXtdNetAfHD'); ?></label>
                                                         <label class="pull-right" id="olbSumFCXtdNetAfHD">0.00</label>
                                                         <div class="clearfix"></div>

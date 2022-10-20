@@ -164,7 +164,9 @@ class Deposit_controller extends MX_Controller {
                 'FTXphUsrApv'   => ''
             );
         }
-        FSoCCallLogMQ($aDataStaReturn);
+        // if(RABBITSSL == true || RABBITSSL == 1){ //กรณีต้องการ connect MQ แบบ SSL
+        //     FSoCCallLogMQ($aDataStaReturn);
+        // }
         echo json_encode($aDataStaReturn);
     }
 
@@ -252,6 +254,7 @@ class Deposit_controller extends MX_Controller {
                 $tWahCode = $aDataUserGroup["FTWahCode"];
                 $tWahName = $aDataUserGroup["FTWahName"];
             }
+            $tPdtDep =  $this->Deposit_Model->FSaMDPSGetPdtDep();
 
             $aDataConfigViewAdd = array(
                 'nOptDecimalShow' => $nOptDecimalShow,
@@ -277,7 +280,8 @@ class Deposit_controller extends MX_Controller {
                 'aDataDocHD' => array('rtCode' => '800'),
                 'aDataDocHDSpl' => array('rtCode' => '800'),
                 'tCmpRetInOrEx' => $tCmpRetInOrEx,
-                'tSOPplCode'  => $tSOPplCode
+                'tSOPplCode'  => $tSOPplCode,
+                'tPdtDep'     => $tPdtDep,
             );
             $tSOViewPageAdd = $this->load->view('document/depositdoc/wDepositAdd', $aDataConfigViewAdd, true);
             $aReturnData = array(
@@ -477,7 +481,9 @@ class Deposit_controller extends MX_Controller {
             );
         }
         //ถ้าทำงานเสร็จสิ้นแล้วจะรวบรวม Data เพื่อส่ง MQ_LOG
-        FSoCCallLogMQ($aReturnData);
+        // if(RABBITSSL == true || RABBITSSL == 1){ //กรณีต้องการ connect MQ แบบ SSL
+        //     FSoCCallLogMQ($aReturnData);
+        // }
         echo json_encode($aReturnData);
     }
 
@@ -1246,7 +1252,9 @@ class Deposit_controller extends MX_Controller {
                 'FTXphUsrApv'   => ''
             );
         }
-        FSoCCallLogMQ($aReturnData);
+        // if(RABBITSSL == true || RABBITSSL == 1){ //กรณีต้องการ connect MQ แบบ SSL
+        //     FSoCCallLogMQ($aReturnData);
+        // };
         echo json_encode($aReturnData);
     }
 
@@ -1481,7 +1489,9 @@ class Deposit_controller extends MX_Controller {
             );
         }
         //ถ้าทำงานเสร็จสิ้นแล้วจะรวบรวม Data เพื่อส่ง MQ_LOG
-        FSoCCallLogMQ($aReturnData); 
+        // if(RABBITSSL == true || RABBITSSL == 1){ //กรณีต้องการ connect MQ แบบ SSL
+        //     FSoCCallLogMQ($aReturnData);
+        // }; 
         echo json_encode($aReturnData);
     }
 
@@ -1542,7 +1552,9 @@ class Deposit_controller extends MX_Controller {
             );
         }
         //ถ้าทำงานเสร็จสิ้นแล้วจะรวบรวม Data เพื่อส่ง MQ_LOG
-        FSoCCallLogMQ($aReturnData); 
+        // if(RABBITSSL == true || RABBITSSL == 1){ //กรณีต้องการ connect MQ แบบ SSL
+        //     FSoCCallLogMQ($aReturnData);
+        // }; 
         echo json_encode($aReturnData);
     }
 
@@ -1603,7 +1615,9 @@ class Deposit_controller extends MX_Controller {
             );
         }
         //ถ้าทำงานเสร็จสิ้นแล้วจะรวบรวม Data เพื่อส่ง MQ_LOG
-        FSoCCallLogMQ($aReturn); 
+        // if(RABBITSSL == true || RABBITSSL == 1){ //กรณีต้องการ connect MQ แบบ SSL
+        //     FSoCCallLogMQ($aReturn); 
+        // }
         echo json_encode($aReturn);
         return;
     }
@@ -1658,7 +1672,9 @@ class Deposit_controller extends MX_Controller {
                 'FTXphUsrApv'   => ''
             );
         }
-        FSoCCallLogMQ($aReturn); 
+        // if(RABBITSSL == true || RABBITSSL == 1){ //กรณีต้องการ connect MQ แบบ SSL
+        //     FSoCCallLogMQ($aReturn); 
+        // }
         echo json_encode($aReturn);
         return;
     }

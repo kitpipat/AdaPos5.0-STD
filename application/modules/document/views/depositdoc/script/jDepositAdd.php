@@ -2048,7 +2048,7 @@
                         $('#oetPanel_CustomerAddress').val(aDataCustomer['FTAddV2Desc1']);
                         $('#oetPanel_CustomerEmail').val(aDataCustomer['FTCstEmail']);
                     }else{
-                        var tMessageError   = aDataReturnEvent['rtDesc'];
+                        var tMessageError   = aDataReturn['rtDesc'];
                         FSvCMNSetMsgErrorDialog(tMessageError);
                     }
                 },

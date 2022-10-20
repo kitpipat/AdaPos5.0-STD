@@ -214,7 +214,7 @@
         <input type="hidden" id="ohdPDTEndPage" name="ohdPDTEndPage" value="<?=$aProduct['rnAllPage']?>" >
         <input type="hidden" id="ohdPDTRowPage" name="ohdPDTRowPage" value="<?=$aProduct['nRow']?>" >
 
-        <?php $nShowRecord = get_cookie('nShowRecordInPageList'); ?>
+        <?php $nShowRecord = (isset($aProduct['nTotalResult'])) ? $aProduct['nTotalResult'] : 0 ; ?>
         <p>แสดงข้อมูลรายการล่าสุด <?=$nShowRecord?> รายการ</p>
 
         <?php if($this->session->userdata("tSesGetAllRow") > 5000) : ?>

@@ -1256,8 +1256,10 @@ class Deposit_Model extends CI_Model {
             $this->db->delete($paTableAddUpdate['tTableDT']);
         }
 
+        // $tSQL   = " INSERT INTO ".$paTableAddUpdate['tTableDT']." (
+        //                 FTBchCode,FTXshDocNo,FNXsdSeqNo,FTXsdName,FCXsdTotal,FCXsdDeposit,FTXsdRmk,FTXsdVatType,FTVatCode,FCVatRate,FCXsdVat,FCXsdVatable,FTXsdSoRef,FTPdtCode ) ";
         $tSQL   = " INSERT INTO ".$paTableAddUpdate['tTableDT']." (
-                        FTBchCode,FTXshDocNo,FNXsdSeqNo,FTXsdName,FCXsdTotal,FCXsdDeposit,FTXsdRmk,FTXsdVatType,FTVatCode,FTVatRate,FCXsdVat,FCXsdVatable,FTXsdSoRef ) ";
+                        FTBchCode,FTXshDocNo,FNXsdSeqNo,FTXsdName,FCXsdTotal,FCXsdDeposit,FTXsdRmk,FTXsdVatType,FTVatCode,FCVatRate,FCXsdVat,FCXsdVatable,FTPdtCode ) ";
         $tSQL   .=  "   SELECT
                             DOCTMP.FTBchCode,
                             DOCTMP.FTXthDocNo,
@@ -1271,7 +1273,8 @@ class Deposit_Model extends CI_Model {
                             '$tDPSVatRate' AS FTVatRate,
                             DOCTMP.FCXtdVat,
                             DOCTMP.FCXtdVatable,
-                            DOCTMP.FTTmpStatus
+                            -- DOCTMP.FTTmpStatus,
+                            DOCTMP.FTPdtCode
                         FROM TCNTDocDTTmp DOCTMP WITH (NOLOCK)
                         WHERE 1 = 1
                         AND DOCTMP.FTBchCode    = '$tSOBchCode'
@@ -1415,7 +1418,7 @@ class Deposit_Model extends CI_Model {
                         FTBchCode,FTXthDocNo,FNXtdSeqNo,FTXthDocKey,FTXtdPdtName,
                         FCXtdSalePrice,FCXtdSetPrice,
                         FCXtdNet,FTTmpRemark,
-                        FTSessionID,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy,FTXtdVatType,FTVatCode,FCXtdVatRate,FCXtdVat,FCXtdVatable,FTXtdStaAlwDis,FCXtdQty,FTTmpStatus )
+                        FTSessionID,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy,FTXtdVatType,FTVatCode,FCXtdVatRate,FCXtdVat,FCXtdVatable,FTXtdStaAlwDis,FCXtdQty )
                     SELECT
                         DPDT.FTBchCode,
                         DPDT.FTXshDocNo,
@@ -1433,12 +1436,11 @@ class Deposit_Model extends CI_Model {
                         CONVERT(VARCHAR,'".$this->session->userdata('tSesUsername')."') AS FTCreateBy,
                         DPDT.FTXsdVatType,
                         DPDT.FTVatCode,
-                        DPDT.FTVatRate,
+                        DPDT.FCVatRate,
                         DPDT.FCXsdVat,
                         DPDT.FCXsdVatable,
                         1 AS FTXtdStaAlwDis,
-                        1 AS FCXtdQty,
-                        DPDT.FTXsdSoRef
+                        1 AS FCXtdQty
                     FROM TARTRcvDepositDT AS DPDT WITH (NOLOCK)
                     WHERE 1=1 AND DPDT.FTXshDocNo = '$tSODocNo'
                     ORDER BY DPDT.FNXsdSeqNo ASC ";
@@ -1647,7 +1649,7 @@ class Deposit_Model extends CI_Model {
                             LEFT JOIN TCNMUser_L    USRL    WITH (NOLOCK)   ON SOHD.FTCreateBy  = USRL.FTUsrCode    AND USRL.FNLngID    = '$nLngID'
                             LEFT JOIN TCNMWaHouse_L WAH_L   WITH (NOLOCK)   ON SOHD.FTBchCode   = WAH_L.FTBchCode   AND SOHD.FTWahCode  = WAH_L.FTWahCode AND WAH_L.FNLngID	= '$nLngID'
                             LEFT JOIN TCNMCst_L     CSTL    WITH(NOLOCK)    ON SOHD.FTCstCode   = CSTL.FTCstCode    AND CSTL.FNLngID    = '$nLngID'
-                            WHERE ISNULL(SOHD.FNXshStaRef,'') != 2 AND SOHD.FTXshStaDoc = 1 AND SOHD.FTXshStaApv = 1
+                            WHERE ISNULL(SOHD.FNXshStaRef,'') != 2 AND SOHD.FTXshStaDoc = 1
                     ";
         if(isset($tDPSRefIntBchCode) && !empty($tDPSRefIntBchCode)){
             $tSQLMain .= " AND (SOHD.FTBchCode = '$tDPSRefIntBchCode')";
@@ -1692,6 +1694,7 @@ class Deposit_Model extends CI_Model {
                 'rnAllPage'     => $nPageAll,
                 'rtCode'        => '1',
                 'rtDesc'        => 'success',
+                'tSQL'          => $tSQL,
             );
             
         }else{
@@ -2678,9 +2681,28 @@ class Deposit_Model extends CI_Model {
     }
 
 
-
-
-
-
+    public function FSaMDPSGetPdtDep(){
+        $tSQL       = "
+                        SELECT 
+                            FTSysStaUsrValue
+                        FROM TSysConfig WITH(NOLOCK)
+                        WHERE FTSysCode = 'tCN_PdtDep' AND FTSysApp = 'CN' AND FTSysKey = 'PdtDep'
+                    ";
+        $oQuery = $this->db->query($tSQL);
+        if($oQuery->num_rows() > 0){
+            $oDataList  = $oQuery->row_array();
+            $aResult    = array(
+                'raItems'       => $oDataList,
+                'rtCode'        => '1',
+                'rtDesc'        => 'Success',
+            );
+        }else{
+            $aResult = array(
+                'rtCode'        => '800',
+                'rtDesc'        => 'error',
+            );
+        }
+        return $aResult;
+    }
 
 }

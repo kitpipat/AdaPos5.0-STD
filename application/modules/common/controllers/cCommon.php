@@ -313,6 +313,11 @@ class cCommon extends MX_Controller {
         echo json_encode($aReturn);
     }
 
+    //Functionality : Function Get Customer Address
+    public function FCNtCCMMGetCustomerAddress(){
+        $aCustomer = FCNtGetAddressCustmerDefVersion($this->input->post('tCSTCode'),$this->session->userdata("tLangID"));
+        echo json_encode($aCustomer);
+    }
 
 }
 

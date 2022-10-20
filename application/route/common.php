@@ -98,3 +98,6 @@ $route['PackDataToLogClient']           = "common/cCommon/FCNoCCMMPackDataToLogC
 
 
 $route['cenEventChkStkB4ApvDoc']     = "common/cCommon/FCNaCChkStkB4ApvDoc";
+
+//Get Address Customer
+$route['GetAddressCustomer']            = "common/cCommon/FCNtCCMMGetCustomerAddress";
