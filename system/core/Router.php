@@ -471,6 +471,15 @@ class CI_Router {
 		}
 		// =================================================================
 
+		// ======================= Route monitor ============================
+		if (file_exists(APPPATH.'route/monitor.php')){
+			include(APPPATH.'route/monitor.php');
+		}
+		if (file_exists(APPPATH.'route/'.ENVIRONMENT.'/monitor.php')){
+			include(APPPATH.'route/'.ENVIRONMENT.'/monitor.php');
+		}
+
+
 		// ======================= Route Register ============================
 		if (file_exists(APPPATH.'route/register.php')){
 			include(APPPATH.'route/register.php');
