@@ -4382,3 +4382,200 @@ IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TFNTC
  ALTER TABLE TFNTCouponHD ADD FNCphFmtLen BIGINT
 END
 GO
+
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TRGTCstBchLic' AND COLUMN_NAME = 'FTCbrRefPos') BEGIN
+ ALTER TABLE [TRGTCstBchLic] ADD [FTCbrRefPos] varchar(5) COLLATE Thai_CI_AS NULL 
+END
+GO
+
+
+
+
+
+/****** Object:  Table [dbo].[TCNTDocDTFhnTmp]    Script Date: 14/10/2565 10:10:50 ******/
+DROP TABLE IF EXISTS [dbo].[TCNTDocDTFhnTmp]
+GO
+/****** Object:  Table [dbo].[TCNTDocDTFhnTmp]    Script Date: 14/10/2565 10:10:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TCNTDocDTFhnTmp] (
+[FTBchCode] varchar(5) NOT NULL ,
+[FTXshDocNo] varchar(20) NULL ,
+[FNXsdSeqNo] bigint NULL ,
+[FTXthDocKey] varchar(20) NULL ,
+[FTPdtCode] varchar(20) NULL ,
+[FTXtdPdtName] varchar(255) NULL ,
+[FCXtdQty] numeric(18,4) NULL ,
+[FTFhnRefCode] varchar(255) NULL ,
+[FCAjdSaleB4AdjC1] numeric(18,4) NULL ,
+[FDAjdDateTimeC1] datetime NULL ,
+[FCAjdUnitQtyC1] numeric(18,4) NULL ,
+[FCAjdQtyAllC1] numeric(18,4) NULL ,
+[FCAjdSaleB4AdjC2] numeric(18,4) NULL ,
+[FDAjdDateTimeC2] datetime NULL ,
+[FCAjdUnitQtyC2] numeric(18,4) NULL ,
+[FCAjdQtyAllC2] numeric(18,4) NULL ,
+[FDAjdDateTime] datetime NULL ,
+[FCAjdUnitQty] numeric(18,4) NULL ,
+[FCAjdQtyAll] numeric(18,4) NULL ,
+[FTSessionID] varchar(255) NULL ,
+[FDCreateOn] datetime NULL ,
+[FTCreateBy] varchar(20) NULL ,
+[FTXtdBarCode] varchar(25) NULL ,
+[FTAjdPlcCode] varchar(5) NULL 
+)
+GO
+
+
+/****** Object:  Table [dbo].[TsysMasTmp]    Script Date: 14/10/2565 10:10:50 ******/
+DROP TABLE IF EXISTS [dbo].[TsysMasTmp]
+GO
+/****** Object:  Table [dbo].[TsysMasTmp]    Script Date: 14/10/2565 10:10:50 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TsysMasTmp] (
+[FTMttTableKey] varchar(255) NULL ,
+[FTMttRefKey] varchar(255) NULL ,
+[FTMttSessionID] varchar(255) NULL ,
+[FTRefPdtCode] varchar(20) NULL ,
+[FTPdtCode] varchar(20) NULL ,
+[FTPdtName] varchar(100) NULL ,
+[FTBarCode] varchar(25) NULL ,
+[FTPunCode] varchar(5) NULL ,
+[FTPunName] varchar(50) NULL ,
+[FTPlcCode] varchar(5) NULL ,
+[FTPlcName] varchar(100) NULL ,
+[FTSplCode] varchar(20) NULL ,
+[FTSplName] varchar(200) NULL ,
+[FTSplStaAlwPO] varchar(1) NULL ,
+[FTBarStaUse] varchar(1) NULL ,
+[FTBarStaAlwSale] varchar(1) NULL ,
+[FCPdtUnitFact] numeric(18,4) NULL ,
+[FTPdtGrade] varchar(50) NULL ,
+[FCPdtWeight] numeric(18,4) NULL ,
+[FTClrCode] varchar(5) NULL ,
+[FTClrName] varchar(50) NULL ,
+[FTPszCode] varchar(5) NULL ,
+[FTPszName] varchar(50) NULL ,
+[FTPdtUnitDim] varchar(50) NULL ,
+[FTPdtPkgDim] varchar(50) NULL ,
+[FTPdtStaAlwPick] varchar(1) NULL ,
+[FTPdtStaAlwPoHQ] varchar(1) NULL ,
+[FTPdtStaAlwBuy] varchar(1) NULL ,
+[FTPdtStaAlwSale] varchar(1) NULL ,
+[FCPgdPriceRet] numeric(18,4) NULL ,
+[FCPgdPriceWhs] numeric(18,4) NULL ,
+[FCPgdPriceNet] numeric(18,4) NULL ,
+[FDLastUpdOn] datetime NULL ,
+[FDCreateOn] datetime NULL ,
+[FTLastUpdBy] varchar(20) NULL ,
+[FTCreateBy] varchar(20) NULL ,
+[FTBchCode] varchar(5) NULL ,
+[FTShpCode] varchar(5) NULL ,
+[FDSgpStart] datetime NULL ,
+[FCSgpPerSun] numeric(18,4) NULL ,
+[FCSgpPerMon] numeric(18,4) NULL ,
+[FCSgpPerTue] numeric(18,4) NULL ,
+[FCSgpPerWed] numeric(18,4) NULL ,
+[FCSgpPerThu] numeric(18,4) NULL ,
+[FCSgpPerFri] numeric(18,4) NULL ,
+[FCSgpPerSat] numeric(18,4) NULL ,
+[FTMerCode] varchar(5) NULL ,
+[FNLayNo] bigint NULL ,
+[FNLayRow] bigint NULL ,
+[FNLayCol] bigint NULL ,
+[FTLayStaUse] varchar(1) NULL ,
+[FTPosCode] varchar(5) NULL ,
+[FTRakCode] varchar(5) NULL ,
+[FTGhdApp] varchar(50) NULL ,
+[FTAppName] varchar(50) NULL ,
+[FTGdtName] varchar(200) NULL ,
+[FTGhdCode] varchar(5) NULL ,
+[FTSysCode] varchar(5) NULL ,
+[FTGdtCallByName] varchar(100) NULL ,
+[FNGdtFuncLevel] bigint NULL ,
+[FTGdtStaUse] varchar(1) NULL ,
+[FTWahCode] varchar(5) NULL ,
+[FCSpwQtyMin] numeric(18,4) NULL ,
+[FCSpwQtyMax] numeric(18,4) NULL ,
+[FTSpwRmk] varchar(100) NULL ,
+[FTStaEdit] varchar(2) NULL ,
+[FTKbdScreen] varchar(50) NULL ,
+[FTPdtStaAlwRet] varchar(1) NULL 
+)
+GO
+
+
+
+
+
+
+DECLARE @tConstraint VARCHAR(30) = (select TOP 1 OBJECT_NAME(OBJECT_ID) AS NameofConstraint FROM sys.objects where OBJECT_NAME(parent_object_id)='TCNMPdtCostAvg' and type_desc LIKE '%CONSTRAINT')
+DECLARE @tSql NVARCHAR(250) = 'ALTER TABLE TCNMPdtCostAvg DROP CONSTRAINT '+@tConstraint
+EXECUTE sp_executesql @tSql
+ALTER TABLE TCNMPdtCostAvg ADD PRIMARY KEY(FTPdtCode)
+ALTER TABLE TCNMPdtCostAvg ALTER COLUMN FTAgnCode VARCHAR (10);
+
+
+
+
+
+IF (SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TFHTPdtStkBal' AND COLUMN_NAME = 'FTFhnRefCode') != 50 BEGIN
+    UPDATE TFHTPdtStkBal SET FTFhnRefCode = '' WHERE FTFhnRefCode IS NULL
+    ALTER TABLE TFHTPdtStkBal ALTER COLUMN FTFhnRefCode VARCHAR(50) NOT NULL
+
+    DECLARE @tConstraint VARCHAR(250) = (select TOP 1 OBJECT_NAME(OBJECT_ID) AS NameofConstraint FROM sys.objects where OBJECT_NAME(parent_object_id)='TFHTPdtStkBal' and type_desc LIKE '%CONSTRAINT')
+    DECLARE @tSql NVARCHAR(250) = 'ALTER TABLE TFHTPdtStkBal DROP CONSTRAINT '+@tConstraint
+    EXECUTE sp_executesql @tSql
+    ALTER TABLE TFHTPdtStkBal ADD PRIMARY KEY(FTBchCode,FTWahCode,FTPdtCode,FTFhnRefCode)
+END
+GO
+
+IF (SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TFHTPdtStkCrd' AND COLUMN_NAME = 'FTFhnRefCode') != 50 BEGIN
+    UPDATE TFHTPdtStkCrd SET FTFhnRefCode = '' WHERE FTFhnRefCode IS NULL
+    ALTER TABLE TFHTPdtStkCrd ALTER COLUMN FTFhnRefCode VARCHAR(50) NOT NULL
+END
+GO
+
+
+IF (SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TFHTPdtStkCrdBch' AND COLUMN_NAME = 'FTFhnRefCode') != 50 BEGIN
+    UPDATE TFHTPdtStkCrdBch SET FTFhnRefCode = '' WHERE FTFhnRefCode IS NULL
+    ALTER TABLE TFHTPdtStkCrdBch ALTER COLUMN FTFhnRefCode VARCHAR(50) NOT NULL
+END
+GO
+
+IF (SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TFHTPdtStkCrdME' AND COLUMN_NAME = 'FTFhnRefCode') != 50 BEGIN
+    UPDATE TFHTPdtStkCrdME SET FTFhnRefCode = '' WHERE FTFhnRefCode IS NULL
+    ALTER TABLE TFHTPdtStkCrdME ALTER COLUMN FTFhnRefCode VARCHAR(50) NOT NULL
+END
+GO
+
+IF (SELECT CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TFHTPdtStkCrdMEBch' AND COLUMN_NAME = 'FTFhnRefCode') != 50 BEGIN
+    UPDATE TFHTPdtStkCrdMEBch SET FTFhnRefCode = '' WHERE FTFhnRefCode IS NULL
+    ALTER TABLE TFHTPdtStkCrdMEBch ALTER COLUMN FTFhnRefCode VARCHAR(50) NOT NULL
+END
+GO
+
+
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNMPdtBar' AND COLUMN_NAME = 'FTFhnRefCode') BEGIN
+	ALTER TABLE TCNMPdtBar ADD FTFhnRefCode VARCHAR(50)
+END
+GO
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNMPdtBar' AND COLUMN_NAME = 'FNBarRefSeq') BEGIN
+   
+    ALTER TABLE TCNMPdtBar ADD FNBarRefSeq bigint NOT NULL DEFAULT 1 WITH VALUES;
+ 	UPDATE TCNMPdtBar SET FNBarRefSeq = 1 WHERE FNBarRefSeq IS NULL
+
+    DECLARE @tConstraint VARCHAR(250) = (select TOP 1 OBJECT_NAME(OBJECT_ID) AS NameofConstraint FROM sys.objects where OBJECT_NAME(parent_object_id)='TCNMPdtBar' and type_desc LIKE '%CONSTRAINT')
+    DECLARE @tSql NVARCHAR(250) = 'ALTER TABLE TCNMPdtBar DROP CONSTRAINT '+@tConstraint
+    EXECUTE sp_executesql @tSql
+    ALTER TABLE TCNMPdtBar ADD PRIMARY KEY(FTPdtCode,FTBarCode,FNBarRefSeq)
+END
+GO
+
+
