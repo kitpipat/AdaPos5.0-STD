@@ -1409,6 +1409,9 @@ class Deposit_controller extends MX_Controller {
             // Move Doc DTTemp To DT
             $this->Deposit_Model->FSaMDPSMoveDtTmpToDt($aDataWhere, $aTableAddUpdate);
 
+            // [Move] Doc TCNTDocHDRefTmp To TARTSqHDDocRef
+            $this->Deposit_Model->FSxMDPSMoveHDRefTmpToHDRef($aDataWhere, $aTableAddUpdate);
+            
             if($tRefin == ""){
                 $nStaRef = '0';
                 $this->Deposit_Model->FSaMDPSClearRefDoc($tRefinOld, $nStaRef, $tDPSDocNo);

@@ -2730,7 +2730,7 @@ class Deposit_Model extends CI_Model {
         if(isset($tDocNo) && !empty($tDocNo)){
             $this->db->where('FTBchCode',$tBchCode);
             $this->db->where('FTXshDocNo',$tDocNo);
-            $this->db->delete('TARTSqHDDocRef');
+            $this->db->delete('TARTRcvDepositHDDocRef');
         }
 
         $tSQL   =   "   INSERT INTO TARTRcvDepositHDDocRef (FTBchCode, FTXshDocNo, FTXshRefDocNo, FTXshRefType, FTXshRefKey, FDXshRefDocDate) ";
