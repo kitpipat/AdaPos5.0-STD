@@ -78,7 +78,7 @@
 								<tr>
 									<td align="center"><?=($nKey+1)?></td>
 									<td align="center">
-										<input type="checkbox" class="progress-bar-chekbox xWIFXDisabledOnProcess" name="ocmIFXExport[<?=$aData['FNApiGrpSeq']?>]" id="ocmIFXExport<?=$aData['FNApiGrpSeq']?>" value="<?=$aData['FNApiGrpSeq']?>" idpgb="xWIFXExpBonTextDisplay" data-type="ExpBon" checked >
+										<input type="checkbox" class="progress-bar-chekbox xWIFXDisabledOnProcess" name="ocmIFXExport[<?=$aData['FTApiCode']?>]" id="ocmIFXExport<?=$aData['FTApiCode']?>" value="<?=$aData['FTApiCode']?>" idpgb="xWIFXExpBonTextDisplay" data-type="ExpBon" checked >
 									</td>
 									<td align="left"><?php echo $aData['FTApiName'] ?></td>
 									<td>
@@ -94,10 +94,10 @@
 															
 															<div class="form-group">	
 																<div class="input-group">
-																	<input class="form-control xCNHide" id="oetIFXBchCodeSale<?=$aData['FNApiGrpSeq']?>" name="oetIFXBchCodeSale[<?=$aData['FNApiGrpSeq']?>]" maxlength="5" value="<?php echo $tUserBchCode; ?>">
-																	<input class="form-control xWPointerEventNone" type="text" id="oetIFXBchNameSale<?=$aData['FNApiGrpSeq']?>" name="oetIFXBchNameSale<?=$aData['FNApiGrpSeq']?>" value="<?php echo $tUserBchName; ?>" readonly>
+																	<input class="form-control xCNHide" id="oetIFXBchCodeSale<?=$aData['FTApiCode']?>" name="oetIFXBchCodeSale[<?=$aData['FTApiCode']?>]" maxlength="5" value="<?php echo $tUserBchCode; ?>">
+																	<input class="form-control xWPointerEventNone" type="text" id="oetIFXBchNameSale<?=$aData['FTApiCode']?>" name="oetIFXBchNameSale<?=$aData['FTApiCode']?>" value="<?php echo $tUserBchName; ?>" readonly>
 																	<span class="input-group-btn">
-																		<button  type="button" data-seq="<?=$aData['FNApiGrpSeq']?>" class="btn xIFXBrowseBchSale xCNBtnBrowseAddOn xWIFXDisabledOnProcess" <?php echo $tDisabled; ?> >
+																		<button  type="button" data-seq="<?=$aData['FTApiCode']?>" class="btn xIFXBrowseBchSale xCNBtnBrowseAddOn xWIFXDisabledOnProcess" <?php echo $tDisabled; ?> >
 																			<img src="<?php echo  base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
 																		</button>
 																	</span>
@@ -124,12 +124,12 @@
 																		type="text" 
 																		class="form-control xWITFXDatePickerSale xCNDatePicker xCNDatePickerStart xCNInputMaskDate xWRptAllInput xWIFXDisabledOnProcess" 
 																		autocomplete="off" 
-																		id="oetITFXDateFromSale<?=$aData['FNApiGrpSeq']?>"  
-																		name="oetITFXDateFromSale[<?=$aData['FNApiGrpSeq']?>]"  
+																		id="oetITFXDateFromSale<?=$aData['FTApiCode']?>"  
+																		name="oetITFXDateFromSale[<?=$aData['FTApiCode']?>]"  
 																		maxlength="10"
 																		value=<?=$dBchStartFrm;?>>
 																	<span class="input-group-btn">
-																		<button id="" data-seq="<?=$aData['FNApiGrpSeq']?>" type="button" class="btn xITFXDateFromSale xCNBtnDateTime xWIFXDisabledOnProcess"><img class="xCNIconCalendar"></button>
+																		<button id="" data-seq="<?=$aData['FTApiCode']?>" type="button" class="btn xITFXDateFromSale xCNBtnDateTime xWIFXDisabledOnProcess"><img class="xCNIconCalendar"></button>
 																	</span>
 																</div>
 															</div>
@@ -144,12 +144,12 @@
 																<div class="input-group">
 																	<input type="text" 
 																		class="form-control xWITFXDatePickerSale xCNDatePicker xCNDatePickerEnd xCNInputMaskDate xWRptAllInput xWIFXDisabledOnProcess" 
-																		autocomplete="off" id="oetITFXDateToSale<?=$aData['FNApiGrpSeq']?>" 
-																		name="oetITFXDateToSale[<?=$aData['FNApiGrpSeq']?>]"  
+																		autocomplete="off" id="oetITFXDateToSale<?=$aData['FTApiCode']?>" 
+																		name="oetITFXDateToSale[<?=$aData['FTApiCode']?>]"  
 																		maxlength="10"
 																		value="<?=$dBchStartTo;?>">
 																	<span class="input-group-btn">
-																		<button id=""  data-seq="<?=$aData['FNApiGrpSeq']?>" type="button" class="btn xITFXDateToSale xCNBtnDateTime xWIFXDisabledOnProcess"><img class="xCNIconCalendar"></button>
+																		<button id=""  data-seq="<?=$aData['FTApiCode']?>" type="button" class="btn xITFXDateToSale xCNBtnDateTime xWIFXDisabledOnProcess"><img class="xCNIconCalendar"></button>
 																	</span>
 																</div>
 															</div>
@@ -159,7 +159,7 @@
 
 												</div>
 											</div>
-												<?php if($aDataConfigUI[$aData['FNApiGrpSeq']]=='1'){ ?>
+												<?php if($aData['FTApiCode'] == '00003'){ ?>
 											<div class="row">
 												<div class="col-md-2"><?=language('interface/interfaceexport/interfaceexport','tITFXFilterDocSal');?></div>
 												<div class="col-md-10">
@@ -168,10 +168,10 @@
 														<div class="col-lg-5">
 															<div class="form-group">
 																<div class="input-group">
-																	<input type="text" class="form-control xWRptAllInput" id="oetITFXXshDocNoFrom<?=$aData['FNApiGrpSeq']?>" name="oetITFXXshDocNoFrom[<?=$aData['FNApiGrpSeq']?>]" readonly>
+																	<input type="text" class="form-control xWRptAllInput" id="oetITFXXshDocNoFrom<?=$aData['FTApiCode']?>" name="oetITFXXshDocNoFrom[<?=$aData['FTApiCode']?>]" readonly>
 																	<!-- <input type="text" class="form-control xWPointerEventNone xWRptAllInput" id="oetRptBchNameFrom" name="oetRptBchNameFrom" readonly=""> -->
 																	<span class="input-group-btn">
-																		<button id="" data-seq="<?=$aData['FNApiGrpSeq']?>" type="button" class="btn xITFXBrowseFromSale xCNBtnBrowseAddOn xWIFXDisabledOnProcess"><img class="xCNIconFind"></button>
+																		<button id="" data-seq="<?=$aData['FTApiCode']?>" type="button" class="btn xITFXBrowseFromSale xCNBtnBrowseAddOn xWIFXDisabledOnProcess"><img class="xCNIconFind"></button>
 																	</span>
 																</div>
 															</div>
@@ -184,10 +184,10 @@
 														<div class="col-lg-5">
 															<div class="form-group">
 																<div class="input-group">
-																	<input type="text" class="form-control xWRptAllInput" id="oetITFXXshDocNoTo<?=$aData['FNApiGrpSeq']?>" name="oetITFXXshDocNoTo[<?=$aData['FNApiGrpSeq']?>]" readonly>
+																	<input type="text" class="form-control xWRptAllInput" id="oetITFXXshDocNoTo<?=$aData['FTApiCode']?>" name="oetITFXXshDocNoTo[<?=$aData['FTApiCode']?>]" readonly>
 																	<!-- <input type="text" class="form-control xWPointerEventNone xWRptAllInput" id="oetRptBchNameTo" name="oetRptBchNameTo" readonly=""> -->
 																	<span class="input-group-btn">
-																		<button id="" data-seq="<?=$aData['FNApiGrpSeq']?>" type="button" class="btn xITFXBrowseToSale xCNBtnBrowseAddOn xWIFXDisabledOnProcess"><img class="xCNIconFind"></button>
+																		<button id="" data-seq="<?=$aData['FTApiCode']?>" type="button" class="btn xITFXBrowseToSale xCNBtnBrowseAddOn xWIFXDisabledOnProcess"><img class="xCNIconFind"></button>
 																	</span>
 																</div>
 															</div>

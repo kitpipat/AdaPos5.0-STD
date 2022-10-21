@@ -303,8 +303,10 @@ class mInterfaceHistory extends CI_Model
             AND FTCfgSeq = '4'
         ";
         $oQuery = $this->db->query($tSQL);
-
+        if($oQuery->num_rows() > 0) {
         return $oQuery->result_array()[0]['FTCfgStaValue'];
+        }
+        return false;
     }
 
     public function FStMIFHGetPathRefLoadFile()
@@ -322,7 +324,9 @@ class mInterfaceHistory extends CI_Model
             AND FTCfgSeq = '4'
         ";
         $oQuery = $this->db->query($tSQL);
-
-        return $oQuery->result_array()[0]['FTCfgStaRef'];
+        if($oQuery->num_rows() > 0) {
+            return $oQuery->result_array()[0]['FTCfgStaRef'];
+        }
+        return false;
     }
 }

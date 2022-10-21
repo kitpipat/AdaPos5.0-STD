@@ -37,9 +37,11 @@ class mInterfaceExport extends CI_Model {
                 CON.FTCfgStaUsrValue
                 ELSE
                 CON.FTCfgStaDefValue
-                END AS FTCfgStaUsrValue
+                END AS FTCfgStaUsrValue,
+                CONL.FTCfgName
                 FROM
                     TLKMConfig CON WITH (NOLOCK)
+                LEFT JOIN TLKMConfig_L CONL ON CON.FTCfgCode = CONL.FTCfgCode AND CONL.FNLngID = 1
                 WHERE
                     CON.FTCfgKey = 'Noti'
                 ORDER BY CAST(CON.FTCfgSeq as INT) ASC

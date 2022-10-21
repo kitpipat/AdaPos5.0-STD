@@ -37,11 +37,11 @@ class cInterfaceExport extends MX_Controller {
         $aDataInterfaceCon = $this->mInterfaceExport->FSaMIFXGetDataInterfaceConfig();
 
         $aConnect = array(
-            'tLK_SAPDBSever' => $aDataInterfaceCon[0]['FTCfgStaUsrValue'],
-            'tLK_SAPDBName'  => $aDataInterfaceCon[1]['FTCfgStaUsrValue'],
-            'tLK_SAPDBPort'  => $aDataInterfaceCon[2]['FTCfgStaUsrValue'],
-            'tLK_SAPDBUsr'   => $aDataInterfaceCon[3]['FTCfgStaUsrValue'],
-            'tLK_SAPDBPwd'   => $aDataInterfaceCon[4]['FTCfgStaUsrValue'],
+            'tLK_SAPDBSever' => @$aDataInterfaceCon[0]['FTCfgStaUsrValue'],
+            'tLK_SAPDBName'  => @$aDataInterfaceCon[1]['FTCfgStaUsrValue'],
+            'tLK_SAPDBPort'  => @$aDataInterfaceCon[2]['FTCfgStaUsrValue'],
+            'tLK_SAPDBUsr'   => @$aDataInterfaceCon[3]['FTCfgStaUsrValue'],
+            'tLK_SAPDBPwd'   => @$aDataInterfaceCon[4]['FTCfgStaUsrValue'],
         );
 
 
@@ -93,18 +93,19 @@ class cInterfaceExport extends MX_Controller {
             }
 
             $aResult = $this->mInterfaceExport->FSaMINMGetDataConfig();
+            // print_r($aResult);
+
             $aConnect = array(
                 'tHost'      => $aResult[0]['FTCfgStaUsrValue'],
-                'tVHost'     => $aResult[2]['FTCfgStaUsrValue'],
+                'tVHost'     => $aResult[6]['FTCfgStaUsrValue'],
                 'tPort'      => $aResult[3]['FTCfgStaUsrValue'],
-                'tUser'      => $aResult[4]['FTCfgStaUsrValue'],
-                'tPassword'  => $aResult[5]['FTCfgStaUsrValue'],
+                'tUser'      => $aResult[1]['FTCfgStaUsrValue'],
+                'tPassword'  => $aResult[2]['FTCfgStaUsrValue'],
                 'tQueuName'  => array(
-                    0 => $aResult[9]['FTCfgStaUsrValue'],
-                    1 => $aResult[11]['FTCfgStaUsrValue'],
-                    2 => $aResult[10]['FTCfgStaUsrValue'],
-                    3 => $aResult[12]['FTCfgStaUsrValue'],
-                    4 => $aResult[13]['FTCfgStaUsrValue'],
+                    0 => $aResult[7]['FTCfgStaUsrValue'],
+                    1 => $aResult[8]['FTCfgStaUsrValue'],
+                    2 => $aResult[9]['FTCfgStaUsrValue'],
+                    3 => $aResult[10]['FTCfgStaUsrValue'],
                 ) 
             );
 
@@ -132,24 +133,29 @@ class cInterfaceExport extends MX_Controller {
                         $aITFXDateToSale   = $this->input->post('oetITFXDateFromSale');
                         $aITFXXshDocNoFrom = $this->input->post('oetITFXXshDocNoFrom');
                         $aITFXXshDocNoTo   = $this->input->post('oetITFXXshDocNoTo');
-                        foreach($aIFXExport as $nKey => $nValue){
 
+                        foreach($aIFXExport as $nKey => $nValue){
+                            // print_r($nValue);
+                            if($nValue == '00001'){
+                                $tQueueName = 'LK_QExpCustomer';
+                            }elseif($nValue == '00002'){
+                                $tQueueName = 'LK_QExpSettlement';
+                            }elseif($nValue == '00003'){
+                                $tQueueName = 'LK_QExpTxnSale';
+                            }
                             $aPackData = array(
                                 // Sale
-                                'tBchCodeSale'          => $aBchCodeSale[$nKey],
-                                'dDateFromSale'         => $aITFXDateFromSale[$nKey],
-                                'dDateToSale'           => $aITFXDateToSale[$nKey],
-                                'tDocNoFrom'            => @$aITFXXshDocNoFrom[$nKey],
-                                'tDocNoTo'              => @$aITFXXshDocNoTo[$nKey],
-                                'tQueueName'            => $aConnect['tQueuName'][$nKey],
+                                'tBchCodeSale'          => $aBchCodeSale[$nValue],
+                                'dDateFromSale'         => $aITFXDateFromSale[$nValue],
+                                'dDateToSale'           => $aITFXDateToSale[$nValue],
+                                'tDocNoFrom'            => @$aITFXXshDocNoFrom[$nValue],
+                                'tDocNoTo'              => @$aITFXXshDocNoTo[$nValue],
+                                // 'tQueueName'            => $aConnect['tQueuName'][$nKey],
+                                'tQueueName'            => $tQueueName,
                                 'tPasswordMQ'           => $tPassword,
                                 'nAlwDupFlag'           => $nAlwDupFlag,
                                 'aConnStr'              => $aConnStr
                             );
-                            // echo '<pre>';
-                            //     print_r($aPackData);
-                            // echo '</pre>';
-                            // die();
                              $this->FSaCIFXGetFormatParam($nValue,$aPackData);
                             
                         }
@@ -169,9 +175,9 @@ class cInterfaceExport extends MX_Controller {
 
         $aVal = $this->mInterfaceExport->FSaMINMGetDataConfig();
         $tHost     = $aVal[0]['FTCfgStaUsrValue'];
-        $tVHost    = $aVal[2]['FTCfgStaUsrValue'];
+        $tVHost    = $aVal[6]['FTCfgStaUsrValue'];
         $tPort     = $aVal[3]['FTCfgStaUsrValue'];
-        $tUser     = $aVal[4]['FTCfgStaUsrValue'];
+        $tUser     = $aVal[1]['FTCfgStaUsrValue'];
         $tPassword = $ptPasswordMQ;
 
 

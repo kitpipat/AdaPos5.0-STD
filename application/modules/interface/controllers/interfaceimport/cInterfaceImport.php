@@ -46,13 +46,12 @@ class cInterfaceimport extends MX_Controller
         $this->FSxCINMRabbitMQDeclareQName($aParams);
 
         $aDataInterfaceCon = $this->mInterfaceImport->FSaMINMGetDataInterfaceConfig();
-
         $aConnect = array(
-            'tLK_SAPDBSever' => $aDataInterfaceCon[0]['FTCfgStaUsrValue'],
-            'tLK_SAPDBName'  => $aDataInterfaceCon[1]['FTCfgStaUsrValue'],
-            'tLK_SAPDBPort'  => $aDataInterfaceCon[2]['FTCfgStaUsrValue'],
-            'tLK_SAPDBUsr'   => $aDataInterfaceCon[3]['FTCfgStaUsrValue'],
-            'tLK_SAPDBPwd'   => $aDataInterfaceCon[4]['FTCfgStaUsrValue'],
+            'tLK_SAPDBSever' => @$aDataInterfaceCon[0]['FTCfgStaUsrValue'],
+            'tLK_SAPDBName'  => @$aDataInterfaceCon[1]['FTCfgStaUsrValue'],
+            'tLK_SAPDBPort'  => @$aDataInterfaceCon[2]['FTCfgStaUsrValue'],
+            'tLK_SAPDBUsr'   => @$aDataInterfaceCon[3]['FTCfgStaUsrValue'],
+            'tLK_SAPDBPwd'   => @$aDataInterfaceCon[4]['FTCfgStaUsrValue'],
         );
         $aData['aConnect'] = $aConnect;
         $this->load->view('interface/interfaceimport/wInterfaceImport', $aData);
