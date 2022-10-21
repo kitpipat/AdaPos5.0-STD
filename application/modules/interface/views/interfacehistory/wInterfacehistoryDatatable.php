@@ -98,7 +98,7 @@ if ($aDataList['rtCode'] == '1') {
 
                                 <td class="text-left">
                                     <?php if ($aValue['FTLogStaPrc'] == '2' && $aValue['FTLogType'] == '2') { ?>
-                                        <?= $aValue['FTErrDesc']; ?>
+                                        <?php //echo $aValue['FTErrDesc']; ?>
                                     <?php } else { ?>
                                         <?= language('interface/interfacehistory', 'tIFHItemNumber'); ?> <?= number_format($aValue['FNLogQtyAll']) ?>
                                         <?= language('interface/interfacehistory', 'tIFHSuccess'); ?> <?= number_format($aValue['FNLogQtyDone']) ?>

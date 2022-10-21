@@ -72,29 +72,31 @@ class mInterfaceHistory extends CI_Model
                             HIS.FTLogType,
                             HIS.FTLogStaSend,
                             HIS.FTLogTaskRef,
-                            HIS.FTLogStaPrc,HIS.FNLogQtyAll,HIS.FNLogQtyDone,
-                            LOGAPI.FTLogErrMsg AS FTErrDesc,
+                            HIS.FTLogStaPrc,
+                            HIS.FNLogQtyAll,
+                            HIS.FNLogQtyDone,
                             LOGAPI.FTLogRefNo,
-                            LOGAPI.FDCreateOn AS FDLogCreate,
+                            HIS.FDCreateOn AS FDLogCreate,
                             HIS.FDCreateOn AS FDLogCreateIm,
-                            CASE WHEN HIS.FTLogType = 2 THEN 
-                            LOGAPI.FDCreateOn
-                            ELSE 
-                            HIS.FDCreateOn
-                            END  AS FDLogHisDate
-                        FROM TLKTLogHis HIS WITH (NOLOCK)
-                        LEFT JOIN TCNMTxnAPI_L API_L WITH (NOLOCK) ON HIS.FTApiCode =  API_L.FTApiCode
-                        LEFT JOIN (
+                        CASE
+                                
+                                WHEN HIS.FTLogType = 2 THEN
+                                LOGAPI.FDCreateOn ELSE HIS.FDCreateOn 
+                            END AS FDLogHisDate 
+                        FROM
+                            TLKTLogHis HIS WITH ( NOLOCK )
+                            LEFT JOIN TCNMTxnAPI_L API_L WITH ( NOLOCK ) ON HIS.FTApiCode = API_L.FTApiCode
+                            LEFT JOIN (
                             SELECT
-                                B.FTXshDocNo,B.FTLogErrMsg,B.FTLogRefNo,B.FDCreateOn
-                            FROM (
-                                SELECT FTXshDocNo, MAX(FDLogDate) AS FDLogDate 
-                                FROM TLKTLogAPI WITH(NOLOCK) 
-                                GROUP BY FTXshDocNo
-                            ) A
-                            LEFT JOIN TLKTLogAPI B WITH(NOLOCK) ON A.FTXshDocNo = B.FTXshDocNo AND A.FDLogDate = B.FDLogDate
-                        ) LOGAPI ON HIS.FTlogTaskRef = LOGAPI.FTXshDocNo
-                        WHERE 1=1 ";
+                                B.FTXshDocNo,
+                                B.FTLogRefNo,
+                                B.FDCreateOn 
+                            FROM
+                                ( SELECT FTXshDocNo, MAX ( FDCreateOn ) AS FDLogDate FROM TLKTLogAPI6 WITH ( NOLOCK ) GROUP BY FTXshDocNo ) A
+                                LEFT JOIN TLKTLogAPI6 B WITH ( NOLOCK ) ON A.FTXshDocNo = B.FTXshDocNo AND A.FDLogDate = B.FDCreateOn 
+                            ) LOGAPI ON HIS.FTlogTaskRef = LOGAPI.FTXshDocNo 
+                        WHERE
+                            1 =1";
 
         $tSearchList = $paData['aPackDataSearch']['tIFHSearchAll'];
         if (!empty($tSearchList)) {
@@ -123,13 +125,13 @@ class mInterfaceHistory extends CI_Model
             $tSubQuery .= " AND ((HIS.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateFrom 00:00:00') AND CONVERT(datetime,'$tIFHDateTo 23:59:59')) ";
             $tSubQuery .= " OR (HIS.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateTo 23:00:00') AND CONVERT(datetime,'$tIFHDateFrom 00:00:00'))) ";
           }elseif (isset($nIFHType) && $nIFHType=='2') {
-            $tSubQuery .= " AND ((LOGAPI.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateFrom 00:00:00') AND CONVERT(datetime,'$tIFHDateTo 23:59:59')) ";
-            $tSubQuery .= " OR (LOGAPI.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateTo 23:00:00') AND CONVERT(datetime,'$tIFHDateFrom 00:00:00'))) ";
+            $tSubQuery .= " AND ((HIS.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateFrom 00:00:00') AND CONVERT(datetime,'$tIFHDateTo 23:59:59')) ";
+            $tSubQuery .= " OR (HIS.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateTo 23:00:00') AND CONVERT(datetime,'$tIFHDateFrom 00:00:00'))) ";
           }else {
             $tSubQuery .= " AND (((HIS.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateFrom 00:00:00') AND CONVERT(datetime,'$tIFHDateTo 23:59:59')) ";
             $tSubQuery .= " OR (HIS.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateTo 23:00:00') AND CONVERT(datetime,'$tIFHDateFrom 00:00:00'))) ";
-            $tSubQuery .= " OR ((LOGAPI.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateFrom 00:00:00') AND CONVERT(datetime,'$tIFHDateTo 23:59:59')) ";
-            $tSubQuery .= " OR (LOGAPI.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateTo 23:00:00') AND CONVERT(datetime,'$tIFHDateFrom 00:00:00')))) ";
+            $tSubQuery .= " OR ((HIS.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateFrom 00:00:00') AND CONVERT(datetime,'$tIFHDateTo 23:59:59')) ";
+            $tSubQuery .= " OR (HIS.FDCreateOn BETWEEN CONVERT(datetime,'$tIFHDateTo 23:00:00') AND CONVERT(datetime,'$tIFHDateFrom 00:00:00')))) ";
           }
 
         }
@@ -141,7 +143,7 @@ class mInterfaceHistory extends CI_Model
                 c.*
             FROM(
                 SELECT
-                    ROW_NUMBER() OVER(ORDER BY FDLogHisDate DESC) AS FNRowID,*
+                    ROW_NUMBER() OVER(ORDER BY FDLogCreate DESC) AS FNRowID,*
                 FROM (
                     $tSubQuery
             ) Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]
@@ -280,7 +282,7 @@ class mInterfaceHistory extends CI_Model
                 API_L.FTApiName AS FTApiName
             FROM TCNMTxnAPI API WITH (NOLOCK)
             LEFT JOIN TCNMTxnAPI_L API_L WITH (NOLOCK) ON API.FTApiCode = API_L.FTApiCode AND API_L.FNLngID = $tLangEdit
-            WHERE API.FTApiGrpPrc IN ('IMPT','SALE') /*API.FTApiTxnType IN ('1','2')*/
+            WHERE API.FTApiGrpPrc IN ('IMPT','SALE','CUST') /*API.FTApiTxnType IN ('1','2')*/
             ORDER BY FTApiTxnType ASC
         ";
         $oQuery = $this->db->query($tSQL);

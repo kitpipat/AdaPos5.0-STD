@@ -354,7 +354,9 @@
 							'tReturnInputCode'  : 'oetITFXXshDocNoFrom'+pnSeq,
 							'tReturnInputName'  : tValueTo,
 							'tNextFuncName'     : '',
-							'aArgReturn'        : ['FTXshDocNo']
+							'aArgReturn'        : ['FTXshDocNo'],
+							'tReturnInputDate'	: 'oetITFXDateFromSale'+pnSeq
+
 						});
 						JCNxBrowseData('oITFXBrowseFromSale');
 					}else{
@@ -367,7 +369,8 @@
 							'tReturnInputCode'  : 'oetITFXXshDocNoTo'+pnSeq,
 							'tReturnInputName'  : tValueTo,
 							'tNextFuncName'     : '',
-							'aArgReturn'        : ['FTXshDocNo']
+							'aArgReturn'        : ['FTXshDocNo'],
+							'tReturnInputDate'	: 'oetITFXDateFromSale'+pnSeq
 						});
 						JCNxBrowseData('oITFXBrowseToSale');
 					}
@@ -395,19 +398,20 @@
         let aArgReturn       = poReturnInput.aArgReturn;
         let tInputReturnCode = poReturnInput.tReturnInputCode;
 		let tInputReturnName = poReturnInput.tReturnInputName;
-		let dDateFrom		 = $('#oetITFXDateFromSale').val();
+		// let dDateFrom		 = $('#oetITFXDateFromSale').val();
+		let dDateFrom		 = $('#'+poReturnInput.tReturnInputDate).val();
 		// let dDateTo			 = $('#oetITFXDateToSale').val();
 		let dDateTo			 = '<?= date_format(new DateTime(),"Y/m/d H:i:s") ?>';
 		let tIFXBchCodeSale  = $('#oetIFXBchCodeSale').val();
 		let tWhere		     = "";
 		let tSessionUserCode  = '<?=$this->session->userdata('tSesUserCode')?>'
-		
 
-		// if(dDateFrom && dDateTo){
-		// 	tWhere = " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) BETWEEN CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121) AND CONVERT(VARCHAR(10),CONVERT(datetime,'"+dDateTo+"',121),121)";
-		// }
+
+		if(dDateFrom){
+			// tWhere = " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) BETWEEN CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121) AND CONVERT(VARCHAR(10),CONVERT(datetime,'"+dDateTo+"',121),121)";
+			tWhere = " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) = CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121)";
+		}
 		tWhere += " AND TPSTSalHD.FTUsrCode = '"+tSessionUserCode+"' ";
-
         let oOptionReturn    = {
             Title: ['interface/interfaceexport/interfaceexport','tITFXDataSal'],
             Table:{Master:'TPSTSalHD',PK:'FTXshDocNo'},
