@@ -1,11 +1,11 @@
 {
   "ReportVersion": "2022.1.4.0",
-  "ReportGuid": "253828d52f7042f58291c26ce5f2f291",
+  "ReportGuid": "f7e1e43f8113499494b12c6129999145",
   "ReportName": "Frm_SMSDepositSale",
   "ReportAlias": "Frm_SMSDepositSale",
   "ReportDescription": "Frm_SMSDepositSale",
   "ReportCreated": "/Date(1582089004000+0700)/",
-  "ReportChanged": "/Date(1646211746926+0700)/",
+  "ReportChanged": "/Date(1666323053904+0700)/",
   "EngineVersion": "EngineV2",
   "CalculationMode": "Interpretation",
   "Script": "using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\nusing System.Data;\r\nusing Stimulsoft.Controls;\r\nusing Stimulsoft.Base.Drawing;\r\nusing Stimulsoft.Report;\r\nusing Stimulsoft.Report.Dialogs;\r\nusing Stimulsoft.Report.Components;\r\n\r\nnamespace Reports\r\n{\r\n    public class Frm_SMSDepositSale : Stimulsoft.Report.StiReport\r\n    {\r\n        public Frm_SMSDepositSale()        {\r\n            this.InitializeComponent();\r\n        }\r\n\r\n        #region StiReport Designer generated code - do not modify\r\n\t\t#endregion StiReport Designer generated code - do not modify\r\n    }\r\n}\r\n",
@@ -62,7 +62,7 @@
         "AllowUseAsSqlParameter": true
       },
       "5": {
-        "Value": "DP2000322000005",
+        "Value": "DP0000122000013",
         "Name": "SP_tDocNo",
         "Alias": "SP_tDocNo",
         "Type": "System.String",
@@ -85,7 +85,7 @@
         "AllowUseAsSqlParameter": true
       },
       "8": {
-        "Value": "20003",
+        "Value": "00001",
         "Name": "SP_tDocBch",
         "Alias": "SP_tDocBch",
         "Type": "System.String",
@@ -516,7 +516,7 @@
         },
         "NameInSource": "SaleInv",
         "CommandTimeout": 5000,
-        "SqlCommand": "SELECT HD.FTBchCode,HD.FTXshRefExt,\r\n\tPos.FTPosRegNo,\r\n\tHD.FTXshStaApv, \r\n\tHD.FTCstCode,Cst_L.FTCstName,CstAddr_L.FTAddName,\r\n\tCst.FTCstTaxNo,\t\r\n\tCASE WHEN Cst.FTCstBusiness = '1' THEN CASE WHEN Cst.FTCstBchHQ = '1' THEN 'สำนักงานใหญ่ ' ELSE 'สาขา : ' + Cst.FTCstBchCode  END ELSE Cst.FTCstBchCode  END AS FTBchName,\t\r\n\tHDCst.FTXshCstTel AS FTAddTel,CstAddr_L.FTAddFax,\r\n\tHD.FTXshDocNo,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshDocDate,CONVERT(VARCHAR(10),FDXshDocDate,103) AS FTXshDocDate,CONVERT(VARCHAR(10),FDXshDocDate,8) AS FTXshDocTime,HD.FTXshRefInt,HD.FTCreateBy,\r\n\tISNULL(HD.FTSpnCode,'') AS FTSpnCode,Spn_L.FTSpnName,\r\n\tISNULL(HD.FTUsrCode,'') AS FTUsrCode,Usr_L.FTUsrName,\r\n    Red_L.FTUsrName AS FTXshRecorder,\r\n\tISNULL(HD.FTXshVATInOrEx,'') AS FTXshVATInOrEx,\r\n\tISNULL(FTXshStaDoc,'') AS FTXshStaDoc,\r\n\tISNULL(FTXshApvCode,'') AS FTXshApvCode,\r\n\tISNULL(FTXshStaPaid,'1') AS FTXshStaPaid,\r\n\tISNULL(HDCst.FTXshCtrName,'') AS FTXshCtrName,\r\n\tISNULL(FTXshRmk,'') AS FTXshRmk,\r\n\tISNULL(CstAddr_L.FTAddVersion,'') AS FTAddVersion,\r\n\tISNULL(CstAddr_L.FTAddV2Desc1,'') AS FTAddV2Desc1,\r\n\tISNULL(CstAddr_L.FTAddV2Desc2,'') AS FTAddV2Desc2,\r\n\tISNULL(CstAddr_L.FTAddRefNo,'') AS FTAddRefNo,\r\n\tISNULL(CstAddr_L.FTAddV1PvnCode,'') AS FTAddV1PvnCode, ISNULL(CstAddr_L.FTAddV1DstCode,'') AS FTAddV1DstCode,\r\n\tISNULL(CstAddr_L.FTAddV1SubDist,'') AS FTAddV1SubDist, \r\n\tISNULL(Pro_L.FTPvnName,'') AS FTPvnName,\r\n\tISNULL(Dis_L.FTDstName,'') AS FTDstName,\r\n\tISNULL(SDis_L.FTSudName,'') AS FTSudName,\r\n\r\n\tISNULL(CstAddr_L.FTAddName,'') AS FTAddName, ISNULL(CstAddr_L.FTAddV1No, '') AS FTAddV1No,\r\n\tISNULL(CstAddr_L.FTAddV1Village, '') AS FTAddV1Village,\r\n\tISNULL(CstAddr_L.FTAddV1Soi, '') AS FTAddV1Soi,\r\n\tISNULL(CstAddr_L.FTAddV1Road, '') AS FTAddV1Road,\r\n\tISNULL(CstAddr_L.FTAddV1PostCode, '') AS FTAddV1PostCode,\r\n\r\n\tISNULL(FCXshTotal,0) AS FCXshTotal,ISNULL(FCXshVat,0) AS FCXshVat,0 AS FCXshDiscount,\r\n    ISNULL(FCXshVatable,0) + ISNULL(FCXshVat,0) AS FCXshVatAmt,\r\n\tISNULL(FCXshVatable,0) AS FCXshVatable,\r\n    ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) AS FCXshGrandBFRnd,\r\n\tISNULL(FCXshRnd,0) AS FCXshRnd,\r\n\tISNULL(FCXshGrand,0) AS FCXshGrandAmt,\r\n\tISNULL(FCXshAmtV,0) AS FCXshAmtV,\r\n\tFCXshGrand,\r\n    HD.FTXshGndText, \r\n\tHD.FNXshDocPrint,\r\n\tCst.FTCstBusiness,\r\n\tApver_L.FTUsrName AS FTApvName,FNXshStaRef\r\n\tFROM TARTRcvDepositHD  HD WITH (NOLOCK)  INNER JOIN \r\n     TARTRcvDepositHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo LEFT JOIN\r\n\t TCNMPos Pos WITH (NOLOCK) ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN \r\n\t TCNMCst Cst WITH (NOLOCK) ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN\r\n\t TCNMCst_L Cst_L WITH (NOLOCK) ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMSpn_L Spn_L WITH (NOLOCK) ON  HD.FTSpnCode = Spn_L.FTSpnCode AND Spn_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Usr_L  WITH (NOLOCK) ON HD.FTUsrCode = Usr_L.FTUsrCode AND Usr_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Red_L   WITH (NOLOCK) ON HD.FTLastUpdBy = Red_L.FTUsrCode AND Red_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Apver_L  WITH (NOLOCK) ON HD.FTXshApvCode = Apver_L.FTUsrCode AND Apver_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMTaxAddress_L CstAddr_L WITH (NoLock) ON HDCst.FTXshCardID = CstAddr_L.FTAddTaxNo AND  CstAddr_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMProvince_L Pro_L WITH (NoLock) ON CstAddr_L.FTAddV1PvnCode = Pro_L.FTPvnCode AND Pro_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L Dis_L WITH (NoLock) ON CstAddr_L.FTAddV1DstCode = Dis_L.FTDstCode AND Dis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMSubDistrict_L SDis_L WITH (NoLock) ON CstAddr_L.FTAddV1SubDist = SDis_L.FTSudCode AND SDis_L.FNLngID = @pnLanguage\r\n     WHERE HD.FTXshStaDoc = '1' AND HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch\r\n\r\n\r\n\r\n",
+        "SqlCommand": "SELECT HD.FTBchCode,HDDF.FTXshRefDocNo AS FTXshRefExt,\r\n\tPos.FTPosRegNo,\r\n\tHD.FTXshStaApv, \r\n\tHD.FTCstCode,Cst_L.FTCstName,CstAddr_L.FTAddName,\r\n\tCst.FTCstTaxNo,\t\r\n\tCASE WHEN Cst.FTCstBusiness = '1' THEN CASE WHEN Cst.FTCstBchHQ = '1' THEN 'สำนักงานใหญ่ ' ELSE 'สาขา : ' + Cst.FTCstBchCode  END ELSE Cst.FTCstBchCode  END AS FTBchName,\t\r\n\tHDCst.FTXshCstTel AS FTAddTel,CstAddr_L.FTAddFax,\r\n\tHD.FTXshDocNo,CONVERT(VARCHAR(10),FDXshDocDate,121) AS FDXshDocDate,CONVERT(VARCHAR(10),FDXshDocDate,103) AS FTXshDocDate,CONVERT(VARCHAR(10),FDXshDocDate,8) AS FTXshDocTime,HD.FTXshRefInt,HD.FTCreateBy,\r\n\tISNULL(HD.FTSpnCode,'') AS FTSpnCode,Spn_L.FTSpnName,\r\n\tISNULL(HD.FTUsrCode,'') AS FTUsrCode,Usr_L.FTUsrName,\r\n    Red_L.FTUsrName AS FTXshRecorder,\r\n\tISNULL(HD.FTXshVATInOrEx,'') AS FTXshVATInOrEx,\r\n\tISNULL(FTXshStaDoc,'') AS FTXshStaDoc,\r\n\tISNULL(FTXshApvCode,'') AS FTXshApvCode,\r\n\tISNULL(FTXshStaPaid,'1') AS FTXshStaPaid,\r\n\tISNULL(HDCst.FTXshCtrName,'') AS FTXshCtrName,\r\n\tISNULL(FTXshRmk,'') AS FTXshRmk,\r\n\tISNULL(CstAddr_L.FTAddVersion,'') AS FTAddVersion,\r\n\tISNULL(CstAddr_L.FTAddV2Desc1,'') AS FTAddV2Desc1,\r\n\tISNULL(CstAddr_L.FTAddV2Desc2,'') AS FTAddV2Desc2,\r\n\tISNULL(CstAddr_L.FTAddRefNo,'') AS FTAddRefNo,\r\n\tISNULL(CstAddr_L.FTAddV1PvnCode,'') AS FTAddV1PvnCode, ISNULL(CstAddr_L.FTAddV1DstCode,'') AS FTAddV1DstCode,\r\n\tISNULL(CstAddr_L.FTAddV1SubDist,'') AS FTAddV1SubDist, \r\n\tISNULL(Pro_L.FTPvnName,'') AS FTPvnName,\r\n\tISNULL(Dis_L.FTDstName,'') AS FTDstName,\r\n\tISNULL(SDis_L.FTSudName,'') AS FTSudName,\r\n\r\n\tISNULL(CstAddr_L.FTAddName,'') AS FTAddName, ISNULL(CstAddr_L.FTAddV1No, '') AS FTAddV1No,\r\n\tISNULL(CstAddr_L.FTAddV1Village, '') AS FTAddV1Village,\r\n\tISNULL(CstAddr_L.FTAddV1Soi, '') AS FTAddV1Soi,\r\n\tISNULL(CstAddr_L.FTAddV1Road, '') AS FTAddV1Road,\r\n\tISNULL(CstAddr_L.FTAddV1PostCode, '') AS FTAddV1PostCode,\r\n\r\n\tISNULL(FCXshTotal,0) AS FCXshTotal,ISNULL(FCXshVat,0) AS FCXshVat,0 AS FCXshDiscount,\r\n    ISNULL(FCXshVatable,0) + ISNULL(FCXshVat,0) AS FCXshVatAmt,\r\n\tISNULL(FCXshVatable,0) AS FCXshVatable,\r\n    ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0) AS FCXshGrandBFRnd,\r\n\tISNULL(FCXshRnd,0) AS FCXshRnd,\r\n\tISNULL(FCXshGrand,0) AS FCXshGrandAmt,\r\n\tISNULL(FCXshAmtV,0) AS FCXshAmtV,\r\n\tFCXshGrand,\r\n    HD.FTXshGndText, \r\n\tHD.FNXshDocPrint,\r\n\tCst.FTCstBusiness,\r\n\tApver_L.FTUsrName AS FTApvName,FNXshStaRef\r\n\tFROM TARTRcvDepositHD  HD WITH (NOLOCK)  INNER JOIN \r\n     TARTRcvDepositHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo LEFT JOIN\r\n\t TCNMPos Pos WITH (NOLOCK) ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN \r\n\t TCNMCst Cst WITH (NOLOCK) ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN\r\n\t TCNMCst_L Cst_L WITH (NOLOCK) ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMSpn_L Spn_L WITH (NOLOCK) ON  HD.FTSpnCode = Spn_L.FTSpnCode AND Spn_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Usr_L  WITH (NOLOCK) ON HD.FTUsrCode = Usr_L.FTUsrCode AND Usr_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Red_L   WITH (NOLOCK) ON HD.FTLastUpdBy = Red_L.FTUsrCode AND Red_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Apver_L  WITH (NOLOCK) ON HD.FTXshApvCode = Apver_L.FTUsrCode AND Apver_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMTaxAddress_L CstAddr_L WITH (NoLock) ON HDCst.FTXshCardID = CstAddr_L.FTAddTaxNo AND  CstAddr_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMProvince_L Pro_L WITH (NoLock) ON CstAddr_L.FTAddV1PvnCode = Pro_L.FTPvnCode AND Pro_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L Dis_L WITH (NoLock) ON CstAddr_L.FTAddV1DstCode = Dis_L.FTDstCode AND Dis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMSubDistrict_L SDis_L WITH (NoLock) ON CstAddr_L.FTAddV1SubDist = SDis_L.FTSudCode AND SDis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TARTRcvDepositHDDocRef HDDF WITH ( NoLock ) ON HD.FTXshDocNo = HDDF.FTXshDocNo AND HD.FTBchCode = HDDF.FTBchCode AND HDDF.FTXshRefType = '3'\r\n     WHERE HD.FTXshStaDoc = '1' AND HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch\r\n\r\n\r\n\r\n",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -798,23 +798,23 @@
             "Type": "System.String"
           },
           "9": {
-            "Name": "FTXsdSoRef",
-            "Index": -1,
-            "NameInSource": "FTXsdSoRef",
-            "Alias": "FTXsdSoRef",
-            "Type": "System.String"
-          },
-          "10": {
             "Name": "FCXsdTotal",
             "Index": -1,
             "NameInSource": "FCXsdTotal",
             "Alias": "FCXsdTotal",
             "Type": "System.Decimal"
+          },
+          "10": {
+            "Name": "FCVatRate",
+            "Index": -1,
+            "NameInSource": "FCVatRate",
+            "Alias": "FCVatRate",
+            "Type": "System.Double"
           }
         },
         "NameInSource": "SaleInv",
         "CommandTimeout": 5000,
-        "SqlCommand": "\r\n SELECT  FTBchCode,FTXshDocNo,FTXsdName,\r\n\tFTXsdVatType,FTVatRate,FCXsdTotal,FCXsdVat,FCXsdVatable,FCXsdDeposit,FTXsdRmk,FTXsdSoRef\t\r\n\tFROM TARTRcvDepositDT DT WITH (NoLock)\r\n\tWHERE  DT.FTXshDocNo = @ptDocNo AND DT.FTBchCode = @ptDocBch",
+        "SqlCommand": "\r\n SELECT  FTBchCode,FTXshDocNo,FTXsdName,\r\n\tFTXsdVatType,FCVatRate,FCXsdTotal,FCXsdVat,FCXsdVatable,FCXsdDeposit,FTXsdRmk\t\r\n\tFROM TARTRcvDepositDT DT WITH (NoLock)\r\n\tWHERE  DT.FTXshDocNo = @ptDocNo AND DT.FTBchCode = @ptDocBch",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -873,7 +873,7 @@
         },
         "NameInSource": "SaleInv",
         "CommandTimeout": 5000,
-        "SqlCommand": "\r\n SELECT FTBchCode,FTXshDocNo,FCXsdVatRate,CAST(FCXsdVat AS DECIMAL(18,2)) AS FCXsdVat \r\nFROM\r\n(SELECT HD.FTBchCode,HD.FTXshDocNo,CAST(FTVatRate AS DECIMAL(18,2))  AS FCXsdVatRate,\r\n\t SUM(FCXsdVat) AS FCXsdVat \r\n\t FROM TARTRcvDepositDT DT INNER JOIN TARTRcvDepositHD HD ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo\r\n\t WHERE HD.FTXshDocNo = \t@ptDocNo AND  HD.FTBchCode = @ptDocBch\r\n\t GROUP BY HD.FTBchCode,HD.FTXshDocNo,CAST(FTVatRate AS DECIMAL(18,2))\r\n    ) Vat",
+        "SqlCommand": "\r\n SELECT FTBchCode,FTXshDocNo,FCXsdVatRate,CAST(FCXsdVat AS DECIMAL(18,2)) AS FCXsdVat \r\nFROM\r\n(SELECT HD.FTBchCode,HD.FTXshDocNo,CAST(FCVatRate AS DECIMAL(18,2))  AS FCXsdVatRate,\r\n\t SUM(FCXsdVat) AS FCXsdVat \r\n\t FROM TARTRcvDepositDT DT INNER JOIN TARTRcvDepositHD HD ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo\r\n\t WHERE HD.FTXshDocNo = \t@ptDocNo AND  HD.FTBchCode = @ptDocBch\r\n\t GROUP BY HD.FTBchCode,HD.FTXshDocNo,CAST(FCVatRate AS DECIMAL(18,2))\r\n    ) Vat",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -972,9 +972,8 @@
                   "Ident": "StiText",
                   "Name": "CmpAddr",
                   "Guid": "26feeac82375420ba87f805a87e67b58",
-                  "CanShrink": true,
                   "CanGrow": true,
-                  "ClientRectangle": "0.05,0.73,10.2,0.5",
+                  "ClientRectangle": "0.05,0.73,10.44,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
                   },

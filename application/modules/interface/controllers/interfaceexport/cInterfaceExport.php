@@ -184,7 +184,7 @@ class cInterfaceExport extends MX_Controller {
         $tQueueName             = $paParams['queueName'];
         $aParams                = $paParams['params'];
         if($pbStaUse == true){
-            // $aParams['ptConnStr']   = DB_CONNECT;
+            $aParams['ptConnStr']   = DB_CONNECT;
         }
         $tExchange              = EXCHANGE; // This use default exchange
 
@@ -249,7 +249,7 @@ class cInterfaceExport extends MX_Controller {
                     "ptConnStr"     => $paPackData['aConnStr'],
                 ]
             ];
-            $this->FCNxCallRabbitMQSale($aMQParams,false,$paPackData['tPasswordMQ']);
+            $this->FCNxCallRabbitMQSale($aMQParams,true,$paPackData['tPasswordMQ']);
         }else{
             //ถ้าไม่เลือกวันที่มา จะต้อส่งไปหาแบบช่วง เลขที่เอกสาร
             $aGetDataDocNo = $this->mInterfaceExport->FSaMINMGetDataDocNo($paPackData['tDocNoFrom'],$paPackData['tDocNoTo'],$paPackData['tBchCodeSale']);
@@ -275,7 +275,7 @@ class cInterfaceExport extends MX_Controller {
                         "ptConnStr"     => $paPackData['aConnStr'],
                     ]
                 ];
-                $this->FCNxCallRabbitMQSale($aMQParams,false,$paPackData['tPasswordMQ']);
+                $this->FCNxCallRabbitMQSale($aMQParams,true,$paPackData['tPasswordMQ']);
             }
         }
     }
