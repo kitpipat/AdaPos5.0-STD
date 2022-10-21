@@ -116,7 +116,7 @@ if ($aDataList['rtCode'] == '1') {
                                     //     $tDisableButton = "";
                                     // }
                                     if($nStaPathServerFile==1){
-                                        $tUrlDownLoadFile = $tPathFile.$aValue['FTLogTaskRef'];
+                                        $tUrlDownLoadFile = $tPathFile.'/'.$aValue['FTLogTaskRef'];
                                     }else{
                                         $tUrlDownLoadFile = base_url().'application\modules\interface\views\interfacehistory\wInterfacehistoryDownload.php?ptFile='.base64_encode($aValue['FTLogTaskRef']).'&ptPath='.base64_encode($tPathFile);
                                     }

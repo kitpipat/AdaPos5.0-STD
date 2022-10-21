@@ -293,14 +293,13 @@ class mInterfaceHistory extends CI_Model
         $tSQL = "
             SELECT TOP 1
                 CASE
-                    WHEN ISNULL(FTCfgStaUsrValue,'') = '' THEN FTCfgStaDefValue
-                    ELSE FTCfgStaUsrValue
+                    WHEN ISNULL(FTCfgStaUsrValue,'') = '' THEN FTCfgStaDefValue 
+                    ELSE FTCfgStaUsrValue 
                 END AS FTCfgStaValue
             FROM TLKMConfig WITH(NOLOCK)
             WHERE FTCfgCode='tLK_BackupPath'
             AND FTCfgApp = 'LINK'
-            AND FTCfgKey = 'Center'
-            AND FTCfgSeq = '4'
+            AND FTCfgKey = 'Path'
         ";
         $oQuery = $this->db->query($tSQL);
         if($oQuery->num_rows() > 0) {
@@ -314,16 +313,16 @@ class mInterfaceHistory extends CI_Model
         $tSQL = "
             SELECT TOP 1
                 CASE
-                    WHEN ISNULL(FTCfgStaUsrRef,'') = '' THEN FTCfgStaDefRef
-                    ELSE FTCfgStaUsrRef
+                    WHEN ISNULL(FTCfgStaUsrValue,'') = '' THEN FTCfgStaDefValue 
+                    ELSE FTCfgStaUsrValue 
                 END AS FTCfgStaRef
             FROM TLKMConfig WITH(NOLOCK)
             WHERE FTCfgCode='tLK_BackupPath'
             AND FTCfgApp = 'LINK'
-            AND FTCfgKey = 'Center'
-            AND FTCfgSeq = '4'
+            AND FTCfgKey = 'CENTER'
         ";
         $oQuery = $this->db->query($tSQL);
+
         if($oQuery->num_rows() > 0) {
             return $oQuery->result_array()[0]['FTCfgStaRef'];
         }
