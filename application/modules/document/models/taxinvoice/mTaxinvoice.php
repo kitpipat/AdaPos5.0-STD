@@ -1029,7 +1029,7 @@ class mTaxinvoice extends CI_Model{
     }
 
     //อัพเดท ว่าเอกสารนี้ถูกใช้งานเเล้ว
-    public function FSaMTAXUpdateDocVatFull($aPackData){
+    public function FSaMTAXUpdateDocVatFullOnSale($aPackData){
         $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
         $tABB               = $aPackData['tDocABB'];
         $dDocDate           = $aPackData['dDocDate'];
@@ -1041,14 +1041,38 @@ class mTaxinvoice extends CI_Model{
         $tSQL       = " UPDATE TPSTSalHD WITH(ROWLOCK) SET FTXshDocVatFull = '$tTaxNumberFull' , FDLastUpdOn = '$dDateCurrent' , FTLastUpdBy = '$tNameTask' WHERE FTXshDocNo = '$tABB' AND FTBchCode = '$tBrowseBchCode' ";
         $this->db->query($tSQL);
 
-        $tSQL       = " UPDATE TPSTTaxHD SET
-                            FTXshDocVatFull = '$tTaxNumberFull' ,
-                            FDLastUpdOn = '$dDateCurrent' ,
-                            FTLastUpdBy = '$tNameTask'
-                        WHERE FTXshDocNo = '$tTaxNumberFull' ";
-        $this->db->query($tSQL);
+        $oMicrotime_full = microtime(TRUE);
+		$tMicrotime_short = sprintf("%06d", ($oMicrotime_full - floor($oMicrotime_full)) * 1000000);
+        $dDate = new DateTime(date('Y-m-d H:i:s.'.$tMicrotime_short, $oMicrotime_full));
+		$dDate = $dDate->format('Y-m-d H:i:s');
+        $tFilepath = APPPATH . 'logs/UpdVatFull-log-' . date('Y-m-d') . '.txt'; 
+        $oHandle = fopen($tFilepath, "a+");  
+        $tUpdVatFull = $dDate . " \n " . $tSQL ;
+        $tUpdVatFull .= " \n --------------------------" ;
+        fwrite($oHandle, $tUpdVatFull . "\n\n");    
+        fclose($oHandle);  
+
     }
 
+
+
+    //อัพเดท ว่าเอกสารนี้ถูกใช้งานเเล้ว
+    public function FSaMTAXUpdateDocVatFullOnTax($aPackData){
+        $tTaxNumberFull     = $aPackData['tTaxNumberFull'];
+        $tABB               = $aPackData['tDocABB'];
+        $dDocDate           = $aPackData['dDocDate'];
+        $dDocTime           = $aPackData['dDocTime'];
+        $tBrowseBchCode     = $aPackData['tBrowseBchCode'];
+        $dDateCurrent       = date('Y-m-d H:i:s');
+        $tNameTask          = $this->session->userdata('tSesUsername');
+
+        $tSQL       = " UPDATE TPSTTaxHD WITH(ROWLOCK) SET
+                FTXshDocVatFull = '$tTaxNumberFull' ,
+                FDLastUpdOn = '$dDateCurrent' ,
+                FTLastUpdBy = '$tNameTask'
+            WHERE FTXshDocNo = '$tTaxNumberFull' ";
+            $this->db->query($tSQL);
+    }
     //เพิ่มข้อมูลที่อยู่ใหม่
     public function FSaMTAXInsertTaxAddress($aPackData){
         $nLngID             = $this->session->userdata("tLangEdit");

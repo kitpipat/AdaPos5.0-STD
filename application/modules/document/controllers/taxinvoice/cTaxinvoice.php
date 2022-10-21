@@ -710,8 +710,9 @@ class cTaxInvoice extends MX_Controller
 
                 
                 //Update FTXshDocVatFull  + ว่าเอกสารนี้ถูกใช้งานเเล้ว
-                $this->mTaxinvoice->FSaMTAXUpdateDocVatFull($aPackData);
-
+                $this->mTaxinvoice->FSaMTAXUpdateDocVatFullOnSale($aPackData);
+                $this->mTaxinvoice->FSaMTAXUpdateDocVatFullOnTax($aPackData);
+                
                 //Insert ลงตารางที่อยู่
                 $this->mTaxinvoice->FSaMTAXInsertTaxAddress($aPackData);
 
