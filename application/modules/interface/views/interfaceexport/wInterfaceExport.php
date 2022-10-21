@@ -78,7 +78,7 @@
 								<tr>
 									<td align="center"><?=($nKey+1)?></td>
 									<td align="center">
-										<input type="checkbox" class="progress-bar-chekbox xWIFXDisabledOnProcess" name="ocmIFXExport[<?=$aData['FTApiCode']?>]" id="ocmIFXExport<?=$aData['FTApiCode']?>" value="<?=$aData['FTApiCode']?>" idpgb="xWIFXExpBonTextDisplay" data-type="ExpBon" checked >
+										<input type="checkbox" class="progress-bar-chekbox xWIFXDisabledOnProcess" name="ocmIFXExport[<?=$aData['FTApiCode']?>]" id="ocmIFXExport<?=$aData['FTApiCode']?>" value="<?=$aData['FTApiCode']?>" idpgb="xWIFXExpBonTextDisplay" data-type="ExpBon"  >
 									</td>
 									<td align="left"><?php echo $aData['FTApiName'] ?></td>
 									<td>
@@ -396,20 +396,21 @@
         let tInputReturnCode = poReturnInput.tReturnInputCode;
 		let tInputReturnName = poReturnInput.tReturnInputName;
 		let dDateFrom		 = $('#oetITFXDateFromSale').val();
-		let dDateTo			 = $('#oetITFXDateToSale').val();
+		// let dDateTo			 = $('#oetITFXDateToSale').val();
+		let dDateTo			 = '<?= date_format(new DateTime(),"Y/m/d H:i:s") ?>';
 		let tIFXBchCodeSale  = $('#oetIFXBchCodeSale').val();
 		let tWhere		     = "";
 		let tSessionUserCode  = '<?=$this->session->userdata('tSesUserCode')?>'
 		
-	
-			tWhere += " AND TCNTBrsBillTmp.FTUsrCode = '"+tSessionUserCode+"' ";
-	
 
-
+		// if(dDateFrom && dDateTo){
+		// 	tWhere = " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) BETWEEN CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121) AND CONVERT(VARCHAR(10),CONVERT(datetime,'"+dDateTo+"',121),121)";
+		// }
+		tWhere += " AND TPSTSalHD.FTUsrCode = '"+tSessionUserCode+"' ";
 
         let oOptionReturn    = {
             Title: ['interface/interfaceexport/interfaceexport','tITFXDataSal'],
-            Table:{Master:'TCNTBrsBillTmp',PK:'FTXshDocNo'},
+            Table:{Master:'TPSTSalHD',PK:'FTXshDocNo'},
 			Where: {
                     Condition: [tWhere]
 			},
@@ -421,24 +422,25 @@
             GrideView:{
                 ColumnPathLang	: 'interface/interfaceexport/interfaceexport',
                 ColumnKeyLang	: ['tITFXSalDocNo','tITFXSalDate'],
-                ColumnsSize     : ['30%','50%','20%'],
+                ColumnsSize     : ['30%','70%'],
                 WidthModal      : 50,
-                DataColumns		: ['TCNTBrsBillTmp.FTXshDocNo','TCNTBrsBillTmp.FDXshDocDate'],
-                DataColumnsFormat : ['','',''],
+                DataColumns		: ['TPSTSalHD.FTXshDocNo','TPSTSalHD.FDXshDocDate'],
+                DataColumnsFormat : ['',''],
                 Perpage			: 10,
-                OrderBy			: ['FTXshDocNo ASC'],
+                OrderBy			: ['TPSTSalHD.FTXshDocNo ASC'],
             },
             CallBack:{
                 ReturnType	: 'S',
-                Value		: [tInputReturnCode,"TCNTBrsBillTmp.FTXshDocNo"],
-                Text		: [tInputReturnName,"TCNTBrsBillTmp.FTXshDocNo"]
+                Value		: [tInputReturnCode,"TPSTSalHD.FTXshDocNo"],
+                Text		: [tInputReturnName,"TPSTSalHD.FTXshDocNo"]
 			},
             NextFunc : {
                 FuncName    : tNextFuncName,
                 ArgReturn   : aArgReturn
-            }
+            },
             // RouteAddNew: 'branch',
             // BrowseLev: 1
+			// DebugSQL: true
         };
         return oOptionReturn;
 	};

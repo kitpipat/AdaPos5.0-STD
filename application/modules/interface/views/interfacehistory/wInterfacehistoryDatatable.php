@@ -116,16 +116,17 @@ if ($aDataList['rtCode'] == '1') {
                                     //     $tDisableButton = "";
                                     // }
                                     if($nStaPathServerFile==1){
-                                        $tUrlDownLoadFile = $tPathFile.'/'.$aValue['FTLogTaskRef'];
+                                        $tUrlDownLoadFile = $tPathFile.$aValue['FTLogTaskRef'];
                                     }else{
                                         $tUrlDownLoadFile = base_url().'application\modules\interface\views\interfacehistory\wInterfacehistoryDownload.php?ptFile='.base64_encode($aValue['FTLogTaskRef']).'&ptPath='.base64_encode($tPathFile);
                                     }
 
                                     ?>
                                     <a href="<?=$tUrlDownLoadFile?>" target="_blank">
-                                        <?php if ($aValue['FTLogType'] == 1) { ?>
+                                    <?php if($aValue['FTLogTaskRef'] == '' || $aValue['FTLogTaskRef'] == null){ ?>
+                                        
+                                        <?php }else{ ?> 
                                             <button type="button" class="btn btn-primary xWIFXBtnDownload"><?php echo language('interface/interfacehistory', 'tIFHBtnDownload'); ?></button>
-                                        <?php } else { ?>
                                         <?php } ?>
                                     </a>
                                 </td>

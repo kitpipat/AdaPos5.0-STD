@@ -135,7 +135,6 @@ class cInterfaceExport extends MX_Controller {
                         $aITFXXshDocNoTo   = $this->input->post('oetITFXXshDocNoTo');
 
                         foreach($aIFXExport as $nKey => $nValue){
-                            // print_r($nValue);
                             if($nValue == '00001'){
                                 $tQueueName = 'LK_QExpCustomer';
                             }elseif($nValue == '00002'){
