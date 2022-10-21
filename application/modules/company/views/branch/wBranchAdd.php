@@ -77,11 +77,24 @@
 							<?php echo language('company/branch/branch','tBCHHeadTabAddress')?>
 						</a>
 					</li>
+
+					<li id="oliBchTabSPLNav" class="xCNBCHTab<?php echo $tMenuTabDisable;?>" data-typetab="sub" data-tabtitle="SPL" style="cursor: pointer;"> 
+						<a role="tab" data-toggle="<?php echo $tMenuTabToggle;?>" data-target="#odvBranchDataSPL" aria-expanded="true">
+							<?php echo language('company/branch/branch','ผู้จำหน่ายพื้นที่')?>
+						</a>
+					</li>
+
 					<li id="oliBchSetConnect" class="xCNBCHTab<?php echo $tMenuTabDisable;?>" data-typetab="sub" data-tabtitle="bchsetconnection">
 						<a role="tab" data-toggle="<?php echo $tMenuTabToggle;?>" data-target="#odvBranchSetConnection"  aria-expanded="true">
 							<?php //echo language('company/branch/branch', 'tBCHSettingconnection') ?>
 						</a>
 					</li>
+
+					<!-- <li id="oliBchTabProFile" class="xCNBCHTab <?php echo $tMenuTabDisable;?>" data-typetab="main" data-tabtitle="bchprofile">
+						<a role="tab" data-toggle="<?php echo $tMenuTabToggle;?>" data-target="#odvBranchDataProFile" aria-expanded="true">
+							<?php echo language('company/branch/branch','tBCHHeadTabProfile')?>
+						</a>
+					</li> -->
 				</ul>
 			</div>
 			<div id="odvBchContentDataTab" class="row">
@@ -434,9 +447,13 @@
 								</div>
 							</div>
 						</div>
+						<!-- Tab Info ผู้จำหน่าย -->
+						<div id="odvBranchDataSPL" class="tab-pane fade">
+						</div>
 						<!-- Tab Info Data Branch Address -->
 						<div id="odvBranchDataAddress" class="tab-pane fade">
 						</div>
+						
 					</div>
 				</div>
 			</div>

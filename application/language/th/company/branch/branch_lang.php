@@ -100,3 +100,18 @@ $lang['tBchAgnTitle']		            = "ตัวแทนขาย";
 $lang['tBchAgnCode']		            = "รหัสตัวแทนขาย";
 $lang['tBchAgnName']		            = "ชื่อตัวแทนขาย";
 $lang ['tAddSalesAgent']                = 'เพิ่มตัวแทนขาย';
+
+$lang ['tBCHHeadTabProfile']             = 'ข้อมูลร้านค้า';
+
+$lang ['tBpfDateOpen']              = 'วันที่เปิดร้าน';
+$lang ['tBpfBchSizeTitle']               = 'ขนาดของร้าน';
+$lang ['tBpfBchSizeSelect']           = 'กรุณาเลือก'; 
+$lang ['tBpfBchSize1']               = 'XS'; 
+$lang ['tBpfBchSize2']               = 'S'; 
+$lang ['tBpfBchSize3']               = 'M'; 
+$lang ['tBpfBchSize4']               = 'L'; 
+$lang ['tBpfDJCode']                = 'รหัส DJ Code ของร้านค้า';
+$lang ['tBpfM1Code']                = 'รหัส M1 ที่ดูแล';
+$lang ['tBpfMdjCode']               = 'รหัส M โดนใจ';
+$lang ['tBpfFstVolumn']             = 'เป้าซื้อเดือนแรก  (30 วันหลังจากเปิดบัตร) นับจากวันเปิดร้าน';
+$lang ['tBpfGldShop']               = 'ร้านค้าตัวอย่าง ประจำเดือน';
