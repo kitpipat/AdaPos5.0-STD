@@ -4578,4 +4578,24 @@ IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNMP
 END
 GO
 
-
+IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNMCstBch') BEGIN
+	CREATE TABLE [dbo].[TCNMCstBch](
+		[FTCstCode] [varchar](20) NOT NULL,
+		[FNCbrSeq] [bigint] NOT NULL,
+		[FTCbrBchCode] [varchar](255) NOT NULL,
+		[FTCbrBchName] [varchar](255) NOT NULL,
+		[FTCbrRegNo] [varchar](30) NULL,
+		[FTCbrSoldTo] [varchar](20) NULL,
+		[FTCbrShipTo] [varchar](20) NULL,
+		[FTCbrStatus] [varchar](30) NULL,
+		[FDLastUpdOn] [datetime] NULL,
+		[FTLastUpdBy] [varchar](20) NULL,
+		[FDCreateOn] [datetime] NULL,
+		[FTCreateBy] [varchar](20) NULL,
+	CONSTRAINT [PK_TCNMCstBch] PRIMARY KEY CLUSTERED 
+	(
+		[FTCstCode] ASC,
+		[FNCbrSeq] ASC
+	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+	) ON [PRIMARY]
+END
