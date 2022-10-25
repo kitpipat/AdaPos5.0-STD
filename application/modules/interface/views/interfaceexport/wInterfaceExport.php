@@ -355,7 +355,8 @@
 							'tReturnInputName'  : tValueTo,
 							'tNextFuncName'     : '',
 							'aArgReturn'        : ['FTXshDocNo'],
-							'tReturnInputDate'	: 'oetITFXDateFromSale'+pnSeq
+							'tReturnInputDate'	: 'oetITFXDateFromSale'+pnSeq,
+							'tUsrCode'	: 'oetIFXBchCodeSale'+pnSeq
 
 						});
 						JCNxBrowseData('oITFXBrowseFromSale');
@@ -370,7 +371,8 @@
 							'tReturnInputName'  : tValueTo,
 							'tNextFuncName'     : '',
 							'aArgReturn'        : ['FTXshDocNo'],
-							'tReturnInputDate'	: 'oetITFXDateFromSale'+pnSeq
+							'tReturnInputDate'	: 'oetITFXDateFromSale'+pnSeq,
+							'tUsrCode'	: 'oetIFXBchCodeSale'+pnSeq
 						});
 						JCNxBrowseData('oITFXBrowseToSale');
 					}
@@ -405,12 +407,17 @@
 		let tIFXBchCodeSale  = $('#oetIFXBchCodeSale').val();
 		let tWhere		     = "";
 		let tSessionUserCode  = '<?=$this->session->userdata('tSesUserCode')?>'
-
+		let BchCode		     = $('#'+poReturnInput.tUsrCode).val();
 
 		if(dDateFrom){
 			// tWhere = " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) BETWEEN CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121) AND CONVERT(VARCHAR(10),CONVERT(datetime,'"+dDateTo+"',121),121)";
 			tWhere = " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) = CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121)";
 		}
+
+		if(BchCode && BchCode != 'undefined'){
+			tWhere += " AND TPSTSalHD.FTBchCode = '"+BchCode+"' ";
+		}
+
 		tWhere += " AND TPSTSalHD.FTUsrCode = '"+tSessionUserCode+"' ";
         let oOptionReturn    = {
             Title: ['interface/interfaceexport/interfaceexport','tITFXDataSal'],

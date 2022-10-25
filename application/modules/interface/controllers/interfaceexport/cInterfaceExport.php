@@ -155,6 +155,7 @@ class cInterfaceExport extends MX_Controller {
                                 'nAlwDupFlag'           => $nAlwDupFlag,
                                 'aConnStr'              => $aConnStr
                             );
+                            print_r($aPackData);
                              $this->FSaCIFXGetFormatParam($nValue,$aPackData);
                             
                         }
