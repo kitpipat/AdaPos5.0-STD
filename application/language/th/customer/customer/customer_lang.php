@@ -281,11 +281,5 @@ $lang['tDetailLogin']       = "ข้อมูลลูกค้าล็อก�
 
 $lang['tCstDebitCrdAllowedAmount']      = "ยอดเงินที่ใช้ได้";
 
-// Cst Bch
-$lang['tCSTBranchTitle']      = "สาขา";
-$lang['tCSTBranchCode']      = "รหัสสาขา";
-$lang['tCSTBranchName']      = "ชื่อสาขา";
-$lang['tCSTBranchRegNo']      = "หมายเลขจดทะเบียน";
-$lang['tCSTBranchShipto']      = "Ship To";
-$lang['tCSTBranchSoldto']      = "Sold To";
+
 

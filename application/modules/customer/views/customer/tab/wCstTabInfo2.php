@@ -114,7 +114,40 @@
                     </div>
                 </div>
             </div> -->
-            
+            <div class="row">
+                <div class="col-xl-12 col-sm-12 col-md-12 col-lg-12">
+                    <div id="odvBchSetHQ">
+                        <label class="fancy-checkbox">
+                            <?php 
+                            $tCstBchHQCheck;
+                            !empty($tCstBchHQ) ? $tCstBchHQCheck = "checked" : $tCstBchHQCheck = "";
+                            ?>
+                            <input type="checkbox" name="ocbCstHeadQua" value="1" <?php echo $tCstBchHQCheck; ?> onchange="JSxDisabledOrEnabledCstBch(this, event)">
+                            <span> <?php echo language('customer/customer/customer','tCSTHeadQua'); ?></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-sm-6 col-md-6 col-lg-6">
+                    <div id="odvCstBchFormGrp" class="form-group">
+
+                        <?php
+                            $tDisabledButton = "";
+                            if( $this->session->userdata("tSesUsrLevel") != "HQ" && $this->session->userdata("nSesUsrBchCount") <= 1 ){
+                                $tDisabledButton = "disabled";
+                            }
+                        ?>
+
+                        <label class="xCNLabelFrm"><?php echo language('customer/customer/customer','tCSTBch');?></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control xCNHide" id="oetCstBchCode" name="oetCstBchCode" value="<?php echo @$tCstBchCode;?>">
+                            <input type="text" class="form-control xWPointerEventNone" id="oetCstBchName" name="oetCstBchName" value="<?php echo @$tCstBchName;?>" readonly>
+                            <span class="input-group-btn">
+                                <button id="oimCstBrowseBch" type="button" class="btn xCNBtnBrowseAddOn" <?=$tDisabledButton;?> ><img class="xCNIconFind"></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 </div>

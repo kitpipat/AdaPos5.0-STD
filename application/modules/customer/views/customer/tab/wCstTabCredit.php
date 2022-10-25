@@ -1,6 +1,6 @@
 <?php 
-$tCstCrTerm = empty($aResult['raCredit']['rtCstCrTerm']) ? 0 : $aResult['raCredit']['rtCstCrTerm'];
-$tCstCrLimit = empty($aResult['raCredit']['rtCstCrLimit']) ? 0 : $aResult['raCredit']['rtCstCrLimit'];
+$tCstCrTerm = empty($aResult['raCredit']['rtCstCrTerm']) ? "" : $aResult['raCredit']['rtCstCrTerm'];
+$tCstCrLimit = empty($aResult['raCredit']['rtCstCrLimit']) ? "" : $aResult['raCredit']['rtCstCrLimit'];
 $tCstStaAlwOrdMon = empty($aResult['raCredit']['rtCstStaAlwOrdMon']) ? "" : $aResult['raCredit']['rtCstStaAlwOrdMon'];
 $tCstStaAlwOrdTue = empty($aResult['raCredit']['rtCstStaAlwOrdTue']) ? "" : $aResult['raCredit']['rtCstStaAlwOrdTue'];
 $tCstStaAlwOrdWed = empty($aResult['raCredit']['rtCstStaAlwOrdWed']) ? "" : $aResult['raCredit']['rtCstStaAlwOrdWed'];
@@ -26,10 +26,10 @@ $tCstStaApv = empty($aResult['raCredit']['rtCstStaApv']) ? "" : $aResult['raCred
             <div class="col-xl-6 col-lg-6">
 
                 <div class="form-group">
-                    <label class="xCNLabelFrm"><span class="text-danger">*</span><?php echo language('customer/customer/customer', 'tCSTCreditTerm')?></label>
+                    <label class="xCNLabelFrm"><?php echo language('customer/customer/customer', 'tCSTCreditTerm')?></label>
                     <input 
-                        type="text" 
-                        class="form-control xCNInputNumericWithoutDecimal text-right" 
+                        type="number" 
+                        class="form-control xCNInputNumericWithoutDecimal" 
                         maxlength="100" 
                         id="oetCstCreditTerm" 
                         name="oetCstCreditTerm" 
@@ -39,16 +39,16 @@ $tCstStaApv = empty($aResult['raCredit']['rtCstStaApv']) ? "" : $aResult['raCred
                 </div>
 
                 <div class="form-group">
-                    <label class="xCNLabelFrm"><span class="text-danger">*</span><?php echo language('customer/customer/customer', 'tCSTCreditLimit')?></label>
+                    <label class="xCNLabelFrm"><?php echo language('customer/customer/customer', 'tCSTCreditLimit')?></label>
                     <input 
-                        class="form-control xCNInputNumericWithDecimal text-right"
+                        class="form-control xCNInputNumericWithoutDecimal text-right"
                         type="text" 
                         maxlength="100" 
                         id="oetCstCreditLimit" 
                         name="oetCstCreditLimit" 
-                        value="<?=number_format($tCstCrLimit,2,".","")?>"
+                        value="<?=$tCstCrLimit?>"
                         data-validate="<?php echo language('customer/customer/customer','tCSTValidateCreditlimit');?>"
-                        ><!-- FCCstCrLimit	numeric(18, 4) -->
+                        >
                 </div>
 
                 <div class="form-group">
@@ -126,8 +126,8 @@ $tCstStaApv = empty($aResult['raCredit']['rtCstStaApv']) ? "" : $aResult['raCred
                 <div class="form-group">
                     <label class="xCNLabelFrm"><?=language('customer/customer/customer','tCSTViaTime')?></label>
                     <input 
-                        type="text" 
-                        class="form-control xCNInputNumericWithoutDecimal text-right" 
+                        type="number" 
+                        class="form-control xCNInputNumericWithoutDecimal" 
                         maxlength="100" 
                         id="oetCstViaTime" 
                         name="oetCstViaTime" 

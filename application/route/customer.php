@@ -21,24 +21,6 @@ $route ['customerDeleteMulti']              = 'customer/customer/cCustomer/FSoCS
 $route ['customerDelete']                   = 'customer/customer/cCustomer/FSoCSTDelete';
 $route ['customerUniqueValidate/(:any)']    = 'customer/customer/cCustomer/FStCSTUniqueValidate/$1';
 
-// Customer Branch New Design
-$route ['customerBchList']                      = 'customer/customer/CustomerBranch_controller/FSvCstBchListPage';
-$route ['customerBchDataTable']                 = 'customer/customer/CustomerBranch_controller/FSvCstBchDataList';
-$route ['customerBchPageAdd']                   = 'customer/customer/CustomerBranch_controller/FSvCstBchAddPage';
-$route ['customerBchEventAdd']                  = 'customer/customer/CustomerBranch_controller/FSaCstBchAddEvent';
-$route ['customerBchPageEdit']                  = 'customer/customer/CustomerBranch_controller/FSvCstBchEditPage';
-$route ['customerBchEventEdit']                 = 'customer/customer/CustomerBranch_controller/FSaCstBchEditEvent';
-$route ['customerBchDelete']                    = 'customer/customer/CustomerBranch_controller/FSoCstBchDelete';
-
-//Customer Branch Address
-$route ['customerBchAddrList']                      = 'customer/customer/Customerbranchaddress_controller/FSvCCstBchAddressData';
-$route ['customerBchAddrDataTable']                 = 'customer/customer/Customerbranchaddress_controller/FSvCCstBchAddressDataTable';
-$route ['customerBchAddrPageAdd']                   = 'customer/customer/Customerbranchaddress_controller/FSvCCstBchAddressCallPageAdd';
-$route ['customerBchAddrEventAdd']                  = 'customer/customer/Customerbranchaddress_controller/FSoCCstBchAddressAddEvent';
-$route ['customerBchAddrPageEdit']                  = 'customer/customer/Customerbranchaddress_controller/FSvCCstBchAddressCallPageEdit';
-$route ['customerBchAddrEventEdit']                 = 'customer/customer/Customerbranchaddress_controller/FSoCCstBchAddressEditEvent';
-$route ['customerBchAddrDelete']                    = 'customer/customer/Customerbranchaddress_controller/FSoCCstBchAddressDeleteEvent';
-
 // Customer Address New Design
 $route ['customerAddressData']              = 'customer/customer/cCustomerAddress/FSvCCSTAddressData';
 $route ['customerAddressDataTable']         = 'customer/customer/cCustomerAddress/FSvCCSTAddressDataTable';
