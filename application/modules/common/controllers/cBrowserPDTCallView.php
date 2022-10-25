@@ -122,7 +122,8 @@ class cBrowserPDTCallView extends MX_Controller
             'tParameterProductCode' => $tParameterProductCode,
             'tParameterAgenCode' => $tParameterAgenCode,
             'tNotInPdtType'   => $tNotInPdtType,
-            'tWhere'            => $tWhere
+            'tWhere'            => $tWhere,
+            'insertToTmp'       => $this->input->post('insertToTmp')
         );
         // echo "<pre>";print_r($aData);exit;
 
@@ -137,6 +138,7 @@ class cBrowserPDTCallView extends MX_Controller
         $tAgenCode          = $this->input->post('AgenCode');
         $tNotInPdtType      = $this->input->post('tNotInPdtType');
         $tWhere             = $this->input->post('tWhere');
+        $insertToTmp        = $this->input->post('insertToTmp');
         if ($tBarcode == '' || $tBarcode == null) { //เลือกสินค้าผ่านหน้าจอ
             $nPage                  =  $this->input->post("nPage");
             $tPagename              =  $this->input->post("tPagename");
@@ -192,6 +194,7 @@ class cBrowserPDTCallView extends MX_Controller
             $tSNPDT                 =  '';
             $aPackDataForSerach     =  $this->input->post("aPackDataForSerach");
             $tWhere                 =  json_encode($this->input->post('tWhere'));
+            $insertToTmp            =  json_encode($this->input->post('insertToTmp'));
         }
 
         $aDataSearch = array(
@@ -219,7 +222,8 @@ class cBrowserPDTCallView extends MX_Controller
             'tWhere'                => $tWhere,
             'tTYPEPDT'              => $tTYPEPDT,
             'tPdtSpcCtl'            => $tPdtSpcCtl,
-            'tSNPDT'                => $tSNPDT
+            'tSNPDT'                => $tSNPDT,
+            'insertToTmp'           => $insertToTmp
         );
         // echo "<pre>";
         // print_r($aDataSearch);
@@ -1054,10 +1058,10 @@ class cBrowserPDTCallView extends MX_Controller
             'ptPplCode' => @$paData['aPriceType'][1],
             'ptPdtSpcCtl' => $paData['tPdtSpcCtl']
         );
-        // echo "<pre>";
-        // print_r($aDataParamExe);
-        // echo "</pre>";
-
+//         echo "<pre>";
+//         print_r($paData);
+//         echo "</pre>";
+// exit;
         $aResultPDT = $this->mBrowserPDTCallView->FSaMGetProductBCH($tFilter, $tLeftJoinPrice, $paData, $nTotalResult,$aDataParamExe);
 
         // switch ($tPermission) {

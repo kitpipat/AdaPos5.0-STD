@@ -1151,7 +1151,8 @@
                         }
 
                         $('#oetPanel_CustomerAddress').val(tAddfull);
-                        
+                        JCNvDPSPdttmp();
+
                     },
                     error: function (jqXHR,textStatus,errorThrown){
 
@@ -1162,6 +1163,67 @@
             }
         }
 
+        function JCNvDPSPdttmp(){
+            // var tSOSplCode = $('#oetSOFrmSplCode').val();
+            // if( $('#ohdSOPplCodeCst').val() != '' ){
+            var tSOPplCode = $('#ohdSOPplCodeCst').val();
+            // }
+
+
+            //อนุญาต "ซื้อ" ที่หน่วย และ อนุญาต "ซื้อ" ที่บาร์โค๊ด
+            var aWhereItem      = [];
+            tPDTAlwSale         = ' AND (PPCZ.FTPdtStaAlwSale = 1 ';
+            aWhereItem.push(tPDTAlwSale);
+
+            tPDTAlwSale         = " OR ISNULL(PPCZ.FTPdtStaAlwSale,null) = null ) ";
+            aWhereItem.push(tPDTAlwSale);
+
+            tPDTAlwSale         = ' AND (PBAR.FTBarStaAlwSale = 1 ';
+            aWhereItem.push(tPDTAlwSale);
+
+            tPDTAlwSale         = " OR ISNULL(PBAR.FTBarStaAlwSale,null) = null ) ";
+            aWhereItem.push(tPDTAlwSale);
+
+            tPdtDepCode = $('#ohdPdtDep').val();
+            if(tPdtDepCode){
+                tPDTDep             = " AND Products.FTPdtCode = '" +tPdtDepCode+ "'";
+                aWhereItem.push(tPDTDep);
+            }
+
+            var aMulti = [];
+            $.ajax({
+                type: "POST",
+                url: "BrowseDataPDT",
+                data: {
+                    'Qualitysearch'   : [],
+                    'PriceType'       : ["Price4Cst", tSOPplCode], /*"Cost", "tCN_Cost", "Company", "1"*/
+                    'ShowCountRecord' : 10,
+                    'NextFunc'        : "FSvDPSNextFuncB4SelPDT", //FSvSOAddPdtIntoDocDTTemp
+                    'ReturnType'      : 'M',
+                    'SPL'             : ['',''],
+                    'BCH'             : [$('#ohdDPSBchCode').val(),$('#ohdDPSBchCode').val()],
+                    'SHP'             : ['',''],
+                    'Where'           : aWhereItem,
+                    'tTYPEPDT'        : '1,3,4,5,6', //สินค้าบริการ ไม่ต้อง , ค่าใช้จ่าย ไม่ต้อง
+                    'tSNPDT'          : '1,3,4', //สินค้าที่เป็นชุดจะไม่ต้องมัดจำ
+                    'insertToTmp'     : 'true'
+                },
+                cache: false,
+                timeout: 0,
+                success: function(tResult){
+                    //remove localstorage
+                    localStorage.removeItem("LocalItemDataPDT");
+
+                    $("#odvModalsectionBodyPDT").html(tResult);
+                    setTimeout(function(){
+                        JSvDPSLoadPdtDataTableHtml();
+                    }, 300);
+                },
+                error: function (jqXHR,textStatus,errorThrown){
+                    JCNxResponseError(jqXHR,textStatus,errorThrown);
+                }
+            });
+        }
         // Functionality : Function Behind NextFunc SO
         // Parameter : Event Next Func Modal
         // Create : 06/07/2021 Off

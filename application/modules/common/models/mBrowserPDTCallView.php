@@ -273,19 +273,21 @@ class mBrowserPDTCallView extends CI_Model
                     'FNResult'            => $nLngID
                 );
                 // echo "<pre>";
-                // print_r($aDataStore);
+                // print_r($paData);
                 // echo "<br>";
                 // exit;
 
                 $oQuery = $this->db->query($tCallStore, $aDataStore);
 
-
+               
                 // echo $this->db->last_query();
                 // die();
             
                 if ($oQuery->num_rows() > 0) {
                     $aList      = $oQuery->result_array();
-
+                    if($paData['insertToTmp'] == 'true'){
+                        $this->FSaMinsertPdtToTmp($paData,$aList);
+                    }
                     // print_r($aList);die();
                     if ($paData['nPage'] == 1) {
                         //ถ้าเป็น page 1 ต้องวิ่งไปหาทั้งหมด
@@ -338,6 +340,48 @@ class mBrowserPDTCallView extends CI_Model
             echo $Error;
         }
     }
+
+    public function FSaMinsertPdtToTmp($paData,$paDataQuery){
+        $tSOSesSessionID = $this->session->userdata('tSesSessionID');
+
+        $tSQL   = " SELECT *
+                        FROM TCNTDocDTTmp DOCTMP
+                        WHERE 1 = 1 ";
+        $tSQL   .= " AND DOCTMP.FTXthDocNo  = '' ";
+        $tSQL   .= " AND DOCTMP.FTXthDocKey = 'TARTRcvDepositHD' ";
+        $tSQL   .= " AND DOCTMP.FTSessionID = '$tSOSesSessionID' ";
+
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+           return false;
+        }else{
+            foreach($paDataQuery AS $paDataQuery){
+                $aDataAdd = array(
+                    'FTBchCode'  => $paData['tBCH'],
+                    'FNXtdSeqNo' => '1',
+                    'FTXthDockey' => 'TARTRcvDepositHD',
+                    'FTXthDocNo'  => '',
+                    'FTPdtCode'  => $paDataQuery['FTPdtCode'],
+                    'FTXtdPdtName'  => $paDataQuery['FTPdtName'],
+                    'FTPunCode'  => $paDataQuery['FTPunCode'],
+                    'FTPunName'  => $paDataQuery['FTPunName'],
+                    'FCXtdFactor'  => $paDataQuery['FCPdtUnitFact'],
+                    'FTXtdBarCode'  => $paDataQuery['FTBarCode'],
+                    'FTXtdVatType'  => $paDataQuery['FTPdtStaVat'],
+                    'FTVatCode'  => $paDataQuery['FTVatCode'],
+                    'FCXtdVatRate'  => $paDataQuery['FCVatRate'],
+                    'FTSessionID'  => $tSOSesSessionID,
+                    'FDLastUpdOn'  => date('Y-m-d h:i:s'),
+                    'FDCreateOn'  => date('Y-m-d h:i:s'),
+                    'FTLastUpdBy'  =>  $this->session->userdata('tSesUsername'),
+                    'FTCreateBy'  =>  $this->session->userdata('tSesUsername'),
+                    'FTTmpStatus'  => '2',
+                );
+                $this->db->insert('TCNTDocDTTmp',$aDataAdd);
+            }
+        }
+    }
+
     /* public function FSaMGetProductBCH($ptFilter, $ptLeftJoinPrice, $paData, $pnTotalResult , $aDataParamExe)
     {
         try {

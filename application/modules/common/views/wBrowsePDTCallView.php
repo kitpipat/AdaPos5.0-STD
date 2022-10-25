@@ -218,6 +218,7 @@ $nStaTopPdt  =  $this->input->cookie("nSesTopPdt_" . $this->session->userdata("t
                 'tNotInPdtType': '<?= json_encode($tNotInPdtType) ?>',
                 'tWhere' : <?= json_encode($tWhere) ?>,
                 'nBWStaTopPdt' : nBWStaTopPdt,
+                'insertToTmp' : <?= json_encode($insertToTmp) ?>,
             },
             cache: false,
             timeout: 0,
