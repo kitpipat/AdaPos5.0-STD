@@ -345,7 +345,6 @@ class Deposit_controller extends MX_Controller {
                 'FNLngID' => $nLangEdit,
                 'tUsrLogin' => $tUsrLogin
             );
-
             $aDataUserGroup = $this->Deposit_Model->FSaMDPSGetShpCodeForUsrLogin($aDataShp);
             if (isset($aDataUserGroup) && empty($aDataUserGroup)) {
                 $tUsrBchCode = "";
@@ -437,6 +436,9 @@ class Deposit_controller extends MX_Controller {
                 $tCmpRetInOrEx = $aDataComp['tCmpRetInOrEx'];
                 
                 // $tStaCalDocDTTemp = FCNbHCallCalcDocDTTemp($aCalcDTTempParams);
+
+                $tPdtDep =  $this->Deposit_Model->FSaMDPSGetPdtDep();
+
                 $aDataConfigViewAdd = array(
                     'nOptDecimalShow' => $nOptDecimalShow,
                     'nOptDocSave' => $nOptDocSave,
@@ -456,6 +458,7 @@ class Deposit_controller extends MX_Controller {
                     'tCmpRetInOrEx' => $tCmpRetInOrEx,
                     'cVatRate' => $cVatRate->FCVatRate,
                     'tVatCode' => $tVatCode,
+                    'tPdtDep'  => $tPdtDep,
                 );
                 $tSOViewPageEdit = $this->load->view('document/depositdoc/wDepositAdd', $aDataConfigViewAdd, true);
                 $aReturnData = array(
