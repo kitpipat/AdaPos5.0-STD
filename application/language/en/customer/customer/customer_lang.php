@@ -233,3 +233,11 @@ $lang['tCstMemUnitPoint']  = "Point";
 
 
 $lang['tCstDebitCrdAllowedAmount']      = "Allowed Amount";
+
+// Cst Bch
+$lang['tCSTBranchTitle']      = "Branch";
+$lang['tCSTBranchCode']      = "Branch Code";
+$lang['tCSTBranchName']      = "Branch Name";
+$lang['tCSTBranchRegNo']      = "Registration No.";
+$lang['tCSTBranchShipto']      = "Ship To";
+$lang['tCSTBranchSoldto']      = "Sold To";
