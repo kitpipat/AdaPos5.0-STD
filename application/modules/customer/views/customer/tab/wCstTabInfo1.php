@@ -125,51 +125,113 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <?php
+                        <?php
                             $tSex1 = "";
                             $tSex2 = "";
-                            if($tCstSex == "1"){
+                            if ($tCstSex == "1") {
                                 $tSex1 = "checked";
                             }
-                            if($tCstSex == "2"){
+                            if ($tCstSex == "2") {
                                 $tSex1 = "";
                                 $tSex2 = "checked";
                             }
-                            ?>
-                            <div class="fancy-radio">
-                                <label class="fancy-checkbox custom-bgcolor-blue">
-                                    <input type="radio" name="orbCstSex" <?php echo $tSex1; ?> value="1">
-                                    <span><i></i><?php echo language('customer/customer/customer','tCSTMale'); ?></span>
-                                </label>
-                                <label class="fancy-checkbox custom-bgcolor-blue">
-                                    <input type="radio" name="orbCstSex" <?php echo $tSex2; ?> value="2">
-                                    <span><i></i><?php echo language('customer/customer/customer','tCSTFemale'); ?></span>
-                                </label>
+                        ?>
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="fancy-radio xCNRadioMain ">
+                                            <input type="radio" id="orbCstSex" name="orbCstSex" value="1" <?php echo $tSex1; ?>>
+                                            <span><i></i><?php echo language('customer/customer/customer', 'tCSTMale'); ?></span>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="fancy-radio xCNRadioMain ">
+                                            <input type="radio" id="orbCstSex" name="orbCstSex" value="2" <?php echo $tSex2; ?>>
+                                            <span><i></i><?php echo language('customer/customer/customer', 'tCSTFemale'); ?></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <?php
-                            $tBusiness1 = "";
-                            $tBusiness2 = "";
-                            if($tCstBusiness == "1"){
-                                $tBusiness1 = "checked";
-                            }
-                            if($tCstBusiness == "2"){
-                                $tBusiness1 = "";
-                                $tBusiness2 = "checked";
-                            }
-                            ?>
-                            <div class="fancy-radio">
-                                <label class="fancy-checkbox custom-bgcolor-blue">
-                                    <input class="form-control" type="radio" name="orbCstBusiness" value="1" <?php echo $tBusiness1; ?>>
-                                    <span><i></i><?php echo language('customer/customer/customer','tCSTCorporate'); ?></span>
-                                </label>
-                                <label class="fancy-checkbox custom-bgcolor-blue">
-                                    <input class="form-control" type="radio" name="orbCstBusiness" value="2" <?php echo $tBusiness2; ?>>
-                                    <span><i></i><?php echo language('customer/customer/customer','tCSTIndividual'); ?></span>
-                                </label>
+                        <div class="row">
+                            <div style="border-top: 1px solid #f1f1f1;padding-top: 10px;margin-top: 10px;margin-bottom: 10px;">
+                                <span style="font-weight: bold;font-size: 20px !important;">ประเภท</span>
+                                <div style="padding-left: 15px;">
+                                    <div class="row">
+
+                                        <div class="col-md-12 col-sm-12">
+                                            <?php
+                                            if ($tCstBus == 2) {
+                                                $tBusiness1 = "checked";
+                                                $tBusiness2 = "";
+                                            } else {
+                                                $tBusiness1 = "";
+                                                $tBusiness2 = "checked";
+                                            }
+                                            ?>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <label class="fancy-radio xCNRadioMain ">
+                                                        <input type="radio" class="xWlBusinessPerson" id="orbCstBusiness" name="orbCstBusiness" value="2" <?php echo $tBusiness1; ?>>
+                                                        <span><i></i><?php echo language('customer/customer/customer', 'tCSTIndividual'); ?></span>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="fancy-radio xCNRadioMain ">
+                                                        <input type="radio" class="xWlBusinessPerson" id="orbCstBusiness" name="orbCstBusiness" value="1" <?php echo $tBusiness2; ?>>
+                                                        <span><i></i><?php echo language('customer/customer/customer', 'tCSTCorporate'); ?></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="odvBranch">
+                                        <div class="col-md-12 col-sm-12">
+                                            <div class="row">
+                                                <div class="col-md-4"></div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+
+                                                        <!-- <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier', 'tVat') ?></label> -->
+                                                        <select class="selectpicker form-control xCNSelectBox" id="ocbCstStaBchOrHQ" name="ocbCstStaBchOrHQ">
+                                                            <option value="1" <?php if ($tCstBusiness == '1') {
+                                                                                    echo "selected";
+                                                                                } ?>>สำนักงานใหญ่</option>
+                                                            <option value="" <?php if ($tCstBusiness != '1') {
+                                                                                    echo "selected";
+                                                                                } ?>>สาขา</option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4" id="odvCstBchCode_input">
+                                                    <div class="form-group">
+                                                        <input type="hidden" id="ohdCstBchCode" name="ohdCstBchCode" value="<?php echo $tCstBchCodes; ?>">
+                                                        <input type="text" class="form-control" maxlength="20" id="oetCstBchCodes" name="oetCstBchCodes" placeholder="<?php echo language('supplier/supplier/supplier', 'tBranch') ?>" <?php if ($tCstBusiness == '1') {
+                                                                                                                                                                                                                                            echo "readonly";
+                                                                                                                                                                                                                                        } ?> autocomplete="off" value="<?php echo $tCstBchCodes; ?>" data-validate="<?php echo  language('supplier/supplier/supplier', 'tBranch'); ?>">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4" id="odvCstBchCode_Browse">
+                                                    <div class="form-group  <?php if (!FCNbGetIsAgnEnabled()) : echo 'xCNHide';
+                                                                            endif; ?>">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control xWPointerEventNone" id="oetCstBchNames" name="oetCstBchNames" placeholder="<?= language('supplier/supplier/supplier', 'tBranch') ?>" value="<?php echo $tCstBchCodes; ?>" readonly>
+                                                            <span class="input-group-btn">
+                                                                <button id="obtCstBrowseBch" type="button" class="btn xCNBtnBrowseAddOn">
+                                                                    <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -240,13 +302,64 @@
 <script src="<?php echo base_url('application/modules/common/assets/src/jFormValidate.js')?>"></script>
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        var tRoute = $('#ohdFunctionAddEditCustomer').val();
+        if (tRoute == 'customerEventAdd') {
+            $("#obtCstBrowseBch").prop("disabled", true);
+        } else {
+            if ($("#ocbCstStaBchOrHQ").val() == '1') {
+                $("#odvCstBchCode_Browse").show();
+                $("#odvCstBchCode_input").hide();
+            } else {
+                $("#odvCstBchCode_input").show();
+                $("#odvCstBchCode_Browse").hide();
+                $("#oetCstBchCodes").prop("readonly", false);
+            }
+            $("#obtCstBrowseBch").prop("disabled", false);
+        }
+    });
+
+    if ('<?= $tCstBus ?>' == 1) {
+        $("#odvBranch").show();
+    } else {
+        $("#odvBranch").hide();
+    }
+
+    $(".xWlBusinessPerson").click(function(e) {
+        $("#odvBranch").show();
+        if ($(this).val() == '1') {
+            $("#odvBranch").show();
+            if ($("#ocbCstStaBchOrHQ").val() == '1') {
+                $("#odvCstBchCode_Browse").show();
+                $("#odvCstBchCode_input").hide();
+            } else {
+                $("#odvCstBchCode_input").show();
+                $("#odvCstBchCode_Browse").hide();
+                $("#oetCstBchCodes").prop("readonly", false);
+            }
+        } else {
+            $("#odvBranch").hide();
+        }
+    });
+
+    $("#ocbCstStaBchOrHQ").change(function() {
+        if ($(this).val() == '1') {
+            $("#odvCstBchCode_Browse").show();
+            $("#odvCstBchCode_input").hide();
+        } else {
+            $("#odvCstBchCode_input").show();
+            $("#odvCstBchCode_Browse").hide();
+            $("#oetCstBchCodes").prop("readonly", false);
+        }
+    });
+
     $('.xCNDatePicker').datepicker({
         format: 'yyyy-mm-dd',
         autoclose: true,
         todayHighlight: true
     });
 
-   $('#obtShpStart').click(function(event){
+    $('#obtShpStart').click(function(event){
         $('#oetCstBirthday').datepicker('show');
     });
 
@@ -310,4 +423,64 @@
     function JSxCSTNextFuncBrowseAgency(){
         //ไม่ทำอะไร
     }
+
+    //เลือกสาขา
+    $('#obtCstBrowseBch').off('click');
+    $('#obtCstBrowseBch').on('click', function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            window.oCSTBchOption = undefined;
+            oCSTBchOption = oCSTBchBrowse({
+                'tReturnInputCode': 'oetCstBchCodes',
+                'tReturnInputName': 'oetCstBchNames',
+                'tNextFuncName': 'JSxCSTNextFuncBrowseCstBch',
+                'aArgReturn': ['FTCbrBchName']
+            });
+            JCNxBrowseData('oCSTBchOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    var oCSTBchBrowse = function(poReturnInputCstBch) {
+        var tInputReturnCode = poReturnInputCstBch.tReturnInputCode;
+        var tInputReturnName = poReturnInputCstBch.tReturnInputName;
+        var tNextFunc = poReturnInputCstBch.tNextFuncName;
+        var aArgReturn = poReturnInputCstBch.aArgReturn;
+        var tCstCode = $('#oetCstCode').val();
+
+        var oCstBchOptionReturn = {
+            Title: ['authen/user/user', 'tBrowseBCHTitle'],
+            Table: {
+                Master: 'TCNMCstBch',
+                PK: 'FTCbrBchCode'
+            },
+            Where: {
+                Condition: ["AND TCNMCstBch.FTCstCode = '" + tCstCode + "' AND TCNMCstBch.FTCbrStatus = '1' "]
+            },
+            GrideView: {
+                ColumnPathLang: 'authen/user/user',
+                ColumnKeyLang: ['tBrowseBCHCode', 'tBrowseBCHName'],
+                ColumnsSize: ['10%', '75%'],
+                DataColumns: ['TCNMCstBch.FTCbrBchCode', 'TCNMCstBch.FTCbrBchName'],
+                DataColumnsFormat: ['', ''],
+                WidthModal: 50,
+                Perpage: 10,
+                OrderBy: ['TCNMCstBch.FDCreateOn DESC'],
+            },
+            // NextFunc : {
+            //     FuncName  : tNextFunc,
+            //     ArgReturn : aArgReturn
+            // },
+            CallBack: {
+                ReturnType: 'S',
+                Value: [tInputReturnCode, "TCNMCstBch.FTCbrBchName"],
+                Text: [tInputReturnName, "TCNMCstBch.FTCbrBchName"]
+            },
+            // DebugSQL: true,
+        };
+        return oCstBchOptionReturn;
+    }
+
 </script>

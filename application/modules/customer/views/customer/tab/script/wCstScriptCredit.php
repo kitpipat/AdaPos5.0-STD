@@ -56,7 +56,7 @@ function JSnCSTAddEditCustomerCredit(ptRoute){
             rules: {
                 'oetCstCreditTerm'     : {"required" :{}},
                 'oetCstCreditLimit'    : {"required" :{}},
-                'oetCstViaTime'        : {"required" :{}},
+                // 'oetCstViaTime'        : {"required" :{}},
             },
             messages: {
                 oetCstCreditTerm   :{
@@ -65,11 +65,9 @@ function JSnCSTAddEditCustomerCredit(ptRoute){
                 oetCstCreditLimit  :{
                     "required"  : $('#oetCstCreditLimit').attr('data-validate')
                 },
-
-                oetCstViaTime      : {
-                    "required"  : $('#oetCstViaTime').attr('data-validate'),
-                } 
-
+                // oetCstViaTime      : {
+                //     "required"  : $('#oetCstViaTime').attr('data-validate'),
+                // } 
             },
             errorElement: "em",
             errorPlacement: function(error, element) {

@@ -4,7 +4,7 @@
         $tCstCardID             = $aResult['raItems']['rtCstCardID'];
         $tCstDob                = date("Y-m-d", strtotime($aResult['raItems']['rtCstDob']));
         $tCstSex                = $aResult['raItems']['rtCstSex'];
-        $tCstBusiness           = $aResult['raItems']['rtCstBusiness'];
+        // $tCstBusiness           = $aResult['raItems']['rtCstBusiness'];
         $tCstTaxNo              = $aResult['raItems']['rtCstTaxNo'];
         $tCstStaActive          = $aResult['raItems']['rtCstStaActive'];
         $tCstName               = $aResult['raItems']['rtCstName'];
@@ -35,6 +35,9 @@
         $tCstStaAlwPosCalSo     = $aResult['raItems']['rtCstStaAlwPosCalSo'];
         $tAgnCode               = $aResult['raItems']['FTAgnCode']; 
         $tAgnName               = $aResult['raItems']['FTAgnName'];
+        $tCstBusiness           = $aResult['raItems']['rtCstBchHQ'];
+        $tCstBus                = $aResult['raItems']['rtCstBusiness'];
+        $tCstBchCodes           = $aResult['raItems']['rtCstBchCode'];
         $tAlwAdjLevelMem    = $tAlwAdjLevelMem;
 
         $tRoute                 = "customerEventEdit";
@@ -43,7 +46,7 @@
         $tCstCardID             = "";
         $tCstDob                = "";
         $tCstSex                = "1";
-        $tCstBusiness           = "1";
+        // $tCstBusiness           = "1";
         $tCstTaxNo              = "";
         $tCstStaActive          = "1";
         $tCstName               = "";
@@ -74,6 +77,9 @@
         $tCstStaAlwPosCalSo     = "1";
         $tAgnCode               = $this->session->userdata("tSesUsrAgnCode");
         $tAgnName               = $this->session->userdata("tSesUsrAgnName");
+        $tCstBusiness           = "";
+        $tCstBus                = 2;
+        $tCstBchCodes           = "";
         $tRoute                 = "customerEventAdd";
     }
     $tCardInfoRoute = "customerEventAddUpdateCardInfo";
@@ -194,6 +200,15 @@
                                             onclick="JSxCSTVisibledActionSubMenu(this, event)"
                                             aria-expanded="false"><?php echo language('customer/customer/customer','tCSTTabInfo2')?></a>
                                     </li>
+                                    <li id="oliCstBch" class="xWMenu <?php echo $tabDisabled?>" data-typetab="sub" data-tabtitle="cstbch">
+                                        <a
+                                            role="tab"
+                                            class="xWOption xWDelSubMenu"
+                                            data-toggle="<?php echo $dataToggle?>"
+                                            data-target="#odvCstBchTab"
+                                            onclick="JSxCSTVisibledActionSubMenu(this, event)"
+                                            aria-expanded="false"><?php echo language('customer/customer/customer','สาขา')?></a>
+                                    </li>
                                     <li id="oliCstAddress" class="xWMenu <?php echo $tabDisabled?>" data-typetab="sub" data-tabtitle="cstaddress">
                                         <a 
                                             role="tab"
@@ -294,6 +309,7 @@
             <div class="tab-content">
                     <?php include "tab/wCstTabInfo1.php"; ?>
                     <?php include "tab/wCstTabInfo2.php"; ?>
+                    <?php include "tab/customerbranch/wCstBchTab.php"; ?>
                     <?php include "tab/wCstTabAddress.php"; ?>
                     <?php include 'tab/wCstTabContact.php' ?>
                     <?php include 'tab/wCstTabCardInfo.php' ?>
@@ -395,6 +411,7 @@
 </script>
 <?php include 'tab/script/wCstScriptInfo1.php' ?>
 <?php include 'tab/script/wCstScriptInfo2.php' ?>
+<?php include 'tab/customerbranch/script/jCstScriptBch.php' ?>
 <?php include 'tab/script/wCstScriptContact.php' ?>
 <?php include 'tab/script/wCstScriptCardInfo.php' ?>
 <?php include 'tab/script/wCstScriptCredit.php' ?>

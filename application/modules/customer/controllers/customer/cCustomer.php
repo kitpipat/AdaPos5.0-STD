@@ -171,11 +171,11 @@ class cCustomer extends MX_Controller {
             $tImgInputCustomer      = $this->input->post('oetImgInputCustomer');
             $tImgInputCustomerOld   = $this->input->post('oetImgInputCustomerOld');
 
-            if($this->input->post('ocbCstHeadQua') == 1){
-                $tBchCode = FCNtGetBchInComp();
-            }else{
-                $tBchCode = $this->input->post('oetCstBchCode');
-            }
+            // if($this->input->post('ocbCstHeadQua') == 1){
+            //     $tBchCode = FCNtGetBchInComp();
+            // }else{
+            //     $tBchCode = $this->input->post('oetCstBchCode');
+            // }
             $aDataMaster = array(
                 // Master
                 'tIsAutoGenCode'        => $this->input->post('ocbCustomerAutoGenCode'),
@@ -202,8 +202,10 @@ class cCustomer extends MX_Controller {
                 'FTPmgCode'             => $this->input->post('oetCstPmgCode'),
                 'FTCstDiscRet'          => $this->input->post('oetCstDiscRet'),
                 'FTCstDiscWhs'          => $this->input->post('oetCstDiscWhs'),
-                'FTCstBchHQ'            => $this->input->post('ocbCstHeadQua'),
-                'FTCstBchCode'          => $tBchCode,
+                'FTCstBchHQ'            => $this->input->post('ocbCstStaBchOrHQ'),
+                'FTCstBchCode'          => $this->input->post('oetCstBchCodes'),
+                // 'FTCstBchHQ'            => $this->input->post('ocbCstHeadQua'),
+                // 'FTCstBchCode'          => $tBchCode,
                 'FDCstStart'            => $this->input->post('oetUsrDateStart'),
                 'FTLastUpdBy'           => $this->session->userdata('tSesUsername'),
                 'FDLastUpdOn'           => date('Y-m-d H:i:s'),
@@ -313,11 +315,11 @@ class cCustomer extends MX_Controller {
             $tImgInputCustomerOld   = $this->input->post('oetImgInputCustomerOld');
             // ***** Image Data Customer *****
 
-            if($this->input->post('ocbCstHeadQua')==1){
-                $tBchCode = FCNtGetBchInComp();
-            }else{
-                $tBchCode = $this->input->post('oetCstBchCode');
-            }
+            // if($this->input->post('ocbCstHeadQua')==1){
+            //     $tBchCode = FCNtGetBchInComp();
+            // }else{
+            //     $tBchCode = $this->input->post('oetCstBchCode');
+            // }
 
             $aDataMaster = array(
                 // Master
@@ -344,8 +346,10 @@ class cCustomer extends MX_Controller {
                 'FTPmgCode'         => $this->input->post('oetCstPmgCode'),
                 'FTCstDiscRet'      => $this->input->post('oetCstDiscRet'),
                 'FTCstDiscWhs'      => $this->input->post('oetCstDiscWhs'),
-                'FTCstBchHQ'        => $this->input->post('ocbCstHeadQua'),
-                'FTCstBchCode'      => $tBchCode,
+                'FTCstBchHQ'            => $this->input->post('ocbCstStaBchOrHQ'),
+                'FTCstBchCode'          => $this->input->post('oetCstBchCodes'),
+                // 'FTCstBchHQ'        => $this->input->post('ocbCstHeadQua'),
+                // 'FTCstBchCode'      => $tBchCode,
                 'FDCstStart'        => $this->input->post('oetUsrDateStart'),
                 'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
                 'FDLastUpdOn'       => date('Y-m-d H:i:s'),
