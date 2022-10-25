@@ -111,8 +111,9 @@ $lang['tPdtTypeTitle1']         = "General product";
 $lang['tPdtTypeTitle2']         = "Product service";
 $lang['tPdtTypeTitle3']         = "Other products";
 $lang['tPdtTypeTitle4']         = "Giveaway";
-$lang['tPdtTypeTitle5']         = "Special";
+$lang['tPdtTypeTitle5']         = "Drug";
 $lang['tPdtTypeTitle6']         = "Ingredient";
+$lang['tPdtTypeTitle7']         = "Special";
 
 $lang['tPdtSaleType']           = "Use sales price";
 $lang['tPdtSaleType1']          = "Force";
