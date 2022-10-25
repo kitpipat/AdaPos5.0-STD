@@ -1213,6 +1213,9 @@ class mCustomer extends CI_Model {
         $this->db->where_in('FTImgRefID', $paData['FTCstCode']);
         $this->db->delete('TCNMImgObj');
 
+        $this->db->where_in('FTCstCode', $paData['FTCstCode']);
+        $this->db->delete('TCNMCstBch');
+
         /*if($this->db->affected_rows() > 0){
             // Success
             $aStatus = array(
