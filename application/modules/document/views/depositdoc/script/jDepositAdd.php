@@ -1145,7 +1145,11 @@
                         if(nAddressVersion == '1'){
                             tAddfull = aData2[0]['FTAddV1No']+' '+aData2[0]['FTAddV1Soi']+' '+aData2[0]['FTAddV1Village']+' '+aData2[0]['FTAddV1Road']+' '+aData2[0]['FTSudName']+' '+aData2[0]['FTDstName']+' '+aData2[0]['FTPvnName'];
                         }else if(nAddressVersion == '2'){
-                            tAddfull = aData2[0]['FTAddV2Desc1']+' '+aData2[0]['FTAddV2Desc2'];
+                            if(aData2[0]['FTAddV2Desc1'] != null || aData2[0]['FTAddV2Desc2'] != null){
+                                tAddfull = (aData2[0]['FTAddV2Desc1']) ? aData2[0]['FTAddV2Desc1'] : false +' '+(aData2[0]['FTAddV2Desc2']) ? aData2[0]['FTAddV2Desc2'] : false;
+                            }else{
+                                tAddfull = '-'
+                            }
                         }else{
                             tAddfull = "-";
                         }

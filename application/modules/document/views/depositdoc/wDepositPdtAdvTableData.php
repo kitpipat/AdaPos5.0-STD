@@ -77,7 +77,9 @@
                             </td>
                             <td class="otdPrice">
                                 <div class="xWEditInLine<?= $nKey ?>">
-                                    <input type="text" class="xCNPrice form-control xWPdtNotEdit xWChkSoRef xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine<?= $nKey ?> " id="ohdPrice<?= $nKey ?>" name="ohdPrice<?= $nKey ?>" data-sostatus="<?= $aDataTableVal['FTTmpStatus']; ?>" maxlength="18" data-alwdis="<?= $aDataTableVal['FTXtdStaAlwDis']; ?>" data-seq="<?= $nKey ?>" value="<?= str_replace(",", "", number_format($aDataTableVal['FCXtdSalePrice'], 2)); ?>" autocomplete="off">
+                                    <div class="form-group">
+                                        <input type="text" class="xCNPrice xCNCheckZero form-control xWPdtNotEdit xWChkSoRef xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine<?= $nKey ?> " id="ohdPrice<?= $nKey ?>" name="ohdPrice<?= $nKey ?>" data-sostatus="<?= $aDataTableVal['FTTmpStatus']; ?>" maxlength="18" data-alwdis="<?= $aDataTableVal['FTXtdStaAlwDis']; ?>" data-seq="<?= $nKey ?>" value="<?= str_replace(",", "", number_format($aDataTableVal['FCXtdSalePrice'], 2)); ?>" autocomplete="off" data-validate-notzero = "<?php echo language('document/deposit/deposit', 'tSOPlsEnterValue'); ?>">
+                                    </div>
                                     <span id="ospPrice<?= $nKey ?>" style="display: none;"><?= str_replace(",", "", number_format($aDataTableVal['FCXtdSalePrice'], 2)); ?></span>
                                 </div>
                             </td>
@@ -87,9 +89,18 @@
                                     <span id="ospRmk<?= $nKey ?>" style="display: none;"><?= $aDataTableVal['FTTmpRemark']; ?></span>
                                 </div>
                             </td>
-                            <td class="text-right">
+                            <td>
                                 <div class="xWEditInLine<?= $nKey ?>">
-                                    <input type="text" class="form-control xCNInputNumericWithDecimal xWPdtNotEdit xCNPdtEditInLine text-right xWValueEditInLine<?= $nKey ?> " id="ohdTOtalGrand<?= $nKey ?>" name="ohdTOtalGrand<?= $nKey ?>" maxlength="18" data-alwdis="<?= $aDataTableVal['FTXtdStaAlwDis']; ?>" data-seq="<?= $nKey ?>" value="<?= str_replace(",", "", number_format($aDataTableVal['FCXtdNet'], 2)); ?>" autocomplete="off">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control xCNCheckZero xCNInputNumericWithDecimal xWPdtNotEdit xCNPdtEditInLine text-right xWValueEditInLine<?= $nKey ?> " id="ohdTOtalGrand<?= $nKey ?>" name="ohdTOtalGrand<?= $nKey ?>" 
+                                            maxlength="18" 
+                                            data-alwdis="<?= $aDataTableVal['FTXtdStaAlwDis']; ?>" 
+                                            data-seq="<?= $nKey ?>" 
+                                            value="<?= str_replace(",", "", number_format($aDataTableVal['FCXtdNet'], 2)); ?>" 
+                                            autocomplete="off"
+                                            data-validate-notzero = "<?php echo language('document/deposit/deposit', 'tSOPlsEnterValue'); ?>"
+                                        >
+                                    </div>
                                 </div>
                                 <span id="ospnetAfterHD<?= $nKey ?>" style="display: none;"><?= str_replace(",", "", number_format($aDataTableVal['FCXtdNet'], 2)); ?></span>
                             </td>
@@ -366,17 +377,20 @@
 
                 //ราคา
                 var oPrice = '<div class="xWEditInLine' + nKey + '">';
+                oPrice += '<div class="form-group">';
                 oPrice += '<input ';
                 oPrice += 'type="text" ';
-                oPrice += 'class="xCNPrice form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine' + nKey + ' "';
+                oPrice += 'class="xCNPrice xCNCheckZero form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine' + nKey + ' "';
                 oPrice += 'id="ohdPrice' + nKey + '" ';
                 oPrice += 'name="ohdPrice' + nKey + '" ';
                 oPrice += 'maxlength="18" ';
                 oPrice += 'data-alwdis=' + nAlwDiscount + ' ';
                 oPrice += 'data-seq=' + nKey + ' ';
                 oPrice += 'value="' + nPrice + '"';
-                oPrice += 'autocomplete="off" >';
+                oPrice += 'autocomplete="off"';
+                oPrice += 'data-validate-notzero = "<?php echo language('document/deposit/deposit', 'tSOPlsEnterValue'); ?>" >'
                 oPrice += '<span id="ospPrice' + nKey + '" style="display: none;">' + nPrice + '</span></div>';
+                oPrice += '</div>';
 
                 //หมายเหตุ
                 var oRmk = '<div class="xWEditInLine' + nKey + '">';
@@ -393,16 +407,19 @@
 
                 //มูลค่ามัดจำ
                 var oTotalGrand = '<div class="xWEditInLine' + nKey + '">';
+                oTotalGrand += '<div class="form-group">';
                 oTotalGrand += '<input ';
                 oTotalGrand += 'type="text" ';
-                oTotalGrand += 'class="xCNGrand form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine' + nKey + ' xWShowInLine' + nKey + ' "';
+                oTotalGrand += 'class="xCNGrand xCNCheckZero form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine' + nKey + ' xWShowInLine' + nKey + ' "';
                 oTotalGrand += 'id="ohdTOtalGrand' + nKey + '" ';
                 oTotalGrand += 'name="ohdTOtalGrand' + nKey + '" ';
                 oTotalGrand += 'data-seq=' + nKey + ' ';
                 oTotalGrand += 'maxlength="18" ';
                 oTotalGrand += 'value="' + nPrice + '"';
-                oTotalGrand += 'autocomplete="off" >';
+                oTotalGrand += 'autocomplete="off"';
+                oTotalGrand += 'data-validate-notzero = "<?php echo language('document/deposit/deposit', 'tSOPlsEnterValue'); ?>" >';
                 oTotalGrand += '<span id="ospnetAfterHD' + nKey + '" style="display: none;">' + nPrice + '</span></div>';
+                oTotalGrand += '</div>';
 
                 //ชื่อสินค้า
                 var oPdName = '<div class="xWEditInLine' + nKey + '">';
@@ -498,6 +515,7 @@
         // } else {
         //     var oAlwDis = 'ไม่อนุญาตให้ส่วนลด';
         // }
+
         //ราคา
         var oPrice = '<div class="xWEditInLine' + nKey + '">';
         oPrice += '<input ';
@@ -509,8 +527,9 @@
         oPrice += 'data-alwdis="" ';
         oPrice += 'data-seq=' + nKey + ' ';
         oPrice += 'value="' + nPrice + '"';
-        oPrice += 'autocomplete="off" >';
+        oPrice += 'autocomplete="off"';
         oPrice += '<span id="ospPrice' + nKey + '" style="display: none;">' + nPrice + '</span></div>';
+
 
         //หมายเหตุ
         var oRmk = '<div class="xWEditInLine' + nKey + '">';
@@ -527,16 +546,19 @@
 
         //มูลค่ามัดจำ
         var oTotalGrand = '<div class="xWEditInLine' + nKey + '">';
+        oTotalGrand += '<div class="form-group">';
         oTotalGrand += '<input ';
         oTotalGrand += 'type="text" ';
-        oTotalGrand += 'class="xCNGrand form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine' + nKey + ' xWShowInLine' + nKey + ' "';
+        oTotalGrand += 'class="xCNGrand xCNCheckZero form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine' + nKey + ' xWShowInLine' + nKey + ' "';
         oTotalGrand += 'id="ohdTOtalGrand' + nKey + '" ';
         oTotalGrand += 'name="ohdTOtalGrand' + nKey + '" ';
         oTotalGrand += 'data-seq=' + nKey + ' ';
         oTotalGrand += 'maxlength="18" ';
         oTotalGrand += 'value="' + nPrice + '"';
-        oTotalGrand += 'autocomplete="off" >';
+        oTotalGrand += 'autocomplete="off"';
+        oTotalGrand += 'data-validate-notzero = "<?php echo language('document/deposit/deposit', 'tSOPlsEnterValue'); ?>" >';
         oTotalGrand += '<span id="ospnetAfterHD' + nKey + '" style="display: none;">' + nPrice + '</span></div>';
+        oTotalGrand += '</div>';
 
         //ชื่อสินค้า
         var oPdName = '<div class="xWEditInLine' + nKey + '">';

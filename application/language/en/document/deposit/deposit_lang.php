@@ -248,3 +248,6 @@ $lang['tTFXVDSerProduct']   = "Search for products";
 
 $lang['tDesRsnCanCel']   = "Reason for cancel";
 $lang['tDplValidateAmout']   = "Please specify the deposit amount.";
+
+//validate massage
+$lang['tSOPlsEnterValue'] = "The value cannot be equal to 0, please enter again.";

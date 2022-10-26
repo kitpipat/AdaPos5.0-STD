@@ -859,9 +859,15 @@ function JSxDPSAddEditDocument(){
 // Return: Status Add Or Update Document 
 // ReturnType : -
 function JSxDPSValidateFormDocument(){
+
     if($("#ohdSOCheckClearValidate").val() != 0){
         $('#ofmSOFormAdd').validate().destroy();
     }
+
+    $.validator.addMethod("notOnlyZero", function (value, element, param) {
+        return this.optional(element) || parseFloat(value) > 0;
+    });
+
     $('#ofmSOFormAdd').validate({
         focusInvalid: false,
         onclick: false,
@@ -925,6 +931,16 @@ function JSxDPSValidateFormDocument(){
             }
         },
     });
+    
+    $('.xCNCheckZero').each(function() {
+        $(this).rules('add', {
+            notOnlyZero: '0',
+            messages: {
+                notOnlyZero: $('.xCNCheckZero').attr('data-validate-notzero')
+            }
+        });
+    });
+
 }
 
 // Functionality: Validate Doc Code (Validate ตรวจสอบรหัสเอกสาร)

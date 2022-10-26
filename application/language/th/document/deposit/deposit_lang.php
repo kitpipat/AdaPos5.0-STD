@@ -255,3 +255,6 @@ $lang['tDplValidateAmout']   = "กรุณาระบุจำนวนเง
 $lang['tTFXVDStaDoc']     = "รออนมุติ";
 $lang['tTFXVDStaDoc1']    = "อนุมัติแล้ว";
 $lang['tTFXVDStaDoc3']    = "ยกเลิก";
+
+//validate massage
+$lang['tSOPlsEnterValue'] = "มูลค่าต้องไม่เท่ากับ 0 โปรดกรอกใหม่อีกครั้ง";
