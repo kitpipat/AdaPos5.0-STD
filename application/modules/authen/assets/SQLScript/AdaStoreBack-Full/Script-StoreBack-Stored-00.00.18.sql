@@ -3725,3 +3725,80 @@ BEGIN CATCH
 END CATCH
 
 GO
+
+
+
+IF EXISTS
+(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCxAutoDeployCreate')and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE [dbo].STP_PRCxAutoDeployCreate
+GO
+CREATE PROCEDURE [dbo].[STP_PRCxAutoDeployCreate]
+ @ptXdhDocNo VARCHAR(10)
+,@pnResult INT OUTPUT
+,@ptMessage VARCHAR(255) OUTPUT 
+AS
+DECLARE @tTrans VARCHAR(10)
+
+/*---------------------------------------------------------------------
+Document History
+Version			Date			User	Remark
+05.01.00		10/02/2022		Zen		Create
+05.02.00		25/02/2022		Zen		แก้เรื่องเงื่อนไข
+----------------------------------------------------------------------*/
+
+SET @tTrans = 'AutoDeploy'
+BEGIN TRY
+	BEGIN TRANSACTION @tTrans  
+	TRUNCATE TABLE TCNTAppDepHisTmp
+	--DECLARE @ptXdhDocNos VARCHAR(20)
+	--SET @ptXdhDocNos = '22Feb07531'
+	--INSERT INTO TCNTAppDepHis
+	INSERT INTO TCNTAppDepHisTmp
+	SELECT Bch.FTAgnCode,Bch.FTBchCode,'' AS FTMerCode,'' AS FTShopCode,Pos.FTPosCode,'' AS FTAppCode,
+	   AppHD.FTXdhDocNo,
+	   NULL AS FDXdsDUpgrade,NULL AS FTXdsStaPrc,NULL AS FTXdsStaDoc,
+	   GETDATE(),'MQProcessTool',GETDATE(),'MQProcessTool'
+	FROM TCNTAppDepHD AppHD WITH(NOLOCK) ,TCNMBranch Bch WITH(NOLOCK) 
+	INNER JOIN TCNMPos Pos WITH(NOLOCK)  ON Pos.FTBchCode = Bch.FTBchCode 
+	WHERE AppHD.FTXdhDocNo = @ptXdhDocNo
+	AND AppHD.FTXdhStaDoc = 1 
+	AND AppHD.FTXdhStaDep = 1 
+	AND AppHD.FTXdhStaPreDep = 1
+
+	DELETE HisTmp
+	FROM TCNTAppDepHisTmp HisTmp 
+	INNER JOIN TCNTAppDepHDBch HDBch 
+	ON HisTmp.FTXdhDocNo = HDBch.FTXdhDocNo
+	AND HisTmp.FTAgnCode = HDBch.FTXdhAgnTo
+	AND HisTmp.FTBchCode = HDBch.FTXdhBchTo
+	AND HisTmp.FTPosCode = HDBch.FTXdhPosTo
+	AND HDBch.FTXdhStaType = '2'
+
+	IF EXISTS (SELECT FTXdhDocNo FROM TCNTAppDepHDBch WHERE FTXdhDocNo = @ptXdhDocNo AND FTXdhStaType = '1') 
+	BEGIN
+	    INSERT INTO TCNTAppDepHis
+		SELECT HisTmp.* FROM TCNTAppDepHisTmp HisTmp
+		INNER JOIN TCNTAppDepHDBch HDBch 
+		ON HisTmp.FTXdhDocNo =  HDBch.FTXdhDocNo
+		AND ((ISNULL(HisTmp.FTAgnCode,'') = ISNULL(HDBch.FTXdhAgnTo,'')) OR (ISNULL(HDBch.FTXdhAgnTo,'') = ''))
+		AND ((ISNULL(HisTmp.FTBchCode,'') = ISNULL(HDBch.FTXdhBchTo,'')) OR (ISNULL(HDBch.FTXdhBchTo,'') = ''))
+		AND ((ISNULL(HisTmp.FTPosCode,'') = ISNULL(HDBch.FTXdhPosTo,'')) OR (ISNULL(HDBch.FTXdhPosTo,'') = ''))	
+		AND HDBch.FTXdhStaType = '1'
+	END
+	ELSE
+	BEGIN
+		INSERT INTO TCNTAppDepHis
+		SELECT HisTmp.* FROM TCNTAppDepHisTmp HisTmp
+	END
+	
+
+	COMMIT TRANSACTION @tTrans  
+	SET @pnResult= 1
+	SET @ptMessage = 'Success'
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION @tTrans  
+    SET @pnResult= -1
+	SET @ptMessage = (SELECT 'Error : ' + ISNULL(ERROR_MESSAGE(),''))
+END CATCH
+GO

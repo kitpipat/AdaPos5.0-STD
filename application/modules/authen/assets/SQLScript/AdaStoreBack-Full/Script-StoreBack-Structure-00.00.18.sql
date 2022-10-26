@@ -4599,3 +4599,26 @@ IF NOT EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNMC
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 	) ON [PRIMARY]
 END
+GO
+
+
+IF OBJECT_ID(N'TCNTAppDepHisTmp') IS NULL BEGIN
+	CREATE TABLE [dbo].[TCNTAppDepHisTmp](
+		[FTAgnCode] [varchar](5) NOT NULL,
+		[FTBchCode] [varchar](5) NOT NULL,
+		[FTMerCode] [varchar](10) NOT NULL,
+		[FTShpCode] [varchar](5) NOT NULL,
+		[FTPosCode] [varchar](5) NOT NULL,
+		[FTAppName] [varchar](50) NOT NULL,
+		[FTXdhDocNo] [varchar](10) NOT NULL,
+		[FDXdsDUpgrade] [datetime] NULL,
+		[FTXdsStaPrc] [varchar](1) NULL,
+		[FTXdsStaDoc] [varchar](1) NULL,
+		[FDLastUpdOn] [datetime] NULL,
+		[FTLastUpdBy] [varchar](20) NULL,
+		[FDCreateOn] [datetime] NULL,
+		[FTCreateBy] [varchar](20) NULL
+	) ON [PRIMARY]
+END
+GO
+
