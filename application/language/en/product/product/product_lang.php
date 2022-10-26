@@ -113,7 +113,7 @@ $lang['tPdtTypeTitle3']         = "Other products";
 $lang['tPdtTypeTitle4']         = "Giveaway";
 $lang['tPdtTypeTitle5']         = "Drug";
 $lang['tPdtTypeTitle6']         = "Ingredient";
-$lang['tPdtTypeTitle7']         = "Special";
+$lang['tPdtTypeTitle8']         = "Special";
 
 $lang['tPdtSaleType']           = "Use sales price";
 $lang['tPdtSaleType1']          = "Force";
