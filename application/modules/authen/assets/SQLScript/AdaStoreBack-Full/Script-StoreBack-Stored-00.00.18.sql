@@ -3802,3 +3802,1053 @@ BEGIN CATCH
 	SET @ptMessage = (SELECT 'Error : ' + ISNULL(ERROR_MESSAGE(),''))
 END CATCH
 GO
+
+
+
+/******************************************** Upgrade Table **************************************************/
+/******************************************** Upgrade Table **************************************************/
+
+
+
+
+
+/******************************************** Upgrade Data **************************************************/
+/******************************************** Upgrade Data **************************************************/
+
+
+
+
+/******************************************** Upgrade Stored Procedure **************************************************/
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCnTopupList')and OBJECTPROPERTY(id, N'IsProcedure') = 1) BEGIN
+	DROP PROCEDURE [dbo].STP_PRCnTopupList
+END
+GO
+CREATE PROCEDURE [dbo].[STP_PRCnTopupList] 
+	@ptBchCode VARCHAR(5) NUll,
+	@ptCrdCode VARCHAR(20) NUll,
+	@pcTxnValue  NUMERIC(18,4) NULL,
+	@pcTxnValuePmt  NUMERIC(18,4) NULL,
+	@pcTxnConditionPmt NUMERIC(18,4) NULL, 
+	@pcTxnNoRfn NUMERIC(18,4) NULL, -- 05.02.00 --
+	@ptTxnPosCode VARCHAR(5) NUll,
+	@pcCrdValue NUMERIC(18,4) NULL,
+	@ptShpCode  VARCHAR(5) NUll,
+	@ptUsrCode VARCHAR(20) NUll,
+	@ptDocNoRef VARCHAR(30) NUll,
+	@ptDocPmtRef VARCHAR(30) NULL
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	10/11/2020		Em		create 
+05.02.00	14/12/2020		Net		เพิ่ม Para ยอดห้ามคืน  
+05.03.00    04/01/2020		Zen		เพิ่ม Parameter ยอดเติมเงินที่ได้เงื่อนไข
+05.04.00    01/10/2022		Net		เพิ่ม Insert ยอดห้ามคืน CrdTopUpFifo
+----------------------------------------------------------------------*/
+DECLARE @tTrans varchar(20)
+DECLARE @nCount int
+SET @tTrans = 'Topup'
+BEGIN TRY
+	BEGIN TRANSACTION @tTrans
+	INSERT INTO TFNTCrdTopUp WITH(ROWLOCK) 
+    ( 
+		FTBchCode,FTTxnDocType,FTCrdCode 
+		,FDTxnDocDate,FCTxnValue 
+		,FTTxnStaPrc,FTTxnPosCode,FCTxnCrdValue,FCTxnPmt
+		,FTShpCode ,FTTxnDocNoRef ,FTUsrCode
+		,FCTxnNoRfn -- 05.02.00 --
+    ) 
+    VALUES 
+    ( 
+		@ptBchCode,'1',@ptCrdCode 
+		,GETDATE(),@pcTxnValue 
+		,'1',@ptTxnPosCode,@pcCrdValue,ISNULL(@pcTxnValuePmt,0)
+		,@ptShpCode,@ptDocNoRef,@ptUsrCode     
+		,@pcTxnNoRfn -- 05.02.00 --
+    ) 
+
+	IF NOT EXISTS(SELECT FTCrdCode FROM TFNMCardBal WITH(NOLOCK) WHERE FTCrdCode = @ptCrdCode)
+	BEGIN
+		INSERT INTO TFNMCardBal(FTCrdCode,FTCrdTxnCode,FCCrdValue,FDLastUpdOn)
+		SELECT @ptCrdCode,FTCrdTxnCode,0,GETDATE() FROM TFNSCrdBalType
+	END 
+    -- Update Master Card
+    UPDATE TFNMCard WITH (ROWLOCK) 
+	SET FDCrdResetDate = GETDATE() 
+		,FDLastUpdOn = GETDATE()  
+    WHERE FTCrdCode=@ptCrdCode
+
+	UPDATE TFNMCardBal
+	SET FCCrdValue = (ISNULL(FCCrdValue,0) + @pcTxnValue)
+	WHERE FTCrdCode = @ptCrdCode 
+	AND FTCrdTxnCode = '001'
+
+	UPDATE TFNMCardBal
+	SET FCCrdValue = ISNULL(CTP.FCCtyDeposit,0)
+	FROM TFNMCardBal BAL
+	INNER JOIN TFNMCard CRD WITH(NOLOCK) ON CRD.FTCrdCode = BAL.FTCrdCode
+	INNER JOIN TFNMCardType CTP WITH(NOLOCK) ON CTP.FTCtyCode = CRD.FTCtyCode
+	WHERE BAL.FTCrdCode = @ptCrdCode 
+	AND BAL.FTCrdTxnCode = '003'
+
+	IF ISNULL(@pcTxnValuePmt,0) > 0
+	BEGIN
+		UPDATE TFNMCardBal
+		SET FCCrdValue = (ISNULL(FCCrdValue,0) + ISNULL(@pcTxnValuePmt,0))
+		WHERE FTCrdCode = @ptCrdCode 
+		AND FTCrdTxnCode = '002'
+
+		INSERT INTO TFNTCrdTopUpFifo WITH(ROWLOCK) 
+		(
+			FTCrdCode ,FDDateTime ,FCPmcAmtPay,
+			FCPmcAmtGet ,FCPmcAmtNot ,
+			FCPmcNoRfnPay,FCPmcNoRfnGet,
+			FCPmcAmtPayAvb ,FCPmcAmtGetAvb ,FCPmcAmtNotAvb,
+			FDLastUpdOn ,FTLastUpdBy,FDCreateOn ,FTCreateBy
+		)
+		 SELECT @ptCrdCode,GETDATE(),@pcTxnConditionPmt,
+		 @pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 CASE WHEN PmtHD.FTPmhStaAlwRetMnyPay = '2' THEN @pcTxnConditionPmt ELSE 0 END,
+		 CASE WHEN PmtHD.FTPmhStaAlwRetMnyGet = '2' THEN @pcTxnValuePmt ELSE 0 END,
+		 @pcTxnConditionPmt,@pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 GETDATE(),@ptUsrCode,GETDATE(),@ptUsrCode
+		 FROM TFNTCrdPmtHD PmtHD
+		 WHERE FTPmhDocNo = @ptDocPmtRef
+		
+	END
+	ELSE
+	BEGIN
+		INSERT INTO TFNTCrdTopUpFifo WITH(ROWLOCK) 
+		(
+			FTCrdCode ,FDDateTime ,FCPmcAmtPay,
+			FCPmcAmtGet ,FCPmcAmtNot ,
+			FCPmcNoRfnPay,FCPmcNoRfnGet,
+			FCPmcAmtPayAvb ,FCPmcAmtGetAvb ,FCPmcAmtNotAvb,
+			FDLastUpdOn ,FTLastUpdBy,FDCreateOn ,FTCreateBy
+		)VALUES (
+		 @ptCrdCode,GETDATE(),@pcTxnConditionPmt,
+		 @pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 --0,
+		 @pcTxnNoRfn, -- 05.04.00 --
+		 0,
+		 @pcTxnConditionPmt,@pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 GETDATE(),@ptUsrCode,GETDATE(),@ptUsrCode )
+	END
+
+	 -- 05.02.00 --
+	IF ISNULL(@pcTxnNoRfn,0) > 0
+	BEGIN
+		UPDATE TFNMCardBal
+		SET FCCrdValue = (ISNULL(FCCrdValue,0) + ISNULL(@pcTxnNoRfn,0))
+		WHERE FTCrdCode = @ptCrdCode 
+		AND FTCrdTxnCode = '005'
+	END
+	 -- 05.02.00 --
+    
+	
+	COMMIT TRANSACTION @tTrans 
+
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION @tTrans 
+END CATCH
+GO
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCnResetCardExpired') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE dbo.STP_PRCnResetCardExpired
+GO
+CREATE PROCEDURE [dbo].[STP_PRCnResetCardExpired]
+    @ptCrdCode VARCHAR(30) NULL
+	, @FNResult INT OUTPUT AS
+/*---------------------------------------------------------------------
+Document History
+Date			User		Remark
+1.28/09/2022	Net			Create  
+----------------------------------------------------------------------*/
+BEGIN TRY
+    
+    
+    UPDATE CRD
+    SET FDCrdExpireDate = 
+        CASE WHEN ISNULL(FNCtyExpirePeriod, 0) = 0 THEN '9999-12-31'
+            ELSE CASE WHEN ISNULL(FTCtyExpiredType, '') = '2' --ตามรอบเวลา
+                THEN CASE ISNULL(FNCtyExpiredType, 2)
+                        WHEN 1 THEN DATEADD(HOUR, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        WHEN 2 THEN DATEADD(DAY, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        WHEN 3 THEN DATEADD(MONTH, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        WHEN 4 THEN DATEADD(YEAR, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        ELSE DATEADD(DAY, ISNULL(FNCtyExpirePeriod, 1), GETDATE())
+                        END
+                ELSE CASE ISNULL(FNCtyExpiredType, 2) -- ตามรอบปฏิทิน
+                        WHEN 1 THEN CONVERT(VARCHAR(14), DATEADD(HOUR, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE()), 121) + '59:59'
+                        WHEN 2 THEN CONVERT(VARCHAR(10), DATEADD(DAY, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE()), 121) + ' 23:59:59'
+                        WHEN 3 THEN CONVERT(VARCHAR(10), EOMONTH(DATEADD(MONTH, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE())), 121) + ' 23:59:59'
+                        WHEN 4 THEN CONVERT(VARCHAR(4), DATEADD(YEAR, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE()), 121) + '-12-31 23:59:59'
+                        ELSE CONVERT(VARCHAR(10), DATEADD(DAY, ISNULL(FNCtyExpirePeriod, 1)-1, GETDATE()), 121) + ' 23:59:59'
+                        END
+            END
+        END
+    FROM TFNMCard CRD WITH(NOLOCK) 
+    INNER JOIN TFNMCardType CTY WITH(NOLOCK) ON 
+        CRD.FTCtyCode = CTY.FTCtyCode 
+    WHERE CRD.FTCrdStaActive = '1'
+        AND CRD.FTCrdCode = @ptCrdCode
+
+    SELECT ''
+	SET @FNResult= 0
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE()
+	SET @FNResult= -1
+END CATCH
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_GEToCardInfoReturn')
+AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+BEGIN
+ DROP PROCEDURE dbo.STP_GEToCardInfoReturn
+END
+GO
+
+CREATE PROCEDURE [dbo].[STP_GEToCardInfoReturn] 
+ @ptCrdCode VARCHAR(30) NULL,
+ @pnLngID INT NULL
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	30/09/2022		Net     Create
+----------------------------------------------------------------------*/
+BEGIN TRY
+		SELECT 			
+		M.FTCrdCode 
+		,L.FTCrdName
+		,TFNMCardType_L.FTCtyName
+		,M.FDCrdExpireDate AS FDCrdExpireDate
+		,M.FDCrdResetDate AS FDCrdResetDate
+		,ISNULL(T.FCCtyTopUpAuto,0.00) AS FCCtyTopUpAuto
+		,T.FNCtyExpiredType
+		,T.FNCtyExpirePeriod
+		,ISNULL(L.FNLngID,1) AS FNLngID
+		,M.FTCrdStaShift
+		,M.FTCrdHolderID
+		,M.FTCrdStaActive
+		,T.FCCtyDeposit
+		,ISNULL(T.FTCtyStaAlwRet,0) AS FTCtyStaAlwRet	
+		,[dbo].[F_GETnCardAmount](@ptCrdCode) AS FCCardAmt --มูลค่าที่ใช้ได้
+		,[dbo].[F_GETnCardTotal](@ptCrdCode) AS FCCardTotal --ยอดคงเหลือ	
+		,T.FTCtyStaPay
+		,T.FTCtyStaShift	 
+		,T.FTCtyCode
+		,ISNULL(T.FCCtyCreditLimit,0) AS FCCtyCreditLimit		-- 05.03.00 --
+		,ISNULL([dbo].[F_GETnCardCheckout](@ptCrdCode),0) As FCCrdCheckout -- 05.04.00 --
+        ,ISNULL(M.FTAgnCode,'') AS FTAgnCode -- 05.07.00 --
+		FROM TFNMCard M WITH (NOLOCK)
+		LEFT JOIN TFNMCard_L L WITH (NOLOCK) ON M.FTCrdCode = L.FTCrdCode 
+		AND L.FNLngID = @pnLngID  -- 05.05.00 --
+		LEFT JOIN TFNMCardType  T WITH (NOLOCK) ON M.FTCtyCode= T.FTCtyCode
+		LEFT JOIN TFNMCardType_L WITH (NOLOCK) ON T.FTCtyCode= TFNMCardType_L.FTCtyCode  AND L.FNLngID = TFNMCardType_L.FNLngID
+		WHERE M.FTCrdCode=@ptCrdCode
+
+		IF NOT EXISTS(SELECT FTCrdCode FROM TFNMCardBal WITH(NOLOCK) WHERE FTCrdCode = @ptCrdCode)
+		BEGIN
+			INSERT INTO TFNMCardBal(FTCrdCode,FTCrdTxnCode,FCCrdValue,FDLastUpdOn)
+			SELECT @ptCrdCode,FTCrdTxnCode,0,GETDATE() FROM TFNSCrdBalType
+		END 
+
+		SELECT ROW_NUMBER() OVER (ORDER BY BAL.FTCrdTxnCode) AS FNTxnSeq,CBT.FTCrdName,BAL.FCCrdValue,BAL.FTCrdTxnCode
+		FROM TFNMCardBal BAL WITH(NOLOCK)
+		LEFT JOIN TFNSCrdBalType_L CBT WITH(NOLOCK) ON CBT.FTCrdTxnCode = BAL.FTCrdTxnCode AND CBT.FNLngID = @pnLngID
+		WHERE BAL.FTCrdCode = @ptCrdCode
+
+END TRY
+BEGIN CATCH
+	SELECT ERROR_MESSAGE()
+END CATCH
+GO
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_GEToCardInfo')
+AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+BEGIN
+ DROP PROCEDURE dbo.STP_GEToCardInfo
+END
+GO
+
+CREATE PROCEDURE [dbo].[STP_GEToCardInfo] 
+ @ptCrdCode VARCHAR(30) NULL,
+ @pnLngID INT NULL
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	11/11/2020		Em		create 
+05.03.00	14/12/2020		Em		เพิ่ม GET FCCtyCreditLimit
+05.04.00	10/03/2021		Zen		เพิ่ม Get Checkout
+05.05.00	02/04/2021		Zen		ย้าน Where ภาษา จาก Where หลักเป็น Where ใน Left Join
+05.06.00	09/04/2021		Zen		เพิ่ม FTCrdStaActive เช็คการเคลื่อนไหวบัตรกดเงินสด
+05.07.00	15/08/2021		Net		เพิ่ม FTAgnCode รองรับบัตรตามตัวแทนขาย
+----------------------------------------------------------------------*/
+BEGIN TRY
+		SELECT 			
+		M.FTCrdCode 
+		,L.FTCrdName
+		,TFNMCardType_L.FTCtyName
+		,M.FDCrdExpireDate AS FDCrdExpireDate
+		,M.FDCrdResetDate AS FDCrdResetDate
+		,ISNULL(T.FCCtyTopUpAuto,0.00) AS FCCtyTopUpAuto
+		,T.FNCtyExpiredType
+		,T.FNCtyExpirePeriod
+		,ISNULL(L.FNLngID,1) AS FNLngID
+		,M.FTCrdStaShift
+		,M.FTCrdHolderID
+		,M.FTCrdStaActive
+		,T.FCCtyDeposit
+		,ISNULL(T.FTCtyStaAlwRet,0) AS FTCtyStaAlwRet	
+		,[dbo].[F_GETnCardAmount](@ptCrdCode) AS FCCardAmt --มูลค่าที่ใช้ได้
+		,[dbo].[F_GETnCardTotal](@ptCrdCode) AS FCCardTotal --ยอดคงเหลือ	
+		,T.FTCtyStaPay
+		,T.FTCtyStaShift	 
+		,T.FTCtyCode
+		,ISNULL(T.FCCtyCreditLimit,0) AS FCCtyCreditLimit		-- 05.03.00 --
+		,ISNULL([dbo].[F_GETnCardCheckout](@ptCrdCode),0) As FCCrdCheckout -- 05.04.00 --
+        ,ISNULL(M.FTAgnCode,'') AS FTAgnCode -- 05.07.00 --
+		FROM TFNMCard M WITH (NOLOCK)
+		LEFT JOIN TFNMCard_L L WITH (NOLOCK) ON M.FTCrdCode = L.FTCrdCode 
+		AND L.FNLngID = @pnLngID  -- 05.05.00 --
+		LEFT JOIN TFNMCardType  T WITH (NOLOCK) ON M.FTCtyCode= T.FTCtyCode
+		LEFT JOIN TFNMCardType_L WITH (NOLOCK) ON T.FTCtyCode= TFNMCardType_L.FTCtyCode  AND L.FNLngID = TFNMCardType_L.FNLngID
+		WHERE M.FTCrdCode=@ptCrdCode AND M.FTCrdStaActive = '1'
+
+		IF NOT EXISTS(SELECT FTCrdCode FROM TFNMCardBal WITH(NOLOCK) WHERE FTCrdCode = @ptCrdCode)
+		BEGIN
+			INSERT INTO TFNMCardBal(FTCrdCode,FTCrdTxnCode,FCCrdValue,FDLastUpdOn)
+			SELECT @ptCrdCode,FTCrdTxnCode,0,GETDATE() FROM TFNSCrdBalType
+		END 
+
+		SELECT ROW_NUMBER() OVER (ORDER BY BAL.FTCrdTxnCode) AS FNTxnSeq,CBT.FTCrdName,BAL.FCCrdValue,BAL.FTCrdTxnCode
+		FROM TFNMCardBal BAL WITH(NOLOCK)
+		LEFT JOIN TFNSCrdBalType_L CBT WITH(NOLOCK) ON CBT.FTCrdTxnCode = BAL.FTCrdTxnCode AND CBT.FNLngID = @pnLngID
+		WHERE BAL.FTCrdCode = @ptCrdCode
+
+END TRY
+BEGIN CATCH
+	SELECT ERROR_MESSAGE()
+END CATCH
+GO
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCoCancelCrdNoReuse') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+	DROP PROCEDURE dbo.STP_PRCoCancelCrdNoReuse
+GO
+CREATE PROCEDURE [dbo].[STP_PRCoCancelCrdNoReuse]
+	@pnBackDay INT
+	, @FNResult INT OUTPUT AS
+/*---------------------------------------------------------------------
+Document History
+Date			User		Remark
+1.28/09/2022	Net			Create  
+----------------------------------------------------------------------*/
+BEGIN TRY
+    
+    DECLARE @dDate DATE
+    SET @dDate = DATEADD(DAY ,@pnBackDay * -1, GETDATE())
+
+    UPDATE CRD
+    SET FTCrdStaActive = '3'
+    --SELECT *
+    FROM TFNMCard CRD WITH(NOLOCK)
+    INNER JOIN TFNMCardType CTY WITH(NOLOCK) ON
+        CRD.FTCtyCode = CTY.FTCtyCode
+    INNER JOIN TFNTCrdSale SAL WITH(NOLOCK) ON
+        CRD.FTCrdCode = SAL.FTCrdCode 
+        --AND SAL.FTTxnDocType NOT IN ('5','7','10')
+    WHERE CRD.FTCrdStaActive = '1' AND CRD.FTCrdStaShift = '2'
+        AND ISNULL(CTY.FTCtyStaCrdReuse, '') = '2'
+        AND CONVERT(DATE,SAL.FDTxnDocDate) >= @dDate
+        AND CRD.FDCrdExpireDate < GETDATE()
+
+    SELECT ''
+	SET @FNResult= 0
+END TRY
+BEGIN CATCH
+    SELECT ERROR_MESSAGE()
+	SET @FNResult= -1
+END CATCH
+GO
+/******************************************** Stored Procedure **************************************************/
+
+
+
+IF EXISTS
+(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'SP_RPTxIncomeNotReturnCardTmp')and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+DROP PROCEDURE [dbo].SP_RPTxIncomeNotReturnCardTmp
+GO
+/****** Object:  StoredProcedure [dbo].[SP_RPTxIncomeNotReturnCardTmp]    Script Date: 5/10/2565 17:17:48 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE Procedure [dbo].[SP_RPTxIncomeNotReturnCardTmp]
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptCode Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+
+	--สาขา
+	@ptBchL Varchar(8000), --สาขา Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+
+	--Shop Code
+	@ptShpL Varchar(8000), --กรณี Condition IN
+	@ptShpF Varchar(10),
+	@ptShpT Varchar(10),
+
+    --Mer Code
+	@ptMerL Varchar(8000), --กรณี Condition IN
+	@ptMerF Varchar(10),
+	@ptMerT Varchar(10),
+
+	--เครื่องจุดขาย
+	@ptPosL Varchar(8000), --กรณี Condition IN
+	@ptPosF Varchar(20),
+	@ptPosT Varchar(20),
+
+	@ptDocDateF Varchar(10),
+	@ptDocDateT Varchar(10),
+
+	@FNResult INT OUTPUT
+
+AS 
+
+BEGIN TRY	
+
+	-- Last Update : Napat(Jame) 05/10/2022 ตรวจสอบบัตรหมดอายุ FDCrdExpireDate
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptCode Varchar(100)
+	DECLARE @tUsrSession Varchar(255)
+	DECLARE @tSql VARCHAR(8000)
+	DECLARE @tSqlIns VARCHAR(8000)
+	DECLARE @tSql1 nVARCHAR(Max)
+	
+	--Branch Code
+	DECLARE @tBchF Varchar(5)
+	DECLARE @tBchT Varchar(5)
+
+	--Shop Code
+	DECLARE @tShpF Varchar(10)
+	DECLARE @tShpT Varchar(10)
+
+	--Mer Code
+	DECLARE @tMerF Varchar(10)
+	DECLARE @tMerT Varchar(10)
+
+	--Pos Code
+	DECLARE @tPosF Varchar(20)
+	DECLARE @tPosT Varchar(20)
+
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tUsrSession = @ptUsrSession
+	SET @tRptCode = @ptRptCode
+
+	--Branch
+	SET @tBchF  = @ptBchF
+	SET @tBchT  = @ptBchT
+
+	--Shop
+	SET @tShpF  = @ptShpF
+	SET @tShpT  = @ptShpT
+
+		--Mer
+	SET @tMerF  = @ptShpF
+	SET @tMerT  = @ptShpT
+
+	--Pos
+	SET @tPosF  = @ptPosF 
+	SET @tPosT  = @ptPosT
+
+	SET @tDocDateF = @ptDocDateF
+	SET @tDocDateT = @ptDocDateT
+	SET @FNResult  = 0
+
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+
+	IF @ptBchL = null
+	BEGIN
+		SET @ptBchL = ''
+	END
+
+	IF @tBchF = null
+	BEGIN
+		SET @tBchF = ''
+	END
+
+	IF @tBchT = null OR @tBchT = ''
+	BEGIN
+		SET @tBchT = @tBchF
+	END
+
+	IF @ptShpL =null
+	BEGIN
+		SET @ptShpL = ''
+	END
+
+	IF @tShpF =null
+	BEGIN
+		SET @tShpF = ''
+	END
+	IF @tShpT =null OR @tShpT = ''
+	BEGIN
+		SET @tShpT = @tShpF
+	END
+
+	IF @ptMerL =null
+	BEGIN
+		SET @ptMerL = ''
+	END
+
+	IF @tMerF =null
+	BEGIN
+		SET @tMerF = ''
+	END
+	IF @tMerT =null OR @tMerT = ''
+	BEGIN
+		SET @tMerT = @tMerF
+	END
+
+	IF @tPosF = null
+	BEGIN
+		SET @tPosF = ''
+	END
+	IF @tPosT = null OR @tPosT = ''
+	BEGIN
+		SET @tPosT = @tPosF
+	END
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+
+	SET @tSql1 = ' WHERE CRD.FTCrdStaShift = ''2'' AND TOPUP.FDTxnDocDate >= DO.FDXshDocDate '
+
+	IF @pnFilterType = '1'
+		BEGIN
+		IF (@tBchF <> '' AND @tBchT <> '')
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+		END
+
+		IF (@tShpF <> '' AND @tShpT <> '')
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+		END
+
+		IF (@tMerF <> '' AND @tMerT <> '')
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+		END
+
+		IF (@tPosF <> '' AND @tPosT <> '')
+		BEGIN
+			SET @tSql1 += ' AND TOPUP.FTTxnPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+		END	
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN	
+		IF (@ptBchL <> '' )
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTBchCode IN (' + @ptBchL + ')'
+		END
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTShpCode IN (' + @ptShpL + ')'
+		END
+
+		IF (@ptMerL <> '')
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTMerCode IN (' + @ptMerL + ')'
+		END
+
+		IF (@ptPosL <> '')
+		BEGIN
+			SET @tSql1 += ' AND TOPUP.FTTxnPosCode IN (' + @ptPosL + ')'
+		END	
+	END
+
+	--IF (@tDocDateF <> '' AND @tDocDateT <> '')
+	--BEGIN
+    --	SET @tSql1 +=' AND CONVERT(VARCHAR(10),TOPUP.FDTxnDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+	--END
+
+	SET @tSql1 += ' AND CONVERT(VARCHAR(10), CRD.FDCrdExpireDate, 121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+
+	DELETE FROM TRPTIncomeNotReturnCardTmp WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''
+
+	SET @tSql  = ' INSERT INTO TRPTIncomeNotReturnCardTmp (FTComName,FTRptCode,FTUsrSession, FTBchCode,FTBchName,FTCrdCode,FCTxnCrdValue) '
+	SET @tSql += ' SELECT B.FTComName,B.FTRptCode,B.FTUsrSession,B.FTBchCode,B.FTBchName,B.FTCrdCode,B.FCTxnCrdAmt '
+	SET @tSql += ' FROM (
+						SELECT '''+ @nComName + ''' AS FTComName,
+							   '''+ @tRptCode +''' AS FTRptCode,
+							   '''+ @tUsrSession +''' AS FTUsrSession,
+							   A.FTBchCode,
+							   A.FTBchName,
+							   A.FTCrdCode,
+							   SUM(A.FCTxnCrdAmt) AS FCTxnCrdAmt
+						FROM ( 
+							SELECT 
+								  ISNULL(TOPUP.FTBchCode, '''') AS FTBchCode,
+								  ISNULL(BCH.FTBchName, '''') AS FTBchName,
+								  ISNULL(TOPUP.FTShpCode, '''') AS FTShpCode,
+								  ISNULL(SHP.FTShpName, '''') AS FTShpName,
+								  ISNULL(TOPUP.FTTxnPosCode, '''') AS FTTxnPosCode,
+								  ISNULL(Pos.FTPosName, ''ระบบหลังบ้าน'') AS FTPosName,
+								  CRD.FTCrdCode,
+								  TOPUP.FTTxnDocNoRef,
+								  TOPUP.FTTxnDocType,
+								  CASE TOPUP.FTTxnDocType
+									WHEN ''1'' THEN ISNULL(TOPUP.FCTxnValue, 0) * 1
+									WHEN ''2'' THEN ISNULL(TOPUP.FCTxnValue, 0) * -1
+									WHEN ''3'' THEN ISNULL(TOPUP.FCTxnValue, 0) * -1
+									WHEN ''4'' THEN ISNULL(TOPUP.FCTxnValue, 0) * 1
+									WHEN ''5'' THEN ISNULL(TOPUP.FCTxnValue, 0) * -1
+									WHEN ''8'' THEN ISNULL(TOPUP.FCTxnValue, 0) * -1
+									WHEN ''9'' THEN ISNULL(TOPUP.FCTxnValue, 0) * 1
+									ELSE TOPUP.FCTxnCrdValue
+								  END AS FCTxnCrdAmt,
+								  DO.FDXshDocDate
+						   FROM TFNMCard CRD
+						   INNER JOIN (
+								SELECT D.FTCrdCode,D.FDXshDocDate FROM (
+									SELECT 
+										SHD.FDXshDocDate,SDT.FTCrdCode,
+										ROW_NUMBER() OVER(PARTITION BY SDT.FTCrdCode ORDER BY SHD.FDXshDocDate DESC) AS FNDateSeq
+									FROM TFNTCrdShiftHD SHD WITH(NOLOCK)
+									INNER JOIN TFNTCrdShiftDT SDT WITH(NOLOCK) ON SHD.FTXshDocNo = SDT.FTXshDocNo
+									WHERE SHD.FNXshDocType = 1
+								) D
+								WHERE D.FNDateSeq = 1
+						   ) DO ON DO.FTCrdCode = CRD.FTCrdCode
+						   LEFT JOIN (
+								SELECT FTBchCode,FTShpCode,FTTxnPosCode,FTTxnDocNoRef,FTTxnDocType,FTCrdCode,FDTxnDocDate,FCTxnValue,FCTxnCrdValue FROM TFNTCrdTopUp
+								WHERE FTTxnDocType != ''5''
+								UNION ALL
+								SELECT FTBchCode,FTShpCode,FTTxnPosCode,FTTxnDocNoRef,FTTxnDocType,FTCrdCode,FDTxnDocDate,FCTxnValue,FCTxnCrdValue FROM TFNTCrdSale
+						   ) TOPUP ON TOPUP.FTCrdCode = CRD.FTCrdCode
+						   LEFT JOIN TCNMShop SH ON TOPUP.FTShpCode = SH.FTShpCode
+						   LEFT JOIN TCNMBranch_L BCH ON TOPUP.FTBchCode = BCH.FTBchCode AND BCH.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + '''
+						   LEFT JOIN TCNMShop_L SHP ON TOPUP.FTBchCode = SHP.FTBchCode AND TOPUP.FTShpCode = SHP.FTShpCode AND SHP.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + '''
+						   LEFT JOIN TCNMPos_L POS ON TOPUP.FTBchCode = POS.FTBchCode AND TOPUP.FTTxnPosCode = POS.FTPosCode AND POS.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+	SET @tSql += @tSql1
+	SET @tSql += '		) A
+						GROUP BY A.FTBchCode,A.FTBchName,A.FTCrdCode
+					) B
+					WHERE B.FCTxnCrdAmt > 0 '
+
+	--SET @tSql = ' INSERT INTO TRPTIncomeNotReturnCardTmp'
+	--SET @tSql +=' (FTComName,FTRptCode,FTUsrSession,'
+	--SET @tSql +=' FTBchCode,FTBchName,FTShpCode,FTShpName,FTPosCode,FTPosName,FTCrdCode,FCTxnCrdValue)'
+	--SET @tSql +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'
+	--SET @tSql +=' A.FTBchCode, A.FTBchName, A.FTShpCode, A.FTShpName, A.FTTxnPosCode, A.FTPosName, A.FTCrdCode, SUM(A.FCTxnCrdAmt) AS FCTxnCrdAmt '
+	--SET @tSql +=' FROM ( SELECT '
+	--SET @tSql +=' ISNULL(TOPUP.FTBchCode, '''') AS FTBchCode, ISNULL(BCH.FTBchName, '''') AS FTBchName, ISNULL(TOPUP.FTShpCode, '''') AS FTShpCode, '
+	--SET @tSql +=' ISNULL(SHP.FTShpName, '''') AS FTShpName, ISNULL(TOPUP.FTTxnPosCode, '''') AS FTTxnPosCode, ISNULL(Pos.FTPosName, ''ระบบหลังบ้าน'') AS FTPosName, ' 
+	--SET @tSql +=' CRD.FTCrdCode, ISNULL(BAL.FCCrdValue,0) AS FCTxnCrdAmt '
+	--SET @tSql +=' FROM TFNMCard CRD'
+	--SET @tSql +=' LEFT JOIN TFNTCrdTopUp TOPUP ON TOPUP.FTCrdCode = CRD.FTCrdCode'
+	--SET @tSql +=' LEFT JOIN TCNMShop SH ON TOPUP.FTShpCode = SH.FTShpCode'
+	--SET @tSql +=' LEFT JOIN TCNMBranch_L BCH ON TOPUP.FTBchCode = BCH.FTBchCode AND BCH.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+	--SET @tSql +=' LEFT JOIN TCNMShop_L SHP ON TOPUP.FTBchCode =  SHP.FTBchCode AND  TOPUP.FTShpCode = SHP.FTShpCode AND SHP.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+	--SET @tSql +=' LEFT JOIN TCNMPos_L POS ON TOPUP.FTBchCode =  POS.FTBchCode AND  TOPUP.FTTxnPosCode = POS.FTPosCode AND POS.FNLngID = ''' + CAST(@nLngID  AS VARCHAR(10)) + ''' '
+	--SET @tSql +=' LEFT OUTER JOIN (
+	--				SELECT
+	--					FTCrdCode,
+	--					SUM (CASE WHEN FTCrdTxnCode = ''001'' THEN FCCrdValue END) + SUM (CASE WHEN FTCrdTxnCode = ''002'' THEN FCCrdValue END) - SUM (CASE WHEN FTCrdTxnCode = ''006'' THEN FCCrdValue END ) AS FCCrdValue
+	--				FROM
+	--					TFNMCardBal
+	--				GROUP BY
+	--					FTCrdCode
+	--			) AS BAL ON CRD.FTCrdCode = BAL.FTCrdCode '
+	--SET @tSql += @tSql1
+	--SET @tSql +=') A '
+	--SET @tSql +='GROUP BY A.FTBchCode, A.FTBchName, A.FTShpCode, A.FTShpName, A.FTTxnPosCode, A.FTPosName, A.FTCrdCode '
+
+	--PRINT @tSql
+	EXECUTE(@tSql)
+
+END TRY
+
+BEGIN CATCH 
+	SET @FNResult= -1
+END CATCH	
+GO
+
+
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_DOCxSalePrcStk')and 
+OBJECTPROPERTY(id, N'IsProcedure') = 1) BEGIN
+	DROP PROCEDURE [dbo].STP_DOCxSalePrcStk
+END
+GO
+CREATE PROCEDURE [dbo].[STP_DOCxSalePrcStk]
+ @ptBchCode varchar(5)	-- 5. --
+,@ptDocNo varchar(30)
+,@ptWho varchar(100) ,@FNResult INT OUTPUT AS
+DECLARE @tDate varchar(10)
+DECLARE @tTime varchar(8)
+DECLARE @TTmpPrcStk TABLE 
+   ( 
+   FTBchCode varchar(5),		-- 5. --
+   FTStkDocNo varchar(20), 
+   FTStkType varchar(1), 
+   FTPdtCode varchar(20), 
+   FCStkQty decimal(18,4),
+   FTWahCode varchar(5), 
+   FDStkDate Datetime ,
+   FCXsdSetPrice decimal(18,4),
+   FCXsdCostIn decimal(18,4),
+   FCXsdCostEx decimal(18,4)
+   ) 
+DECLARE @tTrans varchar(20)
+DECLARE @tStaPrc varchar(1)		-- 4. --
+DECLARE @TTmpPrcStkFhn TABLE 
+   ( 
+   FTBchCode varchar(5),		-- 5. --
+   FTStfDocNo varchar(20), 
+   FTStfType varchar(1), 
+   FTPdtCode varchar(20), 
+   FTFhnRefCode varchar(30),
+   FCStfQty decimal(18,4), 
+   FTWahCode varchar(5), 
+   FDStfDate Datetime ,
+   FCStfSetPrice decimal(18,4),
+   FCStfCostIn decimal(18,4),
+   FCStfCostEx decimal(18,4)
+   ) 
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+00.01.00	22/02/2019		Em		create  
+00.02.00	22/04/2019		Em		แก้ไขในส่วนของการตัดสต๊อก Vending
+00.03.00	17/06/2019		Em		เอาฟิลด์ StkCode ออก
+00.04.00	05/07/2019		Em		เพิ่มการตรวจสอบสถานะการประมวลผลเอกสาร 
+00.05.00	25/07/2019		Em		ปรับขนาดฟิลด์ Branch จาก 3 เป็น 5 และเอา Process Vending ออก
+00.06.00	19/09/2019		Em		เพิ่มการ Insert ลงตาราง StkBal กรณีที่ยังไม่มีรายการอัพเดท
+04.01.00	19/10/2020		Em		เพิ่มการตรวจสอบคลังตัดสต๊อก
+04.02.00	26/10/2020		Em		เพิ่มการตรวจสอบสถานะควบคุมสต๊อก
+05.01.00	14/03/2021		Em		ป้องกันการ Process ซ้ำ
+06.01.00	30/04/2021		Em		แก้ไขให้รองรับสินค้าแฟชั่น
+06.02.00	08/08/2021		Em		แก้ไข Process ต้นทุน
+21.06.01	24/10/2021		Em		แก้ไข Process ต้นทุน และ Stock
+06.03.00	21/10/2022		Zen		แก้เรื่องโครงสร้าง FTWahCode
+----------------------------------------------------------------------*/
+SET @tTrans = 'PrcStk'
+BEGIN TRY
+	BEGIN TRANSACTION @tTrans
+	SET @tDate = CONVERT(VARCHAR(10),GETDATE(),121)
+	SET @tTime = CONVERT(VARCHAR(8),GETDATE(),108)
+	SET @tStaPrc = (SELECT TOP 1 ISNULL(FTXshStaPrcStk,'') FROM TPSTSalHD with(nolock) WHERE FTBchCode = @ptBchCode AND FTXshDocNo = @ptDocNo)	-- 4. --
+
+	IF @tStaPrc <> '1'	-- 4. --
+	BEGIN
+		-- 05.01.00 --
+		DELETE TCNTPdtStkCrd WITH(ROWLOCK)
+		WHERE FTBchCode = @ptBchCode AND FTStkDocNo = @ptDocNo
+		-- 05.01.00 --
+
+		-- 06.01.00 --
+		DELETE TFHTPdtStkCrd WITH(ROWLOCK)
+		WHERE FTBchCode = @ptBchCode AND FTStfDocNo = @ptDocNo
+		-- 06.01.00 --
+
+		-- 04.01.00 --
+		SET @tStaPrc = (SELECT TOP 1 ISNULL(WAH.FTWahStaPrcStk,'') FROM TCNMWaHouse WAH WITH(NOLOCK)
+						INNER JOIN TPSTSalHD HD WITH(NOLOCK) ON HD.FTBchCode = WAH.FTBchCode AND HD.FTWahCode = WAH.FTWahCode
+						WHERE HD.FTBchCode = @ptBchCode AND HD.FTXshDocNo = @ptDocNo)
+
+		IF @tStaPrc = '2'
+		-- 04.01.00 --
+		BEGIN
+			--insert data to Temp
+			--INSERT INTO @TTmpPrcStk (FTComName,FTBchCode,FTStkDocNo,FTStkType,FTPdtCode,FTPdtStkCode,FCStkQty,FTWahCode,FDStkDate,FCXsdSetPrice,FCXsdCostIn,FCXsdCostEx)
+			INSERT INTO @TTmpPrcStk (FTBchCode,FTStkDocNo,FTStkType,FTPdtCode,FCStkQty,FTWahCode,FDStkDate,FCXsdSetPrice,FCXsdCostIn,FCXsdCostEx)		--3.--
+			SELECT HD.FTBchCode,HD.FTXshDocNo AS FTStkDocNo
+			,CASE WHEN HD.FNXshDocType='1'THEN '3' ELSE '4' END AS FTStkType
+			--,FTPdtCode,FTXsdStkCode AS FTPdtStkCode
+			,DT.FTPdtCode		--3.--
+			, SUM(DT.FCXsdQtyAll) AS FCStkQty,ISNULL(DT.FTWahCode,HD.FTWahCode) AS FTWahCode,HD.FDXshDocDate AS FDStkDate
+			,ROUND(SUM(DT.FCXsdNet)/SUM(DT.FCXsdQtyAll),4) AS FCXsdSetPrice
+			,ROUND(SUM(DT.FCXsdCostIn)/SUM(DT.FCXsdQtyAll),4) AS FCXsdCostIn
+			,ROUND(SUM(DT.FCXsdCostEx)/SUM(DT.FCXsdQtyAll),4) AS FCXsdCostEx
+			FROM TPSTSalDT DT with(nolock)
+			INNER JOIN TPSTSalHD HD with(nolock) ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo
+			INNER JOIN TCNMPdt PDT WITH(NOLOCK) ON PDT.FTPdtCode = DT.FTPdtCode AND PDT.FTPdtStkControl = '1'	-- 04.02.00 --
+			WHERE HD.FTBchCode=@ptBchCode AND HD.FTXshDocNo =@ptDocNo
+			AND ISNULL(FTXsdStaPdt,'')NOT IN('4','5')
+			--GROUP BY HD.FTBchCode,HD.FTWahCode,HD.FTXshDocNo,HD.FNXshDocType,DT.FTPdtCode,DT.FTXsdStkCode,HD.FDXshDocDate,DT.FCXsdSetPrice,DT.FCXsdCostIn,DT.FCXsdCostEx
+			GROUP BY HD.FTBchCode,ISNULL(DT.FTWahCode,HD.FTWahCode),HD.FTXshDocNo,HD.FNXshDocType,DT.FTPdtCode,HD.FDXshDocDate		--3.--
+
+			--update Stk balance
+			UPDATE TCNTPdtStkBal with(rowlock)
+			SET FCStkQty = ISNULL(STK.FCStkQty,0) + (CASE WHEN TMP.FTStkType = '4' THEN TMP.FCStkQty ELSE TMP.FCStkQty *(-1) END)
+			,FDLastUpdOn = GETDATE()
+			,FTLastUpdBy = @ptWho
+			FROM TCNTPdtStkBal STK
+			--INNER JOIN @TTmpPrcStk TMP ON STK.FTBchCode = TMP.FTBchCode AND STK.FTWahCode = TMP.FTWahCode AND STK.FTPdtStkCode = TMP.FTPdtStkCode
+			INNER JOIN @TTmpPrcStk TMP ON STK.FTBchCode = TMP.FTBchCode AND STK.FTWahCode = TMP.FTWahCode AND STK.FTPdtCode = TMP.FTPdtCode		--3.--
+
+			-- 6. --
+			INSERT INTO TCNTPdtStkBal(FTBchCode,FTWahCode,FTPdtCode,FCStkQty,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
+			SELECT TMP.FTBchCode,TMP.FTWahCode,TMP.FTPdtCode,(CASE WHEN TMP.FTStkType = '4' THEN TMP.FCStkQty ELSE TMP.FCStkQty *(-1) END) AS FCStkQty,
+			GETDATE() AS FDLastUpdOn, @ptWho AS FTLastUpdBy, GETDATE() AS FDCreateOn, @ptWho FTCreateBy
+			FROM @TTmpPrcStk TMP
+			LEFT JOIN TCNTPdtStkBal BAL WITH(NOLOCK) ON BAL.FTBchCode = TMP.FTBchCode AND BAL.FTWahCode = TMP.FTWahCode AND BAL.FTPdtCode = TMP.FTPdtCode
+			WHERE ISNULL(BAL.FTPdtCode,'') = ''
+			-- 6. --
+
+			--insert stk card
+			--INSERT INTO TCNTPdtStkCrd( FTBchCode, FDStkDate, FTStkDocNo, FTWahCode, FTPdtStkCode, FTStkType, FCStkQty, FCStkSetPrice, FCStkCostIn, FCStkCostEx, FDCreateOn, FTCreateBy)
+			--SELECT  FTBchCode, FDStkDate, FTStkDocNo, FTWahCode, FTPdtStkCode, FTStkType, FCStkQty, FCXsdSetPrice, FCXsdCostIn, FCXsdCostEx, GETDATE() AS FDCreateOn,@ptWho AS FTCreateBy
+			INSERT INTO TCNTPdtStkCrd( FTBchCode, FDStkDate, FTStkDocNo, FTWahCode, FTPdtCode, FTStkType, FCStkQty, FCStkSetPrice, FCStkCostIn, FCStkCostEx, FDCreateOn, FTCreateBy)		--3.--
+			SELECT  FTBchCode, FDStkDate, FTStkDocNo, FTWahCode, FTPdtCode, FTStkType, FCStkQty, FCXsdSetPrice, FCXsdCostIn, FCXsdCostEx, GETDATE() AS FDCreateOn,@ptWho AS FTCreateBy		--3.--
+			FROM @TTmpPrcStk
+
+			-- 06.01.00 --
+			IF EXISTS(SELECT FTPdtCode FROM TPSTSalDTFhn WHERE FTBchCode = @ptBchCode AND FTXshDocNo = @ptDocNo) BEGIN
+				INSERT INTO @TTmpPrcStkFhn (FTBchCode,FTStfDocNo,FTStfType,FTPdtCode,FTFhnRefCode,FCStfQty,FTWahCode,FDStfDate,FCStfSetPrice,FCStfCostIn,FCStfCostEx)		--3.--
+				SELECT HD.FTBchCode,HD.FTXshDocNo AS FTStkDocNo
+				,CASE WHEN HD.FNXshDocType='1'THEN '3' ELSE '4' END AS FTStkType
+				,DT.FTPdtCode,DTF.FTFhnRefCode
+				, SUM(DTF.FCXsdQty * DT.FCXsdFactor) AS FCStkQty,ISNULL(DT.FTWahCode,HD.FTWahCode) AS FTWahCode,HD.FDXshDocDate AS FDStkDate
+				,ROUND(SUM(DT.FCXsdNet)/SUM(DTF.FCXsdQty * DT.FCXsdFactor),4) AS FCXsdSetPrice
+				,ROUND(SUM(DT.FCXsdCostIn)/SUM(DTF.FCXsdQty * DT.FCXsdFactor),4) AS FCXsdCostIn
+				,ROUND(SUM(DT.FCXsdCostEx)/SUM(DTF.FCXsdQty * DT.FCXsdFactor),4) AS FCXsdCostEx
+				FROM TPSTSalDT DT with(nolock)
+				INNER JOIN TPSTSalDTFhn DTF with(nolock) ON DTF.FTBchCode = DT.FTBchCode AND DTF.FTXshDocNo = DT.FTXshDocNo AND DTF.FNXsdSeqNo = DT.FNXsdSeqNo
+				INNER JOIN TPSTSalHD HD with(nolock) ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo
+				INNER JOIN TCNMPdt PDT WITH(NOLOCK) ON PDT.FTPdtCode = DT.FTPdtCode AND PDT.FTPdtStkControl = '1'	-- 04.02.00 --
+				WHERE HD.FTBchCode=@ptBchCode AND HD.FTXshDocNo =@ptDocNo
+				AND ISNULL(FTXsdStaPdt,'')NOT IN('4','5')
+				GROUP BY HD.FTBchCode,ISNULL(DT.FTWahCode,HD.FTWahCode),HD.FTXshDocNo,HD.FNXshDocType,DT.FTPdtCode,DTF.FTFhnRefCode,HD.FDXshDocDate		--3.--
+
+				IF EXISTS(SELECT FTPdtCode FROM @TTmpPrcStkFhn) BEGIN
+					--update Stk balance
+					UPDATE TFHTPdtStkBal with(rowlock)
+					SET FCStfBal = ISNULL(STK.FCStfBal,0) + (CASE WHEN TMP.FTStfType = '4' THEN TMP.FCStfQty ELSE TMP.FCStfQty *(-1) END)
+					,FDLastUpdOn = GETDATE()
+					,FTLastUpdBy = @ptWho
+					FROM TFHTPdtStkBal STK
+					INNER JOIN @TTmpPrcStkFhn TMP ON STK.FTBchCode = TMP.FTBchCode AND STK.FTWahCode = TMP.FTWahCode AND STK.FTPdtCode = TMP.FTPdtCode AND STK.FTFhnRefCode = TMP.FTFhnRefCode	
+
+					INSERT INTO TFHTPdtStkBal(FTBchCode,FTWahCode,FTPdtCode,FTFhnRefCode,FCStfBal,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
+					SELECT TMP.FTBchCode,TMP.FTWahCode,TMP.FTPdtCode,TMP.FTFhnRefCode,(CASE WHEN TMP.FTStfType = '4' THEN TMP.FCStfQty ELSE TMP.FCStfQty *(-1) END) AS FCStkQty,
+					GETDATE() AS FDLastUpdOn, @ptWho AS FTLastUpdBy, GETDATE() AS FDCreateOn, @ptWho FTCreateBy
+					FROM @TTmpPrcStkFhn TMP
+					LEFT JOIN TFHTPdtStkBal BAL WITH(NOLOCK) ON BAL.FTBchCode = TMP.FTBchCode AND BAL.FTWahCode = TMP.FTWahCode AND BAL.FTPdtCode = TMP.FTPdtCode AND BAL.FTFhnRefCode = TMP.FTFhnRefCode
+					WHERE ISNULL(BAL.FTFhnRefCode,'') = ''
+
+					--insert stk card
+					INSERT INTO TFHTPdtStkCrd( FTBchCode, FDStfDate, FTStfDocNo, FTWahCode, FTPdtCode, FTFhnRefCode, FTStfType, FCStfQty, FCStfSetPrice, FCStfCostIn, FCStfCostEx, FDCreateOn, FTCreateBy)		--3.--
+					SELECT  FTBchCode, FDStfDate, FTStfDocNo, FTWahCode, FTPdtCode, FTFhnRefCode, FTStfType, FCStfQty, FCStfSetPrice, FCStfCostIn, FCStfCostEx, GETDATE() AS FDCreateOn,@ptWho AS FTCreateBy		--3.--
+					FROM @TTmpPrcStkFhn
+				END
+			END
+			-- 06.01.00 --
+
+			---- 06.02.00 --
+			----Cost
+			--UPDATE TCNMPdtCostAvg with(rowlock)
+			--SET FCPdtCostAmt = ISNULL(FCPdtCostAmt,0) + ((CASE WHEN TMP.FTStkType = '4' THEN TMP.FCStkQty ELSE TMP.FCStkQty *(-1) END)*FCPdtCostEx)
+			--,FCPdtQtyBal = FCPdtQtyBal + (CASE WHEN TMP.FTStkType = '4' THEN TMP.FCStkQty ELSE TMP.FCStkQty *(-1) END)
+			--,FDLastUpdOn = GETDATE()
+			--FROM TCNMPdtCostAvg COST
+			--INNER JOIN @TTmpPrcStk TMP ON COST.FTPdtCode = TMP.FTPdtCode
+			---- 06.02.00 --
+
+			-- 21.06.01 --
+			--Cost
+			UPDATE TCNMPdtCostAvg with(rowlock)
+			SET FCPdtCostAmt = ROUND((CASE WHEN (FCPdtQtyBal + TMP.FCStkQty) <= 0 THEN 0 ELSE FCPdtCostEx * (FCPdtQtyBal + TMP.FCStkQty) END),4)	-- 21.06.01 --
+			,FCPdtQtyBal = FCPdtQtyBal + TMP.FCStkQty	
+			,FDLastUpdOn = GETDATE()
+			FROM TCNMPdtCostAvg COST
+			INNER JOIN @TTmpPrcStk TMP ON COST.FTPdtCode = TMP.FTPdtCode
+			WHERE TMP.FTStkType = '4'
+
+			UPDATE TCNMPdtCostAvg with(rowlock)
+			SET FCPdtCostAmt = ROUND((CASE WHEN (FCPdtQtyBal - TMP.FCStkQty) <= 0 THEN 0 ELSE FCPdtCostEx * (FCPdtQtyBal - TMP.FCStkQty) END),4)	-- 21.06.01 --
+			,FCPdtQtyBal = FCPdtQtyBal - TMP.FCStkQty	
+			,FDLastUpdOn = GETDATE()
+			FROM TCNMPdtCostAvg COST
+			INNER JOIN @TTmpPrcStk TMP ON COST.FTPdtCode = TMP.FTPdtCode
+			WHERE TMP.FTStkType = '3'
+			-- 21.06.01 --
+		END
+	END -- 4. --
+	COMMIT TRANSACTION @tTrans
+	SET @FNResult= 0
+END TRY
+BEGIN CATCH
+    --EXEC STP_MSGxWriteTSysPrcLog @ptComName,@ptWho,@ptDocNo ,@tDate ,@tTime
+	ROLLBACK TRANSACTION @tTrans
+    SET @FNResult= -1
+END CATCH
+GO
+
+
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCnTopupList')and 
+OBJECTPROPERTY(id, N'IsProcedure') = 1) BEGIN
+	DROP PROCEDURE [dbo].STP_PRCnTopupList
+END
+GO
+CREATE PROCEDURE [dbo].[STP_PRCnTopupList] 
+	@ptBchCode VARCHAR(5) NUll,
+	@ptCrdCode VARCHAR(20) NUll,
+	@pcTxnValue  NUMERIC(18,4) NULL,
+	@pcTxnValuePmt  NUMERIC(18,4) NULL,
+	@pcTxnConditionPmt NUMERIC(18,4) NULL, 
+	@pcTxnNoRfn NUMERIC(18,4) NULL, -- 05.02.00 --
+	@ptTxnPosCode VARCHAR(5) NUll,
+	@pcCrdValue NUMERIC(18,4) NULL,
+	@ptShpCode  VARCHAR(5) NUll,
+	@ptUsrCode VARCHAR(20) NUll,
+	@ptDocNoRef VARCHAR(30) NUll,
+	@ptDocPmtRef VARCHAR(30) NULL
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	10/11/2020		Em		create 
+05.02.00	14/12/2020		Net		เพิ่ม Para ยอดห้ามคืน  
+05.03.00    04/01/2020		Zen		เพิ่ม Parameter ยอดเติมเงินที่ได้เงื่อนไข
+05.04.00    01/10/2022		Net		เพิ่ม Insert ยอดห้ามคืน CrdTopUpFifo
+05.05.00	21/10/2022		Zen		แก้เรื่องเคลีย TFNTCrdTopUp ก่อน ทำการ Insert
+----------------------------------------------------------------------*/
+DECLARE @tTrans varchar(20)
+DECLARE @nCount int
+SET @tTrans = 'Topup'
+BEGIN TRY
+	BEGIN TRANSACTION @tTrans
+
+	DELETE TFNTCrdTopUp WHERE FTBchCode = @ptBchCode AND FTTxnDocNoRef = @ptDocNoRef
+	AND FTCrdCode = @ptCrdCode AND FTTxnDocType = '1'
+
+	INSERT INTO TFNTCrdTopUp WITH(ROWLOCK) 
+    ( 
+		FTBchCode,FTTxnDocType,FTCrdCode 
+		,FDTxnDocDate,FCTxnValue 
+		,FTTxnStaPrc,FTTxnPosCode,FCTxnCrdValue,FCTxnPmt
+		,FTShpCode ,FTTxnDocNoRef ,FTUsrCode
+		,FCTxnNoRfn -- 05.02.00 --
+    ) 
+    VALUES 
+    ( 
+		@ptBchCode,'1',@ptCrdCode 
+		,GETDATE(),@pcTxnValue 
+		,'1',@ptTxnPosCode,@pcCrdValue,ISNULL(@pcTxnValuePmt,0)
+		,@ptShpCode,@ptDocNoRef,@ptUsrCode     
+		,@pcTxnNoRfn -- 05.02.00 --
+    ) 
+
+	IF NOT EXISTS(SELECT FTCrdCode FROM TFNMCardBal WITH(NOLOCK) WHERE FTCrdCode = @ptCrdCode)
+	BEGIN
+		INSERT INTO TFNMCardBal(FTCrdCode,FTCrdTxnCode,FCCrdValue,FDLastUpdOn)
+		SELECT @ptCrdCode,FTCrdTxnCode,0,GETDATE() FROM TFNSCrdBalType
+	END 
+    -- Update Master Card
+    UPDATE TFNMCard WITH (ROWLOCK) 
+	SET FDCrdResetDate = GETDATE() 
+		,FDLastUpdOn = GETDATE()  
+    WHERE FTCrdCode=@ptCrdCode
+
+	UPDATE TFNMCardBal
+	SET FCCrdValue = (ISNULL(FCCrdValue,0) + @pcTxnValue)
+	WHERE FTCrdCode = @ptCrdCode 
+	AND FTCrdTxnCode = '001'
+
+	UPDATE TFNMCardBal
+	SET FCCrdValue = ISNULL(CTP.FCCtyDeposit,0)
+	FROM TFNMCardBal BAL
+	INNER JOIN TFNMCard CRD WITH(NOLOCK) ON CRD.FTCrdCode = BAL.FTCrdCode
+	INNER JOIN TFNMCardType CTP WITH(NOLOCK) ON CTP.FTCtyCode = CRD.FTCtyCode
+	WHERE BAL.FTCrdCode = @ptCrdCode 
+	AND BAL.FTCrdTxnCode = '003'
+
+	IF ISNULL(@pcTxnValuePmt,0) > 0
+	BEGIN
+		UPDATE TFNMCardBal
+		SET FCCrdValue = (ISNULL(FCCrdValue,0) + ISNULL(@pcTxnValuePmt,0))
+		WHERE FTCrdCode = @ptCrdCode 
+		AND FTCrdTxnCode = '002'
+
+		INSERT INTO TFNTCrdTopUpFifo WITH(ROWLOCK) 
+		(
+			FTCrdCode ,FDDateTime ,FCPmcAmtPay,
+			FCPmcAmtGet ,FCPmcAmtNot ,
+			FCPmcNoRfnPay,FCPmcNoRfnGet,
+			FCPmcAmtPayAvb ,FCPmcAmtGetAvb ,FCPmcAmtNotAvb,
+			FDLastUpdOn ,FTLastUpdBy,FDCreateOn ,FTCreateBy
+		)
+		 SELECT @ptCrdCode,GETDATE(),@pcTxnConditionPmt,
+		 @pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 @pcTxnConditionPmt,
+		 @pcTxnValuePmt,
+		 @pcTxnConditionPmt,@pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 GETDATE(),@ptUsrCode,GETDATE(),@ptUsrCode
+		 FROM TFNTCrdPmtHD PmtHD
+		 WHERE FTPmhDocNo = @ptDocPmtRef
+		--SELECT * FROM TFNTCrdPmtHD
+	END
+	ELSE
+	BEGIN
+		INSERT INTO TFNTCrdTopUpFifo WITH(ROWLOCK) 
+		(
+			FTCrdCode ,FDDateTime ,FCPmcAmtPay,
+			FCPmcAmtGet ,FCPmcAmtNot ,
+			FCPmcNoRfnPay,FCPmcNoRfnGet,
+			FCPmcAmtPayAvb ,FCPmcAmtGetAvb ,FCPmcAmtNotAvb,
+			FDLastUpdOn ,FTLastUpdBy,FDCreateOn ,FTCreateBy
+		)VALUES (
+		 @ptCrdCode,GETDATE(),@pcTxnConditionPmt,
+		 @pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 --0,
+		 @pcTxnNoRfn, -- 05.04.00 --
+		 0,
+		 @pcTxnConditionPmt,@pcTxnValuePmt,(@pcTxnValue - @pcTxnConditionPmt),
+		 GETDATE(),@ptUsrCode,GETDATE(),@ptUsrCode )
+	END
+
+	 -- 05.02.00 --
+	IF ISNULL(@pcTxnNoRfn,0) > 0
+	BEGIN
+		UPDATE TFNMCardBal
+		SET FCCrdValue = (ISNULL(FCCrdValue,0) + ISNULL(@pcTxnNoRfn,0))
+		WHERE FTCrdCode = @ptCrdCode 
+		AND FTCrdTxnCode = '005'
+	END
+	 -- 05.02.00 --
+    
+	
+	COMMIT TRANSACTION @tTrans 
+
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION @tTrans 
+END CATCH
+GO
