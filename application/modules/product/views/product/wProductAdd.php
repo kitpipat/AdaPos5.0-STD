@@ -582,7 +582,7 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                         <option value="4" <?php echo $tPdtType == "4" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle4') ?></option>
                                         <option value="5" <?php echo $tPdtType == "5" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle5') ?></option>
                                         <option value="6" <?php echo $tPdtType == "6" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle6') ?></option>
-                                        <option value="7" <?php echo $tPdtType == "7" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle7') ?></option>
+                                        <option value="8" <?php echo $tPdtType == "8" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle8') ?></option>
                                     </select>
                                 </div>
                                 <div class="form-group">

@@ -418,7 +418,7 @@ $lang['tPdtTypeTitle3']         = "สินค้าอื่นๆ";
 $lang['tPdtTypeTitle4']         = "ของแถม";
 $lang['tPdtTypeTitle5']         = "ยา";
 $lang['tPdtTypeTitle6']         = "สินค้าประกอบการขาย";
-$lang['tPdtTypeTitle7']         = "พิเศษ";
+$lang['tPdtTypeTitle8']         = "พิเศษ";
 // $lang['tPdtTypeTitle6']         = "สินค้ารายการซ่อม";
 
 $lang['tPdtSaleType']           = "ใช้ราคาขาย";
