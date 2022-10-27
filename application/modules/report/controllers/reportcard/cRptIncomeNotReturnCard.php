@@ -201,6 +201,11 @@ class cRptIncomeNotReturnCard extends MX_Controller
             'tRptIncomeNotReturnCardUsr'        => language('report/report/report', 'tRptIncomeNotReturnCardUsr'),
             'tRptIncomeNotReturnCardAmt'        => language('report/report/report', 'tRptIncomeNotReturnCardAmt'),
 
+            'tRptIncomeNotReturnCardAuto'        => language('report/report/report', 'tRptIncomeNotReturnCardAuto'),
+            'tRptIncomeNotReturnCardClear'        => language('report/report/report', 'tRptIncomeNotReturnCardClear'),
+            'tRptIncomeNotReturnCardPmt'        => language('report/report/report', 'tRptIncomeNotReturnCardPmt'),
+            'tRptIncomeNotReturnCardInCome'        => language('report/report/report', 'tRptIncomeNotReturnCardInCome'),
+            
             //No Data Report
             'tRptPosTypeName'       => language('report/report/report', 'tRptPosTypeName'),
             'tRptPosType'           => language('report/report/report', 'tRptPosType'),
@@ -459,7 +464,10 @@ class cRptIncomeNotReturnCard extends MX_Controller
             WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardShop']),
             WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardPos']),
             WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardCode']),
-            WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardAmt']),
+            WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardClear']),
+            WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardAuto']),
+            WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardPmt']),
+            WriterEntityFactory::createCell($this->aText['tRptIncomeNotReturnCardInCome']),
         ];
 
         /** add a row at a time */
@@ -494,7 +502,10 @@ class cRptIncomeNotReturnCard extends MX_Controller
                     WriterEntityFactory::createCell($aValue['FTShpName']),
                     WriterEntityFactory::createCell($aValue['FTPosName']),
                     WriterEntityFactory::createCell($aValue['FTCrdCode']),
-                    WriterEntityFactory::createCell(number_format($aValue['FCTxnCrdValue'], 2), $oStyle),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCCrdClear'])),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCCrdTopUpAuto'])),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCCrdTxnPmt'])),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCTxnCrdValue'])),
                 ];
 
                 $aRow = WriterEntityFactory::createRow($values);
@@ -506,7 +517,10 @@ class cRptIncomeNotReturnCard extends MX_Controller
                         WriterEntityFactory::createCell(NULL),
                         WriterEntityFactory::createCell(NULL),
                         WriterEntityFactory::createCell(NULL),
-                        WriterEntityFactory::createCell(number_format($aValue["FCTxnCrdValue_Footer"], 2), $oStyle),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCCrdClear_Footer"])),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCCrdTopUpAuto_Footer"])),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCCrdTxnPmt_Footer"])),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue["FCTxnCrdValue_Footer"])),
 
                     ];
                     $aRow = WriterEntityFactory::createRow($values, $oStyleColums);
@@ -681,6 +695,8 @@ class cRptIncomeNotReturnCard extends MX_Controller
         }
 
         $aCells = [
+            WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell(NULL),

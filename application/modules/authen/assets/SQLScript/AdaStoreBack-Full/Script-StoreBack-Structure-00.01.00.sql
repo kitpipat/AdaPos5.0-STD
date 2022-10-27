@@ -4622,3 +4622,31 @@ IF OBJECT_ID(N'TCNTAppDepHisTmp') IS NULL BEGIN
 END
 GO
 
+
+
+DROP TABLE IF EXISTS [dbo].[TRPTIncomeNotReturnCardTmp]
+GO
+/****** Object:  Table [dbo].[TRPTIncomeNotReturnCardTmp]    Script Date: 27/10/2565 15:09:04 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TRPTIncomeNotReturnCardTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTBchCode] [varchar](5) NULL,
+	[FTBchName] [varchar](255) NULL,
+	[FTShpCode] [varchar](5) NULL,
+	[FTShpName] [varchar](255) NULL,
+	[FTPosCode] [varchar](5) NULL,
+	[FTPosName] [varchar](255) NULL,
+	[FTCrdCode] [varchar](20) NULL,
+	[FCTxnCrdValue] [numeric](18, 4) NULL,
+	[FTComName] [varchar](50) NULL,
+	[FTRptCode] [varchar](50) NULL,
+	[FTUsrSession] [varchar](255) NULL,
+	[FCCrdClear] [numeric](18, 4) NULL,
+	[FCCrdTopUpAuto] [numeric](18, 4) NULL,
+	[FCCrdTxnPmt] [numeric](18, 4) NULL
+) ON [PRIMARY]
+GO

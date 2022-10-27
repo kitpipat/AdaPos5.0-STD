@@ -1604,14 +1604,14 @@ class mImpproduct extends CI_Model {
                             FTPdtStaAlwDis ,FTPdtStaVatBuy ,FTPdtStaAlwReCalOpt ,FTPdtStaCsm ,FTPdtPoint ,FTPdtForSystem,
                             FTPdtStkControl ,FTPdtType , FTPdtSaleType ,FTPdtSetOrSN ,FTPdtStaSetPri ,FDPdtSaleStart,
                             FDPdtSaleStop ,FCPdtMin , FCPdtMax ,FTVatCode, FDLastUpdOn , FTLastUpdBy, FDCreateOn, FTCreateBy,
-                            FTPbnCode,FTTcgCode,FTPtyCode,FTPmoCode,FTPgpChain
+                            FTPbnCode,FTTcgCode,FTPtyCode,FTPmoCode,FTPgpChain,FTPdtStaSetShwDT,FTPdtStaSetPrcStk
                         )
                         SELECT 
                             A.FTPDTCode,A.FTPdtStaVat,A.FTPdtStaActive,A.FTPdtStaAlwReturn,A.FTPdtStaAlwDis,A.FTPdtStaVatBuy,
                             A.FTPdtStaAlwReCalOpt,A.FTPdtStaCsm,A.FTPdtPoint,A.FTPdtForSystem,A.FTPdtStkControl,A.FTPdtType,
                             A.FTPdtSaleType,A.FTPdtSetOrSN,A.FTPdtStaSetPri,A.FDPdtSaleStart,A.FDPdtSaleStop,A.FCPdtMin,
                             A.FCPdtMax,A.FTVatCode,A.FDLastUpdOn,A.FTLastUpdBy,A.FDCreateOn,A.FTCreateBy,A.FTPbnCode,
-                            A.FTTcgCode,A.FTPtyCode,A.FTPmoCode,A.FTPgpChain
+                            A.FTTcgCode,A.FTPtyCode,A.FTPmoCode,A.FTPgpChain,A.FTPdtStaSetShwDT,A.FTPdtStaSetPrcStk
                         FROM (
                             SELECT 
                                 ROW_NUMBER() OVER(PARTITION BY IMP.FTPdtCode ORDER BY IMP.FNTmpSeq ASC) as RowNum,
@@ -1643,7 +1643,9 @@ class mImpproduct extends CI_Model {
                                 ISNULL(TCG.FTTcgCode,'') AS FTTcgCode,
                                 ISNULL(PTY.FTPtyCode,'') AS FTPtyCode,
                                 ISNULL(PMO.FTPmoCode,'') AS FTPmoCode,
-                                ISNULL(PGP.FTPgpChain,'') AS FTPgpChain
+                                ISNULL(PGP.FTPgpChain,'') AS FTPgpChain,
+                                2 AS FTPdtStaSetShwDT,
+                                1 AS FTPdtStaSetPrcStk
                             FROM TCNTImpMasTmp          IMP WITH(NOLOCK)
                             LEFT JOIN TCNMPdtBrand      PBN WITH(NOLOCK) ON IMP.FTPbnCode = PBN.FTPbnCode AND IMP.FTAgnCode = PBN.FTAgnCode
                             LEFT JOIN TCNMPdtTouchGrp   TCG WITH(NOLOCK) ON IMP.FTTcgCode = TCG.FTTcgCode AND IMP.FTAgnCode = TCG.FTAgnCode
@@ -1730,13 +1732,14 @@ class mImpproduct extends CI_Model {
             // เพิ่มตาราง TCNMPDTPackSize
             // - ถ้าไม่มีหน่วยอยู่จริงใน Master จะไม่ Insert ลง PackSize
             // - ถ้า อัตราส่วน/หน่วย ซ้ำ จะไม่ Insert ลง PackSize
-            $tSQL   = " INSERT INTO TCNMPDTPackSize (FTPdtCode,FTPunCode,FCPdtUnitFact,FTPdtStaAlwBuy,FTPdtStaAlwSale,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
+            $tSQL   = " INSERT INTO TCNMPDTPackSize (FTPdtCode,FTPunCode,FCPdtUnitFact,FTPdtStaAlwBuy,FTPdtStaAlwSale,FTPdtStaAlwRet,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
                         SELECT DISTINCT 
                             TMP.FTPdtCode,
                             TMP.FTPunCode,
                             TMP.FCPdtUnitFact,
                             1 AS FTPdtStaAlwBuy,
                             1 AS FTPdtStaAlwSale,
+                            1 AS FTPdtStaAlwRet,
                             '$dDateOn',
                             '$tUserBy',
                             '$dDateOn',

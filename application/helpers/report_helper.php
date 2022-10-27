@@ -302,7 +302,7 @@ function FCNoHDOCClearRptTmp()
 
 function FCNnGetNumeric($pnVal) {
     if (is_numeric($pnVal)) {
-        $nOptDecimalShow = FCNxHGetOptionDecimalShow();
+        $nOptDecimalShow = get_cookie('tOptDecimalShow');
       return str_replace(",","",number_format($pnVal,$nOptDecimalShow))+0;
     }
     return 0;

@@ -129,7 +129,7 @@ class cBrowser extends CI_Controller
                         $tOrderByDistinct = $tTextShow[1];
                     }
                 }
-                $tSQL .= "SELECT $nStartRow + ROW_NUMBER() OVER(ORDER BY ResultSubquery.$tOrderByDistinct) AS rtRowID , $tResultShow FROM ( SELECT ";
+                $tSQL .= "SELECT $nStartRow + ROW_NUMBER() OVER(ORDER BY ResultSubquery.$tOrderByDistinct DESC) AS rtRowID , $tResultShow FROM ( SELECT ";
             } else {
                 $tSQL .= "SELECT $nStartRow + ROW_NUMBER() OVER(ORDER BY $tOrderBy) AS rtRowID , ";
             }

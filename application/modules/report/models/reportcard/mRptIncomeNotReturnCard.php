@@ -113,6 +113,9 @@ class mRptIncomeNotReturnCard extends CI_Model
             $tJoinFoooter = "   
                 SELECT 
                     FTUsrSession AS FTUsrSession_Footer,
+                    SUM(FCCrdClear) AS FCCrdClear_Footer,
+                    SUM(FCCrdTopUpAuto) AS FCCrdTopUpAuto_Footer,
+                    SUM(FCCrdTxnPmt) AS FCCrdTxnPmt_Footer,
                     SUM(FCTxnCrdValue) AS FCTxnCrdValue_Footer
                 FROM TRPTIncomeNotReturnCardTmp WITH(NOLOCK)
                 WHERE FTComName = '$tComName'
@@ -127,6 +130,9 @@ class mRptIncomeNotReturnCard extends CI_Model
             $tJoinFoooter = "   
                 SELECT
                     '$tSession' AS FTUsrSession_Footer,
+                    '0' AS FCCrdClear_Footer,
+                    '0' AS FCCrdTopUpAuto_Footer,
+                    '0' AS FCCrdTxnPmt_Footer,
                     '0' AS FCTxnCrdValue_Footer
                 ) T ON  L.FTUsrSession = T.FTUsrSession_Footer
             ";
@@ -138,11 +144,13 @@ class mRptIncomeNotReturnCard extends CI_Model
         $tSQL = " 
             SELECT
                 L.*,
+                T.FCCrdClear_Footer,
+                T.FCCrdTopUpAuto_Footer,
+                T.FCCrdTxnPmt_Footer,
                 T.FCTxnCrdValue_Footer
-
             FROM (
                 SELECT  
-                    ROW_NUMBER() OVER(ORDER BY FTPosCode ASC) AS RowID ,
+                    ROW_NUMBER() OVER(ORDER BY FTBchCode ASC,FTCrdCode ASC) AS RowID ,
                     A.*,
                     S.FNRptGroupMember,
                     S.FNRowPartID_MaxSeq,
@@ -262,7 +270,7 @@ class mRptIncomeNotReturnCard extends CI_Model
                 FNRowPartID = B.PartID
             FROM( 
                 SELECT 
-                    ROW_NUMBER() OVER(PARTITION BY FTPosCode ORDER BY FTPosCode ASC) AS PartID, 
+                    ROW_NUMBER() OVER(PARTITION BY FTBchCode ORDER BY FTBchCode ASC,FTCrdCode ASC) AS PartID, 
                     FTRptRowSeq  
                 FROM TRPTIncomeNotReturnCardTmp TMP WITH(NOLOCK)
                 WHERE TMP.FTComName = '$ptComName' 

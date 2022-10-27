@@ -2104,3 +2104,9 @@ $lang['tRptPKURemaining'] = "Remaining Amount";
 $lang['tRptCouponFrom'] = "From Coupon";
 $lang['tRptCouponTo']   = "To Coupon";
 
+
+
+$lang['tRptIncomeNotReturnCardClear']   = "Reset Card";
+$lang['tRptIncomeNotReturnCardAuto']   = "Topup Auto";
+$lang['tRptIncomeNotReturnCardPmt']   = "Promotion";
+$lang['tRptIncomeNotReturnCardInCome']   = "Income";

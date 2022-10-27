@@ -62,7 +62,7 @@
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div class="text-center xCNRptFilter">
                                         <label><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptDateFrom']; ?> : </span> <?=date('d/m/Y',strtotime($aDataFilter['tDocDateFrom']));?> </label>
-                                        <label><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptDateTo']; ?> : </span> <?=date('d/m/Y',strtotime($aDataFilter['tDocDateFrom']));?> </label>
+                                        <label><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptDateTo']; ?> : </span> <?=date('d/m/Y',strtotime($aDataFilter['tDocDateTo']));?> </label>
                                     </div>
                             </div>
                         </div>
@@ -111,10 +111,10 @@
                             <th nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
                             <th nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardSeq');?></th>
                             <th nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardCode');?></th>
-                            <th nowrap class="text-left xCNRptColumnHeader"></th>
-                            <th nowrap class="text-left xCNRptColumnHeader"><?php //echo language('report/report/report','tRptIncomeNotReturnCardTopupDate');?></th>
-                            <th nowrap class="text-center xCNRptColumnHeader"><?php //echo language('report/report/report','tRptIncomeNotReturnCardUsr');?></th>
-                            <th nowrap class="text-right xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardAmt');?></th>
+                            <th nowrap class="text-right xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardClear');?></th>
+                            <th nowrap class="text-right xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardAuto');?></th>
+                            <th nowrap class="text-right xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardPmt');?></th>
+                            <th nowrap class="text-right xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardInCome');?></th>
                         </tr>
                     <thead>
                     <tbody>
@@ -153,9 +153,9 @@
                               <td class="text-left xCNRptDetail">&nbsp;</td>
                                 <td class="text-left xCNRptDetail"><?php echo $aValue['FNRowPartID'];?></td>
                                 <td class="text-left xCNRptDetail"><?php echo $aValue['FTCrdCode'];?></td>
-                                <td class="text-left xCNRptDetail">&nbsp;</td>
-                                <td class="text-left xCNRptDetail"><?php //echo date('d/m/Y',strtotime($aValue['FDTxnTopupDate'])); ?></td>
-                                <td class="text-center xCNRptDetail"><?php //echo $aValue['FTUsrName'];?></td>
+                                <td class="text-right xCNRptDetail"><?php echo number_format($aValue['FCCrdClear'],$nOptDecimalShow);?></td>
+                                <td class="text-right xCNRptDetail"><?php echo number_format($aValue['FCCrdTopUpAuto'],$nOptDecimalShow);?></td>
+                                <td class="text-right xCNRptDetail"><?php echo number_format($aValue['FCCrdTxnPmt'],$nOptDecimalShow);?></td>
                                 <td class="text-right xCNRptDetail"><?php echo number_format($aValue['FCTxnCrdValue'],$nOptDecimalShow);?></td>
                             </tr >
                             <?php  if($aValue['FNRowPartID_MaxSeq']== $aValue['FNRowPartID']){ ?>
@@ -185,9 +185,9 @@
                                     <td class="text-left xCNRptSumFooter"><?php echo $aDataTextRef['tRptTotalFooter']; ?></td>
                                     <td class="text-center xCNRptDetail"></td>
                                     <td class="text-center xCNRptDetail"></td>
-                                    <td class="text-center xCNRptDetail"></td>
-                                    <td class="text-center xCNRptDetail"></td>
-                                    <td class="text-center xCNRptDetail"></td>
+                                    <td class="text-right xCNRptSumFooter"><?php echo number_format($aValue['FCCrdClear_Footer'],$nOptDecimalShow);?></td>
+                                    <td class="text-right xCNRptSumFooter"><?php echo number_format($aValue['FCCrdTopUpAuto_Footer'],$nOptDecimalShow);?></td>
+                                    <td class="text-right xCNRptSumFooter"><?php echo number_format($aValue['FCCrdTxnPmt_Footer'],$nOptDecimalShow);?></td>
                                     <td class="text-right xCNRptSumFooter"><?php echo number_format($aValue['FCTxnCrdValue_Footer'],$nOptDecimalShow);?></td>
                                 </tr>
                             <?php  } ?>

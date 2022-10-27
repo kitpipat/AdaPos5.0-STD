@@ -1711,11 +1711,11 @@ var oBrowsePODoc = function(poReturnInput) {
         },
         GrideView: {
             ColumnPathLang: 'document/purchaseorder/purchaseorder',
-            ColumnKeyLang: ['tPOTBDocNo','tPOTBBchCreate','tPOTBCreateBy','tPOTBDocDate'],
+            ColumnKeyLang: ['tPOTBDocNo','tPOTBBchCreate','tPOTBCreateBy','tPOTBDocDate','tPOPanelSupplier','tPOPanelSupplier','tPOPanelSupplier'],
             WidthModal: 50,
             DataColumns: ['TAPTPoHD.FTXphDocNo', 'TCNMBranch_L.FTBchName','TCNMUser_L.FTUsrName','TAPTPoHD.FDXphDocDate','TAPTPoHD.FTSplCode','TCNMSpl_L.FTSplName', 'TCNMSplCredit.FNSplCrTerm', 'TCNMSplCredit.FCSplCrLimit', 'TCNMSpl.FTSplStaVATInOrEx', 'TCNMSplCredit.FTSplTspPaid','VCN_VatActive.FTVatCode','VCN_VatActive.FCVatRate'],
             DataColumnsFormat: ['', '','','Date:0','',''],
-            DisabledColumns: [4,5,6,7,8,9,10,11],
+            DisabledColumns: [4,5,7,8,9,10,11],
             Perpage: 10,
             OrderBy: ['TAPTPoHD.FDCreateOn DESC,TAPTPoHD.FTXphDocNo DESC'],
         },

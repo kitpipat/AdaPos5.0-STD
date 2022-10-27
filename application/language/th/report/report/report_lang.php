@@ -2569,3 +2569,7 @@ $lang['tRptPKURemaining'] = "จำนวนคงเหลือ";
 $lang['tRptCouponFrom'] = "จากคูปอง";
 $lang['tRptCouponTo']   = "ถึงคูปอง";
 
+$lang['tRptIncomeNotReturnCardClear']   = "ยอดล้างบัตร";
+$lang['tRptIncomeNotReturnCardAuto']   = "ยอดเติมอัตโนมัติ";
+$lang['tRptIncomeNotReturnCardPmt']   = "ยอดโปรโมชั่น";
+$lang['tRptIncomeNotReturnCardInCome']   = "รายได้";
