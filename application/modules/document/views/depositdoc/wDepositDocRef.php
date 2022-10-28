@@ -17,9 +17,7 @@
                         <td nowrap><?=language('document/document/document','tDocRefType'.$aValue['FTXthRefType'])?></td>
                         <td nowrap><?=$aValue['FTXthRefDocNo']?></td>
                         <td nowrap class="text-center"><?=date_format(date_create($aValue['FDXthRefDocDate']),'Y-m-d')?></td>
-                        <td nowrap class="text-left">
-                            <?php if( $aValue['FTXthRefType'] != '' ){ echo $aValue['FTXthRefKey']; }else{ echo "-"; } ?>
-                        </td>
+                        <td nowrap class="text-left otdDPSRefType"><?php if( $aValue['FTXthRefType'] != '' ){ echo $aValue['FTXthRefKey']; }else{ echo "-"; } ?></td>
                         <td nowrap class="text-center xCNHideWhenCancelOrApprove">
                             <img class="xCNIconTable xCNIconDel xWDelDocRef" src="<?php echo  base_url().'/application/modules/common/assets/images/icons/delete.png'?>">
                         </td>
@@ -36,6 +34,13 @@
 </div>
 
 <script>
+
+    $('.otdDPSRefType').each(function() {
+        var value = $(this).text();
+        if(value == 'ABB'){
+            $('#obtDPSApproveDPS').hide();
+        }
+    });
 
     var nQTStaApv =  $('#ohdTQStaApv').val();
     var nQTStaDoc =  $('#ohdTQStaDoc').val();
