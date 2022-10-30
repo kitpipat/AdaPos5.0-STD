@@ -83,7 +83,7 @@
 
 
         $thRsnType              = $aDataDocHD['raItems']['FTXthRsnType'];
-
+        $nStaUploadFile         = 2;
     }else{
         $tTBIRoute              = "docTBIEventAdd";
         // $tTBICompCode           = $tCmpCode;
@@ -147,6 +147,7 @@
         $tTBIViaCode            = "";
         $tTBIViaName            = "";
         $thRsnType              = "3";
+        $nStaUploadFile         = 1;
     }
 
     $bIsApv         = empty($tTBIStaApv) ? false : true;
@@ -761,6 +762,41 @@
                     </div>
                 </div>
             </div>
+
+             <!-- Panel ไฟลแนบ -->
+             <div class="panel panel-default" style="margin-bottom: 25px;">
+                    <div id="odvSOReferenceDoc" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
+                        <label class="xCNTextDetail1"><?php echo language('document/saleorder/saleorder', 'ไฟล์แนบ'); ?></label>
+                        <a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvSODataFile" aria-expanded="true">
+                            <i class="fa fa-plus xCNPlus"></i>
+                        </a>
+                    </div>
+                    <div id="odvSODataFile" class="xCNMenuPanelData panel-collapse collapse" role="tabpanel">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="odvDOShowDataTable">
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        var oSOCallDataTableFile = {
+                            ptElementID : 'odvDOShowDataTable',
+                            ptBchCode   : $('#oetTBIBchCode').val(),
+                            ptDocNo     : $('#oetTBIDocNo').val(),
+                            ptDocKey    : 'TCNTPdtTbiHD',
+                            ptSessionID : '<?= $this->session->userdata("tSesSessionID") ?>',
+                            pnEvent     : <?= $nStaUploadFile ?>,
+                            ptCallBackFunct: 'JSxSoCallBackUploadFile',
+                            ptStaApv        : $('#ohdTBIStaApv').val(),
+                            ptStaDoc        : $('#ohdTBIStaDoc').val()
+                        }
+                        JCNxUPFCallDataTable(oSOCallDataTableFile);
+                    </script>
+                </div>
+
         </div>       
 
         <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
