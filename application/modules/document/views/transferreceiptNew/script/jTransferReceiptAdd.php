@@ -1,36 +1,94 @@
 <script type="text/javascript">
-    var nLangEdits = '<?php echo $this->session->userdata("tLangEdit"); ?>';
-    var tUsrApv = '<?php echo $this->session->userdata("tSesUsername"); ?>';
-    var tUsrBchCode = '<?php echo $this->session->userdata('tSesUsrBchCodeDefault'); ?>';
-    var tTWIDocType = '<?= $tTWIDocType; ?>';
-    var tTWIRsnType = '<?= $tTWIRsnType; ?>';
-    var tTWIStaDoc = '<?= $tTWIStaDoc; ?>';
-    var tTWIStaApvDoc = '<?= $tTWIStaApv; ?>';
-    var tTWIStaPrcStkDoc = '<?= $tTWIStaPrcStk; ?>';
-    var tTWIRoute = '<?= $tTWIRoute; ?>';
+    var nLangEdits          = '<?php echo $this->session->userdata("tLangEdit"); ?>';
+    var tUsrApv             = '<?php echo $this->session->userdata("tSesUsername"); ?>';
+    var tUsrBchCode         = '<?php echo $this->session->userdata('tSesUsrBchCodeDefault'); ?>';
+    var tTWIDocType         = '<?= $tTWIDocType; ?>';
+    var tTWIRsnType         = '<?= $tTWIRsnType; ?>';
+    var tTWIStaDoc          = '<?= $tTWIStaDoc; ?>';
+    var tTWIStaApvDoc       = '<?= $tTWIStaApv; ?>';
+    var tTWIStaPrcStkDoc    = '<?= $tTWIStaPrcStk; ?>';
+    var tTWIRoute           = '<?= $tTWIRoute; ?>';
+    // Get Data Check Permision Compare Month
+    var tRefInType          = $('#ohdTWIRefInType').val();
+    var tAutStaCancel       = $('#ohdTWIAutStaCancel').val();
+    var tDocDateCreate      = $('#ohdTWIDocDateCreate').val();
+    var tDocDateNowToday    = $('#ohdTWIDateNowToday').val();
     $(document).ready(function() {
-
+        JSxCheckPinMenuClose(); /*Check เปิดปิด Menu ตาม Pin*/
         $('#odvTRNOut').css('display', 'block');
         $('#odvTRNIn').css('display', 'none');
-
         $('#obtTWIConfirmApprDoc').click(function() {
             JSxTRNTransferReceiptStaApvDoc(true);
         });
-
-        //เอกสารถูกยกเลิก
         if (tTWIStaDoc == 3 || tTWIStaApvDoc == 1) {
-            $('#obtTWIPrintDoc').show();
+            $('#odvTWIMngAdvTableList').hide();
+            $('#odvTWIMngDelPdtInTableDT').hide();
+            $('#obtTWIDocBrowsePdt').hide();
+        }
+        $("#obtTWISubmitFromDoc").removeAttr("disabled");
+
+        // เอกสารถูกยกเลิก
+        if(tTWIStaDoc == 3) {
+            $('#obtTrnOutPrintDoc').show();
+            $('#odvTWIBtnGrpSave').show();
             $('#obtTWICancelDoc').hide();
             $('#obtTWIApproveDoc').hide();
-            $('#odvTWIBtnGrpSave').hide();
-
+            $('#otaTWIFrmInfoOthRmk').removeAttr('disabled', true);
+            // วันที่ + เวลา
+            $('#oetTWIDocDate').attr('disabled', true);
+            $('#oetTWIDocTime').attr('disabled', true);
+            $('.xCNControllDateTime').attr('disabled', true);
+            $('.xWDropdown').attr('disabled',true);
+            // ประเภท
+            $('#ocmSelectTransferDocument').attr('disabled', true);
+            $('#ocmSelectTransTypeIN').attr('disabled', true);
+            $('#oetTWIINEtc').attr('disabled', true);
+            $('.xCNApvOrCanCelDisabled').attr('disabled', true);
+            $(".xCNDocBrowsePdt").attr("disabled", true).addClass("xCNBrowsePdtdisabled");
+        } else if (tTWIStaDoc == 1 && tTWIStaApvDoc == 1 && tRefInType != 2) {
+            // เอกสารอนุมัติแล้วแต่ไม่ได้ถูกอ้างอิง
+            $('#obtTWICancelDoc').show();
+            $('#obtTrnOutPrintDoc').show();
+            $('#odvTWIBtnGrpSave').show();
+            $('#obtTWIApproveDoc').hide();
+            $('#otaTWIFrmInfoOthRmk').removeAttr('disabled', true);
             //วันที่ + เวลา
             $('#oetTWIDocDate').attr('disabled', true);
             $('#oetTWIDocTime').attr('disabled', true);
-            $('.xCNBtnDateTime').attr('disabled', true);
+            $('.xCNControllDateTime').attr('disabled', true);
             $('.xWDropdown').attr('disabled',true);
-            $('#obtTWIFrmBrowseShipAdd').attr('disabled',true);
-
+            //ประเภท
+            $('#ocmSelectTransferDocument').attr('disabled', true);
+            $('#ocmSelectTransTypeIN').attr('disabled', true);
+            $('#oetTWIINEtc').attr('disabled', true);
+            $('.xCNApvOrCanCelDisabled').attr('disabled', true);
+            $(".xCNDocBrowsePdt").attr("disabled", true).addClass("xCNBrowsePdtdisabled");
+            // เช็คเดือนที่สร้างไม่ เท่ากับ เดือนปัจจุบัน วิ่งไปเช็คสิทธิ์ต่อ
+            if(tDocDateCreate != tDocDateNowToday){
+                if(tAutStaCancel == '1'){
+                    // มีสิทธิ์ Cancel เอกสารได้
+                    $('#obtTWICancelDoc').show();
+                }else{
+                    $('#obtTWICancelDoc').hide();
+                }
+            }else{
+                $('#obtTWICancelDoc').hide();
+            }
+        } else if (tTWIStaDoc == 1 && tTWIStaApvDoc == 1 && tRefInType == 2) {
+            $('#obtTrnOutPrintDoc').show();
+            if (tTWIStaPrcStkDoc == '') {
+                $('#obtTWICancelDoc').show();
+            }else{
+                $('#obtTWICancelDoc').hide();
+            }
+            $('#obtTWIApproveDoc').hide();
+            $('#odvTWIBtnGrpSave').show();
+            $('#otaTWIFrmInfoOthRmk').removeAttr('disabled', true);
+            //วันที่ + เวลา
+            $('#oetTWIDocDate').attr('disabled', true);
+            $('#oetTWIDocTime').attr('disabled', true);
+            $('.xCNControllDateTime').attr('disabled', true);
+            $('.xWDropdown').attr('disabled',true);
             //ประเภท
             $('#ocmSelectTransferDocument').attr('disabled', true);
             $('#ocmSelectTransTypeIN').attr('disabled', true);
@@ -39,19 +97,19 @@
             $(".xCNDocBrowsePdt").attr("disabled", true).addClass("xCNBrowsePdtdisabled");
         } else {
             if (tTWIStaDoc == 1 && tTWIRoute == 'dcmTWIEventEdit') {
-                $('#obtTWIPrintDoc').show();
+                $('#obtTrnOutPrintDoc').show();
                 $('#obtTWICancelDoc').show();
                 $('#obtTWIApproveDoc').show();
+                $('#odvTWIBtnGrpSave').show();
             } else {
                 $('#odvTWIBtnGrpSave').show();
-                $('#obtTWIPrintDoc').hide();
+                $('#obtTrnOutPrintDoc').hide();
                 $('#obtTWICancelDoc').hide();
                 $('#obtTWIApproveDoc').hide();
             }
         }
 
         $('.selectpicker').selectpicker('refresh');
-
         $('.xCNDatePicker').datepicker({
             format: "yyyy-mm-dd",
             todayHighlight: true,
@@ -60,19 +118,15 @@
             disableTouchKeyboard: true,
             autoclose: true
         });
-
         $('.xCNTimePicker').datetimepicker({
             format: 'HH:mm:ss'
         });
-
         $('.xWTooltipsBT').tooltip({
             'placement': 'bottom'
         });
-
         $('[data-toggle="tooltip"]').tooltip({
             'placement': 'top'
         });
-
         $(".xWConDisDocument .disabled").attr("disabled", "disabled");
 
         // ================================ Event Date Function  ===============================
@@ -484,16 +538,26 @@
         if (tPOS != '' && tBCH != '') {
             tSQLCondition = "AND TCNMWaHouse.FTWahRefCode = '" + tPOS + "' AND TCNMWaHouse.FTBchCode = '" + tBCH + "' ";
         } else if (tBCH != '') {
-            tSQLCondition = "AND TCNMWaHouse.FTBchCode = '" + tBCH + "' AND TCNMWaHouse.FTWahStaType IN('2','1') ";
+
+            //User สาขาจะมองไม่เห็นคลังของเสีย
+            if($('#ohdTWOnStaWasteWAH').val() == ""){
+                var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2') ";
+            }else{
+                var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2','10') ";
+            }
+
+            tSQLCondition = "AND TCNMWaHouse.FTBchCode = '" + tBCH + "' "+tFindWahouse+" ";
+
             if ($('#oetTROutWahToCode').val() != '') {
                 tSQLCondition += "AND TCNMWaHouse.FTWahCode != '" + $('#oetTROutWahToCode').val() + "' ";
             }
         }
+
         window.oBrowseTROutFromWah_BCHOption = undefined;
         oBrowseTROutFromWah_BCHOption = oBrowseTROutFromWah_BCH({
-            'tReturnInputCode': 'oetTROutWahFromCode',
-            'tReturnInputName': 'oetTROutWahFromName',
-            'tWhereReturn': tSQLCondition
+            'tReturnInputCode'  : 'oetTROutWahFromCode',
+            'tReturnInputName'  : 'oetTROutWahFromName',
+            'tWhereReturn'      : tSQLCondition
         });
         JCNxBrowseData('oBrowseTROutFromWah_BCHOption');
     });
@@ -801,15 +865,11 @@
             // เลือกคลังที่ร้านค้า
             var tBCH = $('#oetSOFrmBchCode').val();
             var tSHP = $('#oetTROutShpToCode').val();
-            // oBrowseTROutToWah_SHP.Where.Condition = ["AND TCNMShpWah.FTShpCode = '" + tSHP + "' AND TCNMShpWah.FTBchCode = '"+ tBCH + "' "];
-            // JCNxBrowseData('oBrowseTROutToWah_SHP'); 
             window.oBrowseTROutToWah_SHPOption = undefined;
             oBrowseTROutToWah_SHPOption = oBrowseTROutToWah_SHP({
-                'tReturnInputCode': 'oetTROutWahToCode',
-                'tReturnInputName': 'oetTROutWahToName',
-                // 'tNextFuncName'     : 'JSxSelectTROutFromShp',
-                // 'aArgReturn'        : ['FTShpCode','FTBchCode'],
-                'tWhereReturn': "AND TCNMShpWah.FTShpCode = '" + tSHP + "' AND TCNMShpWah.FTBchCode = '" + tBCH + "' "
+                'tReturnInputCode'  : 'oetTROutWahToCode',
+                'tReturnInputName'  : 'oetTROutWahToName',
+                'tWhereReturn'      : "AND TCNMShpWah.FTShpCode = '" + tSHP + "' AND TCNMShpWah.FTBchCode = '" + tBCH + "' "
             });
             JCNxBrowseData('oBrowseTROutToWah_SHPOption');
         } else if ($('#oetSOFrmBchCode').val() != '' && $('#oetTROutShpToCode').val() == '') {
@@ -818,22 +878,28 @@
             var tPOS = $('#oetTROutPosFromCode').val();
             var tSQLCondition = '';
             if (tPOS != '' && tBCH != '') {
-                //รอการปรับตาราง WaHouse ให้ใช้กับ Pos ที่ผูกกับ Bch ได้
+
             } else if (tBCH != '') {
-                tSQLCondition = "AND TCNMWaHouse.FTBchCode = '" + tBCH + "' AND TCNMWaHouse.FTWahStaType IN('2','1') ";
+
+                //User สาขาจะมองไม่เห็นคลังของเสีย
+                if($('#ohdTWOnStaWasteWAH').val() == ""){
+                    var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2') ";
+                }else{
+                    var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2','10') ";
+                }
+
+                tSQLCondition = "AND TCNMWaHouse.FTBchCode = '" + tBCH + "' "+tFindWahouse+" ";
+
                 if ($('#oetTROutWahFromCode').val() != '') {
                     tSQLCondition += " AND TCNMWaHouse.FTWahCode!='" + $('#oetTROutWahFromCode').val() + "' ";
                 }
             }
-            // oBrowseTROutToWah_BCH.Where.Condition = [tSQLCondition];
-            // JCNxBrowseData('oBrowseTROutToWah_BCH'); 
+
             window.oBrowseTROutToWah_BCHOption = undefined;
             oBrowseTROutToWah_BCHOption = oBrowseTROutToWah_BCH({
-                'tReturnInputCode': 'oetTROutWahToCode',
-                'tReturnInputName': 'oetTROutWahToName',
-                // 'tNextFuncName'     : 'JSxSelectTROutFromShp',
-                // 'aArgReturn'        : ['FTShpCode','FTBchCode'],
-                'tWhereReturn': tSQLCondition
+                'tReturnInputCode'  : 'oetTROutWahToCode',
+                'tReturnInputName'  : 'oetTROutWahToName',
+                'tWhereReturn'      : tSQLCondition
             });
             JCNxBrowseData('oBrowseTROutToWah_BCHOption');
         }
@@ -880,7 +946,7 @@
                 Text: [tInputReturnName, "TCNTPdtIntDT.FTXthDocNo"]
             },
             // DebugSQL : true,
-            NextFunc: {
+            NextFunc : {
                 FuncName: tNextFuncName,
                 ArgReturn: aArgReturn,
             }
@@ -890,21 +956,13 @@
 
     $('#oetTWIDocReferBrows').unbind().click(function() {
         var tTWIBchCode = $('#oetSOFrmBchCode').val();
-
-        // var tWahTo = $('#oetTROutWahToCode').val();
-        // oBrowseTWIBPdtInt.Where.Condition = ["AND TCNTPdtIntDT.FTXthWahTo = '"+tWahTo+"' AND TCNTPdtIntDT.FTBchCode = '" + tTWIBchCode + "' AND  ( TCNTPdtIntDT.FTXtdRvtRef IS NULL OR TCNTPdtIntDT.FTXtdRvtRef='' )"];
-        // oBrowseTWIBPdtInt.Where.Condition = [
-        //     "AND TCNTPdtIntDT.FTBchCode = '" + tTWIBchCode + "' AND  ( TCNTPdtIntDT.FTXtdRvtRef IS NULL OR TCNTPdtIntDT.FTXtdRvtRef='' )" 
-        //     // "AND TCNTPdtIntDT.FTXthWahTo = '"+ tWahTo +"' "
-        // ];
-        // JCNxBrowseData('oBrowseTWIBPdtInt'); 
-        
         window.oBrowseTWIBPdtIntOption = undefined;
         oBrowseTWIBPdtIntOption = oBrowseTWIBPdtInt({
             'tReturnInputCode': 'oetTWIRefIntDocCode',
             'tReturnInputName': 'oetTWIRefIntDocNo',
             'tNextFuncName': 'JSxTWISelectDocRefer',
-            'aArgReturn': ['FTXthDocNo', 'FTBchCode', 'FTBchName', 'FTWahName', 'FTXthWahTo'],
+            'aArgReturn': ['FTXthDocNo', 'FTBchCode', 'FTBchName', 'FTWahName', 'FTXthWahTo','FDCreateOn'],
+
             'tWhereReturn': "AND TCNTPdtIntDT.FTBchCode = '" + tTWIBchCode + "' AND  ( TCNTPdtIntDT.FTXtdRvtRef IS NULL OR TCNTPdtIntDT.FTXtdRvtRef='' )"
         });
         JCNxBrowseData('oBrowseTWIBPdtIntOption');
@@ -915,14 +973,19 @@
         if (ptCode == 'NULL' || ptCode == null) {
             //JSxTBIEventClearTemp();
         } else {
-            var tResult = JSON.parse(ptCode);
-            let tDocNoRef = tResult[0];
+            var tResult     = JSON.parse(ptCode);
+            console.log(tResult);
+            let tDocNoRef   = tResult[0];
 
             //ปลายทาง
-            let tWahName = tResult[3];
-            let tWahCode = tResult[4];
+            let tWahCode    = tResult[4];
+            let tWahName    = tResult[3];
             $('#oetTROutWahToCode').val(tWahCode);
             $('#oetTROutWahToName').val(tWahName);
+
+            // วันที่อ้างอิงเอกสารจ่ายโอน
+            let tDateCreateOn   = tResult[5];
+            $('#oetTWIRefIntDocDate').val(tDateCreateOn);
 
             //คลังต้นทาง
             $.ajax({
@@ -938,7 +1001,6 @@
                     var tJSON = JSON.parse(oResult);
                     var tCodeWah = tJSON[0].FTXthWhFrm;
                     var tNameWah = tJSON[0].FTWahName;
-
                     $('#oetTROutWahFromName').val(tNameWah);
                     $('#oetTROutWahFromCode').val(tCodeWah);
                 },
@@ -1537,7 +1599,8 @@
                 SPL: [$('#oetTRINSplFromCode').val(), $('#oetTRINSplFromCode').val()],
                 BCH: [$('#oetSOFrmBchCode').val(), ''],
                 MCH: ['', ''],
-                SHP: [$('#oetTROutShpFromCode').val(), $('#oetTROutShpFromName').val()]
+                SHP: [$('#oetTROutShpFromCode').val(), $('#oetTROutShpFromName').val()],
+                'Where' : [" AND Products.FTPdtStkControl = 1"]
             },
             cache: false,
             timeout: 0,
@@ -1773,7 +1836,7 @@
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof(nStaSession) !== "undefined" && nStaSession == 1) {
 
-            //ถ้าค่าไม่สมบูรณ์ไม่อนุญาติให้บันทึก
+            //ถ้าค่าไม่สมบูรณ์ไม่อนุญาตให้บันทึก
             var tWahCode_Input_Origin = $('#oetTROutWahFromCode').val();
             var tWahCode_Input_To = $('#oetTROutWahToCode').val();
             var tWahCode_Output_Spl = $('#oetTRINWahFromCode').val();
@@ -1878,6 +1941,21 @@
                     $( element ).closest('.form-group').addClass( "has-success" ).removeClass( "has-error" );
                 },
                 submitHandler: function(form) {
+                    $('#otaTWIFrmInfoOthRmk').removeAttr('disabled', true);
+                    //วันที่ + เวลา
+                    $('#oetTWIDocDate').removeAttr('disabled', true);
+                    $('#oetTWIDocTime').removeAttr('disabled', true);
+                    $('.xCNControllDateTime').removeAttr('disabled', true);
+                    $('.xWDropdown').removeAttr('disabled',true);
+
+                    //ประเภท
+                    $('#ocmSelectTransferDocument').removeAttr('disabled', true);
+                    $('#ocmSelectTransTypeIN').removeAttr('disabled', true);
+                    $('#oetTWIINEtc').removeAttr('disabled', true);
+                    $('.xCNApvOrCanCelDisabled').removeAttr('disabled', true);
+                    $(".xCNDocBrowsePdt").removeAttr("disabled", true).removeClass("xCNBrowsePdtdisabled");
+                    $("#obtTWISubmitFromDoc").attr('disabled','true');
+
                     var tItem = $('#odvTWIDataPdtTableDTTemp #otbTWIDocPdtAdvTableList .xWPdtItem').length;
                     if (tItem > 0) {
                         $.ajax({
@@ -1900,6 +1978,7 @@
                                 } else {
                                     alert(aReturn['tStaMessg']);
                                 }
+                                $("#obtTWISubmitFromDoc").removeAttr("disabled");
                                 var nDODocNoCallBack    = aReturn['tCodeReturn'];
                                 var oDOCallDataTableFile = {
                                     ptElementID : 'odvDOShowDataTable',
@@ -1912,6 +1991,7 @@
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
                                 JCNxResponseError(jqXHR, textStatus, errorThrown);
+                                $("#obtTWISubmitFromDoc").removeAttr("disabled");
                             }
                         });
                     } else {
@@ -1951,7 +2031,7 @@
                 cache: false,
                 timeout: 0,
                 success: function(oResult) {
-                    JSvTRNLoadPdtDataTableHtml();
+                    // JSvTRNLoadPdtDataTableHtml();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxResponseError(jqXHR, textStatus, errorThrown);

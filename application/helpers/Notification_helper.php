@@ -23,4 +23,25 @@
 
         echo $tNotifications;
     }
+
+    //Functionality: Mapping เอกสารหา รหัส NotID
+    function FCNtHNotiGetNotiIDByDocRef($tDocRef){
+        $ci = &get_instance();
+        $ci->load->database();
+        $aDataNotiDoc = $ci->session->userdata("aDataNotiDoc");
+        $tNotID = '';
+        if(!empty($aDataNotiDoc)){
+            foreach($aDataNotiDoc as $aData){
+                if(!empty($aData['FTNotDocRef'])){
+                    if($aData['FTNotDocRef']==$tDocRef){
+                        $tNotID = $aData['FTNotID'];
+                        break;
+                    }
+                }
+            }
+        }else{
+            $tNotID = '';
+        }
+        return $tNotID;
+    }
 ?>

@@ -28,7 +28,29 @@
         
         return $bHaveUser;
     }
+    
+    function FCNbIsGetRoleWasteWAH(){
+        $ci = &get_instance();
+        $ci->load->database();
 
+        $tSesUsrRoleCodeMulti = $ci->session->userdata("tSesUsrRoleCodeMulti");
+
+        $tSQL = "SELECT
+                    USR.FTRolCode
+                FROM TCNTUsrFuncRpt USR
+                WHERE USR.FTRolCode IN ($tSesUsrRoleCodeMulti) AND FTUfrGrpRef = '085' AND FTUfrRef = 'KB901' ";
+
+        $oQuery = $ci->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $bHaveUser = true;
+        }else{
+            $bHaveUser = false;
+        }
+        unset($tSesUsrRoleCodeMulti);
+        unset($tSQL);
+        unset($oQuery);
+        return $bHaveUser;
+    }
     /**
      * Functionality : Check Alow Function in Role
      * Parameters : $paParams

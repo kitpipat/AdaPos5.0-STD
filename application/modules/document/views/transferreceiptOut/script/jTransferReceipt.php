@@ -1,15 +1,23 @@
-<script>
-    var nStaTRNBrowseType = $('#oetTRNStaBrowse').val();
-    var tCallTRNBackOption = $('#oetTRNCallBackOption').val();
-
+<script type="text/javascript">
+    var nStaTRNBrowseType   = $('#oetTRNStaBrowse').val();
+    var tCallTRNBackOption  = $('#oetTRNCallBackOption').val();
     $('document').ready(function() {
         localStorage.removeItem('LocalItemData');
         JSxCheckPinMenuClose(); /*Check เปิดปิด Menu ตาม Pin*/
         JSxTRNNavDefult();
-        JSvTRNCallPageTransferReceipt();
+        switch(nStaTRNBrowseType){
+            case '2':
+                var tAgnCode    = $('#oetTRNJumpAgnCode').val();
+                var tBchCode    = $('#oetTRNJumpBchCode').val();
+                var tDocNo      = $('#oetTRNJumpDocNo').val();
+                JSvTWICallPageEdit(tDocNo);
+            break;
+            default:
+            JSvTRNCallPageTransferReceipt();
+        }
     });
 
-    //ซ่อนปุ่มต่างๆ
+    // ซ่อนปุ่มต่างๆ
     function JSxTRNNavDefult() {
         try {
             $('.xCNTRNMaster').show();
@@ -22,7 +30,7 @@
         }
     }
 
-    //Page - List
+    // Page - List
     function JSvTRNCallPageTransferReceipt() {
         try {
             var nStaSession = JCNxFuncChkSessionExpired();
@@ -49,26 +57,28 @@
         }
     }
 
-    //Page - Datatable
+    // Page - Datatable
     function JSvTRNCallPageTransferReceiptDataTable(pnPage) {
+        $("#obtTWISubmitFrmSearchAdv").attr('disabled',true);
         JCNxOpenLoading();
-        var oAdvanceSearch = JSoTRNGetAdvanceSearchData();
-        var nPageCurrent = pnPage;
+        let oAdvanceSearch  = JSoTRNGetAdvanceSearchData();
+        let nPageCurrent    = pnPage;
         if (nPageCurrent == undefined || nPageCurrent == "") {
-            nPageCurrent = "1";
+            nPageCurrent    = "1";
         }
         JCNxCloseLoading();
         $.ajax({
-            type: "POST",
-            url: "TXOOutTransferReceiptDataTable",
-            data: {
-                oAdvanceSearch: oAdvanceSearch,
-                nPageCurrent: nPageCurrent
+            type : "POST",
+            url  : "TXOOutTransferReceiptDataTable",
+            data : {
+                oAdvanceSearch  : oAdvanceSearch,
+                nPageCurrent    : nPageCurrent
             },
             cache: false,
             timeout: 0,
             success: function(oResult) {
-                var aReturnData = JSON.parse(oResult);
+                $("#obtTWISubmitFrmSearchAdv").removeAttr('disabled',true);
+                let aReturnData = JSON.parse(oResult);
                 if (aReturnData['nStaEvent'] == '1') {
                     JSxTRNNavDefult();
                     $('#ostContentTransferreceipt').html(aReturnData['tViewDataTable']);
@@ -92,10 +102,11 @@
             if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
                 JCNxOpenLoading();
                 $.ajax({
-                    type: "POST",
-                    url: "TXOOutTransferReceiptPageAdd",
-                    cache: false,
-                    timeout: 0,
+                    type    : "POST",
+                    url     : "TXOOutTransferReceiptPageAdd",
+                    cache   : false,
+                    timeout : 0,
+                    async   : false,
                     success: function(oResult) {
                         var aReturnData = JSON.parse(oResult);
                         if (aReturnData['nStaEvent'] == '1') {
@@ -108,7 +119,6 @@
                             $('#odvContentTransferReceipt').html(aReturnData['tViewPageAdd']);
                             JCNxLayoutControll();
                             JCNxCloseLoading();
-
                             //Load PDT - TABLE
                             JSvTRNLoadPdtDataTableHtml();
                         } else {
@@ -128,7 +138,7 @@
         }
     }
 
-    //Page - Edit
+    //Page - Edit - ใบรับเข้า
     function JSvTWICallPageEdit(ptDocNumber) {
         try {
             var nStaSession = JCNxFuncChkSessionExpired();
@@ -142,6 +152,7 @@
                     },
                     cache: false,
                     timeout: 0,
+                    async: false,
                     success: function(oResult) {
                         var aReturnData = JSON.parse(oResult);
                         if (aReturnData['nStaEvent'] == '1') {
@@ -150,11 +161,8 @@
                             $('#oliTransferReceiptTitleAdd').hide();
                             $('#odvBtnTransferReceiptInfo').hide();
                             $('#odvBtnAddEdit').show();
-                            JSxControlBTN('PAGEEDIT');
                             $('#odvContentTransferReceipt').html(aReturnData['tViewPageAdd']);
                             JCNxLayoutControll();
-                            JCNxCloseLoading();
-
                             //Load PDT - TABLE
                             JSvTRNLoadPdtDataTableHtml();
                         } else {
@@ -174,6 +182,7 @@
         }
     }
 
+
     //Control ปุ่ม
     function JSxControlBTN(ptTypeEvent) {
         if (ptTypeEvent == 'PAGEADD') {
@@ -182,9 +191,6 @@
             $('#obtTWIApproveDoc').hide();
         }
     }
-
-
-
 
     //Page - Product Table
     function JSvTRNLoadPdtDataTableHtml(pnPage) {
@@ -195,10 +201,8 @@
             } else {
                 var tTWIDocNo = $("#oetTWIDocNo").val();
             }
-
             var tTWIStaApv = $("#ohdTWIStaApv").val();
             var tTWIStaDoc = $("#ohdTWIStaDoc").val();
-
             if (pnPage == '' || pnPage == null) {
                 var pnNewPage = 1;
             } else {
@@ -206,28 +210,24 @@
             }
             var nPageCurrent = pnNewPage;
             var tSearchPdtAdvTable = $('#oetTWIFrmFilterPdtHTML').val();
-            var nTWIFrmSplInfoVatInOrEx = $('#ocmTWIFrmSplInfoVatInOrEx').val();
             $.ajax({
                 type: "POST",
                 url: "TXOOutTransferReceiptPdtAdvanceTableLoadData",
                 data: {
-                    'ptSearchPdtAdvTable': tSearchPdtAdvTable,
-                    'ptTWIDocNo': tTWIDocNo,
-                    'ptTWIStaApv': tTWIStaApv,
-                    'ptTWIStaDoc': tTWIStaDoc,
-                    'pnTWIPageCurrent': nPageCurrent,
-                    'tBCH': $('#oetSOFrmBchCode').val(),
-                    'nTWIFrmSplInfoVatInOrEx':nTWIFrmSplInfoVatInOrEx
+                    'ptSearchPdtAdvTable'   : tSearchPdtAdvTable,
+                    'ptTWIDocNo'            : tTWIDocNo,
+                    'ptTWIStaApv'           : tTWIStaApv,
+                    'ptTWIStaDoc'           : tTWIStaDoc,
+                    'pnTWIPageCurrent'      : nPageCurrent,
+                    'tBCH'                  : $('#oetSOFrmBchCode').val()
                 },
-                cache: false,
-                Timeout: 0,
+                cache   : false,
+                Timeout : 0,
                 success: function(oResult) {
                     localStorage.removeItem('TWI_LocalItemDataDelDtTemp');
                     var aReturnData = JSON.parse(oResult);
                     if (aReturnData['nStaEvent'] == '1') {
                         $('#odvTWIDataPdtTableDTTemp').html(aReturnData['tTWIPdtAdvTableHtml']);
-                        var aTWIEndOfBill    = aReturnData['aTWIEndOfBill'];
-                        JSxTWISetFooterEndOfBill(aTWIEndOfBill);
                         JCNxCloseLoading();
                     } else {
                         var tMessageError = aReturnData['tStaMessg'];
@@ -410,22 +410,17 @@
         if (pbIsConfirm) {
             $.ajax({
                 type: "POST",
-                url: "TXOOutTransferReceiptEventCencel",
+                url : "TXOOutTransferReceiptEventCencel",
                 data: {
-                    tTWIDocNo: tTWIDocNo
+                    'tTWIDocNo'   : $('#oetTWIDocNo').val(),
+                    'tTWIDocType' : 5,
+                    'tTWIBchCode' : $('#oetSOFrmBchCode').val(),
                 },
-                cache: false,
-                timeout: 5000,
                 success: function(tResult) {
+                    console.log(tResult);
                     $("#odvTWIPopupCancel").modal("hide");
-                    aResult = $.parseJSON(tResult);
-                    if (aResult.nSta == 1) {
-                        JSvTWICallPageEdit(tTWIDocNo);
-                    } else {
-                        JCNxCloseLoading();
-                        tMsgBody = aResult.tMsg;
-                        FSvCMNSetMsgErrorDialog(tMsgBody);
-                    }
+                    JCNxOpenLoading();
+                    JSvTWICallPageEdit(tTWIDocNo);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -438,7 +433,75 @@
 
     //อนุมัติเอกสาร
     function JSxTRNTransferReceiptStaApvDoc(pbIsConfirm) {
+
+        var tTypeDocumentIN = $('#ocmSelectTransTypeIN :selected').val();
+        if (tTypeDocumentIN == 'SPL') {
+            if ($('#oetTRINWahCodeTo').val() == '') {
+                $('#odvWTIModalWahIsEmpty').modal('show');
+                $('#ospWahIsEmpty').html('<?= language('document/transferreceiptNew/transferreceiptNew', 'tWahINDocumentISEmptyDetail') ?>');
+                return;
+            }
+        } else if (tTypeDocumentIN == 'ETC') {
+            if ($('#oetTRINWahEtcCodeETC').val() == '') {
+                $('#odvWTIModalWahIsEmpty').modal('show');
+                $('#ospWahIsEmpty').html('<?= language('document/transferreceiptNew/transferreceiptNew', 'tWahINDocumentISEmptyDetail') ?>');
+                return;
+            }
+        } else if (tTypeDocumentIN == 'CUS') {
+            if ($('#oetTRINWahEtcCode').val() == '') {
+                $('#odvWTIModalWahIsEmpty').modal('show');
+                $('#ospWahIsEmpty').html('<?= language('document/transferreceiptNew/transferreceiptNew', 'tWahINDocumentISEmptyDetail') ?>');
+                return;
+            }
+        }
+
         var nStaSession = JCNxFuncChkSessionExpired();
+        var ptRoute     = $("#ohdTWIRoute").val();
+        var tItem       = $('#odvTWIDataPdtTableDTTemp #otbTWIDocPdtAdvTableList .xWPdtItem').length;
+        
+        //วันที่ + เวลา
+        $('#oetTWIDocDate').removeAttr('disabled', true);
+        $('#oetTWIDocTime').removeAttr('disabled', true);
+        $('.xCNControllDateTime').removeAttr('disabled', true);
+        $('.xWDropdown').removeAttr('disabled',true);
+
+        //ประเภท
+        $('#ocmSelectTransferDocument').removeAttr('disabled', true);
+        $('#ocmSelectTransTypeIN').removeAttr('disabled', true);
+        $('#oetTWIINEtc').removeAttr('disabled', true);
+        $('.xCNApvOrCanCelDisabled').removeAttr('disabled', true);
+        $(".xCNDocBrowsePdt").removeAttr("disabled", true).addClass("xCNBrowsePdtdisabled");
+        $("#obtTWISubmitFromDoc").attr('disabled','true');
+        if (tItem > 0) {
+            $.ajax({
+                type    : "POST",
+                url     : ptRoute,
+                data    : $('#ofmTransferreceiptFormAdd').serialize(),
+                cache   : false,
+                timeout : 0,
+                success : function(tResult) {
+                    var aReturn = JSON.parse(tResult);
+                    $("#obtTWISubmitFromDoc").removeAttr("disabled");
+                    var nDODocNoCallBack    = aReturn['tCodeReturn'];
+                    var oDOCallDataTableFile = {
+                        ptElementID : 'odvDOShowDataTable',
+                        ptBchCode   : $('#oetSOFrmBchCode').val(),
+                        ptDocNo     : nDODocNoCallBack,
+                        ptDocKey    :'TCNTPdtTwiHD',
+                    }
+                    JCNxUPFInsertDataFile(oDOCallDataTableFile);
+
+                    JCNxCloseLoading();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    $("#obtTWISubmitFromDoc").removeAttr("disabled");
+                }
+            });
+        } else {
+            $('#odvWTIModalPleaseSelectPDT').modal('show');
+        }
+
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
             try {
                 if (pbIsConfirm) {

@@ -5,106 +5,105 @@ class cTransferreceiptOut extends MX_Controller
 {
 
     public function __construct()
-    {
+    {   
         parent::__construct();
         $this->load->model('document/transferreceiptOut/mTransferreceiptOut');
         $this->load->model('company/company/mCompany');
         $this->load->model('payment/rate/mRate');
+        
+        // Test XSS Load Helper Security
+        $this->load->helper("security");
+        if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
+            echo "ERROR XSS Filter";
+        }
     }
 
-    public function index($nBrowseType, $tBrowseOption)
-    {
-        $aDataConfigView = array(
-            'nBrowseType' => $nBrowseType,
-            'tBrowseOption' => $tBrowseOption,
-            'aPermission' => FCNaHCheckAlwFunc('TXOOut/0/0'),
-            'vBtnSave' => FCNaHBtnSaveActiveHTML('TXOOut/0/0'),
-            'nOptDecimalShow' => FCNxHGetOptionDecimalShow(),
-            'nOptDecimalSave' => FCNxHGetOptionDecimalSave()
+    public function index($nBrowseType, $tBrowseOption){
+        $aParams=array(
+            'tDocNo'    => $this->input->post('tDocNo'),
+            'tBchCode'  => $this->input->post('tBchCode'),
+            'tAgnCode'  => $this->input->post('tAgnCode'),
+        );
+        $aDataConfigView    = array(
+            'nBrowseType'       => $nBrowseType,
+            'tBrowseOption'     => $tBrowseOption,
+            'aPermission'       => FCNaHCheckAlwFunc('TXOOut/0/0'),
+            'vBtnSave'          => FCNaHBtnSaveActiveHTML('TXOOut/0/0'),
+            'nOptDecimalShow'   => get_cookie('tOptDecimalShow'),
+            'nOptDecimalSave'   => get_cookie('tOptDecimalSave'),
+            'aParams'           => $aParams,
         );
         $this->load->view('document/transferreceiptOut/wTransferreceiptOut', $aDataConfigView);
     }
 
     //Page - List
-    public function FSxCTWOTransferReceiptList()
-    {
+    public function FSxCTWOTransferReceiptList(){
         $this->load->view('document/transferreceiptOut/wTransferreceiptOutSearchList');
     }
 
     //Page - DataTable
-    public function FSxCTWOTransferReceiptDataTable()
-    {
+    public function FSxCTWOTransferReceiptDataTable(){
         $tAdvanceSearchData = $this->input->post('oAdvanceSearch');
-        $nPage = $this->input->post('nPageCurrent');
-        $aAlwEvent = FCNaHCheckAlwFunc('TXOOut/0/0');
-        $nOptDecimalShow = FCNxHGetOptionDecimalShow();
-
+        $nPage              = $this->input->post('nPageCurrent');
+        $aAlwEvent          = FCNaHCheckAlwFunc('TXOOut/0/0');
+        $nOptDecimalShow    = get_cookie('tOptDecimalShow');
         if ($nPage == '' || $nPage == null) {
-            $nPage = 1;
+            $nPage  = 1;
         } else {
-            $nPage = $this->input->post('nPageCurrent');
+            $nPage  = $this->input->post('nPageCurrent');
         }
-
-        $nLangResort = $this->session->userdata("tLangID");
-        $nLangEdit = $this->session->userdata("tLangEdit");
-        $aData = array(
-            'FNLngID' => $nLangEdit,
-            'nPage' => $nPage,
-            'nRow' => 10,
+        $nLangEdit  = $this->session->userdata("tLangEdit");
+        $aData      = array(
+            'FNLngID'   => $nLangEdit,
+            'nPage'     => $nPage,
+            'nRow'      => 10,
             'aAdvanceSearch' => $tAdvanceSearchData
         );
-
-        $aResList = $this->mTransferreceiptOut->FSaMTRNList($aData);
-        $aGenTable = array(
-            'aAlwEvent' => $aAlwEvent,
-            'aDataList' => $aResList,
-            'nPage' => $nPage,
-            'nOptDecimalShow' => $nOptDecimalShow
+        $aResList   = $this->mTransferreceiptOut->FSaMTRNList($aData);
+        $aGenTable  = array(
+            'aAlwEvent'         => $aAlwEvent,
+            'aDataList'         => $aResList,
+            'nPage'             => $nPage,
+            'nOptDecimalShow'   => $nOptDecimalShow
         );
-
         $tTWIViewDataTable = $this->load->view('document/transferreceiptOut/wTransferreceiptOutDataTable', $aGenTable, true);
         $aReturnData = array(
-            'tViewDataTable' => $tTWIViewDataTable,
-            'nStaEvent' => '1',
-            'tStaMessg' => 'Success'
+            'tViewDataTable'    => $tTWIViewDataTable,
+            'nStaEvent'         => '1',
+            'tStaMessg'         => 'Success'
         );
         echo json_encode($aReturnData);
     }
 
     //Page - Add
-    public function FSvCTWOTransferReceiptPageAdd()
-    {
+    public function FSvCTWOTransferReceiptPageAdd(){
         try {
             // Clear Product List IN Doc Temp
-            $tTblSelectData = "TCNTPdtTwiHD";
+            $tTblSelectData     = "TCNTPdtTwiHD";
             $this->mTransferreceiptOut->FSxMTWIClearPdtInTmp($tTblSelectData);
-
             // Get Option Show Decimal
-            $nOptDecimalShow = FCNxHGetOptionDecimalShow();
+            $nOptDecimalShow    = get_cookie('tOptDecimalShow');
             // Get Option Doc Save
-            $nOptDocSave = FCNnHGetOptionDocSave();
+            $nOptDocSave        = get_cookie('tOptDecimalSave');
             // Get Option Scan SKU
-            $nOptScanSku = FCNnHGetOptionScanSku();
+            $nOptScanSku        = get_cookie('tOptScanSku');
             //Lang ภาษา
             $nLangEdit = $this->session->userdata("tLangEdit");
-
             // VAT
             $aDataWhere = array('FNLngID' => $nLangEdit);
             $tAPIReq = "";
             $tMethodReq = "GET";
             $aCompData = $this->mCompany->FSaMCMPList($tAPIReq, $tMethodReq, $aDataWhere);
             $tCmpCode = $aCompData['raItems']['rtCmpCode'];
-     
             if ($aCompData['rtCode'] == '1') {
-                $tBchCode = $aCompData['raItems']['rtCmpBchCode'];
-                $tCmpRteCode = $aCompData['raItems']['rtCmpRteCode'];
-                $tVatCode = $aCompData['raItems']['rtVatCodeUse'];
-                $tCmpRetInOrEx = $aCompData['raItems']['rtCmpRetInOrEx'];
-                $aVatRate = FCNoHCallVatlist($tVatCode);
-                $cVatRate = $aVatRate['FCVatRate'][0];
-                $aDataRate = array(
+                $tBchCode       = $aCompData['raItems']['rtCmpBchCode'];
+                $tCmpRteCode    = $aCompData['raItems']['rtCmpRteCode'];
+                $tVatCode       = $aCompData['raItems']['rtVatCodeUse'];
+                $aVatRate       = FCNoHCallVatlist($tVatCode);
+                $cVatRate       = $aVatRate['FCVatRate'][0];
+                $aDataRate      = array(
                     'FTRteCode' => $tCmpRteCode,
-                    'FNLngID' => $nLangEdit
+                    'FNLngID'   => $nLangEdit
                 );
                 $aResultRte = $this->mRate->FSaMRTESearchByID($aDataRate);
                 if ($aResultRte['rtCode'] == 1) {
@@ -113,21 +112,20 @@ class cTransferreceiptOut extends MX_Controller
                     $cXthRteFac = "";
                 }
             } else {
-                $tBchCode = FCNtGetBchInComp();
-                $tCmpRteCode = "";
-                $tVatCode = "";
-                $tCmpRetInOrEx = "1";
-                $cVatRate = "";
-                $cXthRteFac = "";
+                $tBchCode       = FCNtGetBchInComp();
+                $tCmpRteCode    = "";
+                $tVatCode       = "";
+                $cVatRate       = "";
+                $cXthRteFac     = "";
             }
 
             // Get Department Code
             $tUsrLogin = $this->session->userdata('tSesUsername');
-            $tDptCode = FCNnDOCGetDepartmentByUser($tUsrLogin);
+            $tDptCode   = FCNnDOCGetDepartmentByUser($tUsrLogin);
 
             // Get ข้อมูลสาขา และ ร้านค้าของ User ที่ login
             $aDataShp   = array(
-                'FNLngID' => $nLangEdit,
+                'FNLngID'   => $nLangEdit,
                 'tUsrLogin' => $tUsrLogin
             );
             $aDataUserGroup = $this->mTransferreceiptOut->FSaMASTGetShpCodeForUsrLogin($aDataShp);
@@ -179,35 +177,36 @@ class cTransferreceiptOut extends MX_Controller
             }
 
             $aDataConfigViewAdd = array(
-                'nOptDecimalShow' => $nOptDecimalShow,
-                'nOptDocSave' => $nOptDocSave,
-                'nOptScanSku' => $nOptScanSku,
-                'tCmpRteCode' => $tCmpRteCode,
-                'tVatCode' => $tVatCode,
-                'cVatRate' => $cVatRate,
-                'cXthRteFac' => $cXthRteFac,
-                'tCmpRetInOrEx' => $tCmpRetInOrEx,
-                'tDptCode' => $tDptCode,
-                'tBchCode' => $tBchCode,
-                'tBchName' => $tBchName,
-                'tMerCode' => $tMerCode,
-                'tMerName' => $tMerName,
-                'tShpType' => $tShpType,
-                'tShpCode' => $tShpCode,
-                'tShpName' => $tShpName,
-                'tWahCode' => $tWahCode,
-                'tWahName' => $tWahName,
-                'aDataDocHD' => array('rtCode' => '99'),
-                'tBchCompCode' => FCNtGetBchInComp(),
-                'tBchCompName' => FCNtGetBchNameInComp(),
-                'tCmpCode' => $tCmpCode
+                'nOptDecimalShow'   => $nOptDecimalShow,
+                'nOptDocSave'       => $nOptDocSave,
+                'nOptScanSku'       => $nOptScanSku,
+                'tCmpRteCode'       => $tCmpRteCode,
+                'tVatCode'          => $tVatCode,
+                'cVatRate'          => $cVatRate,
+                'cXthRteFac'        => $cXthRteFac,
+                'tDptCode'          => $tDptCode,
+                'tBchCode'          => $tBchCode,
+                'tBchName'          => $tBchName,
+                'tMerCode'          => $tMerCode,
+                'tMerName'          => $tMerName,
+                'tShpType'          => $tShpType,
+                'tShpCode'          => $tShpCode,
+                'tShpName'          => $tShpName,
+                'tWahCode'          => $tWahCode,
+                'tWahName'          => $tWahName,
+                'aDataDocHD'        => array('rtCode' => '99'),
+                'tBchCompCode'      => FCNtGetBchInComp(),
+                'tBchCompName'      => FCNtGetBchNameInComp(),
+                'tCmpCode'          => $tCmpCode,
+                'nStaWasteWAH'      => FCNbIsGetRoleWasteWAH(),
+                'aPermission'       => FCNaHCheckAlwFunc('TXOOut/0/0'),
             );
 
-            $tViewPageAdd = $this->load->view('document/transferreceiptOut/wTransferreceiptOutPageAdd', $aDataConfigViewAdd, true);
-            $aReturnData = array(
-                'tViewPageAdd' => $tViewPageAdd,
-                'nStaEvent' => '1',
-                'tStaMessg' => 'Success'
+            $tViewPageAdd   = $this->load->view('document/transferreceiptOut/wTransferreceiptOutPageAdd', $aDataConfigViewAdd, true);
+            $aReturnData    = array(
+                'tViewPageAdd'  => $tViewPageAdd,
+                'nStaEvent'     => '1',
+                'tStaMessg'     => 'Success'
             );
         } catch (Exception $Error) {
             $aReturnData = array(
@@ -219,56 +218,48 @@ class cTransferreceiptOut extends MX_Controller
     }
 
     // Page - Edit
-    public function FSvCTWOTransferReceiptPageEdit()
-    {
+    public function FSvCTWOTransferReceiptPageEdit(){
         try {
-            $tTWIDocNo = $this->input->post('ptDocNumber');
-
+            $tTWIDocNo  = $this->input->post('ptDocNumber');
             // Clear Data In Doc DT Temp
-            $aWhereClearTemp = [
-                'FTXthDocNo' => $tTWIDocNo,
-                'FTXthDocKey' => 'TCNTPdtTwiHD',
-                'FTSessionID' => $this->session->userdata('tSesSessionID')
+            $aWhereClearTemp    = [
+                'FTXthDocNo'    => $tTWIDocNo,
+                'FTXthDocKey'   => 'TCNTPdtTwiHD',
+                'FTSessionID'   => $this->session->userdata('tSesSessionID')
             ];
             $this->mTransferreceiptOut->FSxMTWIClearPdtInTmp($aWhereClearTemp);
-
-            $aAlwEvent = FCNaHCheckAlwFunc('TXOOut/0/0');
+            $aAlwEvent      = FCNaHCheckAlwFunc('TXOOut/0/0');
             // Get Option Show Decimal
-            $nOptDecimalShow = FCNxHGetOptionDecimalShow();
+            $nOptDecimalShow    = get_cookie('tOptDecimalShow');
             // Get Option Doc Save
-            $nOptDocSave = FCNnHGetOptionDocSave();
+            $nOptDocSave        = get_cookie('tOptDecimalSave');
             // Get Option Scan SKU
-            $nOptScanSku = FCNnHGetOptionScanSku();
+            $nOptScanSku        = get_cookie('tOptScanSku');
             // Lang ภาษา
-            $nLangEdit = $this->session->userdata("tLangEdit");
-
+            $nLangEdit  = $this->session->userdata("tLangEdit");
             // Get Department Code
-            $tUsrLogin = $this->session->userdata('tSesUsername');
-            $tDptCode = FCNnDOCGetDepartmentByUser($tUsrLogin);
-
+            $tUsrLogin  = $this->session->userdata('tSesUsername');
+            $tDptCode   = FCNnDOCGetDepartmentByUser($tUsrLogin);
             // Get ข้อมูลสาขา และ ร้านค้าของ User ที่ login
-            $tUsrLogin = $this->session->userdata('tSesUsername');
-            $aDataShp = array(
-                'FNLngID' => $nLangEdit,
+            $tUsrLogin  = $this->session->userdata('tSesUsername');
+            $aDataShp   = array(
+                'FNLngID'   => $nLangEdit,
                 'tUsrLogin' => $tUsrLogin
             );
-
             // VAT
-            $aDataWhere = array('FNLngID' => $nLangEdit);
-            $tAPIReq = "";
-            $tMethodReq = "GET";
-            $aCompData = $this->mCompany->FSaMCMPList($tAPIReq, $tMethodReq, $aDataWhere);
-            $tCmpCode = $aCompData['raItems']['rtCmpCode'];
+            $aDataWhere     = array('FNLngID' => $nLangEdit);
+            $tAPIReq        = "";
+            $tMethodReq     = "GET";
+            $aCompData      = $this->mCompany->FSaMCMPList($tAPIReq, $tMethodReq, $aDataWhere);
+            $tCmpCode       = $aCompData['raItems']['rtCmpCode'];
             if ($aCompData['rtCode'] == '1') {
-                $tBchCode = $aCompData['raItems']['rtCmpBchCode'];
-                $tCmpRteCode = $aCompData['raItems']['rtCmpRteCode'];
-                $tVatCode = $aCompData['raItems']['rtVatCodeUse'];
-                $tCmpRetInOrEx = $aCompData['raItems']['rtCmpRetInOrEx'];
-                $aVatRate = FCNoHCallVatlist($tVatCode);
-                $cVatRate = $aVatRate['FCVatRate'][0];
-                $aDataRate = array(
+                $tCmpRteCode    = $aCompData['raItems']['rtCmpRteCode'];
+                $tVatCode       = $aCompData['raItems']['rtVatCodeUse'];
+                $aVatRate       = FCNoHCallVatlist($tVatCode);
+                $cVatRate       = $aVatRate['FCVatRate'][0];
+                $aDataRate      = array(
                     'FTRteCode' => $tCmpRteCode,
-                    'FNLngID' => $nLangEdit
+                    'FNLngID'   => $nLangEdit
                 );
                 $aResultRte = $this->mRate->FSaMRTESearchByID($aDataRate);
                 if ($aResultRte['rtCode'] == 1) {
@@ -280,104 +271,99 @@ class cTransferreceiptOut extends MX_Controller
                 $tBchCode = FCNtGetBchInComp();
                 $tCmpRteCode = "";
                 $tVatCode = "";
-                $tCmpRetInOrEx = "";
                 $cVatRate = "";
                 $cXthRteFac = "";
             }
-
             $aDataUserGroup = $this->mTransferreceiptOut->FSaMASTGetShpCodeForUsrLogin($aDataShp);
             if (isset($aDataUserGroup) && empty($aDataUserGroup)) {
-                $tUsrBchCode = "";
-                $tUsrBchName = "";
-                $tUsrMerCode = "";
-                $tUsrMerName = "";
-                $tUsrShopType = "";
-                $tUsrShopCode = "";
-                $tUsrShopName = "";
-                $tUsrWahCode = "";
-                $tUsrWahName = "";
+                $tUsrBchCode    = "";
+                $tUsrBchName    = "";
+                $tUsrMerCode    = "";
+                $tUsrMerName    = "";
+                $tUsrShopType   = "";
+                $tUsrShopCode   = "";
+                $tUsrShopName   = "";
+                $tUsrWahCode    = "";
+                $tUsrWahName    = "";
             } else {
-                $tUsrBchCode = $aDataUserGroup["FTBchCode"];
-                $tUsrBchName = $aDataUserGroup["FTBchName"];
-                $tUsrMerCode = $aDataUserGroup["FTMerCode"];
-                $tUsrMerName = $aDataUserGroup["FTMerName"];
-                $tUsrShopType = $aDataUserGroup["FTShpType"];
-                $tUsrShopCode = $aDataUserGroup["FTShpCode"];
-                $tUsrShopName = $aDataUserGroup["FTShpName"];
-                $tUsrWahCode = $aDataUserGroup["FTWahCode"];
-                $tUsrWahName = $aDataUserGroup["FTWahName"];
+                $tUsrBchCode    = $aDataUserGroup["FTBchCode"];
+                $tUsrBchName    = $aDataUserGroup["FTBchName"];
+                $tUsrMerCode    = $aDataUserGroup["FTMerCode"];
+                $tUsrMerName    = $aDataUserGroup["FTMerName"];
+                $tUsrShopType   = $aDataUserGroup["FTShpType"];
+                $tUsrShopCode   = $aDataUserGroup["FTShpCode"];
+                $tUsrShopName   = $aDataUserGroup["FTShpName"];
+                $tUsrWahCode    = $aDataUserGroup["FTWahCode"];
+                $tUsrWahName    = $aDataUserGroup["FTWahName"];
             }
-
             // Data Table Document
             $aTableDocument = array(
-                'tTableHD' => 'TCNTPdtTwiHD',
-                'tTableHDCst' => '',
-                'tTableHDDis' => '',
-                'tTableDT' => 'TCNTPdtTwiDT',
-                'tTableDTDis' => ''
+                'tTableHD'      => 'TCNTPdtTwiHD',
+                'tTableHDCst'   => '',
+                'tTableHDDis'   => '',
+                'tTableDT'      => 'TCNTPdtTwiDT',
+                'tTableDTDis'   => ''
             );
-
             // Array Data Where Get (HD,HDSpl,HDDis,DT,DTDis)
-            $aDataWhere = array(
-                'FTXthDocNo' => $tTWIDocNo,
-                'FTXthDocKey' => 'TCNTPdtTwiHD',
-                'FNLngID' => $nLangEdit,
-                'nRow' => 10000,
-                'nPage' => 1,
+            $aDataWhere     = array(
+                'FTXthDocNo'    => $tTWIDocNo,
+                'FTXthDocKey'   => 'TCNTPdtTwiHD',
+                'FNLngID'       => $nLangEdit,
+                'nRow'          => 10000,
+                'nPage'         => 1,
             );
             $this->db->trans_begin();
-
             // Get Data Document HD
             $aDataDocHD = $this->mTransferreceiptOut->FSaMTWIGetDataDocHD($aDataWhere);
-
+            // Get Data Document HDRef
+            $aDataDocHDRef = $this->mTransferreceiptOut->FSaMTWIGetDataDocHDRef($aDataWhere);
             // Move Data DT TO DTTemp
             $this->mTransferreceiptOut->FSxMTWIMoveDTToDTTemp($aDataWhere);
-
             // Move Data DTFhn TO DTFhnTemp
             $this->mTransferreceiptOut->FSxMTWIMoveDTToDTFhnTemp($aDataWhere);
-
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
-                $aReturnData = array(
+                $aReturnData    = array(
                     'nStaEvent' => '500',
                     'tStaMessg' => 'Error Query Call Edit Page.'
                 );
             } else {
                 $this->db->trans_commit();
-                $tTWIVATInOrEx = ($aDataDocHD['rtCode'] == '1') ? $aDataDocHD['raItems']['FTXthVATInOrEx'] : 1;
-                $aCalcDTTempParams = array(
-                    'tDataDocEvnCall' => '1',
-                    'tDataVatInOrEx' => $tTWIVATInOrEx,
-                    'tDataDocNo' => $tTWIDocNo,
-                    'tDataDocKey' => 'TCNTPdtTwiHD',
-                    'tDataSeqNo' => ""
+                $tTWIVATInOrEx      = ($aDataDocHD['rtCode'] == '1') ? $aDataDocHD['raItems']['FTXthVATInOrEx'] : 1;
+                $aCalcDTTempParams  = array(
+                    'tDataDocEvnCall'   => '1',
+                    'tDataVatInOrEx'    => $tTWIVATInOrEx,
+                    'tDataDocNo'        => $tTWIDocNo,
+                    'tDataDocKey'       => 'TCNTPdtTwiHD',
+                    'tDataSeqNo'        => ""
                 );
-                FCNbHCallCalcDocDTTemp($aCalcDTTempParams);
-
+                // FCNbHCallCalcDocDTTemp($aCalcDTTempParams);
                 $aDataConfigViewAdd = array(
-                    'nOptDecimalShow' => $nOptDecimalShow,
-                    'nOptDocSave' => $nOptDocSave,
-                    'nOptScanSku' => $nOptScanSku,
-                    'tCmpRteCode' => $tCmpRteCode,
-                    'tVatCode' => $tVatCode,
-                    'cVatRate' => $cVatRate,
-                    'tCmpRetInOrEx' => $tCmpRetInOrEx,
-                    'cXthRteFac' => $cXthRteFac,
-                    'tDptCode' => $tDptCode,
-                    'tBchCode' => $tUsrBchCode,
-                    'tBchName' => $tUsrBchName,
-                    'tMerCode' => $tUsrMerCode,
-                    'tMerName' => $tUsrMerName,
-                    'tShpType' => $tUsrShopType,
-                    'tShpCode' => $tUsrShopCode,
-                    'tShpName' => $tUsrShopName,
-                    'tWahCode' => $tUsrWahCode,
-                    'tWahName' => $tUsrWahName,
-                    'aDataDocHD' => $aDataDocHD,
-                    'tBchCompCode' => FCNtGetBchInComp(),
-                    'tBchCompName' => FCNtGetBchNameInComp(),
-                    'tCmpCode' => $tCmpCode,
-                    'aAlwEvent' => $aAlwEvent
+                    'nOptDecimalShow'   => $nOptDecimalShow,
+                    'nOptDocSave'       => $nOptDocSave,
+                    'nOptScanSku'       => $nOptScanSku,
+                    'tCmpRteCode'       => $tCmpRteCode,
+                    'tVatCode'          => $tVatCode,
+                    'cVatRate'          => $cVatRate,
+                    'cXthRteFac'        => $cXthRteFac,
+                    'tDptCode'          => $tDptCode,
+                    'tBchCode'          => $tUsrBchCode,
+                    'tBchName'          => $tUsrBchName,
+                    'tMerCode'          => $tUsrMerCode,
+                    'tMerName'          => $tUsrMerName,
+                    'tShpType'          => $tUsrShopType,
+                    'tShpCode'          => $tUsrShopCode,
+                    'tShpName'          => $tUsrShopName,
+                    'tWahCode'          => $tUsrWahCode,
+                    'tWahName'          => $tUsrWahName,
+                    'aDataDocHD'        => $aDataDocHD,
+                    'aDataDocHDRef'     => $aDataDocHDRef,
+                    'tBchCompCode'      => FCNtGetBchInComp(),
+                    'tBchCompName'      => FCNtGetBchNameInComp(),
+                    'tCmpCode'          => $tCmpCode,
+                    'aAlwEvent'         => $aAlwEvent,
+                    'nStaWasteWAH'      => FCNbIsGetRoleWasteWAH(),
+                    'aPermission'       => FCNaHCheckAlwFunc('TXOOut/0/0'),
                 );
 
                 $tViewPageAdd = $this->load->view('document/transferreceiptOut/wTransferreceiptOutPageAdd', $aDataConfigViewAdd, true);
@@ -404,7 +390,7 @@ class cTransferreceiptOut extends MX_Controller
             $tTWIAutoGenCode = (isset($aDataDocument['ocbTWIStaAutoGenCode'])) ? 1 : 0;
             $tTWIDocNo = (isset($aDataDocument['oetTWIDocNo'])) ? $aDataDocument['oetTWIDocNo'] : '';
             $tTWIDocDate = $aDataDocument['oetTWIDocDate'] . " " . $aDataDocument['oetTWIDocTime'];
-            $tTWIVATInOrEx = $aDataDocument['ocmTWIFrmSplInfoVatInOrEx'];
+            $tTWIVATInOrEx = 1;
             $tTWISessionID = $this->session->userdata('tSesSessionID');
 
             // Get Data Comp.
@@ -454,12 +440,39 @@ class cTransferreceiptOut extends MX_Controller
                 $tShopFrm = null;
                 $tShopTo = $aDataDocument['oetTRINShpCodeTo'] == '' ? null : $aDataDocument['oetTRINShpCodeTo'];
 
+                // คลัง
+                $tWahFrm = null;
+                $tWahTo = $aDataDocument['oetTRINWahCodeTo'] == '' ? null : $aDataDocument['oetTRINWahCodeTo'];
+
                 // ผู้จำหน่าย
                 $tSplCode = $aDataDocument['oetTRINSplCode'] == '' ? null : $aDataDocument['oetTRINSplCode'];
 
+                // ลูกค้า
+                $tCusCode = null;
+
                 // แหล่งอื่น
                 $tOther = null;
-            } else { // รับเข้าจากแหล่งอื่น
+            } else if ($aDataDocument['ocmSelectTransTypeIN'] == 'CUS') { // รับเข้าจากแหล่งอื่น
+                // ประเภทคลังสินค้า
+                $tRsnType = 5;
+
+                // ร้านค้า
+                $tShopFrm = null;
+                $tShopTo = null;
+
+                // คลัง
+                $tWahFrm = null;
+                $tWahTo = $aDataDocument['oetTRINWahEtcCode'] == '' ? null : $aDataDocument['oetTRINWahEtcCode'];
+
+                // ผู้จำหน่าย
+                $tSplCode = null;
+
+                // ลูกค้า
+                $tCusCode = $aDataDocument['oetTRINCusCode'] == '' ? null : $aDataDocument['oetTRINCusCode'];
+
+                // แหล่งอื่น
+                $tOther = null;
+            } else if ($aDataDocument['ocmSelectTransTypeIN'] == 'ETC') { // รับเข้าจากแหล่งอื่น
                 // ประเภทคลังสินค้า
                 $tRsnType = 4;
 
@@ -467,15 +480,18 @@ class cTransferreceiptOut extends MX_Controller
                 $tShopFrm = null;
                 $tShopTo = null;
 
+                // คลัง
+                $tWahFrm = null;
+                $tWahTo = $aDataDocument['oetTRINWahEtcCodeETC'] == '' ? null : $aDataDocument['oetTRINWahEtcCodeETC'];
+
                 // ผู้จำหน่าย
                 $tSplCode = null;
+
+                $tCusCode = null;
 
                 // แหล่งอื่น
                 $tOther = $aDataDocument['oetTWIINEtc'] == '' ? null : $aDataDocument['oetTWIINEtc'];
             }
-            $tWahFrm = null;
-             // คลัง
-            $tWahTo = $aDataDocument['oetTRINWahCodeTo'] == '' ? null : $aDataDocument['oetTRINWahCodeTo'];
 
             // เครื่องจุดขาย
             $tPosFrm = null;
@@ -486,6 +502,7 @@ class cTransferreceiptOut extends MX_Controller
                 'FTBchCode' => $aDataDocument['oetSOFrmBchCode'],
                 'FTXthDocNo' => $tTWIDocNo,
                 'FNXthDocType' => 1,
+                'FTXthRsnType' => $tRsnType,
                 'FTXthTypRefFrm' => $tRsnType,
                 'FDXthDocDate' => (!empty($tTWIDocDate)) ? $tTWIDocDate : NULL,
                 'FTXthVATInOrEx' => $tTWIVATInOrEx,
@@ -498,6 +515,7 @@ class cTransferreceiptOut extends MX_Controller
                 'FTXthPosFrm' => $tPosFrm,
                 'FTXthPosTo' => $tPosTo,
                 'FTSplCode' => $tSplCode,
+                'FTCstCode' => $tCusCode,
                 'FTXthOther' => $tOther,
                 'FTUsrCode' => $this->session->userdata('tSesUserCode'),
                 'FTSpnCode' => null,
@@ -524,6 +542,16 @@ class cTransferreceiptOut extends MX_Controller
                 'FTCreateBy'=> $this->session->userdata('tSesUsername')
             );
 
+            $aDataPdtTwiHDRef = array(
+                'FTXthCtrName'        => $aDataDocument['oetTWITransportCtrName'],
+                'FDXthTnfDate'        => $aDataDocument['oetTWITransportTnfDate'],
+                'FTXthRefTnfID'       => $aDataDocument['oetTWITransportRefTnfID'],
+                'FTXthRefVehID'       => $aDataDocument['oetTWITransportRefVehID'],
+                'FTXthQtyAndTypeUnit' => $aDataDocument['oetTWITransportQtyAndTypeUnit'],
+                // 'FNXthShipAdd'        => $aDataDocument['oetTWITransportAddress'],
+                'FTViaCode'           => $aDataDocument['oetTWIRefTransportNumber'],
+            );
+
             $this->db->trans_begin();
 
             // Check Auto GenCode Document
@@ -544,6 +572,9 @@ class cTransferreceiptOut extends MX_Controller
 
             // Add Update Document HD
             $this->mTransferreceiptOut->FSxMTWIAddUpdateHD($aDataMaster, $aDataWhere, $aTableAddUpdate);
+
+            // Add Update Document HDRef
+            $this->mTransferreceiptOut->FSxMTWIAddUpdateHDRef($aDataPdtTwiHDRef, $aDataWhere);
 
             // Update Doc No Into Doc Temp
             $this->mTransferreceiptOut->FSxMTWIAddUpdateDocNoToTemp($aDataWhere, $aTableAddUpdate);
@@ -583,11 +614,25 @@ class cTransferreceiptOut extends MX_Controller
     public function FSoCTWOEditEventDoc()
     {
         try {
+            $aDataDocument          = $this->input->post();
+            if($aDataDocument['ohdTWIStaApv'] == 1){ //ถ้าอนุมัติแล้ว อัพเดทแค่หมายเหตุได้อย่างเดียว
+                // Array Data update
+                $tTWIDocNo              = (isset($aDataDocument['oetTWIDocNo'])) ? $aDataDocument['oetTWIDocNo'] : '';
+                $aDataWhere = array(
+                    'FTBchCode'             => $aDataDocument['ohdTWIBchCode'],
+                    'FTXthDocNo'            => $tTWIDocNo ,
+                    'FTXthRmk'              => $aDataDocument['otaTWIFrmInfoOthRmk'],
+                );
+                $this->db->trans_begin();
+                // [Update] update หมายเหตุ
+                $this->mTransferreceiptOut->FSaMTwiUpdateRmk($aDataWhere);
+
+            } else { //ถ้ายังไม่อนุมัติ ก็อัพเดทข้อมูลปกติ
             $aDataDocument = $this->input->post();
             $tTWIAutoGenCode = (isset($aDataDocument['ocbTWIStaAutoGenCode'])) ? 1 : 0;
             $tTWIDocNo = (isset($aDataDocument['oetTWIDocNo'])) ? $aDataDocument['oetTWIDocNo'] : '';
             $tTWIDocDate = $aDataDocument['oetTWIDocDate'] . " " . $aDataDocument['oetTWIDocTime'];
-            $tTWIVATInOrEx = $aDataDocument['ocmTWIFrmSplInfoVatInOrEx'];
+            $tTWIVATInOrEx = 1;
             $tTWISessionID = $this->session->userdata('tSesSessionID');
 
             // Get Data Comp.
@@ -637,13 +682,38 @@ class cTransferreceiptOut extends MX_Controller
                 $tShopFrm = null;
                 $tShopTo = $aDataDocument['oetTRINShpCodeTo'] == '' ? null : $aDataDocument['oetTRINShpCodeTo'];
 
+                // คลัง
+                $tWahFrm = null;
+                $tWahTo = $aDataDocument['oetTRINWahCodeTo'] == '' ? null : $aDataDocument['oetTRINWahCodeTo'];
 
                 // ผู้จำหน่าย
                 $tSplCode = $aDataDocument['oetTRINSplCode'] == '' ? null : $aDataDocument['oetTRINSplCode'];
 
+                $tCusCode = null;
+
                 // แหล่งอื่น
                 $tOther = null;
-            } else { // รับเข้าจากแหล่งอื่น
+            } else if ($aDataDocument['ocmSelectTransTypeIN'] == 'CUS') { // รับเข้าลูกค้า
+                // ประเภทคลังสินค้า
+                $tRsnType = 5;
+
+                // ร้านค้า
+                $tShopFrm = null;
+                $tShopTo = null;
+
+                // คลัง
+                $tWahFrm = null;
+                $tWahTo = $aDataDocument['oetTRINWahEtcCode'] == '' ? null : $aDataDocument['oetTRINWahEtcCode'];
+
+                // ผู้จำหน่าย
+                $tSplCode = null;
+
+                // ลูกค้า
+                $tCusCode = $aDataDocument['oetTRINCusCode'] == '' ? null : $aDataDocument['oetTRINCusCode'];
+
+                // แหล่งอื่น
+                $tOther = null;
+            } else if ($aDataDocument['ocmSelectTransTypeIN'] == 'ETC') { // รับเข้าจากแหล่งอื่น
                 // ประเภทคลังสินค้า
                 $tRsnType = 4;
 
@@ -651,16 +721,18 @@ class cTransferreceiptOut extends MX_Controller
                 $tShopFrm = null;
                 $tShopTo = null;
 
+                // คลัง
+                $tWahFrm = null;
+                $tWahTo = $aDataDocument['oetTRINWahEtcCodeETC'] == '' ? null : $aDataDocument['oetTRINWahEtcCodeETC'];
+
                 // ผู้จำหน่าย
                 $tSplCode = null;
+
+                $tCusCode = null;
 
                 // แหล่งอื่น
                 $tOther = $aDataDocument['oetTWIINEtc'] == '' ? null : $aDataDocument['oetTWIINEtc'];
             }
-
-            // คลัง
-            $tWahFrm = null;
-            $tWahTo = $aDataDocument['oetTRINWahCodeTo'] == '' ? null : $aDataDocument['oetTRINWahCodeTo'];
 
             // เครื่องจุดขาย
             $tPosFrm = null;
@@ -671,6 +743,7 @@ class cTransferreceiptOut extends MX_Controller
                 'FTBchCode' => $aDataDocument['oetSOFrmBchCode'],
                 'FTXthDocNo' => $tTWIDocNo,
                 'FNXthDocType' => 1,
+                'FTXthRsnType' => $tRsnType,
                 'FTXthTypRefFrm' => $tRsnType,
                 'FDXthDocDate' => (!empty($tTWIDocDate)) ? $tTWIDocDate : NULL,
                 'FTXthVATInOrEx' => $tTWIVATInOrEx,
@@ -683,6 +756,7 @@ class cTransferreceiptOut extends MX_Controller
                 'FTXthPosFrm' => $tPosFrm,
                 'FTXthPosTo' => $tPosTo,
                 'FTSplCode' => $tSplCode,
+                'FTCstCode' => $tCusCode,
                 'FTXthOther' => $tOther,
                 'FTUsrCode' => $this->session->userdata('tSesUserCode'),
                 'FTSpnCode' => null,
@@ -696,7 +770,7 @@ class cTransferreceiptOut extends MX_Controller
                 'FCXthVat' => $aCalDTTempForHD['FCXphVat'],
                 'FCXthVatable' => $aCalDTTempForHD['FCXphVatable'],
                 'FTXthRmk' => $aDataDocument['otaTWIFrmInfoOthRmk'],
-                'FTXthStaDoc' => 1, // สถานะ เอกสาร  1:สมบูรณ์, 2:ไม่สมบูรณ์, 3:ยกเลิก
+                'FTXthStaDoc' => $aDataDocument['ohdTWIStaDoc'], // สถานะ เอกสาร  1:สมบูรณ์, 2:ไม่สมบูรณ์, 3:ยกเลิก
                 'FTXthStaApv' => !empty($aDataDocument['ohdTWIStaApv']) ? $aDataDocument['ohdTWIStaApv'] : NULL,
                 'FTXthStaPrcStk' => !empty($aDataDocument['ohdTWIStaPrcStk']) ? $$aDataDocument['ohdTWIStaPrcStk'] : NULL,
                 'FTXthStaDelMQ' => !empty($aDataDocument['ohdTWIStaDelMQ']) ? $aDataDocument['ohdTWIStaDelMQ'] : NULL,
@@ -709,12 +783,25 @@ class cTransferreceiptOut extends MX_Controller
                 'FTCreateBy'=> $this->session->userdata('tSesUsername')
             );
 
+            $aDataPdtTwiHDRef = array(
+                'FTXthCtrName'        => $aDataDocument['oetTWITransportCtrName'],
+                'FDXthTnfDate'        => $aDataDocument['oetTWITransportTnfDate'],
+                'FTXthRefTnfID'       => $aDataDocument['oetTWITransportRefTnfID'],
+                'FTXthRefVehID'       => $aDataDocument['oetTWITransportRefVehID'],
+                'FTXthQtyAndTypeUnit' => $aDataDocument['oetTWITransportQtyAndTypeUnit'],
+                // 'FNXthShipAdd'        => $aDataDocument['oetTWITransportAddress'],
+                'FTViaCode'           => $aDataDocument['oetTWIRefTransportNumber'],
+            );
+
             $this->db->trans_begin();
 
             $aDataWhere['FTXthDocNo'] = $tTWIDocNo;
 
             // Add Update Document HD
             $this->mTransferreceiptOut->FSxMTWIAddUpdateHD($aDataMaster, $aDataWhere, $aTableAddUpdate);
+
+            // Add Update Document HDRef
+            $this->mTransferreceiptOut->FSxMTWIAddUpdateHDRef($aDataPdtTwiHDRef, $aDataWhere);
 
             // Update Doc No Into Doc Temp
             $this->mTransferreceiptOut->FSxMTWIAddUpdateDocNoToTemp($aDataWhere, $aTableAddUpdate);
@@ -725,6 +812,7 @@ class cTransferreceiptOut extends MX_Controller
             // Move Doc DTTemp To DT
             $this->mTransferreceiptOut->FSaMTWIMoveDtTmpToDtFhn($aDataWhere, $aTableAddUpdate);
 
+        }
             // Check Status Transection DB
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
@@ -754,12 +842,13 @@ class cTransferreceiptOut extends MX_Controller
     public function FSoCTWOPdtAdvTblLoadData()
     {
         try {
+            
             $tTWIDocNo                = $this->input->post('ptTWIDocNo');
             $tTWIStaApv               = $this->input->post('ptTWIStaApv');
             $tTWIStaDoc               = $this->input->post('ptTWIStaDoc');
             $nTWIPageCurrent          = $this->input->post('pnTWIPageCurrent');
             $tSearchPdtAdvTable       = $this->input->post('ptSearchPdtAdvTable');
-            $tVat                     = $this->input->post('nTWIFrmSplInfoVatInOrEx');
+            $tVat                     = 1;
             // Edit in line
             $tTWIPdtCode              = '';
             $tTWIPunCode              = '';
@@ -769,7 +858,6 @@ class cTransferreceiptOut extends MX_Controller
 
             // Call Advance Table
             $tTableGetColumeShow        = 'TCNTPdtTwiDT';
-            $aColumnShow                = FCNaDCLGetColumnShow($tTableGetColumeShow);
 
 
             $aDataWhere = array(
@@ -801,7 +889,6 @@ class cTransferreceiptOut extends MX_Controller
                 'tTWIPdtCode'           => @$tTWIPdtCode,
                 'tTWIPunCode'           => @$tTWIPunCode,
                 'nPage'                 => $nTWIPageCurrent,
-                'aColumnShow'           => $aColumnShow,
                 'aDataDocDTTemp'        => $aDataDocDTTemp,
                 'aDataDocDTTempSum'     => $aDataDocDTTempSum
             );
@@ -922,7 +1009,7 @@ class cTransferreceiptOut extends MX_Controller
             $tTWIBchCode         = $this->input->post('tBCH');
             $tTWIPdtData         = $this->input->post('tTWIPdtData');
             $aTWIPdtData         = JSON_decode($tTWIPdtData);
-            $tTWIVATInOrEx       = $this->input->post('nTWIFrmSplInfoVatInOrEx');
+            $tTWIVATInOrEx       = 1;
             $tTypeInsPDT         = $this->input->post('tType');
 
             $aDataWhere = array(
@@ -1035,7 +1122,7 @@ class cTransferreceiptOut extends MX_Controller
                 $tTWIBchCode         = $this->input->post('tBCH');
                 $tTWIPdtData         = $this->input->post('tTWIPdtDataFhn');
                 $aTWIPdtData         = JSON_decode($tTWIPdtData);
-                $tTWIVATInOrEx       = $this->input->post('nTWIFrmSplInfoVatInOrEx');
+                $tTWIVATInOrEx       = 1;
                 $tTypeInsPDT         = $this->input->post('tType');
              
                 $aDataWhere = array(
@@ -1045,8 +1132,8 @@ class cTransferreceiptOut extends MX_Controller
                 );
                 $this->db->trans_begin();
                 if($aTWIPdtData->tType=='confirm'){
-                    // $aDataWhere['FTPdtCode']  = $aTWIPdtData->aResult[0]->tPDTCode;
-                    // $this->mTransferreceiptOut->FSaMTWIClearDocDTFhnTemp($aDataWhere);
+                    $aDataWhere['FTPdtCode']  = $aTWIPdtData->aResult[0]->tPDTCode;
+                    $this->mTransferreceiptOut->FSaMTWIClearDocDTFhnTemp($aDataWhere);
                 // ทำทีรายการ ตามรายการสินค้าที่เพิ่มเข้ามา
                 $nPdtParentQty = 0;
                 for ($nI = 0; $nI < FCNnHSizeOf($aTWIPdtData->aResult); $nI++) {
@@ -1054,23 +1141,20 @@ class cTransferreceiptOut extends MX_Controller
                     $aItem       = $aTWIPdtData->aResult[$nI];
                     $tTWIPdtCode = $aItem->tPDTCode;
                     $tTWItRefCode = $aItem->tRefCode;
-                    $tTWItBarCode = $aItem->tBarCode;
-                    $tTWItPunCode = $aItem->tPunCode;
-
                     $nTWInQty= $aItem->nQty;
                     $nPdtParentQty = $nPdtParentQty + $nTWInQty;
 
-                    $aDataWhere['tPdtCode'] = $tTWIPdtCode;
-                    $aDataWhere['tBarCode'] = $tTWItBarCode;
-                    $aDataWhere['tPunCode'] = $tTWItPunCode;
+                    if($nI==0){
+                        $tTWItRefCodeSeqFirst = $tTWItRefCode;
+                    }
 
-                    $nTWISeqNo = $this->mTransferreceiptOut->FSaMTWIGetMaxSeqDocDTFhnTemp($aDataWhere);
+                    $nTWIMaxSeqNo = $this->mTransferreceiptOut->FSaMTWIGetMaxSeqDocDTFhnTemp($aDataWhere);
                     $aDataPdtParams = array(
                         'tDocNo'            => $tTWIDocNo,
                         'tBchCode'          => $tTWIBchCode,
                         'tPdtCode'          => $tTWIPdtCode,
                         'tRefCode'          => $tTWItRefCode,
-                        'nMaxSeqNo'         => $nTWISeqNo,
+                        'nMaxSeqNo'         => $nTWIMaxSeqNo + 1,
                         'nTWInQty'          => $nTWInQty,
                         'nLngID'            => $this->session->userdata("tLangID"),
                         'tSessionID'        => $this->session->userdata('tSesSessionID'),
@@ -1081,42 +1165,31 @@ class cTransferreceiptOut extends MX_Controller
 
                 }
 
-      
+                $tPdtBarCode = '';
+                if($tTWItRefCodeSeqFirst!=''){
+                    $aDataPdtFhnParams = array(
+                        'FTPdtCode' => $tTWIPdtCode,
+                        'FTFhnRefCode' => $tTWItRefCodeSeqFirst,
+                    );
+                    $tPdtBarCode  = $this->mTransferreceiptOut->FSaMTWIGetBarCodeByRefCodePdtFhn($aDataPdtFhnParams);
 
-                // $aDataUpdateQtyParent = array(
-                //     'tTWIBchCode'   => $tTWIBchCode,
-                //     'tTWIDocNo'     => $tTWIDocNo,
-                //     'tPdtCode'       => $tTWIPdtCode,
-                //     'tPdtBarCode'    => $tTWItBarCode,
-                //     'nXtdSeq'        => $nTWISeqNo,
-                //     'tTWISessionID' => $this->session->userdata('tSesSessionID'),
-                //     'tDocKey'       => 'TCNTPdtTwiHD',
-                //     'tTWIValue'      => $nPdtParentQty
-                // );
-    
-                // $this->mTransferreceiptOut->FSaMTWIUpdateInlineDTFhnTemp($aDataUpdateQtyParent);
+                }
 
                 $aDataUpdateQtyParent = array(
-                    'tDocNo'        => $tTWIDocNo,
-                    'nXtdSeq'       => $nTWISeqNo,
-                    'tSessionID'    => $this->session->userdata('tSesSessionID'),
+                    'tTWIBchCode'   => $tTWIBchCode,
+                    'tTWIDocNo'     => $tTWIDocNo,
+                    'tPdtCode'       => $tTWIPdtCode,
+                    'tPdtBarCode'    => $tPdtBarCode,
+                    'tTWISessionID' => $this->session->userdata('tSesSessionID'),
                     'tDocKey'       => 'TCNTPdtTwiHD',
-                    'tValue'        => $nPdtParentQty
+                    'tTWIValue'      => $nPdtParentQty
                 );
-                FCNaUpdateInlineDTTmp($aDataUpdateQtyParent);
+    
+                $this->mTransferreceiptOut->FSaMTWIUpdateInlineDTFhnTemp($aDataUpdateQtyParent);
 
 
             }else{
                 $tTWIPdtCode = $aTWIPdtData->aResult->tPDTCode;
-                // $aDataPdtParams = array(
-                //     'tDocNo'            => $tTWIDocNo,
-                //     'tBchCode'          => $tTWIBchCode,
-                //     'tPdtCode'          => $tTWIPdtCode,
-                //     'tSessionID'        => $this->session->userdata('tSesSessionID'),
-                //     'tDocKey'           => 'TCNTPdtTwiHD',
-                // );
-           
-                // $nStaInsPdtToTmp    = $this->mTransferreceiptOut->FSaMTWIDeletePDTFhnToTemp($aDataPdtParams);
                 $aDataPdtParams = array(
                     'tDocNo'            => $tTWIDocNo,
                     'tBchCode'          => $tTWIBchCode,
@@ -1124,8 +1197,8 @@ class cTransferreceiptOut extends MX_Controller
                     'tSessionID'        => $this->session->userdata('tSesSessionID'),
                     'tDocKey'           => 'TCNTPdtTwiHD',
                 );
-                $nStaInsPdtToTmp    = FCNxDeletePDTInTmp($aDataPdtParams);
-
+           
+                $nStaInsPdtToTmp    = $this->mTransferreceiptOut->FSaMTWIDeletePDTFhnToTemp($aDataPdtParams);
             }
     
                 if ($this->db->trans_status() === FALSE) {
@@ -1382,27 +1455,34 @@ class cTransferreceiptOut extends MX_Controller
     //ยกเลิกเอกสาร
     public function FSoCTWOEventCancel()
     {
-        $tTWIDocNo = $this->input->post('tTWIDocNo');
-
+        $tTWIBchCode    = $this->input->post('tTWIBchCode');
+        $tTWIDocNo      = $this->input->post('tTWIDocNo');
+        $tTWIDocType    = $this->input->post('tTWIDocType');
+        
         $aDataUpdate = array(
             'FTXthDocNo' => $tTWIDocNo,
         );
         $aStaApv    = $this->mTransferreceiptOut->FSvMTWICancel($aDataUpdate);
 
         //อัพเดทใน CN ให้กลับไปใช้งานได้
-        $this->mTransferreceiptOut->FSvMCheckDocumentInCN('CANCEL', $aDataUpdate);
+        //$this->mTransferreceiptOut->FSvMCheckDocumentInCN('CANCEL', $aDataUpdate);
 
-        if ($aStaApv['rtCode'] == 1) {
-            $aApv = array(
-                'nSta' => 1,
-                'tMsg' => "Cancel done.",
-            );
-        } else {
-            $aApv = array(
-                'nSta' => 2,
-                'tMsg' => "Not Cancel.",
-            );
-        }
+        $aMQParams = [
+            "queueName"     => "TNFWAREHOSEIN",
+            "exchangname"   => "",
+            "params"        => [
+                "ptBchCode"     => $tTWIBchCode,
+                "ptDocNo"       => $tTWIDocNo,
+                "ptDocType"     => $tTWIDocType,
+                "ptUser"        => $this->session->userdata('tSesUsername')
+            ]
+        ];
+        FCNxCallRabbitMQ($aMQParams);
+
+        $aApv = array(
+            'nSta' => 1,
+            'tMsg' => "Cancel done.",
+        );
         echo json_encode($aApv);
     }
 
@@ -1509,7 +1589,7 @@ class cTransferreceiptOut extends MX_Controller
             'FTXthDocNo'    => $tXthDocNo,
             'FTXthApvCode'  => $this->session->userdata('tSesUsername')
         );
-        $aStaApv = $this->mTransferreceiptOut->FSvMTWIApprove($aDataUpdate);
+        // $aStaApv = $this->mTransferreceiptOut->FSvMTWIApprove($aDataUpdate);
         try {
             $aMQParams = [
                 "queueName" => "TNFWAREHOSEIN",

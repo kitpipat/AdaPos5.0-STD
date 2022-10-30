@@ -38,7 +38,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     $tTWIUsrNameApv = $aDataDocHD['raItems']['FTUsrName'];
     $tTWIApvCode = $aDataDocHD['raItems']['FTXthApvCode'];
     $tTWIDocType = $aDataDocHD['raItems']['FNXthDocType'];
-    $tTWIRsnType = $aDataDocHD['raItems']['FTXthTypRefFrm'];
+    $tTWIRsnType = $aDataDocHD['raItems']['FTXthRsnType'];
     $tTWIVATInOrEx = $aDataDocHD['raItems']['FTXthVATInOrEx'];
     $tTWIMerCode = $aDataDocHD['raItems']['FTXthMerCode'];
     $tTWIShopFrm = $aDataDocHD['raItems']['FTXthShopFrm'];
@@ -53,6 +53,8 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     $tTWIPosTo = $aDataDocHD['raItems']['FTXthPosTo'];
     $tTWISplCode = $aDataDocHD['raItems']['FTSplCode'];
     $tTWISplName = $aDataDocHD['raItems']['FTSplName'];
+    $tTWICusCode = $aDataDocHD['raItems']['FTCstCode'];
+    $tTWICusName = $aDataDocHD['raItems']['FTCstName'];
     $tTWIOther = $aDataDocHD['raItems']['FTXthOther'];
     $tTWIRefExt = $aDataDocHD['raItems']['FTXthRefExt'];
     $tTWIRefExtDate = $aDataDocHD['raItems']['FDXthRefExtDate'];
@@ -62,12 +64,18 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     $tTWIRmk = $aDataDocHD['raItems']['FTXthRmk'];
     $tTWIRsnCode = $aDataDocHD['raItems']['FTRsnCode'];
     $tTWIRsnName = $aDataDocHD['raItems']['FTRsnName'];
+    $nStaUploadFile         = 2;
+    $tTWICtrName            = $aDataDocHDRef['raItems']['FTXthCtrName'];
+    $dTWIXthTnfDate         = $aDataDocHDRef['raItems']['FDXthTnfDate'];
+    $tTWIXthRefTnfID        = $aDataDocHDRef['raItems']['FTXthRefTnfID'];
+    $tTWIXthRefVehID        = $aDataDocHDRef['raItems']['FTXthRefVehID'];
+    $tTWIXthQtyAndTypeUnit  = $aDataDocHDRef['raItems']['FTXthQtyAndTypeUnit'];
+    $nTWIXthShipAdd         = $aDataDocHDRef['raItems']['FNXthShipAdd'];
+    $tTWIViaCode            = $aDataDocHDRef['raItems']['FTViaCode'];
 
     $tTWIBchCompCode = $aDataDocHD['raItems']['FTBchCode'];
     $tTWIBchCompName = $aDataDocHD['raItems']['FTBchName'];
     $tTWIUserBchName = $aDataDocHD['raItems']['FTBchName'];
-    $nStaUploadFile        = 2;
-
 } else {
     $tTWIRoute = "dcmTXOOutEventAdd";
     $tTWICompCode = $tCmpCode;
@@ -90,7 +98,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     $tTWIUsrNameApv = "";
     $tTWIDocType = "";
     $tTWIRsnType = "";
-    $tTWIVATInOrEx = $tCmpRetInOrEx;
+    $tTWIVATInOrEx = 1;
     $tTWIMerCode = "";
     $tTWIShopFrm = "";
     $tTWIShopCodeTo = "";
@@ -104,6 +112,8 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     $tTWIPosTo = "";
     $tTWISplCode = "";
     $tTWISplName = "";
+    $tTWICusCode = "";
+    $tTWICusName = "";
     $tTWIOther = "";
     $tTWIRefExt = "";
     $tTWIRefExtDate = "";
@@ -115,7 +125,15 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     $tTWIRsnName = "";
     $tTWIUserBchCode = $tBchCode;
     $tTWIUserBchName = $tBchName;
-    $nStaUploadFile        = 1;
+    $nStaUploadFile         = 1;
+
+    $tTWICtrName            = "";
+    $dTWIXthTnfDate         = "";
+    $tTWIXthRefTnfID        = "";
+    $tTWIXthRefVehID        = "";
+    $tTWIXthQtyAndTypeUnit  = "";
+    $nTWIXthShipAdd         = "";
+    $tTWIViaCode            = "";
 
     $tTWIBchCompCode = $this->session->userdata('tSesUsrBchCodeDefault');
     $tTWIBchCompName = $this->session->userdata('tSesUsrBchNameDefault');
@@ -128,7 +146,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     <input type="hidden" id="ohdTWICompCode" name="ohdTWICompCode" value="<?= $tTWICompCode; ?>">
     <input type="hidden" id="ohdBaseUrl" name="ohdBaseUrl" value="<?= base_url(); ?>">
     <input type="hidden" id="ohdTWIRoute" name="ohdTWIRoute" value="<?= $tTWIRoute; ?>">
-    <input type="hidden" id="ohdTWICheckClearValidate" name="ohdTWICheckClearValidate" value="0">
+    <input type="hidden" id="ohdTWICheckClearValidate"  name="ohdTWICheckClearValidate" value="0">
     <input type="hidden" id="ohdTWICheckSubmitByButton" name="ohdTWICheckSubmitByButton" value="0">
     <input type="hidden" id="ohdTWIAutStaEdit" name="ohdTWIAutStaEdit" value="<?= $nTWIAutStaEdit; ?>">
     <input type="hidden" id="ohdTWIStaApv" name="ohdTWIStaApv" value="<?= $tTWIStaApv; ?>">
@@ -142,7 +160,12 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     <input type="hidden" id="ohdTWIApvCodeUsrLogin" name="ohdTWIApvCodeUsrLogin" value="<?= $tTWIUsrCode; ?>">
     <input type="hidden" id="ohdTWILangEdit" name="ohdTWILangEdit" value="<?= $this->session->userdata("tLangEdit"); ?>">
     <input type="hidden" id="ohdTWIFrmSplInfoVatInOrEx" name="ohdTWIFrmSplInfoVatInOrEx" value="<?= $tTWIVATInOrEx ?>">
+    <input type="hidden" id="ohdTWOnStaWasteWAH"  name="ohdTWOnStaWasteWAH" value="<?= $nStaWasteWAH ?>">
 
+    <input type="hidden" id="ohdTWIAutStaCancel"    name="ohdTWIAutStaCancel"   value="<?=@$aPermission['tAutStaCancel'];?>">
+    <input type="hidden" id="ohdTWIDocDateCreate"   name="ohdTWIDocDateCreate"  value="<?=date("m",strtotime($dTWIDocDate));?>">
+    <inpuy type="hidden" id="ohdTWIDateNowToday"    name="ohdTWIDateNowToday"   value="<?=date('m');?>">
+    
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
             <!-- Panel รหัสเอกสารและสถานะเอกสาร -->
@@ -184,7 +207,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                     <div class="input-group">
                                         <input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetTWIDocDate" name="oetTWIDocDate" value="<?= $dTWIDocDate; ?>" data-validate-required="<?= language('document/transferreceiptOut/transferreceiptOut', 'tASTPlsEnterDocDate'); ?>">
                                         <span class="input-group-btn">
-                                            <button id="obtTWIDocDate" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                                            <button id="obtTWIDocDate" type="button" class="btn xCNBtnDateTime xCNControllDateTime"><img class="xCNIconCalendar"></button>
                                         </span>
                                     </div>
                                 </div>
@@ -195,7 +218,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                     <div class="input-group">
                                         <input type="text" class="form-control xCNTimePicker" id="oetTWIDocTime" name="oetTWIDocTime" value="<?= $dTWIDocTime; ?>" data-validate-required="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIPlsEnterDocTime'); ?>">
                                         <span class="input-group-btn">
-                                            <button id="obtTWIDocTime" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                                            <button id="obtTWIDocTime" type="button" class="btn xCNBtnDateTime xCNControllDateTime"><img class="xCNIconCalendar"></button>
                                         </span>
                                     </div>
                                 </div>
@@ -225,14 +248,39 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                     </div>
                                 </div>
 
+                                <?php
+                                    if ($tTWIStaDoc == 3) {
+                                        $tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaDoc3'); //ยกเลิก
+                                        $tClassStaDoc = 'text-danger';
+                                    } else {
+                                        if ($tTWIStaApv == 1) {
+                                            $tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaApv1'); //อนุมัติแล้ว
+                                            $tClassStaDoc = 'text-success';
+                                        } else {
+                                            $tNewProcess = language('document/adjustmentcost/adjustmentcost', 'tADCStaApv'); //รออนุมัติ
+                                            $tClassStaDoc = 'text-warning';
+                                        }
+                                    }
+
+                                    if ($tTWIStaPrcStk == 1) {
+                                        $tClassPrcStk = 'text-success';
+                                    } else if ($tTWIStaPrcStk == 2) {
+                                        $tClassPrcStk = 'text-warning';
+                                    } else if ($tTWIStaPrcStk == '') {
+                                        $tClassPrcStk = 'text-warning';
+                                    } else {
+                                        $tClassPrcStk = "";
+                                    }
+                                ?>
+
                                 <!-- สถานะอนุมัติเอกสาร -->
                                 <div class="form-group" style="margin:0">
                                     <div class="row">
                                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                            <label class="xCNLabelFrm"><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIStaApv'); ?></label>
+                                            <label class="xCNLabelFrm"><?= language('document/deliveryorder/deliveryorder', 'tDOLabelFrmStaApv'); ?></label>
                                         </div>
-                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
-                                            <label><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIStaApv' . $tTWIStaApv); ?></label>
+                                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right <?= $tClassStaDoc ?>">
+                                            <label><?= $tNewProcess; ?></label>
                                         </div>
                                     </div>
                                 </div>
@@ -244,7 +292,11 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                             <label class="xCNLabelFrm"><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIStaPrcStk'); ?></label>
                                         </div>
                                         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
-                                            <label><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIStaPrcStk' . $tTWIStaPrcStk); ?></label>
+                                        <?php if ($tTWIStaDoc == 3) { ?>
+                                            <label class="text-danger xCNTDTextStatus"><?php echo language('document/adjuststock/adjuststock', 'tASTStaDoc3'); ?></label>
+                                        <?php }else{ ?>
+                                            <label class="<?=$tClassPrcStk?> xCNTDTextStatus <?php echo $tClassPrcStk; ?>"><?php echo language('document/transferreceiptOut/transferreceiptOut', 'tTWIStaPrcStk' . $tTWIStaPrcStk) ?></label>
+                                        <?php } ?>
                                         </div>
                                     </div>
                                 </div>
@@ -302,7 +354,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                         <label class="xCNLabelFrm"><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITablePDTBch'); ?></label>
                                         <div class="input-group">
                                             <input name="oetTWOFrmBchName" id="oetTWOFrmBchName" class="form-control" value="<?= $tTWIDataInputBchName ?>" type="text" readonly="" placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITablePDTBch') ?>">
-                                            <input name="oetSOFrmBchCode" id="oetSOFrmBchCode" value="<?= $tTWIDataInputBchCode ?>" class="form-control xCNHide xCNClearValue xFhnBchCodeShw" type="text">
+                                            <input name="oetSOFrmBchCode" id="oetSOFrmBchCode" value="<?= $tTWIDataInputBchCode ?>" class="form-control xCNHide xCNClearValue" type="text">
                                             <span class="input-group-btn">
                                                 <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTWOBCH" type="button">
                                                     <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
@@ -319,7 +371,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                         <label class="xCNLabelFrm"><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITablePDTBch'); ?></label>
                                         <div class="input-group">
                                             <input name="oetTWOFrmBchName" id="oetTWOFrmBchName" class="form-control" value="<?= $tTWIDataInputBchName ?>" type="text" readonly="" placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITablePDTBch') ?>">
-                                            <input name="oetSOFrmBchCode" id="oetSOFrmBchCode" value="<?= $tTWIDataInputBchCode ?>" class="form-control xCNHide xCNClearValue xFhnBchCodeShw" type="text">
+                                            <input name="oetSOFrmBchCode" id="oetSOFrmBchCode" value="<?= $tTWIDataInputBchCode ?>" class="form-control xCNHide xCNClearValue" type="text">
                                             <span class="input-group-btn">
                                                 <?php if ($tTWIRoute == "dcmTXOOutEventEdit") {
                                                     $tDis = 'disabled';
@@ -369,7 +421,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                             DataColumnsFormat: ['', ''],
                                             DisabledColumns: [2, 3],
                                             Perpage: 10,
-                                            OrderBy: ['TCNMBranch.FDCreateOn DESC'],
+                                            OrderBy: ['TCNMBranch.FTBchCode DESC'],
                                         },
                                         CallBack: {
                                             ReturnType: 'S',
@@ -378,7 +430,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                         },
                                         NextFunc: {
                                             FuncName: 'JSxSetDefauleWahouse',
-                                            ArgReturn: ['FTWahCode', 'FTWahName','FTBchCode']
+                                            ArgReturn: ['FTWahCode', 'FTWahName']
                                         }
                                     }
                                     $('#obtBrowseTWOBCH').click(function() {
@@ -393,16 +445,6 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                             $('#oetTRINWahEtcCode').val('');
                                         } else {
                                             var tResult = JSON.parse(ptData);
-
-                                            var rtDocBchCode = tResult[2];
-                                                var oUpdChgBch = {
-                                                    rtDocBchCode : tResult[2],
-                                                    rtDocNo      : $('#oetTWIDocNo').val(),
-                                                    rtDocKey     : 'TCNTPdtTwiHD'
-                                                }
-                                                JSxCNEventChangeDocBranch(oUpdChgBch);
-                                                JSvTFWLoadPdtDataTableHtml();
-
                                             $('#oetTRINWahNameTo').val(tResult[1]);
                                             $('#oetTRINWahCodeTo').val(tResult[0]);
                                             $('#oetTRINWahEtcName').val(tResult[1]);
@@ -431,6 +473,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                             <label class="xCNLabelFrm"><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIConditionIN'); ?></label>
                                             <select class="selectpicker form-control" id="ocmSelectTransTypeIN" name="ocmSelectTransTypeIN">
                                                 <option value='SPL'><?= language('document/transferreceiptOut/transferreceiptOut', 'tINSPL'); ?></option>
+                                                <option value='CUS'><?= language('document/transferreceiptOut/transferreceiptOut', 'tINCUS'); ?></option>
                                                 <option value='ETC'><?= language('document/transferreceiptOut/transferreceiptOut', 'tINETC'); ?></option>
                                             </select>
                                         </div>
@@ -438,15 +481,22 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
 
                                     <script>
                                         $('#odvINWhereSPL').css('display', 'block');
+                                        $('#odvINWhereCUS').css('display', 'none');
                                         $('#odvINWhereETC').css('display', 'none');
 
                                         $('#ocmSelectTransTypeIN').change(function() {
                                             var tValue = $(this).val();
                                             if (tValue == 'SPL') {
                                                 $('#odvINWhereSPL').css('display', 'block');
+                                                $('#odvINWhereCUS').css('display', 'none');
                                                 $('#odvINWhereETC').css('display', 'none');
-                                            } else if (tValue == 'ETC') {
+                                            }else if (tValue == 'CUS') {
                                                 $('#odvINWhereSPL').css('display', 'none');
+                                                $('#odvINWhereCUS').css('display', 'block');
+                                                $('#odvINWhereETC').css('display', 'none');
+                                            }else if (tValue == 'ETC') {
+                                                $('#odvINWhereSPL').css('display', 'none');
+                                                $('#odvINWhereCUS').css('display', 'none');
                                                 $('#odvINWhereETC').css('display', 'block');
                                             }
                                         });
@@ -454,7 +504,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
 
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div id="odvINWhereSPL" style="display:none;">
-
+                                            
                                             <!-- เลือกผู้จำหน่าย -->
                                             <div class="form-group">
                                                 <label class="xCNLabelFrm"><?= language('document/topupVending/topupVending', 'tTBSpl'); ?></label>
@@ -468,26 +518,69 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                                     </span>
                                                 </div>
                                             </div>
-
                                             <!-- เลือกร้านค้า ปลายทาง-->
-                                            <div class="form-group <?php echo (!FCNbGetIsShpEnabled()) ? 'xCNHide' : ''; ?>">
-                                                <label class="xCNLabelFrm"><?= language('document/topupVending/topupVending', 'tShop'); ?></label>
+                                            <div id="odvINtore" style="display:none;">
+                                                <div class="form-group <?php echo (!FCNbGetIsShpEnabled()) ? 'xCNHide' : ''; ?>">
+                                                    <label class="xCNLabelFrm" ><?= language('document/topupVending/topupVending', 'tShop'); ?></label>
+                                                    <div class="input-group">
+                                                        <script>
+                                                            if ('<?= $this->session->userdata("tSesUsrLevel") ?>' == 'SHP') {
+                                                                $('#obtBrowseTRINFromShp').attr('disabled', true);
+                                                            }
+                                                        </script>
+                                                        <input name="oetTRINShpNameTo" id="oetTRINShpNameTo" type="hidden" class="form-control xCNClearValue" value="<?= $tTWIShopNameTo ?>" type="text" readonly="" placeholder="<?= language('document/topupVending/topupVending', 'tShop') ?>">
+                                                        <input name="oetTRINShpCodeTo" id="oetTRINShpCodeTo" type="hidden" value="<?= $tTWIShopCodeTo ?>" class="form-control xCNHide xCNClearValue" type="text">
+                                                        <span class="input-group-btn">
+                                                            <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTRINFromShp" type="button ">
+                                                                <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- เลือกคลังสินค้า ปลายทาง -->
+                                            <div class="form-group">
+                                                <label class="xCNLabelFrm"><span style="color:red">*</span><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIWahhouse'); ?></label>
                                                 <div class="input-group">
-                                                    <script>
-                                                        if ('<?= $this->session->userdata("tSesUsrLevel") ?>' == 'SHP') {
-                                                            $('#obtBrowseTRINFromShp').attr('disabled', true);
-                                                        }
-                                                    </script>
-                                                    <input name="oetTRINShpNameTo" id="oetTRINShpNameTo" class="form-control xCNClearValue" value="<?= $tTWIShopNameTo ?>" type="text" readonly="" placeholder="<?= language('document/topupVending/topupVending', 'tShop') ?>">
-                                                    <input name="oetTRINShpCodeTo" id="oetTRINShpCodeTo" value="<?= $tTWIShopCodeTo ?>" class="form-control xCNHide xCNClearValue" type="text">
+                                                    <input name="oetTRINWahNameTo" id="oetTRINWahNameTo" class="form-control xCNClearValue" value="<?= $tTWIWhNameTo ?>" type="text" readonly="" placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIWahhouse') ?>">
+                                                    <input name="oetTRINWahCodeTo" id="oetTRINWahCodeTo" value="<?= $tTWIWhTo ?>" class="form-control xCNHide xCNClearValue" type="text">
                                                     <span class="input-group-btn">
-                                                        <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTRINFromShp" type="button">
+                                                        <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTRINFromWah" type="button">
                                                             <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
                                                         </button>
                                                     </span>
                                                 </div>
                                             </div>
 
+                                        </div>
+
+                                        <!-- เลือกลูกค้า -->
+                                       <div id="odvINWhereCUS" style="display:none;">
+                                            <div class="form-group">
+                                                <label class="xCNLabelFrm"><?= language('document/topupVending/topupVending', 'tINCUS'); ?></label>
+                                                <div class="input-group">
+                                                    <input name="oetTRINCusName" id="oetTRINCusName" class="form-control xCNClearValue" value="<?= $tTWICusName ?>" type="text" readonly="" placeholder="<?= language('document/topupVending/topupVending', 'tINCUS') ?>">
+                                                    <input name="oetTRINCusCode" id="oetTRINCusCode" value="<?= $tTWISplCode ?>" class="form-control xCNHide xCNClearValue" type="text">
+                                                    <span class="input-group-btn">
+                                                        <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTRINFromCus" type="button">
+                                                            <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <!--เลือกคลังสินค้า - รับเข้า - เงือนไขแหล่งอื่น-->
+                                            <div class="form-group">
+                                                <label class="xCNLabelFrm"><span style="color:red">*</span><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIWahhouse'); ?></label>
+                                                    <div class="input-group">
+                                                        <input name="oetTRINWahEtcName" id="oetTRINWahEtcName" class="form-control xCNClearValue" value="<?= $tTWIWhNameTo ?>" type="text" readonly="" placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIWahhouse') ?>">
+                                                        <input name="oetTRINWahEtcCode" id="oetTRINWahEtcCode" value="<?= $tTWIWhTo ?>" class="form-control xCNHide xCNClearValue" type="text">
+                                                            <span class="input-group-btn">
+                                                                 <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTRINEtcWah" type="button">
+                                                            <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                                 </button>
+                                                            </span>
+                                                    </div>
+                                            </div>
                                         </div>
 
                                         <div id="odvINWhereETC" style="display:none;">
@@ -497,49 +590,20 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                                 <input type="text" class="form-control xCNClearValue" id="oetTWIINEtc" name="oetTWIINEtc" value="<?= $tTWIOther ?>" maxlength="100">
                                             </div>
 
-                                        </div>
-
-                                        <!-- ประเภทภาษี -->
-                                        <div class="form-group">
-                                            <label class="xCNLabelFrm"><?php echo language('document/purchaseinvoice/purchaseinvoice','tPILabelFrmSplInfoVatInOrEx');?></label>
-                                            <?php
-                                                switch($tTWIVATInOrEx){
-                                                    case '1':
-                                                        $tOptionVatIn   = "selected";
-                                                        $tOptionVatEx   = "";
-                                                    break;
-                                                    case '2':
-                                                        $tOptionVatIn   = "";
-                                                        $tOptionVatEx   = "selected";
-                                                    break;
-                                                    default:
-                                                        $tOptionVatIn   = "selected";
-                                                        $tOptionVatEx   = "";
-                                                }
-                                            ?>
-                                            <select class="selectpicker form-control xWPIDisabledOnApv" id="ocmTWIFrmSplInfoVatInOrEx" name="ocmTWIFrmSplInfoVatInOrEx" maxlength="1">
-                                                <option value="1" <?php echo @$tOptionVatIn;?>><?php echo language('document/purchaseinvoice/purchaseinvoice','tPILabelFrmSplInfoVatInclusive');?></option>
-                                                <option value="2" <?php echo @$tOptionVatEx;?>><?php echo language('document/purchaseinvoice/purchaseinvoice','tPILabelFrmSplInfoVatExclusive');?></option>
-                                            </select>
-                                        </div>
-
-                                        <!-- เลือกคลังสินค้า ปลายทาง -->
-                                        <div class="form-group">
+                                            <!--เลือกคลังสินค้า - รับเข้า - เงือนไขแหล่งอื่น-->
+                                            <div class="form-group">
                                                 <label class="xCNLabelFrm"><span style="color:red">*</span><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIWahhouse'); ?></label>
                                                 <div class="input-group">
-                                                    <input name="oetTRINWahNameTo" id="oetTRINWahNameTo" class="form-control xCNClearValue" value="<?= $tTWIWhNameTo ?>" type="text" readonly="" placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIWahhouse') ?>">
-                                                    <input name="oetTRINWahCodeTo" id="oetTRINWahCodeTo" value="<?= $tTWIWhTo ?>" class="form-control xCNHide xCNClearValue xFhnWahCodeShw" type="text">
+                                                    <input name="oetTRINWahEtcNameETC" id="oetTRINWahEtcNameETC" class="form-control xCNClearValue" value="<?= $tTWIWhNameTo ?>" type="text" readonly="" placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIWahhouse') ?>">
+                                                    <input name="oetTRINWahEtcCodeETC" id="oetTRINWahEtcCodeETC" value="<?= $tTWIWhTo ?>" class="form-control xCNHide xCNClearValue" type="text">
                                                     <span class="input-group-btn">
-                                                        <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTRINFromWah" type="button">
+                                                        <button class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" id="obtBrowseTRINEtcWah2" type="button">
                                                             <img src="<?= base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
                                                         </button>
                                                     </span>
                                                 </div>
                                             </div>
-
-
-
-
+                                        </div>
 
                                     </div>
 
@@ -563,7 +627,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                         <!-- อ้างอิงเลขที่เอกสารภายใน -->
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?= language('document/saleorder/saleorder', 'tSOLabelFrmRefIntDoc'); ?></label>
-                            <input type="text" class="form-control xCNApvOrCanCelDisabled" id="oetTWIRefIntDoc" name="oetTWIRefIntDoc" maxlength="20" value="<?= $tTWIRefInt ?>">
+                            <input type="text" class="form-control xCNApvOrCanCelDisabled" placeholder="<?= language('document/saleorder/saleorder', 'tSOLabelFrmRefIntDoc'); ?>" id="oetTWIRefIntDoc" name="oetTWIRefIntDoc" maxlength="20" value="<?= $tTWIRefInt ?>">
                         </div>
                         <!-- วันที่อ้างอิงเลขที่เอกสารภายใน -->
                         <div class="form-group">
@@ -571,14 +635,14 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                             <div class="input-group">
                                 <input type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" id="oetTWIRefIntDocDate" name="oetTWIRefIntDocDate" placeholder="YYYY-MM-DD" value="<?= $tTWIRefIntDate ?>">
                                 <span class="input-group-btn">
-                                    <button id="obtTWIBrowseRefIntDocDate" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                                    <button id="obtTWIBrowseRefIntDocDate" type="button" class="btn xCNBtnDateTime xCNControllDateTime"><img class="xCNIconCalendar"></button>
                                 </span>
                             </div>
                         </div>
                         <!-- อ้างอิงเลขที่เอกสารภายนอก -->
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?= language('document/saleorder/saleorder', 'tSOLabelFrmRefExtDoc'); ?></label>
-                            <input type="text" class="form-control xCNApvOrCanCelDisabled" id="oetTWIRefExtDoc" name="oetTWIRefExtDoc" maxlength="20" value="<?= $tTWIRefExt ?>">
+                            <input type="text" class="form-control xCNApvOrCanCelDisabled" id="oetTWIRefExtDoc" maxlength="20" placeholder="<?= language('document/saleorder/saleorder', 'tSOLabelFrmRefExtDoc'); ?>" name="oetTWIRefExtDoc" value="<?= $tTWIRefExt ?>">
                         </div>
                         <!-- วันที่เอกสารภายนอก -->
                         <div class="form-group">
@@ -586,7 +650,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                             <div class="input-group">
                                 <input type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" id="oetTWIRefExtDocDate" name="oetTWIRefExtDocDate" placeholder="YYYY-MM-DD" value="<?= $tTWIRefExtDate ?>">
                                 <span class="input-group-btn">
-                                    <button id="obtTWIBrowseRefExtDocDate" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                                    <button id="obtTWIBrowseRefExtDocDate" type="button" class="btn xCNBtnDateTime xCNControllDateTime"><img class="xCNIconCalendar"></button>
                                 </span>
                             </div>
                         </div>
@@ -608,7 +672,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWCtrName'); ?></label>
-                                    <input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="100" id="oetTWITransportCtrName" name="oetTWITransportCtrName" value="">
+                                    <input type="text" class="form-control xCNApvOrCanCelDisabled" placeholder="<?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWCtrName'); ?>" maxlength="100" id="oetTWITransportCtrName" name="oetTWITransportCtrName" value="<?php echo @$tTWICtrName ?>">
                                 </div>
                             </div>
                         </div>
@@ -617,9 +681,9 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWTnfDate'); ?></label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" id="oetTWITransportTnfDate" name="oetTWITransportTnfDate" value="">
+                                        <input type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" placeholder="YYYY-MM-DD" autocomplete="off" id="oetTWITransportTnfDate" name="oetTWITransportTnfDate" value="<?php echo @$dTWIXthTnfDate ?>">
                                         <span class="input-group-btn">
-                                            <button id="obtTWITnfDate" type="button" class="btn xCNBtnDateTime">
+                                            <button id="obtTWITnfDate" type="button" class="btn xCNBtnDateTime xCNControllDateTime">
                                                 <img src="<?= base_url() . 'application/modules/common/assets/images/icons/icons8-Calendar-100.png' ?>">
                                             </button>
                                         </span>
@@ -631,7 +695,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWRefTnfID'); ?></label>
-                                    <input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="20" id="oetTWITransportRefTnfID" name="oetTWITransportRefTnfID" value="">
+                                    <input type="text" class="form-control xCNApvOrCanCelDisabled" placeholder="<?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWRefTnfID'); ?>" maxlength="100" id="oetTWITransportRefTnfID" name="oetTWITransportRefTnfID" value="<?php echo @$tTWIXthRefTnfID ?>">
                                 </div>
                             </div>
                         </div>
@@ -639,7 +703,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWRefVehID'); ?></label>
-                                    <input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="50" id="oetTWITransportRefVehID" name="oetTWITransportRefVehID" value="">
+                                    <input type="text" class="form-control xCNApvOrCanCelDisabled" placeholder="<?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWRefVehID'); ?>" maxlength="100" id="oetTWITransportRefVehID" name="oetTWITransportRefVehID" value="<?php echo @$tTWIXthRefVehID ?>">
                                 </div>
                             </div>
                         </div>
@@ -647,23 +711,23 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWQtyAndTypeUnit'); ?></label>
-                                    <input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="30" id="oetTWITransportQtyAndTypeUnit" name="oetTWITransportQtyAndTypeUnit" value="">
+                                    <input type="text" class="form-control xCNApvOrCanCelDisabled" placeholder="<?= language('document/producttransferwahouse/producttransferwahouse', 'tTFWQtyAndTypeUnit'); ?>" maxlength="100" id="oetTWITransportQtyAndTypeUnit" name="oetTWITransportQtyAndTypeUnit" value="<?php echo @$tTWIXthQtyAndTypeUnit ?>">
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <!-- <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITransportAddress'); ?></label>
-                                    <input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="100" id="oetTWITransportAddress" name="oetTWITransportAddress" value="">
+                                    <input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="100" id="oetTWITransportAddress" name="oetTWITransportAddress" value="<?php echo @$nTWIXthShipAdd ?>">
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITransportNumber'); ?></label>
-                                    <input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="100" id="oetTWTransportNumber" name="oetTWIRefTransportNumber" value="">
+                                    <input type="text" class="form-control xCNApvOrCanCelDisabled" placeholder="<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWITransportNumber'); ?>" maxlength="20" id="oetTWTransportNumber" name="oetTWIRefTransportNumber" value="<?php echo @$tTWIViaCode ?>">
                                 </div>
                             </div>
                         </div>
@@ -698,9 +762,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                         <!-- หมายเหตุ -->
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?= language('document/purchaseinvoice/purchaseinvoice', 'tPILabelFrmInfoOthRemark'); ?></label>
-                            <textarea class="form-control xCNApvOrCanCelDisabled" id="otaTWIFrmInfoOthRmk" name="otaTWIFrmInfoOthRmk" rows="10" maxlength="200" style="resize: none;height:86px;">
-                            </textarea>
-                            <?= $tTWIRmk; ?>
+                            <textarea class="form-control" id="otaTWIFrmInfoOthRmk"  name="otaTWIFrmInfoOthRmk" rows="5" maxlength="200"><?= $tTWIRmk;?></textarea>
                         </div>
 
                         <!-- จำนวนครั้งที่พิมพ์ -->
@@ -725,42 +787,41 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                     </div>
                 </div>
             </div>
-                            <!-- Panel ไฟลแนบ -->
-                            <div class="panel panel-default" style="margin-bottom: 25px;">
-                            <div id="odvSOReferenceDoc" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
-                                <label class="xCNTextDetail1"><?php echo language('document/saleorder/saleorder', 'ไฟล์แนบ'); ?></label>
-                                <a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvSODataFile" aria-expanded="true">
-                                    <i class="fa fa-plus xCNPlus"></i>
-                                </a>
+             <!-- Panel ไฟลแนบ -->
+             <div class="panel panel-default" style="margin-bottom: 25px;">
+                <div id="odvSOReferenceDoc" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
+                    <label class="xCNTextDetail1"><?php echo language('document/saleorder/saleorder', 'ไฟล์แนบ'); ?></label>
+                    <a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvSODataFile" aria-expanded="true">
+                        <i class="fa fa-plus xCNPlus"></i>
+                    </a>
+                </div>
+                <div id="odvSODataFile" class="xCNMenuPanelData panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="odvDOShowDataTable">
+
+
                             </div>
-                            <div id="odvSODataFile" class="xCNMenuPanelData panel-collapse collapse" role="tabpanel">
-                                <div class="panel-body">
-                                    <div class="row">
-                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="odvDOShowDataTable">
-
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <script>
-
-
-                                var oSOCallDataTableFile = {
-                                    ptElementID : 'odvDOShowDataTable',
-                                    ptBchCode   : $('#oetSOFrmBchCode').val(),
-                                    ptDocNo     : $('#oetTWIDocNo').val(),
-                                    ptDocKey    : 'TCNTPdtTwiHD',
-                                    ptSessionID : '<?= $this->session->userdata("tSesSessionID") ?>',
-                                    pnEvent     : <?= $nStaUploadFile ?>,
-                                    ptCallBackFunct: 'JSxSoCallBackUploadFile',
-                                    ptStaApv        : $('#ohdTWIStaApv').val(),
-                                    ptStaDoc        : $('#ohdTWIStaDoc').val()
-                                }
-                                JCNxUPFCallDataTable(oSOCallDataTableFile);
-                            </script>
                         </div>
+                    </div>
+                </div>
+                <script>
 
+
+                    var oSOCallDataTableFile = {
+                        ptElementID : 'odvDOShowDataTable',
+                        ptBchCode   : $('#oetSOFrmBchCode').val(),
+                        ptDocNo     : $('#oetTWIDocNo').val(),
+                        ptDocKey    : 'TCNTPdtTwiHD',
+                        ptSessionID : '<?= $this->session->userdata("tSesSessionID") ?>',
+                        pnEvent     : <?= $nStaUploadFile ?>,
+                        ptCallBackFunct: 'JSxSoCallBackUploadFile',
+                        ptStaApv        : $('#ohdTWIStaApv').val(),
+                        ptStaDoc        : $('#ohdTWIStaDoc').val()
+                    }
+                    JCNxUPFCallDataTable(oSOCallDataTableFile);
+                </script>
+            </div>
         </div>
 
         <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
@@ -773,30 +834,32 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                                 <div style="margin-top: 10px;">
                                     <!--ค้นหา-->
                                     <div class="row p-t-10">
-                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <!-- <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div class="">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" maxlength="100" id="oetTWIFrmFilterPdtHTML" name="oetTWIFrmFilterPdtHTML" placeholder="<?php echo language('document/purchaseinvoice/purchaseinvoice', 'tPIFrmFilterTablePdt'); ?>" onkeyup="javascript:if(event.keyCode==13) JSvTWIDOCFilterPdtInTableTemp()">
                                                     <span class="input-group-btn">
-                                                        <div id="odvTWISearchAndScanBtnGrp" class="xCNDropDrownGroup input-group-append">
-                                                            <button id="obtTWIMngPdtIconSearch" type="button" class="btn xCNBTNMngTable xCNBtnDocSchAndScan" onclick="JSvTWIDOCFilterPdtInTableTemp()">
-                                                                <i class="fa fa-search" style="width:20px;"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu" role="menu">
-                                                                <li>
-                                                                    <a id="oliTWIMngPdtSearch"><label><?= language('document/purchaseinvoice/purchaseinvoice', 'tPIFrmFilterTablePdt'); ?></label></a>
-                                                                    <a id="oliTWIMngPdtScan"><?= language('document/purchaseinvoice/purchaseinvoice', 'tPIFrmSearchAndAddPdt'); ?></a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
+                                                        <button id="obtTWIMngPdtIconSearch" type="button" class="btn xCNBtnDateTime" onclick="JSvTWIDOCFilterPdtInTableTemp()">
+                                                            <img class="xCNIconSearch">
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div> -->
+
+                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control xCNInputWithoutSingleQuote" id="oetSearchPdtHTML" name="oetSearchPdtHTML" onkeyup="JSvDOCSearchPdtHTML()" placeholder="<?= language('common/main/main', 'tPlaceholder'); ?>">
+                                                    <span class="input-group-btn">
+                                                        <button id="oimMngPdtIconSearch" class="btn xCNBtnSearch" type="button" onclick="JSvDOCSearchPdtHTML()">
+                                                            <img class="xCNIconBrowse" src="<?php echo base_url() . '/application/modules/common/assets/images/icons/search-24.png' ?>">
+                                                        </button>
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5 text-right">
-                                            <div id="odvTWIMngAdvTableList" class="btn-group xCNDropDrownGroup">
-                                                <button id="obtTWIAdvTablePdtDTTemp" type="button" class="btn xCNBTNMngTable m-r-20"><?= language('common/main/main', 'tModalAdvTable') ?></button>
-                                            </div>
                                             <div id="odvTWIMngDelPdtInTableDT" class="btn-group xCNDropDrownGroup">
                                                 <button type="button" class="btn xCNBTNMngTable xWDropdown" data-toggle="dropdown">
                                                     <?= language('common/main/main', 'tCMNOption') ?>
@@ -820,7 +883,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
 
                                     <!--ตาราง-->
                                     <div class="row p-t-10" id="odvTWIDataPdtTableDTTemp"></div>
-                                    <?php include('wTransferreceiptOutEndOfBill.php'); ?> 
+                                    <!-- <?php include('wTransferreceiptOutEndOfBill.php'); ?> -->
                                 </div>
                             </div>
                         </div>
@@ -972,7 +1035,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
                 <p id="obpMsgApv"><strong><?= language('common/main/main', 'tDocCancelAlert2') ?></strong></p>
             </div>
             <div class="modal-footer">
-                <button onclick="JSxTRNTransferReceiptDocCancel(true)" type="button" class="btn xCNBTNPrimery">
+                <button onclick="JSxTRNTransferReceiptDocCancel(true)" type="button" class="btn xCNBTNPrimery" data-dismiss="modal">
                     <?= language('common/main/main', 'tModalConfirm'); ?>
                 </button>
                 <button type="button" class="btn xCNBTNDefult" data-dismiss="modal">

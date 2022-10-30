@@ -4,7 +4,7 @@
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
                 <div class="form-group">
                     <div class="input-group">
-                        <input class="form-control xCNInpuASTthoutSingleQuote" type="text" id="oetSearchAll" name="oetSearchAll" placeholder="<?= language('document/adjuststock/adjuststock', 'tASTFillTextSearch') ?>" onkeyup="Javascript:if(event.keyCode==13) JSvTRNCallPageTransferReceiptDataTable()" autocomplete="off">
+                        <input class="form-control xCNInputWithoutSingleQuote" type="text" id="oetSearchAll" name="oetSearchAll" placeholder="<?= language('document/adjuststock/adjuststock', 'tASTFillTextSearch') ?>" onkeyup="Javascript:if(event.keyCode==13) JSvTRNCallPageTransferReceiptDataTable()" autocomplete="off">
                         <span class="input-group-btn">
                             <button type="button" class="btn xCNBtnDateTime" onclick="JSvTRNCallPageTransferReceiptDataTable()">
                                 <img class="xCNIconSearch">
@@ -20,7 +20,6 @@
         <div id="odvTRNAdvanceSearchContainer" class="hidden" style="margin-bottom:20px;">
             <form id="ofmASTFromSerchAdv" class="validate-form" action="javascript:void(0)" method="post">
                 <div class="row">
-
                     <?php
                         if ( $this->session->userdata("tSesUsrLevel") != "HQ" ){
                             if( $this->session->userdata("nSesUsrBchCount") <= 1 ){
@@ -33,12 +32,11 @@
                                 $tBchNameDefault    = '';
                             }
                         } else {
-                            $tBchCodeDefault = "";
-                            $tBchNameDefault = "";
+                            $tBchCodeDefault    = "";
+                            $tBchNameDefault    = "";
                             $tBrowseBchDisabled = '';
                         }
                     ?>
-
                     <!-- From Search Advanced  Branch -->
                     <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
                         <div class="form-group">
@@ -89,18 +87,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <!-- From Search Advanced Status Doc -->
-                    <!-- <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label class="xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTAdvSearchLabelStaDoc'); ?></label>
-                            <select class="selectpicker form-control" id="ocmASTStaDoc" name="ocmASTStaDoc">
-                                <option value='0'><?php echo language('common/main/main', 'tStaDocAll'); ?></option>
-                                <option value='1'><?php echo language('common/main/main', 'tStaDocComplete'); ?></option>
-                                <option value='2'><?php echo language('common/main/main', 'tStaDocinComplete'); ?></option>
-                                <option value='3'><?php echo language('common/main/main', 'tStaDocCancel'); ?></option>
-                            </select>
-                        </div>
-                    </div> -->
                     <div class="col-xs-12 col-md-3 col-lg-3">
                         <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
                             <label class="xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTAdvSearchLabelStaDoc'); ?></label>
@@ -115,19 +101,6 @@
                         </div>
                     </div>
 
-
-                    <!-- From Search Advanced Status Approve -->
-                    <!-- <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                        <div class="form-group">
-                            <label class="xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTAdvSearchStaApprove'); ?></label>
-                            <select class="selectpicker form-control" id="ocmASTStaApprove" name="ocmASTStaApprove">
-                                <option value='0'><?php echo language('common/main/main', 'tAll'); ?></option>
-                                <option value='1'><?php echo language('common/main/main', 'tStaDocApv'); ?></option>
-                                <option value='2'><?php echo language('common/main/main', 'tStaDocPendingApv'); ?></option>
-                                
-                            </select>
-                        </div>
-                    </div> -->
                     <!-- From Search Advanced Status Process Stock -->
                     <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
                         <div class="form-group">
@@ -140,7 +113,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="col-xs-12 col-md-3 col-lg-3">
                         <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
                             <label class="xCNLabelFrm"><?php echo language('common/main/main', 'tStaDocAct'); ?></label>
@@ -153,7 +125,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="col-xs-12 col-sm-6 col-md-2 col-lg-2">
                         <div class="form-group" style="width: 60%;">
                             <label class="xCNLabelFrm">&nbsp;</label>

@@ -971,6 +971,34 @@ $route['TXOOutTransferReceiptEventEditInline']         = 'document/transferrecei
 $route['TXOOutTransferReceiptSelectPDTInCN']           = 'document/transferreceiptOut/cTransferreceiptOut/FSoCTWOSelectPDTInCN';
 $route['TXOOutTransferReceiptEventApproved']           = 'document/transferreceiptOut/cTransferreceiptOut/FSoCTWOApproved';
 
+//========================================== ใบรับของ ======================================//
+$route['docDO/(:any)/(:any)']                       = 'document/deliveryorder/Deliveryorder_controller/index/$1/$2';
+$route['dcmDOFormSearchList']                       = 'document/deliveryorder/Deliveryorder_controller/FSvCDOFormSearchList';
+$route['docDODataTable']                            = 'document/deliveryorder/Deliveryorder_controller/FSoCDODataTable';
+$route['docDOPageAdd']                              = 'document/deliveryorder/Deliveryorder_controller/FSoCDOPageAdd';
+$route['docDOPdtAdvanceTableLoadData']              = 'document/deliveryorder/Deliveryorder_controller/FSoCDOPdtAdvTblLoadData';
+$route['docDOAddPdtIntoDTDocTemp']                  = 'document/deliveryorder/Deliveryorder_controller/FSoCDOAddPdtIntoDocDTTemp';
+$route['docDORemovePdtInDTTmp']                     = 'document/deliveryorder/Deliveryorder_controller/FSvCDORemovePdtInDTTmp';
+$route['docDORemovePdtInDTTmpMulti']                = 'document/deliveryorder/Deliveryorder_controller/FSvCDORemovePdtInDTTmpMulti';
+$route['docDOEditPdtInDTDocTemp']                   = 'document/deliveryorder/Deliveryorder_controller/FSoCDOEditPdtIntoDocDTTemp';
+$route['docDOChkHavePdtForDocDTTemp']               = 'document/deliveryorder/Deliveryorder_controller/FSoCDOChkHavePdtForDocDTTemp';
+$route['docDOEventAdd']                             = 'document/deliveryorder/Deliveryorder_controller/FSoCDOAddEventDoc';
+$route['docDOEventEdit']                            = 'document/deliveryorder/Deliveryorder_controller/FSoCDOEditEventDoc';
+$route['docDOPageEdit']                             = 'document/deliveryorder/Deliveryorder_controller/FSvCDOEditPage';
+$route['docDOCallRefIntDoc']                        = 'document/deliveryorder/Deliveryorder_controller/FSoCDOCallRefIntDoc';
+$route['docDOCallRefIntDocDataTable']               = 'document/deliveryorder/Deliveryorder_controller/FSoCDOCallRefIntDocDataTable';
+$route['docDOCallRefIntDocDetailDataTable']         = 'document/deliveryorder/Deliveryorder_controller/FSoCDOCallRefIntDocDetailDataTable';
+$route['docDOCallRefIntDocInsertDTToTemp']          = 'document/deliveryorder/Deliveryorder_controller/FSoCDOCallRefIntDocInsertDTToTemp';
+$route['docDOEventDelete']                          = 'document/deliveryorder/Deliveryorder_controller/FSoCDODeleteEventDoc';
+$route['docDOCancelDocument']                       = 'document/deliveryorder/Deliveryorder_controller/FSvCDOCancelDocument';
+$route['docDOCancelCheckDocref']                    = 'document/deliveryorder/Deliveryorder_controller/FSvCDOCancelCheckRef';
+$route['docDOApproveDocument']                      = 'document/deliveryorder/Deliveryorder_controller/FSoCDOApproveEvent';
+$route['docDOPageHDDocRef']                         = 'document/deliveryorder/Deliveryorder_controller/FSoCDOPageHDDocRef';
+$route['docDOEventAddEditHDDocRef']                 = 'document/deliveryorder/Deliveryorder_controller/FSoCDOEventAddEditHDDocRef';
+$route['docDOEventDelHDDocRef']                     = 'document/deliveryorder/Deliveryorder_controller/FSoCDOEventDelHDDocRef';
+$route['docDOClearTempWhenChangeData']              = 'document/deliveryorder/Deliveryorder_controller/FSoCDOClearTempWhenChangeData';
+$route['docDOEventGenSO']                           = 'document/deliveryorder/Deliveryorder_controller/FSoCDOEventGenSO';
+
 //หาราคาที่มีส่วนลด
 $route['GetPriceAlwDiscount']                          = 'document/creditnote/cCreditNoteDisChgModal/FSaCCENGetPriceAlwDiscount';
 
