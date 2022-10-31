@@ -2104,3 +2104,6 @@ $lang['tRptPKURemaining'] = "Remaining Amount";
 $lang['tRptCouponFrom'] = "From Coupon";
 $lang['tRptCouponTo']   = "To Coupon";
 
+
+//รายงาน - สรุปยอดมัดจำ/เงินเชื่อ ตามจุดขาย
+$lang['tRptTitleDepositDaily'] = "Report - Summary of deposit - credit according to point of sale";

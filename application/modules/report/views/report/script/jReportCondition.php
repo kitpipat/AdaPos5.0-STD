@@ -13,6 +13,8 @@
 
     var tUsrBchCode = '<?php echo str_replace("'","",$this->session->userdata("tSesUsrBchCodeMulti")); ?>';
     var tUsrBchName = '<?php echo str_replace("'","",$this->session->userdata("tSesUsrBchNameMulti")); ?>';
+    var tBchCode = '<?php echo str_replace("'","",$this->session->userdata("tSesUsrBchCodeDefault")); ?>';
+    var tBchName = '<?php echo str_replace("'","",$this->session->userdata("tSesUsrBchNameDefault")); ?>';
 
     $(document).ready(function() {
 
@@ -33,6 +35,7 @@
         var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
         var tBchCodeMulti = "<?php echo $this->session->userdata("tSesUsrBchCodeMulti"); ?>";
         var nCountBch = "<?php echo $this->session->userdata("nSesUsrBchCount"); ?>";
+
         var tWhere = "";
 
         if (nCountBch >= 1) {
@@ -42,6 +45,9 @@
             $('#oetRptBchNameSelect').val(tUsrBchName);
             $('#oetRptBchStaSelectAll').val('');
             $('#obtRptMultiBrowseBranch').attr("disabled", false);
+            $('#oetRptBchCodeFrom').val(tBchCode);
+            $('#oetRptBchNameFrom').val(tBchName);
+            $('#obtRptBrowseBchFrom').attr("disabled", false);
         }
 
         // ควบคุม เปิด-ปิด เครื่องจุดขาย
@@ -50,6 +56,14 @@
             $("#obtRptMultiBrowsePos").attr('disabled', false);
         } else {
             $("#obtRptMultiBrowsePos").attr('disabled', true);
+        }
+
+        // ควบคุม เปิด-ปิด เครื่องจุดขาย 
+        var bIsBchFrom = $("#oetRptBchCodeFrom").val() != "";
+        if (bIsBchFrom && nCountBch == 1) {
+            $("#obtRptBrowsePosFrom").attr('disabled', false);
+        } else {
+            $("#obtRptBrowsePosFrom").attr('disabled', true);
         }
 
         $(".selectpicker-crd-sta-from").selectpicker('refresh');
@@ -144,6 +158,26 @@
         let aArgReturnBch = poReturnInputBch.aArgReturn;
         let tInputReturnCodeBch = poReturnInputBch.tReturnInputCode;
         let tInputReturnNameBch = poReturnInputBch.tReturnInputName;
+
+
+        var nStaSession = JCNxFuncChkSessionExpired();
+        var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
+        var tBchCodeMulti = "<?php echo $this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+        var tWhere = "";
+        var tAgnCodeWhere = $('#oetSpcAgncyCode').val();
+
+        if (tUsrLevel != "HQ") {
+            tWhere = " AND TCNMBranch.FTBchCode IN (" + tBchCodeMulti + ") ";
+        } else {
+            tWhere = "";
+        }
+
+        if (tAgnCodeWhere == '' || tAgnCodeWhere == null) {
+            tWhereAgn = '';
+        } else {
+            tWhereAgn = " AND TCNMBranch.FTAgnCode = '" + tAgnCodeWhere + "'";
+        }
+
         let oOptionReturnBch = {
             Title: ['company/branch/branch', 'tBCHTitle'],
             Table: {
@@ -153,6 +187,9 @@
             Join: {
                 Table: ['TCNMBranch_L'],
                 On: ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits]
+            },
+            Where: {
+                Condition: [tWhere + tWhereAgn]
             },
             GrideView: {
                 ColumnPathLang: 'company/branch/branch',
@@ -353,65 +390,64 @@
         let tPosWherePos = "";
         let tPosWherePosAndShop = "";
         let tPosOrderByCase = "";
-        // // Case Report Type POS,VD,LK
-        // switch(tPosRptModCode){
-        //     case '001':
-        //         // Report Pos (รานงานการขาย)
-        //         tPosWherePos    = " AND (TCNMPos.FTPosStaUse = 1) AND (TCNMPos.FTPosType NOT IN(4,5))";
-        //         tPosOrderByCase = " TCNMPos.FTPosCode ASC"
-        //     break;
-        //     case '002':
-        //         // Report Vending (รานงานตู้ขายสินค้า)
-        //         oPosJoinTable   = {
-        //             Table: ['TVDMPosShop'],
-        //             On: [
-        //                 'TCNMPos.FTPosCode = TVDMPosShop.FTPosCode',
-        //             ]
-        //         };
-        //         tPosWherePos        = " AND (TCNMPos.FTPosStaUse = 1) AND (TCNMPos.FTPosType = 4)";
-        //         tPosWherePosAndShop = " AND ((TVDMPosShop.FTShpCode BETWEEN "+tPosRptShopForm+" AND "+tPosRptShopTo+") OR (TVDMPosShop.FTShpCode BETWEEN "+tPosRptShopTo+" AND "+tPosRptShopForm+"))";
-        //         tPosOrderByCase     = " TCNMPos.FTPosCode ASC,TVDMPosShop.FTPosCode ASC"
-        //     break;
-        //     case '003':
-        //         // Report Locker (รานงานตู้ฝากของ)
-        //         oPosJoinTable  = {
-        //             Table: ['TRTMShopPos'],
-        //             On: [
-        //                 'TCNMPos.FTPosCode = TRTMShopPos.FTPosCode',
-        //             ]
-        //         };
-        //         tPosWherePos        = " AND (TCNMPos.FTPosStaUse = 1) AND (TCNMPos.FTPosType = 5)";
-        //         tPosWherePosAndShop = " AND ((TRTMShopPos.FTShpCode BETWEEN "+tPosRptShopForm+" AND "+tPosRptShopTo+") OR (TRTMShopPos.FTShpCode BETWEEN "+tPosRptShopTo+" AND "+tPosRptShopForm+"))";
-        //         tPosOrderByCase     = " TCNMPos.FTPosCode ASC,TRTMShopPos.FTPosCode ASC"
-        //     break;
-        // }
+        var nStaSession = JCNxFuncChkSessionExpired();
+        var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
+        var tBchCodeMulti = "<?php echo $this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+        var tWhere = "";
+        var tTextWhereInBranch = '';
 
-        // if(typeof(tPosRptShopForm) == 'undefined' && typeof(tPosRptShopTo) == 'undefined'){
+        if (tUsrLevel != "HQ") {
+            tWhere = " AND TCNMPos.FTBchCode IN (" + tBchCodeMulti + ") ";
+        } else {
+            tWhere = "";
+        }
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose(); // Hidden Pin Menu
+            let tDataBranch = $('#oetRptBchCodeFrom').val();
+            // ********** Check Data Branch **********
+            if (tDataBranch != '') {
+                tTextWhereInBranch = " AND (TCNMPos.FTBchCode ='" + tDataBranch + "')";
+            }
+        }
+        
         // เกิดขึ้นในกรณีที่ไม่มีปุ่ม Input Shop From || Input Shop To
         var oPosOptionReturn = {
             Title: ["pos/salemachine/salemachine", "tPOSTitle"],
-            Table: {
-                Master: 'TCNMPos',
-                PK: 'FTPosCode'
-            },
-            // Where   : {
-            //     Condition : [tPosWherePos]
-            // },
-            GrideView: {
-                ColumnPathLang: 'pos/salemachine/salemachine',
-                ColumnKeyLang: ['tPOSCode', 'tPOSRegNo'],
-                ColumnsSize: ['40%', '50%'],
-                WidthModal: 50,
-                DataColumns: ['TCNMPos.FTPosCode', 'TCNMPos.FTPosRegNo'],
-                DataColumnsFormat: ['', ''],
-                Perpage: 10,
-                OrderBy: ['TCNMPos.FDCreateOn DESC, TCNMPos.FTPosCode ASC'],
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: [tPosInputReturnCode, "TCNMPos.FTPosCode"],
-                Text: [tPosInputReturnName, "TCNMPos.FTPosCode"]
-            },
+                Table: {
+                    Master: 'TCNMPos',
+                    PK: 'FTPosCode'
+                },
+                Join: {
+                    Table: ['TCNMPos_L', 'TCNMBranch_L'],
+                    On: [
+                        'TCNMPos_L.FTBchCode = TCNMPos.FTBchCode AND TCNMPos_L.FTPosCode = TCNMPos.FTPosCode AND TCNMPos_L.FNLngID = ' + nLangEdits,
+                        'TCNMPos.FTBchCode = TCNMBranch_L.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits,
+                        // 'TCNMPos.FTPosCode = TVDMPosShop.FTPosCode AND TVDMPosShop.FTPshStaUse = 1',
+                        // 'TVDMPosShop.FTBchCode = TCNMBranch_L.FTBchCode AND TCNMBranch_L.FNLngID = '+nLangEdits,
+                        // 'TVDMPosShop.FTBchCode = TCNMShop_L.FTBchCode AND TVDMPosShop.FTShpCode = TCNMShop_L.FTShpCode AND TCNMShop_L.FNLngID = '+nLangEdits
+                    ]
+                },
+                Where: {
+                    Condition: [
+                        // 'AND (TCNMPos.FTPosType IN (1,2,3,4)) ' +
+                        tTextWhereInBranch + tWhere
+                    ]
+                },
+                GrideView: {
+                    ColumnPathLang: 'pos/salemachine/salemachine',
+                    ColumnKeyLang: ['tPOSCode', 'tPOSName'/*, 'tPOSBranchRef'*/],
+                    ColumnsSize: ['20%', '35%'/*, '35%'*/],
+                    WidthModal: 50,
+                    DataColumns: ['TCNMPos.FTPosCode', 'TCNMPos_L.FTPosName'/*, 'TCNMBranch_L.FTBchName'*/],
+                    DataColumnsFormat: ['', ''/*, ''*/],
+                    Perpage: 10,
+                    OrderBy: ['TCNMPos.FDCreateOn DESC, TCNMPos.FTPosCode ASC'],
+                },
+                CallBack: {
+                    ReturnType  : 'S',
+                    Value: [tPosInputReturnCode, "TCNMPos.FTPosCode"],
+                    Text: [tPosInputReturnName, "TCNMPos_L.FTPosName"]
+                },
             NextFunc: {
                 FuncName: tPosNextFuncName,
                 ArgReturn: aPosArgReturn
@@ -4171,6 +4207,27 @@ var oRptClvBrows = function(poReturnInput) {
             $('#oetRptCashierCodeTo').val('');
             $('#oetRptCashierNameTo').val('');
         }
+
+        var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
+        var tBchCodeMulti = "<?php echo str_replace("'", '', $this->session->userdata("tSesUsrBchCodeMulti")); ?>";
+        var tBchNameMulti = "<?php echo str_replace("'", '', $this->session->userdata("tSesUsrBchNameMulti")); ?>";
+
+
+        $('#oetRptPosCodeFrom').val('');
+        $('#oetRptPosNameFrom').val('');
+        if (tBchCode == null) {
+            if (tUsrLevel != 'HQ') {
+                $('#oetRptBchCodeFrom').val(tBchCodeMulti);
+                // $('#oetRptBchNameSelect').val(tBchNameMulti);
+            }
+            $("#obtRptBrowsePosFrom").attr('disabled', true);
+        } else {
+            if(tBchCode){
+                $("#obtRptBrowsePosFrom").attr('disabled', false);
+            }else{
+                $("#obtRptBrowsePosFrom").attr('disabled', true);
+            }
+        }
     }
 
     // Functionality : Next Function Shop And Check Data Pos And Clear Data
@@ -5199,6 +5256,13 @@ var oRptClvBrows = function(poReturnInput) {
         $('#ocmRptMonthFrom').selectpicker('refresh');
         $('#ocmRptMonthTo').val(tMonthDefault);
         $('#ocmRptMonthTo').selectpicker('refresh');
+
+        $('#obtRptBrowsePosFrom').prop("disabled", true);
+        // var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
+        // if(tUsrLevel != "HQ"){
+        //     $('#oetRptBchCodeFrom').val(tBchCode);
+        //     $('#oetRptBchNameFrom').val(tBchName);
+        // }
     });
 
     var tWarningCheckBchMessage = 'กรุณาเลือกสาขาก่อนดำเนินการ';

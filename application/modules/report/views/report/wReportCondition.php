@@ -438,7 +438,7 @@
 
                             /*===== Begin แบบเลือก ==========================================*/
                             $tCoditionReport .= "<div id='odvConditionSelect" . $aRptFilValue['FTRptFltCode'] . "' class='row xCNFilterSelectMode'>";
-                            if ($aRptFilValue['FTRptFltStaFrm'] == '1') {
+                            if ($aRptFilValue['FTRptFltStaFrm'] == '1' ) {
                                 $tCoditionReport .= "
                                         <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
                                             <div class='form-group'>
@@ -698,6 +698,106 @@
                             $tCoditionReport .= "</div>"; // End xCNFilterBox
                             break;
                         }
+                        case '71': { // Filter Branch (ค้นหาข้อมูลสาขา)
+
+                            //ถ้าเป็นรายงานข้อมูลบัตร (master) จะไม่มีการกรองข้อมูลสาขา
+                            //รายงานตรวจสอบสถานะบัตร , รายงานโอนข้อมูลบัตร , รายงานบัตรคงเหลือ , รายงานยอดสะสมบัตรหมดอายุ
+                            //รายงานรายการต้นงวดบัตรและเงินสด , รายงานข้อมูลบัตร
+                            if( $tNameRoute == 'rptCrdCheckStatusCard' ||
+                                //$tNameRoute == 'rptCrdTransferCardInfo' ||
+                                $tNameRoute == 'rptCrdCardTimesUsed' ||
+                                $tNameRoute == 'rptCrdClearCardValueForReuse' ||
+                                $tNameRoute == 'rptCrdCardBalance' ||
+                                $tNameRoute == 'rptCrdCollectExpireCard' ||
+                                $tNameRoute == 'rptCrdCardPrinciple' ||
+                                $tNameRoute == 'rptCrdCardDetail'){
+
+                            }else{
+                                $tCoditionLabelReport   .= "<div><p class='xCNTextLabel xCNTextLabelMargin'>" . language('report/report/report', 'tRptBarchName') . "</p></div>";
+                                $tCoditionReport        .= "<div class='xCNFilterBox'>";
+
+                                /*===== Begin แบบช่วง ===========================================*/
+                                $tCoditionReport .= "<div id='odvCondition" . $aRptFilValue['FTRptFltCode'] . "' class='row'>";
+                                if ($aRptFilValue['FTRptFltStaFrm'] == '1') {
+                                    $tCoditionReport .= "
+                                        <div class='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                                            <div class='form-group'>
+                                                <div class='input-group'>
+                                                    <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptBchCodeFrom' name='oetRptBchCodeFrom' maxlength='5'>
+                                                    <input type='text' class='form-control xWPointerEventNone xWRptAllInput' id='oetRptBchNameFrom' name='oetRptBchNameFrom' readonly>
+                                                    <span class='input-group-btn'>
+                                                        <button id='obtRptBrowseBchFrom' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    ";
+                                }
+                                if ($aRptFilValue['FTRptFltStaTo'] == '1') {
+                                    $tCoditionReport .= "
+                                            <div class='col-lg-1'>
+                                                <p class='xCNTextTo'>" . language('report/report/report', 'tRptCoditionTo') . "</p>
+                                            </div>
+                                            <div class='col-lg-5'>
+                                            <div class='form-group'>
+                                                <div class='input-group'>
+                                                    <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptBchCodeTo' name='oetRptBchCodeTo' maxlength='5'>
+                                                    <input type='text' class='form-control xWPointerEventNone xWRptAllInput' id='oetRptBchNameTo' name='oetRptBchNameTo' readonly>
+                                                    <span class='input-group-btn'>
+                                                        <button id='obtRptBrowseBchTo' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    ";
+                                }
+                                $tCoditionReport .= "</div>";
+                            }
+                            break;
+                        }
+                        case '72': { // Filter Branch (ค้นหาข้อมูลสาขา)
+                            $tCoditionLabelReport   .= "<div><p class='xCNTextLabel xCNTextLabelMargin'>" . language('report/report/report', 'tRPC12TBPosCode') . "</p></div>";
+                            $tCoditionReport        .= "<div class='xCNFilterBox'>";
+
+                            /*===== Begin แบบช่วง ===========================================*/
+                            $tCoditionReport .= "<div id='odvCondition" . $aRptFilValue['FTRptFltCode'] . "' class='row'>";
+                            if ($aRptFilValue['FTRptFltStaFrm'] == '1') {
+                                $tCoditionReport .= "
+                                            <div class='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                                                <div class='form-group'>
+                                                    <div class='input-group'>
+                                                        <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptPosCodeFrom' name='oetRptPosCodeFrom' maxlength='5'>
+                                                        <input type='text' class='form-control xWPointerEventNone xWRptAllInput' id='oetRptPosNameFrom' name='oetRptPosNameFrom' readonly>
+                                                        <span class='input-group-btn'>
+                                                            <button id='obtRptBrowsePosFrom' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    ";
+                            }
+                            if ($aRptFilValue['FTRptFltStaTo'] == '1') {
+                                $tCoditionReport .= "
+                                            <div class='col-lg-1'>
+                                                <p class='xCNTextTo'>" . language('report/report/report', 'tRptCoditionTo') . "</p>
+                                            </div>
+                                            <div class='col-lg-5'>
+                                                <div class='form-group'>
+                                                    <div class='input-group'>
+                                                        <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptPosCodeTo' name='oetRptPosCodeTo' maxlength='5'>
+                                                        <input type='text' class='form-control xWPointerEventNone xWRptAllInput' id='oetRptPosNameTo' name='oetRptPosNameTo' readonly>
+                                                        <span class='input-group-btn'>
+                                                            <button id='obtRptBrowsePosTo' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    ";
+                            }
+                            $tCoditionReport .= "</div>";
+                            $tCoditionReport .= "</div>";
+                            break;
+                        }
                 }
 
                 if (in_array($aRptFilterData['raItems']['rtGrpRptCode'], ["001001", "001002", "001003", "0003001"])) {
@@ -761,7 +861,7 @@
 //ตรวจสอบว่ามีฟิวส์เตอร์ อันอื่นไหม ที่นอกจาก 6 ตัวบน
 $aCheckFltGroup = array();
 foreach ($aRptFilterData['raItems']['raRptFilterCol'] as $nKey => $aRptFilValue) {
-    if (!in_array($aRptFilValue['FTRptFltCode'], ["1", "2", "3", "4", "6", "38"])) {
+    if (!in_array($aRptFilValue['FTRptFltCode'], ["1", "2", "3", "4", "6", "38", "71", "72"])) {
         array_push($aCheckFltGroup, "true");
     }
 }
@@ -2823,7 +2923,7 @@ if (FCNnHSizeOf($aCheckFltGroup) == 0) {
                             }
                             ?>
 
-                            <?php if (!in_array($aRptFilValue['FTRptFltCode'], ["1", "2", "3", "6", "4", "38"])) { ?>
+                            <?php if (!in_array($aRptFilValue['FTRptFltCode'], ["1", "2", "3", "6", "4", "38", "71", "72"])) { ?>
                                 <!--Loop เอาชื่อมาแสดง-->
                                 <?php if ($tGroupFilter != $aRptFilValue['FTRptGrpFlt']) { ?>
                                     <?php

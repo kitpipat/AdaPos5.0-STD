@@ -882,3 +882,11 @@ $route['rptPackageUsageInfo']               = 'report/reportpackageusageinfo/Rpt
 $route['rptPackageUsageInfoClickPage']      = 'report/reportpackageusageinfo/Rptpackageusageinfo_controller/FSvCCallRptViewBeforePrintClickPage';
 $route['rptPackageUsageInfoCallExportFile'] = 'report/reportpackageusageinfo/Rptpackageusageinfo_controller/FSvCCallRptExportFile';
 /** =================================================================================================================================================== */
+
+/** ========================================= รายงาน - สรุปยอดมัดจำ-เงินเชื่อ ตามจุดขาย ======================================================================== */
+$route['rptDepositDailyByPos']               = 'report/rptdepositdailybypos/Rptdepositdailybypos_controller/index';
+$route['rptDepositDailyByPosClickPage']      = 'report/rptdepositdailybypos/Rptdepositdailybypos_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptDepositDailyByPosCallExportFile'] = 'report/rptdepositdailybypos/Rptdepositdailybypos_controller/FSvCCallRptExportFile';
+/** =================================================================================================================================================== */
+
+

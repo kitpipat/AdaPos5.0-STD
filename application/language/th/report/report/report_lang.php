@@ -2569,3 +2569,6 @@ $lang['tRptPKURemaining'] = "จำนวนคงเหลือ";
 $lang['tRptCouponFrom'] = "จากคูปอง";
 $lang['tRptCouponTo']   = "ถึงคูปอง";
 
+
+//รายงาน - สรุปยอดมัดจำ/เงินเชื่อ ตามจุดขาย
+$lang['tRptTitleDepositDaily'] = "รายงาน - สรุปยอดมัดจำ-เงินเชื่อ ตามจุดขาย";
