@@ -2982,7 +2982,7 @@ if (FCNnHSizeOf($aCheckFltGroup) == 0) {
                                     <td>
                                         <?php if (!in_array($aRptFilValue['FTRptFltCode'], ["26", "18", "28", "5", "10", "35", "36", "39", "41", "42", "49","55"])) {  ?>
                                             <label class="fancy-checkbox text-center" style="width : 50px; margin-top: 3px;">
-                                                <input type="checkbox" class='xCNCheckboxValue' id="ocbCondition<?= $aRptFilValue['FTRptFltCode'] ?><?= $aRptFilValue['FTRptGrpFlt'] ?>" checked><span></span>
+                                                <input type="checkbox" class='xCNCheckboxValue' id="ocbCondition<?= $aRptFilValue['FTRptFltCode'] ?><?= $aRptFilValue['FTRptGrpFlt'] ?>" ><span></span>
                                             </label>
                                         <?php } else { ?>
                                             <label class="fancy-checkbox text-center" style="width : 50px; margin-top: 3px; ">
