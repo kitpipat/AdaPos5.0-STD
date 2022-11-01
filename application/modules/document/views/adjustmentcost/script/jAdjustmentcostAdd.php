@@ -1,16 +1,17 @@
 <script>
-    var nLangEdits = '<?php echo $this->session->userdata("tLangEdit"); ?>';
-    var tUsrApv = '<?php echo $this->session->userdata("tSesUsername"); ?>';
-    var tSesUsrLevel = '<?php echo $this->session->userdata('tSesUsrLevel'); ?>';
-    var tUserBchCode = '<?php echo $this->session->userdata("tSesUsrBchCodeDefault"); ?>';
-    var tUserBchName = '<?php echo $this->session->userdata("tSesUsrBchNameDefault"); ?>';
-    var tUserWahCode = '<?php echo $this->session->userdata("tSesUsrWahCode"); ?>';
-    var tUserWahName = '<?php echo $this->session->userdata("tSesUsrWahName"); ?>';
-    var tUsrAgnCode = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
-    var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
-    var tBchCodeMulti = "<?php echo $this->session->userdata("tSesUsrBchCodeMulti"); ?>";
-    var tSesUserCode = "<?php echo $this->session->userdata("tSesUserCode"); ?>";
+    var nLangEdits      = '<?php echo $this->session->userdata("tLangEdit"); ?>';
+    var tUsrApv         = '<?php echo $this->session->userdata("tSesUsername"); ?>';
+    var tSesUsrLevel    = '<?php echo $this->session->userdata('tSesUsrLevel'); ?>';
+    var tUserBchCode    = '<?php echo $this->session->userdata("tSesUsrBchCodeDefault"); ?>';
+    var tUserBchName    = '<?php echo $this->session->userdata("tSesUsrBchNameDefault"); ?>';
+    var tUserWahCode    = '<?php echo $this->session->userdata("tSesUsrWahCode"); ?>';
+    var tUserWahName    = '<?php echo $this->session->userdata("tSesUsrWahName"); ?>';
+    var tUsrAgnCode     = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+    var tUsrLevel       = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
+    var tBchCodeMulti   = "<?php echo $this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+    var tSesUserCode    = "<?php echo $this->session->userdata("tSesUserCode"); ?>";
     $(document).ready(function() {
+        JSxCheckPinMenuClose();
         $('.selectpicker').selectpicker('refresh');
 
 
@@ -60,9 +61,9 @@
         // =====================================================================================
 
         // ================================== Set Date Default =================================
-        var dCurrentDate = new Date();
-        var tAmOrPm = (dCurrentDate.getHours() < 12) ? "AM" : "PM";
-        var tCurrentTime = dCurrentDate.getHours() + ":" + dCurrentDate.getMinutes() + " " + tAmOrPm;
+        var dCurrentDate    = new Date();
+        var tAmOrPm         = (dCurrentDate.getHours() < 12) ? "AM" : "PM";
+        var tCurrentTime    = dCurrentDate.getHours() + ":" + dCurrentDate.getMinutes() + " " + tAmOrPm;
 
         if ($('#oetADCDocDate').val() == '') {
             $('#oetADCDocDate').datepicker("setDate", dCurrentDate);
@@ -125,6 +126,18 @@
             }
         });
 
+        var type = $('#ocmADCDocType').val();
+        var dActDate = $('#oetADCEffectiveDate').val();
+        if (type == 10) {
+            $('#olbDoctype10').show();
+            $('#ospDoctype10').text(dActDate);
+            $('#olbDoctype12').hide();
+        } else {
+            $('#olbDoctype12').show();
+            $('#ospDoctype12').text(dActDate);
+            $('#olbDoctype10').hide();
+        }
+
     });
 
     //BrowseBch
@@ -147,15 +160,15 @@
 
     //Option Branch
     var oADCBrowseBranch = function(poReturnInput) {
-        var tInputReturnCode = poReturnInput.tReturnInputCode;
-        var tInputReturnName = poReturnInput.tReturnInputName;
-        var tAgnCodeWhere = poReturnInput.tAgnCodeWhere;
+        var tInputReturnCode    = poReturnInput.tReturnInputCode;
+        var tInputReturnName    = poReturnInput.tReturnInputName;
+        var tAgnCodeWhere       = poReturnInput.tAgnCodeWhere;
 
         $nCountBCH = '<?= $this->session->userdata('nSesUsrBchCount') ?>';
 
         if ($nCountBCH > 1) {
             //ถ้าสาขามากกว่า 1 
-            tWhereBCH = " AND TCNMBranch.FTBchCode IN ( " + tBchCodeMulti + " ) ";
+            tWhereBCH = " AND TCNMBranch.FTBchCode IN ( '" + tBchCodeMulti + "' ) ";
         } else {
             tWhereBCH = '';
         }
@@ -234,12 +247,12 @@
 
     //Option Purchase
     var oADCPurchase = function(poReturnInput) {
-        var tInputReturnCode = poReturnInput.tReturnInputCode;
-        var tInputReturnName = poReturnInput.tReturnInputName;
-        var tAgnCodeWhere = poReturnInput.tAgnCodeWhere;
-        var tBchCode = $('#ohdADCBchCode').val();
+        var tInputReturnCode    = poReturnInput.tReturnInputCode;
+        var tInputReturnName    = poReturnInput.tReturnInputName;
+        var tAgnCodeWhere       = poReturnInput.tAgnCodeWhere;
+        var tBchCode            = $('#ohdADCBchCode').val();
         if (tBchCode != '') {
-            tWhereBCH = " AND TAPTPiHD.FTBchCode = " + tBchCode + "";
+            tWhereBCH = " AND TAPTPiHD.FTBchCode = '" + tBchCode + "' ";
         } else {
             tWhereBCH = '';
         }
@@ -251,9 +264,11 @@
                 PK: 'FTXphDocNo'
             },
             Join: {
-                Table: ['TCNMBranch_L'],
+                Table: ['TCNMBranch_L','TAPTPiHDDocRef','TCNMSpl_L'],
                 On: [
                     'TCNMBranch_L.FTBchCode = TAPTPiHD.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits,
+                    'TAPTPiHDDocRef.FTXshDocNo = TAPTPiHD.FTXphDocNo',
+                    'TAPTPiHD.FTSplCode = TCNMSpl_L.FTSplCode AND TCNMSpl_L.FNLngID = ' + nLangEdits
                     // 'TCNMUser_L.FTUsrCode = TAPTPoHD.FTCreateBy AND POHD.FTXphApvCode = TCNMUser_L.FTUsrCode AND TCNMUser_L.FNLngID = ' + nLangEdits,
                 ]
             },
@@ -262,11 +277,11 @@
             },
             GrideView: {
                 ColumnPathLang: 'document/purchaseorder/purchaseorder',
-                ColumnKeyLang: ['tPOTBBchCreate', 'tPOTBDocNo', 'tPOTBDocDate'],
-                ColumnsSize: ['15%', '75%'],
-                DataColumns: ['TCNMBranch_L.FTBchName', 'TAPTPiHD.FTXphDocNo','TAPTPiHD.FDXphDocDate'],
-                DataColumnsFormat: ['', '', ''],
-                DisabledColumns: [2],
+                ColumnKeyLang: ['tPOTBBchCreate', 'tPOTBDocNo', 'tPOTBDocDate', 'tPORefIntDoc', 'tPORefIntDocDate', 'tPOLabelFrmSplInfoDoc'],
+                ColumnsSize: ['10%', '20%', '15%', '20%', '15%', '20%'],
+                DataColumns: ['TCNMBranch_L.FTBchName', 'TAPTPiHD.FTXphDocNo','TAPTPiHD.FDXphDocDate','TAPTPiHDDocRef.FTXshRefDocNo','TAPTPiHDDocRef.FDXshRefDocDate','TCNMSpl_L.FTSplName'],
+                DataColumnsFormat: ['', '', '', '', '', ''],
+                DisabledColumns: [],
                 WidthModal: 50,
                 Perpage: 10,
                 OrderBy: ['TAPTPiHD.FDXphDocDate DESC'],
@@ -286,24 +301,24 @@
 
 
     function FSxNextFuncPurchase(poDataNextFunc) {
-        var tFTXphDocNo  = '';
-        var tFTXphDocDate  = '';
+        var tFTXphDocNo     = '';
+        var tFTXphDocDate   = '';
         if (typeof(poDataNextFunc) != 'undefined' && poDataNextFunc != "NULL") {
             var aDataNextFunc = JSON.parse(poDataNextFunc);
-            tFTXphDocNo = aDataNextFunc[0];
-            tFTXphDocDate = $.datepicker.formatDate('yy-mm-dd', new Date(aDataNextFunc[1]));
+            tFTXphDocNo     = aDataNextFunc[0];
+            tFTXphDocDate   = $.datepicker.formatDate('yy-mm-dd', new Date(aDataNextFunc[1]));
         }
         $("#oetADCRefInt").val(tFTXphDocNo);
         $("#oetADCRefIntDate").val(tFTXphDocDate);
     }
 
     function FSxNextFuncDoc(poDataNextFunc) {
-        var tFTXphDocNo  = '';
-        var tFTXphDocDate  = '';
+        var tFTXphDocNo     = '';
+        var tFTXphDocDate   = '';
         if (typeof(poDataNextFunc) != 'undefined' && poDataNextFunc != "NULL") {
             var aDataNextFunc = JSON.parse(poDataNextFunc);
-            tFTXphDocNo = aDataNextFunc[0];
-            tFTXphDocDate = $.datepicker.formatDate('yy-mm-dd', new Date(aDataNextFunc[1]));
+            tFTXphDocNo     = aDataNextFunc[0];
+            tFTXphDocDate   = $.datepicker.formatDate('yy-mm-dd', new Date(aDataNextFunc[1]));
         }
         $("#oetADCRefInt").val(tFTXphDocNo);
         $("#oetADCRefIntDate").val(tFTXphDocDate);
@@ -410,12 +425,12 @@
     // Return : -
     // Return Type : -
     function JSxADCGetPdtFromFilter(paData) {
-        var tPdtCodeFrom = paData[0];
-        var tPdtCodeTo = paData[1];
-        var tBarCodeFrom = paData[2];
-        var tBarCodeCodeTo = paData[3];
-        var tPdtCodeDup = $('#ohdADCPdtDupCode').val();
-        var tBchCode = $('#ohdADCBchCode').val();
+        var tPdtCodeFrom    = paData[0];
+        var tPdtCodeTo      = paData[1];
+        var tBarCodeFrom    = paData[2];
+        var tBarCodeCodeTo  = paData[3];
+        var tPdtCodeDup     = $('#ohdADCPdtDupCode').val();
+        var tBchCode        = $('#ohdADCBchCode').val();
         JCNxOpenLoading();
         $.ajax({
             type: "POST",
@@ -451,8 +466,8 @@
     // Return : -
     // Return Type : -
     function JSxADCGetPdtFromDT() {
-        var tDocNo = $('#oetADCDocNo').val();
-        var tSearchPdtHTML = $('#oetADCSearchPdtHTML').val();
+        var tDocNo          = $('#oetADCDocNo').val();
+        var tSearchPdtHTML  = $('#oetADCSearchPdtHTML').val();
         JCNxOpenLoading();
         $.ajax({
             type: "POST",
@@ -482,19 +497,29 @@
     // Return : -
     // Return Type : -
     function JSxADCShowTable(paResult) {
-        var tbaseUrl = '<?php echo  base_url('application/modules/common/assets/images/icons/delete.png'); ?>';
-        var tItemData = '';
-        var tFCPdtCostEx = ''
-        var tFTTmpRemark = ''
+        var nTypeAdj        = $('#ocmADCDocType').val();
+        var tbaseUrl        = '<?php echo  base_url('application/modules/common/assets/images/icons/delete.png'); ?>';
+        var tItemData       = '';
+        var tFCPdtCost      = ''
+        var tFTTmpRemark    = ''
         if (paResult['nStaEvent'] == '1') {
             var nRemarkCount = 0;
             for (i = 0; i < paResult['aData'].length; i++) {
-                if (paResult['aData'][i].FCPdtCostEx === null) {
-                    tFCPdtCostEx = (0).toFixed(2);
-                } else {
-                    tFCPdtCostEx = parseFloat(paResult['aData'][i].FCPdtCostEx).toFixed(2);
+                if (nTypeAdj == 12) {
+                    if (paResult['aData'][i].FCPdtCostStd === null || paResult['aData'][i].FCPdtCostStd === undefined) {
+                        tFCPdtCost = (0).toFixed(2);
+                    } else {
+                        tFCPdtCost = parseFloat(paResult['aData'][i].FCPdtCostStd).toFixed(2);
+                    }
+                    // console.log(tFCPdtCost);
+                }else{
+                    if (paResult['aData'][i].FCPdtCostEx === null || paResult['aData'][i].FCPdtCostEx === undefined) {
+                        tFCPdtCost = (0).toFixed(2);
+                    } else {
+                        tFCPdtCost = parseFloat(paResult['aData'][i].FCPdtCostEx).toFixed(2);
+                    }
                 }
-
+                
                 if(paResult['aData'][i].FCXcdDiff == '' || paResult['aData'][i].FCXcdDiff == null){
                     tFCXcdDiff = (0).toFixed(2);
                 }else{
@@ -539,10 +564,10 @@
                     tFCXcdFactor = paResult['aData'][i].FCXcdFactor;
                 }
                 
-                tItemData += '<tr class="xCNTextDetail">' +
-                    '<td class="text-center">' +
+                tItemData += '<tr class="xCNTextDetail" data-pdt='+paResult['aData'][i].FTPdtCode+'>' +
+                    '<td class="text-center xCNHideWhenApvOrCancel">' +
                     '<label class="fancy-checkbox">' +
-                    '<input type="checkbox" class="ocbListItem" name="ocbListItem">' +
+                    '<input type="checkbox" class="ocbListItem" name="ocbListItem[]">' +
                     '<span>&nbsp;</span>' +
                     '</label>' +
                     '</td>' +
@@ -551,15 +576,15 @@
                     '<td >' + tFTPdtName + '</td>' +
                     '<td class="hidden">' + paResult['aData'][i].FTXcdBarScan + '</td>' +
                     '<td >' + tFTPunName + '</td>' +
-                    '<td class="text-right">' + tFCPdtCostEx + '</td>' +
+                    '<td class="text-right">' + tFCPdtCost + '</td>' +
                     '<td class="text-right">' + tFCXcdDiff + '</td>' +
                     '<td class="otdQty">' +
                     '<div class="xWEditInLine">' +
-                    '<input type="text" value ="' + tFCXcdCostNew + '"onblur = "JSxADCCostDiff(this)" class="inputs form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine xWShowInLine" style="background:#F9F9F9;border-top: 0px !important;border-left: 0px !important;border-right: 0px !important;box-shadow: inset 0 0px 0px; min-width:100px;" maxlength="10" value="" autocomplete="off">' +
+                    '<input type="text" value ="' + tFCXcdCostNew + '"onblur = "JSxADCCostDiff(this)" class="inputs form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine xWShowInLine" style="background:#F9F9F9;border-top: 0px !important;border-left: 0px !important;border-right: 0px !important;box-shadow: inset 0 0px 0px; min-width:100px;" maxlength="10" autocomplete="off">' +
                     '</div>' +
                     '</td>' +
                     '<td class="text-left xWRemark1" style="color: red !important;">' + tFTTmpRemark + '</td>' +
-                    '<td nowrap class="text-center xWASTRemoveOnApv"' +
+                    '<td nowrap class="text-center xWASTRemoveOnApv xCNHideWhenApvOrCancel"' +
                     '<lable class="xCNTextLink">' +
                     '<img class="xCNIconTable" src="' + tbaseUrl + '" title="Remove" onclick="JSxADCRemoveDTRow(this)">' +
                     '</lable>' +
@@ -567,7 +592,6 @@
                     '<td class= "hidden">' + tFTPunCode + '</td>' +
                     '<td class= "hidden">' + tFCXcdFactor + '</td>' +
                     '</tr>';
-
             }
             $('#ohdADCCountDocRemark').val(nRemarkCount);
             $("#odvADCTable").prepend(tItemData);
@@ -575,13 +599,13 @@
             $('.inputs').keydown(function (e) {
                 var tCostOld = parseFloat($(this).parents("tr").find("td:eq(6)").text());
                 var tCostNew = parseFloat($(this).parents("tr").find(".xCNPdtEditInLine").val());
-                var tCostDiff = ''
-                    if ($(this).val() == '') { // check if value changed
+                var tCostDiff = '';
+                if ($(this).val() == '') { // check if value changed
                     $(this).val('')
                     tCostDiff = 0;
-                    }else{
-                        tCostDiff = tCostNew - tCostOld;
-                    }
+                }else{
+                    tCostDiff = tCostNew - tCostOld;
+                }
                 if (e.which === 13) {
                     $(this).closest("tr").nextAll().eq(0).find(".xCNPdtEditInLine").focus().select()
                     $(this).parents("tr").find("td:eq(7)").html((tCostDiff).toFixed(2));
@@ -590,18 +614,20 @@
             $('.inputs').click(function (e) {
                 $(this).select();
             });
+            $('.inputs').focusout(function (e) {
+                var tCostNew = parseFloat($(this).parents("tr").find(".xCNPdtEditInLine").val());
+                $(this).val(tCostNew.toFixed(2));
+            });
+
             $('.ocbListItem').unbind().click(function() {
+                $('#ocbCheckAll').prop('checked',false);
                 var nCountchecked = $("table input[type=checkbox]:checked").length;
                 if (nCountchecked > 1) {
                     $("#oliADCBtnDeleteMulti").removeClass("disabled");
                 } else {
                     $("#oliADCBtnDeleteMulti").addClass("disabled");
                 }
-
             });
-
-
-
         }
     }
 
@@ -658,13 +684,50 @@
         }
     }
 
+
+    // Functionality : ลบข้อมูลแบบ Single
+    // Parameter : function parameters
+    // Create : 25/02/2021 Sooksanti(Nont) ยกมาจาก fit auto By: IcePHP 18/10/2022
+    // Return : -
+    // Return Type : -
+    function JSxADCAutoRemoveDTRow(tThis) {
+        JCNxOpenLoading();
+        if($(tThis).find("td:eq(9)").text() != ''){
+            var tCountDocRemark = parseInt($("#ohdADCCountDocRemark").val())
+            $("#ohdADCCountDocRemark").val(tCountDocRemark-1);
+        }
+        $(tThis).remove();
+        JSxADCNumberRows($("#odvADCTable"))
+        JCNxCloseLoading();
+
+        //ถ้าลบออก เเล้วไม่ซ้ำ ก็เอาออกด้วย
+        var tTextDup    = $(tThis).find("td:eq(2)").text();
+        var nCountDup   = 0;
+        $("table tbody tr").each(function() {
+            var tText = $(this).find("td:eq(2)").text();
+            if(tText == tTextDup){
+                nCountDup++;
+            }
+        });
+
+        if(nCountDup == 1){
+            $("table tbody tr").each(function() {
+                var tText = $(this).find("td:eq(2)").text();
+                if(tText == tTextDup){
+                    $(this).find("td:eq(9)").text('');
+                }
+            });
+        }
+    }
+
     //ลบข้อมูลแบบ multi
     $('#oliADCBtnDeleteMulti').unbind().click(function() {
-        $("table tbody").find('input[name="ocbListItem"]').each(function() {
+        $("table tbody").find('.ocbListItem').each(function() {
             if ($(this).is(":checked")) {
                 $(this).parents("tr").remove();
                 JSxADCNumberRows($("#odvADCTable"))
                 $("#oliADCBtnDeleteMulti").addClass("disabled");
+                $('#ocbCheckAll').prop('checked',false);
             }
         });
     });
@@ -706,13 +769,13 @@
 
     //Option รับเข้า
     var oADCAddDoc = function(poReturnInput) {
-        var tInputReturnCode = poReturnInput.tReturnInputCode;
-        var tInputReturnName = poReturnInput.tReturnInputName;
-        var tAgnCodeWhere = poReturnInput.tAgnCodeWhere;
+        var tInputReturnCode    = poReturnInput.tReturnInputCode;
+        var tInputReturnName    = poReturnInput.tReturnInputName;
+        var tAgnCodeWhere       = poReturnInput.tAgnCodeWhere;
 
         var tBchCode = $('#ohdADCBchCode').val();
         if (tBchCode != '') {
-            tWhereBCH = " AND TCNTPdtTwiHD.FTBchCode = " + tBchCode + "";
+            tWhereBCH = " AND TCNTPdtTwiHD.FTBchCode = '" + tBchCode + "' ";
         } else {
             tWhereBCH = '';
         }
@@ -813,19 +876,19 @@
     var oADCProductOption = function(poReturnInputPdt) {
         let tPdtInputReturnCode = poReturnInputPdt.tReturnInputCode;
         let tPdtInputReturnName = poReturnInputPdt.tReturnInputName;
-        let tPdtNextFuncName = poReturnInputPdt.tNextFuncName;
-        let aPdtArgReturn = poReturnInputPdt.aArgReturn;
-        let tCondition = '';
+        let tPdtNextFuncName    = poReturnInputPdt.tNextFuncName;
+        let aPdtArgReturn       = poReturnInputPdt.aArgReturn;
+        let tCondition          = '';
 
 
         let tBchCode = $('#ohdADCBchCode').val();
         let tAgnCode  = "<?= $this->session->userdata("tSesUsrAgnCode") ?>";
         if(tSesUsrLevel != 'HQ'){
-            tCondition  +=" AND ((TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"')	OR TCNMPdtSpcBch.FTBchCode = "+tBchCode;
-            tCondition  +=" OR (ISNULL(TCNMPdtSpcBch.FTBchCode,'') = '' AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"'	)";
+            tCondition  +=" AND ((TCNMPdtSpcBch.FTAgnCode = '" + tAgnCode + "')	OR TCNMPdtSpcBch.FTBchCode = '" + tBchCode + "'";
+            tCondition  +=" OR (ISNULL(TCNMPdtSpcBch.FTBchCode,'') = '' AND TCNMPdtSpcBch.FTAgnCode = '" + tAgnCode + "'	)";
             tCondition  +=" OR ISNULL(TCNMPdtSpcBch.FTAgnCode,'') = '' )";
         }
-        tCondition  +=" AND TCNMPdt.FTPdtStaActive='1' ";
+        // tCondition  +=" AND TCNMPdt.FTPdtStaActive='1' ";
         let oPdtOptionReturn = {
             Title   : ["product/product/product", "tPDTTitle"],
             Table   : {
@@ -885,10 +948,10 @@
 
         // ประกาศตัวแปร สินค้า
         var tPdtCodeFrom, tPdtNameFrom, tPdtCodeTo, tPdtNameTo
-        tPdtCodeFrom = $('#oetADCFilterPdtCodeFrom').val();
-        tPdtNameFrom = $('#oetADCFilterPdtNameFrom').val();
-        tPdtCodeTo = $('#oetADCFilterPdtCodeTo').val();
-        tPdtNameTo = $('#oetADCFilterPdtNameTo').val();
+        tPdtCodeFrom    = $('#oetADCFilterPdtCodeFrom').val();
+        tPdtNameFrom    = $('#oetADCFilterPdtNameFrom').val();
+        tPdtCodeTo      = $('#oetADCFilterPdtCodeTo').val();
+        tPdtNameTo      = $('#oetADCFilterPdtNameTo').val();
 
         // เช็คข้อมูลถ้ามีการ Browse จากสินค้า ให้ default ถึงร้านค้า เป็นข้อมูลเดียวกัsน 
         if ((typeof(tPdtCodeFrom) !== 'undefined' && tPdtCodeFrom != "") && (typeof(tPdtCodeTo) !== 'undefined' && tPdtCodeTo == "")) {
@@ -945,20 +1008,20 @@
     var oADCBarCodetOption = function(poReturnInputBarCode) {
         let tBarCodeInputReturnCode = poReturnInputBarCode.tReturnInputCode;
         let tBarCodeInputReturnName = poReturnInputBarCode.tReturnInputName;
-        let tBarCodeNextFuncName = poReturnInputBarCode.tNextFuncName;
-        let aBarCodeArgReturn = poReturnInputBarCode.aArgReturn;
-        let tCondition = '';
+        let tBarCodeNextFuncName    = poReturnInputBarCode.tNextFuncName;
+        let aBarCodeArgReturn       = poReturnInputBarCode.aArgReturn;
+        let tCondition              = '';
 
 
         let tBchCode = $('#ohdADCBchCode').val();
         let tAgnCode  = "<?= $this->session->userdata("tSesUsrAgnCode") ?>";
         if(tSesUsrLevel != 'HQ'){
-            tCondition  +=" AND ((TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"')	OR TCNMPdtSpcBch.FTBchCode = "+tBchCode;
+            tCondition  +=" AND ((TCNMPdtSpcBch.FTAgnCode = '" + tAgnCode + "')	OR TCNMPdtSpcBch.FTBchCode = " + tBchCode +"'";
             tCondition  +=" OR (ISNULL(TCNMPdtSpcBch.FTBchCode,'') = '' AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"'	)";
             tCondition  +=" OR ISNULL(TCNMPdtSpcBch.FTAgnCode,'') = '' )";
         }
-        tCondition  +=" AND TCNMPdt.FTPdtStaActive='1' ";
-        tCondition  +=" AND TCNMPdtPackSize.FTPdtStaAlwBuy='1' ";
+        // tCondition  +=" AND TCNMPdt.FTPdtStaActive='1' ";
+        // tCondition  +=" AND TCNMPdtPackSize.FTPdtStaAlwBuy='1' ";
         let oBarCodeOptionReturn = {
             Title: ["product/product/product", "tPDTTitle"],
             Table: {
@@ -966,12 +1029,17 @@
                 PK: "FTBarCode"
             },
             Join: {
-                Table: ['TCNMPdt_L','TCNMPdtSpcBch','TCNMPdt','TCNMPdtPackSize'],
+                // Table: ['TCNMPdt_L','TCNMPdtSpcBch','TCNMPdt','TCNMPdtPackSize'],
+                // On: [
+                //     'TCNMPdtBar.FTPdtCode = TCNMPdt_L.FTPdtCode AND TCNMPdt_L.FNLngID = ' + nLangEdits,
+                //     'TCNMPdtSpcBch.FTPdtCode = TCNMPdtBar.FTPdtCode',
+                //     'TCNMPdt.FTPdtCode = TCNMPdtBar.FTPdtCode ',
+                //     'TCNMPdtPackSize.FTPdtCode = TCNMPdtBar.FTPdtCode AND TCNMPdtPackSize.FTPunCode = TCNMPdtBar.FTPunCode ',
+                // ]
+                Table: ['TCNMPdt_L','TCNMPdtSpcBch'],
                 On: [
                     'TCNMPdtBar.FTPdtCode = TCNMPdt_L.FTPdtCode AND TCNMPdt_L.FNLngID = ' + nLangEdits,
-                    'TCNMPdtSpcBch.FTPdtCode = TCNMPdtBar.FTPdtCode',
-                    'TCNMPdt.FTPdtCode = TCNMPdtBar.FTPdtCode ',
-                    'TCNMPdtPackSize.FTPdtCode = TCNMPdtBar.FTPdtCode AND TCNMPdtPackSize.FTPunCode = TCNMPdtBar.FTPunCode ',
+                    'TCNMPdtSpcBch.FTPdtCode = TCNMPdtBar.FTPdtCode'
                 ]
             },
             Where: {
@@ -981,7 +1049,7 @@
                 ColumnPathLang: 'product/product/product',
                 ColumnKeyLang: ['tPDTCode','tPDTName','tPDTViewPackBarcode'],
                 DataColumns: ['TCNMPdtBar.FTPdtCode','TCNMPdt_L.FTPdtName','TCNMPdtBar.FTBarCode'],
-                DataColumnsFormat: ['', '',''],
+                DataColumnsFormat: ['', '', ''],
                 ColumnsSize: ['15%', '50%'],
                 Perpage: 10,
                 WidthModal: 50,
@@ -1010,8 +1078,8 @@
 
         if (typeof(poDataNextFunc) != 'undefined' && poDataNextFunc != "NULL") {
             var aDataNextFunc = JSON.parse(poDataNextFunc);
-            tBarCode = aDataNextFunc[0];
-            tBarCodeName = aDataNextFunc[1];
+            tBarCode        = aDataNextFunc[0];
+            tBarCodeName    = aDataNextFunc[1];
         } else {
             tBarCode = '';
             tBarCodeName = '';
@@ -1019,10 +1087,10 @@
 
         // ประกาศตัวแปร สินค้า
         var tBarCodeFrom, tBarCodeNameFrom, tBarCodeTo, tBarCodeNameTo
-        tBarCodeFrom = $('#oetADCFilterBarCodeFrom').val();
-        tBarCodeNameFrom = $('#oetADCFilterBarCodeNameFrom').val();
-        tBarCodeTo = $('#oetADCFilterBarCodeCodeTo').val();
-        tBarCodeNameTo = $('#oetADCFilterBarCodeNameTo').val();
+        tBarCodeFrom        = $('#oetADCFilterBarCodeFrom').val();
+        tBarCodeNameFrom    = $('#oetADCFilterBarCodeNameFrom').val();
+        tBarCodeTo          = $('#oetADCFilterBarCodeCodeTo').val();
+        tBarCodeNameTo      = $('#oetADCFilterBarCodeNameTo').val();
 
         // เช็คข้อมูลถ้ามีการ Browse จากสินค้า ให้ default ถึงร้านค้า เป็นข้อมูลเดียวกัsน 
         if ((typeof(tBarCodeFrom) !== 'undefined' && tBarCodeFrom != "") && (typeof(tBarCodeTo) !== 'undefined' && tBarCodeTo == "")) {
@@ -1040,10 +1108,10 @@
 
     //ยืนยันการนำเข้า
     $('#obtADCConfirmFilter').unbind().click(function() {
-        var tPdtCodeFrom = $('#oetADCFilterPdtCodeFrom').val();
-        var tPdtCodeTo = $('#oetADCFilterPdtCodeTo').val();
-        var tBarCodeFrom = $('#oetADCFilterBarCodeNameFrom').val();
-        var tBarCodeCodeTo = $('#oetADCFilterBarCodeNameTo').val();
+        var tPdtCodeFrom    = $('#oetADCFilterPdtCodeFrom').val();
+        var tPdtCodeTo      = $('#oetADCFilterPdtCodeTo').val();
+        var tBarCodeFrom    = $('#oetADCFilterBarCodeNameFrom').val();
+        var tBarCodeCodeTo  = $('#oetADCFilterBarCodeNameTo').val();
 
         if (tPdtCodeFrom == '' && tPdtCodeTo != '') {
             tPdtCodeFrom = tPdtCodeTo;
@@ -1106,10 +1174,10 @@
         var tFlagClearTmp = '1' // null = ไม่สนใจ 1 = ลบหมดเเล้วเพิ่มใหม่ 2 = เพิ่มต่อเนื่อง
 
         var aPackdata = {
-        'tNameModule' : tNameModule,
-        'tTypeModule' : tTypeModule,
-        'tAfterRoute' : tAfterRoute,
-        'tFlagClearTmp' : tFlagClearTmp
+            'tNameModule' : tNameModule,
+            'tTypeModule' : tTypeModule,
+            'tAfterRoute' : tAfterRoute,
+            'tFlagClearTmp' : tFlagClearTmp
         };
 
         JSxImportPopUp(aPackdata);
@@ -1121,4 +1189,57 @@
             JSxADCGetPdtFromImportExcel();
         }, 50);
     }
+
+    $( "#ocmADCDocType" ).change(function() {
+        var type        = $('#ocmADCDocType').val();
+        var dActDate    = $('#oetADCEffectiveDate').val();
+        if (type == 10) {
+            $('#olbDoctype12').hide();
+            $('#olbDoctype10').show();
+            $('#ospDoctype10').text(dActDate);
+        } else {
+            $('#olbDoctype12').show();
+            $('#olbDoctype10').hide();
+            $('#ospDoctype12').text(dActDate);
+        }
+        var nChkTrLength = $('.xCNTextDetail').length;
+        if (nChkTrLength > 0) {
+            $("#odvADCPopupChangeTypeAdj").modal("show");
+        }
+    });
+
+    function JSxADCClearData(){  
+        $("#odvADCTable").empty();
+        $("#odvADCPopupChangeTypeAdj").modal("hide");
+        JSxADCNumberRows($("#odvADCTable"))
+    }
+
+    function JSxADCNotClearData(){  
+        var nType = $('#ohdADCDocType').val();
+        var nDocType = '';
+        if (nType == '') {
+            nDocType = $("#ocmADCDocType").val();
+            if (nDocType == 10) {
+                $("#ocmADCDocType").val("12").selectpicker('refresh');
+            } else {
+                $("#ocmADCDocType").val("10").selectpicker('refresh');
+            }
+        } else {
+            $("#ocmADCDocType").val(nType).selectpicker('refresh');
+        }
+        $("#odvADCPopupChangeTypeAdj").modal("hide");
+    }
+
+    $("#ocbCheckAll").click(function(){
+        $('input:checkbox').not(this).prop('checked', this.checked);
+
+        if($(this).is(':checked')==true){
+            $('.ocbListItem').prop('checked',true);
+            $("#oliADCBtnDeleteMulti").removeClass("disabled");
+        }else{
+            $('.ocbListItem').prop('checked',false);
+            $("#oliADCBtnDeleteMulti").addClass("disabled");
+        }
+    });
+
 </script>

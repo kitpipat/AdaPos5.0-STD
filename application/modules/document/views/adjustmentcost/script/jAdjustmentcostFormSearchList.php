@@ -1,39 +1,46 @@
 <script>
     var nLangEdits  = '<?php echo $this->session->userdata("tLangEdit");?>';
 
-$(document).ready(function(){
-    $('.selectpicker').selectpicker();
+    $(document).ready(function(){
+        $('.selectpicker').selectpicker();
 
-    // Set Select  Doc Date
-    $('#obtADCDocDateForm').unbind().click(function(){
-        event.preventDefault();
-        $('#oetADCDocDateFrom').datepicker('show');
-    });
-
-    $('#obtADCDocDateTo').unbind().click(function(){
-        event.preventDefault();
-        $('#oetADCDocDateTo').datepicker('show');
-    });
-});
-
-// Event Click On/Off Advance Search
-$('#oahADCAdvanceSearch').unbind().click(function(){
-    if($('#odvADCAdvanceSearchContainer').hasClass('hidden')){
-        $('#odvADCAdvanceSearchContainer').removeClass('hidden').hide().slideDown(500);
-    }else{
-        $("#odvADCAdvanceSearchContainer").slideUp(500,function() {
-            $(this).addClass('hidden');
+        $('.xCNDatePicker').datepicker({
+            format: 'yyyy-mm-dd',
+            enableOnReadonly: false,
+            disableTouchKeyboard : true,
+            autoclose: true
         });
-    }
-});
+
+        // Set Select  Doc Date
+        $('#obtADCDocDateForm').unbind().click(function(){
+            event.preventDefault();
+            $('#oetADCDocDateFrom').datepicker('show');
+        });
+
+        $('#obtADCDocDateTo').unbind().click(function(){
+            event.preventDefault();
+            $('#oetADCDocDateTo').datepicker('show');
+        });
+    });
+
+    // Event Click On/Off Advance Search
+    $('#oahADCAdvanceSearch').unbind().click(function(){
+        if($('#odvADCAdvanceSearchContainer').hasClass('hidden')){
+            $('#odvADCAdvanceSearchContainer').removeClass('hidden').hide().slideDown(500);
+        }else{
+            $("#odvADCAdvanceSearchContainer").slideUp(500,function() {
+                $(this).addClass('hidden');
+            });
+        }
+    });
 
 
     // ======================= Option Branch Advance Search =======================
 
-    var tUsrLevel = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
-    var tBchCodeMulti = "<?php echo $this->session->userdata("tSesUsrBchCodeMulti"); ?>";
-    var nCountBch = "<?php echo $this->session->userdata("nSesUsrBchCount"); ?>";
-    var tWhere = "";
+    var tUsrLevel       = "<?php echo $this->session->userdata("tSesUsrLevel"); ?>";
+    var tBchCodeMulti   = "<?php echo $this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+    var nCountBch       = "<?php echo $this->session->userdata("nSesUsrBchCount"); ?>";
+    var tWhere          = "";
 
     if(nCountBch == 1){
         $('#obtBrowseADCBCH').attr('disabled', true);

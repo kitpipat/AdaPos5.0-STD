@@ -1260,6 +1260,7 @@ $route['docADCApproveDocument']                     = 'document/adjustmentcost/c
 $route['docADCEventDelete']                         = 'document/adjustmentcost/cAdjustmentcost/FSoCADCDeleteEventDoc';
 $route['docPOEventCallEndOfBill']                   = 'document/purchaseorder/cPurchaseOrder/FSaPOCallEndOfBillOnChaheVat';
 $route['dcmPOChangeSPLAffectNewVAT']                = 'document/purchaseorder/cPurchaseOrder/FSoCPOChangeSPLAffectNewVAT';
+$route['docADCGetPdtFromProductCode']               = 'document/adjustmentcost/cAdjustmentcost/FSoCADCGetPdtFromPdtCode';
 
 // หน้าจอตรวจสอบสถานะใบขาย - Napat(Jame) 02/07/2021
 // Check Status Sale (CSS)

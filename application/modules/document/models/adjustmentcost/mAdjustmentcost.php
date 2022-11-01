@@ -3,8 +3,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class mAdjustmentcost extends CI_Model
 {
-
-
     // Functionality: Data List
     // Parameters: function parameters
     // Creator:  03/03/2021 Sooksanti(Nont)
@@ -40,7 +38,7 @@ class mAdjustmentcost extends CI_Model
         $tWhereShp  = "";
         if (isset($tUserLevel) && !empty($tUserLevel) && $tUserLevel == "BCH") {
             // Check User Level BCH
-            $tWhereBch  =   " AND ADC.FTBchCode IN (" . $tUsrBchCode . ") ";
+            $tWhereBch  =   " AND ADC.FTBchCode IN ('" . $tUsrBchCode . "') ";
         }
 
         $tWhereBchFrmTo     = "";
@@ -53,7 +51,7 @@ class mAdjustmentcost extends CI_Model
                 $tWhereBchFrmTo = " AND ((ADC.FTBchCode BETWEEN '$tSearchBchCodeFrom' AND '$tSearchBchCodeTo') OR (ADC.FTBchCode BETWEEN '$tSearchBchCodeTo' AND '$tSearchBchCodeFrom'))";
             }
         } else {
-            $tWhereBchFrmTo .= " AND ADC.FTBchCode IN (" . $tUsrBchCode . ")";
+            $tWhereBchFrmTo .= " AND ADC.FTBchCode IN ('" . $tUsrBchCode . "')";
         }
 
         /** ค้นหาจากวันที่ - ถึงวันที่ */
@@ -94,17 +92,18 @@ class mAdjustmentcost extends CI_Model
                                             ADC.FDCreateOn,
                                             USRL.FTUsrName  AS FTCreateByName,
                                             ADC.FTXchApvCode,
-                                            USRLAPV.FTUsrName   AS FTXchApvName
-                                    FROM [TCNTPdtAdjCostHD] ADC WITH (NOLOCK) 
-                                    LEFT JOIN TCNMBranch_L  BCHL    WITH (NOLOCK) ON ADC.FTBchCode      = BCHL.FTBchCode    AND BCHL.FNLngID    = $nLngID
-                                    LEFT JOIN TCNMUser_L    USRL    WITH (NOLOCK) ON ADC.FTCreateBy     = USRL.FTUsrCode    AND USRL.FNLngID    = $nLngID
-                                    LEFT JOIN TCNMUser_L    USRLAPV WITH (NOLOCK) ON ADC.FTXchApvCode   = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = $nLngID
-                                    WHERE 1=1 AND ADC.FNXchDocType = '10' 
-                                        " . $tWhereSearchAll . "
-                                        " . $tWhereBch . "
-                                        " . $tWhereBchFrmTo . "
-                                        " . $tWhereDateFrmTo . "
-                                        " . $tWhereStaDoc . "
+                                            USRLAPV.FTUsrName   AS FTXchApvName,
+                                            ADC.FNXchDocType
+                                        FROM [TCNTPdtAdjCostHD] ADC WITH (NOLOCK) 
+                                        LEFT JOIN TCNMBranch_L  BCHL    WITH (NOLOCK) ON ADC.FTBchCode      = BCHL.FTBchCode    AND BCHL.FNLngID    = $nLngID
+                                        LEFT JOIN TCNMUser_L    USRL    WITH (NOLOCK) ON ADC.FTCreateBy     = USRL.FTUsrCode    AND USRL.FNLngID    = $nLngID
+                                        LEFT JOIN TCNMUser_L    USRLAPV WITH (NOLOCK) ON ADC.FTXchApvCode   = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = $nLngID
+                                        WHERE ADC.FDCreateOn <> ''
+                                            " . $tWhereSearchAll . "
+                                            " . $tWhereBch . "
+                                            " . $tWhereBchFrmTo . "
+                                            " . $tWhereDateFrmTo . "
+                                            " . $tWhereStaDoc . "
                                     ) HD
                                     INNER JOIN (SELECT DISTINCT FTXchDocNo  FROM TCNTPdtAdjCostDT)DT
                                     ON HD.FTXchDocNo = DT.FTXchDocNo
@@ -177,7 +176,7 @@ class mAdjustmentcost extends CI_Model
         $tWhereShp  = "";
         if (isset($tUserLevel) && !empty($tUserLevel) && $tUserLevel == "BCH") {
             // Check User Level BCH
-            $tWhereBch  =   " AND ADC.FTBchCode IN (" . $tUsrBchCode . ") ";
+            $tWhereBch  =   " AND ADC.FTBchCode IN ('" . $tUsrBchCode . "') ";
         }
 
 
@@ -242,8 +241,8 @@ class mAdjustmentcost extends CI_Model
                         FTXchDocNo
                         FROM TCNTPdtAdjCostDT
                     ) DT ON ADC.FTXchDocNo = DT.FTXchDocNo
-                    WHERE 1=1 
-                    AND ADC.FNXchDocType = 10 
+                    WHERE 1=1
+                    " . $tWhereSearchAll . "
                     " . $tWhereBch . "
                     " . $tWhereShp . "
                     " . $tWhereBchFrmTo . "
@@ -280,28 +279,37 @@ class mAdjustmentcost extends CI_Model
     // Return Type : array
     public function FSaMADCGetPdtFromDoc($paData)
     {
-        $nLngID = $paData['FNLngID'];
-        $tTable = $paData['tTable'];
-        $tDocNo = $paData['tDocNo'];
-        $tPdtCodeDup = $paData['tPdtCodeDup'];
-        $aPdtCodeDup = (explode(",",$tPdtCodeDup));
+        $tAgnCode       = $this->session->userdata("tSesUsrAgnCode");
+        $tAgnType       = $this->session->userdata('tAgnType');
+        $nLngID         = $paData['FNLngID'];
+        $tTable         = $paData['tTable'];
+        $tDocNo         = $paData['tDocNo'];
+        $tPdtCodeDup    = $paData['tPdtCodeDup'];
+        $aPdtCodeDup    = (explode(",",$tPdtCodeDup));
 
         if($tTable == 'TCNTPdtTwiDT'){
-            $tPdtField = 'TCNTPdtTwiDT.FTXtdPdtName';
-            $tDocNoField = 'TCNTPdtTwiDT.FTXthDocNo';
-            $tFactor    = 'TCNTPdtTwiDT.FCXtdFactor';
+            $tPdtField      = 'TCNTPdtTwiDT.FTXtdPdtName';
+            $tDocNoField    = 'TCNTPdtTwiDT.FTXthDocNo';
+            $tFactor        = 'TCNTPdtTwiDT.FCXtdFactor';
+            $tBarCode       = 'TCNTPdtTwiDT.FTXtdBarCode';
         }else{
-            $tPdtField = 'TAPTPiDT.FTXpdPdtName';
-            $tDocNoField = 'TAPTPiDT.FTXphDocNo';
-            $tFactor    = 'TAPTPiDT.FCXpdFactor';
+            $tPdtField      = 'TAPTPiDT.FTXpdPdtName';
+            $tDocNoField    = 'TAPTPiDT.FTXphDocNo';
+            $tFactor        = 'TAPTPiDT.FCXpdFactor';
+            $tBarCode       = 'TAPTPiDT.FTXpdBarCode';
         }
 
-        $this->db->select('"'.$tTable.'".FTPdtCode,"'.$tPdtField.'" AS FTPdtName,"'.$tTable.'".FTPunName,TCNMPdtCostAvg.FCPdtCostEx,TCNMPdtUnit_L.FTPunCode,"'.$tFactor.'" AS FCXcdFactor,TCNMPdtBar.FTBarCode AS FTXcdBarScan,0 AS FCXcdDiff,0 AS FCXcdCostNew');
+        if(isset($tAgnCode) && !empty($tAgnCode) && isset($tAgnType) && $tAgnType == 2){
+            $this->db->select('"'.$tTable.'".FTPdtCode,"'.$tPdtField.'" AS FTPdtName,"'.$tTable.'".FTPunName,TCNMPdtCostAvg.FCPdtCostEx,TCNMPdtCostAvg.FCPdtCostStd,"'.$tTable.'".FTPunCode,"'.$tFactor.'" AS FCXcdFactor,"'.$tBarCode.'" AS FTXcdBarScan,0 AS FCXcdDiff,0 AS FCXcdCostNew');
+        }else{
+            $this->db->select('"'.$tTable.'".FTPdtCode,"'.$tPdtField.'" AS FTPdtName,"'.$tTable.'".FTPunName,TCNMPdtCostAvg.FCPdtCostEx,TCNMPdt.FCPdtCostStd,"'.$tTable.'".FTPunCode,"'.$tFactor.'" AS FCXcdFactor,"'.$tBarCode.'" AS FTXcdBarScan,0 AS FCXcdDiff,0 AS FCXcdCostNew');
+        }
         $this->db->from($tTable);
-        $this->db->join('TCNMPdtBar', 'TCNMPdtBar.FTPdtCode = "'.$tTable.'".FTPdtCode','left');
         $this->db->join('TCNMPdtCostAvg', 'TCNMPdtCostAvg.FTPdtCode = "'.$tTable.'".FTPdtCode','left');
-        $this->db->join('TCNMPdtPackSize', 'TCNMPdtPackSize.FTPdtCode = "'.$tTable.'".FTPdtCode','left');
-        $this->db->join('TCNMPdtUnit_L', 'TCNMPdtUnit_L.FTPunCode = TCNMPdtPackSize.FTPunCode','left');
+        $this->db->join('TCNMPdt', 'TCNMPdt.FTPdtCode = "'.$tTable.'".FTPdtCode','left');
+        // $this->db->join('TCNMPdtBar', 'TCNMPdtBar.FTPdtCode = "'.$tTable.'".FTPdtCode','left');
+        // $this->db->join('TCNMPdtPackSize', 'TCNMPdtPackSize.FTPdtCode = "'.$tTable.'".FTPdtCode','left');
+        // $this->db->join('TCNMPdtUnit_L', 'TCNMPdtUnit_L.FTPunCode = TCNMPdtPackSize.FTPunCode','left');
         if($tPdtCodeDup != ''){
             $this->db->where_not_in('"'.$tTable.'".FTPdtCode',$aPdtCodeDup);
         }
@@ -340,42 +348,42 @@ class mAdjustmentcost extends CI_Model
     public function FSaMADCGetHD($paData)
     {
 
-        $tXchDocNo  = $paData['FTXchDocNo'];
-        $nLngID     = $paData['FNLngID'];
+        $tXchDocNo      = $paData['FTXchDocNo'];
+        $tXchDocType    = $paData['FNXchDocType'];
+        $nLngID         = $paData['FNLngID'];
 
         $tSQL = " SELECT ADC.FTBchCode,
-        BCHLDOC.FTBchName,
-        ADC.FTXchDocNo, 
-        ADC.FNXchDocType, 
-        CONVERT(CHAR(10), ADC.FDXchDocDate, 121) AS FDXchDocDate, 
-        CONVERT(CHAR(5), ADC.FTXchDocTime, 108) AS FTXchDocTime, 
-        CONVERT(CHAR(10), ADC.FDXchAffect, 121) AS FDXchAffect,
-        ADC.FTDptCode, 
-        DPTL.FTDptName, 
-        ADC.FTXchRefInt, 
-        CONVERT(CHAR(10), ADC.FDXchRefIntDate, 121) AS FDXchRefIntDate, 
-        ADC.FTXchRmk, 
-        ADC.FTXchStaDoc, 
-        ADC.FTXchStaApv, 
-        ADC.FTCreateBy, 
-        USRLCREATE.FTUsrName AS FTUsrNameCreate, 
-        ADC.FTXchApvCode, 
-        USRAPV.FTUsrName AS FTUsrNameApv
- FROM TCNTPdtAdjCostHD ADC
-      LEFT JOIN TCNMBranch_L BCHLDOC WITH(NOLOCK) ON ADC.FTBchCode = BCHLDOC.FTBchCode
-                                                     AND BCHLDOC.FNLngID = $nLngID
-      LEFT JOIN TCNMBranch_L BCHLTO WITH(NOLOCK) ON ADC.FTXchDocNo = BCHLTO.FTBchCode
-                                                    AND BCHLTO.FNLngID = $nLngID
-      LEFT JOIN TCNMUser_L USRLKEY WITH(NOLOCK) ON ADC.FTUsrCode = USRLKEY.FTUsrCode
-                                                   AND USRLKEY.FNLngID = $nLngID
-      LEFT JOIN TCNMUser_L USRLCREATE WITH(NOLOCK) ON ADC.FTCreateBy = USRLCREATE.FTUsrCode
-                                                      AND USRLCREATE.FNLngID = $nLngID
-      LEFT JOIN TCNMUser_L USRAPV WITH(NOLOCK) ON ADC.FTXchApvCode = USRAPV.FTUsrCode
-                                                  AND USRAPV.FNLngID = $nLngID
-      LEFT JOIN TCNMUsrDepart_L DPTL WITH(NOLOCK) ON ADC.FTDptCode = DPTL.FTDptCode
-                                                     AND DPTL.FNLngID = $nLngID
+                    BCHLDOC.FTBchName,
+                    ADC.FTXchDocNo, 
+                    ADC.FNXchDocType, 
+                    CONVERT(CHAR(10), ADC.FDXchDocDate, 121) AS FDXchDocDate, 
+                    CONVERT(CHAR(5), ADC.FTXchDocTime, 108) AS FTXchDocTime, 
+                    CONVERT(CHAR(10), ADC.FDXchAffect, 121) AS FDXchAffect,
+                    ADC.FTDptCode, 
+                    DPTL.FTDptName, 
+                    ADC.FTXchRefInt, 
+                    CONVERT(CHAR(10), ADC.FDXchRefIntDate, 121) AS FDXchRefIntDate, 
+                    ADC.FTXchRmk, 
+                    ADC.FTXchStaDoc, 
+                    ADC.FTXchStaApv, 
+                    ADC.FTCreateBy, 
+                    USRLCREATE.FTUsrName AS FTUsrNameCreate, 
+                    ADC.FTXchApvCode, 
+                    USRAPV.FTUsrName AS FTUsrNameApv,
+                    ADC.FTXchStaPrcDoc
+                FROM TCNTPdtAdjCostHD ADC
+                LEFT JOIN TCNMBranch_L BCHLDOC WITH(NOLOCK) ON ADC.FTBchCode = BCHLDOC.FTBchCode AND BCHLDOC.FNLngID = $nLngID
+                LEFT JOIN TCNMBranch_L BCHLTO WITH(NOLOCK) ON ADC.FTXchDocNo = BCHLTO.FTBchCode AND BCHLTO.FNLngID = $nLngID
+                LEFT JOIN TCNMUser_L USRLKEY WITH(NOLOCK) ON ADC.FTUsrCode = USRLKEY.FTUsrCode AND USRLKEY.FNLngID = $nLngID
+                LEFT JOIN TCNMUser_L USRLCREATE WITH(NOLOCK) ON ADC.FTCreateBy = USRLCREATE.FTUsrCode AND USRLCREATE.FNLngID = $nLngID
+                LEFT JOIN TCNMUser_L USRAPV WITH(NOLOCK) ON ADC.FTXchApvCode = USRAPV.FTUsrCode AND USRAPV.FNLngID = $nLngID
+                LEFT JOIN TCNMUsrDepart_L DPTL WITH(NOLOCK) ON ADC.FTDptCode = DPTL.FTDptCode AND DPTL.FNLngID = $nLngID
+                WHERE ADC.FDCreateOn <> ''";
+         
+        if ($tXchDocType != "") {
+            $tSQL   .= "AND ADC.FNXchDocType = ".$this->db->escape($tXchDocType)." ";
+        }
 
-        WHERE 1=1 AND ADC.FNXchDocType = '10' ";
         if ($tXchDocNo != "") {
             $tSQL .= "AND ADC.FTXchDocNo = '$tXchDocNo'";
         }
@@ -409,19 +417,20 @@ class mAdjustmentcost extends CI_Model
     // Return Type : array
     public function FSaMADCGetPdtFromFilter($paData)
     {
-        $tUserLevel = $this->session->userdata("tSesUsrLevel");
-        $tAgnCode  = $this->session->userdata("tSesUsrAgnCode");
-        $nLngID = $paData['FNLngID'];
-        $tPdtCodeFrom = $paData['tPdtCodeFrom'];
-        $tPdtCodeTo = $paData['tPdtCodeTo'];
-        $tBarCodeFrom = $paData['tBarCodeFrom'];
+        $tUserLevel     = $this->session->userdata("tSesUsrLevel");
+        $tAgnCode       = $this->session->userdata("tSesUsrAgnCode");
+        $tAgnType       = $this->session->userdata('tAgnType');
+        $nLngID         = $paData['FNLngID'];
+        $tPdtCodeFrom   = $paData['tPdtCodeFrom'];
+        $tPdtCodeTo     = $paData['tPdtCodeTo'];
+        $tBarCodeFrom   = $paData['tBarCodeFrom'];
         $tBarCodeCodeTo = $paData['tBarCodeCodeTo'];
-        $tPdtCodeDup = FCNtAddSingleQuote($paData['tPdtCodeDup']);
-        $tBchCode    = $paData['tBchCode'];
+        $tPdtCodeDup    = FCNtAddSingleQuote($paData['tPdtCodeDup']);
+        $tBchCode       = $paData['tBchCode'];
         
-        $tSQL = "
-        SELECT * FROM
-        (
+        /*$tSQL = "
+                SELECT * FROM
+                (
                     SELECT 
                         ROW_NUMBER() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PDT.FTPdtCode DESC) FNRowID,
                         RANK() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PPCZ.FCPdtUnitFact ASC) FNUnitFactRank,
@@ -445,16 +454,70 @@ class mAdjustmentcost extends CI_Model
                     LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)  ON PDT.FTPdtCode = PBAR.FTPdtCode AND PPCZ.FTPunCode = PBAR.FTPunCode
                     LEFT JOIN TCNMPdtSpcBch SPC WITH (NOLOCK) ON PDT.FTPdtCode = SPC.FTPdtCode
                 WHERE 1 = 1
-                ";
-        
+                ";*/
+
+        if(isset($tAgnCode) && !empty($tAgnCode) && isset($tAgnType) && $tAgnType == 2){
+            $tSQL   = "
+                SELECT * FROM(
+                    SELECT
+                        ROW_NUMBER() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PDT.FTPdtCode DESC) FNRowID,
+                        RANK() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PPCZ.FCPdtUnitFact ASC) FNUnitFactRank,
+                        PDT.FTPdtCode,
+                        PDTL.FTPdtName,
+                        PUNL.FTPunName,
+                        COST.FCPdtCostStd,
+                        COST.FCPdtCostEx,
+                        PPCZ.FTPunCode,
+                        PPCZ.FCPdtUnitFact AS FCXcdFactor,
+                        PBAR.FTBarCode AS FTXcdBarScan,
+                        '' AS FCXcdDiff,
+                        '' AS FCXcdCostNew,
+                        ISNULL(PBAR.FTBarCode, PDT.FTPdtCode) AS FTBarCode
+                    FROM TCNMPdt PDT WITH(NOLOCK)
+                    LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK) ON PDT.FTPdtCode = PDTL.FTPdtCode AND PDTL.FNLngID = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtCostAvg COST WITH(NOLOCK) ON PDT.FTPdtCode = COST.FTPdtCode
+                    LEFT JOIN TCNMPdtPackSize PPCZ WITH(NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode
+                    LEFT JOIN TCNMPdtUnit_L PUNL WITH(NOLOCK) ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)  ON PDT.FTPdtCode = PBAR.FTPdtCode AND PPCZ.FTPunCode = PBAR.FTPunCode
+                    LEFT JOIN TCNMPdtSpcBch SPC WITH (NOLOCK) ON PDT.FTPdtCode = SPC.FTPdtCode
+                    WHERE PDT.FDCreateOn <> ''
+            ";
+        } else {
+            $tSQL   = "
+                SELECT * FROM(
+                    SELECT
+                        ROW_NUMBER() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PDT.FTPdtCode DESC) FNRowID,
+                        RANK() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PPCZ.FCPdtUnitFact ASC) FNUnitFactRank,
+                        PDT.FTPdtCode,
+                        PDTL.FTPdtName,
+                        PUNL.FTPunName,
+                        PDT.FCPdtCostStd,
+                        COST.FCPdtCostEx,
+                        PPCZ.FTPunCode,
+                        PPCZ.FCPdtUnitFact AS FCXcdFactor,
+                        PBAR.FTBarCode AS FTXcdBarScan,
+                        '' AS FCXcdDiff,
+                        '' AS FCXcdCostNew,
+                        ISNULL(PBAR.FTBarCode, PDT.FTPdtCode) AS FTBarCode
+                    FROM TCNMPdt PDT WITH(NOLOCK)
+                    LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK) ON PDT.FTPdtCode = PDTL.FTPdtCode AND PDTL.FNLngID = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtCostAvg COST WITH(NOLOCK) ON PDT.FTPdtCode = COST.FTPdtCode
+                    LEFT JOIN TCNMPdtPackSize PPCZ WITH(NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode
+                    LEFT JOIN TCNMPdtUnit_L PUNL WITH(NOLOCK) ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)  ON PDT.FTPdtCode = PBAR.FTPdtCode AND PPCZ.FTPunCode = PBAR.FTPunCode
+                    LEFT JOIN TCNMPdtSpcBch SPC WITH (NOLOCK) ON PDT.FTPdtCode = SPC.FTPdtCode
+                    WHERE PDT.FDCreateOn <> ''
+            ";
+        }
+
         if($tPdtCodeDup != ''){
-            $tSQL .= "AND PDT.FTPdtCode NOT IN($tPdtCodeDup)";
+            $tSQL .= "AND PDT.FTPdtCode NOT IN('$tPdtCodeDup')";
         }
 
         $tSQL .= " AND ((PDT.FTPdtCode BETWEEN '$tPdtCodeFrom' AND '$tPdtCodeTo'
-        OR PDT.FTPdtCode BETWEEN '$tPdtCodeTo' AND '$tPdtCodeFrom')
-       OR (PBAR.FTBarCode BETWEEN '$tBarCodeFrom' AND '$tBarCodeCodeTo'
-           OR PBAR.FTBarCode BETWEEN '$tBarCodeCodeTo' AND '$tBarCodeFrom'))";
+                    OR PDT.FTPdtCode BETWEEN '$tPdtCodeTo' AND '$tPdtCodeFrom')
+                    OR (PBAR.FTBarCode BETWEEN '$tBarCodeFrom' AND '$tBarCodeCodeTo'
+                    OR PBAR.FTBarCode BETWEEN '$tBarCodeCodeTo' AND '$tBarCodeFrom'))";
 
 
         if($tUserLevel != 'HQ'){
@@ -475,14 +538,14 @@ class mAdjustmentcost extends CI_Model
         if ($oQuery->num_rows() > 0) {
             $oList = $oQuery->result_array();
             $aResult = array(
-                'raItems' => $oList,
-                'rtCode' => '1',
-                'rtDesc' => 'success',
+                'raItems'   => $oList,
+                'rtCode'    => '1',
+                'rtDesc'    => 'success',
             );
         } else {
             $aResult = array(
-                'rtCode' => '99',
-                'rtDesc' => 'data not found',
+                'rtCode'    => '99',
+                'rtDesc'    => 'data not found',
             );
         }
         unset($nLngID);
@@ -501,15 +564,17 @@ class mAdjustmentcost extends CI_Model
     // Return Type : array
     public function FSaMADCGetPdtFromImportExcel($paData)
     {
-        $nLngID = $paData['FNLngID'];
-        $tPdtCodeDup = FCNtAddSingleQuote($paData['tPdtCodeDup']);
-        $tFTSessionID  = $paData['FTSessionID'];
+        $tAgnCode       = $this->session->userdata("tSesUsrAgnCode");
+        $tAgnType       = $this->session->userdata('tAgnType');
+        $nLngID         = $paData['FNLngID'];
+        $tPdtCodeDup    = FCNtAddSingleQuote($paData['tPdtCodeDup']);
+        $tFTSessionID   = $paData['FTSessionID'];
 
         // $this->db->where_in('FTXthDocKey', 'TCNTPdtAdjCostHD');
         // $this->db->where_in('FTSessionID', $tFTSessionID);
         // $this->db->delete('TCNTDocDTTmp');
 
-        $tSQL = " SELECT * FROM ( 
+        /*$tSQL = " SELECT * FROM ( 
                     SELECT 
                         ROW_NUMBER() OVER(PARTITION BY PDTL.FTPdtCode ORDER BY PDTL.FTPdtCode DESC) FNRowID,
                         RANK() OVER(PARTITION BY PDTL.FTPdtCode ORDER BY PPCZ.FCPdtUnitFact ASC) FNUnitFactRank,
@@ -534,21 +599,85 @@ class mAdjustmentcost extends CI_Model
                 WHERE 1 = 1
                 AND DOCTMP.FTXthDocKey = 'TCNTPdtAdjCostHD' 
                 AND DOCTMP.FTSessionID = '$tFTSessionID'
-            ) A WHERE A.FTTmpStatus = 5 OR (A.FNRowID = 1 AND FNUnitFactRank = 1) ORDER BY A.FTPdtCode DESC ";
+            ) A WHERE A.FTTmpStatus = 5 OR (A.FNRowID = 1 AND FNUnitFactRank = 1) ORDER BY A.FTPdtCode DESC ";*/
+
+        if(isset($tAgnCode) && !empty($tAgnCode) && isset($tAgnType) && $tAgnType == 2){
+            $tSQL   = "
+                SELECT * FROM (
+                    SELECT
+                        ROW_NUMBER() OVER(PARTITION BY PDTL.FTPdtCode ORDER BY PDTL.FTPdtCode DESC) FNRowID,
+                        RANK() OVER(PARTITION BY PDTL.FTPdtCode ORDER BY PPCZ.FCPdtUnitFact ASC) FNUnitFactRank,
+                        DOCTMP.FTPdtCode,
+                        PDTL.FTPdtName,
+                        PUNL.FTPunName,
+                        COST.FCPdtCostEx,
+                        PPCZ.FTPunCode,
+                        COST.FCPdtCostStd,
+                        PPCZ.FCPdtUnitFact AS FCXcdFactor,
+                        PBAR.FTBarCode AS FTXcdBarScan,
+                        (DOCTMP.FCXtdCostEx - COST.FCPdtCostStd) AS FCXcdDiff,
+                        DOCTMP.FCXtdCostEx AS FCXcdCostNew,
+                        DOCTMP.FTTmpStatus,
+                        DOCTMP.FTTmpRemark
+                    FROM TCNTDocDTTmp DOCTMP
+                    LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK) ON DOCTMP.FTPdtCode = PDTL.FTPdtCode AND PDTL.FNLngID     = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdt PDT WITH ( NOLOCK ) ON DOCTMP.FTPdtCode = PDT.FTPdtCode 
+                    LEFT JOIN TCNMPdtCostAvg COST WITH(NOLOCK) ON DOCTMP.FTPdtCode = COST.FTPdtCode
+                    LEFT JOIN TCNMPdtPackSize PPCZ WITH(NOLOCK) ON DOCTMP.FTPdtCode = PPCZ.FTPdtCode
+                    LEFT JOIN TCNMPdtUnit_L PUNL WITH(NOLOCK) ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID   = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)  ON DOCTMP.FTPdtCode = PBAR.FTPdtCode
+                    LEFT JOIN TCNMPdtSpcBch SPC WITH (NOLOCK) ON DOCTMP.FTPdtCode = SPC.FTPdtCode
+                    WHERE DOCTMP.FDCreateOn <> ''
+                    AND DOCTMP.FTXthDocKey  = 'TCNTPdtAdjCostHD'
+                    AND DOCTMP.FTSessionID  = ".$this->db->escape($tFTSessionID)."
+                ) A WHERE A.FTTmpStatus = 5 OR (A.FNRowID = 1 AND FNUnitFactRank = 1) ORDER BY A.FTPdtCode DESC
+            ";
+        } else {
+            $tSQL   = "
+                SELECT * FROM (
+                    SELECT
+                        ROW_NUMBER() OVER(PARTITION BY PDTL.FTPdtCode ORDER BY PDTL.FTPdtCode DESC) FNRowID,
+                        RANK() OVER(PARTITION BY PDTL.FTPdtCode ORDER BY PPCZ.FCPdtUnitFact ASC) FNUnitFactRank,
+                        DOCTMP.FTPdtCode,
+                        PDTL.FTPdtName,
+                        PUNL.FTPunName,
+                        COST.FCPdtCostEx,
+                        PPCZ.FTPunCode,
+                        PDT.FCPdtCostStd,
+                        PPCZ.FCPdtUnitFact AS FCXcdFactor,
+                        PBAR.FTBarCode AS FTXcdBarScan,
+                        (DOCTMP.FCXtdCostEx - PDT.FCPdtCostStd) AS FCXcdDiff,
+                        DOCTMP.FCXtdCostEx AS FCXcdCostNew,
+                        DOCTMP.FTTmpStatus,
+                        DOCTMP.FTTmpRemark
+                    FROM TCNTDocDTTmp DOCTMP
+                    LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK) ON DOCTMP.FTPdtCode = PDTL.FTPdtCode AND PDTL.FNLngID     = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdt PDT WITH ( NOLOCK ) ON DOCTMP.FTPdtCode = PDT.FTPdtCode 
+                    LEFT JOIN TCNMPdtCostAvg COST WITH(NOLOCK) ON DOCTMP.FTPdtCode = COST.FTPdtCode
+                    LEFT JOIN TCNMPdtPackSize PPCZ WITH(NOLOCK) ON DOCTMP.FTPdtCode = PPCZ.FTPdtCode
+                    LEFT JOIN TCNMPdtUnit_L PUNL WITH(NOLOCK) ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID   = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)  ON DOCTMP.FTPdtCode = PBAR.FTPdtCode
+                    LEFT JOIN TCNMPdtSpcBch SPC WITH (NOLOCK) ON DOCTMP.FTPdtCode = SPC.FTPdtCode
+                    WHERE DOCTMP.FDCreateOn <> ''
+                    AND DOCTMP.FTXthDocKey  = 'TCNTPdtAdjCostHD'
+                    AND DOCTMP.FTSessionID  = ".$this->db->escape($tFTSessionID)."
+                ) A WHERE A.FTTmpStatus = 5 OR (A.FNRowID = 1 AND FNUnitFactRank = 1) ORDER BY A.FTPdtCode DESC
+            ";
+        }
         
         $oQuery = $this->db->query($tSQL);
 
         if ($oQuery->num_rows() > 0) {
-            $oList = $oQuery->result_array();
-            $aResult = array(
-                'raItems' => $oList,
-                'rtCode' => '1',
-                'rtDesc' => 'success',
+            $oList      = $oQuery->result_array();
+            $aResult    = array(
+                'raItems'   => $oList,
+                'rtCode'    => '1',
+                'rtDesc'    => 'success',
             );
         } else {
             $aResult = array(
-                'rtCode' => '99',
-                'rtDesc' => 'data not found',
+                'rtCode'    => '99',
+                'rtDesc'    => 'data not found',
             );
         }
         unset($nLngID);
@@ -568,14 +697,14 @@ class mAdjustmentcost extends CI_Model
     {
             $this->db->insert('TCNTPdtAdjCostDT', $paData);
             if ($this->db->affected_rows() > 0) {
-                $aResult = array(
-                    'rtCode' => '1',
-                    'rtDesc' => 'success',
+                $aResult    = array(
+                    'rtCode'    => '1',
+                    'rtDesc'    => 'success',
                 );
             } else {
-                $aResult = array(
-                    'rtCode' => '99',
-                    'rtDesc' => 'data not found',
+                $aResult    = array(
+                    'rtCode'    => '99',
+                    'rtDesc'    => 'data not found',
                 );
             }
     }
@@ -613,13 +742,13 @@ class mAdjustmentcost extends CI_Model
             'FTXchDocNo'        => $paData['FTXchDocNo'],
             'FNXchDocType'      => $paData['FNXchDocType'],
             'FDXchDocDate'      => $paData['FDXchDocDate'],
-            'FTXchDocTime'         => $paData['FTXchDocTime'],
-            'FDXchAffect'      => $paData['FDXchAffect'],
-            'FTXchRefInt'      => $paData['FTXchRefInt'],
-            'FDXchRefIntDate'       => $FDXchRefIntDate,
+            'FTXchDocTime'      => $paData['FTXchDocTime'],
+            'FDXchAffect'       => $paData['FDXchAffect'],
+            'FTXchRefInt'       => $paData['FTXchRefInt'],
+            'FDXchRefIntDate'   => $FDXchRefIntDate,
             'FTUsrCode'         => $paData['FTUsrCode'],
-            'FTXchStaDoc'         => $paData['FTXchStaDoc'],
-            'FTXchRmk'      => $paData['FTXchRmk'],
+            'FTXchStaDoc'       => $paData['FTXchStaDoc'],
+            'FTXchRmk'          => $paData['FTXchRmk'],
             'FDLastUpdOn'       => date('Y-m-d H:i:s'),
             'FTLastUpdBy'       => $this->session->userdata('tSesUserCode'),
             'FDCreateOn'        => date('Y-m-d H:i:s'),
@@ -655,6 +784,7 @@ class mAdjustmentcost extends CI_Model
         }
         $this->db->set('FTBchCode', $paData['FTBchCode']);
         $this->db->set('FDXchDocDate', $paData['FDXchDocDate']);
+        $this->db->set('FNXchDocType', $paData['FNXchDocType']);
         $this->db->set('FTXchDocTime', $paData['FTXchDocTime']);
         $this->db->set('FDXchAffect', $paData['FDXchAffect']);
         $this->db->set('FTXchRefInt', $paData['FTXchRefInt']);
@@ -695,6 +825,7 @@ class mAdjustmentcost extends CI_Model
         $tSQL = "SELECT ADCDT.FTPdtCode, 
                         ADCDT.FTPdtName, 
                         PUNL.FTPunName,
+                        ADCDT.FCXcdCostOld AS FCPdtCostStd,
                         ADCDT.FCXcdCostOld AS FCPdtCostEx,
                         ADCDT.FCXcdDiff,
                         ADCDT.FCXcdCostNew,
@@ -702,7 +833,7 @@ class mAdjustmentcost extends CI_Model
                         ADCDT.FCXcdFactor,
                         ADCDT.FTXcdBarScan
                 FROM TCNTPdtAdjCostDT ADCDT
-                    LEFT JOIN TCNMPdtUnit_L PUNL WITH(NOLOCK) ON ADCDT.FTPunCode = PUNL.FTPunCode
+                LEFT JOIN TCNMPdtUnit_L PUNL WITH(NOLOCK) ON ADCDT.FTPunCode = PUNL.FTPunCode
                 WHERE 1 = 1
                 ";
     
@@ -813,9 +944,9 @@ class mAdjustmentcost extends CI_Model
             $tLastUpdBy = $this->session->userdata('tSesUsername');
             $this->db->set('FDLastUpdOn', $dLastUpdOn);
             $this->db->set('FTLastUpdBy', $tLastUpdBy);
-
-            $this->db->set('FTXchStaApv', 2);
-            $this->db->set('FTXchStaPrcDoc', 2);
+            $this->db->set('FTXchStaApv', 1);
+            // $this->db->set('FTXchStaApv', 2);
+            // $this->db->set('FTXchStaPrcDoc', 2);
             $this->db->set('FTXchApvCode', $paDataUpdate['FTXchApvCode']);
             $this->db->where('FTXchDocNo', $paDataUpdate['FTXchDocNo']);
 
@@ -835,5 +966,105 @@ class mAdjustmentcost extends CI_Model
         } catch (Exception $Error) {
             return $Error;
         }
+    }
+
+    // Functionality : Function Get Pdt From Doc
+    // Parameters : Function Parameter
+    // Creator : 25/02/2021 [IcePHP ยกมาจาก Fit Auto 11/10/2022]
+    // Last Modified :
+    // Return : array
+    // Return Type : array
+    public function FSaMADCGetPdtFromPdtCode($paData){
+        $tUserLevel     = $this->session->userdata("tSesUsrLevel");
+        $tAgnCode       = $this->session->userdata("tSesUsrAgnCode");
+        $tAgnType       = $this->session->userdata('tAgnType');
+        $nLngID         = $paData['FNLngID'];
+        $tPdtCode       = $paData['FTPdtCode'];
+        $FTBarCode      = $paData['FTBarCode'];
+        $tBchCode       = $paData['tBchCode'];
+
+        if(isset($tAgnCode) && !empty($tAgnCode) && isset($tAgnType) && $tAgnType == 2){
+            $tSQL   = "
+                SELECT * FROM(
+                    SELECT
+                        ROW_NUMBER() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PDT.FTPdtCode DESC) FNRowID,
+                        RANK() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PPCZ.FCPdtUnitFact ASC) FNUnitFactRank,
+                        PDT.FTPdtCode,
+                        PDTL.FTPdtName,
+                        PUNL.FTPunName,
+                        COST.FCPdtCostStd,
+                        COST.FCPdtCostEx,
+                        PPCZ.FTPunCode,
+                        PPCZ.FCPdtUnitFact AS FCXcdFactor,
+                        PBAR.FTBarCode AS FTXcdBarScan,
+                        '' AS FCXcdDiff,
+                        '' AS FCXcdCostNew,
+                        ISNULL(PBAR.FTBarCode, PDT.FTPdtCode) AS FTBarCode
+                    FROM TCNMPdt PDT WITH(NOLOCK)
+                    LEFT JOIN TCNMPdt_L         PDTL    WITH(NOLOCK)    ON PDT.FTPdtCode    = PDTL.FTPdtCode    AND PDTL.FNLngID    = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtCostAvg    COST    WITH(NOLOCK)    ON PDT.FTPdtCode    = COST.FTPdtCode    AND COST.FTAgnCOde  = ".$this->db->escape($tAgnCode)."
+                    LEFT JOIN TCNMPdtPackSize   PPCZ    WITH(NOLOCK)    ON PDT.FTPdtCode    = PPCZ.FTPdtCode
+                    LEFT JOIN TCNMPdtUnit_L     PUNL    WITH(NOLOCK)    ON PPCZ.FTPunCode   = PUNL.FTPunCode    AND PUNL.FNLngID    = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtBar        PBAR    WITH (NOLOCK)   ON PDT.FTPdtCode    = PBAR.FTPdtCode    AND PPCZ.FTPunCode  = PBAR.FTPunCode
+                    LEFT JOIN TCNMPdtSpcBch     SPC     WITH (NOLOCK)   ON PDT.FTPdtCode    = SPC.FTPdtCode
+                    WHERE PDT.FDCreateOn <> '' AND PDT.FTPdtCode = ".$this->db->escape($tPdtCode)." AND PBAR.FTBarCode = ".$this->db->escape($FTBarCode)."
+            ";
+        } else {
+            $tSQL   = "
+                SELECT * FROM(
+                    SELECT
+                        ROW_NUMBER() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PDT.FTPdtCode DESC) FNRowID,
+                        RANK() OVER(PARTITION BY PDT.FTPdtCode ORDER BY PPCZ.FCPdtUnitFact ASC) FNUnitFactRank,
+                        PDT.FTPdtCode,
+                        PDTL.FTPdtName,
+                        PUNL.FTPunName,
+                        PDT.FCPdtCostStd,
+                        COST.FCPdtCostEx,
+                        PPCZ.FTPunCode,
+                        PPCZ.FCPdtUnitFact AS FCXcdFactor,
+                        PBAR.FTBarCode AS FTXcdBarScan,
+                        '' AS FCXcdDiff,
+                        '' AS FCXcdCostNew,
+                        ISNULL(PBAR.FTBarCode, PDT.FTPdtCode) AS FTBarCode
+                    FROM TCNMPdt PDT WITH(NOLOCK)
+                    LEFT JOIN TCNMPdt_L         PDTL    WITH(NOLOCK)    ON PDT.FTPdtCode    = PDTL.FTPdtCode AND PDTL.FNLngID = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtCostAvg    COST    WITH(NOLOCK)    ON PDT.FTPdtCode    = COST.FTPdtCode
+                    LEFT JOIN TCNMPdtPackSize   PPCZ    WITH(NOLOCK)    ON PDT.FTPdtCode    = PPCZ.FTPdtCode
+                    LEFT JOIN TCNMPdtUnit_L     PUNL    WITH(NOLOCK)    ON PPCZ.FTPunCode   = PUNL.FTPunCode AND PUNL.FNLngID   = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtBar        PBAR    WITH (NOLOCK)   ON PDT.FTPdtCode    = PBAR.FTPdtCode AND PPCZ.FTPunCode   = PBAR.FTPunCode
+                    LEFT JOIN TCNMPdtSpcBch     SPC     WITH (NOLOCK)   ON PDT.FTPdtCode    = SPC.FTPdtCode
+                    WHERE PDT.FDCreateOn <> '' AND PDT.FTPdtCode  = ".$this->db->escape($tPdtCode)." AND PBAR.FTBarCode = ".$this->db->escape($FTBarCode)."
+            ";
+        }
+
+        if($tUserLevel != 'HQ'){
+            $tSQL   .="
+                AND ((SPC.FTAgnCode = ".$this->db->escape($tAgnCode).")	OR SPC.FTBchCode = ".$this->db->escape($tBchCode)."
+                OR (ISNULL(SPC.FTBchCode,'') = ''   AND SPC.FTAgnCode = ".$this->db->escape($tAgnCode).")
+                OR ISNULL(SPC.FTAgnCode,'') = '' )
+            ";
+        }
+        $tSQL .= ") A";
+
+
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $oList      = $oQuery->result_array();
+            $aResult    = array(
+                'raItems'   => $oList,
+                'rtCode'    => '1',
+                'rtDesc'    => 'success',
+            );
+        } else {
+            $aResult    = array(
+                'rtCode'    => '99',
+                'rtDesc'    => 'data not found',
+            );
+        }
+        unset($nLngID);
+        unset($tSQL);
+        unset($oQuery);
+        unset($oList);
+        return $aResult;
     }
 }

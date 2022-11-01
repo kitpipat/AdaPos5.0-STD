@@ -113,4 +113,18 @@ $lang['tADCTBDelete']       = "Delete";
 $lang['tADCTBEdit']         = "Edit";
 $lang['tADCTBQtyAllDiff']   = "Recommend";
 
+$lang['tADCEffectiveDocType']            = "Adjustment Type (No Tax)";
+$lang['tADCEffectiveDocTypeStd']         = "Standard Cost";
+$lang['tADCEffectiveDocTypeAvg']         = "Average Cost";
+
+$lang['tASTAvgActive']                   = "Average Cost has been active at";
+$lang['tASTAStdActive']                  = "Standard Cost has been active at";
+
+$lang['tDIDocumentInformation']          = "Document Information";
+
+$lang['tADCDocChangeType']              = "Changing the cost type affects the item list. Confirm to clear the data. ?";
+$lang['tADCDocChangeTypeConfrim']       = "Confirm to change cost ?";
+$lang['tASTWarning']                    = "Warning";
+
+
 

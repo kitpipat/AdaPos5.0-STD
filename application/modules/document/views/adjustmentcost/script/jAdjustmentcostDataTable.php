@@ -1,5 +1,6 @@
 <script type="text/javascript">
     $(document).ready(function(){
+        JSxCheckPinMenuClose();
         // Click Check Box List Delete All
         $('.ocbListItem').unbind().click(function(){
             var nCode = $(this).parent().parent().parent().data('code');  //code

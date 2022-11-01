@@ -189,16 +189,19 @@ function JSvADCCallPageAdd() {
 // Create : 02/03/2021 Sooksanti(Nont)
 // Return : -
 // Return Type : -
-function JSvADCCallPageEdit(ptXchDocNo) {
+function JSvADCCallPageEdit(ptXchDocNo, pnXchDocType, pnXchStaPrcDoc) {
     JCNxOpenLoading();
     $.ajax({
         type: "POST",
         url: "docADCPageEdit",
-        data: { ptXchDocNo: ptXchDocNo },
+        data: { ptXchDocNo: ptXchDocNo,
+                pnTypeAdc: pnXchDocType 
+            },
         cache: false,
         timeout: 0,
         success: function (tResult) {
             var aReturnData = JSON.parse(tResult);
+            // console.log(aReturnData);
             if (tResult != "") {
                 $("#oliADCTitleAdd").hide();
                 $("#oliADCTitleEdit").show();
@@ -214,6 +217,7 @@ function JSvADCCallPageEdit(ptXchDocNo) {
 
                 $(".xWBtnGrpSaveLeft").show();
                 $(".xWBtnGrpSaveRight").show();
+                $("#odvGrpOptionFrom").show();
 
             }
             //Control Event Button
@@ -233,7 +237,7 @@ function JSvADCCallPageEdit(ptXchDocNo) {
 
             $('#odvADCContentPage').html(aReturnData['tViewPageAdd']);
             JSxADCGetPdtFromDT()
-            JCNxADCControlObjAndBtn()
+            JCNxADCControlObjAndBtn(pnXchStaPrcDoc, pnXchDocType)
         },
         error: function (jqXHR, textStatus, errorThrown) {
             JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -436,6 +440,7 @@ function JSxADCInsertDT(){
             oetADCRefInt: $('#oetADCRefInt').val(),
             oetADCRefIntDate: $('#oetADCRefIntDate').val(),
             otaADCRmk: $('#otaADCRmk').val(),
+            ocmADCDocType : $("#ocmADCDocType").val(),
             aDataInsert: JSxADCGetDataFromTableInsert()
         },
         cache: false,
@@ -446,9 +451,16 @@ function JSxADCInsertDT(){
 
             if (nStaADCBrowseType != 1) {
                 if (aReturn['nStaEvent'] == 1) {
+                    var oSOCallDataTableFile = {
+                        ptElementID  : 'odvShowDataTable',                     //div ที่ต้องการแสดงผลรายการไฟล์แนบ
+                        ptBchCode    : $("#oetADCBchCodeFile").val(),                                  //รหัสสาขา
+                        ptDocNo      : aReturn['tCodeReturn'],                       //เลขที่เอกสาร
+                        ptDocKey     : 'TCNTPdtAdjCostHD',                                 //ชื่อตารางของเอกสาร
+                    }
+                    JCNxUPFInsertDataFile(oSOCallDataTableFile);
                     switch (aReturn['nStaCallBack']) {
                         case '1':
-                            JSvADCCallPageEdit(aReturn['tCodeReturn']);
+                            JSvADCCallPageEdit(aReturn['tCodeReturn'],aReturn['nDocType']);
                             break;
                         case '2':
                             JSvADCCallPageAdd();
@@ -457,7 +469,7 @@ function JSxADCInsertDT(){
                             JSvADCCallPageList();
                             break;
                         default:
-                            JSvADCCallPageEdit(aReturn['tCodeReturn']);
+                            JSvADCCallPageEdit(aReturn['tCodeReturn'],aReturn['nDocType']);
                     }
                 } else {
                     FSvCMNSetMsgErrorDialog(aReturn['tStaMessg']);
@@ -481,7 +493,8 @@ function JSxADCInsertDT(){
 // Return Type : -
 function JSnADCCancelDoc(pbIsConfirm) {
 
-    var tXchDocNo = $("#ohdADCDocNo").val();
+    var tXchDocNo   = $("#ohdADCDocNo").val();
+    var nDocType    = $("#ocmADCDocType").val();
 
     if (pbIsConfirm) {
         $.ajax({
@@ -496,7 +509,7 @@ function JSnADCCancelDoc(pbIsConfirm) {
                 $("#odvADCPopupCancel").modal("hide");
                 aResult = $.parseJSON(tResult);
                 if (aResult.nSta == 1) {
-                    JSvADCCallPageEdit(tXchDocNo);
+                    JSvADCCallPageEdit(tXchDocNo,nDocType);
 
                 } else {
                     JCNxCloseLoading();
@@ -526,10 +539,12 @@ function JSnADCCancelDoc(pbIsConfirm) {
 // Create : 02/03/2021 Sooksanti(Nont)
 // Return : -
 // Return Type : -
-function JCNxADCControlObjAndBtn() {
+function JCNxADCControlObjAndBtn(pnXchStaPrcDoc, pnXchDocType) {
     //Check สถานะอนุมัติ
-    var ohdXthStaApv = $("#ohdADCStaApv").val();
-    var ohdADCStaDoc = $("#ohdADCStaDoc").val();
+    var ohdXthStaApv    = $("#ohdADCStaApv").val();
+    var ohdADCStaDoc    = $("#ohdADCStaDoc").val();
+    var nADCStaPrc      = pnXchStaPrcDoc;
+    var nDocType        = pnXchDocType;
 
     //Set Default
     //Btn Cancel
@@ -540,6 +555,7 @@ function JCNxADCControlObjAndBtn() {
     $(".form-control").attr("disabled", false);
     $(".ocbListItem").attr("disabled", false);
     // $(".xCNBtnBrowseAddOn").attr("disabled", false);
+    // $(".xCNBtnDateTimeControl").attr("disabled", false);
     $(".xCNBtnDateTime").attr("disabled", false);
     $(".xCNDocBrowsePdt")
         .attr("disabled", false)
@@ -552,11 +568,27 @@ function JCNxADCControlObjAndBtn() {
     $("#oliBtnEditTaxAdd").show();
 
     if (ohdXthStaApv == '1') {
+        
+        if (nDocType == 12) {
+            if (nADCStaPrc == '') {
+                $("#obtADCCancel").show();
+            } else {
+                $("#obtADCCancel").hide();
+            }
+        } else {
+            $("#obtADCCancel").hide();
+        }
+
+        $('#oliADCTitleDetail').show(); //เพิ่มมาจาก fit
+        $('#oliADCTitleEdit').hide(); //เพิ่มมาจาก fit
+        
         //Btn Apv
         $("#obtADCApprove").hide();
         $("#obtADCPrint").attr("disabled", false);
+        $("#odvGrpOptionFrom").hide(); //เพิ่มมาจาก fit
 
-        $("#obtADCCancel").hide();
+        $('.xCNHideWhenApvOrCancel').hide(); //เพิ่มมาจาก fit
+
         $(".xWBtnGrpSaveLeft").hide();
         $(".xWBtnGrpSaveRight").hide();
 
@@ -564,6 +596,7 @@ function JCNxADCControlObjAndBtn() {
         $(".form-control").attr("disabled", true);
         $(".ocbListItem").attr("disabled", true);
         $(".xCNBtnBrowseAddOn").attr("disabled", true);
+        // $(".xCNBtnDateTimeControl").attr("disabled", true); //เพิ่มมาจาก fit
         $(".xCNBtnDateTime").attr("disabled", true);
         $(".xCNDocBrowsePdt")
             .attr("disabled", true)
@@ -583,18 +616,22 @@ function JCNxADCControlObjAndBtn() {
 
     //Check สถานะเอกสาร
     if (ohdADCStaDoc == '3') {
+        $('#oliADCTitleDetail').show(); //เพิ่มมาจาก fit
+        $('#oliADCTitleEdit').hide(); //เพิ่มมาจาก fit
         $("#obtADCCancel").hide();
         $("#obtADCApprove").hide();
         $("#obtADCPrint").hide();
         $(".form-control").attr("disabled", true);
         $(".ocbListItem").attr("disabled", true);
         $(".xCNBtnBrowseAddOn").attr("disabled", true);
+        // $(".xCNBtnDateTimeControl").attr("disabled", true); //เพิ่มมาจาก fit
         $(".xCNBtnDateTime").attr("disabled", true);
         $(".xCNDocBrowsePdt")
             .attr("disabled", true)
             .addClass("xCNBrowsePdtdisabled");
         $(".xCNDocDrpDwn").hide();
         $("#oetADCSearchPdtHTML").attr("disabled", false);
+        $("#odvGrpOptionFrom").hide(); //เพิ่มมาจาก fit
         $(".xWBtnGrpSaveLeft").hide();
         $(".xWBtnGrpSaveRight").hide();
         $("#oliBtnEditShipAdd").hide();
@@ -606,6 +643,7 @@ function JCNxADCControlObjAndBtn() {
         $("#ocbADCAddDoc").attr("disabled", true);
         $(".xWBtnDelPdt").attr("disabled", true);
         $(".xCNImportBtn").attr("disabled", true);
+        $('.xCNHideWhenApvOrCancel').hide(); //เพิ่มมาจาก fit
     }
 }
 
@@ -622,9 +660,9 @@ function JSxADCApproveDocument(pbIsConfirm) {
         $('body').removeClass('modal-open');
         $('.modal-backdrop').remove();
 
-        var tADCDocNo = $("#ohdADCDocNo").val();
+        var tADCDocNo   = $("#ohdADCDocNo").val();
         var tADCBchCode = $('#ohdADCBchCode').val();
-        var tADCStaApv = $("#ohdADCStaApv").val();
+        var tADCStaApv  = $("#ohdADCStaApv").val();
 
         $.ajax({
             type: "POST",
@@ -666,13 +704,13 @@ function JSoADCCallSubscribeMQ() {
     // RabbitMQ
     /*===========================================================================*/
     // Document variable
-    var tLangCode = $("#ohdADCLang").val();
+    var tLangCode   = $("#ohdADCLang").val();
     var tUsrBchCode = $("#ohdADCBchCode").val();
-    var tUsrApv = $("#ohdADCUsrApvMQ").val();
-    var tDocNo = $("#ohdADCDocNo").val();
-    var tPrefix = "RESADJCOST";
-    var tStaApv = $("#ohdADCStaApv").val();
-    var tQName = tPrefix + "_" + tDocNo + "_" + tUsrApv;
+    var tUsrApv     = $("#ohdADCUsrApvMQ").val();
+    var tDocNo      = $("#ohdADCDocNo").val();
+    var tPrefix     = "RESADJCOST";
+    var tStaApv     = $("#ohdADCStaApv").val();
+    var tQName      = tPrefix + "_" + tDocNo + "_" + tUsrApv;
 
     // MQ Message Config
     var poDocConfig = {
@@ -763,11 +801,11 @@ function JStADCFindObjectByKey(array, key, value) {
 function JSoADCDelDocMultiple() {
     var nStaSession = JCNxFuncChkSessionExpired();
     if (typeof (nStaSession) !== 'undefined' && nStaSession == 1) {
-        var aDataDelMultiple = $('#odvADCModalDelDocMultiple #ohdConfirmIDDelMultiple').val();
-        var aTextsDelMultiple = aDataDelMultiple.substring(0, aDataDelMultiple.length - 2);
-        var aDataSplit = aTextsDelMultiple.split(" , ");
-        var nDataSplitlength = aDataSplit.length;
-        var aNewIdDelete = [];
+        var aDataDelMultiple    = $('#odvADCModalDelDocMultiple #ohdConfirmIDDelMultiple').val();
+        var aTextsDelMultiple   = aDataDelMultiple.substring(0, aDataDelMultiple.length - 2);
+        var aDataSplit          = aTextsDelMultiple.split(" , ");
+        var nDataSplitlength    = aDataSplit.length;
+        var aNewIdDelete        = [];
 
         for ($i = 0; $i < nDataSplitlength; $i++) {
             aNewIdDelete.push(aDataSplit[$i]);
