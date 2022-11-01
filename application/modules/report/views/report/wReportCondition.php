@@ -720,7 +720,7 @@
                                 $tCoditionReport .= "<div id='odvCondition" . $aRptFilValue['FTRptFltCode'] . "' class='row'>";
                                 if ($aRptFilValue['FTRptFltStaFrm'] == '1') {
                                     $tCoditionReport .= "
-                                        <div class='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                                        <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
                                             <div class='form-group'>
                                                 <div class='input-group'>
                                                     <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptBchCodeFrom' name='oetRptBchCodeFrom' maxlength='5'>
@@ -733,24 +733,7 @@
                                         </div> 
                                     ";
                                 }
-                                if ($aRptFilValue['FTRptFltStaTo'] == '1') {
-                                    $tCoditionReport .= "
-                                            <div class='col-lg-1'>
-                                                <p class='xCNTextTo'>" . language('report/report/report', 'tRptCoditionTo') . "</p>
-                                            </div>
-                                            <div class='col-lg-5'>
-                                            <div class='form-group'>
-                                                <div class='input-group'>
-                                                    <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptBchCodeTo' name='oetRptBchCodeTo' maxlength='5'>
-                                                    <input type='text' class='form-control xWPointerEventNone xWRptAllInput' id='oetRptBchNameTo' name='oetRptBchNameTo' readonly>
-                                                    <span class='input-group-btn'>
-                                                        <button id='obtRptBrowseBchTo' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div> 
-                                    ";
-                                }
+                               
                                 $tCoditionReport .= "</div>";
                             }
                             break;
@@ -763,31 +746,13 @@
                             $tCoditionReport .= "<div id='odvCondition" . $aRptFilValue['FTRptFltCode'] . "' class='row'>";
                             if ($aRptFilValue['FTRptFltStaFrm'] == '1') {
                                 $tCoditionReport .= "
-                                            <div class='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+                                            <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
                                                 <div class='form-group'>
                                                     <div class='input-group'>
                                                         <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptPosCodeFrom' name='oetRptPosCodeFrom' maxlength='5'>
                                                         <input type='text' class='form-control xWPointerEventNone xWRptAllInput' id='oetRptPosNameFrom' name='oetRptPosNameFrom' readonly>
                                                         <span class='input-group-btn'>
                                                             <button id='obtRptBrowsePosFrom' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                    ";
-                            }
-                            if ($aRptFilValue['FTRptFltStaTo'] == '1') {
-                                $tCoditionReport .= "
-                                            <div class='col-lg-1'>
-                                                <p class='xCNTextTo'>" . language('report/report/report', 'tRptCoditionTo') . "</p>
-                                            </div>
-                                            <div class='col-lg-5'>
-                                                <div class='form-group'>
-                                                    <div class='input-group'>
-                                                        <input type='text' class='form-control xCNHide xWRptAllInput' id='oetRptPosCodeTo' name='oetRptPosCodeTo' maxlength='5'>
-                                                        <input type='text' class='form-control xWPointerEventNone xWRptAllInput' id='oetRptPosNameTo' name='oetRptPosNameTo' readonly>
-                                                        <span class='input-group-btn'>
-                                                            <button id='obtRptBrowsePosTo' type='button' class='btn xCNBtnBrowseAddOn'><img class='xCNIconFind'></button>
                                                         </span>
                                                     </div>
                                                 </div>

@@ -60,7 +60,7 @@
 
         // ควบคุม เปิด-ปิด เครื่องจุดขาย 
         var bIsBchFrom = $("#oetRptBchCodeFrom").val() != "";
-        if (bIsBchFrom && nCountBch == 1) {
+        if (bIsBchFrom) {
             $("#obtRptBrowsePosFrom").attr('disabled', false);
         } else {
             $("#obtRptBrowsePosFrom").attr('disabled', true);
@@ -4215,18 +4215,11 @@ var oRptClvBrows = function(poReturnInput) {
 
         $('#oetRptPosCodeFrom').val('');
         $('#oetRptPosNameFrom').val('');
-        if (tBchCode == null) {
-            if (tUsrLevel != 'HQ') {
-                $('#oetRptBchCodeFrom').val(tBchCodeMulti);
-                // $('#oetRptBchNameSelect').val(tBchNameMulti);
-            }
+
+        if(tRptBchCodeFrom){
+            $("#obtRptBrowsePosFrom").attr('disabled', false);
+        }else{
             $("#obtRptBrowsePosFrom").attr('disabled', true);
-        } else {
-            if(tBchCode){
-                $("#obtRptBrowsePosFrom").attr('disabled', false);
-            }else{
-                $("#obtRptBrowsePosFrom").attr('disabled', true);
-            }
         }
     }
 
