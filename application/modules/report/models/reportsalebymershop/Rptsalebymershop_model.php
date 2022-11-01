@@ -75,7 +75,7 @@ class Rptsalebymershop_model extends CI_Model
 
         // Check ว่าเป็นหน้าสุดท้ายหรือไม่ ถ้าเป็นหน้าสุดท้ายให้ไป Sum footer ข้อมูลมา
         if ($nPage == $nTotalPage) {
-            $tJoinFoooter   =   "   SELECT DISTINCT
+            $tJoinFoooter   =   "   SELECT 
                                             FTUsrSession_Footer,
                                             SUM(SUB.FCPXsdQty)                      AS FCPXsdQty_Footer,
                                             SUM(SUB.FCPTotal)                       AS FCPTotal_Footer,
@@ -83,7 +83,7 @@ class Rptsalebymershop_model extends CI_Model
                                             AVG(SUB.FCPAgvPri * SUB.FCPXsdQty)      AS FCPAgvPri_Footer,
                                             SUM(SUB.FCPGrand)                       AS FCPGrand_Footer
                                         FROM (
-                                                SELECT DISTINCT 
+                                                SELECT  
                                                     FTMerCode, FTShpCode,
                                                     FTUsrSession	   AS FTUsrSession_Footer,
                                                     CONVERT(FLOAT,FTPXsdQty)  AS FCPXsdQty,
