@@ -412,6 +412,7 @@
                     </div>
                 </div> 
                 <?php include('func_setting/wFuncSetting.php'); ?>
+                <?php include('noti_setting/wNotiSetting.php'); ?>
             </div>
         </div>
     </div>

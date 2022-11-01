@@ -24,13 +24,14 @@ class mRole extends CI_Model
         $tSubQuery = "  SELECT DISTINCT
                             USRR.FTRolCode,
                             USRRL.FTRolName,
+                            USRR.FNRolLevel,
                             USRRL.FTRolRmk,
                             IMG.FTImgObj,
                             USRR.FDCreateOn
                         FROM TCNMUsrRole        USRR WITH(NOLOCK)
                         LEFT JOIN TCNMUsrRole_L USRRL WITH(NOLOCK) ON USRR.FTRolCode = USRRL.FTRolCode AND USRRL.FNLngID  = $nLngID
                         LEFT JOIN TCNMImgObj    IMG   WITH(NOLOCK) ON IMG.FTImgRefID = USRR.FTRolCode  AND IMG.FTImgTable = 'TCNMUsrRole'
-                        WHERE 1=1
+                        WHERE USRR.FDCreateOn <> ''
                      ";
 
         if( $this->session->userdata('tSesUsrLevel') != "HQ" ){
@@ -124,14 +125,15 @@ class mRole extends CI_Model
     // Return Type : Array
     public function FSaMGetDataRoleListAll($paDataWhere)
     {
-        $nLngID         = $paDataWhere['FNLngID'];
-        $tSearchList    = $paDataWhere['tSearchAll'];
-        $tSesUsrRoleCodeMulti    = $paDataWhere['tSesUsrRoleCodeMulti'];
+        $nLngID                 = $paDataWhere['FNLngID'];
+        $tSearchList            = $paDataWhere['tSearchAll'];
+        $tSesUsrRoleCodeMulti   = $paDataWhere['tSesUsrRoleCodeMulti'];
+
         $tSQL           = " SELECT
                                 COUNT (USRR.FTRolCode) AS counts
                             FROM [TCNMUsrRole]          USRR    WITH(NOLOCK)
                             LEFT JOIN [TCNMUsrRole_L]   USRRL   WITH(NOLOCK)    ON USRR.FTRolCode = USRRL.FTRolCode AND USRRL.FNLngID = $nLngID
-                            WHERE 1 = 1
+                            WHERE USRR.FDCreateOn <> ''
         ";
 
             if($this->session->userdata('nSesUsrBchCount')!=0){
@@ -172,12 +174,12 @@ class mRole extends CI_Model
     // Return Type : array
     public function FSaMRoleMenuList($paData)
     {
-        $nLngID = $paData['FNLngID'];
-        $tSesUsrRoleCodeMulti = $paData['tSesUsrRoleCodeMulti'];
+        $nLngID                 = $paData['FNLngID'];
+        $tSesUsrRoleCodeMulti   = $paData['tSesUsrRoleCodeMulti'];
 
         // echo $tSesUsrRoleCodeMulti.'XXXXX';
         if($this->session->userdata('tSesUserCode')!='00001' && $this->session->userdata('tSesUserCode')!='009'){
-        $tSQL   = " SELECT DISTINCT
+        /*$tSQL   = " SELECT DISTINCT
                         MENU.FTGmnModCode,
                         MOD_L.FTGmnModName,
                         MOD.FNGmnModShwSeq,
@@ -205,13 +207,41 @@ class mRole extends CI_Model
                     LEFT JOIN TSysMenuGrpModule MOD ON MENU.FTGmnModCode = MOD.FTGmnModCode
                     LEFT JOIN TSysMenuGrpModule_L MOD_L ON MOD.FTGmnModCode = MOD_L.FTGmnModCode AND MOD_L.FNLngID = $nLngID
                     INNER JOIN TSysMenuAlbAct MNUALB ON USRM.FTMnuCode = MNUALB.FTMnuCode
+                    WHERE 1=1 AND MENU.FTGmnModCode NOT IN ('RPT') ";*/
+        $tSQL   = " SELECT DISTINCT
+                        MENU.FTGmnModCode,
+                        MOD_L.FTGmnModName,
+                        MOD.FNGmnModShwSeq,
+                        MOD.FTGmnModCode AS FTGmnCode,
+                        MOD_L.FTGmnModName AS FTGmnName,
+                        '0' AS FNGmnShwSeq,
+                        MENU.FTMnuCode,
+                        MNU_L.FTMnuName,
+                        MENU.FNMnuSeq,
+                        MENU.FNMnuLevel,
+                        ISNULL(USRM.FTAutStaRead, 1) AS FTAutStaRead,
+                        ISNULL(USRM.FTAutStaAdd, 1) AS FTAutStaAdd,
+                        ISNULL(USRM.FTAutStaDelete, 1) AS FTAutStaDelete,
+                        ISNULL(USRM.FTAutStaEdit, 1) AS FTAutStaEdit,
+                        ISNULL(USRM.FTAutStaCancel, 1) AS FTAutStaCancel,
+                        ISNULL(USRM.FTAutStaAppv, 1) AS FTAutStaAppv,
+                        ISNULL(USRM.FTAutStaPrint, 1) AS FTAutStaPrint,
+                        ISNULL(USRM.FTAutStaPrintMore, 1) AS FTAutStaPrintMore
+                    FROM TCNTUsrMenu USRM
+                    LEFT JOIN TSysMenuGrp MGP ON USRM.FTGmnCode = MGP.FTGmnCode
+                    LEFT JOIN TSysMenuGrp_L MGPL ON USRM.FTGmnCode = MGPL.FTGmnCode AND MGPL.FNLngID = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TSysMenuList MENU ON USRM.FTMnuCode = MENU.FTMnuCode
+                    LEFT JOIN TSysMenuList_L MNU_L ON USRM.FTMnuCode = MNU_L.FTMnuCode AND MNU_L.FNLngID = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TSysMenuGrpModule MOD ON MENU.FTGmnModCode = MOD.FTGmnModCode
+                    LEFT JOIN TSysMenuGrpModule_L MOD_L ON MOD.FTGmnModCode = MOD_L.FTGmnModCode AND MOD_L.FNLngID  = ".$this->db->escape($nLngID)."
+                    INNER JOIN TSysMenuAlbAct MNUALB ON USRM.FTMnuCode = MNUALB.FTMnuCode
                     WHERE 1=1 AND MENU.FTGmnModCode NOT IN ('RPT') ";
             // if($this->session->userdata('nSesUsrBchCount')!=0){
                 if(!empty($tSesUsrRoleCodeMulti)){
                    $tSQL   .= " AND USRM.FTRolCode IN ($tSesUsrRoleCodeMulti) ";
                 }
             // }
-                $tSQL   .= " AND MENU.FNMnuLevel = 0
+                /*$tSQL   .= " AND MENU.FNMnuLevel = 0
                     AND MENU.FTMnuStaUse = 1
                     AND MOD.FTGmnModStaUse = 1
                     GROUP BY MENU.FTGmnModCode,MOD_L.FTGmnModName,MOD.FNGmnModShwSeq,MOD.FTGmnModCode,MOD_L.FTGmnModName,MENU.FTMnuCode,MNU_L.FTMnuName,MENU.FNMnuSeq,MENU.FNMnuLevel
@@ -244,7 +274,39 @@ class mRole extends CI_Model
                     LEFT JOIN TSysMenuGrpModule MOD ON MENU.FTGmnModCode = MOD.FTGmnModCode
                     LEFT JOIN TSysMenuGrpModule_L MOD_L ON MOD.FTGmnModCode = MOD_L.FTGmnModCode AND MOD_L.FNLngID = $nLngID
                     INNER JOIN TSysMenuAlbAct MNUALB ON USRM.FTMnuCode = MNUALB.FTMnuCode
-                    WHERE 1=1 ";
+                    WHERE USRM.FDCreateOn <> ''";*/
+                $tSQL   .= " AND MENU.FNMnuLevel = 0
+                            AND MENU.FTMnuStaUse    = 1
+                            AND MOD.FTGmnModStaUse  = 1
+                            UNION
+                            SELECT DISTINCT
+                                MENU.FTGmnModCode,
+                                MOD_L.FTGmnModName,
+                                MOD.FNGmnModShwSeq,
+                                MGP.FTGmnCode,
+                                MGPL.FTGmnName,
+                                MGP.FNGmnShwSeq,
+                                MENU.FTMnuCode,
+                                MNU_L.FTMnuName,
+                                MENU.FNMnuSeq,
+                                MENU.FNMnuLevel,
+                                ISNULL(USRM.FTAutStaRead, 1)        AS FTAutStaRead,
+                                ISNULL(USRM.FTAutStaAdd, 1)         AS FTAutStaAdd,
+                                ISNULL(USRM.FTAutStaDelete, 1)      AS FTAutStaDelete,
+                                ISNULL(USRM.FTAutStaEdit, 1)        AS FTAutStaEdit,
+                                ISNULL(USRM.FTAutStaCancel, 1)      AS FTAutStaCancel,
+                                ISNULL(USRM.FTAutStaAppv, 1)        AS FTAutStaAppv,
+                                ISNULL(USRM.FTAutStaPrint, 1)       AS FTAutStaPrint,
+                                ISNULL(USRM.FTAutStaPrintMore, 1)   AS FTAutStaPrintMore
+                            FROM TCNTUsrMenu USRM
+                            LEFT JOIN TSysMenuGrp MGP ON USRM.FTGmnCode = MGP.FTGmnCode
+                            LEFT JOIN TSysMenuGrp_L MGPL ON USRM.FTGmnCode = MGPL.FTGmnCode AND MGPL.FNLngID = ".$this->db->escape($nLngID)."
+                            LEFT JOIN TSysMenuList MENU ON USRM.FTMnuCode = MENU.FTMnuCode
+                            LEFT JOIN TSysMenuList_L MNU_L ON USRM.FTMnuCode = MNU_L.FTMnuCode AND MNU_L.FNLngID = ".$this->db->escape($nLngID)."
+                            LEFT JOIN TSysMenuGrpModule MOD ON MENU.FTGmnModCode = MOD.FTGmnModCode
+                            LEFT JOIN TSysMenuGrpModule_L MOD_L ON MOD.FTGmnModCode = MOD_L.FTGmnModCode AND MOD_L.FNLngID = ".$this->db->escape($nLngID)."
+                            INNER JOIN TSysMenuAlbAct MNUALB ON USRM.FTMnuCode = MNUALB.FTMnuCode
+                            WHERE USRM.FDCreateOn <> ''";
             // if($this->session->userdata('nSesUsrBchCount')!=0){
                 if(!empty($tSesUsrRoleCodeMulti)){
                    $tSQL   .= " AND USRM.FTRolCode IN ($tSesUsrRoleCodeMulti) ";
@@ -253,43 +315,43 @@ class mRole extends CI_Model
                 $tSQL .= " AND MOD.FTGmnModStaUse  = 1
                            AND MGP.FTGmnStaUse     = 1
                            AND MENU.FTMnuStaUse     = 1
-                           GROUP BY MENU.FTGmnModCode, MOD_L.FTGmnModName,MOD.FNGmnModShwSeq,MGP.FTGmnCode,MGPL.FTGmnName,MGP.FNGmnShwSeq,MENU.FTMnuCode,MNU_L.FTMnuName,MENU.FNMnuSeq, MENU.FNMnuLevel
+                           --GROUP BY MENU.FTGmnModCode, MOD_L.FTGmnModName,MOD.FNGmnModShwSeq,MGP.FTGmnCode,MGPL.FTGmnName,MGP.FNGmnShwSeq,MENU.FTMnuCode,MNU_L.FTMnuName,MENU.FNMnuSeq, MENU.FNMnuLevel
                            ORDER BY FNGmnModShwSeq,FTGmnModCode,FNGmnShwSeq,FTGmnCode,FNMnuSeq,FTMnuCode";
                     //ORDER BY FNGmnModShwSeq ASC,FNGmnShwSeq ASC,FNMnuSeq ASC,FNMnuLevel ASC ";
 
                     // echo $tSQL;
                     // die();
         }else{
-            // $tSQL   = " SELECT DISTINCT
-            //                 MENU.FTGmnModCode,
-            //                 MOD_L.FTGmnModName,
-            //                 MOD.FNGmnModShwSeq,
-            //                 MOD.FTGmnModCode    AS FTGmnCode,
-            //                 MOD_L.FTGmnModName	AS FTGmnName,
-            //                 '0'                 AS FNGmnShwSeq,
-            //                 MENU.FTMnuCode,
-            //                 MNU_L.FTMnuName,
-            //                 MENU.FNMnuSeq,
-            //                 MENU.FNMnuLevel,
-            //                 ISNULL(MNUALB.FTAutStaRead,1)       AS FTAutStaRead,
-            //                 ISNULL(MNUALB.FTAutStaAdd,1)        AS FTAutStaAdd,
-            //                 ISNULL(MNUALB.FTAutStaDelete,1)     AS FTAutStaDelete,
-            //                 ISNULL(MNUALB.FTAutStaEdit,1)       AS FTAutStaEdit,
-            //                 ISNULL(MNUALB.FTAutStaCancel,1)     AS FTAutStaCancel,
-            //                 ISNULL(MNUALB.FTAutStaAppv,1)       AS FTAutStaAppv,
-            //                 ISNULL(MNUALB.FTAutStaPrint,1)      AS FTAutStaPrint,
-            //                 ISNULL(MNUALB.FTAutStaPrintMore,1)  AS FTAutStaPrintMore
-            //             FROM TSysMenuList               MENU    WITH(NOLOCK)
-            //             LEFT JOIN TSysMenuList_L        MNU_L   WITH(NOLOCK) ON MENU.FTMnuCode      = MNU_L.FTMnuCode       AND MNU_L.FNLngID = $nLngID
-            //             LEFT JOIN TSysMenuGrpModule     MOD     WITH(NOLOCK) ON MENU.FTGmnModCode   = MOD.FTGmnModCode
-            //             LEFT JOIN TSysMenuGrpModule_L   MOD_L   WITH(NOLOCK) ON MOD.FTGmnModCode    = MOD_L.FTGmnModCode    AND MOD_L.FNLngID = $nLngID
-            //             LEFT JOIN TSysMenuAlbAct        MNUALB	WITH(NOLOCK) ON MENU.FTMnuCode      = MNUALB.FTMnuCode
-            //             WHERE 1=1
-            //             -- AND MENU.FTGmnModCode NOT IN ('RPT')
-            //             AND MENU.FNMnuLevel     = 0
-            //             AND MENU.FTMnuStaUse    = 1
-            //             AND MOD.FTGmnModStaUse	= 1
-            //             UNION  ";
+            /*$tSQL   = " SELECT DISTINCT
+                            MENU.FTGmnModCode,
+                            MOD_L.FTGmnModName,
+                            MOD.FNGmnModShwSeq,
+                            MOD.FTGmnModCode    AS FTGmnCode,
+                            MOD_L.FTGmnModName	AS FTGmnName,
+                            '0'                 AS FNGmnShwSeq,
+                            MENU.FTMnuCode,
+                            MNU_L.FTMnuName,
+                            MENU.FNMnuSeq,
+                            MENU.FNMnuLevel,
+                            ISNULL(MNUALB.FTAutStaRead,1)       AS FTAutStaRead,
+                            ISNULL(MNUALB.FTAutStaAdd,1)        AS FTAutStaAdd,
+                            ISNULL(MNUALB.FTAutStaDelete,1)     AS FTAutStaDelete,
+                            ISNULL(MNUALB.FTAutStaEdit,1)       AS FTAutStaEdit,
+                            ISNULL(MNUALB.FTAutStaCancel,1)     AS FTAutStaCancel,
+                            ISNULL(MNUALB.FTAutStaAppv,1)       AS FTAutStaAppv,
+                            ISNULL(MNUALB.FTAutStaPrint,1)      AS FTAutStaPrint,
+                            ISNULL(MNUALB.FTAutStaPrintMore,1)  AS FTAutStaPrintMore
+                        FROM TSysMenuList               MENU    WITH(NOLOCK)
+                        LEFT JOIN TSysMenuList_L        MNU_L   WITH(NOLOCK) ON MENU.FTMnuCode      = MNU_L.FTMnuCode       AND MNU_L.FNLngID = $nLngID
+                        LEFT JOIN TSysMenuGrpModule     MOD     WITH(NOLOCK) ON MENU.FTGmnModCode   = MOD.FTGmnModCode
+                        LEFT JOIN TSysMenuGrpModule_L   MOD_L   WITH(NOLOCK) ON MOD.FTGmnModCode    = MOD_L.FTGmnModCode    AND MOD_L.FNLngID = $nLngID
+                        LEFT JOIN TSysMenuAlbAct        MNUALB	WITH(NOLOCK) ON MENU.FTMnuCode      = MNUALB.FTMnuCode
+                        WHERE 1=1
+                        -- AND MENU.FTGmnModCode NOT IN ('RPT')
+                        AND MENU.FNMnuLevel     = 0
+                        AND MENU.FTMnuStaUse    = 1
+                        AND MOD.FTGmnModStaUse	= 1
+                        UNION  ";*/
             $tSQL   = " SELECT DISTINCT
                             MNU.FTGmnModCode,
                             MNU_L.FTGmnModName,
@@ -310,19 +372,16 @@ class mRole extends CI_Model
                             ISNULL(MNUALB.FTAutStaPrint,1)      AS FTAutStaPrint,
                             ISNULL(MNUALB.FTAutStaPrintMore,1)  AS FTAutStaPrintMore
                         FROM TSysMenuGrpModule        MNU    WITH (NOLOCK)
-                        LEFT JOIN TSysMenuGrpModule_L MNU_L  WITH (NOLOCK) ON MNU.FTGmnModCode = MNU_L.FTGmnModCode  AND MNU_L.FNLngID = $nLngID
+                        LEFT JOIN TSysMenuGrpModule_L MNU_L  WITH (NOLOCK) ON MNU.FTGmnModCode = MNU_L.FTGmnModCode  AND MNU_L.FNLngID = ".$this->db->escape($nLngID)."
                         LEFT JOIN TSysMenuGrp         MNG    WITH (NOLOCK) ON MNU.FTGmnModCode = MNG.FTGmnModCode
-                        LEFT JOIN TSysMenuGrp_L       MNG_L  WITH (NOLOCK) ON MNG.FTGmnCode    = MNG_L.FTGmnCode     AND MNG_L.FNLngID = $nLngID
+                        LEFT JOIN TSysMenuGrp_L       MNG_L  WITH (NOLOCK) ON MNG.FTGmnCode    = MNG_L.FTGmnCode     AND MNG_L.FNLngID = ".$this->db->escape($nLngID)."
                         LEFT JOIN TSysMenuList        MNL    WITH (NOLOCK) ON MNU.FTGmnModCode = MNL.FTGmnModCode    AND MNG.FTGmnCode = MNL.FTGmnCode AND MNG.FTGmnCode = MNL.FTMnuParent
                         LEFT JOIN TSysMenuList_L      MNL_L  WITH (NOLOCK) ON MNL.FTMnuCode    = MNL_L.FTMnuCode     AND MNL_L.FNLngID = 1 
                         LEFT JOIN TSysMenuAlbAct      MNUALB WITH (NOLOCK) ON MNL.FTMnuCode    = MNUALB.FTMnuCode
-                        WHERE 1=1
-                        -- AND MNU.FTGmnModCode NOT IN ('RPT')
-                        AND MNU.FTGmnModStaUse  = 1
-                        AND MNG.FTGmnStaUse     = 1
-                        AND MNL.FTMnuStaUse     = 1
+                        WHERE MNU.FTGmnModStaUse    = 1
+                        AND MNG.FTGmnStaUse         = 1
+                        AND MNL.FTMnuStaUse         = 1
                         ORDER BY FNGmnModShwSeq,FTGmnModCode,FNGmnShwSeq,FTGmnCode,FNMnuSeq,FTMnuCode
-                        --ORDER BY FNGmnModShwSeq ASC,FNGmnShwSeq ASC,FNMnuSeq ASC,FNMnuLevel ASC
                     ";
         }
         
@@ -355,29 +414,27 @@ class mRole extends CI_Model
     // Return Type : array
     public function FSaMRptListMenu($paData)
     {
-        $nLngID     = $paData['FNLngID'];
-        $tSesUsrRoleCodeMulti = $paData['tSesUsrRoleCodeMulti'];
-        if($this->session->userdata('tSesUserCode')!='00001' && $this->session->userdata('tSesUserCode')!='009'){
+        $nLngID                 = $paData['FNLngID'];
+        $tSesUsrRoleCodeMulti   = $paData['tSesUsrRoleCodeMulti'];
+        //if($this->session->userdata('tSesUserCode')!='00001' && $this->session->userdata('tSesUserCode')!='009'){
+        if( $this->session->userdata('nSesUsrRoleLevel') != '99' ){
         $tSQL   =   "  SELECT DISTINCT
-                        RPM.FTGrpRptModCode,
-                        RPM.FNGrpRptModShwSeq,
-                        RPG.FNGrpRptShwSeq,
-                        RPML.FNGrpRptModName,
-                        RPG.FTGrpRptCode,
-                        RPGL.FTGrpRptName,
-                        RPT.FTRptCode,
-                        RPTL.FTRptName
-                        FROM
-                        TCNTUsrFuncRpt UFR
+                            RPM.FTGrpRptModCode,
+                            RPM.FNGrpRptModShwSeq,
+                            RPG.FNGrpRptShwSeq,
+                            RPML.FNGrpRptModName,
+                            RPG.FTGrpRptCode,
+                            RPGL.FTGrpRptName,
+                            RPT.FTRptCode,
+                            RPTL.FTRptName
+                        FROM TCNTUsrFuncRpt UFR
                         INNER JOIN TSysReport RPT WITH (NOLOCK) ON UFR.FTUfrGrpRef = RPT.FTGrpRptCode AND UFR.FTUfrRef = RPT.FTRptCode
-                        LEFT JOIN TSysReport_L RPTL WITH (NOLOCK) ON RPT.FTRptCode = RPTL.FTRptCode AND RPTL.FNLngID = $nLngID
+                        LEFT JOIN TSysReport_L RPTL WITH (NOLOCK) ON RPT.FTRptCode = RPTL.FTRptCode AND RPTL.FNLngID = ".$this->db->escape($nLngID)."
                         LEFT JOIN TSysReportGrp RPG WITH (NOLOCK) ON UFR.FTUfrGrpRef = RPG.FTGrpRptCode
-                        LEFT JOIN TSysReportGrp_L RPGL WITH (NOLOCK) ON RPG.FTGrpRptCode = RPGL.FTGrpRptCode AND RPGL.FNLngID = $nLngID
+                        LEFT JOIN TSysReportGrp_L RPGL WITH (NOLOCK) ON RPG.FTGrpRptCode = RPGL.FTGrpRptCode AND RPGL.FNLngID = ".$this->db->escape($nLngID)."
                         LEFT JOIN TSysReportModule RPM WITH (NOLOCK) ON RPT.FTGrpRptModCode = RPM.FTGrpRptModCode 
-                        LEFT JOIN TSysReportModule_L RPML WITH (NOLOCK) ON RPM.FTGrpRptModCode = RPML.FTGrpRptModCode AND RPML.FNLngID = $nLngID
-                        WHERE
-                            1 = 1
-                        AND UFR.FTUfrType = 2
+                        LEFT JOIN TSysReportModule_L RPML WITH (NOLOCK) ON RPM.FTGrpRptModCode = RPML.FTGrpRptModCode AND RPML.FNLngID = ".$this->db->escape($nLngID)."
+                        WHERE UFR.FTUfrType = 2
                         AND RPG.FTGrpRptStaUse = 1
                         AND RPM.FTGrpRptModStaUse = 1
                         AND RPT.FTRptStaUse = 1 ";
@@ -391,27 +448,26 @@ class mRole extends CI_Model
                                     RPG.FNGrpRptShwSeq ASC
                 ";
                 
-            }else{
-         $tSQL   =   "   SELECT 
-                RPM.FTGrpRptModCode,
-                RPM.FNGrpRptModShwSeq,
-                RPML.FNGrpRptModName,
-                RPG.FTGrpRptCode,
-                RPGL.FTGrpRptName,
-                RPT.FTRptCode,
-                RPTL.FTRptName                         
-            FROM TSysReportModule           RPM     WITH(NOLOCK)
-            LEFT JOIN TSysReportModule_L    RPML    WITH(NOLOCK)    ON RPM.FTGrpRptModCode  = RPML.FTGrpRptModCode AND RPML.FNLngID = $nLngID 
-            LEFT JOIN TSysReportGrp         RPG     WITH(NOLOCK)    ON RPM.FTGrpRptModCode  = RPG.FTGrpRptModCode
-            LEFT JOIN TSysReportGrp_L       RPGL    WITH(NOLOCK)    ON RPG.FTGrpRptCode     = RPGL.FTGrpRptCode    AND RPGL.FNLngID = $nLngID 
-            LEFT JOIN TSysReport            RPT     WITH(NOLOCK)    ON RPM.FTGrpRptModCode  = RPT.FTGrpRptModCode  AND RPG.FTGrpRptCode = RPT.FTGrpRptCode
-            LEFT JOIN TSysReport_L          RPTL    WITH(NOLOCK)    ON RPT.FTRptCode        = RPTL.FTRptCode       AND RPTL.FNLngID = $nLngID 
-            WHERE 1 = 1 
-            AND RPG.FTGrpRptStaUse    = 1
-            AND RPM.FTGrpRptModStaUse = 1
-            AND RPT.FTRptStaUse       = 1
-            ORDER BY RPM.FNGrpRptModShwSeq ASC , RPG.FNGrpRptShwSeq ASC 
-            ";
+        }else{
+            $tSQL   =   "   SELECT 
+                                RPM.FTGrpRptModCode,
+                                RPM.FNGrpRptModShwSeq,
+                                RPML.FNGrpRptModName,
+                                RPG.FTGrpRptCode,
+                                RPGL.FTGrpRptName,
+                                RPT.FTRptCode,
+                                RPTL.FTRptName                         
+                            FROM TSysReportModule RPM WITH(NOLOCK)
+                            LEFT JOIN TSysReportModule_L RPML WITH(NOLOCK) ON RPM.FTGrpRptModCode = RPML.FTGrpRptModCode AND RPML.FNLngID = ".$this->db->escape($nLngID)."
+                            LEFT JOIN TSysReportGrp RPG WITH(NOLOCK) ON RPM.FTGrpRptModCode = RPG.FTGrpRptModCode
+                            LEFT JOIN TSysReportGrp_L RPGL WITH(NOLOCK) ON RPG.FTGrpRptCode = RPGL.FTGrpRptCode AND RPGL.FNLngID = ".$this->db->escape($nLngID)."
+                            LEFT JOIN TSysReport RPT WITH(NOLOCK) ON RPM.FTGrpRptModCode = RPT.FTGrpRptModCode AND RPG.FTGrpRptCode = RPT.FTGrpRptCode
+                            LEFT JOIN TSysReport_L RPTL WITH(NOLOCK) ON RPT.FTRptCode = RPTL.FTRptCode AND RPTL.FNLngID = ".$this->db->escape($nLngID)."
+                            WHERE RPG.FTGrpRptStaUse    = 1
+                            AND RPM.FTGrpRptModStaUse = 1
+                            AND RPT.FTRptStaUse       = 1
+                            ORDER BY RPM.FNGrpRptModShwSeq ASC , RPG.FNGrpRptShwSeq ASC 
+                ";
         }
         $oQuery = $this->db->query($tSQL);
 
@@ -446,9 +502,9 @@ class mRole extends CI_Model
      */
     public function FSaMGetFuncSettingList($paParams = [])
     {
-        $nLngID = $paParams['FNLngID'];
-        $tRoleCode = $paParams['FTRolCode'];
-        $tSesUsrRoleCodeMulti = $paParams['tSesUsrRoleCodeMulti'];
+        $nLngID                 = $paParams['FNLngID'];
+        $tRoleCode              = $paParams['FTRolCode'];
+        $tSesUsrRoleCodeMulti   = $paParams['tSesUsrRoleCodeMulti'];
         
         $tSQL = " 
             SELECT DISTINCT
@@ -461,8 +517,15 @@ class mRole extends CI_Model
                 DT.FTGdtCallByName,
                 DT.FNGdtFuncLevel,
                 DT.FTGdtStaUse,
-                (SELECT FUNC.FTUfrStaAlw FROM TCNTUsrFuncRpt FUNC WHERE FUNC.FTGhdApp = HD.FTGhdApp AND FUNC.FTUfrGrpRef = HD.FTGhdCode AND FUNC.FTUfrRef = DT.FTSysCode AND  FUNC.FTUfrType = '1' AND FUNC.FTRolCode='$tRoleCode'  ) AS FTUfrStaAlw
-                --USRFUNC.FTUfrStaAlw
+                (
+                    SELECT FUNC.FTUfrStaAlw 
+                    FROM TCNTUsrFuncRpt FUNC 
+                    WHERE FUNC.FTGhdApp = HD.FTGhdApp 
+                    AND FUNC.FTUfrGrpRef = HD.FTGhdCode 
+                    AND FUNC.FTUfrRef = DT.FTSysCode 
+                    AND  FUNC.FTUfrType = '1' 
+                    AND FUNC.FTRolCode='$tRoleCode'  
+                ) AS FTUfrStaAlw
             FROM TPSMFuncHD HD WITH (NOLOCK)
             INNER JOIN TPSMFuncDT DT WITH (NOLOCK) ON HD.FTGhdCode = DT.FTGhdCode
             INNER JOIN TPSMFuncDT_L DTL WITH (NOLOCK) ON DT.FTGhdCode = DTL.FTGhdCode AND DT.FTSysCode = DTL.FTSysCode AND DTL.FNLngID = $nLngID
@@ -470,9 +533,15 @@ class mRole extends CI_Model
             LEFT JOIN TCNTUsrFuncRpt USRFUNC WITH (NOLOCK) ON USRFUNC.FTGhdApp = HD.FTGhdApp AND USRFUNC.FTUfrGrpRef = HD.FTGhdCode AND USRFUNC.FTUfrRef = DT.FTSysCode AND USRFUNC.FTUfrType = '1' 
             WHERE DT.FTGdtSysUse = '1' 
             AND DT.FTGdtStaUse = '1' ";
-    if($this->session->userdata('tSesUserCode')!='00001' && $this->session->userdata('tSesUserCode')!='009'){
+
+    // if($this->session->userdata('tSesUserCode')!='00001' && $this->session->userdata('tSesUserCode')!='009'){
+    //     if(!empty($tSesUsrRoleCodeMulti)){
+    //     $tSQL .= "AND USRFUNC.FTRolCode IN($tSesUsrRoleCodeMulti)";
+    //     }
+    // }
+    if ($this->session->userdata("tSesUsrLevel") != "HQ"){
         if(!empty($tSesUsrRoleCodeMulti)){
-        $tSQL .= "AND USRFUNC.FTRolCode IN($tSesUsrRoleCodeMulti)";
+            $tSQL .= "AND USRFUNC.FTRolCode IN ('$tSesUsrRoleCodeMulti')";
         }
     }
      $tSQL .=" ORDER BY APL.FTAppName ASC, HD.FTKbdScreen ASC, DTL.FTGdtName ASC
@@ -927,7 +996,7 @@ class mRole extends CI_Model
                             LEFT JOIN TSysMenuList_L        MNL_L	WITH(NOLOCK) ON MNL.FTMnuCode 		= MNL_L.FTMnuCode 		AND MNL_L.FNLngID = $nLngID
                             LEFT JOIN TSysMenuGrpModule     MOD		WITH(NOLOCK) ON MNL.FTGmnModCode	= MOD.FTGmnModCode
                             LEFT JOIN TSysMenuGrpModule_L   MOD_L	WITH(NOLOCK) ON MOD.FTGmnModCode	= MOD_L.FTGmnModCode	AND MOD_L.FNLngID = $nLngID
-                            WHERE 1=1
+                            WHERE USRM.FDCreateOn <> ''
                             AND USRM.FTRolCode      = '$tRoleCode'
                             AND MNL.FNMnuLevel      = 0
                             AND MNL.FTMnuStaUse     = 1
@@ -962,7 +1031,7 @@ class mRole extends CI_Model
                             LEFT JOIN TSysMenuGrp_L MGP_L       WITH(NOLOCK) ON MGP.FTGmnCode    = MGP_L.FTGmnCode       AND MGP_L.FNLngID = $nLngID
                             LEFT JOIN TSysMenuGrpModule MOD     WITH(NOLOCK) ON MGP.FTGmnModCode = MOD.FTGmnModCode
                             LEFT JOIN TSysMenuGrpModule_L MOD_L WITH(NOLOCK) ON MOD.FTGmnModCode = MOD_L.FTGmnModCode    AND MOD_L.FNLngID = $nLngID
-                            WHERE 1=1 
+                            WHERE USRM.FDCreateOn <> ''
                             AND USRM.FTRolCode      = '$tRoleCode'
                             AND MNL.FTMnuStaUse     = 1
                             AND MGP.FTGmnStaUse     = 1
@@ -1137,135 +1206,35 @@ class mRole extends CI_Model
     // ===============================================  Export  Data ==================================================================
 
 
-        // Function : Get Data TCNMUsrRoleSpc
-        // Create By Witsarut 28-10-2020
-        public function FSaMROlExportDetailUsrRoleSpc($paData){
-            $tRoleCode  = $paData['tRoleCode'];
-            $nLngID     = $this->session->userdata("tLangEdit");
+    // Function : Get Data TCNMUsrRoleSpc
+    // Create By Witsarut 28-10-2020
+    public function FSaMROlExportDetailUsrRoleSpc($paData){
+        $tRoleCode  = $paData['tRoleCode'];
+        $nLngID     = $this->session->userdata("tLangEdit");
 
-            $tSQL       = " SELECT 
-                                ROLSPC.FTRolCode,
-                                ROLSPC.FTAgnCode,
-                                ROLSPC.FTBchCode,
-                                AGN_L.FTAgnName,
-                                BCH_L.FTBchName
-                        FROM TCNMUsrRoleSpc ROLSPC WITH(NOLOCK)
-                        LEFT JOIN TCNMUsrRole ROL WITH(NOLOCK) ON ROLSPC.FTRolCode = ROL.FTRolCode
-                        LEFT JOIN TCNMUsrRole_L ROL_L WITH(NOLOCK) ON ROLSPC.FTRolCode = ROL_L.FTRolCode AND ROL_L.FNLngID = $nLngID
-                        LEFT JOIN TCNMAgency AGN WITH(NOLOCK) ON ROLSPC.FTAgnCode = AGN.FTAgnCode
-                        LEFT JOIN TCNMAgency_L AGN_L WITH(NOLOCK) ON ROLSPC.FTAgnCode = AGN_L.FTAgnCode AND AGN_L.FNLngID = $nLngID
-                        LEFT JOIN TCNMBranch BCH WITH(NOLOCK) ON ROLSPC.FTBchCode = BCH.FTBchCode
-                        LEFT JOIN TCNMBranch_L BCH_L WITH(NOLOCK) ON ROLSPC.FTBchCode = BCH_L.FTBchCode AND BCH_L.FNLngID = $nLngID
-                        WHERE ROLSPC.FTRolCode = '$tRoleCode'  "; 
+        $tSQL       = " SELECT 
+                            ROLSPC.FTRolCode,
+                            ROLSPC.FTAgnCode,
+                            ROLSPC.FTBchCode,
+                            AGN_L.FTAgnName,
+                            BCH_L.FTBchName
+                    FROM TCNMUsrRoleSpc ROLSPC WITH(NOLOCK)
+                    LEFT JOIN TCNMUsrRole ROL WITH(NOLOCK) ON ROLSPC.FTRolCode = ROL.FTRolCode
+                    LEFT JOIN TCNMUsrRole_L ROL_L WITH(NOLOCK) ON ROLSPC.FTRolCode = ROL_L.FTRolCode AND ROL_L.FNLngID = $nLngID
+                    LEFT JOIN TCNMAgency AGN WITH(NOLOCK) ON ROLSPC.FTAgnCode = AGN.FTAgnCode
+                    LEFT JOIN TCNMAgency_L AGN_L WITH(NOLOCK) ON ROLSPC.FTAgnCode = AGN_L.FTAgnCode AND AGN_L.FNLngID = $nLngID
+                    LEFT JOIN TCNMBranch BCH WITH(NOLOCK) ON ROLSPC.FTBchCode = BCH.FTBchCode
+                    LEFT JOIN TCNMBranch_L BCH_L WITH(NOLOCK) ON ROLSPC.FTBchCode = BCH_L.FTBchCode AND BCH_L.FNLngID = $nLngID
+                    WHERE ROLSPC.FTRolCode = '$tRoleCode'  "; 
 
-                $oQuery = $this->db->query($tSQL);
-
-                if ($oQuery->num_rows() > 0) {
-                    $aItems = $oQuery->result_array();
-                    $aResult = array(
-                        'raItems' => $aItems,
-                        'rtCode' => '1',
-                        'rtDesc' => 'success',
-                    );
-                } else {
-                    $aResult = array(
-                        'raItems'   => array(),
-                        'rtCode'    => '800',
-                        'rtDesc'    => 'data not found'
-                    );
-                }
-            return $aResult;
-
-        }
-
-        // Function : Get Data TCNTUsrMenu
-        // Create By Witsarut 28-10-2020
-        public function FSaMROlExportDetailUsrMenu($paData){
-            $tRoleCode  = $paData['tRoleCode'];
-            $nLngID     = $this->session->userdata("tLangEdit");
-    
-            $tSQL   = " SELECT DISTINCT
-                            USRM.FTRolCode,
-                            MENU.FTGmnModCode,
-                            MOD_L.FTGmnModName,
-                            MOD.FNGmnModShwSeq,
-                            MOD.FTGmnModCode AS FTGmnCode,
-                            MOD_L.FTGmnModName AS FTGmnName,
-                            '0' AS FNGmnShwSeq,
-                            MENU.FTMnuCode,
-                            MNU_L.FTMnuName,
-                            MENU.FNMnuSeq,
-                            MENU.FNMnuLevel,
-                            ISNULL(USRM.FTAutStaRead, 1) AS FTAutStaRead,
-                            ISNULL(USRM.FTAutStaAdd, 1) AS FTAutStaAdd,
-                            ISNULL(USRM.FTAutStaDelete, 1) AS FTAutStaDelete,
-                            ISNULL(USRM.FTAutStaEdit, 1) AS FTAutStaEdit,
-                            ISNULL(USRM.FTAutStaCancel, 1) AS FTAutStaCancel,
-                            ISNULL(USRM.FTAutStaAppv, 1) AS FTAutStaAppv,
-                            ISNULL(USRM.FTAutStaPrint, 1) AS FTAutStaPrint,
-                            ISNULL(USRM.FTAutStaPrintMore, 1) AS FTAutStaPrintMore
-                        FROM
-                            TCNTUsrMenu USRM
-                        LEFT JOIN TSysMenuGrp MGP ON USRM.FTGmnCode = MGP.FTGmnCode
-                        LEFT JOIN TSysMenuGrp_L MGPL ON USRM.FTGmnCode = MGPL.FTGmnCode AND MGPL.FNLngID = $nLngID
-                        LEFT JOIN TSysMenuList MENU ON USRM.FTMnuCode = MENU.FTMnuCode
-                        LEFT JOIN TSysMenuList_L MNU_L ON USRM.FTMnuCode = MNU_L.FTMnuCode AND MNU_L.FNLngID = $nLngID
-                        LEFT JOIN TSysMenuGrpModule MOD ON MENU.FTGmnModCode = MOD.FTGmnModCode
-                        LEFT JOIN TSysMenuGrpModule_L MOD_L ON MOD.FTGmnModCode = MOD_L.FTGmnModCode AND MOD_L.FNLngID = $nLngID
-                        WHERE 1=1 ";
-                    if(!empty($tRoleCode)){
-                       $tSQL   .= " AND USRM.FTRolCode IN ('$tRoleCode') ";
-                    }
-                    $tSQL   .= " AND MENU.FNMnuLevel = 0
-                        AND MENU.FTMnuStaUse = 1
-                        AND MOD.FTGmnModStaUse = 1
-                        UNION
-                        SELECT DISTINCT
-                            USRM.FTRolCode,
-                            MENU.FTGmnModCode,
-                            MOD_L.FTGmnModName,
-                            MOD.FNGmnModShwSeq,
-                            MGP.FTGmnCode,
-                            MGPL.FTGmnName,
-                            MGP.FNGmnShwSeq,
-                            MENU.FTMnuCode,
-                            MNU_L.FTMnuName,
-                            MENU.FNMnuSeq,
-                            MENU.FNMnuLevel,
-                            ISNULL(USRM.FTAutStaRead, 1) AS FTAutStaRead,
-                            ISNULL(USRM.FTAutStaAdd, 1) AS FTAutStaAdd,
-                            ISNULL(USRM.FTAutStaDelete, 1) AS FTAutStaDelete,
-                            ISNULL(USRM.FTAutStaEdit, 1) AS FTAutStaEdit,
-                            ISNULL(USRM.FTAutStaCancel, 1) AS FTAutStaCancel,
-                            ISNULL(USRM.FTAutStaAppv, 1) AS FTAutStaAppv,
-                            ISNULL(USRM.FTAutStaPrint, 1) AS FTAutStaPrint,
-                            ISNULL(USRM.FTAutStaPrintMore, 1) AS FTAutStaPrintMore
-                        FROM
-                            TCNTUsrMenu USRM
-                        LEFT JOIN TSysMenuGrp MGP ON USRM.FTGmnCode = MGP.FTGmnCode
-                        LEFT JOIN TSysMenuGrp_L MGPL ON USRM.FTGmnCode = MGPL.FTGmnCode AND MGPL.FNLngID = $nLngID
-                        LEFT JOIN TSysMenuList MENU ON USRM.FTMnuCode = MENU.FTMnuCode
-                        LEFT JOIN TSysMenuList_L MNU_L ON USRM.FTMnuCode = MNU_L.FTMnuCode AND MNU_L.FNLngID = $nLngID
-                        LEFT JOIN TSysMenuGrpModule MOD ON MENU.FTGmnModCode = MOD.FTGmnModCode
-                        LEFT JOIN TSysMenuGrpModule_L MOD_L ON MOD.FTGmnModCode = MOD_L.FTGmnModCode AND MOD_L.FNLngID = $nLngID
-                        WHERE 1=1 ";
-                    if(!empty($tRoleCode)){
-                       $tSQL   .= " AND USRM.FTRolCode IN ('$tRoleCode') ";
-                    }
-                    $tSQL .= " AND MOD.FTGmnModStaUse  = 1
-                               AND MGP.FTGmnStaUse     = 1
-                               AND MENU.FTMnuStaUse     = 1
-                               ORDER BY FNGmnModShwSeq,FTGmnModCode,FNGmnShwSeq,FTGmnCode,FNMnuSeq,FTMnuCode
-                      ";
-         
             $oQuery = $this->db->query($tSQL);
 
             if ($oQuery->num_rows() > 0) {
-                $oList = $oQuery->result_array();
+                $aItems = $oQuery->result_array();
                 $aResult = array(
-                    'raItems'   => $oList,
-                    'rtCode'    => '1',
-                    'rtDesc'    => 'success',
+                    'raItems' => $aItems,
+                    'rtCode' => '1',
+                    'rtDesc' => 'success',
                 );
             } else {
                 $aResult = array(
@@ -1274,112 +1243,157 @@ class mRole extends CI_Model
                     'rtDesc'    => 'data not found'
                 );
             }
-            unset($nLngID);
-            unset($tSQL);
-            unset($oQuery);
-            unset($oList);
-            return $aResult;
-        }
+        return $aResult;
 
-        // Function : Get Data RptMenu
-        // Create By Witsarut 28-10-2020
-        public function FSaMROlExportDetailRptMenu($paData){
-            $tRoleCode  = $paData['tRoleCode'];
-            $nLngID     = $this->session->userdata("tLangEdit");
+    }
 
-            $tSQL   =   "   SELECT DISTINCT
-                                RPM.FTGrpRptModCode,
-                                RPM.FNGrpRptModShwSeq,
-                                RPG.FNGrpRptShwSeq,
-                                RPML.FNGrpRptModName,
-                                RPG.FTGrpRptCode,
-                                RPGL.FTGrpRptName,
-                                RPT.FTRptCode,
-                                RPTL.FTRptName    
-                            FROM TCNTUsrFuncRpt UFR
-                            INNER JOIN TSysReport RPT WITH (NOLOCK) ON UFR.FTUfrGrpRef = RPT.FTGrpRptCode AND UFR.FTUfrRef = RPT.FTRptCode
-                            LEFT JOIN TSysReport_L RPTL WITH (NOLOCK) ON RPT.FTRptCode = RPTL.FTRptCode AND RPTL.FNLngID = $nLngID
-                            LEFT JOIN TSysReportGrp RPG WITH (NOLOCK) ON UFR.FTUfrGrpRef = RPG.FTGrpRptCode
-                            LEFT JOIN TSysReportGrp_L RPGL WITH (NOLOCK) ON RPG.FTGrpRptCode = RPGL.FTGrpRptCode AND RPGL.FNLngID = $nLngID
-                            LEFT JOIN TSysReportModule RPM WITH (NOLOCK) ON RPT.FTGrpRptModCode = RPM.FTGrpRptModCode 
-                            LEFT JOIN TSysReportModule_L RPML WITH (NOLOCK) ON RPM.FTGrpRptModCode = RPML.FTGrpRptModCode AND RPML.FNLngID = $nLngID
-                            WHERE 1 = 1
-                            AND UFR.FTUfrType = 2
-                            AND RPG.FTGrpRptStaUse = 1
-                            AND RPM.FTGrpRptModStaUse = 1
-                            AND RPT.FTRptStaUse = 1 ";
+    // Function : Get Data TCNTUsrMenu
+    // Create By Witsarut 28-10-2020
+    public function FSaMROlExportDetailUsrMenu($paData){
+        $tRoleCode  = $paData['tRoleCode'];
+        $nLngID     = $this->session->userdata("tLangEdit");
 
-                    if(!empty($tRoleCode)){
-                        $tSQL   .= " AND UFR.FTRolCode IN ('$tRoleCode') ";
-                    }
-
-                    $tSQL   .= " ORDER BY
-                                    RPM.FNGrpRptModShwSeq ASC,
-                                    RPG.FNGrpRptShwSeq ASC
-                    ";
-
-                    $oQuery = $this->db->query($tSQL);
-
-                    if ($oQuery->num_rows() > 0) {
-                        $oList = $oQuery->result_array();
-                        $aResult = array(
-                            'raItems'   => $oList,
-                            'rtCode'    => '1',
-                            'rtDesc'    => 'success',
-                        );
-                    } else {
-                        $aResult = array(
-                            'raItems'   => array(),
-                            'rtCode'    => '800',
-                            'rtDesc'    => 'data not found'
-                        );
-                    }
-                unset($nLngID);
-                unset($tSQL);
-                unset($oQuery);
-                unset($oList);
-                return $aResult;
-        }
-
-        // Function : Get Data TPSMFuncHD
-        // Create By Witsarut 28-10-2020
-        public function FSaMROlExportDetailFuncSetting($paData){
-            $tRoleCode  = $paData['tRoleCode'];
-            $nLngID     = $this->session->userdata("tLangEdit");
-
-            $tSQL = " SELECT DISTINCT
-                            HD.FTGhdApp,
-                            HD.FTKbdScreen,
-                            APL.FTAppName,
-                            DTL.FTGdtName,
-                            DT.FTGhdCode,
-                            DT.FTSysCode,
-                            DT.FTGdtCallByName,
-                            DT.FNGdtFuncLevel,
-                            DT.FTGdtStaUse,
-                            (SELECT FUNC.FTUfrStaAlw FROM TCNTUsrFuncRpt FUNC WHERE FUNC.FTGhdApp = HD.FTGhdApp AND FUNC.FTUfrGrpRef = HD.FTGhdCode AND FUNC.FTUfrRef = DT.FTSysCode AND  FUNC.FTUfrType = '1' AND FUNC.FTRolCode='$tRoleCode'  ) AS FTUfrStaAlw
-                        FROM TPSMFuncHD HD WITH (NOLOCK)
-                        INNER JOIN TPSMFuncDT DT WITH (NOLOCK) ON HD.FTGhdCode = DT.FTGhdCode
-                        INNER JOIN TPSMFuncDT_L DTL WITH (NOLOCK) ON DT.FTGhdCode = DTL.FTGhdCode AND DT.FTSysCode = DTL.FTSysCode AND DTL.FNLngID = $nLngID
-                        INNER JOIN TSysApp_L APL WITH (NOLOCK) ON HD.FTGhdApp = APL.FTAppCode AND APL.FNLngID = $nLngID
-                        LEFT JOIN TCNTUsrFuncRpt USRFUNC WITH (NOLOCK) ON USRFUNC.FTGhdApp = HD.FTGhdApp AND USRFUNC.FTUfrGrpRef = HD.FTGhdCode AND USRFUNC.FTUfrRef = DT.FTSysCode AND USRFUNC.FTUfrType = '1' 
-                        WHERE DT.FTGdtSysUse = '1' 
-                        AND DT.FTGdtStaUse = '1' ";
+        $tSQL   = " SELECT DISTINCT
+                        USRM.FTRolCode,
+                        MENU.FTGmnModCode,
+                        MOD_L.FTGmnModName,
+                        MOD.FNGmnModShwSeq,
+                        MOD.FTGmnModCode AS FTGmnCode,
+                        MOD_L.FTGmnModName AS FTGmnName,
+                        '0' AS FNGmnShwSeq,
+                        MENU.FTMnuCode,
+                        MNU_L.FTMnuName,
+                        MENU.FNMnuSeq,
+                        MENU.FNMnuLevel,
+                        ISNULL(USRM.FTAutStaRead, 1) AS FTAutStaRead,
+                        ISNULL(USRM.FTAutStaAdd, 1) AS FTAutStaAdd,
+                        ISNULL(USRM.FTAutStaDelete, 1) AS FTAutStaDelete,
+                        ISNULL(USRM.FTAutStaEdit, 1) AS FTAutStaEdit,
+                        ISNULL(USRM.FTAutStaCancel, 1) AS FTAutStaCancel,
+                        ISNULL(USRM.FTAutStaAppv, 1) AS FTAutStaAppv,
+                        ISNULL(USRM.FTAutStaPrint, 1) AS FTAutStaPrint,
+                        ISNULL(USRM.FTAutStaPrintMore, 1) AS FTAutStaPrintMore
+                    FROM
+                        TCNTUsrMenu USRM
+                    LEFT JOIN TSysMenuGrp MGP ON USRM.FTGmnCode = MGP.FTGmnCode
+                    LEFT JOIN TSysMenuGrp_L MGPL ON USRM.FTGmnCode = MGPL.FTGmnCode AND MGPL.FNLngID = $nLngID
+                    LEFT JOIN TSysMenuList MENU ON USRM.FTMnuCode = MENU.FTMnuCode
+                    LEFT JOIN TSysMenuList_L MNU_L ON USRM.FTMnuCode = MNU_L.FTMnuCode AND MNU_L.FNLngID = $nLngID
+                    LEFT JOIN TSysMenuGrpModule MOD ON MENU.FTGmnModCode = MOD.FTGmnModCode
+                    LEFT JOIN TSysMenuGrpModule_L MOD_L ON MOD.FTGmnModCode = MOD_L.FTGmnModCode AND MOD_L.FNLngID = $nLngID
+                    WHERE USRM.FDCreateOn <> '' ";
                 if(!empty($tRoleCode)){
-                    $tSQL .= "AND USRFUNC.FTRolCode IN('$tRoleCode')";
+                    $tSQL   .= " AND USRM.FTRolCode IN ('$tRoleCode') ";
                 }
-              
-                $tSQL .=" ORDER BY APL.FTAppName ASC, HD.FTKbdScreen ASC, DTL.FTGdtName ASC
+                $tSQL   .= " AND MENU.FNMnuLevel = 0
+                    AND MENU.FTMnuStaUse = 1
+                    AND MOD.FTGmnModStaUse = 1
+                    UNION
+                    SELECT DISTINCT
+                        USRM.FTRolCode,
+                        MENU.FTGmnModCode,
+                        MOD_L.FTGmnModName,
+                        MOD.FNGmnModShwSeq,
+                        MGP.FTGmnCode,
+                        MGPL.FTGmnName,
+                        MGP.FNGmnShwSeq,
+                        MENU.FTMnuCode,
+                        MNU_L.FTMnuName,
+                        MENU.FNMnuSeq,
+                        MENU.FNMnuLevel,
+                        ISNULL(USRM.FTAutStaRead, 1) AS FTAutStaRead,
+                        ISNULL(USRM.FTAutStaAdd, 1) AS FTAutStaAdd,
+                        ISNULL(USRM.FTAutStaDelete, 1) AS FTAutStaDelete,
+                        ISNULL(USRM.FTAutStaEdit, 1) AS FTAutStaEdit,
+                        ISNULL(USRM.FTAutStaCancel, 1) AS FTAutStaCancel,
+                        ISNULL(USRM.FTAutStaAppv, 1) AS FTAutStaAppv,
+                        ISNULL(USRM.FTAutStaPrint, 1) AS FTAutStaPrint,
+                        ISNULL(USRM.FTAutStaPrintMore, 1) AS FTAutStaPrintMore
+                    FROM
+                        TCNTUsrMenu USRM
+                    LEFT JOIN TSysMenuGrp MGP ON USRM.FTGmnCode = MGP.FTGmnCode
+                    LEFT JOIN TSysMenuGrp_L MGPL ON USRM.FTGmnCode = MGPL.FTGmnCode AND MGPL.FNLngID = $nLngID
+                    LEFT JOIN TSysMenuList MENU ON USRM.FTMnuCode = MENU.FTMnuCode
+                    LEFT JOIN TSysMenuList_L MNU_L ON USRM.FTMnuCode = MNU_L.FTMnuCode AND MNU_L.FNLngID = $nLngID
+                    LEFT JOIN TSysMenuGrpModule MOD ON MENU.FTGmnModCode = MOD.FTGmnModCode
+                    LEFT JOIN TSysMenuGrpModule_L MOD_L ON MOD.FTGmnModCode = MOD_L.FTGmnModCode AND MOD_L.FNLngID = $nLngID
+                    WHERE USRM.FDCreateOn <> ''";
+                if(!empty($tRoleCode)){
+                    $tSQL   .= " AND USRM.FTRolCode IN ('$tRoleCode') ";
+                }
+                $tSQL .= " AND MOD.FTGmnModStaUse  = 1
+                            AND MGP.FTGmnStaUse    = 1
+                            AND MENU.FTMnuStaUse   = 1
+                            ORDER BY FNGmnModShwSeq,FTGmnModCode,FNGmnShwSeq,FTGmnCode,FNMnuSeq,FTMnuCode
+                    ";
+        
+        $oQuery = $this->db->query($tSQL);
+
+        if ($oQuery->num_rows() > 0) {
+            $oList = $oQuery->result_array();
+            $aResult = array(
+                'raItems'   => $oList,
+                'rtCode'    => '1',
+                'rtDesc'    => 'success',
+            );
+        } else {
+            $aResult = array(
+                'raItems'   => array(),
+                'rtCode'    => '800',
+                'rtDesc'    => 'data not found'
+            );
+        }
+        unset($nLngID);
+        unset($tSQL);
+        unset($oQuery);
+        unset($oList);
+        return $aResult;
+    }
+
+    // Function : Get Data RptMenu
+    // Create By Witsarut 28-10-2020
+    public function FSaMROlExportDetailRptMenu($paData){
+        $tRoleCode  = $paData['tRoleCode'];
+        $nLngID     = $this->session->userdata("tLangEdit");
+
+        $tSQL   =   "   SELECT DISTINCT
+                            RPM.FTGrpRptModCode,
+                            RPM.FNGrpRptModShwSeq,
+                            RPG.FNGrpRptShwSeq,
+                            RPML.FNGrpRptModName,
+                            RPG.FTGrpRptCode,
+                            RPGL.FTGrpRptName,
+                            RPT.FTRptCode,
+                            RPTL.FTRptName    
+                        FROM TCNTUsrFuncRpt UFR
+                        INNER JOIN TSysReport RPT WITH (NOLOCK) ON UFR.FTUfrGrpRef = RPT.FTGrpRptCode AND UFR.FTUfrRef = RPT.FTRptCode
+                        LEFT JOIN TSysReport_L RPTL WITH (NOLOCK) ON RPT.FTRptCode = RPTL.FTRptCode AND RPTL.FNLngID = $nLngID
+                        LEFT JOIN TSysReportGrp RPG WITH (NOLOCK) ON UFR.FTUfrGrpRef = RPG.FTGrpRptCode
+                        LEFT JOIN TSysReportGrp_L RPGL WITH (NOLOCK) ON RPG.FTGrpRptCode = RPGL.FTGrpRptCode AND RPGL.FNLngID = $nLngID
+                        LEFT JOIN TSysReportModule RPM WITH (NOLOCK) ON RPT.FTGrpRptModCode = RPM.FTGrpRptModCode 
+                        LEFT JOIN TSysReportModule_L RPML WITH (NOLOCK) ON RPM.FTGrpRptModCode = RPML.FTGrpRptModCode AND RPML.FNLngID = $nLngID
+                        WHERE UFR.FTUfrType = 2
+                        AND RPG.FTGrpRptStaUse = 1
+                        AND RPM.FTGrpRptModStaUse = 1
+                        AND RPT.FTRptStaUse = 1 ";
+
+                if(!empty($tRoleCode)){
+                    $tSQL   .= " AND UFR.FTRolCode IN ('$tRoleCode') ";
+                }
+
+                $tSQL   .= " ORDER BY
+                                RPM.FNGrpRptModShwSeq ASC,
+                                RPG.FNGrpRptShwSeq ASC
                 ";
 
                 $oQuery = $this->db->query($tSQL);
 
                 if ($oQuery->num_rows() > 0) {
-                    $aItems = $oQuery->result_array();
+                    $oList = $oQuery->result_array();
                     $aResult = array(
-                        'raItems' => $aItems,
-                        'rtCode' => '1',
-                        'rtDesc' => 'success',
+                        'raItems'   => $oList,
+                        'rtCode'    => '1',
+                        'rtDesc'    => 'success',
                     );
                 } else {
                     $aResult = array(
@@ -1388,115 +1402,177 @@ class mRole extends CI_Model
                         'rtDesc'    => 'data not found'
                     );
                 }
+            unset($nLngID);
+            unset($tSQL);
+            unset($oQuery);
+            unset($oList);
             return $aResult;
+    }
 
-        }
+    // Function : Get Data TPSMFuncHD
+    // Create By Witsarut 28-10-2020
+    public function FSaMROlExportDetailFuncSetting($paData){
+        $tRoleCode  = $paData['tRoleCode'];
+        $nLngID     = $this->session->userdata("tLangEdit");
 
-       
-        // function insert ตาราง TCNTUsrMenu
-        // Create By Witsarut 31-10-2020 
-        public function FSaMROlInsertUsrMenu($paDataUsrRole){
-            try{
-
-                $aInsUsrMenu  = array(
-                    'FTRolCode'         => $paDataUsrRole['FTRolCode'],
-                    'FTGmnCode'         => $paDataUsrRole['FTGmnCode'],
-                    'FTMnuParent'       => $paDataUsrRole['FTGmnCode'],
-                    'FTMnuCode'         => $paDataUsrRole['FTMnuCode'],
-                    'FTAutStaFull'      => 0,
-                    'FTAutStaRead'      => $paDataUsrRole['FTAutStaRead'],
-                    'FTAutStaAdd'       => $paDataUsrRole['FTAutStaAdd'],
-                    'FTAutStaEdit'      => $paDataUsrRole['FTAutStaEdit'],
-                    'FTAutStaDelete'    => $paDataUsrRole['FTAutStaDelete'],
-                    'FTAutStaCancel'    => $paDataUsrRole['FTAutStaCancel'],
-                    'FTAutStaAppv'      => $paDataUsrRole['FTAutStaAppv'],
-                    'FTAutStaPrint'     => $paDataUsrRole['FTAutStaPrint'],
-                    'FTAutStaPrintMore' => $paDataUsrRole['FTAutStaPrintMore'],
-                    'FTAutStaFavorite'  => 0,
-                    'FDLastUpdOn'       => date('Y-m-d H:i:s'),
-                    'FDCreateOn'        => date('Y-m-d H:i:s'),
-                    'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
-                    'FTCreateBy'        => $this->session->userdata('tSesUsername'),
-                );
-
-                $this->db->insert('TCNTUsrMenu', $aInsUsrMenu);
-
-            }catch(Exception $Error){
-                echo $Error;
+        $tSQL = " SELECT DISTINCT
+                        HD.FTGhdApp,
+                        HD.FTKbdScreen,
+                        APL.FTAppName,
+                        DTL.FTGdtName,
+                        DT.FTGhdCode,
+                        DT.FTSysCode,
+                        DT.FTGdtCallByName,
+                        DT.FNGdtFuncLevel,
+                        DT.FTGdtStaUse,
+                        (
+                            SELECT FUNC.FTUfrStaAlw 
+                            FROM TCNTUsrFuncRpt FUNC 
+                            WHERE FUNC.FTGhdApp = HD.FTGhdApp 
+                            AND FUNC.FTUfrGrpRef = HD.FTGhdCode 
+                            AND FUNC.FTUfrRef = DT.FTSysCode 
+                            AND FUNC.FTUfrType = '1' 
+                            AND FUNC.FTRolCode='$tRoleCode'  
+                        ) AS FTUfrStaAlw
+                    FROM TPSMFuncHD HD WITH (NOLOCK)
+                    INNER JOIN TPSMFuncDT DT WITH (NOLOCK) ON HD.FTGhdCode = DT.FTGhdCode
+                    INNER JOIN TPSMFuncDT_L DTL WITH (NOLOCK) ON DT.FTGhdCode = DTL.FTGhdCode AND DT.FTSysCode = DTL.FTSysCode AND DTL.FNLngID = $nLngID
+                    INNER JOIN TSysApp_L APL WITH (NOLOCK) ON HD.FTGhdApp = APL.FTAppCode AND APL.FNLngID = $nLngID
+                    LEFT JOIN TCNTUsrFuncRpt USRFUNC WITH (NOLOCK) ON USRFUNC.FTGhdApp = HD.FTGhdApp AND USRFUNC.FTUfrGrpRef = HD.FTGhdCode AND USRFUNC.FTUfrRef = DT.FTSysCode AND USRFUNC.FTUfrType = '1' 
+                    WHERE DT.FTGdtSysUse = '1' 
+                    AND DT.FTGdtStaUse = '1' ";
+            if(!empty($tRoleCode)){
+                $tSQL .= "AND USRFUNC.FTRolCode IN ('$tRoleCode')";
             }
+            
+            $tSQL .=" ORDER BY APL.FTAppName ASC, HD.FTKbdScreen ASC, DTL.FTGdtName ASC
+            ";
 
-        }
+            $oQuery = $this->db->query($tSQL);
 
-        //function insert ตาราง TCNTUsrFuncRpt
-        //create By Witsarut 31-10-2020
-        public function FSaMROlInsertUsrFuncRpt($paDataUsrFuncRpt){
-            try{
-                $aInsUsrFuncRpt = array(
-                    'FTRolCode'         => $paDataUsrFuncRpt['FTRolCode'],
-                    'FTUfrType'         => 2,
-                    'FTUfrGrpRef'       => $paDataUsrFuncRpt['FTGrpRptCode'],
-                    'FTUfrRef'          => $paDataUsrFuncRpt['FTRptCode'],
-                    'FTUfrStaAlw'       => '1',
-                    'FTUfrStaFavorite'  => 0,
-                    'FDLastUpdOn'       => date('Y-m-d H:i:s'),
-                    'FDCreateOn'        => date('Y-m-d H:i:s'),
-                    'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
-                    'FTCreateBy'        => $this->session->userdata('tSesUsername'),
-                ); 
-
-                $this->db->insert('TCNTUsrFuncRpt', $aInsUsrFuncRpt);
-
-            }catch(Exception $Error){
-                echo $Error;
-            }
-        }
-
-        //function insert ตาราง TPSMFuncHD
-        //create By Witsarut 31-10-2020
-        public function FSaMROlInsertFuncHD($paDataFuncHD){
-            try{
-                
-                $aInsUsrFuncHD = array(
-                    'FTRolCode'         => $paDataFuncHD['FTRolCode'],
-                    'FTUfrType'         => 1,
-                    'FTUfrGrpRef'       => $paDataFuncHD['FTGhdCode'],
-                    'FTUfrRef'          => $paDataFuncHD['FTSysCode'],
-                    'FTGhdApp'          => $paDataFuncHD['FTGhdApp'],
-                    'FTUfrStaAlw'       => '1',
-                    'FTUfrStaFavorite'  => 0,
-                    'FDLastUpdOn'       => date('Y-m-d H:i:s'),
-                    'FDCreateOn'        => date('Y-m-d H:i:s'),
-                    'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
-                    'FTCreateBy'        => $this->session->userdata('tSesUsername'),
-                );
-
-                $this->db->insert('TCNTUsrFuncRpt', $aInsUsrFuncHD);
-
-            }catch(Exception $Error){
-                echo $Error;
-            }
-        }
-
-
-        //function insert ตาราง TCNMUsrRoleSpc
-        //create By Witsarut 31-10-2020
-        public function FSaMROlInsertUsrRoleSpc($paDataUsrRoleSpc){
-            try{
+            if ($oQuery->num_rows() > 0) {
+                $aItems = $oQuery->result_array();
                 $aResult = array(
-                    'FTRolCode'     => $paDataUsrRoleSpc['FTRolCode'],
-                    'FTAgnCode'     => $paDataUsrRoleSpc['FTAgnCode'],
-                    'FTBchCode'     => $paDataUsrRoleSpc['FTBchCode'],
-                    'FDLastUpdOn'   => date('Y-m-d H:i:s'),
-                    'FDCreateOn'    => date('Y-m-d H:i:s'),
-                    'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
-                    'FTCreateBy'    => $this->session->userdata('tSesUsername'),
+                    'raItems' => $aItems,
+                    'rtCode' => '1',
+                    'rtDesc' => 'success',
                 );
-                $this->db->insert('TCNMUsrRoleSpc', $aResult);
-                
-            }catch(Exception $Error){
-                echo $Error;
+            } else {
+                $aResult = array(
+                    'raItems'   => array(),
+                    'rtCode'    => '800',
+                    'rtDesc'    => 'data not found'
+                );
             }
+        return $aResult;
+
+    }
+
+    
+    // function insert ตาราง TCNTUsrMenu
+    // Create By Witsarut 31-10-2020 
+    public function FSaMROlInsertUsrMenu($paDataUsrRole){
+        try{
+
+            $aInsUsrMenu  = array(
+                'FTRolCode'         => $paDataUsrRole['FTRolCode'],
+                'FTGmnCode'         => $paDataUsrRole['FTGmnCode'],
+                'FTMnuParent'       => $paDataUsrRole['FTGmnCode'],
+                'FTMnuCode'         => $paDataUsrRole['FTMnuCode'],
+                'FTAutStaFull'      => 0,
+                'FTAutStaRead'      => $paDataUsrRole['FTAutStaRead'],
+                'FTAutStaAdd'       => $paDataUsrRole['FTAutStaAdd'],
+                'FTAutStaEdit'      => $paDataUsrRole['FTAutStaEdit'],
+                'FTAutStaDelete'    => $paDataUsrRole['FTAutStaDelete'],
+                'FTAutStaCancel'    => $paDataUsrRole['FTAutStaCancel'],
+                'FTAutStaAppv'      => $paDataUsrRole['FTAutStaAppv'],
+                'FTAutStaPrint'     => $paDataUsrRole['FTAutStaPrint'],
+                'FTAutStaPrintMore' => $paDataUsrRole['FTAutStaPrintMore'],
+                'FTAutStaFavorite'  => 0,
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+            );
+
+            $this->db->insert('TCNTUsrMenu', $aInsUsrMenu);
+
+        }catch(Exception $Error){
+            echo $Error;
         }
+
+    }
+
+    //function insert ตาราง TCNTUsrFuncRpt
+    //create By Witsarut 31-10-2020
+    public function FSaMROlInsertUsrFuncRpt($paDataUsrFuncRpt){
+        try{
+            $aInsUsrFuncRpt = array(
+                'FTRolCode'         => $paDataUsrFuncRpt['FTRolCode'],
+                'FTUfrType'         => 2,
+                'FTUfrGrpRef'       => $paDataUsrFuncRpt['FTGrpRptCode'],
+                'FTUfrRef'          => $paDataUsrFuncRpt['FTRptCode'],
+                'FTUfrStaAlw'       => '1',
+                'FTUfrStaFavorite'  => 0,
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+            ); 
+
+            $this->db->insert('TCNTUsrFuncRpt', $aInsUsrFuncRpt);
+
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+    //function insert ตาราง TPSMFuncHD
+    //create By Witsarut 31-10-2020
+    public function FSaMROlInsertFuncHD($paDataFuncHD){
+        try{
+            
+            $aInsUsrFuncHD = array(
+                'FTRolCode'         => $paDataFuncHD['FTRolCode'],
+                'FTUfrType'         => 1,
+                'FTUfrGrpRef'       => $paDataFuncHD['FTGhdCode'],
+                'FTUfrRef'          => $paDataFuncHD['FTSysCode'],
+                'FTGhdApp'          => $paDataFuncHD['FTGhdApp'],
+                'FTUfrStaAlw'       => '1',
+                'FTUfrStaFavorite'  => 0,
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+            );
+
+            $this->db->insert('TCNTUsrFuncRpt', $aInsUsrFuncHD);
+
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+
+    //function insert ตาราง TCNMUsrRoleSpc
+    //create By Witsarut 31-10-2020
+    public function FSaMROlInsertUsrRoleSpc($paDataUsrRoleSpc){
+        try{
+            $aResult = array(
+                'FTRolCode'     => $paDataUsrRoleSpc['FTRolCode'],
+                'FTAgnCode'     => $paDataUsrRoleSpc['FTAgnCode'],
+                'FTBchCode'     => $paDataUsrRoleSpc['FTBchCode'],
+                'FDLastUpdOn'   => date('Y-m-d H:i:s'),
+                'FDCreateOn'    => date('Y-m-d H:i:s'),
+                'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
+                'FTCreateBy'    => $this->session->userdata('tSesUsername'),
+            );
+            $this->db->insert('TCNMUsrRoleSpc', $aResult);
+            
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
 
 
     // ===============================================  Export  Data ==================================================================
@@ -1543,7 +1619,7 @@ class mRole extends CI_Model
                             '$tSesUserCode'     AS FTCreateBy
                         FROM TCNMUsrRoleChain WITH(NOLOCK) 
                         WHERE FTRolCode IN ($tSesUsrRoleCodeMulti) 
-                          AND FNRolType = 2
+                        AND FNRolType = 2
                         
                         UNION ALL
 
@@ -1557,8 +1633,83 @@ class mRole extends CI_Model
                             '$tSesUserCode'     AS FTCreateBy
                     ";
             $this->db->query($tSQL);
-
         }
-        
     }
+
+        /**
+     * Functionality : Get Setting Function List (TPSMFuncHD, TPSMFuncDT, TPSMFuncDT_L)
+     * Parameters : -
+     * Creator : 23/04/2020 piya ยกมาจาก fit auto by IcePHP 17/10/2022
+     * Last Modified : -
+     * Return : Setting Funtion Data
+     * Return Type : array
+     */
+    public function FSaMGetNotiSettingList($paParams = [])
+    {
+        $nLngID     = $paParams['FNLngID'];
+        $tRoleCode  = $paParams['FTRolCode'];
+        $tSQL       = "
+            SELECT
+                NOTI.FTNotCode,
+                NOTI.FTNotStaResponse,
+                NOTI_L.FTNotTypeName,
+                RPTSPC.FTRptCode 
+            FROM TCNSNoti NOTI WITH(NOLOCK)
+            LEFT OUTER JOIN TCNSNoti_L NOTI_L WITH(NOLOCK) ON NOTI.FTNotCode = NOTI_L.FTNotCode AND NOTI_L.FNLngID = ".$this->db->escape($nLngID)."
+            LEFT OUTER JOIN TCNSRptSpc RPTSPC WITH(NOLOCK) ON NOTI.FTNotCode = RPTSPC.FTRptCode AND RPTSPC.FTRolCode = ".$this->db->escape($tRoleCode)."
+        ";
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $aItems     = $oQuery->result_array();
+            $aResult    = array(
+                'raItems'   => $aItems,
+                'rtCode'    => '1',
+                'rtDesc'    => 'success',
+            );
+        } else {
+            $aResult    = array(
+                'rtCode'    => '800',
+                'rtDesc'    => 'data not found'
+            );
+        }
+        return $aResult;
+    }
+
+    // Functionality : Add/Update Role User Report Menu
+    // Parameters : Function Parameter In Controler
+    // Creator : 24/07/2019 Saharat(Golf) ยกมาจาก fit auto by IcePHP 17/10/2022
+    // LastUpdate: 28/08/2019 Wasin(Yoshi) 
+    // Return : -
+    // Return Type : None
+    public function FSxMAddRoleNotiSetting($paDataMaster, $paRoleNotiData)
+    {
+        // Delete Data User Role Menu
+        $this->db->where('FTRolCode', $paDataMaster['FTRolCode']);
+        $this->db->where('FNRptGrpSeq', "3");
+        $this->db->where("ISNULL(FTRptRoute,'')", "");
+        $this->db->where('FTRptGrpCode', $paDataMaster['FTRolCode']);
+        $this->db->delete('TCNSRptSpc');
+        // Check Data Role Menu Report
+        if (isset($paRoleNotiData) && !empty($paRoleNotiData)) {
+            // Loop Add/Update Data User Role Report Menu
+            foreach ($paRoleNotiData as $nKey => $aValue) {
+                // Add Data User Role Report Menu
+                $this->db->insert('TCNSRptSpc', array(
+                    'FNRptGrpSeq'       => 3,
+                    'FTRptGrpCode'      => $paDataMaster['FTRolCode'],
+                    'FTRptRoute'        => '',
+                    'FNRptSeq'          => $nKey,
+                    'FTRolCode'         => $paDataMaster['FTRolCode'],
+                    'FTRptCode'         => $aValue['tNotiCode'],
+                    'FTRptStaActive'    => '1',
+                    'FDLastUpdOn'       => $paDataMaster['FDCreateOn'],
+                    'FTLastUpdBy'       => $paDataMaster['FTCreateBy'],
+                    'FDCreateOn'        => $paDataMaster['FDCreateOn'],
+                    'FTCreateBy'        => $paDataMaster['FTCreateBy'],
+                ));
+            }
+        }
+        return;
+    }
+
 }
