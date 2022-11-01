@@ -6004,3 +6004,137 @@ CREATE PROCEDURE [dbo].[SP_CNtAUTAutoDocNo]
 GO
 
 
+
+
+
+
+
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'SP_RPTxSalByMerShp')and 
+OBJECTPROPERTY(id, N'IsProcedure') = 1) BEGIN
+	DROP PROCEDURE [dbo].SP_RPTxSalByMerShp
+END
+GO
+CREATE PROCEDURE [dbo].[SP_RPTxSalByMerShp]
+   @tUseSession varchar(255),
+   @tLangID varchar(1),
+   @tBchCode varchar(4000),
+   @tMerCode varchar(30),
+   @tShpCode varchar(4000),
+   @tDateF varchar(30),
+   @tDateT varchar(30),
+   @tPdtCodeF varchar(30),
+   @tPdtCodeT varchar(30)
+AS
+BEGIN TRY
+   --SELECT * FROM TRPTSalByMerShpTmp
+   DECLARE @tSQL VARCHAR(MAX)
+   SET @tSQL = ''
+
+   DECLARE @tSQLFilter VARCHAR(MAX)
+   SET @tSQLFilter = ''
+
+   IF (@tBchCode <> '' OR @tBchCode <> NULL)
+		BEGIN
+			SET @tSQLFilter += ' AND HD.FTBchCode IN(' + @tBchCode + ' ) '
+		END	
+
+ --  IF (@tMerCode <> '' OR @tMerCode <> NULL)
+--		BEGIN
+--			SET @tSQLFilter += ' AND SHP.FTMerCode =''' + @tMerCode + ''' '
+--		END	
+
+   IF (@tShpCode <> '' OR @tShpCode <> NULL)
+		BEGIN
+			SET @tSQLFilter += ' AND HD.FTShpCode IN(' + @tShpCode + ')'
+		END	
+   
+   IF ((@tDateF <> '' OR @tDateF <> NULL) AND (@tDateT <> '' OR @tDateT <> NULL) )
+		BEGIN
+			SET @tSQLFilter += ' AND CONVERT(VARCHAR(10),HD.FDXshDocDate,121) BETWEEN  ''' + @tDateF + '''AND '''+ @tDateT + ''' '
+		END	
+
+   IF ((@tPdtCodeF <> '' OR @tPdtCodeF <> NULL) AND (@tPdtCodeT <> '' OR @tPdtCodeT <> NULL) )
+		BEGIN
+			SET @tSQLFilter += ' AND DT.FTPdtCode BETWEEN  ''' + @tPdtCodeF + ''' AND ''' +  @tPdtCodeT + ''''
+		END	
+
+	DECLARE @tSQLFilter2 VARCHAR(MAX)
+	  SET @tSQLFilter2 = ''
+
+	IF (@tMerCode <> '' OR @tMerCode <> NULL)
+	 BEGIN
+   SET @tSQLFilter2 += ' WHERE MER.FTMerCode =''' + @tMerCode + ''' '
+	END
+
+
+   DELETE FROM TRPTSalByMerShpTmp WHERE FTUsrSession = '' +@tUseSession+ ''
+
+   SET @tSQL += ' INSERT INTO TRPTSalByMerShpTmp ' 
+   SET @tSQL += ' SELECT '
+		SET @tSQL += ' MER.FTMerCode '
+		SET @tSQL += ' ,MER.FTMerName '
+		SET @tSQL += ' ,S.FTShpCode '
+		SET @tSQL += ' ,SHP.FTShpName '
+		SET @tSQL += ' ,S.FTPdtCode '
+		SET @tSQL += ' ,S.FTXsdPdtName '
+		SET @tSQL += ' ,S.FTPunName '
+		SET @tSQL += ' ,SUM(CASE WHEN S.FNXshDocType = 1 THEN S.FCXsdQtyAll ELSE S.FCXsdQtyAll * -1 END ) AS FCXsdQtyAll '
+		SET @tSQL += ' ,SUM(CASE WHEN S.FNXshDocType = 1 THEN ISNULL(S.FCXsdAmtB4DisChg,0) ELSE ISNULL(S.FCXsdAmtB4DisChg,0) * -1 END ) AS FCXsdTotal '
+		SET @tSQL += ' ,SUM(CASE WHEN S.FNXshDocType = 1 THEN ISNULL(S.FCXddValue,0) ELSE ISNULL(S.FCXddValue,0) * -1 END ) AS FCXsdTotalDisChg '
+		SET @tSQL += ' ,SUM(CASE WHEN S.FNXshDocType = 1 THEN S.FCXsdNetAfHD ELSE S.FCXsdNetAfHD * -1 END ) /  '
+		SET @tSQL += '  SUM(CASE WHEN S.FNXshDocType = 1 THEN S.FCXsdQtyAll ELSE S.FCXsdQtyAll * -1 END ) AS FCXsdPriAvg '
+		SET @tSQL += ' ,SUM(CASE WHEN S.FNXshDocType = 1 THEN S.FCXsdNetAfHD ELSE S.FCXsdNetAfHD * -1 END ) AS FCXsdNetAfHD '
+		SET @tSQL += ' , ' + ''''+@tUseSession+''''
+
+		SET @tSQL += '  FROM ( '
+				SET @tSQL += ' SELECT  '
+				SET @tSQL += '  HD.FTXshDocNo '
+				SET @tSQL += ' ,HD.FNXshDocType '
+				SET @tSQL += ' ,HD.FTBchCode '
+				SET @tSQL += ' ,SHP.FTMerCode '
+				SET @tSQL += ' ,SHP.FTShpCode '
+				SET @tSQL += ' ,DT.FTPdtCode '
+				SET @tSQL += ' ,DT.FTXsdPdtName '
+				SET @tSQL += ' ,DT.FCXsdQtyAll '
+				SET @tSQL += ' ,DT.FTPunName '
+				SET @tSQL += ' ,DT.FCXsdAmtB4DisChg '
+				SET @tSQL += ' ,DIS.FCXddValue '
+				SET @tSQL += ' ,DT.FCXsdNetAfHD '
+				SET @tSQL += ' FROM TPSTSalDT DT '
+				SET @tSQL += ' LEFT JOIN TPSTSalHD HD  ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo '
+				SET @tSQL += ' LEFT JOIN TCNMShop SHP ON  HD.FTShpCode = SHP.FTShpCode '
+				SET @tSQL += ' LEFT JOIN ( '
+
+				SET @tSQL += ' SELECT FTBchCode,FTXshDocNo,FNXsdSeqNo, '
+				SET @tSQL += ' SUM(CASE WHEN FTXddDisChgType = ''3''  OR FTXddDisChgType = ''4'' THEN FCXddValue * -1 ELSE FCXddValue END) AS FCXddValue  '
+				SET @tSQL += ' FROM TPSTSalDTDis '
+				SET @tSQL += ' GROUP BY FTBchCode,FTXshDocNo,FNXsdSeqNo '
+
+				SET @tSQL += ' ) DIS ON DT.FTBchCode = DIS.FTBchCode AND DT.FTXshDocNo = DIS.FTXshDocNo AND DT.FNXsdSeqNo = DIS.FNXsdSeqNo  '
+				SET @tSQL += ' WHERE DT.FTXsdStaPdt <> ''4'' '
+
+				SET @tSQL += @tSQLFilter
+
+				--Filter
+				--AND HD.FTBchCode IN('00001','00002')
+				--AND HD.FTShpCode ='00001'
+				--AND SHP.FTMerCode ='00001'
+				--AND DT.FTPdtCode BETWEEN  '00002' AND '00003'
+				--AND CONVERT(VARCHAR(10),HD.FDXshDocDate,121) BETWEEN  '2022-01-01' AND '2022-01-01'
+		SET @tSQL += ' ) S  '
+		SET @tSQL += ' LEFT JOIN TCNMPdtSpcBch PSB ON S.FTPdtCode = PSB.FTPdtCode '
+		SET @tSQL += ' LEFT JOIN TCNMMerchant_L MER ON PSB.FTMerCode = MER.FTMerCode AND MER.FNLngID =  ' + @tLangID
+		SET @tSQL += ' LEFT JOIN TCNMShop_L SHP ON  S.FTShpCode = SHP.FTShpCode AND SHP.FNLngID =   ' + @tLangID
+		SET @tSQL += @tSQLFilter2
+		SET @tSQL += ' GROUP BY MER.FTMerCode,MER.FTMerName,S.FTShpCode,SHP.FTShpName,S.FTPdtCode,S.FTXsdPdtName,S.FTPunName  '
+
+		--PRINT(@tSQL)
+		execute(@tSQL)
+
+   return 1
+
+END TRY
+BEGIN CATCH
+	return -1
+END CATCH
+GO

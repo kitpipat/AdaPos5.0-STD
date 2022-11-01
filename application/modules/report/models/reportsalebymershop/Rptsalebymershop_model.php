@@ -80,7 +80,7 @@ class Rptsalebymershop_model extends CI_Model
                                             SUM(SUB.FCPXsdQty)                      AS FCPXsdQty_Footer,
                                             SUM(SUB.FCPTotal)                       AS FCPTotal_Footer,
                                             SUM(SUB.FCPDisChg)                      AS FCPDisChg_Footer,
-                                            AVG(SUB.FCPAgvPri * SUB.FCPXsdQty)      AS FCPAgvPri_Footer,
+                                            SUM(SUB.FCPGrand)/SUM(SUB.FCPXsdQty)    AS FCPAgvPri_Footer,
                                             SUM(SUB.FCPGrand)                       AS FCPGrand_Footer
                                         FROM (
                                                 SELECT  

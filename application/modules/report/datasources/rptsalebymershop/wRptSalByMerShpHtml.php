@@ -175,16 +175,16 @@ $nOptDecimalShow    = $aDataViewRpt['nOptDecimalShow'];
                                 ?>
 
                                 <tr>
-                                    <td class="text-left xCNRptDetail"><?php if($nRowPartMer == 1): echo $aValue['FTMerName']; else: echo ''; endif;?></td>
-                                    <td class="text-left xCNRptDetail"><?php if($nRowPartShp == 1): echo $aValue['FTShpName']; else: echo ''; endif;?></td>
-                                    <td class="text-left xCNRptDetail"><?php echo $aValue['FTPdtCode']; ?></td>
-                                    <td class="text-left xCNRptDetail"><?php echo $aValue['FTPdtName']; ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FTPXsdQty"], $nOptDecimalShow); ?></td>
-                                    <td class="text-left xCNRptDetail"><?php echo $aValue['FTPunName']; ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCPXsdTotal"], $nOptDecimalShow); ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCPXsdDisChg"], $nOptDecimalShow); ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCPXsdAgvPri"], $nOptDecimalShow); ?></td>
-                                    <td class="text-right xCNRptDetail"><?php echo number_format($aValue['FCPXsdGrand'], $nOptDecimalShow) ?></td>
+                                    <td class="text-left xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php if($nRowPartMer == 1): echo $aValue['FTMerName']; else: echo ''; endif;?></td>
+                                    <td class="text-left xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php if($nRowPartShp == 1): echo $aValue['FTShpName']; else: echo ''; endif;?></td>
+                                    <td class="text-left xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php echo $aValue['FTPdtCode']; ?></td>
+                                    <td class="text-left xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php echo $aValue['FTPdtName']; ?></td>
+                                    <td class="text-right xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php echo number_format($aValue["FTPXsdQty"], $nOptDecimalShow); ?></td>
+                                    <td class="text-left xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php echo $aValue['FTPunName']; ?></td>
+                                    <td class="text-right xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php echo number_format($aValue["FCPXsdTotal"], $nOptDecimalShow); ?></td>
+                                    <td class="text-right xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php echo number_format($aValue["FCPXsdDisChg"], $nOptDecimalShow); ?></td>
+                                    <td class="text-right xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php echo number_format($aValue["FCPXsdAgvPri"], $nOptDecimalShow); ?></td>
+                                    <td class="text-right xCNRptDetail" <?php if($nRowPartMer == 1){ ?> style="border-top: dashed 1px #333 !important;" <?php } ?>><?php echo number_format($aValue['FCPXsdGrand'], $nOptDecimalShow) ?></td>
                                 </tr>
                                 
                                 <?php
