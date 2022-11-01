@@ -2110,3 +2110,16 @@ $lang['tRptIncomeNotReturnCardClear']   = "Reset Card";
 $lang['tRptIncomeNotReturnCardAuto']   = "Topup Auto";
 $lang['tRptIncomeNotReturnCardPmt']   = "Promotion";
 $lang['tRptIncomeNotReturnCardInCome']   = "Income";
+
+//รายงาน - ยอดขายตามสินค้า ตามกลุ่มธุรกิจ ตามร้านค้า
+$lang['tRptSalebymershopTitle']         = "Report - Sale By Merchant By Shop";
+$lang['tRptSalebymershopMer']           = "MerChant";
+$lang['tRptSalebymershopShop']          = "Shop";
+$lang['tRptSalebymershopPdtCode']       = "ProductCode";
+$lang['tRptSalebymershopPdtName']       = "ProductName";
+$lang['tRptSalebymershopQty']           = "Qty";
+$lang['tRptSalebymershopPun']           = "Unit Name";
+$lang['tRptSalebymershopAmtTotal']      = "Total sales";
+$lang['tRptSalebymershopDisChg']        = "Discount";
+$lang['tRptSalebymershopAgvPri']        = "Averge Price";
+$lang['tRptSalebymershopGrand']         = "GrandToTal";

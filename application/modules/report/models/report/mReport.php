@@ -109,7 +109,7 @@ class mReport extends CI_Model {
                         FROM TCNSRptSpc RSPC WITH(NOLOCK)
                         LEFT JOIN TCNSRptSpc_L RPT_L    WITH(NOLOCK) ON RSPC.FTRptCode = RPT_L.FTRptCode AND RPT_L.FNLngID = $nLngID
                         LEFT JOIN TCNSRptSpcGrp_L GRP_L WITH(NOLOCK) ON RSPC.FTRptGrpCode = GRP_L.FTRptGrpCode AND GRP_L.FNLngID = $nLngID
-                        WHERE 1=1 AND RSPC.FTRptStaActive = '1'
+                        WHERE 1=1 AND RSPC.FTRptRoute != '' AND RSPC.FTRptStaActive = '1'
                     ";
             if( $tUsrLoginLevel != "HQ" ){
                 if( $bIsHaveAgn ){

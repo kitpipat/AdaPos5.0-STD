@@ -882,3 +882,10 @@ $route['rptPackageUsageInfo']               = 'report/reportpackageusageinfo/Rpt
 $route['rptPackageUsageInfoClickPage']      = 'report/reportpackageusageinfo/Rptpackageusageinfo_controller/FSvCCallRptViewBeforePrintClickPage';
 $route['rptPackageUsageInfoCallExportFile'] = 'report/reportpackageusageinfo/Rptpackageusageinfo_controller/FSvCCallRptExportFile';
 /** =================================================================================================================================================== */
+
+
+/** ========================================= รายงาน - ยอดขายตามสินค้า ตามกลุ่มธุรกิจ ตามร้านค้า ======================================================================== */
+$route['rptRptSalByMerShp']                 = 'report/reportsalebymershop/Rptsalebymershop_controller/index';
+$route['rptRptSalByMerShpeInfoClickPage']   = 'report/reportsalebymershop/Rptsalebymershop_controller/FSvCCallRptViewBeforePrintClickPage';
+$route['rptRptSalByMerShpCallExportFile']   = 'report/reportsalebymershop/Rptsalebymershop_controller/FSvCCallRptExportFile';
+/** ============================================================================================================================================================== */
