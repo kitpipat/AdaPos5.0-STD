@@ -99,9 +99,9 @@
                     <thead>
                         <tr style="border-bottom: 2px solid #ffffff !important;">
                             <th style="width:10%" nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardBranch');?></th>
-                            <th style="width:15%" nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardShop');?></th>
+                            <th style="width:15%" nowrap class="text-left xCNRptColumnHeader"></th>
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
-                            <th style="width:15%" nowrap class="text-left xCNRptColumnHeader"><?php echo language('report/report/report','tRptIncomeNotReturnCardPos');?></th>
+                            <th style="width:15%" nowrap class="text-left xCNRptColumnHeader"></th>
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
                             <th style="width:15%" nowrap class="text-left xCNRptColumnHeader">&nbsp;</th>
