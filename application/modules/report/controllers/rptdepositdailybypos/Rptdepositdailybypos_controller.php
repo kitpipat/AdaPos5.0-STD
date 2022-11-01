@@ -490,6 +490,7 @@ class Rptdepositdailybypos_controller extends MX_Controller
             ->build();
 
         $oBorderbottom = (new BorderBuilder())
+            ->setBorderTop(Color::BLACK, Border::WIDTH_THIN)
             ->setBorderBottom(Color::BLACK, Border::WIDTH_THIN)
             ->build();
 

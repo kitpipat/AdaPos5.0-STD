@@ -179,6 +179,9 @@ $nTotalPage         = $aDataReport["aPagination"]["nTotalPage"];
 
                                         ?>
                                         <tr>
+                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
+                                        </tr>
+                                        <tr>
                                             <td class="text-left xCNRptDetail xCNRptGrouPing"><?=language('report/report/report', 'tRptSaleTaxByMonthlyTotal');?></td>
                                             <td colspan="3"></td>
                                             <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCPXsdQty_Footer"],$nOptDecimalShow); ?></td>
