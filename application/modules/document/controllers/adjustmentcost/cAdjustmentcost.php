@@ -7,6 +7,11 @@ class cAdjustmentcost extends MX_Controller {
     {
         parent::__construct();
         $this->load->model('document/adjustmentcost/mAdjustmentcost');
+        // Test XSS Load Helper Security
+        $this->load->helper("security");
+        if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
+            echo "ERROR XSS Filter";
+        }
     }
 
     public function index($nBrowseType,$tBrowseOption){
@@ -131,6 +136,7 @@ class cAdjustmentcost extends MX_Controller {
     public function FSvCADCEditPage(){
         try{
             $tXchDocNo          = $this->input->post('ptXchDocNo');
+            $pnTypeAdc          = $this->input->post('pnTypeAdc');
         // Get Option Show Decimal
         $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
 
@@ -143,6 +149,7 @@ class cAdjustmentcost extends MX_Controller {
             'FNLngID'       => $nLangEdit,
             'nRow'          => 10000,
             'nPage'         => 1,
+            'FNXchDocType'  => $pnTypeAdc,
             'FTXchDocKey'   => 'TCNTPdtAdjCostHD',
         );
         $aResult    = $this->mAdjustmentcost->FSaMADCGetHD($aDataWhere);  //TCNTPdtAdjCostHD
@@ -151,6 +158,8 @@ class cAdjustmentcost extends MX_Controller {
             'nOptDecimalShow'   => $nOptDecimalShow,
             'aDataDocHD'        => $aResult,
         );
+
+        // print_r($aDataConfigViewAdd);
 
         $tViewPageAdd = $this->load->view('document/adjustmentcost/wAdjustmentcostAdd',$aDataConfigViewAdd,true);
 
@@ -180,17 +189,17 @@ class cAdjustmentcost extends MX_Controller {
             $nLangEdit      = $this->session->userdata("tLangEdit");
 
             $aParams = array(
-                'tTable' => $tTable,
-                'tDocNo' => $tDocNo,
-                'tPdtCodeDup' => $tPdtCodeDup,
-                'FNLngID' => $nLangEdit,
+                'tTable'        => $tTable,
+                'tDocNo'        => $tDocNo,
+                'tPdtCodeDup'   => $tPdtCodeDup,
+                'FNLngID'       => $nLangEdit,
             );
 
             $aData = $this->mAdjustmentcost->FSaMADCGetPdtFromDoc($aParams);
             
             if ($aData['rtCode'] == '1') {
                 $aReturnData = array(
-                    'aData' => $aData['raItems'],
+                    'aData'     => $aData['raItems'],
                     'nStaEvent' => $aData['rtCode'],
                     'tStaMessg' => $aData['rtDesc'],
                 );
@@ -217,22 +226,22 @@ class cAdjustmentcost extends MX_Controller {
     // Return Type : object
     public function FSoCADCGetPdtFromFilter(){
         try{
-            $tPdtCodeFrom         = $this->input->post('tPdtCodeFrom');
+            $tPdtCodeFrom       = $this->input->post('tPdtCodeFrom');
             $tPdtCodeTo         = $this->input->post('tPdtCodeTo');
-            $tBarCodeFrom    = $this->input->post('tBarCodeFrom');
-            $tBarCodeCodeTo    = $this->input->post('tBarCodeCodeTo');
-            $tPdtCodeDup    = $this->input->post('tPdtCodeDup');
-            $tBchCode    = $this->input->post('tBchCode');
-            $nLangEdit      = $this->session->userdata("tLangEdit");
+            $tBarCodeFrom       = $this->input->post('tBarCodeFrom');
+            $tBarCodeCodeTo     = $this->input->post('tBarCodeCodeTo');
+            $tPdtCodeDup        = $this->input->post('tPdtCodeDup');
+            $tBchCode           = $this->input->post('tBchCode');
+            $nLangEdit          = $this->session->userdata("tLangEdit");
 
             $aParams = array(
-                'tPdtCodeFrom' => $tPdtCodeFrom,
-                'tPdtCodeTo' => $tPdtCodeTo,
-                'tBarCodeFrom' => $tBarCodeFrom,
-                'tBarCodeCodeTo' => $tBarCodeCodeTo,
-                'tPdtCodeDup' => $tPdtCodeDup,
-                'tBchCode'  => $tBchCode,
-                'FNLngID' => $nLangEdit,
+                'tPdtCodeFrom'      => $tPdtCodeFrom,
+                'tPdtCodeTo'        => $tPdtCodeTo,
+                'tBarCodeFrom'      => $tBarCodeFrom,
+                'tBarCodeCodeTo'    => $tBarCodeCodeTo,
+                'tPdtCodeDup'       => $tPdtCodeDup,
+                'tBchCode'          => $tBchCode,
+                'FNLngID'           => $nLangEdit,
             );
 
 
@@ -267,7 +276,7 @@ class cAdjustmentcost extends MX_Controller {
     // Return Type : object
     public function FSoCADCGetPdtFromImportExcel(){
         try{
-            $tPdtCodeDup   = $this->input->post('tPdtCodeDup');
+            $tPdtCodeDup    = $this->input->post('tPdtCodeDup');
             $nLangEdit      = $this->session->userdata("tLangEdit");
 
             $aParams = array(
@@ -281,7 +290,7 @@ class cAdjustmentcost extends MX_Controller {
             
             if ($aData['rtCode'] == '1') {
                 $aReturnData = array(
-                    'aData' => $aData['raItems'],
+                    'aData'     => $aData['raItems'],
                     'nStaEvent' => $aData['rtCode'],
                     'tStaMessg' => $aData['rtDesc'],
                 );
@@ -307,14 +316,15 @@ class cAdjustmentcost extends MX_Controller {
     // Return Type : object
     public function FSoCADCEventAdd(){
         try{
-            $tBchCode   = $this->input->post('ohdADCBchCode');
-            $tDocDate    = $this->input->post('oetADCDocDate');
-            $tDocTime    = $this->input->post('oetADCDocTime');
-            $tEffectiveDate    = $this->input->post('oetADCEffectiveDate');
-            $tRefInt    = $this->input->post('oetADCRefInt');
-            $tRefIntDate    = $this->input->post('oetADCRefIntDate');
-            $tRmk   = $this->input->post('otaADCRmk');
-            $aDataInsert   = $this->input->post('aDataInsert');
+            $tBchCode           = $this->input->post('ohdADCBchCode');
+            $tDocDate           = $this->input->post('oetADCDocDate');
+            $tDocTime           = $this->input->post('oetADCDocTime');
+            $tEffectiveDate     = $this->input->post('oetADCEffectiveDate');
+            $tRefInt            = $this->input->post('oetADCRefInt');
+            $tRefIntDate        = $this->input->post('oetADCRefIntDate');
+            $tRmk               = $this->input->post('otaADCRmk');
+            $aDataInsert        = $this->input->post('aDataInsert');
+            $tDocType           = $this->input->post('ocmADCDocType');
    
             $aStoreParam = array(
                 "tTblName"    => 'TCNTPdtAdjCostHD',                           
@@ -373,6 +383,7 @@ class cAdjustmentcost extends MX_Controller {
                         'FDCreateOn'        => date('Y-m-d H:i:s'),
                         'FTCreateBy'        => $this->session->userdata('tSesUserCode'),
                     );
+                    
                     $this->mAdjustmentcost->FSaMADCEventAddDT($aDataIns);
                 }
 
@@ -380,7 +391,7 @@ class cAdjustmentcost extends MX_Controller {
             $aParams = array(
                 'FTBchCode'    => $tBchCode,
                 'FTXchDocNo'   => $aDataMaster['FTXchDocNo'],
-                'FNXchDocType' => 10,
+                'FNXchDocType' => $tDocType,
                 'FDXchDocDate' => $tDocDate,
                 'FTXchDocTime' => $tDocTime,
                 'FDXchAffect'  => $tEffectiveDate,
@@ -402,10 +413,11 @@ class cAdjustmentcost extends MX_Controller {
             } else {
                 $this->db->trans_commit();
                 $aReturnData = array(
-                    'nStaEvent' => '1',
-                    'tStaMessg' => 'success',
-                    'nStaCallBack' => $this->session->userdata('tBtnSaveStaActive'),
-                    'tCodeReturn' => $aDataMaster['FTXchDocNo'],
+                    'nStaEvent'         => '1',
+                    'tStaMessg'         => 'success',
+                    'nStaCallBack'      => $this->session->userdata('tBtnSaveStaActive'),
+                    'tCodeReturn'       => $aDataMaster['FTXchDocNo'],
+                    'nDocType'          => $tDocType
                 );
             }
         }catch(Exception $Error){
@@ -414,6 +426,8 @@ class cAdjustmentcost extends MX_Controller {
                 'tStaMessg' => $Error->getMessage()
             );
         }
+
+        // print_r($aReturnData); exit;
         echo json_encode($aReturnData);
     }
 
@@ -424,20 +438,21 @@ class cAdjustmentcost extends MX_Controller {
     // Return Type : object
     public function FSoCADCEventEdit(){
         try{
-            $tDocNo      = $this->input->post('ohdADCDocNo');
-            $tBchCode   = $this->input->post('ohdADCBchCode');
-            $tDocDate    = $this->input->post('oetADCDocDate');
-            $tDocTime    = $this->input->post('oetADCDocTime');
-            $tEffectiveDate    = $this->input->post('oetADCEffectiveDate');
-            $tRefInt    = $this->input->post('oetADCRefInt');
-            $tRefIntDate    = $this->input->post('oetADCRefIntDate');
-            $tRmk   = $this->input->post('otaADCRmk');
-            $aDataInsert   = $this->input->post('aDataInsert');
+            $tDocNo             = $this->input->post('ohdADCDocNo');
+            $tBchCode           = $this->input->post('ohdADCBchCode');
+            $tDocDate           = $this->input->post('oetADCDocDate');
+            $tDocTime           = $this->input->post('oetADCDocTime');
+            $tEffectiveDate     = $this->input->post('oetADCEffectiveDate');
+            $tRefInt            = $this->input->post('oetADCRefInt');
+            $tRefIntDate        = $this->input->post('oetADCRefIntDate');
+            $tRmk               = $this->input->post('otaADCRmk');
+            $aDataInsert        = $this->input->post('aDataInsert');
+            $tDocType           = $this->input->post('ocmADCDocType');
 
             $aParams = array(
                 'FTBchCode'    => $tBchCode,
                 'FTXchDocNo'   => $tDocNo,
-                'FNXchDocType' => 10,
+                'FNXchDocType' => $tDocType,
                 'FDXchDocDate' => $tDocDate,
                 'FTXchDocTime' => $tDocTime,
                 'FDXchAffect'  => $tEffectiveDate,
@@ -501,9 +516,10 @@ class cAdjustmentcost extends MX_Controller {
             } else {
                 $this->db->trans_commit();
                 $aReturnData = array(
-                    'nStaEvent' => '1',
-                    'tStaMessg' => 'success',
-                    'tCodeReturn' => $tDocNo,
+                    'nStaEvent'     => '1',
+                    'tStaMessg'     => 'success',
+                    'tCodeReturn'   => $tDocNo,
+                    'nDocType'      => $tDocType
                 );
             }
         }catch(Exception $Error){
@@ -523,6 +539,7 @@ class cAdjustmentcost extends MX_Controller {
     public function FSoCADCGetPdtFromDT(){
         try{
             $tDocNo = $this->input->post('tDocNo');
+
             $aParams = array(
                 'tDocNo' => $tDocNo,
             );
@@ -588,12 +605,12 @@ class cAdjustmentcost extends MX_Controller {
     // ReturnType: Object
     public function FSvCADCApproveDocument() {
         try {
-            $tADCDocNo = $this->input->post('ptADCDocNo');
-            $tADCBchCode = $this->input->post('ptADCBchCode');
+            $tADCDocNo      = $this->input->post('ptADCDocNo');
+            $tADCBchCode    = $this->input->post('ptADCBchCode');
             
             $aDataUpdate = array(
-                'FTXchDocNo' => $tADCDocNo,
-                'FTXchApvCode' => $this->session->userdata('tSesUsername')
+                'FTXchDocNo'    => $tADCDocNo,
+                'FTXchApvCode'  => $this->session->userdata('tSesUsername')
             );
 
             $aStaApv = $this->mAdjustmentcost->FSvMADCApprove($aDataUpdate);
@@ -602,14 +619,14 @@ class cAdjustmentcost extends MX_Controller {
                 $aMQParams = [
                     "queueName" => "CN_QDocApprove",
                     "params" => [
-                        'ptFunction' => "AdjustCost",
-                        'ptSource' => 'AdaStoreBack',
-                        'ptDest' =>'MQReceivePrc',
-                        'ptFilter' => $tADCBchCode,
-                        'ptData'=>json_encode([
-                            "ptBchCode" => $tADCBchCode,
-                            "ptDocNo" => $tADCDocNo,
-                            "ptUser" => $this->session->userdata("tSesUsername"),
+                        'ptFunction'    => "AdjustCost",
+                        'ptSource'      => 'AdaStoreBack',
+                        'ptDest'        =>'MQReceivePrc',
+                        'ptFilter'      => $tADCBchCode,
+                        'ptData'        =>json_encode([
+                            "ptBchCode"     => $tADCBchCode,
+                            "ptDocNo"       => $tADCDocNo,
+                            "ptUser"        => $this->session->userdata("tSesUsername"),
                         ])
                     ]
                 ];
@@ -667,6 +684,50 @@ class cAdjustmentcost extends MX_Controller {
             );
         }
         echo json_encode($aDataStaReturn);
+    }
+
+    // Functionality : Get PDT From PDT Code
+    // Parameters : Ajax and Function Parameter
+    // Creator : 19/11/2021 Off [IcePHP ยกมาจาก Fit Auto 11/10/2022]
+    // Return :
+    // Return Type : object
+    public function FSoCADCGetPdtFromPdtCode(){
+        try{
+            $aPdtDetail     = $this->input->post();
+            $FTPdtCode      = $aPdtDetail['aProduct'][0]['pnPdtCode'];
+            $FTBarCode      = $aPdtDetail['aProduct'][0]['ptBarCode'];
+
+            $tBchCode       = $this->input->post('tBchCode');
+            $nLangEdit      = $this->session->userdata("tLangEdit");
+
+            $aParams = array(
+                'tBchCode'  => $tBchCode,
+                'FTPdtCode' => $FTPdtCode,
+                'FTBarCode' => $FTBarCode,
+                'FNLngID'   => $nLangEdit,
+            );
+
+            $aData = $this->mAdjustmentcost->FSaMADCGetPdtFromPdtCode($aParams);
+
+            if ($aData['rtCode'] == '1') {
+                $aReturnData = array(
+                    'aData' => $aData['raItems'],
+                    'nStaEvent' => $aData['rtCode'],
+                    'tStaMessg' => $aData['rtDesc'],
+                );
+            } else {
+                $aReturnData = array(
+                    'nStaEvent' => $aData['rtCode'],
+                    'tStaMessg' => $aData['rtDesc'],
+                );
+            }
+        }catch(Exception $Error){
+            $aReturnData    = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
+            );
+        }
+        echo json_encode($aReturnData);
     }
 }
 

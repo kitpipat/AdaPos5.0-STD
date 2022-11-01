@@ -14,12 +14,18 @@
                 <thead>
                     <tr>
                         <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
-                        <th nowrap class="xCNTextBold" style="width:5%;text-align:center;"><?php echo language('authen/role/role','tROLTBChoose')?></th>
+                            <th nowrap class="xCNTextBold text-center" style="width:5%;">
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" class="ocmCENCheckDeleteAll" id="ocmCENCheckDeleteAll" >
+                                    <span class="ospListItem">&nbsp;</span>
+                                </label>
+                            </th>
                         <?php endif; ?>
                         <th nowrap class="xCNTextBold" style="width:10%;text-align:center;"><?php echo language('authen/role/role','tImglogo')?></th>
 
                         <th nowrap class="xCNTextBold" style="width:10%;text-align:center;"><?php echo language('authen/role/role','tROLTBCode')?></th>
                         <th nowrap class="xCNTextBold" style="width:50%;text-align:center;"><?php echo language('authen/role/role','tROLTBName')?></th>
+                        <th nowrap class="xCNTextBold" style="width:10%;text-align:center;"><?php echo language('authen/role/role','tROLTBLevel')?></th>
                         <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
                         <th nowrap class="xCNTextBold" style="width:10%;text-align:center;"><?php echo language('authen/role/role','tROLTBDelete')?></th>
                         <?php endif; ?>
@@ -53,6 +59,7 @@
 
                                 <td class="text-left"><?php echo $aValue['FTRolCode']?></td>
                                 <td><?php echo $aValue['FTRolName']?></td>
+                                <td class="text-center"><?php echo $aValue['FNRolLevel']?></td>
 
                                 <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
                                 <td style="text-align: center;">

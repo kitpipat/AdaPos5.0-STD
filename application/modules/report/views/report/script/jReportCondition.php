@@ -5598,12 +5598,23 @@ var oRptClvBrows = function(poReturnInput) {
                     OrderBy: ['TCNMMerchant.FDCreateOn DESC'],
                 },
                 CallBack: {
+                    ReturnType: 'S',
                     StausAll: ['oetRptMerStaSelectAll'],
                     Value: ['oetRptMerCodeSelect', 'TCNMMerchant.FTMerCode'],
                     Text: ['oetRptMerNameSelect', 'TCNMMerchant_L.FTMerName'],
                 },
             };
-            JCNxBrowseMultiSelect('oMerchantBrowseMultiOption');
+
+            switch ($("#ohdRptCode").val()) {
+                case 'SPCANI005' :
+                    JCNxBrowseData('oMerchantBrowseMultiOption');
+                    break;
+                default :  
+                    JCNxBrowseMultiSelect('oMerchantBrowseMultiOption');
+                    break;
+            }
+            // console.log($("#ohdRptCode").val())
+
         } else {
             JCNxShowMsgSessionExpired();
         }

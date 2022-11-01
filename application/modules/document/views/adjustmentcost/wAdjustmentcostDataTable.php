@@ -12,13 +12,18 @@ if ($aDataList['rtCode'] == '1') {
                 <thead>
                     <tr class="xCNCenter">
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
-                            <th class="xCNTextBold" style="width:5%;"><?php echo  language('document/adjustmentcost/adjustmentcost', 'tADCTBChoose') ?></th>
+                            <th nowrap class="xCNTextBold text-center" style="width:5%;">
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" class="ocmCENCheckDeleteAll" id="ocmCENCheckDeleteAll" >
+                                    <span class="ospListItem">&nbsp;</span>
+                                </label>
+                            </th>
                         <?php endif; ?>
                         <th class="xCNTextBold"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCTBBchCreate') ?></th>
                         <th class="xCNTextBold"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCTBDocNo') ?></th>
                         <th class="xCNTextBold"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCTBDocDate') ?></th>
                         <th class="xCNTextBold"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCTBStaDoc') ?></th>
-                        <th class="xCNTextBold"><?php echo language('document/adjuststock/adjuststock', 'tASTTBStaPrc') ?></th>
+                        <th class="xCNTextBold"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCTBStaPrc') ?></th>
                         <th class="xCNTextBold"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCTBCreateBy') ?></th>
                         <th class="xCNTextBold"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCTBApvBy') ?></th>
 
@@ -37,41 +42,47 @@ if ($aDataList['rtCode'] == '1') {
                         if (FCNnHSizeOf($aDataList['raItems']) != 0) {
                             foreach ($aDataList['raItems'] as $nKey => $aValue) : ?>
                                 <?php
-                                $tASTDocNo  =   $aValue['FTXchDocNo'];
-                                if ($aValue['FTXchStaApv'] == 1 || $aValue['FTXchStaApv'] == 2 || $aValue['FTXchStaDoc'] == 3) {
-                                    $tCheckboxDisabled  = "disabled";
-                                    $tClassDisabled     = "xCNDocDisabled";
-                                    $tTitle             = language('document/document/document', 'tDOCMsgCanNotDel');
-                                    $tOnclick           = '';
-                                } else {
-                                    $tCheckboxDisabled  = "";
-                                    $tClassDisabled     = '';
-                                    $tTitle             = '';
-                                    $tOnclick           = "onclick=JSoADCDelDocSingle('" . $nCurrentPage . "','" . $tASTDocNo . "')";
-                                }
-
-                                if ($aValue['FTXchStaDoc'] == 3) {
-                                    $tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaDoc3'); //ยกเลิก
-                                    $tClassStaDoc = 'text-danger';
-                                } else {
-                                    if ($aValue['FTXchStaApv'] == 1) {
-                                        $tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaApv1'); //อนุมัติแล้ว
-                                        $tClassStaDoc = 'text-success';
+                                    $tASTDocNo  =   $aValue['FTXchDocNo'];
+                                    if ($aValue['FTXchStaApv'] == 1 || $aValue['FTXchStaApv'] == 2 || $aValue['FTXchStaDoc'] == 3) {
+                                        $tCheckboxDisabled  = "disabled";
+                                        $tClassDisabled     = "xCNDocDisabled";
+                                        $tTitle             = language('document/document/document', 'tDOCMsgCanNotDel');
+                                        $tOnclick           = '';
                                     } else {
-                                        $tNewProcess = language('document/adjustmentcost/adjustmentcost', 'tADCStaApv'); //รออนุมัติ
-                                        $tClassStaDoc = 'text-warning';
+                                        $tCheckboxDisabled  = "";
+                                        $tClassDisabled     = '';
+                                        $tTitle             = '';
+                                        $tOnclick           = "onclick=JSoADCDelDocSingle('" . $nCurrentPage . "','" . $tASTDocNo . "')";
                                     }
-                                }
-                                // เช็ค Text Color 
-                                if ($aValue['FTXchStaPrcDoc'] == 1) {
-                                    $tClassPrcStk = 'text-success';
-                                } else if ($aValue['FTXchStaPrcDoc'] == 2) {
-                                    $tClassPrcStk = 'text-warning';
-                                } else if ($aValue['FTXchStaPrcDoc'] == '') {
-                                    $tClassPrcStk = 'text-warning';
-                                } else {
-                                    $tClassPrcStk = "";
-                                }
+
+                                    if ($aValue['FTXchStaDoc'] == 3) {
+                                        $tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaDoc3'); //ยกเลิก
+                                        $tClassStaDoc = 'text-danger';
+                                    } else {
+                                        if ($aValue['FTXchStaApv'] == 1) {
+                                            $tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaApv1'); //อนุมัติแล้ว
+                                            $tClassStaDoc = 'text-success';
+                                        } else {
+                                            $tNewProcess = language('document/adjustmentcost/adjustmentcost', 'tADCStaApv'); //รออนุมัติ
+                                            $tClassStaDoc = 'text-warning';
+                                        }
+                                    }
+                                    // เช็ค Text Color 
+                                    if ($aValue['FTXchStaPrcDoc'] == 1) {
+                                        $tClassPrcStk = 'text-success';
+                                    } else if ($aValue['FTXchStaPrcDoc'] == 2) {
+                                        $tClassPrcStk = 'text-warning';
+                                    } else if ($aValue['FTXchStaPrcDoc'] == '') {
+                                        $tClassPrcStk = 'text-warning';
+                                    } else {
+                                        $tClassPrcStk = "";
+                                    }
+
+                                    if($aValue['FTXchStaApv']=="" || $aValue['FTXchStaDoc'] == 3){
+                                        $tXchUsrApv = language('document/salepriceadj/salepriceadj','tSpaStaEmtpy');
+                                    }else{
+                                        $tXchUsrApv = $aValue['FTXchApvName'];
+                                    }
                                 ?>
                                 <tr id="otrAdjustmentcost<?php echo $nKey ?>" class="text-center xCNTextDetail2 otrAdjustmentcost" data-code="<?php echo $aValue['FTXchDocNo'] ?>" data-name="<?php echo $aValue['FTXchDocNo'] ?>">
                                     <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
@@ -87,7 +98,7 @@ if ($aDataList['rtCode'] == '1') {
                                     <td class="text-center"><?php echo (!empty($aValue['FDXchDocDate'])) ? $aValue['FDXchDocDate'] : '-' ?></td>
                                     <td class="text-left"><label class="xCNTDTextStatus <?= $tClassStaDoc ?>"><?php echo $tNewProcess; ?></label></td>
                                     <td class="text-left">
-                                        <label class="xCNTDTextStatus <?php echo $tClassPrcStk; ?>"><?php echo language('document/adjuststock/adjuststock', 'tASTStaPrcStk' . $aValue['FTXchStaPrcDoc']) ?></label>
+                                        <label class="xCNTDTextStatus <?php echo $tClassPrcStk; ?>"><?php echo language('document/adjustmentcost/adjustmentcost', 'tADCTBStaPrc' . $aValue['FTXchStaPrcDoc']) ?></label>
                                     </td>
                                     <td class="text-left">
                                         <?php echo (!empty($aValue['FTCreateByName'])) ? $aValue['FTCreateByName'] : '-' ?>

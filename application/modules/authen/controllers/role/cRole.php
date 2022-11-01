@@ -11,6 +11,12 @@ class cRole extends MX_Controller
         $this->load->model('authen/user/mUser');
         $this->load->model('authen/login/mLogin');
         date_default_timezone_set("Asia/Bangkok");
+
+        // Test XSS Load Helper Security
+        $this->load->helper("security");
+        if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
+            echo "ERROR XSS Filter";
+        }
     }
 
     public function index($nRoleBrowseType, $tRoleBrowseOption)
@@ -103,8 +109,8 @@ class cRole extends MX_Controller
             $tRoleViewDataTableList   = $this->load->view('authen/role/wRoleDataTable', $aConfigView, true);
             $aReturnData = array(
                 'tRoleViewDataTableList'    => $tRoleViewDataTableList,
-                'nStaEvent' => 1,
-                'tStaMessg' => 'Success'
+                'nStaEvent'                 => 1,
+                'tStaMessg'                 => 'Success'
             );
         } catch (ErrorException $Error) {
             $aReturnData = array(
@@ -159,14 +165,14 @@ class cRole extends MX_Controller
             // }
 
             $aParams = array(
-                'FNLngID' => $nLangEdit,
-                'FTRolCode' => '',
-                'tSesUsrRoleCodeMulti' => $tSesUsrRoleCodeMulti
+                'FNLngID'               => $nLangEdit,
+                'FTRolCode'             => '',
+                'tSesUsrRoleCodeMulti'  => $tSesUsrRoleCodeMulti
             );
-            $aDataMenuList = $this->mRole->FSaMRoleMenuList($aParams);
-            $aDataMenuRptList = $this->mRole->FSaMRptListMenu($aParams);
-            $aDataFuncSettingList = $this->mRole->FSaMGetFuncSettingList($aParams);
-
+            $aDataMenuList          = $this->mRole->FSaMRoleMenuList($aParams);
+            $aDataMenuRptList       = $this->mRole->FSaMRptListMenu($aParams);
+            $aDataFuncSettingList   = $this->mRole->FSaMGetFuncSettingList($aParams);
+            $aDataNotiSettingList   = $this->mRole->FSaMGetNotiSettingList($aParams);
 
             // echo '<pre>';
 
@@ -174,19 +180,20 @@ class cRole extends MX_Controller
             // echo '<pre>';
             // die();
             $aDataConfigViewForm = array(
-                'nStaCallView' => 1, // 1 = Call View Add , 2 = Call View Edits
-                'aDataMenuList' => $aDataMenuList,
-                'aDataMenuReport' => $aDataMenuRptList,
-                'aDataFuncSettingList' => $aDataFuncSettingList,
-                'tSesAgnCode'   => $this->session->userdata("tSesUsrAgnCode"),
-                'tSesAgnName'   => $this->session->userdata("tSesUsrAgnName"),
+                'nStaCallView'          => 1, // 1 = Call View Add , 2 = Call View Edits
+                'aDataMenuList'         => $aDataMenuList,
+                'aDataMenuReport'       => $aDataMenuRptList,
+                'aDataFuncSettingList'  => $aDataFuncSettingList,
+                'aDataNotiSettingList'  => $aDataNotiSettingList,
+                'tSesAgnCode'           => $this->session->userdata("tSesUsrAgnCode"),
+                'tSesAgnName'           => $this->session->userdata("tSesUsrAgnName"),
             );
 
             $tRoleViewPageForm = $this->load->view('authen/role/wRoleAdd', $aDataConfigViewForm, true);
             $aReturnData = array(
-                'tRoleViewPageAdd' => $tRoleViewPageForm,
-                'nStaEvent' => '1',
-                'tStaMessg' => 'Success'
+                'tRoleViewPageAdd'  => $tRoleViewPageForm,
+                'nStaEvent'         => '1',
+                'tStaMessg'         => 'Success'
             );
         } catch (Exception $Error) {
             $aReturnData = array(
@@ -206,11 +213,11 @@ class cRole extends MX_Controller
     public function FSoCCallPageRoleEdit()
     {
         try {
-            $tRolCode = $this->input->post('tRolCode');
-            $nLangResort = $this->session->userdata("tLangID");
-            $nLangEdit = $this->session->userdata("tLangEdit");
-            $aLangHave = FCNaHGetAllLangByTable('TCNMUsrRole_L');
-            $nLangHave = FCNnHSizeOf($aLangHave);
+            $tRolCode       = $this->input->post('tRolCode');
+            $nLangResort    = $this->session->userdata("tLangID");
+            $nLangEdit      = $this->session->userdata("tLangEdit");
+            $aLangHave      = FCNaHGetAllLangByTable('TCNMUsrRole_L');
+            $nLangHave      = FCNnHSizeOf($aLangHave);
             if ($nLangHave > 1) {
                 if ($nLangEdit != '') {
                     $nLangEdit = $nLangEdit;
@@ -237,9 +244,9 @@ class cRole extends MX_Controller
             //     $tSesUsrRoleCodeMulti .= ','.$tUsrBchCodeMulti;
             // }
             $aParams  = array(
-                'FNLngID' => $nLangEdit,
-                'FTRolCode' => $tRolCode,
-                'tSesUsrRoleCodeMulti' => $tSesUsrRoleCodeMulti
+                'FNLngID'               => $nLangEdit,
+                'FTRolCode'             => $tRolCode,
+                'tSesUsrRoleCodeMulti'  => $tSesUsrRoleCodeMulti
             );
 
             // Get Data User Role
@@ -248,35 +255,36 @@ class cRole extends MX_Controller
 // ***************************************************************************************
             // Create By Witsarut 190620
             //GetData UsrRoleSpc
-            $aDataUsrRoleSpc  = $this->mRole->FSaMUsrRoleSpcGetDataMaster($aParams);
-            @$aDataRoleCode = $aDataUsrRoleSpc['raItems']['FTRolCode'];
-            @$aDataAgnCode  = $aDataUsrRoleSpc['raItems']['FTAgnCode'];
-            @$aDataBchCode  = $aDataUsrRoleSpc['raItems']['FTBchCode'];
+            $aDataUsrRoleSpc    = $this->mRole->FSaMUsrRoleSpcGetDataMaster($aParams);
+            @$aDataRoleCode     = $aDataUsrRoleSpc['raItems']['FTRolCode'];
+            @$aDataAgnCode      = $aDataUsrRoleSpc['raItems']['FTAgnCode'];
+            @$aDataBchCode      = $aDataUsrRoleSpc['raItems']['FTBchCode'];
 
 
             // นับจำนวนของ Branch ถ้า Branch ที่อยู่ภายใต้ ตัวแทนขาย นับมากกว่า 1 ให้หน้า Edit Browse Branch ไม่ต้องโชว์
             // แต่ ถ้านับแล้วมีแค่ 1 ให้ เอา Browse Branch มาโชว
-            $aDataCountRoleCode = $this->mRole->FSaMRoleCountNRolCodeFromUsrSpc($aDataAgnCode, $aDataBchCode, $aDataRoleCode);
+            $aDataCountRoleCode     = $this->mRole->FSaMRoleCountNRolCodeFromUsrSpc($aDataAgnCode, $aDataBchCode, $aDataRoleCode);
           
-            $aGetDataBranch   = $this->mRole->FSaMRoleGetBchFromAgnCode($aDataAgnCode);
+            $aGetDataBranch         = $this->mRole->FSaMRoleGetBchFromAgnCode($aDataAgnCode);
 
 
 // ***************************************************************************************
             if (isset($aDataUsrRole['rtRoleImgObj']) && !empty($aDataUsrRole['rtRoleImgObj'])) {
-                $tImgObj = $aDataUsrRole['rtRoleImgObj'];
-                $aImgObjPath = explode("application/modules/", $tImgObj);
-                $aImgObjName = explode("/", $tImgObj);
-                $tImgObjPath = end($aImgObjPath);
-                $tImgObjName = end($aImgObjName);
+                $tImgObj        = $aDataUsrRole['rtRoleImgObj'];
+                $aImgObjPath    = explode("application/modules/", $tImgObj);
+                $aImgObjName    = explode("/", $tImgObj);
+                $tImgObjPath    = end($aImgObjPath);
+                $tImgObjName    = end($aImgObjName);
             } else {
-                $tImgObjPath = "";
-                $tImgObjName = "";
+                $tImgObjPath    = "";
+                $tImgObjName    = "";
             }
 
             // Get Data Report Menu
-            $aDataMenuList = $this->mRole->FSaMRoleMenuList($aParams);
-            $aDataMenuReport = $this->mRole->FSaMRptListMenu($aParams);
-            $aDataFuncSettingList = $this->mRole->FSaMGetFuncSettingList($aParams);
+            $aDataMenuList          = $this->mRole->FSaMRoleMenuList($aParams);
+            $aDataMenuReport        = $this->mRole->FSaMRptListMenu($aParams);
+            $aDataFuncSettingList   = $this->mRole->FSaMGetFuncSettingList($aParams);
+            $aDataNotiSettingList   = $this->mRole->FSaMGetNotiSettingList($aParams);
 
             // echo '<pre>';
 
@@ -284,22 +292,23 @@ class cRole extends MX_Controller
             // echo '<pre>';
             // die();
             $aDataConfigViewForm = array(
-                'nStaCallView' => 2, // 1 = Call View Add , 2 = Call View Edits
-                'aDataMenuList' => $aDataMenuList,
-                'aDataMenuReport' => $aDataMenuReport,
-                'aDataFuncSettingList' => $aDataFuncSettingList,
-                'aDataUsrRole' => $aDataUsrRole,
-                'tImgObjPath' => $tImgObjPath,
-                'tImgObjName' => $tImgObjName,
-                'aDataUsrRoleSpc' => $aDataUsrRoleSpc,
-                'aDataCountRoleCode' => $aDataCountRoleCode,
+                'nStaCallView'          => 2, // 1 = Call View Add , 2 = Call View Edits
+                'aDataMenuList'         => $aDataMenuList,
+                'aDataMenuReport'       => $aDataMenuReport,
+                'aDataFuncSettingList'  => $aDataFuncSettingList,
+                'aDataNotiSettingList'  => $aDataNotiSettingList,
+                'aDataUsrRole'          => $aDataUsrRole,
+                'tImgObjPath'           => $tImgObjPath,
+                'tImgObjName'           => $tImgObjName,
+                'aDataUsrRoleSpc'       => $aDataUsrRoleSpc,
+                'aDataCountRoleCode'    => $aDataCountRoleCode,
             );
 
             $tRoleViewPageForm = $this->load->view('authen/role/wRoleAdd', $aDataConfigViewForm, true);
 
             // Get Data Report Menu Edit
-            $aDataRoleMenuEdit = $this->mRole->FSaMGetDataRoleMenuEdit($aParams);
-            $aDataRoleMenuRptEdit = $this->mRole->FSaMGetDataRoleMenuRptEdit($aParams);
+            $aDataRoleMenuEdit      = $this->mRole->FSaMGetDataRoleMenuEdit($aParams);
+            $aDataRoleMenuRptEdit   = $this->mRole->FSaMGetDataRoleMenuRptEdit($aParams);
 
             $aReturnData = array(
                 'nStaEvent'             => '1',
@@ -330,16 +339,16 @@ class cRole extends MX_Controller
 
             // Master Add/Update Table (TCNMUsrRole,TCNMUsrRole_L)
             $aDataMaster = array(
-                'tIsAutoGenCode' => $this->input->post('ptRoleAutoGenCode'),
-                'FTRolCode'     => $this->input->post('ptRoleCode'),
-                'FNRolLevel'    => $this->input->post('ptRoleLevel'),
-                'FTRolName'     => $this->input->post('ptRoleName'),
-                'FTRolRmk'      => $this->input->post('ptRoleRemark'),
-                'FDLastUpdOn'   => date('Y-m-d H:i:s'),
-                'FDCreateOn'    => date('Y-m-d H:i:s'),
-                'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
-                'FTCreateBy'    => $this->session->userdata('tSesUsername'),
-                'FNLngID'       => $this->session->userdata("tLangEdit")
+                'tIsAutoGenCode'    => $this->input->post('ptRoleAutoGenCode'),
+                'FTRolCode'         => $this->input->post('ptRoleCode'),
+                'FNRolLevel'        => $this->input->post('ptRoleLevel'),
+                'FTRolName'         => $this->input->post('ptRoleName'),
+                'FTRolRmk'          => $this->input->post('ptRoleRemark'),
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                'FNLngID'           => $this->session->userdata("tLangEdit")
             );
 
             if ($aDataMaster['tIsAutoGenCode'] == '1') {
@@ -356,13 +365,10 @@ class cRole extends MX_Controller
             }
 
             //simput Imge
-            $tImageUplodeOld = trim($this->input->post('ptImageOld'));
-            $tImageUplode = trim($this->input->post('ptImageNew'));
+            $tImageUplodeOld    = trim($this->input->post('ptImageOld'));
+            $tImageUplode       = trim($this->input->post('ptImageNew'));
 
-         
-
-
-// ******************************************************************************************************************************************
+            // ******************************************************************************************************************************************
 
             $tSpcAgnCode        = $this->input->post('ptSpcAgnCode');
             $tSpcBchCode        = $this->input->post('ptSpcBchCode');
@@ -400,8 +406,7 @@ class cRole extends MX_Controller
             //     }
             // }
 
-
-// ********************************************************************************************************************************
+            // ********************************************************************************************************************************
 
             $this->mRole->FSxMRoleAddUpdateUsrRole($aDataMaster);
             $this->mRole->FSxMRoleAddUpdateUsrRoleLang($aDataMaster);
@@ -421,12 +426,12 @@ class cRole extends MX_Controller
             if (!empty($aRoleFuncSettingData)) {
                 foreach ($aRoleFuncSettingData as $aRoleFuncSettingItem) {
                     $aAddRoleFuncSettingParams = [
-                        "tRoleCode" => $aDataMaster['FTRolCode'],
-                        "tGhdApp" => $aRoleFuncSettingItem["tGhdApp"],
-                        "tGhdCode" => $aRoleFuncSettingItem["tGhdCode"],
-                        "tSysCode" => $aRoleFuncSettingItem["tSysCode"],
-                        "tUfrStaAlw" => "1",
-                        "tUserLoginCode" => $this->session->userdata('tSesUsername')
+                        "tRoleCode"         => $aDataMaster['FTRolCode'],
+                        "tGhdApp"           => $aRoleFuncSettingItem["tGhdApp"],
+                        "tGhdCode"          => $aRoleFuncSettingItem["tGhdCode"],
+                        "tSysCode"          => $aRoleFuncSettingItem["tSysCode"],
+                        "tUfrStaAlw"        => "1",
+                        "tUserLoginCode"    => $this->session->userdata('tSesUsername')
                     ];
                     $this->mRole->FSxMAddRoleFuncSetting($aAddRoleFuncSettingParams);
                 }
@@ -437,6 +442,11 @@ class cRole extends MX_Controller
                 $this->mRole->FSxClearRoleFuncSetting($aClearUsrFuncSettingParams);
             }
             /*===== End Add Data FuncSetting ===========================================*/
+
+            /*===== Begin Add Data NotiSetting =========================================*/
+            $aRoleNotiSettingData = $this->input->post('paRoleNotiSetting');
+            $this->mRole->FSxMAddRoleNotiSetting($aDataMaster,$aRoleNotiSettingData);
+                
             // Set session on Add Data
             //26-10-2020 nale เพิ่มเก็บสิทใน session เพื่อแสดงในหน้าจอสิทหลังบันทึก
             if($this->session->userdata('nSesUsrBchCount')!=0){
@@ -460,8 +470,8 @@ class cRole extends MX_Controller
                     'tAgnCode'		=> $this->session->userdata("tSesUsrAgnCode"),
                     'tBchCodeMulti'	=> $this->session->userdata("tSesUsrBchCodeMulti")
                 );
-                $aDataUsrRoleChain  		= $this->mLogin->FSaMLOGGetUserRoleChain($aDataWhereChain);
 
+                $aDataUsrRoleChain  		= $this->mLogin->FSaMLOGGetUserRoleChain($aDataWhereChain);
                 if( $aDataUsrRoleChain['tCode'] == '1' ){
                     $tSesUsrRoleCodeMultiSpc = $this->mLogin->FStMLOGMakeArrayToString($aDataUsrRoleChain['aItems'],'FTRolCode','value');
                 }
@@ -523,8 +533,12 @@ class cRole extends MX_Controller
             $this->db->trans_begin();
 
             //imput Imge
-            $tImageUplodeOld = trim($this->input->post('ptImageOld'));
-            $tImageUplode = trim($this->input->post('ptImageNew'));
+            // $tImageUplodeOld    = $this->input->post('ptImageOld');
+            // $tImageUplode       = $this->input->post('ptImageNew');
+            $tImageUplodeOld    = trim($this->input->post('ptImageOld'));
+            $tImageUplode       = trim($this->input->post('ptImageNew'));
+
+            // print_r([$tImageUplodeOld, "-----", $tImageUplode]);
 
             // Master Add/Update Table (TCNMUsrRole,TCNMUsrRole_L)
             $aDataMaster = array(
@@ -539,10 +553,9 @@ class cRole extends MX_Controller
                 'FNLngID'       => $this->session->userdata("tLangEdit")
             );
 
-// ********************************************************************************************************************************
+            // ********************************************************************************************************************************
             $tSpcAgnCode    =  $this->input->post('ptSpcAgnCode');
             $tSpcBchCode    =  $this->input->post('ptSpcBchCode');
-
             $tRoleCode      =  $this->input->post('ptRoleCode');
 
             // Insert  Table TCNMUsrRoleSpc
@@ -569,13 +582,14 @@ class cRole extends MX_Controller
                         $this->mRole->FSxMRoleAddUpdateUsrRoleSpc($tSpcBchCode , $aDataMasterRoleSpc);
                 //     }
                 // }
-            }else if($tSpcAgnCode != '' && $tSpcBchCode != ''){
+            }
+            else if($tSpcAgnCode != '' && $tSpcBchCode != ''){
                 $this->mRole->FSxMRoleAddUpdateUsrRoleSpc($tSpcBchCode, $aDataMasterRoleSpc);
             }else{
                 $this->mRole->FSxMRoleAddUpdateUsrRoleSpc($tSpcBchCode, $aDataMasterRoleSpc);
             }
     
-// ********************************************************************************************************************************
+            // ********************************************************************************************************************************
             $this->mRole->FSxMRoleAddUpdateUsrRole($aDataMaster);
             $this->mRole->FSxMRoleAddUpdateUsrRoleLang($aDataMaster);
 
@@ -599,12 +613,12 @@ class cRole extends MX_Controller
 
                 foreach ($aRoleFuncSettingData as $aRoleFuncSettingItem) {
                     $aAddRoleFuncSettingParams = [
-                        "tRoleCode" => $this->input->post('ptRoleCode'),
-                        "tGhdApp" => $aRoleFuncSettingItem["tGhdApp"],
-                        "tGhdCode" => $aRoleFuncSettingItem["tGhdCode"],
-                        "tSysCode" => $aRoleFuncSettingItem["tSysCode"],
-                        "tUfrStaAlw" => "1",
-                        "tUserLoginCode" => $this->session->userdata('tSesUsername')
+                        "tRoleCode"         => $this->input->post('ptRoleCode'),
+                        "tGhdApp"           => $aRoleFuncSettingItem["tGhdApp"],
+                        "tGhdCode"          => $aRoleFuncSettingItem["tGhdCode"],
+                        "tSysCode"          => $aRoleFuncSettingItem["tSysCode"],
+                        "tUfrStaAlw"        => "1",
+                        "tUserLoginCode"    => $this->session->userdata('tSesUsername')
                     ];
                     $this->mRole->FSxMAddRoleFuncSetting($aAddRoleFuncSettingParams);
                 }
@@ -616,6 +630,10 @@ class cRole extends MX_Controller
             }
             /*===== End Add Data FuncSetting ===========================================*/
 
+            /*===== Begin Add Data NotiSetting =========================================*/
+            $aRoleNotiSettingData = $this->input->post('paRoleNotiSetting');
+            $this->mRole->FSxMAddRoleNotiSetting($aDataMaster,$aRoleNotiSettingData);
+
             // Check Trancetion Event Menu
             if ($this->db->trans_status() !== FALSE) {
                 $this->db->trans_commit();
@@ -626,18 +644,22 @@ class cRole extends MX_Controller
                 // Set สิทธิในการมองเห็นตัวแทนขาย
                 FCNbLoadConfigIsAgnEnabled();
 
-                $aDataUpload = array(
-                    'tModuleName'     => 'authen',
-                    'tImgFolder'      => 'role',
-                    'tImgRefID'       => $this->input->post('ptRoleCode'),
-                    'tImgObj'         => $tImageUplode,
-                    'tImgTable'       => 'TCNMUsrRole',
-                    'tTableInsert'    => 'TCNMImgObj',
-                    'tImgKey'         => 'main',
-                    'dDateTimeOn'     => date('Y-m-d H:i:s'),
-                    'tWhoBy'          => $this->session->userdata('tSesUsername')
-                );
-                $aImgReturn = FCNnHAddImgObj($aDataUpload);
+                if($tImageUplode != $tImageUplodeOld) {
+                    $aDataUpload = array(
+                        'tModuleName'     => 'authen',
+                        'tImgFolder'      => 'role',
+                        'tImgRefID'       => $this->input->post('ptRoleCode'),
+                        'tImgObj'         => $tImageUplode,
+                        'tImgTable'       => 'TCNMUsrRole',
+                        'tTableInsert'    => 'TCNMImgObj',
+                        'tImgKey'         => 'main',
+                        'dDateTimeOn'     => date('Y-m-d H:i:s'),
+                        'tWhoBy'          => $this->session->userdata('tSesUsername')
+                    );
+    
+                    $aImgReturn = FCNnHAddImgObj($aDataUpload);
+                }
+                
                 $aReturnData = array(
                     'aImgReturn'    => ( isset($aImgReturn) && !empty($aImgReturn) ? $aImgReturn : array("nStaEvent" => '1') ),
                     'nStaCallBack'	=> $this->session->userdata('tBtnSaveStaActive'),
@@ -688,10 +710,10 @@ class cRole extends MX_Controller
                     'nNumRowRolLoc' => $nNumRowRolLoc
                 );
             } else {
-                throw new Exception(array(
+                $aReturnData = array(
                     'tCodeReturn'   => $aStaDelRole['rtCode'],
                     'tTextStaMessg' => $aStaDelRole['rtDesc'],
-                ));
+                );
             }
         } catch (Exception $Error) {
             $aReturnData    = array(
@@ -705,342 +727,342 @@ class cRole extends MX_Controller
 
     // ===============================================  ExportData  ============================================= ExportData ===========================
         
-        // function export data ต้องเป็นขา Edit ถึงมีค่า
-        // create By Witsarut 27-10-202
-        public function FSxRoleExport(){
-            $paPackData = array(
-                'tRoleCode'     => $this->input->post('tRoleCode'),
-                'tRolName'      => $this->input->post('tRolName'),
-                'tRoleLev'      => $this->input->post('tRoleLev'),
-                'tAgnCode'      => $this->input->post('tAgnCode'),
-                'tSpcBchCode'   => $this->input->post('tSpcBchCode'),
-            );
+    // function export data ต้องเป็นขา Edit ถึงมีค่า
+    // create By Witsarut 27-10-202
+    public function FSxRoleExport(){
+        $paPackData = array(
+            'tRoleCode'     => $this->input->post('tRoleCode'),
+            'tRolName'      => $this->input->post('tRolName'),
+            'tRoleLev'      => $this->input->post('tRoleLev'),
+            'tAgnCode'      => $this->input->post('tAgnCode'),
+            'tSpcBchCode'   => $this->input->post('tSpcBchCode'),
+        );
 
 
-            // เอาข้อมูล จากตารางที่เกี่ยวข้อง มาทำการ exportหรือ ส่งออก
-            // TCNMUsrRole/L เอา UsrRole ไป where 
-            // TCNTUsrMenu  * สิทธิ์การใช้งานเมนู ระบบ
-            // TCNTUsrFuncRpt  * สิทธิ์การใช้งานเมนู Report *
-            // TPSMFuncHD  *สิทธิ์การใช้งานฟังก์ชั่น*
+        // เอาข้อมูล จากตารางที่เกี่ยวข้อง มาทำการ exportหรือ ส่งออก
+        // TCNMUsrRole/L เอา UsrRole ไป where 
+        // TCNTUsrMenu  * สิทธิ์การใช้งานเมนู ระบบ
+        // TCNTUsrFuncRpt  * สิทธิ์การใช้งานเมนู Report *
+        // TPSMFuncHD  *สิทธิ์การใช้งานฟังก์ชั่น*
 
-           
-
-            //GetData TCNTUsrMenu
-            $aPackDataUsrMenu       = $this->mRole->FSaMROlExportDetailUsrMenu($paPackData);
-
-            //Get Data TCNTUsrFuncRpt
-            $aPackDataMenuReport    = $this->mRole->FSaMROlExportDetailRptMenu($paPackData);
-
-            //Get Data TPSMFuncHD
-            $aPackDataFuncSetting   = $this->mRole->FSaMROlExportDetailFuncSetting($paPackData);
-
-            //GetData AgnCode
-            $aPackDataUsrRoleSpc    = $this->mRole->FSaMROlExportDetailUsrRoleSpc($paPackData);
-
-
-            $aItemUsrMenu      = $aPackDataUsrMenu['raItems'];
-            $aItemRptMenu      = $aPackDataMenuReport['raItems'];
-            $aItemFuncSetting  = $aPackDataFuncSetting['raItems'];
-            $aItemUsrRoleSpc   = $aPackDataUsrRoleSpc['raItems'];
-
-       
-            $aWriteData      = array();
-            $nKeyIndexImport = 0;
-            $nCntModCode     = 999;
-            
-            $aDataArray = array(
-                'tTable'  => 'TCNTUsrMenu',
-                'tItem'    => array(),
-            );    
-
-            for($i=0; $i<FCNnHSizeOf($aItemUsrMenu); $i++){
-                    $aParam = [
-                        'tTable'            => 'TCNTUsrMenu',
-                        'FTRolCode'         => $aItemUsrMenu[$i]['FTRolCode'],
-                        'FTGmnModCode'      => $aItemUsrMenu[$i]['FTGmnModCode'],
-                        'FTGmnModName'      => $aItemUsrMenu[$i]['FTGmnModName'],
-                        'FNGmnModShwSeq'    => $aItemUsrMenu[$i]['FNGmnModShwSeq'],
-                        'FTGmnCode'         => $aItemUsrMenu[$i]['FTGmnCode'],
-                        'FTGmnName'         => $aItemUsrMenu[$i]['FTGmnName'],
-                        'FNGmnShwSeq'       => $aItemUsrMenu[$i]['FNGmnShwSeq'],
-                        'FTMnuCode'         => $aItemUsrMenu[$i]['FTMnuCode'],
-                        'FTMnuName'         => $aItemUsrMenu[$i]['FTMnuName'],
-                        'FNMnuSeq'          => $aItemUsrMenu[$i]['FNMnuSeq'],
-                        'FNMnuLevel'        => $aItemUsrMenu[$i]['FNMnuLevel'],
-                        'FTAutStaRead'      => $aItemUsrMenu[$i]['FTAutStaRead'],
-                        'FTAutStaAdd'       => $aItemUsrMenu[$i]['FTAutStaAdd'],
-                        'FTAutStaDelete'    => $aItemUsrMenu[$i]['FTAutStaDelete'],
-                        'FTAutStaEdit'      => $aItemUsrMenu[$i]['FTAutStaEdit'],
-                        'FTAutStaCancel'    => $aItemUsrMenu[$i]['FTAutStaCancel'],
-                        'FTAutStaAppv'      => $aItemUsrMenu[$i]['FTAutStaAppv'],
-                        'FTAutStaPrint'     => $aItemUsrMenu[$i]['FTAutStaPrint'],
-                        'FTAutStaPrintMore' => $aItemUsrMenu[$i]['FTAutStaPrintMore']
-                    ];
-
-                array_push($aDataArray['tItem'], $aParam);
-            }
-
-
-            $aDataArrayRpt = array(
-                'tTable'  => 'TCNTUsrFuncRpt',
-                'tItem'    => array(),
-            );    
-
-            for($j=0; $j<FCNnHSizeOf($aItemRptMenu); $j++){
-                $aParam = [
-                    'tTable'            => 'TCNTUsrFuncRpt',
-                    'FTGrpRptModCode'   => $aItemRptMenu[$j]['FTGrpRptModCode'],
-                    'FNGrpRptModShwSeq' => $aItemRptMenu[$j]['FNGrpRptModShwSeq'],
-                    'FNGrpRptShwSeq'    => $aItemRptMenu[$j]['FNGrpRptShwSeq'],
-                    'FNGrpRptModName'   => $aItemRptMenu[$j]['FNGrpRptModName'],
-                    'FTGrpRptCode'      => $aItemRptMenu[$j]['FTGrpRptCode'],
-                    'FTGrpRptName'      => $aItemRptMenu[$j]['FTGrpRptName'],
-                    'FTRptCode'         => $aItemRptMenu[$j]['FTRptCode'],
-                    'FTRptName'         => $aItemRptMenu[$j]['FTRptName']
-                ];
-
-                array_push($aDataArrayRpt['tItem'], $aParam);
-            }
-
-            $aDataArrayfuncHD = array(
-                'tTable'  => 'TPSMFuncHD',
-                'tItem'    => array(),
-            );    
-
-            for($k=0; $k<FCNnHSizeOf($aItemFuncSetting); $k++){
-                $aParam   = [
-                    'tTable'            => 'TPSMFuncHD',
-                    'FTGhdApp'          => $aItemFuncSetting[$k]['FTGhdApp'],
-                    'FTKbdScreen'       => $aItemFuncSetting[$k]['FTKbdScreen'],
-                    'FTAppName'         => $aItemFuncSetting[$k]['FTAppName'],
-                    'FTGdtName'         => $aItemFuncSetting[$k]['FTGdtName'],
-                    'FTGhdCode'         => $aItemFuncSetting[$k]['FTGhdCode'],
-                    'FTSysCode'         => $aItemFuncSetting[$k]['FTSysCode'],
-                    'FTGdtCallByName'   => $aItemFuncSetting[$k]['FTGdtCallByName'],
-                    'FNGdtFuncLevel'    => $aItemFuncSetting[$k]['FNGdtFuncLevel'],
-                    'FTGdtStaUse'       => $aItemFuncSetting[$k]['FTGdtStaUse'],
-                    'FTUfrStaAlw'       => $aItemFuncSetting[$k]['FTUfrStaAlw']
-                ];
-
-                array_push($aDataArrayfuncHD['tItem'], $aParam);
-            }
-
-            $aDataArrayUsrSpc = array(
-                'tTable'  => 'TCNMUsrRoleSpc',
-                'tItem'    => array(),
-            ); 
-
-            for($n=0; $n<FCNnHSizeOf($aItemUsrRoleSpc); $n++){
-                $aParam   = [
-                    'tTable'        => 'TCNMUsrRoleSpc',
-                    'FTRolCode'     => $aItemUsrRoleSpc[$n]['FTRolCode'],
-                    'FTAgnCode'     => '',
-                    // 'FTAgnCode'     => $aItemUsrRoleSpc[$n]['FTAgnCode'],
-                    'FTBchCode'     => $aItemUsrRoleSpc[$n]['FTBchCode'],
-                    'FTAgnName'     => $aItemUsrRoleSpc[$n]['FTAgnName'],
-                    'FTBchName'     => $aItemUsrRoleSpc[$n]['FTBchName']
-                ];
-
-                array_push($aDataArrayUsrSpc['tItem'], $aParam);
-            }
-
-
-            array_push($aWriteData,$aDataArray,$aDataArrayRpt,$aDataArrayfuncHD,$aDataArrayUsrSpc);
-
-            $aResultWrite   = json_encode($aWriteData, JSON_PRETTY_PRINT);
-            $tFileName      = "ExportRole".$this->session->userdata('tSesUsername').date('His');
-            $tPATH          = APPPATH . "modules/authen/views/role/Export//".$tFileName.".json";
-
-            $handle         = fopen($tPATH, 'w+');
-
-            if($handle){
-                if(!fwrite($handle, $aResultWrite))  die("couldn't write to file."); 
-            }
-
-            //ส่งชื่อไฟล์ออกไป
-            $aReturn = array(
-                'tStatusReturn' => '1',
-                'tFilename'     => $tFileName
-            );
-            echo json_encode($aReturn);
-        }
-
-
-        //Function InsertData Role
-        //Create By Witsarut 30-10-2020
-        function FSxRoleInsertData(){
-            
-            $tDataJSon = $this->input->post('aData');
-
-            // Master Add/Update Table (TCNMUsrRole,TCNMUsrRole_L)
-            $aDataMaster = array(
-                'tIsAutoGenCode' => $this->input->post('tRoleAutoGenCode'),
-                'FTRolCode'     => $this->input->post('tRoleCode'),
-                'FNRolLevel'    => $this->input->post('tRolRev'),
-                'FTRolName'     => $this->input->post('tRolName'),
-                'FTRolRmk'      => $this->input->post('tRemark'),
-                'FDLastUpdOn'   => date('Y-m-d H:i:s'),
-                'FDCreateOn'    => date('Y-m-d H:i:s'),
-                'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
-                'FTCreateBy'    => $this->session->userdata('tSesUsername'),
-                'FNLngID'       => $this->session->userdata("tLangEdit")
-            );
-
-            if ($aDataMaster['tIsAutoGenCode'] == '1') {
-                $aStoreParam = array(
-                    "tTblName"   => 'TCNMUsrRole',                           
-                    "tDocType"   => 0,                                          
-                    "tBchCode"   => "",                                 
-                    "tShpCode"   => "",                               
-                    "tPosCode"   => "",                     
-                    "dDocDate"   => date("Y-m-d")       
-                );
-                $aAutogen   = FCNaHAUTGenDocNo($aStoreParam);
-                $aDataMaster['FTRolCode']  =  $aAutogen[0]["FTXxhDocNo"];
-            }
-
-            $aDataSpc = array(
-                'FTRolCode'     => $aDataMaster['FTRolCode'],
-                'FTAgnCode'     => $this->input->post('tRoleSpcAgnCode'),
-                'FTBchCode'     => $this->input->post('tRoleSpcBchCode'),
-                'FDLastUpdOn'   => date('Y-m-d H:i:s'),
-                'FDCreateOn'    => date('Y-m-d H:i:s'),
-                'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
-                'FTCreateBy'    => $this->session->userdata('tSesUsername'),
-            );
-
-            $this->mRole->FSxMRoleAddUpdateUsrRole($aDataMaster);
-            $this->mRole->FSxMRoleAddUpdateUsrRoleLang($aDataMaster);
-
-            if( !empty($aDataSpc['FTAgnCode']) || !empty($aDataSpc['FTBchCode']) ){
-                $this->mRole->FSxMRoleAddUpdateUsrRoleSpc($aDataSpc['FTBchCode'],$aDataSpc); // Last Update : Napat(Jame) 11/01/2021 ดึง spc จาก form
-            }
-
-            // Call Fucntion Jame RoelChan 11-1-2021
-            $this->mRole->FSxMRoleAddUpdateUsrRoleChain($aDataMaster);
-
-            //Insert ตาราง TCNTUsrMenu
-            if(!empty($tDataJSon[0]['tItem'])){
-                foreach($tDataJSon[0]['tItem'] AS $key=>$aValue){
-                    $aDataInsUseMenu = array(
-                        'FTRolCode'         => $aDataMaster['FTRolCode'],
-                        'FTGmnModCode'      => $aValue['FTGmnModCode'],
-                        'FTGmnModName'      => $aValue['FTGmnModName'],
-                        'FNGmnModShwSeq'    => $aValue['FNGmnModShwSeq'], 
-                        'FTGmnCode'         => $aValue['FTGmnCode'],
-                        'FTGmnName'         => $aValue['FTGmnName'],
-                        'FNGmnShwSeq'       => $aValue['FNGmnShwSeq'],
-                        'FTMnuCode'         => $aValue['FTMnuCode'],
-                        'FTMnuName'         => $aValue['FTMnuName'],
-                        'FNMnuSeq'          => $aValue['FNMnuSeq'],
-                        'FNMnuLevel'        => $aValue['FNMnuLevel'],
-                        'FTAutStaRead'      => $aValue['FTAutStaRead'],
-                        'FTAutStaAdd'       => $aValue['FTAutStaAdd'],
-                        'FTAutStaDelete'    => $aValue['FTAutStaDelete'],
-                        'FTAutStaEdit'      => $aValue['FTAutStaEdit'],
-                        'FTAutStaCancel'    => $aValue['FTAutStaCancel'],
-                        'FTAutStaAppv'      => $aValue['FTAutStaAppv'],
-                        'FTAutStaPrint'     => $aValue['FTAutStaPrint'],
-                        'FTAutStaPrintMore' => $aValue['FTAutStaPrintMore'],
-                    );
-
-                    $aDataInsUsrMenu    = $this->mRole->FSaMROlInsertUsrMenu($aDataInsUseMenu);
-                }
-            }
-
-            //Insert ตาราง TCNTUsrFuncRpt
-            if(!empty($tDataJSon[1]['tItem'])){
-                foreach($tDataJSon[1]['tItem'] AS $key => $aValue){
-                    $aDataInsRptMenu  = array(
-                        'FTRolCode'             => $aDataMaster['FTRolCode'],
-                        'FTGrpRptModCode'       => $aValue['FTGrpRptModCode'],
-                        'FNGrpRptModShwSeq'     => $aValue['FNGrpRptModShwSeq'], 
-                        'FNGrpRptShwSeq'        => $aValue['FNGrpRptShwSeq'],
-                        'FNGrpRptModName'       => $aValue['FNGrpRptModName'],
-                        'FTGrpRptCode'          => $aValue['FTGrpRptCode'],
-                        'FTGrpRptName'          => $aValue['FTGrpRptName'],
-                        'FTRptCode'             => $aValue['FTRptCode'],
-                        'FTRptName'             => $aValue['FTRptName'],
-                    );
-
-                    $aDataInsUsrFuncRpt    = $this->mRole->FSaMROlInsertUsrFuncRpt($aDataInsRptMenu);
-                }
-            }
-
-            //Insert ตาราง TPSMFuncHD
-            if(!empty($tDataJSon[2]['tItem'])){
-                foreach($tDataJSon[2]['tItem'] AS $key => $aValue){
-                    $aDataInsfuncHD = array(
-                        'FTRolCode'         => $aDataMaster['FTRolCode'],
-                        'FTGhdApp'          => $aValue['FTGhdApp'],
-                        'FTKbdScreen'       => $aValue['FTKbdScreen'],
-                        'FTAppName'         => $aValue['FTAppName'],
-                        'FTGdtName'         => $aValue['FTGdtName'],
-                        'FTGhdCode'         => $aValue['FTGhdCode'],
-                        'FTSysCode'         => $aValue['FTSysCode'],
-                        'FTGdtCallByName'   => $aValue['FTGdtCallByName'],
-                        'FNGdtFuncLevel'    => $aValue['FNGdtFuncLevel'],
-                        'FTGdtStaUse'       => $aValue['FTGdtStaUse'],
-                        'FTUfrStaAlw'       => $aValue['FTUfrStaAlw'],
-
-                    );
-                    $aDataInsFuncHD    = $this->mRole->FSaMROlInsertFuncHD($aDataInsfuncHD);
-                }
-            }
-
-            //Insert ตาราง TCNMUsrRoleSpc
-            // if(!empty($tDataJSon[3]['tItem'])){
-            //     foreach($tDataJSon[3]['tItem'] AS $key => $aValue){
-            //         $aDataInsUsrRoleSpc = array(
-            //             'FTRolCode'     => $aDataMaster['FTRolCode'],
-            //             'FTAgnCode'     => $aValue['FTAgnCode'],
-            //             'FTBchCode'     => $aValue['FTBchCode'],
-            //             'FTAgnName'     => $aValue['FTAgnName'],
-            //             'FTBchName'     => $aValue['FTBchName'],
-            //         );
-            //         $aDataInsUsrRoleSpc    = $this->mRole->FSaMROlInsertUsrRoleSpc($aDataInsUsrRoleSpc);
-            //     }
-            // }
-
-            if($this->session->userdata('nSesUsrBchCount')!=0){
-                // $tSesUsrRoleCodeMulti = $this->session->userdata('tSesUsrRoleCodeMulti');
-                // $tBchCodeUsr = '';
-                // $aDataUsrRole = $this->mUser->FStUSERGetRoleSpcWhereBrows($tBchCodeUsr);
-                // $tUsrBchCodeMulti = '';
         
-                // if(!empty($aDataUsrRole)){
-                // $tUsrBchCodeMulti 	= $this->mLogin->FStMLOGMakeArrayToString($aDataUsrRole['aItems'],'FTRolCode','value');
-                // }
-                
-                // if(!empty($tUsrBchCodeMulti)){
-                // $tSesUsrRoleCodeMulti .= ','.$tUsrBchCodeMulti;
-                // }
-                // $this->session->set_userdata("tSesUsrRoleSpcCodeMulti", $tSesUsrRoleCodeMulti);
-                $tSesUsrRoleCodeMultiSpc 	= "";
-                $aDataWhereChain = array(
-                    'tUsrRoleMulti'	=> $this->session->userdata("tSesUsrRoleCodeMulti"),
-                    'tLoginLevel' 	=> $this->session->userdata("tSesUsrLoginLevel"),
-                    'tAgnCode'		=> $this->session->userdata("tSesUsrAgnCode"),
-                    'tBchCodeMulti'	=> $this->session->userdata("tSesUsrBchCodeMulti")
+
+        //GetData TCNTUsrMenu
+        $aPackDataUsrMenu       = $this->mRole->FSaMROlExportDetailUsrMenu($paPackData);
+
+        //Get Data TCNTUsrFuncRpt
+        $aPackDataMenuReport    = $this->mRole->FSaMROlExportDetailRptMenu($paPackData);
+
+        //Get Data TPSMFuncHD
+        $aPackDataFuncSetting   = $this->mRole->FSaMROlExportDetailFuncSetting($paPackData);
+
+        //GetData AgnCode
+        $aPackDataUsrRoleSpc    = $this->mRole->FSaMROlExportDetailUsrRoleSpc($paPackData);
+
+
+        $aItemUsrMenu      = $aPackDataUsrMenu['raItems'];
+        $aItemRptMenu      = $aPackDataMenuReport['raItems'];
+        $aItemFuncSetting  = $aPackDataFuncSetting['raItems'];
+        $aItemUsrRoleSpc   = $aPackDataUsrRoleSpc['raItems'];
+
+    
+        $aWriteData      = array();
+        $nKeyIndexImport = 0;
+        $nCntModCode     = 999;
+        
+        $aDataArray = array(
+            'tTable'  => 'TCNTUsrMenu',
+            'tItem'    => array(),
+        );    
+
+        for($i=0; $i<FCNnHSizeOf($aItemUsrMenu); $i++){
+                $aParam = [
+                    'tTable'            => 'TCNTUsrMenu',
+                    'FTRolCode'         => $aItemUsrMenu[$i]['FTRolCode'],
+                    'FTGmnModCode'      => $aItemUsrMenu[$i]['FTGmnModCode'],
+                    'FTGmnModName'      => $aItemUsrMenu[$i]['FTGmnModName'],
+                    'FNGmnModShwSeq'    => $aItemUsrMenu[$i]['FNGmnModShwSeq'],
+                    'FTGmnCode'         => $aItemUsrMenu[$i]['FTGmnCode'],
+                    'FTGmnName'         => $aItemUsrMenu[$i]['FTGmnName'],
+                    'FNGmnShwSeq'       => $aItemUsrMenu[$i]['FNGmnShwSeq'],
+                    'FTMnuCode'         => $aItemUsrMenu[$i]['FTMnuCode'],
+                    'FTMnuName'         => $aItemUsrMenu[$i]['FTMnuName'],
+                    'FNMnuSeq'          => $aItemUsrMenu[$i]['FNMnuSeq'],
+                    'FNMnuLevel'        => $aItemUsrMenu[$i]['FNMnuLevel'],
+                    'FTAutStaRead'      => $aItemUsrMenu[$i]['FTAutStaRead'],
+                    'FTAutStaAdd'       => $aItemUsrMenu[$i]['FTAutStaAdd'],
+                    'FTAutStaDelete'    => $aItemUsrMenu[$i]['FTAutStaDelete'],
+                    'FTAutStaEdit'      => $aItemUsrMenu[$i]['FTAutStaEdit'],
+                    'FTAutStaCancel'    => $aItemUsrMenu[$i]['FTAutStaCancel'],
+                    'FTAutStaAppv'      => $aItemUsrMenu[$i]['FTAutStaAppv'],
+                    'FTAutStaPrint'     => $aItemUsrMenu[$i]['FTAutStaPrint'],
+                    'FTAutStaPrintMore' => $aItemUsrMenu[$i]['FTAutStaPrintMore']
+                ];
+
+            array_push($aDataArray['tItem'], $aParam);
+        }
+
+
+        $aDataArrayRpt = array(
+            'tTable'  => 'TCNTUsrFuncRpt',
+            'tItem'    => array(),
+        );    
+
+        for($j=0; $j<FCNnHSizeOf($aItemRptMenu); $j++){
+            $aParam = [
+                'tTable'            => 'TCNTUsrFuncRpt',
+                'FTGrpRptModCode'   => $aItemRptMenu[$j]['FTGrpRptModCode'],
+                'FNGrpRptModShwSeq' => $aItemRptMenu[$j]['FNGrpRptModShwSeq'],
+                'FNGrpRptShwSeq'    => $aItemRptMenu[$j]['FNGrpRptShwSeq'],
+                'FNGrpRptModName'   => $aItemRptMenu[$j]['FNGrpRptModName'],
+                'FTGrpRptCode'      => $aItemRptMenu[$j]['FTGrpRptCode'],
+                'FTGrpRptName'      => $aItemRptMenu[$j]['FTGrpRptName'],
+                'FTRptCode'         => $aItemRptMenu[$j]['FTRptCode'],
+                'FTRptName'         => $aItemRptMenu[$j]['FTRptName']
+            ];
+
+            array_push($aDataArrayRpt['tItem'], $aParam);
+        }
+
+        $aDataArrayfuncHD = array(
+            'tTable'  => 'TPSMFuncHD',
+            'tItem'    => array(),
+        );    
+
+        for($k=0; $k<FCNnHSizeOf($aItemFuncSetting); $k++){
+            $aParam   = [
+                'tTable'            => 'TPSMFuncHD',
+                'FTGhdApp'          => $aItemFuncSetting[$k]['FTGhdApp'],
+                'FTKbdScreen'       => $aItemFuncSetting[$k]['FTKbdScreen'],
+                'FTAppName'         => $aItemFuncSetting[$k]['FTAppName'],
+                'FTGdtName'         => $aItemFuncSetting[$k]['FTGdtName'],
+                'FTGhdCode'         => $aItemFuncSetting[$k]['FTGhdCode'],
+                'FTSysCode'         => $aItemFuncSetting[$k]['FTSysCode'],
+                'FTGdtCallByName'   => $aItemFuncSetting[$k]['FTGdtCallByName'],
+                'FNGdtFuncLevel'    => $aItemFuncSetting[$k]['FNGdtFuncLevel'],
+                'FTGdtStaUse'       => $aItemFuncSetting[$k]['FTGdtStaUse'],
+                'FTUfrStaAlw'       => $aItemFuncSetting[$k]['FTUfrStaAlw']
+            ];
+
+            array_push($aDataArrayfuncHD['tItem'], $aParam);
+        }
+
+        $aDataArrayUsrSpc = array(
+            'tTable'  => 'TCNMUsrRoleSpc',
+            'tItem'    => array(),
+        ); 
+
+        for($n=0; $n<FCNnHSizeOf($aItemUsrRoleSpc); $n++){
+            $aParam   = [
+                'tTable'        => 'TCNMUsrRoleSpc',
+                'FTRolCode'     => $aItemUsrRoleSpc[$n]['FTRolCode'],
+                'FTAgnCode'     => '',
+                // 'FTAgnCode'     => $aItemUsrRoleSpc[$n]['FTAgnCode'],
+                'FTBchCode'     => $aItemUsrRoleSpc[$n]['FTBchCode'],
+                'FTAgnName'     => $aItemUsrRoleSpc[$n]['FTAgnName'],
+                'FTBchName'     => $aItemUsrRoleSpc[$n]['FTBchName']
+            ];
+
+            array_push($aDataArrayUsrSpc['tItem'], $aParam);
+        }
+
+
+        array_push($aWriteData,$aDataArray,$aDataArrayRpt,$aDataArrayfuncHD,$aDataArrayUsrSpc);
+
+        $aResultWrite   = json_encode($aWriteData, JSON_PRETTY_PRINT);
+        $tFileName      = "ExportRole".$this->session->userdata('tSesUsername').date('His');
+        $tPATH          = APPPATH . "modules/authen/views/role/Export//".$tFileName.".json";
+
+        $handle         = fopen($tPATH, 'w+');
+
+        if($handle){
+            if(!fwrite($handle, $aResultWrite))  die("couldn't write to file."); 
+        }
+
+        //ส่งชื่อไฟล์ออกไป
+        $aReturn = array(
+            'tStatusReturn' => '1',
+            'tFilename'     => $tFileName
+        );
+        echo json_encode($aReturn);
+    }
+
+
+    //Function InsertData Role
+    //Create By Witsarut 30-10-2020
+    function FSxRoleInsertData(){
+        
+        $tDataJSon = $this->input->post('aData');
+
+        // Master Add/Update Table (TCNMUsrRole,TCNMUsrRole_L)
+        $aDataMaster = array(
+            'tIsAutoGenCode' => $this->input->post('tRoleAutoGenCode'),
+            'FTRolCode'     => $this->input->post('tRoleCode'),
+            'FNRolLevel'    => $this->input->post('tRolRev'),
+            'FTRolName'     => $this->input->post('tRolName'),
+            'FTRolRmk'      => $this->input->post('tRemark'),
+            'FDLastUpdOn'   => date('Y-m-d H:i:s'),
+            'FDCreateOn'    => date('Y-m-d H:i:s'),
+            'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
+            'FTCreateBy'    => $this->session->userdata('tSesUsername'),
+            'FNLngID'       => $this->session->userdata("tLangEdit")
+        );
+
+        if ($aDataMaster['tIsAutoGenCode'] == '1') {
+            $aStoreParam = array(
+                "tTblName"   => 'TCNMUsrRole',                           
+                "tDocType"   => 0,                                          
+                "tBchCode"   => "",                                 
+                "tShpCode"   => "",                               
+                "tPosCode"   => "",                     
+                "dDocDate"   => date("Y-m-d")       
+            );
+            $aAutogen   = FCNaHAUTGenDocNo($aStoreParam);
+            $aDataMaster['FTRolCode']  =  $aAutogen[0]["FTXxhDocNo"];
+        }
+
+        $aDataSpc = array(
+            'FTRolCode'     => $aDataMaster['FTRolCode'],
+            'FTAgnCode'     => $this->input->post('tRoleSpcAgnCode'),
+            'FTBchCode'     => $this->input->post('tRoleSpcBchCode'),
+            'FDLastUpdOn'   => date('Y-m-d H:i:s'),
+            'FDCreateOn'    => date('Y-m-d H:i:s'),
+            'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
+            'FTCreateBy'    => $this->session->userdata('tSesUsername'),
+        );
+
+        $this->mRole->FSxMRoleAddUpdateUsrRole($aDataMaster);
+        $this->mRole->FSxMRoleAddUpdateUsrRoleLang($aDataMaster);
+
+        if( !empty($aDataSpc['FTAgnCode']) || !empty($aDataSpc['FTBchCode']) ){
+            $this->mRole->FSxMRoleAddUpdateUsrRoleSpc($aDataSpc['FTBchCode'],$aDataSpc); // Last Update : Napat(Jame) 11/01/2021 ดึง spc จาก form
+        }
+
+        // Call Fucntion Jame RoelChan 11-1-2021
+        $this->mRole->FSxMRoleAddUpdateUsrRoleChain($aDataMaster);
+
+        //Insert ตาราง TCNTUsrMenu
+        if(!empty($tDataJSon[0]['tItem'])){
+            foreach($tDataJSon[0]['tItem'] AS $key=>$aValue){
+                $aDataInsUseMenu = array(
+                    'FTRolCode'         => $aDataMaster['FTRolCode'],
+                    'FTGmnModCode'      => $aValue['FTGmnModCode'],
+                    'FTGmnModName'      => $aValue['FTGmnModName'],
+                    'FNGmnModShwSeq'    => $aValue['FNGmnModShwSeq'], 
+                    'FTGmnCode'         => $aValue['FTGmnCode'],
+                    'FTGmnName'         => $aValue['FTGmnName'],
+                    'FNGmnShwSeq'       => $aValue['FNGmnShwSeq'],
+                    'FTMnuCode'         => $aValue['FTMnuCode'],
+                    'FTMnuName'         => $aValue['FTMnuName'],
+                    'FNMnuSeq'          => $aValue['FNMnuSeq'],
+                    'FNMnuLevel'        => $aValue['FNMnuLevel'],
+                    'FTAutStaRead'      => $aValue['FTAutStaRead'],
+                    'FTAutStaAdd'       => $aValue['FTAutStaAdd'],
+                    'FTAutStaDelete'    => $aValue['FTAutStaDelete'],
+                    'FTAutStaEdit'      => $aValue['FTAutStaEdit'],
+                    'FTAutStaCancel'    => $aValue['FTAutStaCancel'],
+                    'FTAutStaAppv'      => $aValue['FTAutStaAppv'],
+                    'FTAutStaPrint'     => $aValue['FTAutStaPrint'],
+                    'FTAutStaPrintMore' => $aValue['FTAutStaPrintMore'],
                 );
-                $aDataUsrRoleChain  		= $this->mLogin->FSaMLOGGetUserRoleChain($aDataWhereChain);
 
-                if( $aDataUsrRoleChain['tCode'] == '1' ){
-                    $tSesUsrRoleCodeMultiSpc = $this->mLogin->FStMLOGMakeArrayToString($aDataUsrRoleChain['aItems'],'FTRolCode','value');
-                }
+                $aDataInsUsrMenu    = $this->mRole->FSaMROlInsertUsrMenu($aDataInsUseMenu);
+            }
+        }
 
-                $this->session->set_userdata("tSesUsrRoleSpcCodeMulti", $tSesUsrRoleCodeMultiSpc);
+        //Insert ตาราง TCNTUsrFuncRpt
+        if(!empty($tDataJSon[1]['tItem'])){
+            foreach($tDataJSon[1]['tItem'] AS $key => $aValue){
+                $aDataInsRptMenu  = array(
+                    'FTRolCode'             => $aDataMaster['FTRolCode'],
+                    'FTGrpRptModCode'       => $aValue['FTGrpRptModCode'],
+                    'FNGrpRptModShwSeq'     => $aValue['FNGrpRptModShwSeq'], 
+                    'FNGrpRptShwSeq'        => $aValue['FNGrpRptShwSeq'],
+                    'FNGrpRptModName'       => $aValue['FNGrpRptModName'],
+                    'FTGrpRptCode'          => $aValue['FTGrpRptCode'],
+                    'FTGrpRptName'          => $aValue['FTGrpRptName'],
+                    'FTRptCode'             => $aValue['FTRptCode'],
+                    'FTRptName'             => $aValue['FTRptName'],
+                );
+
+                $aDataInsUsrFuncRpt    = $this->mRole->FSaMROlInsertUsrFuncRpt($aDataInsRptMenu);
+            }
+        }
+
+        //Insert ตาราง TPSMFuncHD
+        if(!empty($tDataJSon[2]['tItem'])){
+            foreach($tDataJSon[2]['tItem'] AS $key => $aValue){
+                $aDataInsfuncHD = array(
+                    'FTRolCode'         => $aDataMaster['FTRolCode'],
+                    'FTGhdApp'          => $aValue['FTGhdApp'],
+                    'FTKbdScreen'       => $aValue['FTKbdScreen'],
+                    'FTAppName'         => $aValue['FTAppName'],
+                    'FTGdtName'         => $aValue['FTGdtName'],
+                    'FTGhdCode'         => $aValue['FTGhdCode'],
+                    'FTSysCode'         => $aValue['FTSysCode'],
+                    'FTGdtCallByName'   => $aValue['FTGdtCallByName'],
+                    'FNGdtFuncLevel'    => $aValue['FNGdtFuncLevel'],
+                    'FTGdtStaUse'       => $aValue['FTGdtStaUse'],
+                    'FTUfrStaAlw'       => $aValue['FTUfrStaAlw'],
+
+                );
+                $aDataInsFuncHD    = $this->mRole->FSaMROlInsertFuncHD($aDataInsfuncHD);
+            }
+        }
+
+        //Insert ตาราง TCNMUsrRoleSpc
+        // if(!empty($tDataJSon[3]['tItem'])){
+        //     foreach($tDataJSon[3]['tItem'] AS $key => $aValue){
+        //         $aDataInsUsrRoleSpc = array(
+        //             'FTRolCode'     => $aDataMaster['FTRolCode'],
+        //             'FTAgnCode'     => $aValue['FTAgnCode'],
+        //             'FTBchCode'     => $aValue['FTBchCode'],
+        //             'FTAgnName'     => $aValue['FTAgnName'],
+        //             'FTBchName'     => $aValue['FTBchName'],
+        //         );
+        //         $aDataInsUsrRoleSpc    = $this->mRole->FSaMROlInsertUsrRoleSpc($aDataInsUsrRoleSpc);
+        //     }
+        // }
+
+        if($this->session->userdata('nSesUsrBchCount')!=0){
+            // $tSesUsrRoleCodeMulti = $this->session->userdata('tSesUsrRoleCodeMulti');
+            // $tBchCodeUsr = '';
+            // $aDataUsrRole = $this->mUser->FStUSERGetRoleSpcWhereBrows($tBchCodeUsr);
+            // $tUsrBchCodeMulti = '';
+    
+            // if(!empty($aDataUsrRole)){
+            // $tUsrBchCodeMulti 	= $this->mLogin->FStMLOGMakeArrayToString($aDataUsrRole['aItems'],'FTRolCode','value');
+            // }
+            
+            // if(!empty($tUsrBchCodeMulti)){
+            // $tSesUsrRoleCodeMulti .= ','.$tUsrBchCodeMulti;
+            // }
+            // $this->session->set_userdata("tSesUsrRoleSpcCodeMulti", $tSesUsrRoleCodeMulti);
+            $tSesUsrRoleCodeMultiSpc 	= "";
+            $aDataWhereChain = array(
+                'tUsrRoleMulti'	=> $this->session->userdata("tSesUsrRoleCodeMulti"),
+                'tLoginLevel' 	=> $this->session->userdata("tSesUsrLoginLevel"),
+                'tAgnCode'		=> $this->session->userdata("tSesUsrAgnCode"),
+                'tBchCodeMulti'	=> $this->session->userdata("tSesUsrBchCodeMulti")
+            );
+            $aDataUsrRoleChain  		= $this->mLogin->FSaMLOGGetUserRoleChain($aDataWhereChain);
+
+            if( $aDataUsrRoleChain['tCode'] == '1' ){
+                $tSesUsrRoleCodeMultiSpc = $this->mLogin->FStMLOGMakeArrayToString($aDataUsrRoleChain['aItems'],'FTRolCode','value');
             }
 
-
-            $aReturn = array(
-                'nStaCallBack'	=> $this->session->userdata('tBtnSaveStaActive'),
-                'tCodeReturn'	=> $tRoleCode,
-                'nStaEvent'	    => '1',
-                'tStaMessg'		=> 'Success Update'
-            );
-            echo json_encode($aReturn);
+            $this->session->set_userdata("tSesUsrRoleSpcCodeMulti", $tSesUsrRoleCodeMultiSpc);
         }
+
+
+        $aReturn = array(
+            'nStaCallBack'	=> $this->session->userdata('tBtnSaveStaActive'),
+            'tCodeReturn'	=> $aDataMaster['FTRolCode'],
+            'nStaEvent'	    => '1',
+            'tStaMessg'		=> 'Success Update'
+        );
+        echo json_encode($aReturn);
+    }
 
     // ===============================================  ExportData  ============================================= ExportData ===========================
 

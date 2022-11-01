@@ -1,5 +1,6 @@
 <input id="oetADCStaBrowse" type="hidden" value="<?php echo $nBrowseType?>">
 <input id="oetADCCallBackOption" type="hidden" value="<?php echo $tBrowseOption?>">
+<input id="oetADCBchCodeFile" type="hidden" value="<?php echo $this->session->userdata("tSesUsrBchCodeDefault"); ?>">
 <?php if(isset($nBrowseType) && $nBrowseType == 0) : ?>
     <div id="odvADCMainMenu" class="main-menu">
         <div class="xCNMrgNavMenu">
@@ -23,21 +24,15 @@
                         <div id="odvADCBtnAddEdit">
                             <div class="demo-button xCNBtngroup" style="width:100%;">
                                 <button id="obtADCCallBackPage" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main','tBack')?></button>
-                                    <?php if($aAlwEvent['tAutStaPrint'] == 1 ) : ?>
-                                    <button id="obtADCPrint" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCMNPrint')?></button>
-                                    <?php endif;?>
-                                    <?php if($aAlwEvent['tAutStaCancel'] == 1 ) : ?>
-                                    <button id="obtADCCancel" onclick="JSnADCCancelDoc(false)" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCancel')?></button>
-                                    <?php endif;?>
-                                    <?php if($aAlwEvent['tAutStaAppv'] == 1 ) : ?>
-                                    <button id="obtADCApprove"  class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('common/main/main', 'tCMNApprove')?></button>
-                                    <?php endif;?>
                                     <?php if($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)):?>
-                                    <div class="btn-group">
-                                         <button id="obtADCSubmitFrom" type="button" class="btn xWBtnGrpSaveLeft"> <?php echo language('common/main/main', 'tSave')?></button>
-                                         <?php echo $vBtnSave?>
-                                    </div>
-                                <?php endif;?>
+                                        <button id="obtADCPrint" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCMNPrint')?></button>
+                                        <button id="obtADCCancel" onclick="JSnADCCancelDoc(false)" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCancel')?></button>
+                                        <button id="obtADCApprove"  class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('common/main/main', 'tCMNApprove')?></button>
+                                        <div class="btn-group">
+                                            <button id="obtADCSubmitFrom" type="button" class="btn xWBtnGrpSaveLeft"> <?php echo language('common/main/main', 'tSave')?></button>
+                                            <?php echo $vBtnSave?>
+                                        </div>
+                                    <?php endif;?>
                             </div>
                         </div>
                     </div>

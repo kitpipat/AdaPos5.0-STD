@@ -1731,6 +1731,16 @@
                             } else {
                                 alert(aReturn['tStaMessg']);
                             }
+                            $("#obtTBISubmitFromDoc").removeAttr("disabled");
+                            var nDODocNoCallBack = aReturn['tCodeReturn'];
+                            var oDOCallDataTableFile = {
+                                ptElementID: 'odvDOShowDataTable',
+                                ptBchCode: $('#oetTBIBchCode').val(),
+                                ptDocNo: nDODocNoCallBack,
+                                ptDocKey: 'TCNTPdtTbiHD',
+                            }
+                            JCNxUPFInsertDataFile(oDOCallDataTableFile);
+
                             JCNxCloseLoading();
                         },
                         error: function(jqXHR, textStatus, errorThrown) {

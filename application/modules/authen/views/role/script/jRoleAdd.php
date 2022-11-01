@@ -91,7 +91,13 @@
             JSxCheckRoleCodeDupInDB();
         });
     
+         // ตรวจสอบข้อมูลเมนูเพื่อเช็ค Box All
+         JSxCheckDataInputCheckBoxAll();
     });
+
+    // ตรวจสอบข้อมูลเมนูเพื่อเช็ค Box All
+    function JSxCheckDataInputCheckBoxAll(){
+    }
 
     //Functionality: Event Check Sale Person Duplicate
     //Parameters: Event Blur Input Sale Person Code
@@ -286,7 +292,7 @@
         if( tSesUsrLevel != "HQ" ){
             //ถ้าสาขามากกว่า 1 
             tBCH        = "<?=$this->session->userdata('tSesUsrBchCodeMulti');?>";
-            tWhereBCH   = " AND TCNMBranch.FTBchCode IN ( " + tBCH + " ) ";
+            tWhereBCH   = " AND TCNMBranch.FTBchCode IN ( '" + tBCH + "' ) ";
         }else{
             tWhereBCH   = '';
         }
@@ -316,7 +322,7 @@
                 ColumnsSize     : ['15%','75%'],
                 DataColumns		: ['TCNMBranch.FTBchCode','TCNMBranch_L.FTBchName','TCNMAgency_L.FTAgnName','TCNMBranch.FTAgnCode'],
                 DataColumnsFormat : ['','','',''],
-                DisabledColumns: [2, 3],
+                DisabledColumns : [2, 3],
                 WidthModal      : 50,
                 Perpage			: 10,
                 OrderBy			: ['TCNMBranch.FDCreateOn DESC'],

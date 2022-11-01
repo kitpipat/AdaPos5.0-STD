@@ -113,4 +113,17 @@ $lang['tADCTBDelete']       = "ลบ";
 $lang['tADCTBEdit']         = "แก้ไข";
 $lang['tADCTBQtyAllDiff']   = "ยอดที่ปรับปรุง";
 
+$lang['tADCEffectiveDocType']            = "ประเภทปรับราคาทุน (ไม่รวมภาษี)";
+$lang['tADCEffectiveDocTypeStd']         = "ต้นทุนมาตรฐาน";
+$lang['tADCEffectiveDocTypeAvg']         = "ต้นทุนเฉลี่ย";
+
+$lang['tASTAvgActive']                   = "ต้นทุนมาตราฐานจะมีผลวันที่";
+$lang['tASTAStdActive']                  = "ต้นทุนเฉลี่ยจะมีผลทันที่วันที่";
+
+$lang['tDIDocumentInformation']          = "ข้อมูลเอกสาร";
+
+
+$lang['tADCDocChangeType']              = "การเปลี่ยน ประเภทต้นทุน มีผลต่อรายการสินค้า ระบบจะทำการล้างรายการสินค้าที่ท่านเลือกไว้ก่อนหน้า";
+$lang['tADCDocChangeTypeConfrim']       = "ยืนยันเพื่อที่เปลี่ยนประเภทต้นทุน ?";
+$lang['tASTWarning']                    = "คำเตือน";
 

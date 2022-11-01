@@ -62,20 +62,54 @@ class Configslip_model extends CI_Model {
 
     // Create By: Napat(Jame) 30/05/2022
     public function FSxMCFSEventInsertHD($paDataUsrSlipHD){
+        // print_r($paDataUsrSlipHD);
         // เคลียร์ตารางก่อนแล้วค่อย Insert
         $this->db->where('FTAgnCode', $paDataUsrSlipHD[0]['FTAgnCode']);
         $this->db->delete('TPSMUsrSlipHD');
 
-        $this->db->insert_batch('TPSMUsrSlipHD', $paDataUsrSlipHD);
+        foreach ($paDataUsrSlipHD as $nKey => $aRow)
+        {
+            $aData[$nKey] = array(
+                'FTAgnCode'     =>  $paDataUsrSlipHD[$nKey]['FTAgnCode'],
+                'FNUshSeq'      =>  $paDataUsrSlipHD[$nKey]['FNUshSeq'],
+                'FTGshCode'     =>  $paDataUsrSlipHD[$nKey]['FTGshCode'],
+                'FTUshStaShw'   =>  $paDataUsrSlipHD[$nKey]['FTUshStaShw'],
+                'FDLastUpdOn'   =>  $paDataUsrSlipHD[$nKey]['FDLastUpdOn'],
+                'FTLastUpdBy'   =>  $paDataUsrSlipHD[$nKey]['FTLastUpdBy'],
+                'FDCreateOn'    =>  $paDataUsrSlipHD[$nKey]['FDCreateOn'],
+                'FTCreateBy'    =>  $paDataUsrSlipHD[$nKey]['FTCreateBy'],
+            );
+        }
+
+        // print_r($aData); exit;
+        $this->db->insert_batch('TPSMUsrSlipHD', $aData);
     }
 
     // Create By: Napat(Jame) 30/05/2022
     public function FSxMCFSEventInsertDT($paDataUsrSlipDT){
+        // print_r($paDataUsrSlipDT);exit;
         // เคลียร์ตารางก่อนแล้วค่อย Insert
         $this->db->where('FTAgnCode', $paDataUsrSlipDT[0]['FTAgnCode']);
         $this->db->delete('TPSMUsrSlipDT');
 
-        $this->db->insert_batch('TPSMUsrSlipDT', $paDataUsrSlipDT);
+
+        foreach ($paDataUsrSlipDT as $nKey => $aRow)
+        {
+            $aData[$nKey] = array(
+                'FTAgnCode'     =>  $paDataUsrSlipDT[$nKey]['FTAgnCode'],
+                'FNUshSeq'      =>  $paDataUsrSlipDT[$nKey]['FNUshSeq'],
+                'FTUsdSubCode'  =>  $paDataUsrSlipDT[$nKey]['FTUsdSubCode'],
+                'FTUsdStaShw'   =>  $paDataUsrSlipDT[$nKey]['FTUsdStaShw'],
+                'FNUsdLine'     =>  $paDataUsrSlipDT[$nKey]['FNUsdLine'],
+                'FNUsdSeqNo'    =>  $paDataUsrSlipDT[$nKey]['FNUsdSeqNo'],
+                'FDLastUpdOn'   =>  $paDataUsrSlipDT[$nKey]['FDLastUpdOn'],
+                'FTLastUpdBy'   =>  $paDataUsrSlipDT[$nKey]['FTLastUpdBy'],
+                'FDCreateOn'    =>  $paDataUsrSlipDT[$nKey]['FDCreateOn'],
+                'FTCreateBy'    =>  $paDataUsrSlipDT[$nKey]['FTCreateBy'],
+            );
+        }
+
+        $this->db->insert_batch('TPSMUsrSlipDT', $aData);
     }
 
     // Create By: Napat(Jame) 31/05/2022

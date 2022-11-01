@@ -284,7 +284,7 @@
 </div>
 <!--end pagenation-->
 
-<div class="XCNPosition xWCanEnter" id="odvModalAddPdtConfig"> 
+<div class="XCNPosition xWCanEnter xCNHide" id="odvModalAddPdtConfig"> 
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
         <label class="xCNLabelFrm"><?php echo language('common/main/main','tCommonShowDetail')?></label>
     </div> 

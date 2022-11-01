@@ -200,6 +200,8 @@ $lang['tFuncSettingFuncGroup']                  = "Group function";
 $lang['tFuncSettingFunc']                       = "Function";
 $lang['tFuncSettingLevel']                      = "Level";
 
+$lang['tNotSettingType']                        = "Noti Type";
+
 
 
 

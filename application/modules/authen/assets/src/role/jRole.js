@@ -265,10 +265,18 @@ function JSxControlCheckBoxListTable(paReturnData){
     // Loop Check Menu List
     let aDataRoleMenuEdit   = paReturnData['aDataRoleMenuEdit'];
     if(aDataRoleMenuEdit['rtCode'] == '1'){
+
+        var tGmnModCodeKeep = '';
+        var aItem           = [];
+
         $.each(aDataRoleMenuEdit['raItems'],function(nKey,aValueMenu){
             var tGmnModCode   = aValueMenu['FTGmnModCode'];
             var tGmnCode      = aValueMenu['FTGmnCode'];
             var tMnuCode      = aValueMenu['FTMnuCode'];
+
+            if(nKey == 0){
+                tGmnModCodeKeep = '';
+            }
 
             // Check Status Read
             if(aValueMenu['FTUsrUseStaStaRead'] == 1 && aValueMenu['FTAutStaRead'] == 1){
@@ -318,23 +326,68 @@ function JSxControlCheckBoxListTable(paReturnData){
             }else{
                 $('#otbModuleMenuRole tbody .xCNDataRole[data-gmc='+tGmnModCode+'][data-gmn='+tGmnCode+'][data-mnc='+tMnuCode+'] .xCNIsUseChkBox .xWDataRolePrintMore').prop("checked",false);
             }
+
+            //เก็บค่าไว้ สำหรับทำ checkbox all กรณีเเก้ไข
+            if(tGmnModCodeKeep != tGmnModCode){
+                aItemSort = { 
+                    'nRound'            : nKey,
+                    'tCode'             : tGmnModCode , 
+                    'nInputCheckAll'    : $('#otbModuleMenuRole tbody .xCNDataRole[data-gmc='+tGmnModCode+']').find('.xCNIsUseChkBox').length }
+                aItem.push(aItemSort);
+            }
+            tGmnModCodeKeep = aValueMenu['FTGmnModCode'];
         });
+
+        for(var j=0; j<aItem.length; j++){
+            var nValueCheck =  $('#otbModuleMenuRole tbody .xCNDataRole[data-gmc='+aItem[j].tCode+'] input:checked').length;  
+            if(nValueCheck == aItem[j].nInputCheckAll){
+                $('.xWHeardRoleAll[data-gmc='+aItem[j].tCode+']').find('.xWCheckAll').find('.xWOcbCheckAll').prop('checked',true);
+            }
+        }
     }
     
     // Loop Check Menu Report List
     let aDataRoleMenuRptEdit    = paReturnData['aDataRoleMenuRptEdit'];
     if(aDataRoleMenuRptEdit['rtCode'] == '1'){
+
+        var tRptModCodeKeep = '';
+        var aItem           = [];
+
         $.each(aDataRoleMenuRptEdit['raItems'],function(nKey,aValueRptMenu){
             let tRptGrpModCode  = aValueRptMenu['FTGrpRptModCode'];
             let tRptGrpCode     = aValueRptMenu['FTGrpRptCode'];
             let tRptCode        = aValueRptMenu['FTRptCode'];
+
+            if(nKey == 0){
+                tRptModCodeKeep = '';
+            }
+
             // Check Status Allow Report
             if(aValueRptMenu['FTUfrStaAlw'] == 1){
                 $('#otbModuleMenuRole tbody .xCNDataReport[data-rmc='+tRptGrpModCode+'][data-grc='+tRptGrpCode+'][data-rtc='+tRptCode+'] .xWDataReportAllow').prop("checked",true);
             }else{
                 $('#otbModuleMenuRole tbody .xCNDataReport[data-rmc='+tRptGrpModCode+'][data-grc='+tRptGrpCode+'][data-rtc='+tRptCode+'] .xWDataReportAllow').prop("checked",false);
             }
+
+            //เก็บค่าไว้ สำหรับทำ checkbox all กรณีเเก้ไข
+            if(tRptModCodeKeep != tRptGrpModCode){
+                aItemSort = { 
+                    'nRound'            : nKey,
+                    'tCode'             : tRptGrpModCode , 
+                    'nInputCheckAll'    : $('#otbModuleMenuRole tbody .xCNDataReport[data-rmc='+tRptGrpModCode+']').find('.xWDataReportAllow').length }
+                aItem.push(aItemSort);
+            }
+            tRptModCodeKeep = aValueRptMenu['FTGrpRptModCode'];
+
         });
+
+        console.log(aItem);
+        for(var k=0; k<aItem.length; k++){
+            var nValueCheck =  $('#otbModuleMenuRole tbody .xCNDataReport[data-rmc='+aItem[k].tCode+'] input:checked').length;  
+            if(nValueCheck == aItem[k].nInputCheckAll){
+                $('.xWHeardReportAll[data-rmc='+aItem[k].tCode+']').find('.xWCheckAll').find('.xWAllow').prop('checked',true);
+            }
+        }
     }
 
 }
@@ -383,8 +436,12 @@ function JSxAddEditRole(ptRoute){
             oetSpcBranchName : {
                 "required" : {
                     depends: function(oElement){
-                        if( $('#ohdSesUsrLoginLevel').val() != "HQ" && $('#ohdSesUsrLoginLevel').val() != "AGN" ){
-                            return true;
+                        if(ptRoute == "roleEventAdd"){
+                            if( $('#ohdSesUsrLoginLevel').val() != "HQ" && $('#ohdSesUsrLoginLevel').val() != "AGN" ){
+                                return true;
+                            }else{
+                                return false;
+                            }
                         }else{
                             return false;
                         }
@@ -579,6 +636,7 @@ function JSxRoleSubmitEventByButton(){
     var tImageOld    = $('#oetImgInputRoleOld').val();
     var tImageNew    = $('#oetImgInputRole').val();
 
+    // console.log(JSaGetRoleNotiSettingSelect());
     $.ajax({
         type: "POST",
         url: $('#ohdRoleRouteData').val(),
@@ -591,6 +649,7 @@ function JSxRoleSubmitEventByButton(){
             'paRoleMnuData'     : aRoleMnuData,
             'paRoleRptData'     : aRoleRptData,
             'paRoleFuncSetting' : JSaGetRoleFuncSettingSelect(),
+            'paRoleNotiSetting' : JSaGetRoleNotiSettingSelect(),
             'ptImageOld'        : tImageOld,
             'ptImageNew'        : tImageNew,
             'ptSpcAgnCode'      : tSpcAgnCode,
