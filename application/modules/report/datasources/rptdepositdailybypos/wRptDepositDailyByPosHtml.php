@@ -128,39 +128,13 @@ $nTotalPage         = $aDataReport["aPagination"]["nTotalPage"];
                     <tbody>
                         <?php if (isset($aDataReport['aRptData']) && !empty($aDataReport['aRptData'])) { ?>
                             <?php
-                                $tBchCode       = "";
-                                $tBchCodeNew    = "";
                                 $tPosCodeNew    = "";
-                                $tTpyeCodeNew   = "";
-                                $tNextPos       = 0;
-                                $tType          = 1;
+                                $tDateNew       = "";
                             ?>
                             <?php foreach ($aDataReport['aRptData'] as $nKey => $aValue) { ?>
                                 <?php
-                                    // Step 1 เตรียม Parameter สำหรับการ Groupping
-                                    // $tTypeCode  = $aValue["FTTnsType"];
                                     $tPosCode   = $aValue["FTPosCode"];
-                                    // $nRowPartID = $aValue["FNRowPartID"];
-                                    // $tBchCode   = $aValue["FTBchCode"];
-                               
-                                    // //ตรวจสอบเครื่องจุดขาย
-                                    // if($tBchCode != $tBchCodeNew){
-                                    //     if($tType != 0){
-                                    //         $aSumFooter         = array('N','N','N','N','N','N');
-                                    //         if($tTypeCode == 1){
-                                    //             echo '<tr>';
-                                    //             for($i = 0;$i<FCNnHSizeOf($aSumFooter);$i++){
-                                    //                 if($aSumFooter[$i] !='N'){
-                                    //                     $tFooterVal =   $aSumFooter[$i];
-                                    //                 }else{
-                                    //                     $tFooterVal =   '';
-                                    //                 }
-                                    //                     echo "<td class='xCNRptGrouPing'  style='border-top: dashed 1px #333 !important;'>".$tFooterVal."</td>";
-                                    //             }
-                                    //             echo '</tr>';
-                                    //         }
-                                    //     }
-                                    // }
+                                    $tDateOld   = $aValue['FDXshDocDate'];
                                 ?>
 
                                     <tr>
@@ -173,10 +147,9 @@ $nTotalPage         = $aDataReport["aPagination"]["nTotalPage"];
                                         <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCXshTotal"],$nOptDecimalShow); ?></td>
                                     </tr>
 
-                                <!--โชว์สาขา-->
+                                <!--โชว์ แถว รวม-->
                                 <?php
-                                    if($tPosCode == $tPosCodeNew){ 
-
+                                    if($tPosCode == $tPosCodeNew && $tDateOld == $tDateNew){
                                         ?>
                                         <tr>
                                             <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
@@ -184,18 +157,38 @@ $nTotalPage         = $aDataReport["aPagination"]["nTotalPage"];
                                         <tr>
                                             <td class="text-left xCNRptDetail xCNRptGrouPing"><?=language('report/report/report', 'tRptSaleTaxByMonthlyTotal');?></td>
                                             <td colspan="3"></td>
-                                            <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCPXsdQty_Footer"],$nOptDecimalShow); ?></td>
-                                            <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCPRefGrand_Footer"],$nOptDecimalShow); ?></td>
-                                            <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCPTotal_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPXsdQty_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPRefGrand_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPTotal_Footer"],$nOptDecimalShow); ?></td>
                                         </tr>
                                         <tr>
                                             <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
                                         </tr>
-                               
                                 <?php } ?>
+
+                                <?php
+                                    if($aValue["rtDateCount"] == '1'){
+                                        ?>
+                                        <tr>
+                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left xCNRptDetail xCNRptGrouPing"><?=language('report/report/report', 'tRptSaleTaxByMonthlyTotal');?></td>
+                                            <td colspan="3"></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPXsdQty_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPRefGrand_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPTotal_Footer"],$nOptDecimalShow); ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
+                                        </tr>
+                                <?php } ?>   
+                                <!--  -->
+                                
                                     <?php  
                                         $tPosCodeNew = $tPosCode;
-                                    } ?>
+                                        $tDateNew = $tDateOld;
+                                } ?>
                             <?php
                                 // Step 6 : สั่ง Summary Footer
                                 $nPageNo    = $aDataReport["aPagination"]["nDisplayPage"];

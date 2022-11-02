@@ -539,10 +539,12 @@ class Rptdepositdailybypos_controller extends MX_Controller
             ->build();
 
         if (isset($aDataReport['aRptData']) && !empty($aDataReport['aRptData'])) {
-            $tFTPosCode = '';
             $tPosCodeNew    = "";
+            $tDateNew       = "";
             foreach ($aDataReport['aRptData'] as $nKey => $aValue) {
-                $tFTPosCode   = $aValue["FTPosCode"];
+                $tPosCode   = $aValue["FTPosCode"];
+                $tDateOld   = $aValue['FDXshDocDate'];
+
                 $values = [
                     WriterEntityFactory::createCell('(' . $aValue['FTBchCode'] .')' . $aValue['FTBchName']),
                     WriterEntityFactory::createCell(null),
@@ -565,7 +567,7 @@ class Rptdepositdailybypos_controller extends MX_Controller
                 $aRow = WriterEntityFactory::createRow($values);
                 $oWriter->addRow($aRow);
 
-                if($tFTPosCode == $tPosCodeNew){ 
+                if($tPosCode == $tPosCodeNew && $tDateOld == $tDateNew){
                     $values = [
                         WriterEntityFactory::createCell(language('report/report/report', 'tRptSaleTaxByMonthlyTotal'),$oStyleColumsBottom),
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
@@ -587,8 +589,31 @@ class Rptdepositdailybypos_controller extends MX_Controller
                     $aRow = WriterEntityFactory::createRow($values);
                     $oWriter->addRow($aRow);
                 }
-                
-                $tPosCodeNew = $tFTPosCode;
+
+                if($aValue["rtDateCount"] == '1'){
+                    $values = [
+                        WriterEntityFactory::createCell(language('report/report/report', 'tRptSaleTaxByMonthlyTotal'),$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPXsdQty_Footer']),$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPRefGrand_Footer']),$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPTotal_Footer']),$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                    ];
+                    $aRow = WriterEntityFactory::createRow($values);
+                    $oWriter->addRow($aRow);
+                }
+                $tPosCodeNew = $tPosCode;
+                $tDateNew = $tDateOld;
             }
         }
 

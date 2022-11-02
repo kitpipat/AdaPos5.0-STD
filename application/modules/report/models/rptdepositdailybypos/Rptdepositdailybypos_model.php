@@ -86,6 +86,8 @@ class Rptdepositdailybypos_model extends CI_Model {
                     LEFT JOIN (
                     SELECT DISTINCT
                         FTPosCode,
+                        FDXshDocDate,
+                        COUNT(FDXshDocDate) AS rtDateCount,
                         SUM ( SUB.FCPXsdGrand ) AS FCPXsdQty_Footer,
                         SUM ( SUB.FCPXshRefGrand ) AS FCPRefGrand_Footer,
                         SUM ( SUB.FCPXshTotal ) AS FCPTotal_Footer
@@ -94,6 +96,7 @@ class Rptdepositdailybypos_model extends CI_Model {
                         SELECT DISTINCT
                             FTBchCode,
                             FTPosCode,
+                            FDXshDocDate,
                             FTUsrSession AS FTUsrSession_Footer,
                             CONVERT ( FLOAT, FCXshGrand ) AS FCPXsdGrand,
                             CONVERT ( FLOAT, CAST ( FCXshRetGrand AS FLOAT ) ) AS FCPXshRefGrand,
@@ -105,30 +108,12 @@ class Rptdepositdailybypos_model extends CI_Model {
                             AND FTUsrSession = '$tUsrSession' 
                         ) SUB 
                     GROUP BY
-                        FTPosCode 
-                    ) T ON L.FTPosCode = T.FTPosCode
+                        FTPosCode , FDXshDocDate
+                    ) T ON L.FTPosCode = T.FTPosCode AND L.FDXshDocDate = T.FDXshDocDate
                     LEFT JOIN TCNMBranch_L BCHL WITH(NOLOCK) ON BCHL.FTBchCode = L.FTBchCode
                     LEFT JOIN TCNMPos_L POSL WITH(NOLOCK) ON POSL.FTPosCode = L.FTPosCode AND POSL.FTBchCode = L.FTBchCode";
         $tSQL .= " WHERE L.RowID > $nRowIDStart AND L.RowID <= $nRowIDEnd ";
-        $tSQL .= " ORDER BY L.FTBchCode , L.FTPosCode";
-        // $tSQL = "   
-        //         SELECT
-        //             L.*        
-        //         FROM (
-        //             SELECT 
-        //                     ROW_NUMBER() OVER(ORDER BY A.FTBchCode) AS RowID,
-        //                     A.*,
-        //                     BCHL.FTBchName AS rtBchName,
-        //                     POSL.FTPosName AS rtPosName
-        //             FROM TRPTSalReconcileTmp A WITH(NOLOCK)
-        //             LEFT JOIN TCNMBranch_L BCHL WITH(NOLOCK) ON BCHL.FTBchCode = A.FTBchCode
-        //             LEFT JOIN TCNMPos_L POSL WITH(NOLOCK) ON POSL.FTPosCode = A.FTPosCode AND POSL.FTBchCode = A.FTBchCode
-        //             WHERE A.FTUsrSession = '$tUsrSession'
-        //         ) AS L"; 
-
-        // // WHERE เงื่อนไข Page
-        // $tSQL .= " WHERE L.RowID > $nRowIDStart AND L.RowID <= $nRowIDEnd ";
-        // $tSQL .= " ORDER BY FTBchCode , FTPosCode";
+        $tSQL .= " ORDER BY L.FTBchCode , L.FTPosCode , L.FDXshDocDate";
         $oQuery = $this->db->query($tSQL);
 
         if ($oQuery->num_rows() > 0){
