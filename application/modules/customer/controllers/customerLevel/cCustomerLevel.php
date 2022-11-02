@@ -97,9 +97,9 @@ class cCustomerLevel extends MX_Controller
         $tMethodReq = "GET";
         $aResList = $this->mCustomerLevel->FSaMCstLevList($tAPIReq, $tMethodReq, $aData);
         $aGenTable = array(
-            'aDataList' => $aResList,
-            'nPage' => $nPage,
-            'tSearchAll' => $tSearchAll
+            'aDataList'     => $aResList,
+            'nPage'         => $nPage,
+            'tSearchAll'    => $tSearchAll
         );
         $this->load->view('customer/customerLevel/wCustomerLevelDataTable', $aGenTable);
     }
@@ -140,7 +140,7 @@ class cCustomerLevel extends MX_Controller
         $tMethodReq     = "GET";
         $aDataAdd = array(
             'aResult'   => array(
-                'rtCode' => '99',
+                'rtCode'        => '99',
                 'tSesAgnCode'   => $this->session->userdata("tSesUsrAgnCode"),
                 'tSesAgnName'   => $this->session->userdata("tSesUsrAgnName")
             )
@@ -181,14 +181,20 @@ class cCustomerLevel extends MX_Controller
         // }
 
         $aData  = array(
-            'FTCstLevCode' => $tCstLevCode,
-            'FNLngID'   => $nLangEdit
+            'FTCstLevCode'  => $tCstLevCode,
+            'FNLngID'       => $nLangEdit
         );
+
+        // Get Option Show Decimal  
+        $nOptDecimalShow = FCNxHGetOptionDecimalShow();
 
         $tAPIReq        = "";
         $tMethodReq     = "GET";
-        $aCstLevData       = $this->mCustomerLevel->FSaMCstLevSearchByID($tAPIReq, $tMethodReq, $aData);
-        $aDataEdit      = array('aResult' => $aCstLevData);
+        $aCstLevData    = $this->mCustomerLevel->FSaMCstLevSearchByID($tAPIReq, $tMethodReq, $aData);
+        $aDataEdit      = array(
+            'aResult'            => $aCstLevData,
+            'nOptDecimalShow'   => $nOptDecimalShow
+        );
         $this->load->view('customer/customerLevel/wCustomerLevelAdd', $aDataEdit);
     }
 
@@ -209,13 +215,17 @@ class cCustomerLevel extends MX_Controller
                 'FTCstLevCode'    => $this->input->post('oetCstLevCode'),
                 'FTCstLevRmk'     => $this->input->post('otaCstLevRemark'),
                 'FTCstLevName'    => $this->input->post('oetCstLevName'),
-                'FTPplCode'    => $this->input->post('oetCstPplRetCode'),
+                'FCLevRtePntAge'  => floatval($this->input->post('oetCstPointExp')),
+                'FTPplCode'       => $this->input->post('oetCstLevPplCode'),
+                'FCLevRtePntAmt'  => floatval($this->input->post('oetCstLevRtePntAmt')),
+                'FCLevRtePntQty'  => floatval($this->input->post('oetCstLevRtePntQty')),
+                'FTLevStaAlwPnt'  => (!empty($this->input->post('ocbCstLevStaAlwAccPoint'))) ? 1 : 2,
                 'FTLastUpdBy'     => $this->session->userdata('tSesUsername'),
                 'FDLastUpdOn'     => date('Y-m-d H:i:s'),
                 'FTCreateBy'      => $this->session->userdata('tSesUsername'),
                 'FDCreateOn'      => date('Y-m-d H:i:s'),
                 'FNLngID'         => $this->session->userdata("tLangEdit"),
-                'FTAgnCode'  => $this->input->post('oetCstLevAgnCode')
+                'FTAgnCode'       => $this->input->post('oetCstLevAgnCode')
             );
 
             if ($aDataMaster['tIsAutoGenCode'] == '1') { // Check Auto Gen CustomerLevel Code?
@@ -253,10 +263,10 @@ class cCustomerLevel extends MX_Controller
                 } else {
                     $this->db->trans_commit();
                     $aReturn = array(
-                        'nStaCallBack'    => $this->session->userdata('tBtnSaveStaActive'),
-                        'tCodeReturn'    => $aDataMaster['FTCstLevCode'],
-                        'nStaEvent'        => '1',
-                        'tStaMessg'        => 'Success Add Event'
+                        'nStaCallBack'  => $this->session->userdata('tBtnSaveStaActive'),
+                        'tCodeReturn'   => $aDataMaster['FTCstLevCode'],
+                        'nStaEvent'     => '1',
+                        'tStaMessg'     => 'Success Add Event'
                     );
                 }
             } else {
@@ -283,16 +293,20 @@ class cCustomerLevel extends MX_Controller
     {
         try {
             $aDataMaster = array(
-                'FTCstLevCode' => $this->input->post('oetCstLevCode'),
-                'FTCstLevRmk' => $this->input->post('otaCstLevRemark'),
-                'FTCstLevName' => $this->input->post('oetCstLevName'),
-                'FTPplCode'    => $this->input->post('oetCstPplRetCode'),
-                'FTLastUpdBy'   => $this->session->userdata('tSesUsername'),
-                'FDLastUpdOn'   => date('Y-m-d H:i:s'),
-                'FTCreateBy'   => $this->session->userdata('tSesUsername'),
-                'FDCreateOn'   => date('Y-m-d H:i:s'),
-                'FNLngID'   => $this->session->userdata("tLangEdit"),
-                'FTAgnCode'  => $this->input->post('oetCstLevAgnCode')
+                'FTCstLevCode'      => $this->input->post('oetCstLevCode'),
+                'FTCstLevRmk'       => $this->input->post('otaCstLevRemark'),
+                'FTCstLevName'      => $this->input->post('oetCstLevName'),
+                'FCLevRtePntAge'    => $this->input->post('oetCstPointExp'),
+                'FTPplCode'         => $this->input->post('oetCstLevPplCode'),
+                'FCLevRtePntAmt'    => str_replace(',', '', $this->input->post('oetCstLevRtePntAmt')),
+                'FCLevRtePntQty'    => $this->input->post('oetCstLevRtePntQty'),
+                'FTLevStaAlwPnt'    => (!empty($this->input->post('ocbCstLevStaAlwAccPoint'))) ? 1 : 2,
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FNLngID'           => $this->session->userdata("tLangEdit"),
+                'FTAgnCode'         => $this->input->post('oetCstLevAgnCode'),
             );
             $this->db->trans_begin();
             $aStaCstLevMaster  = $this->mCustomerLevel->FSaMCstLevAddUpdateMaster($aDataMaster);
@@ -306,10 +320,10 @@ class cCustomerLevel extends MX_Controller
             } else {
                 $this->db->trans_commit();
                 $aReturn = array(
-                    'nStaCallBack'    => $this->session->userdata('tBtnSaveStaActive'),
-                    'tCodeReturn'    => $aDataMaster['FTCstLevCode'],
-                    'nStaEvent'        => '1',
-                    'tStaMessg'        => 'Success Add Event'
+                    'nStaCallBack'  => $this->session->userdata('tBtnSaveStaActive'),
+                    'tCodeReturn'   => $aDataMaster['FTCstLevCode'],
+                    'nStaEvent'     => '1',
+                    'tStaMessg'     => 'Success Add Event'
                 );
             }
             echo json_encode($aReturn);
@@ -355,7 +369,7 @@ class cCustomerLevel extends MX_Controller
         if ($this->input->is_ajax_request()) { // Request check
             if ($tSelect == 'CstLevCode') {
 
-                $tCstLevCode = $this->input->post('tCstLevCode');
+                $tCstLevCode    = $this->input->post('tCstLevCode');
                 $oCustomerLevel = $this->mCustomerLevel->FSoMCstLevCheckDuplicate($tCstLevCode);
 
                 $tStatus = 'false';

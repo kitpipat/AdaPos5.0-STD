@@ -17,7 +17,7 @@
                         <tr class="text-center xCNTextDetail2 otrCstLev" id="otrCstLev<?=$key?>" data-code="<?=$aValue['rtCstLevCode']?>" data-name="<?=$aValue['rtCstLevName']?>">
                         <?php
 
-                        if($aValue['rtCstClvCodeLef'] != ''){
+                        /*if($aValue['rtCstClvCodeLef'] != ''){
                             $tDisableTD     = "xWTdDisable";
                             $tDisableImg    = "xWImgDisable";
                             $tDisabledItem  = "disabled ";
@@ -29,9 +29,9 @@
                             $tDisabledItem  = "";
                             $tDisabledItem2  = " ";
                             $tDisabledcheckrow  = "false";
-                        }
+                        }*/
                         ?>	
-                        <td class="text-center">
+                            <!-- <td class="text-center">
 								<label class="fancy-checkbox">
 									<input id="ocbListItem<?=$key?>" type="checkbox" class="ocbListItem" <?php echo $tDisabledItem; ?> name="ocbListItem[]" onchange="JSxCstLevVisibledDelAllBtn(this, event)">
 									<span class="<?php echo $tDisabledItem2; ?>">&nbsp;</span>
@@ -41,6 +41,20 @@
                             <td class="text-left otdCstLevName"><?=$aValue['rtCstLevName']?></td>
                             <td class="<?=$tDisableTD?>">
                                 <img class="xCNIconTable <?php echo $tDisableImg; ?>" src="<?php echo  base_url().'/application/modules/common/assets/images/icons/delete.png'?>" onClick="JSaCstLevDelete(this, event)" title="<?php echo language('customer/customerLevel/customerLevel', 'tCstLevTBDelete'); ?>">
+                            </td>
+                            <td>
+                                <img class="xCNIconTable" src="<?php echo  base_url().'/application/modules/common/assets/images/icons/edit.png'?>" onClick="JSvCallPageCstLevEdit('<?=$aValue['rtCstLevCode']?>')" title="<?php echo language('customer/customerLevel/customerLevel', 'tCstLevTBEdit'); ?>">
+                            </td> -->
+                            <td class="text-center">
+								<label class="fancy-checkbox">
+									<input id="ocbListItem<?=$key?>" type="checkbox" class="ocbListItem" name="ocbListItem[]" onchange="JSxCstLevVisibledDelAllBtn(this, event)">
+									<span>&nbsp;</span>
+								</label>
+							</td>
+                            <td class="text-left otdCstLevCode"><?=$aValue['rtCstLevCode']?></td>
+                            <td class="text-left otdCstLevName"><?=$aValue['rtCstLevName']?></td>
+                            <td>
+                                <img class="xCNIconTable" src="<?php echo  base_url().'/application/modules/common/assets/images/icons/delete.png'?>" onClick="JSaCstLevDelete(this, event)" title="<?php echo language('customer/customerLevel/customerLevel', 'tCstLevTBDelete'); ?>">
                             </td>
                             <td>
                                 <img class="xCNIconTable" src="<?php echo  base_url().'/application/modules/common/assets/images/icons/edit.png'?>" onClick="JSvCallPageCstLevEdit('<?=$aValue['rtCstLevCode']?>')" title="<?php echo language('customer/customerLevel/customerLevel', 'tCstLevTBEdit'); ?>">

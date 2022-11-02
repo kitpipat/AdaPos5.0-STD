@@ -1,29 +1,44 @@
 <?php
 if($aResult['rtCode'] == "1"){
-    $tCstLevCode       = $aResult['raItems']['rtCstLevCode'];
-    $tCstLevName       = $aResult['raItems']['rtCstLevName'];
-    $tCstLevRmk        = $aResult['raItems']['rtCstLevRmk'];
-    $tRoute         = "customerLevelEventEdit";
-    $tCstLevAlwPnt     = $aResult['raItems']['rtCClvAlwPnt'];
-    $tCstLevCalAmt     = $aResult['raItems']['rtCClvCalAmt'];
-    $tCstLevCalPnt     = $aResult['raItems']['rtCClvCalPnt'];
-    $tCstLevClvCode    = $aResult['raItems']['rtCClvCode'];
-    $tCstLevPplName    = $aResult['raItems']['rtPplName'];
-    $tCstLevAgnCode   = $aResult['raItems']['rtAgnCode'];
-    $tCstLevAgnName   = $aResult['raItems']['rtAgnName'];
+    $tRoute             = "customerLevelEventEdit";
+    $tCstLevCode        = $aResult['raItems']['rtCstLevCode'];
+    $tCstLevName        = $aResult['raItems']['rtCstLevName'];
+    $tCstLevRtePntAge   = $aResult['raItems']['rtCstLevRtePntAge'];
+    
+    $tCstLevPplCode     = $aResult['raItems']['rtCstLevPplCode'];
+    $tCstLevPplName     = $aResult['raItems']['rtCstLevPplName'];
+    $tCstLevRtePntAmt   = $aResult['raItems']['rtCstLevRtePntAmt'];
+    $tCstLevRtePntQty   = $aResult['raItems']['rtCstLevRtePntQty'];
+    $tCstLevStaAlwPnt   = $aResult['raItems']['rtCstLevStaAlwPnt'];
+
+    $tCstLevRmk         = $aResult['raItems']['rtCstLevRmk'];
+
+    // $tCstLevAlwPnt     = $aResult['raItems']['rtCClvAlwPnt'];
+    // $tCstLevCalAmt     = $aResult['raItems']['rtCClvCalAmt'];
+    // $tCstLevCalPnt     = $aResult['raItems']['rtCClvCalPnt'];
+    // $tCstLevClvCode    = $aResult['raItems']['rtCClvCode'];
+    $tCstLevAgnCode     = $aResult['raItems']['rtAgnCode'];
+    $tCstLevAgnName     = $aResult['raItems']['rtAgnName'];
 }else{
-    $tCstLevCode       = "";
-    $tCstLevName       = "";
-    $tCstLevRmk        = "";
-    $tRoute         = "customerLevelEventAdd";
-    $tCstLevAlwPnt     = "2";
-    $tCstLevCalAmt     = "";
-    $tCstLevCalPnt     = "";
-    $tCstLevClvCode    = "";
-    $tCstLevClvCode    = "";
-    $tCstLevPplName    = "" ;
-    $tCstLevAgnCode   = $aResult['tSesAgnCode'];
-    $tCstLevAgnName   = $aResult['tSesAgnName'];
+    $tRoute             = "customerLevelEventAdd";
+    $tCstLevCode        = "";
+    $tCstLevName        = "";
+    $tCstLevRtePntAge   = 0;
+
+    $tCstLevPplCode     = "";
+    $tCstLevPplName     = "" ;
+    $tCstLevRtePntAmt   = 0;
+    $tCstLevRtePntQty   = 0;
+    $tCstLevStaAlwPnt   = "";
+
+    $tCstLevRmk         = "";
+    // $tCstLevAlwPnt       = "2";
+    // $tCstLevCalAmt       = "";
+    // $tCstLevCalPnt       = "";
+    // $tCstLevClvCode      = "";
+    // $tCstLevClvCode      = "";
+    $tCstLevAgnCode     = $aResult['tSesAgnCode'];
+    $tCstLevAgnName     = $aResult['tSesAgnName'];
 }
 ?>
 <form class="contact100-form validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmAddCstLev">
@@ -32,52 +47,51 @@ if($aResult['rtCode'] == "1"){
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                <label class="xCNLabelFrm"><span class="text-danger">*</span> <?php echo language('customer/customerLevel/customerLevel','tCstLevCode'); ?><?= language('customer/customerLevel/customerLevel','tCstLevTitle')?></label>
-                <div id="odvCstLevAutoGenCode" class="form-group">
-                <div class="validate-input">
-                <label class="fancy-checkbox">
-                    <input type="checkbox" id="ocbCustomerLevelAutoGenCode" name="ocbCustomerLevelAutoGenCode" checked="true" value="1">
-                    <span> <?php echo language('common/main/main', 'tGenerateAuto'); ?></span>
-                </label>
-            </div>
-        </div>
-            <div id="odvCstLevCodeForm" class="form-group">
-                <input type="hidden" id="ohdCheckDuplicateCstLevCode" name="ohdCheckDuplicateCstLevCode" value="1">  
+                    <label class="xCNLabelFrm"><span class="text-danger">*</span> <?php echo language('customer/customerLevel/customerLevel','tCstLevCode'); ?><?= language('customer/customerLevel/customerLevel','tCstLevTitle')?></label>
+                    <div id="odvCstLevAutoGenCode" class="form-group">
                         <div class="validate-input">
-                        <input 
-                        type="text" 
-                        class="form-control xCNGenarateCodeTextInputValidate" 
-                        maxlength="5" 
-                        id="oetCstLevCode" 
-                        name="oetCstLevCode"
-                        data-is-created="<?php echo $tCstLevCode;?>"
-                        placeholder="<?php echo language('customer/customerLevel/customerLevel','tCstLevTBCode'); ?>"
-                        value="<?= $tCstLevCode; ?>" 
-                        data-validate-required = "<?= language('customer/customerLevel/customerLevel','tCstLevValidCode')?>"
-                        data-validate-dublicateCode = "<?= language('customer/customerLevel/customerLevel','tCstLevValidCheckCode')?>"
-                    >
+                            <label class="fancy-checkbox">
+                                <input type="checkbox" id="ocbCustomerLevelAutoGenCode" name="ocbCustomerLevelAutoGenCode" checked="true" value="1">
+                                <span> <?php echo language('common/main/main', 'tGenerateAuto'); ?></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="odvCstLevCodeForm" class="form-group">
+                        <input type="hidden" id="ohdCheckDuplicateCstLevCode" name="ohdCheckDuplicateCstLevCode" value="1">  
+                                <div class="validate-input">
+                                <input 
+                                type="text" 
+                                class="form-control xCNGenarateCodeTextInputValidate" 
+                                maxlength="5" 
+                                id="oetCstLevCode" 
+                                name="oetCstLevCode"
+                                data-is-created="<?php echo $tCstLevCode;?>"
+                                placeholder="<?php echo language('customer/customerLevel/customerLevel','tCstLevTBCode'); ?>"
+                                value="<?= $tCstLevCode; ?>" 
+                                data-validate-required = "<?= language('customer/customerLevel/customerLevel','tCstLevValidCode')?>"
+                                data-validate-dublicateCode = "<?= language('customer/customerLevel/customerLevel','tCstLevValidCheckCode')?>"
+                            >
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-6">
 
-            <?php
-                if ($tRoute ==  "pdtgroupEventAdd") {
-                    $tCstLevAgnCode   = $tSesAgnCode;
-                    $tCstLevAgnCode   = $tSesAgnName;
-                    $tDisabled     = '';
-                    $tNameElmIDAgn = 'oimBrowseAgn';
-                } else {
-                    $tCstLevAgnCode    = $tCstLevAgnCode;
-                    $tCstLevAgnCode    = $tCstLevAgnCode;
-                    $tDisabled      = '';
-                    $tNameElmIDAgn  = 'oimBrowseAgn';
-                }
+                <?php
+                    if ($tRoute ==  "pdtgroupEventAdd") {
+                        $tCstLevAgnCode     = $tSesAgnCode;
+                        $tCstLevAgnCode     = $tSesAgnName;
+                        $tDisabled          = '';
+                        $tNameElmIDAgn      = 'oimBrowseAgn';
+                    } else {
+                        $tCstLevAgnCode     = $tCstLevAgnCode;
+                        $tCstLevAgnCode     = $tCstLevAgnCode;
+                        $tDisabled          = '';
+                        $tNameElmIDAgn      = 'oimBrowseAgn';
+                    }
                 ?>
-
 
                 <!-- เพิ่ม AD Browser -->
                 <div class="form-group  <?php if (!FCNbGetIsAgnEnabled()) : echo 'xCNHide';
@@ -92,6 +106,8 @@ if($aResult['rtCode'] == "1"){
                         </span>
                     </div>
                 </div>
+
+                <!--ชื่อระดับลูกค้า -->
                 <div class="form-group">
                     <div class="validate-input" data-validate="Please Insert Name">
                         <label class="xCNLabelFrm"><span class="text-danger">*</span> <?= language('customer/customerLevel/customerLevel','tCstLevName')?><?= language('customer/customerLevel/customerLevel','tCstLevCustomer')?></label>
@@ -99,8 +115,53 @@ if($aResult['rtCode'] == "1"){
                         data-validate-required = "<?= language('customer/customerLevel/customerLevel','tCstLevvalidateName')?>">
                     </div>
                 </div>
-                
+
+                <!-- รหัสกลุ่มราคา -->
                 <div class="form-group">
+                    <label class="xCNLabelFrm"><?php echo language('customer/customerLevel/customerLevel', 'tCSTPplRet') ?></label>
+                    <div class="input-group">
+                        <input type="text" class="form-control xCNHide" id="oetCstLevPplCode" name="oetCstLevPplCode" maxlength="5" value="<?= $tCstLevPplCode; ?>">
+                        <input type="text" class="form-control xWPointerEventNone" id="oetCstLevPplName" name="oetCstLevPplName" maxlength="100" value="<?= $tCstLevPplName; ?>" readonly>
+                        <span class="input-group-btn">
+                            <button id="oimBrowsePpl" type="button" class="btn xCNBtnBrowseAddOn">
+                                <img src="<?php echo  base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                            </button>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- อัตราส่วน มูลค่าเงิน -->
+                <div class="form-group">
+                    <label class="xCNLabelFrm"><?= language('customer/customerLevel/customerLevel','tCstLevRtePntAmt')?></label>
+                    <?php 
+                        
+                        if ($tCstLevRtePntAmt != "") {
+                            $nRtePntAmt = number_format($tCstLevRtePntAmt, $nOptDecimalShow, '.', '');
+                        }else {
+                            $nRtePntAmt = 0;
+                        }  
+                    ?>
+                    <input type="text" class="input100 xCNInputNumericWithDecimal text-right" maxlength="18" id="oetCstLevRtePntAmt" name="oetCstLevRtePntAmt" value="<?=$nRtePntAmt?>"
+                    data-validate-required = "<?= language('customer/customerLevel/customerLevel','tCstLevvalidateName')?>">
+                </div>
+
+                <!-- อัตราส่วน แต้มได้รับ -->
+                <div class="form-group">
+                    <label class="xCNLabelFrm"><?= language('customer/customerLevel/customerLevel','tCstLevRtePntQty')?></label>
+                    <?php 
+                        
+                        if ($tCstLevRtePntQty != "") {
+                            $nRtePntQty = number_format($tCstLevRtePntQty, $nOptDecimalShow, '.', '');
+                        }else {
+                            $nRtePntQty = 0;
+                        }  
+                    ?>
+                    <input type="text" class="input100 xCNInputNumericWithDecimal text-right" maxlength="18" id="oetCstLevRtePntQty" name="oetCstLevRtePntQty" value="<?=$nRtePntQty?>"
+                    data-validate-required = "<?= language('customer/customerLevel/customerLevel','tCstLevvalidateName')?>">
+                </div>
+
+                
+                <!-- <div class="form-group">
                     <label class="xCNLabelFrm"><?php echo language('product/product/product','tCstLevRtePntQty');?></label>
                     <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetCstLevCalAmt" class="form-control" maxlength="100"  name="oetCstLevCalAmt" disabled value="<?php echo $tCstLevCalAmt;?>">
                 </div>
@@ -108,18 +169,20 @@ if($aResult['rtCode'] == "1"){
                 <div class="form-group">
                     <label class="xCNLabelFrm"><?php echo language('product/product/product','tCstLevRtePntAmt');?></label>
                     <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="tCstLevCalPnt" class="form-control" maxlength="100"  name="tCstLevCalPnt" disabled value="<?php echo $tCstLevCalPnt;?>">
-                </div>
+                </div> -->
 
-                <div class="form-group" >
-                    <label class="xCNLabelFrm"><?php echo language('customer/customer/customer','tCSTPplRet');?></label>
-                    <div class="input-group">
-                        <input type="text" class="form-control xCNHide" id="oetCstPplRetCode" name="oetCstPplRetCode" value="<?php echo @$tCstLevClvCode;?>">
-                        <input type="text" class="form-control xWPointerEventNone" id="oetCstPplRetName" name="oetCstPplRetName" placeholder="<?php echo language('customer/customer/customer','tCSTPplRet');?>" value="<?php echo @$tCstLevPplName;?>" readonly>
-                       
-                        <span class="input-group-btn">
-                            <button id="oimCstBrowsePpl" type="button" class="btn xCNBtnBrowseAddOn"><img class="xCNIconFind"></button>
-                        </span>
-                    </div>
+                <!-- อายุแต้ม (วัน) -->
+                <div class="form-group">
+                    <label class="xCNLabelFrm"><?= language('customer/customerLevel/customerLevel','tCstPointExp')?></label>
+                    <?php 
+                        
+                        if ($tCstLevRtePntAge != "") {
+                            $nStaPoint = number_format($tCstLevRtePntAge, $nOptDecimalShow, '.', '');
+                        }else {
+                            $nStaPoint = 0;
+                        }  
+                    ?>
+                    <input type="text" class="input100 xCNInputNumericWithDecimal text-right" maxlength="100" id="oetCstPointExp" name="oetCstPointExp" value="<?=$nStaPoint?>">
                 </div>
 
                 <div class="form-group">
@@ -133,18 +196,25 @@ if($aResult['rtCode'] == "1"){
                     </div>
                 </div>
 
+                <!-- สถานะอนุญาตตรวจสอบเงื่อนไขสมาชิก -->
                 <div class="form-group">
                     <label class="fancy-checkbox">
-                        <input type="checkbox" id="ocbCustomerLevelAppr" name="ocbCustomerLevelAppr"   <?php if ($tCstLevAlwPnt=="1") {  echo 'checked'; } ?> disabled>
-                        <span> <?= language('customer/customerLevel/customerLevel','tCstLevAlw')?></span>
-                
+                        <?php
+                        if (isset($tCstLevStaAlwPnt) && $tCstLevStaAlwPnt == 1) {
+                            $tChecked   = 'checked';
+                        } else {
+                            $tChecked   = '';
+                        }
+                        ?>
+                        <input type="checkbox" id="ocbCstLevStaAlwAccPoint" name="ocbCstLevStaAlwAccPoint" <?php echo $tChecked; ?>>
+                        <span> <?php echo language('customer/customerLevel/customerLevel','tCstLevAlw'); ?></span>
                     </label>
                 </div>
-
             </div>
         </div>
     </div>
 </form>
+
 <script src="<?php echo base_url('application/modules/common/assets/js/jquery.mask.js');?>"></script>
 <script src="<?php echo base_url('application/modules/common/assets/src/jFormValidate.js');?>"></script>
 <?php include "script/jCustomerLevelAdd.php";?>
@@ -218,19 +288,38 @@ if($aResult['rtCode'] == "1"){
 
 
     if (tStaUsrLevel == 'BCH' || tStaUsrLevel == 'SHP') {
-        // $('#oimBrowseAgn').attr("disabled", true);
+        $('#oimBrowseAgn').attr("disabled", true);
 
     }
 
 
-    $('#oimCstBrowsePpl').click(function(){
-      // Create By Witsarut 04/10/2019
-        JSxCheckPinMenuClose();
-      // Create By Witsarut 04/10/2019
-      oOptionReturnPpl = oCstBrowsePpl();
-      JCNxBrowseData('oOptionReturnPpl');
+    // $('#oimCstBrowsePpl').click(function(){
+    //   // Create By Witsarut 04/10/2019
+    //     JSxCheckPinMenuClose();
+    //   // Create By Witsarut 04/10/2019
+    //   oOptionReturnPpl = oCstBrowsePpl();
+    //   JCNxBrowseData('oOptionReturnPpl');
+    // });
+
+    //Browse กลุ่มมราคา
+    $('#oimBrowsePpl').click(function(e) {
+        e.preventDefault();
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            window.oPdtBrowseAgencyOption = oBrowsePpl({
+                'tReturnInputCode': 'oetCstLevPplCode',
+                'tReturnInputName': 'oetCstLevPplName',
+            });
+            JCNxBrowseData('oPdtBrowseAgencyOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
     });
-    var oCstBrowsePpl = function(){
+    
+    var nLangEdits = <?php echo $this->session->userdata("tLangEdit") ?>;
+
+    /*var oCstBrowsePpl = function(){
     	var tCondition = '';
     	var tStaUsrLevel = '<?= $this->session->userdata("tSesUsrLevel"); ?>';
     	var tAgnCode  = '<?= $this->session->userdata("tSesUsrAgnCode") ?>';
@@ -264,5 +353,49 @@ if($aResult['rtCode'] == "1"){
     		//BrowseLev : nStaCstBrowseType
     	}
     	return oCstBrowsePplReturn;
+    }*/
+
+    //option กลุ่มมราคา
+    var oBrowsePpl = function(poReturnInput) {
+        var tInputReturnCode = poReturnInput.tReturnInputCode;
+        var tInputReturnName = poReturnInput.tReturnInputName;
+
+        var oOptionReturn = {
+            Title: ['customer/customer/customer', 'tCSTPplRet'],
+            Table: {
+                Master: 'TCNMPdtPriList',
+                PK: 'FTPplCode'
+            },
+            Join: {
+                Table: ['TCNMPdtPriList_L'],
+                On: ['TCNMPdtPriList_L.FTPplCode = TCNMPdtPriList.FTPplCode AND TCNMPdtPriList_L.FNLngID = ' + nLangEdits]
+            },
+            GrideView: {
+                ColumnPathLang: 'document/conditionredeem/conditionredeem',
+                ColumnKeyLang: ['tRDHTabCouponHDCstPriCode', 'tRDHTabCouponHDCstPriName'],
+                ColumnsSize: ['15%', '85%'],
+                WidthModal: 50,
+                DataColumns: ['TCNMPdtPriList.FTPplCode', 'TCNMPdtPriList_L.FTPplName'],
+                DataColumnsFormat: ['', ''],
+                Perpage: 10,
+                OrderBy: ['TCNMPdtPriList.FDCreateOn DESC'],
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: [tInputReturnCode, "TCNMPdtPriList.FTPplCode"],
+                Text: [tInputReturnName, "TCNMPdtPriList_L.FTPplName"],
+            },
+            RouteAddNew: 'agency',
+            BrowseLev: 1,
+        }
+        return oOptionReturn;
+    }
+
+    var tStaUsrLevel = '<?php echo $this->session->userdata("tSesUsrLevel"); ?>';
+
+
+    if (tStaUsrLevel == 'BCH' || tStaUsrLevel == 'SHP') {
+        $('#oimBrowseAgn').attr("disabled", true);
+
     }
 </script>
