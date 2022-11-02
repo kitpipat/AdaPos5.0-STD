@@ -18,6 +18,7 @@ $('document').ready(function() {
 //Return : Show Tab Menu
 //Return Type : -
 function JSxSplNavDefult() {
+    console.log(nStaSplBrowseType);
     if (nStaSplBrowseType != 1 || nStaSplBrowseType == undefined) {
         $('.xCNChoose').hide();
         $('#oliSplTitleAdd').hide();
@@ -33,6 +34,16 @@ function JSxSplNavDefult() {
         $('#odvModalBody .xCNSplBrowseLine').css('padding', '0px 0px');
         $('#odvModalBody .xCNSplBrowseLine').css('border-bottom', '1px solid #e3e3e3');
     }
+}
+
+function JSxSplNavDelDefult() {
+    // console.log(nStaSplBrowseType);
+        $('.xCNChoose').hide();
+        $('#oliSplTitleAdd').hide();
+        $('#oliSplTitleEdit').hide();
+        $('#odvBtnAddEdit').show();
+        $('#odvBtnSplInfo').hide();
+    
 }
 
 
@@ -877,7 +888,7 @@ function JSoSupplierAddressDel(ptSplCode, pnSqeNo, ptName) {
 
                 JSxAddressDatatable(ptSplCode);
                 $('.modal-backdrop').remove();
-                JSxSplNavDefult();
+                JSxSplNavDelDefult();
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -914,7 +925,7 @@ function JSoSupplierContactDel(ptSplCode, pnSqeNo, ptName) {
 
                 JSxContactDatatable(ptSplCode);
                 $('.modal-backdrop').remove();
-                JSxSplNavDefult();
+                JSxSplNavDelDefult();
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 JCNxResponseError(jqXHR, textStatus, errorThrown);

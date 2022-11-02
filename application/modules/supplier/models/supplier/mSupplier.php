@@ -39,6 +39,8 @@ class mSupplier extends CI_Model {
                 $tSQL .= " AND ( SPL.FTAgnCode = '$tAgnCode' OR ISNULL(SPL.FTAgnCode,'') = '' ) ";
             }
 
+            $tSQL   .= " ORDER BY SPL.FDCreateOn DESC";
+
             $tSQLFooter = " ) Base) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1] ";
 
             $tSQLMain = $tSQLHeader.$tSQL.$tSQLFooter;
@@ -120,62 +122,70 @@ class mSupplier extends CI_Model {
             $tSplCode   = $paData['FTSplCode'];
             $nLngID     = $paData['FNLngID'];
             $tSQL       = " SELECT
-                                SPL.FTSplCode       AS rtSplCode,
-                                SPL_L.FTSplName     AS rtSplName,
-                                SPL.FTSplTel        AS rtSplTel,
-                                SPL.FTSplEmail      AS rtSplEmail,
-                                SPL.FTSplFax        AS rtSplFax,
-                                SPL.FTSplSex        AS rtSplSex,
-                                SPL.FDSplDob        AS rtSplDob,
-                                SPL.FTSgpCode       AS rtSgpCode,
-                                Grp_L.FTSgpName     AS rtSgpName,
-                                SPL.FTStyCode       AS rtStyCode,
-                                Type_L.FTStyName    AS rtStyName,
-                                SPL.FTSlvCode       AS rtSlvCode,
-                                Lev_L.FTSlvName     AS rtSlvName,
-                                SPL.FTVatCode       AS rtVatCode,
+                                SPL.FTSplCode           AS rtSplCode,
+                                SPL_L.FTSplName         AS rtSplName,
+                                SPL.FTSplTel            AS rtSplTel,
+                                SPL.FTSplEmail          AS rtSplEmail,
+                                SPL.FTSplFax            AS rtSplFax,
+                                SPL.FTSplSex            AS rtSplSex,
+                                SPL.FDSplDob            AS rtSplDob,
+                                SPL.FTSgpCode           AS rtSgpCode,
+                                Grp_L.FTSgpName         AS rtSgpName,
+                                SPL.FTStyCode           AS rtStyCode,
+                                Type_L.FTStyName        AS rtStyName,
+                                SPL.FTSlvCode           AS rtSlvCode,
+                                Lev_L.FTSlvName         AS rtSlvName,
+                                SPL.FTVatCode           AS rtVatCode,
+                                SPL.FTFmtCodeExp        AS rtFmtCodeExp,
+                                Fmt_L.FTRfsName         AS rtFTRfsName,
                                 SPL.FTSplStaVATInOrEx   AS rtSplStaVATInOrEx,
                                 SPL.FTSplDiscBillRet    AS rtSplDiscBillRet,
                                 SPL.FTSplDiscBillWhs    AS rtSplDiscBillWhs,
                                 SPL.FTSplDiscBillNet    AS rtSplDiscBillNet,
-                                SPL.FTSplBusiness   AS rtSplBusiness,
-                                SPL.FTSplStaBchOrHQ AS rtSplStaBchOrHQ,
-                                SPL.FTSplBchCode    AS rtSplBchCode,
-                                SPL.FTSplStaActive  AS rtSplStaActive,
-                                SPL.FTUsrCode       AS rtUsrCode,
-                                SPL_L.FTSplCode     AS rtSplCode,
-                                SPL_L.FNLngID       AS rtLngID,
-                                SPL_L.FTSplPayRmk   AS rtSplPayRmk,
-                                SPL_L.FTSplBillRmk  AS rtSplBillRmk,
-                                SPL_L.FTSplViaRmk   AS rtSplViaRmk,
-                                SPL_L.FTSplRmk      AS rtSplRmk,
-                                Crd.FDSplApply      AS rtSplApply,
-                                Crd.FTSplRefExCrdNo AS rtSplRefExCrdNo,
-                                Crd.FDSplCrdIssue   AS rtSplCrdIssue,
-                                Crd.FDSplCrdExpire  AS rtSplCrdExpire,
-                                Cred.FNSplCrTerm    AS rtSplCrTerm,
-                                Cred.FCSplCrLimit   AS rtSplCrLimit,
-                                Cred.FTSplDayCta    AS rtSplDayCta,
-                                Cred.FDSplLastCta   AS rtSplLastCta,
-                                Cred.FDSplLastPay   AS rtSplLastPay,
-                                Cred.FNSplLimitRow  AS rtSplLimitRow,
-                                Cred.FCSplLeadTime  AS rtSplLeadTime,
-                                Cred.FTViaCode      AS rtViaCode,
-                                Ship_L.FTViaName    AS rtViaName,
-                                Cred.FTSplTspPaid   AS rtSplTspPaid,
-                                Img.FTImgObj        AS rtImgObj,
-                                AGN_L.FTAgnCode     AS FTAgnCode,
-                                AGN_L.FTAgnName     AS FTAgnName
+                                SPL.FTSplBusiness       AS rtSplBusiness,
+                                SPL.FTSplStaBchOrHQ     AS rtSplStaBchOrHQ,
+                                SPL.FTSplStaLocal       AS rtSplStaLocal,
+                                SPL.FTSplBchCode        AS rtSplBchCode,
+                                SPL.FTSplStaActive      AS rtSplStaActive,
+                                SPL.FTUsrCode           AS rtUsrCode,
+                                Usr_L.FTUsrName         AS rtUsrName,
+                                SPL_L.FTSplCode         AS rtSplCode,
+                                SPL_L.FNLngID           AS rtLngID,
+                                SPL_L.FTSplPayRmk       AS rtSplPayRmk,
+                                SPL_L.FTSplBillRmk      AS rtSplBillRmk,
+                                SPL_L.FTSplViaRmk       AS rtSplViaRmk,
+                                SPL_L.FTSplRmk          AS rtSplRmk,
+                                Crd.FDSplApply          AS rtSplApply,
+                                Crd.FTSplRefExCrdNo     AS rtSplRefExCrdNo,
+                                Crd.FDSplCrdIssue       AS rtSplCrdIssue,
+                                Crd.FDSplCrdExpire      AS rtSplCrdExpire,
+                                Cred.FNSplCrTerm        AS rtSplCrTerm,
+                                Cred.FCSplCrLimit       AS rtSplCrLimit,
+                                Cred.FTSplDayCta        AS rtSplDayCta,
+                                Cred.FDSplLastCta       AS rtSplLastCta,
+                                Cred.FDSplLastPay       AS rtSplLastPay,
+                                Cred.FNSplLimitRow      AS rtSplLimitRow,
+                                Cred.FCSplLeadTime      AS rtSplLeadTime,
+                                Cred.FTViaCode          AS rtViaCode,
+                                Ship_L.FTViaName        AS rtViaName,
+                                Cred.FTSplTspPaid       AS rtSplTspPaid,
+                                Img.FTImgObj            AS rtImgObj,
+                                AGN_L.FTAgnCode         AS FTAgnCode,
+                                AGN_L.FTAgnName         AS FTAgnName
                             FROM TCNMSpl SPL WITH(NOLOCK)
-                            LEFT JOIN TCNMAgency_L AGN_L WITH(NOLOCK) ON SPL.FTAgnCode = AGN_L.FTAgnCode AND AGN_L.FNLngID = $nLngID
-                            LEFT JOIN TCNMSpl_L SPL_L WITH(NOLOCK) ON SPL.FTSplCode = SPL_L.FTSplCode AND SPL_L.FNLngID = $nLngID
-                            LEFT JOIN TCNMSplGrp_L Grp_L WITH(NOLOCK)  ON SPL.FTSgpCode = Grp_L.FTSgpCode AND Grp_L.FNLngID = $nLngID
-                            LEFT JOIN TCNMSplType_L Type_L WITH(NOLOCK) ON SPL.FTStyCode = Type_L.FTStyCode AND Type_L.FNLngID = $nLngID
-                            LEFT JOIN TCNMSplLev_L Lev_L WITH(NOLOCK) ON SPL.FTSlvCode = Lev_L.FTSlvCode AND Lev_L.FNLngID = $nLngID 
-                            LEFT JOIN TCNMSplCredit Cred WITH(NOLOCK) ON SPL.FTSplCode = Cred.FTSplCode
-                            LEFT JOIN TCNMShipVia_L Ship_L WITH(NOLOCK) ON Cred.FTViaCode = Ship_L.FTViaCode AND Ship_L.FNLngID = $nLngID 
-                            LEFT JOIN TCNMSplCard Crd WITH(NOLOCK) ON SPL.FTSplCode = Crd.FTSplCode 
-                            LEFT JOIN TCNMImgObj Img WITH(NOLOCK) ON Img.FTImgRefID = SPL.FTSplCode AND Img.FNImgSeq = '1' AND Img.FTImgTable = 'TCNMSpl' AND Img.FTImgKey = 'main' AND Img.FNImgSeq = 1
+                            LEFT JOIN TCNMAgency_L      AGN_L   WITH(NOLOCK) ON SPL.FTAgnCode       = AGN_L.FTAgnCode   AND AGN_L.FNLngID   = $nLngID
+                            LEFT JOIN TCNMSpl_L         SPL_L   WITH(NOLOCK) ON SPL.FTSplCode       = SPL_L.FTSplCode   AND SPL_L.FNLngID   = $nLngID
+                            LEFT JOIN TCNMSplGrp_L      Grp_L   WITH(NOLOCK) ON SPL.FTSgpCode       = Grp_L.FTSgpCode   AND Grp_L.FNLngID   = $nLngID
+                            LEFT JOIN TCNMSplType_L     Type_L  WITH(NOLOCK) ON SPL.FTStyCode       = Type_L.FTStyCode  AND Type_L.FNLngID  = $nLngID
+                            LEFT JOIN TCNMSplLev_L      Lev_L   WITH(NOLOCK) ON SPL.FTSlvCode       = Lev_L.FTSlvCode   AND Lev_L.FNLngID   = $nLngID 
+                            LEFT JOIN TCNMSplCredit     Cred    WITH(NOLOCK) ON SPL.FTSplCode       = Cred.FTSplCode
+                            LEFT JOIN TCNMShipVia_L     Ship_L  WITH(NOLOCK) ON Cred.FTViaCode      = Ship_L.FTViaCode  AND Ship_L.FNLngID  = $nLngID 
+                            LEFT JOIN TCNMSplCard       Crd     WITH(NOLOCK) ON SPL.FTSplCode       = Crd.FTSplCode 
+                            LEFT JOIN TCNMImgObj        Img     WITH(NOLOCK) ON Img.FTImgRefID      = SPL.FTSplCode     AND Img.FNImgSeq    = '1' AND Img.FTImgTable = 'TCNMSpl' AND Img.FTImgKey = 'main' AND Img.FNImgSeq = 1
+                            LEFT JOIN TRPSRptFormat     Fmt                  ON SPL.FTFmtCodeExp    =  Fmt.FTRfsCode   
+                            LEFT JOIN TRPSRptFormat_L   Fmt_L                ON Fmt_L.FTRfsCode     =  Fmt .FTRfsCode   AND Fmt_L.FNLngID   = $nLngID
+                            LEFT JOIN TCNMUser          Usr                  ON SPL.FTUsrCode       =  Usr.FTUsrCode   
+                            LEFT JOIN TCNMUser_L        Usr_L                ON Usr_L.FTUsrCode     =  Usr.FTUsrCode    AND Usr_L.FNLngID   = $nLngID
                             WHERE 1=1 AND SPL.FTSplCode = '$tSplCode' ";
             $oQuery = $this->db->query($tSQL);
             if ($oQuery->num_rows() > 0){
@@ -737,8 +747,8 @@ class mSupplier extends CI_Model {
         // $ci = &get_instance();
         // $ci->load->database();
         
-        $nAddSeqNo = $ptData['FNSeqNo'];
-        $nLngID = $ptData['FNLangID'];
+        $nAddSeqNo  = $ptData['FNSeqNo'];
+        $nLngID     = $ptData['FNLangID'];
         
     
         $tSQL ="SELECT  TOP 1 FTAddV1SubDist,
@@ -767,6 +777,291 @@ class mSupplier extends CI_Model {
             return false;
         }
     
+    }
+
+    //Functionality : list Data Supplier
+    //Parameters : function parameters
+    //Creator :  22/10/2018 Phisan ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : data
+    //Return Type : Array
+    public function FSaMSPLGetDataBranch($paData){
+        try{
+            $aRowLen        = FCNaHCallLenData($paData['nRow'],$paData['nPage']);
+            $nLngID         = $paData['FNLngID'];
+            $tSearchList    = $paData['tSearchAll'];
+            $tSPLBranchSplCode       = $paData['tSPLBranchSplCode'];
+            $tSPLBranchBchCode       = $paData['tSPLBranchBchCode'];
+
+            $tSQLHeader     = " SELECT c.* FROM( SELECT  ROW_NUMBER() OVER(ORDER BY FTSplCode DESC , FTBchCode DESC) AS rtRowID,* FROM ( ";
+            $tSQL           = "   SELECT
+                                        SPLBCH.FTSplCode,
+                                        SPL_L.FTSplName,
+                                        SPLBCH.FTBchCode,
+                                        BCH_L.FTBchName,
+                                        SPLBCH.FCSbhLeadTime,
+                                        SPLBCH.FTSbhOrdDay,
+                                        SPLBCH.FTSbhStaAlwOrdSun,
+                                        SPLBCH.FTSbhStaAlwOrdMon,
+                                        SPLBCH.FTSbhStaAlwOrdTue,
+                                        SPLBCH.FTSbhStaAlwOrdWed,
+                                        SPLBCH.FTSbhStaAlwOrdThu,
+                                        SPLBCH.FTSbhStaAlwOrdFri,
+                                        SPLBCH.FTSbhStaAlwOrdSat,
+                                        SPLBCH.FTSbhStaDefault
+                                    FROM
+                                        TCNMSplBch SPLBCH WITH(NOLOCK)
+                                    LEFT JOIN TCNMBranch_L BCH_L  WITH(NOLOCK) ON SPLBCH.FTBchCode = BCH_L.FTBchCode AND BCH_L.FNLngID = $nLngID
+                                    LEFT JOIN TCNMSpl_L SPL_L WITH(NOLOCK )  ON SPLBCH.FTSplCode = SPL_L.FTSplCode AND SPL_L.FNLngID = $nLngID
+
+                                    WHERE ISNULL(SPLBCH.FTSplCode,'')!= '' ";
+            if(isset($tSearchList) && !empty($tSearchList)){
+                $tSQL .= " AND (SPLBCH.FTSplCode  COLLATE THAI_BIN LIKE '%$tSearchList%'";
+                $tSQL .= " OR SPL_L.FTSplName  COLLATE THAI_BIN LIKE '%$tSearchList%'";
+                $tSQL .= " OR SPLBCH.FTBchCode     COLLATE THAI_BIN LIKE '%$tSearchList%'";
+                $tSQL .= " OR BCH_L.FTBchName   COLLATE THAI_BIN LIKE '%$tSearchList%')";
+            }
+
+            if($tSPLBranchBchCode != ""){
+                $tSQL .= " AND ( SPLBCH.FTBchCode = '$tSPLBranchBchCode'  ) ";
+            }
+
+            if($tSPLBranchSplCode != ""){
+                $tSQL .= " AND ( SPLBCH.FTSplCode = '$tSPLBranchSplCode'  ) ";
+            }
+
+            $tSQLFooter = " ) Base) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1] ";
+
+            $tSQLMain = $tSQLHeader.$tSQL.$tSQLFooter;
+            $tSQLSub  = $tSQL;
+
+            $oQuery = $this->db->query($tSQLMain);
+            if( $oQuery->num_rows() > 0 ){
+                $oQuerySub  = $this->db->query($tSQLSub);
+                $aList      = $oQuery->result_array();
+                $nFoundRow  = $oQuerySub->num_rows();
+                // $oFoundRow = $this->FSoMSPLGetPageAll($tSearchList,$nLngID);
+                // $nFoundRow = $oFoundRow[0]->counts;
+                $nPageAll   = ceil($nFoundRow/$paData['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
+                $aResult    = array(
+                    'raItems'       => $aList,
+                    'rnAllRow'      => $nFoundRow,
+                    'rnCurrentPage' => $paData['nPage'],
+                    'rnAllPage'     => $nPageAll,
+                    'rtCode'        => '1',
+                    'rtDesc'        => 'success',
+                );
+            }else{
+                //No Data
+                $aResult = array(
+                    'rnAllRow'      => 0,
+                    'rnCurrentPage' => $paData['nPage'],
+                    "rnAllPage"     => 0,
+                    'rtCode'        => '800',
+                    'rtDesc'        => 'data not found',
+                );
+            }
+            return $aResult;
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+    //Functionality : Function Add/Update Master
+    //Parameters : function parameters
+    //Creator : 10/05/2018 wasin ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Last Modified : 11/06/2018 wasin
+    //Return : Status Add/Update Master
+    //Return Type : array
+    public function FSaMSPLAddUpdateBranch($paData){
+        try{
+            //Update Master
+            $this->db->set('FCSbhLeadTime' , $paData['FCSbhLeadTime']);
+            $this->db->set('FTSbhOrdDay' , $paData['FTSbhOrdDay']);
+            $this->db->set('FTSbhStaAlwOrdSun' , $paData['FTSbhStaAlwOrdSun']);
+            $this->db->set('FTSbhStaAlwOrdMon', $paData['FTSbhStaAlwOrdMon']);
+            $this->db->set('FTSbhStaAlwOrdTue', $paData['FTSbhStaAlwOrdTue']);
+            $this->db->set('FTSbhStaAlwOrdWed', $paData['FTSbhStaAlwOrdWed']);
+            $this->db->set('FTSbhStaAlwOrdThu', $paData['FTSbhStaAlwOrdThu']);
+            $this->db->set('FTSbhStaAlwOrdFri', $paData['FTSbhStaAlwOrdFri']);
+            $this->db->set('FTSbhStaAlwOrdSat', $paData['FTSbhStaAlwOrdSat']);
+            $this->db->set('FTSbhStaDefault', $paData['FTSbhStaDefault']);
+            $this->db->where('FTSplCode', $paData['FTSplCode']);
+            $this->db->where('FTBchCode', $paData['FTBchCode']);
+            $this->db->update('TCNMSplBch');
+            if($this->db->affected_rows() > 0){
+                $aStatus = array(
+                    'rtCode' => '1',
+                    'rtDesc' => 'Update Master Success',
+                );
+            }else{
+                //Add Master
+                $this->db->insert('TCNMSplBch',array(
+                    'FTSplCode'     => $paData['FTSplCode'],
+                    'FTBchCode'     => $paData['FTBchCode'],
+
+                    'FCSbhLeadTime'   => $paData['FCSbhLeadTime'],
+                    'FTSbhOrdDay'     => $paData['FTSbhOrdDay'],
+
+                    'FTSbhStaAlwOrdSun'     => $paData['FTSbhStaAlwOrdSun'],
+                    'FTSbhStaAlwOrdMon'     => $paData['FTSbhStaAlwOrdMon'],
+                    'FTSbhStaAlwOrdTue'     => $paData['FTSbhStaAlwOrdTue'],
+                    'FTSbhStaAlwOrdWed'     => $paData['FTSbhStaAlwOrdWed'],
+                    'FTSbhStaAlwOrdThu'     => $paData['FTSbhStaAlwOrdThu'],
+                    'FTSbhStaAlwOrdFri'     => $paData['FTSbhStaAlwOrdFri'],
+                    'FTSbhStaDefault'       => $paData['FTSbhStaDefault'],
+              
+                ));
+                if($this->db->affected_rows() > 0 ){
+                    $aStatus = array(
+                        'rtCode' => '1',
+                        'rtDesc' => 'Add Master Success',
+                    );
+                }else{
+                    $aStatus = array(
+                        'rtCode' => '905',
+                        'rtDesc' => 'Error Cannot Add/Edit Master.',
+                    );
+                }
+            }
+            return $aStatus;
+        }catch(Exception $Error){
+            return $Error;
+        }
+    }
+
+
+    //Functionality : Checkduplicate Suppliers
+    //Parameters : function parameters
+    //Creator : 22/10/2018 Phisan ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : data
+    //Return Type : Array
+    public function  FSoMSPLBranchCheckDuplicate($paData){
+        try{
+    
+            $tSqlCode = $paData['FTSplCode'];
+            $tBchCode = $paData['FTBchCode'];
+            $tSQL = "SELECT COUNT(SBH.FTSplCode) AS counts
+                 FROM TCNMSplBch SBH 
+                 WHERE SBH.FTSplCode = '$tSqlCode' AND SBH.FTBchCode = '$tBchCode' ";
+            $oQuery = $this->db->query($tSQL);
+            if($oQuery->num_rows() > 0){
+                return $oQuery->row_array();
+            }else{
+                return FALSE;
+            }
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+
+
+    //Functionality : Checkduplicate Suppliers
+    //Parameters : function parameters
+    //Creator : 22/10/2018 Phisan ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : data
+    //Return Type : Array
+    public function  FSoMSPLBranchCodeCheckStaDefault($paData){
+        try{
+    
+            $tBchCode = $paData['FTBchCode'];
+            $tSQL = "SELECT COUNT(SBH.FTSplCode) AS counts
+                 FROM TCNMSplBch SBH 
+                 WHERE  SBH.FTBchCode = '$tBchCode' ";
+            $oQuery = $this->db->query($tSQL);
+            if($oQuery->num_rows() > 0){
+                return $oQuery->row_array();
+            }else{
+                return 0;
+            }
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+
+    //Functionality : Get Data Supplier By ID
+    //Parameters : function parameters
+    //Creator : 22/10/2018 Phisan ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : data
+    //Return Type : Array
+    public function FSaMSPLGetBranchDataByID($paData){
+        try{
+            $tSplCode   = $paData['FTSplCode'];
+            $tBchCode   = $paData['FTBchCode'];
+            $nLngID     = $paData['nLangEdit'];
+            $tSQL           = "   SELECT
+                                    SPLBCH.FTSplCode,
+                                    SPL_L.FTSplName,
+                                    SPLBCH.FTBchCode,
+                                    BCH_L.FTBchName,
+                                    SPLBCH.FCSbhLeadTime,
+                                    SPLBCH.FTSbhOrdDay,
+                                    SPLBCH.FTSbhStaAlwOrdSun,
+                                    SPLBCH.FTSbhStaAlwOrdMon,
+                                    SPLBCH.FTSbhStaAlwOrdTue,
+                                    SPLBCH.FTSbhStaAlwOrdWed,
+                                    SPLBCH.FTSbhStaAlwOrdThu,
+                                    SPLBCH.FTSbhStaAlwOrdFri,
+                                    SPLBCH.FTSbhStaAlwOrdSat,
+                                    SPLBCH.FTSbhStaDefault
+                                FROM
+                                    TCNMSplBch SPLBCH WITH(NOLOCK)
+                                LEFT JOIN TCNMBranch_L BCH_L  WITH(NOLOCK) ON SPLBCH.FTBchCode = BCH_L.FTBchCode AND BCH_L.FNLngID = $nLngID
+                                LEFT JOIN TCNMSpl_L SPL_L WITH(NOLOCK )  ON SPLBCH.FTSplCode = SPL_L.FTSplCode AND SPL_L.FNLngID = $nLngID
+                                WHERE ISNULL(SPLBCH.FTSplCode,'')= '$tSplCode' AND ISNULL(SPLBCH.FTBchCode,'')= '$tBchCode' ";
+
+            $oQuery = $this->db->query($tSQL);
+            if ($oQuery->num_rows() > 0){
+                $aDetail = $oQuery->row_array();
+                $aResult = array(
+                    'raItems'   => $aDetail,
+                    'rtCode'    => '1',
+                    'rtDesc'    => 'success',
+                );
+            }else{
+                $aResult = array(
+                    'rtCode' => '800',
+                    'rtDesc' => 'Data not found.',
+                );
+            }
+            return $aResult;
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+
+    
+    //Functionality : Delete Supplier
+    //Parameters : function parameters
+    //Creator : 22/10/2018 Phisan ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : Status Delete
+    //Return Type : array
+    public function FSnMSPLBranchDel($paData){
+        try{
+            $this->db->trans_begin();
+            $this->db->where_in('FTSplCode', $paData['FTSplCode']);
+            $this->db->where_in('FTBchCode', $paData['FTBchCode']);
+            $this->db->delete('TCNMSplBch');
+
+            if($this->db->trans_status() === FALSE){
+                $this->db->trans_rollback();
+                $aStatus = array(
+                    'rtCode' => '905',
+                    'rtDesc' => 'Delete Unsuccess.',
+                );
+            }else{
+                $this->db->trans_commit();
+                $aStatus = array(
+                    'rtCode' => '1',
+                    'rtDesc' => 'Delete Success.',
+                );
+            }
+            return $aStatus;
+        }catch(Exception $Error){
+            echo $Error;
+        }
     }
 
 }

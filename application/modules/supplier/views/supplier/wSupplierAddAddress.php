@@ -1,6 +1,6 @@
 <?php
 if($nStaAddOrEdit==1){
-    $tRout                ="supplierEventEditAddress";
+    $tRout                = "supplierEventEditAddress";
     $tFTSplCode           = $aSplAddressData['raItems']['FTSplCode'];//
     $nFNAddSeqNo          = $aSplAddressData['raItems']['FNAddSeqNo'];
     $tFTAddVersion        = $aSplAddressData['raItems']['FTAddVersion'];
@@ -28,33 +28,33 @@ if($nStaAddOrEdit==1){
     $tFTSudName           = $aSplAddressSeparate['FTSudName'];
     $tFTAddV1SubDist      = $aSplAddressSeparate['FTAddV1SubDist'];
 }else{
-    $tRout             ="supplierEventAddAddress";
-    $tFTSplCode        = "";//
-    $nFNAddSeqNo       = "";
-    $tFTAddVersion     = "";
-    $tFTAddName        = "";
-    $tFTAddGrpType     = 1;
-    $tFTAddRefNo       = "";
-    $tFTAddTaxNo       = "";
-    $tFTAddV2Desc1     = "";
-    $tFTAddV2Desc2     = "";
-    $tFTAddWebsite     = "";
-    $tFTAddRmk         = "";
-    $tFTAddLongitude   = "";
-    $tFTAddLatitude    = "";
+    $tRout                = "supplierEventAddAddress";
+    $tFTSplCode           = "";//
+    $nFNAddSeqNo          = "";
+    $tFTAddVersion        = "";
+    $tFTAddName           = "";
+    $tFTAddGrpType        = 1;
+    $tFTAddRefNo          = "";
+    $tFTAddTaxNo          = "";
+    $tFTAddV2Desc1        = "";
+    $tFTAddV2Desc2        = "";
+    $tFTAddWebsite        = "";
+    $tFTAddRmk            = "";
+    $tFTAddLongitude      = "";
+    $tFTAddLatitude       = "";
     //จบฟอร์มสัน
-    $tFTAddCountry     = "";
-    $tFTAddV1No        = "";
-    $tFTAddV1Village   = "";
-    $tFTAddV1Road      = "";
-    $tFTAddV1Soi       = "";
-    $tFTAddV1PostCode  = "";
-    $tFTAddV1PvnCode   = "";
-    $tFTPvnName        = "";
-    $tFTDstName        = "";
-    $tFTAddV1DstCode   = "";
-    $tFTSudName        = "";
-    $tFTAddV1SubDist   = "";
+    $tFTAddCountry        = "";
+    $tFTAddV1No           = "";
+    $tFTAddV1Village      = "";
+    $tFTAddV1Road         = "";
+    $tFTAddV1Soi          = "";
+    $tFTAddV1PostCode     = "";
+    $tFTAddV1PvnCode      = "";
+    $tFTPvnName           = "";
+    $tFTDstName           = "";
+    $tFTAddV1DstCode      = "";
+    $tFTSudName           = "";
+    $tFTAddV1SubDist      = "";
 }
 // print_r($aData);
 ?>
@@ -143,7 +143,7 @@ if($nStaAddOrEdit==1){
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div  class="form-group">
                                 <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV2Desc1')?></label>
@@ -162,7 +162,179 @@ if($nStaAddOrEdit==1){
                                 </div>
                             </div>
                         </div>
+                    </div> -->
+
+                    <!--ประเทศ-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddCountry')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="100" id="oetSplAddCountry" name="oetSplAddCountry"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddCountry')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddCountry ; ?>">
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <!--End ประเทศ-->
+
+                    <!--จังหวัด-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1PvnCode')?></label>
+                                <div class="input-group">
+                                    <input class="form-control xCNHide" id="oetAddPvnCode" name="oetAddPvnCode" maxlength="5" onchange="JSxResetVal('oetAddPvnCode','<?php echo $tFTAddV1PvnCode ; ?>',3)" value="<?php echo $tFTAddV1PvnCode; ?>"> <!--value="<?php if(@$nCnfAddVersion == '1'){ echo @$aCnfAddPanal[0]->FTAddV1PvnCode; } ?>" -->
+                                    <input class="form-control xWPointerEventNone" type="text" id="oetAddPvnName" name="oetAddPvnName" value="<?php echo $tFTPvnName; ?>" readonly>
+                                    <span class="input-group-btn">
+                                        <button id="obtSplBrowseProvince" type="button" class="btn xCNBtnBrowseAddOn">
+                                            <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End จังหวัด-->
+
+                    <!--อำเภอ/เขต-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1DstCode')?></label>
+                                <div class="input-group">
+                                    <input class="form-control xCNHide" id="oetAddDstCode" name="oetAddDstCode" maxlength="5" onchange="JSxResetVal('oetAddDstCode','<?php echo $tFTAddV1DstCode ; ?>',4)" value="<?php echo $tFTAddV1DstCode ;?>">
+                                    <input class="form-control xWPointerEventNone" type="text" id="oetAddDstName" name="oetAddDstName" value="<?php echo $tFTDstName ?>" readonly>
+                                    <span class="input-group-btn">
+                                        <button id="obtSplBrowseDistrict" type="button" class="btn xCNBtnBrowseAddOn">
+                                            <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End อำเภอ/เขต-->
+
+                    <!--ตำบล/แขวง-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1SubDist')?></label>
+                                <div class="input-group">
+                                    <input class="form-control xCNHide" id="oetAddSubDistCode" name="oetAddSubDistCode" maxlength="5" value="<?php echo $tFTAddV1SubDist ;?>">
+                                    <input class="form-control xWPointerEventNone" type="text" id="oetAddSubDistName" name="oetAddSubDistName" value="<?php echo $tFTSudName ; ?>" readonly>
+                                    <span class="input-group-btn">
+                                        <button id="obtSplBrowseSubDistrict" type="button" class="btn xCNBtnBrowseAddOn">
+                                            <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End ตำบล/แขวง-->
+
+                    <!--บ้านเลขที่-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1No')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="20" id="oetSplAddHomeNo" name="oetSplAddHomeNo"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1No')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1No ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End บ้านเลขที่-->
+
+                    <!--หมู่บ้าน-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Village')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="20" id="oetSplAddvillage" name="oetSplAddvillage"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Village')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1Village ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End หมู่บ้าน-->
+
+                    <!--ถนน-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Road')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="20" id="oetSplAddRoad" name="oetSplAddRoad"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Road')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1Road ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End ถนน-->
+
+                    <!--ซอย-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Soi')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="20" id="oetSplAddAlley" name="oetSplAddAlley"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Soi')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1Soi ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End ซอย-->
+
+                    <!--รหัสไปรษณีย์-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1PostCode')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control xCNInputNumericWithDecimal"
+                                    maxlength="5" id="oetSplAddZipCode" name="oetSplAddZipCode"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1PostCode')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1PostCode ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End รหัสไปรษณีย์-->
+
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div  class="form-group">
@@ -565,7 +737,7 @@ if($nStaAddOrEdit==1){
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div  class="form-group">
                                 <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV2Desc1')?></label>
@@ -584,7 +756,179 @@ if($nStaAddOrEdit==1){
                                 </div>
                             </div>
                         </div>
+                    </div> -->
+
+                    <!--ประเทศ-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddCountry')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="100" id="oetSplAddCountry" name="oetSplAddCountry"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddCountry')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddCountry ; ?>">
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <!--End ประเทศ-->
+
+                    <!--จังหวัด-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1PvnCode')?></label>
+                                <div class="input-group">
+                                    <input class="form-control xCNHide" id="oetAddPvnCode" name="oetAddPvnCode" maxlength="5" onchange="JSxResetVal('oetAddPvnCode','<?php echo $tFTAddV1PvnCode ; ?>',3)" value="<?php echo $tFTAddV1PvnCode; ?>"> <!--value="<?php if(@$nCnfAddVersion == '1'){ echo @$aCnfAddPanal[0]->FTAddV1PvnCode; } ?>" -->
+                                    <input class="form-control xWPointerEventNone" type="text" id="oetAddPvnName" name="oetAddPvnName" value="<?php echo $tFTPvnName; ?>" readonly>
+                                    <span class="input-group-btn">
+                                        <button id="obtSplBrowseProvince" type="button" class="btn xCNBtnBrowseAddOn">
+                                            <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End จังหวัด-->
+
+                    <!--อำเภอ/เขต-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1DstCode')?></label>
+                                <div class="input-group">
+                                    <input class="form-control xCNHide" id="oetAddDstCode" name="oetAddDstCode" maxlength="5" onchange="JSxResetVal('oetAddDstCode','<?php echo $tFTAddV1DstCode ; ?>',4)" value="<?php echo $tFTAddV1DstCode ;?>">
+                                    <input class="form-control xWPointerEventNone" type="text" id="oetAddDstName" name="oetAddDstName" value="<?php echo $tFTDstName ?>" readonly>
+                                    <span class="input-group-btn">
+                                        <button id="obtSplBrowseDistrict" type="button" class="btn xCNBtnBrowseAddOn">
+                                            <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End อำเภอ/เขต-->
+
+                    <!--ตำบล/แขวง-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1SubDist')?></label>
+                                <div class="input-group">
+                                    <input class="form-control xCNHide" id="oetAddSubDistCode" name="oetAddSubDistCode" maxlength="5" value="<?php echo $tFTAddV1SubDist ;?>">
+                                    <input class="form-control xWPointerEventNone" type="text" id="oetAddSubDistName" name="oetAddSubDistName" value="<?php echo $tFTSudName ; ?>" readonly>
+                                    <span class="input-group-btn">
+                                        <button id="obtSplBrowseSubDistrict" type="button" class="btn xCNBtnBrowseAddOn">
+                                            <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End ตำบล/แขวง-->
+
+                    <!--บ้านเลขที่-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1No')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="20" id="oetSplAddHomeNo" name="oetSplAddHomeNo"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1No')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1No ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End บ้านเลขที่-->
+
+                    <!--หมู่บ้าน-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Village')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="20" id="oetSplAddvillage" name="oetSplAddvillage"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Village')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1Village ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End หมู่บ้าน-->
+
+                    <!--ถนน-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Road')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="20" id="oetSplAddRoad" name="oetSplAddRoad"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Road')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1Road ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End ถนน-->
+
+                    <!--ซอย-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Soi')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control"
+                                    maxlength="20" id="oetSplAddAlley" name="oetSplAddAlley"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Soi')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1Soi ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End ซอย-->
+
+                    <!--รหัสไปรษณีย์-->
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div  class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1PostCode')?></label>
+                                <div class="form-group">
+                                    <input type="text"
+                                    class="form-control xCNInputNumericWithDecimal"
+                                    maxlength="5" id="oetSplAddZipCode" name="oetSplAddZipCode"
+                                    placeholder="<?php echo language('supplier/supplier/supplier','tAddV1PostCode')?>"
+                                    autocomplete="off"
+                                    data-is-created=""
+                                    value="<?php echo $tFTAddV1PostCode ; ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End รหัสไปรษณีย์-->
+
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div  class="form-group">
@@ -967,7 +1311,7 @@ if($nStaAddOrEdit==1){
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            <!-- <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div  class="form-group">
                                         <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV2Desc1')?></label>
@@ -986,7 +1330,179 @@ if($nStaAddOrEdit==1){
                                         </div>
                                     </div>
                                 </div>
+                            </div> -->
+
+                            <!--ประเทศ-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div  class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddCountry')?></label>
+                                        <div class="form-group">
+                                            <input type="text"
+                                            class="form-control"
+                                            maxlength="100" id="oetSplAddCountry" name="oetSplAddCountry"
+                                            placeholder="<?php echo language('supplier/supplier/supplier','tAddCountry')?>"
+                                            autocomplete="off"
+                                            data-is-created=""
+                                            value="<?php echo $tFTAddCountry ; ?>">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <!--End ประเทศ-->
+
+                            <!--จังหวัด-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1PvnCode')?></label>
+                                        <div class="input-group">
+                                            <input class="form-control xCNHide" id="oetAddPvnCode" name="oetAddPvnCode" maxlength="5" onchange="JSxResetVal('oetAddPvnCode','<?php echo $tFTAddV1PvnCode ; ?>',3)" value="<?php echo $tFTAddV1PvnCode; ?>"> <!--value="<?php if(@$nCnfAddVersion == '1'){ echo @$aCnfAddPanal[0]->FTAddV1PvnCode; } ?>" -->
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetAddPvnName" name="oetAddPvnName" value="<?php echo $tFTPvnName; ?>" readonly>
+                                            <span class="input-group-btn">
+                                                <button id="obtSplBrowseProvince" type="button" class="btn xCNBtnBrowseAddOn">
+                                                    <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End จังหวัด-->
+
+                            <!--อำเภอ/เขต-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1DstCode')?></label>
+                                        <div class="input-group">
+                                            <input class="form-control xCNHide" id="oetAddDstCode" name="oetAddDstCode" maxlength="5" onchange="JSxResetVal('oetAddDstCode','<?php echo $tFTAddV1DstCode ; ?>',4)" value="<?php echo $tFTAddV1DstCode ;?>">
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetAddDstName" name="oetAddDstName" value="<?php echo $tFTDstName ?>" readonly>
+                                            <span class="input-group-btn">
+                                                <button id="obtSplBrowseDistrict" type="button" class="btn xCNBtnBrowseAddOn">
+                                                    <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End อำเภอ/เขต-->
+
+                            <!--ตำบล/แขวง-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo  language('company/branch/branch','tAddV1SubDist')?></label>
+                                        <div class="input-group">
+                                            <input class="form-control xCNHide" id="oetAddSubDistCode" name="oetAddSubDistCode" maxlength="5" value="<?php echo $tFTAddV1SubDist ;?>">
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetAddSubDistName" name="oetAddSubDistName" value="<?php echo $tFTSudName ; ?>" readonly>
+                                            <span class="input-group-btn">
+                                                <button id="obtSplBrowseSubDistrict" type="button" class="btn xCNBtnBrowseAddOn">
+                                                    <img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End ตำบล/แขวง-->
+
+                            <!--บ้านเลขที่-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div  class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1No')?></label>
+                                        <div class="form-group">
+                                            <input type="text"
+                                            class="form-control"
+                                            maxlength="20" id="oetSplAddHomeNo" name="oetSplAddHomeNo"
+                                            placeholder="<?php echo language('supplier/supplier/supplier','tAddV1No')?>"
+                                            autocomplete="off"
+                                            data-is-created=""
+                                            value="<?php echo $tFTAddV1No ; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End บ้านเลขที่-->
+
+                            <!--หมู่บ้าน-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div  class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Village')?></label>
+                                        <div class="form-group">
+                                            <input type="text"
+                                            class="form-control"
+                                            maxlength="20" id="oetSplAddvillage" name="oetSplAddvillage"
+                                            placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Village')?>"
+                                            autocomplete="off"
+                                            data-is-created=""
+                                            value="<?php echo $tFTAddV1Village ; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End หมู่บ้าน-->
+
+                            <!--ถนน-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div  class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Road')?></label>
+                                        <div class="form-group">
+                                            <input type="text"
+                                            class="form-control"
+                                            maxlength="20" id="oetSplAddRoad" name="oetSplAddRoad"
+                                            placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Road')?>"
+                                            autocomplete="off"
+                                            data-is-created=""
+                                            value="<?php echo $tFTAddV1Road ; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End ถนน-->
+
+                            <!--ซอย-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div  class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1Soi')?></label>
+                                        <div class="form-group">
+                                            <input type="text"
+                                            class="form-control"
+                                            maxlength="20" id="oetSplAddAlley" name="oetSplAddAlley"
+                                            placeholder="<?php echo language('supplier/supplier/supplier','tAddV1Soi')?>"
+                                            autocomplete="off"
+                                            data-is-created=""
+                                            value="<?php echo $tFTAddV1Soi ; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End ซอย-->
+
+                            <!--รหัสไปรษณีย์-->
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <div  class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tAddV1PostCode')?></label>
+                                        <div class="form-group">
+                                            <input type="text"
+                                            class="form-control xCNInputNumericWithDecimal"
+                                            maxlength="5" id="oetSplAddZipCode" name="oetSplAddZipCode"
+                                            placeholder="<?php echo language('supplier/supplier/supplier','tAddV1PostCode')?>"
+                                            autocomplete="off"
+                                            data-is-created=""
+                                            value="<?php echo $tFTAddV1PostCode ; ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--End รหัสไปรษณีย์-->
+
                             <div class="row">
                                 <div class="col-md-12 col-sm-12">
                                     <div  class="form-group">

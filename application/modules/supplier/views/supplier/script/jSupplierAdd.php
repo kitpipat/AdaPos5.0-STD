@@ -126,7 +126,36 @@
         }    
     }
 
+//Functionality : Event Check Voucher
+//Parameters : Event Blur Input Voucher Code
+//Creator : 25/03/2019 wasin (Yoshi)
+//Return : -
+//Return Type : -
+function JSxSPLBranch(){
+    var tSplCode = $("#oetSplCode").val();
+    var tSplName = $("#oetSplName").val();
+    var tBchCode = '';
+    var tBchName = '';
+    $.ajax({
+                type: "POST",
+                url: "supplierBranch",
+                data: { 
+                        tSplCode:tSplCode,
+                        tSplName:tSplName,
+                        tBchCode:tBchCode,
+                        tBchName:tBchName,
+                        },
+                cache: false,
+                timeout: 0,
+                success: function(tResult){
+                    $('#odvSPLBranch').html(tResult);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
 
+ }
 
 
 
