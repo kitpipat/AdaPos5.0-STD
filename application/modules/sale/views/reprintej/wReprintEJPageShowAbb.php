@@ -10,7 +10,23 @@
     <div class="row p-b-20">
         <?php foreach($aDataListEJ['raItems'] AS $nKey => $aValueEJ):?>
             <?php if($aDataListEJ['rnAllRow'] > 1):?>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <!-- ค้นหาแล้วเจอ -->
+
+                <?php 
+                    switch ($nDocSize) {
+                        case '827':
+                            $tDocType        = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
+                            break;
+                        case '280':
+                            $tDocType        = "col-xs-12 col-sm-6 col-md-6 col-lg-6";
+                            break;                        
+                        default:
+                            $tDocType        = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
+                            break;
+                    }
+                ?>
+                
+                <div class="<?php echo $tDocType;?>">
                     <div class="xWEJBoxFilter">
                         <label class="xCNLabelFrm xWEJLabelFilter"><?php echo @$aValueEJ['FTXshDocNo'];?></label>
                         <div class="form-group text-center">
@@ -31,6 +47,7 @@
                     </div>
                 </div>
             <?php else:?>
+                <!-- ค้นหาแล้วไม่เจอ -->
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div class="xWEJBoxFilter">
                         <label class="xCNLabelFrm xWEJLabelFilter"><?php echo @$aValueEJ['FTXshDocNo'];?></label>

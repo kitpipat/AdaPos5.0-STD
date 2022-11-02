@@ -28,13 +28,13 @@ $lang['tEJDocumentTypeXBNK']        = "Form Bank note";
 $lang['tEJSlipBrowseTitle']         = "Summary tax invoice";
 $lang['tEJSlipBrowseBranch']        = "Branch";
 $lang['tEJSlipBrowseShop']          = "Shop";
-$lang['tEJSlipBrowsePos']          = "Pos";
+$lang['tEJSlipBrowsePos']           = "Pos";
 $lang['tEJSlipBrowseType']          = "Type";
-$lang['tEJSlipBrowseType1']          = "บิลขาย";
-$lang['tEJSlipBrowseType2']          = "บิลคืน";
-$lang['tEJSlipBrowseDateSale']          = "Sale Date";
-$lang['tEJSlipBrowseNo']          = "No";
-$lang['tEJSlipBrowseUsr']          = "cashier";
+$lang['tEJSlipBrowseType1']         = "บิลขาย";
+$lang['tEJSlipBrowseType2']         = "บิลคืน";
+$lang['tEJSlipBrowseDateSale']      = "Sale Date";
+$lang['tEJSlipBrowseNo']            = "No";
+$lang['tEJSlipBrowseUsr']           = "cashier";
 $lang['tEJSlipBrowseDocumentNo']    = "Document No";
 $lang['tEJSlipBrowseDocumentDate']  = "Document Date";
 $lang['tEJSlipBrowseShfCode']       = "Sales cycle code";
@@ -42,3 +42,6 @@ $lang['tRPEJRefreshView']           = "RefreshView";
 $lang['tRPEJFilterSerch']           = "Search";
 // Viewer EJ
 $lang['tEJNotFoundData']            = "ABB Slip Not Found.";
+
+$lang['tEJA4Size']                  = "A4";
+$lang['tEJThermalSize']             = "Thermal";

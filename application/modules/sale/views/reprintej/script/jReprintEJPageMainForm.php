@@ -134,7 +134,7 @@
         $('#obtEJBrowseBranch').attr('disabled',true);
     }
     if(tUsrLevel != "HQ"){
-        tWhere = " AND TCNMBranch.FTBchCode IN ("+tBchCodeMulti+") ";
+        tWhere = " AND TCNMBranch.FTBchCode IN ('"+tBchCodeMulti+"') ";
     }else{
         tWhere = "";
     }
@@ -233,17 +233,19 @@
             var tInputReturnName    = poReturnInput.tReturnInputName;
             var tBranchCode         = poReturnInput.tBranchCode;
             var tShopCode           = poReturnInput.tShopCode;
+            var nDocSize            = $('#ocmEjDocumentSize').val();
             var tWhereBranch        = '';
             var tWhereShop          = '';
             var tWhereDocDate       = '';
             var tWhereDocType       = '';
 
-            var dEJDocDateFrom   = $('#oetEJDocDateFrom').val();
-            var dEJDocDateTo   = $('#oetEJDocDateTo').val();
-            var tEjDocumentType   = $('#ocmEjDocumentType').val();
+            var dEJDocDateFrom      = $('#oetEJDocDateFrom').val();
+            var dEJDocDateTo        = $('#oetEJDocDateTo').val();
+            var tEjDocumentType     = $('#ocmEjDocumentType').val();
             if(typeof tBranchCode !== 'undefined' && tBranchCode != ''){
                 tWhereBranch    = " AND (TPSTSlipEJ.FTBchCode = '"+tBranchCode+"')";
             }
+            
             if(typeof tShopCode !== 'undefined' && tShopCode != ''){
                 tWhereShop      = " AND (TPSTSlipEJ.FTShpCode = '"+tShopCode+"')";
             }
@@ -261,6 +263,11 @@
                     tWhereDocType += " AND LEFT(TPSTSlipEJ.FTXshDocNo,3) <> 'RCV' ";
                 }
             }
+
+            if(typeof nDocSize !== 'undefined' && nDocSize != ''){
+                tWhereDocSize    = " AND (TPSTSlipEJ.FNJnlPicWidth = '"+nDocSize+"')";
+            }
+
             var oOptionReturn       = {
                 Title: ['sale/reprintej/reprintej','tEJSlipBrowseTitle'],
                 Table: {Master:'TPSTSlipEJ', PK:'FTXshDocNo'},
@@ -281,7 +288,7 @@
                     ]
                 },
                 Where :{
-                    Condition : [tWhereBranch+tWhereShop+tWhereDocDate+tWhereDocType]
+                    Condition : [tWhereBranch+tWhereShop+tWhereDocDate+tWhereDocType+tWhereDocSize]
                 },
                 GrideView:{
                     ColumnPathLang	: 'sale/reprintej/reprintej',
@@ -366,9 +373,9 @@
             var tWhereDocDate       = '';
             var tWhereDocType       = '';
 
-            var dEJDocDateFrom   = $('#oetEJDocDateFrom').val();
-            var dEJDocDateTo   = $('#oetEJDocDateTo').val();
-            var tEjDocumentType   = $('#ocmEjDocumentType').val();
+            var dEJDocDateFrom      = $('#oetEJDocDateFrom').val();
+            var dEJDocDateTo        = $('#oetEJDocDateTo').val();
+            var tEjDocumentType     = $('#ocmEjDocumentType').val();
             if(typeof tBranchCode !== 'undefined' && tBranchCode != ''){
                 tWhereBranch    = " AND (TPSTSlipEJ.FTBchCode = '"+tBranchCode+"')";
             }

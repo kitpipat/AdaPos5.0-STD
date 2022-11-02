@@ -48,10 +48,28 @@ class cReprintEJ extends MX_Controller {
         }else{
             $nPage  = $nPageCurrent;
         }
+
+        $nDataRow = 0;
+        if (!empty($aDataFilterEJ['ocmEjDocumentSize']) && $aDataFilterEJ['ocmEjDocumentSize'] != '') {
+            switch ($aDataFilterEJ['ocmEjDocumentSize']) {
+                //A4
+                case '827':
+                    $nDataRow = 1;
+                    break;
+                //Thermal
+                case '280':
+                    $nDataRow = 2;
+                    break;
+                default:
+                    $nDataRow = 1;
+                    break;
+            }
+        }
+
         $nLangEdit      = $this->session->userdata("tLangEdit");
         $aDataWhere = [
             'nPage'         => $nPage,
-            'nRow'          => 2,
+            'nRow'          => $nDataRow,
             'nLangEdit'     => $nLangEdit,
             'aDataFilterEJ' => $aDataFilterEJ
         ];
@@ -59,6 +77,7 @@ class cReprintEJ extends MX_Controller {
         $aDataConfigVuew    = [
             'aDataListEJ'   => $aDataListEJ,
             'nPage'         => $nPage,
+            'nDocSize'      => $aDataFilterEJ['ocmEjDocumentSize']
         ];
         $this->load->view('sale/reprintej/wReprintEJPageShowAbb',$aDataConfigVuew);
     }

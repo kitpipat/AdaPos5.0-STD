@@ -53,8 +53,6 @@ class mReprintEJ extends CI_Model {
             $tWhereEJDocNoBetween   = " AND ((EJ.FTXshDocNo BETWEEN '$tDocNoFrom' AND '$tDocNoTo') OR (EJ.FTXshDocNo BETWEEN '$tDocNoTo' AND '$tDocNoFrom'))";
         }
 
-
-
         $tEjDocumentType   = $aDataFilterEJ['ocmEjDocumentType'];
         $tWhereEJDocType = "";
         if(isset($tEjDocumentType) && !empty($tEjDocumentType)){
@@ -65,6 +63,12 @@ class mReprintEJ extends CI_Model {
             if($tEjDocumentType=='R'){
                 $tWhereEJDocType .= " AND LEFT(EJ.FTXshDocNo,3) <> 'RCV' ";
             }
+        }
+
+        $tEjDocumentSize   = $aDataFilterEJ['ocmEjDocumentSize'];
+        $tWhereEJDocSize = "";
+        if(isset($tEjDocumentSize) && !empty($tEjDocumentSize)){
+            $tWhereEJDocSize = " AND EJ.FNJnlPicWidth = '$tEjDocumentSize' ";
         }
 
         $tSQL           = " SELECT c.* FROM (
@@ -83,10 +87,11 @@ class mReprintEJ extends CI_Model {
                                     ".$tWhereEJDocNoSingle."
                                     ".$tWhereEJDocNoBetween."
                                     ".$tWhereEJDocType."
+                                    ".$tWhereEJDocSize."
                             ) Base ) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1]
         ";
+        
         $oQuery = $this->db->query($tSQL);
-
 
         if($oQuery->num_rows() > 0) {
             $aDataList      = $oQuery->result_array();
@@ -125,6 +130,7 @@ class mReprintEJ extends CI_Model {
         unset($tDocNoTo);
         unset($tWhereEJDocNoBetween);
         unset($tWhereEJDocType);
+        unset($tWhereEJDocSize);
         unset($tSQL);
         unset($oQuery);
         unset($aDataList);
@@ -181,7 +187,6 @@ class mReprintEJ extends CI_Model {
             $tWhereEJDocNoBetween   = " AND ((EJ.FTXshDocNo BETWEEN '$tDocNoFrom' AND '$tDocNoTo') OR (EJ.FTXshDocNo BETWEEN '$tDocNoTo' AND '$tDocNoFrom'))";
         }
 
-
         $tEjDocumentType   = $aDataFilterEJ['ocmEjDocumentType'];
         $tWhereEJDocType = "";
         if(isset($tEjDocumentType) && !empty($tEjDocumentType)){
@@ -194,6 +199,11 @@ class mReprintEJ extends CI_Model {
             }
         }
 
+        $tEjDocumentSize   = $aDataFilterEJ['ocmEjDocumentSize'];
+        $tWhereEJDocSize = "";
+        if(isset($tEjDocumentSize) && !empty($tEjDocumentSize)){
+            $tWhereEJDocSize = " AND EJ.FNJnlPicWidth = '$tEjDocumentSize' ";
+        }
 
         $tSQL    = "    SELECT
                             COUNT(EJ.FTBchCode) AS FTCountDataAll
@@ -205,7 +215,9 @@ class mReprintEJ extends CI_Model {
                         ".$tWhereEJDocNoSingle."
                         ".$tWhereEJDocNoBetween."
                         ".$tWhereEJDocType."
+                        ".$tWhereEJDocSize."
         ";
+        
         $oQuery = $this->db->query($tSQL);
         unset($aDataFilterEJ);
         unset($tBranchCode);
@@ -221,6 +233,7 @@ class mReprintEJ extends CI_Model {
         unset($tDocNoTo);
         unset($tWhereEJDocNoBetween);
         unset($tWhereEJDocType);
+        unset($tWhereEJDocSize);
         unset($tSQL);
         return $oQuery->row_array()['FTCountDataAll'];
     }
@@ -273,7 +286,7 @@ class mReprintEJ extends CI_Model {
             $tWhereEJDocNoBetween   = " AND ((EJ.FTXshDocNo BETWEEN '$tDocNoFrom' AND '$tDocNoTo') OR (EJ.FTXshDocNo BETWEEN '$tDocNoTo' AND '$tDocNoFrom'))";
         }
 
-        $tEjDocumentType   = $aDataFilterEJ['ocmEjDocumentType'];
+        $tEjDocumentType   = $paDataFilterEJ['ocmEjDocumentType'];
         $tWhereEJDocType = "";
         if(isset($tEjDocumentType) && !empty($tEjDocumentType)){
             $tWhereEJDocType = " AND EJ.FTXshDocNo LIKE '$tEjDocumentType%' ";
@@ -283,6 +296,12 @@ class mReprintEJ extends CI_Model {
             if($tEjDocumentType=='R'){
                 $tWhereEJDocType .= " AND LEFT(EJ.FTXshDocNo,3) <> 'RCV' ";
             }
+        }
+
+        $tEjDocumentSize   = $paDataFilterEJ['ocmEjDocumentSize'];
+        $tWhereEJDocSize = "";
+        if(isset($tEjDocumentSize) && !empty($tEjDocumentSize)){
+            $tWhereEJDocSize = " AND EJ.FNJnlPicWidth = '$tEjDocumentSize' ";
         }
 
         $tSQL   = " SELECT DISTINCT
@@ -299,8 +318,9 @@ class mReprintEJ extends CI_Model {
                     ".$tWhereEJDocNoSingle."
                     ".$tWhereEJDocNoBetween."
                     ".$tWhereEJDocType."
+                    ".$tWhereEJDocSize."
         ";
-
+        
         $oQuery = $this->db->query($tSQL);
         if($oQuery->num_rows() > 0) {
             $aDataList  = $oQuery->result_array();
@@ -322,6 +342,7 @@ class mReprintEJ extends CI_Model {
         unset($tDocNoTo);
         unset($tWhereEJDocNoBetween);
         unset($tWhereEJDocType);
+        unset($tWhereEJDocSize);
         unset($tSQL);
         unset($oQuery);
         return $aDataList;
@@ -374,7 +395,7 @@ class mReprintEJ extends CI_Model {
             $tWhereEJDocNoBetween   = " AND ((EJ.FTXshDocNo BETWEEN '$tDocNoFrom' AND '$tDocNoTo') OR (EJ.FTXshDocNo BETWEEN '$tDocNoTo' AND '$tDocNoFrom'))";
         }
 
-        $tEjDocumentType   = $aDataFilterEJ['ocmEjDocumentType'];
+        $tEjDocumentType   = $paDataFilterEJ['ocmEjDocumentType'];
         $tWhereEJDocType = "";
         if(isset($tEjDocumentType) && !empty($tEjDocumentType)){
             $tWhereEJDocType = " AND EJ.FTXshDocNo LIKE '$tEjDocumentType%' ";
@@ -384,6 +405,12 @@ class mReprintEJ extends CI_Model {
             if($tEjDocumentType=='R'){
                 $tWhereEJDocType .= " AND LEFT(EJ.FTXshDocNo,3) <> 'RCV' ";
             }
+        }
+
+        $tEjDocumentSize   = $paDataFilterEJ['ocmEjDocumentSize'];
+        $tWhereEJDocSize = "";
+        if(isset($tEjDocumentSize) && !empty($tEjDocumentSize)){
+            $tWhereEJDocSize = " AND EJ.FNJnlPicWidth = '$tEjDocumentSize' ";
         }
 
         $tSQL   = " UPDATE SLEJ_UPD
@@ -402,6 +429,7 @@ class mReprintEJ extends CI_Model {
                         ".$tWhereEJDocNoSingle."
                         ".$tWhereEJDocNoBetween."
                         ".$tWhereEJDocType."
+                        ".$tWhereEJDocSize."
                     ) AS SLEJ_SLT 
                     ON SLEJ_UPD.FTBchCode = SLEJ_SLT.FTBchCode AND SLEJ_UPD.FTXshDocNo = SLEJ_SLT.FTXshDocNo
         ";
@@ -416,6 +444,4 @@ class mReprintEJ extends CI_Model {
             return 1;
         }
     }
-
-
 }

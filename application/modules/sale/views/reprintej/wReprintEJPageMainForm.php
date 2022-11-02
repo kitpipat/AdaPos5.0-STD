@@ -144,6 +144,7 @@
                         <div id="odvEJFilterDocumentNo" class="row">
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                 <div class="xWEJBoxFilter">
+                                    <!-- ประเภทเอกสาร -->
                                     <label class="xCNLabelFrm xWEJLabelFilter"><?php echo language('sale/reprintej/reprintej','tEJFilterDocumentType');?></label>
                                     <div class="form-group">
                                         <select class="form-control selectpicker" id="ocmEjDocumentType" name="ocmEjDocumentType">
@@ -153,6 +154,15 @@
                                             <option value="SUM"><?php echo language('sale/reprintej/reprintej','tEJDocumentTypeXRoundOff');?></option>
                                             <option value="R"><?php echo language('sale/reprintej/reprintej','tEJDocumentTypeXRecive');?></option>
                                             <option value="BNK"><?php echo language('sale/reprintej/reprintej','tEJDocumentTypeXBNK');?></option>
+                                        </select>
+                                    </div>
+
+                                     <!-- ขนาดเอกสาร -->
+                                     <label class="xCNLabelFrm xWEJLabelFilter"><?php echo language('sale/reprintej/reprintej','tEJFilterDocumentType');?></label>
+                                    <div class="form-group">
+                                        <select class="form-control selectpicker" id="ocmEjDocumentSize" name="ocmEjDocumentSize">
+                                            <option value="827" selected><?php echo language('sale/reprintej/reprintej','tEJA4Size');?></option>
+                                            <option value="280"><?php echo language('sale/reprintej/reprintej','tEJThermalSize');?></option>
                                         </select>
                                     </div>
                                 </div>
@@ -176,6 +186,7 @@
                                                 class='form-control xWPointerEventNone'
                                                 id='oetEJSlipName'
                                                 name='oetEJSlipName'
+                                                placeholder=<?php echo language('sale/reprintej/reprintej','tEJSlipBrowseTitle');?>
                                                 readonly
                                             >
                                             <span class='input-group-btn'>
