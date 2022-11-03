@@ -22,6 +22,20 @@ $route['productEventDelete']           = 'product/product/cProduct/FSoCPDTDelete
 $route['productGetDataBarCode']        = 'product/product/cProduct/FSoCPDTBarCodeDataTable';
 $route['productUpdateBarCode']         = 'product/product/cProduct/FSoCPDTUpdateBarCode';
 $route['productDeleteBarCode']         = 'product/product/cProduct/FSoCPDTDeleteBarCode';
+$route['productGetNormalUnit']         = 'product/product/cProduct/FSoCPDTNormalDataTable';
+$route['productGetNormalBarCodeUnit']  = 'product/product/cProduct/FSoCPDTNormalBarCodeDataTable';
+$route['productGetNormalVendor']       = 'product/product/cProduct/FSoCPDTNormalVendorDataTable';
+$route['productAddPackSizeUnitTmp']    = 'product/product/cProduct/FSoCPDTPackSizeAddToTmp';
+$route['productDelPackSizeUnitTmp']    = 'product/product/cProduct/FSoCPDTPackSizeDeleteTmp';
+$route['productAddPackSizeBarCodeTmp'] = 'product/product/cProduct/FSoCPDTBarCodeAddToTmp';
+$route['productDelBarCodeUnitTmp']     = 'product/product/cProduct/FSoCPDTBarCodeDeleteTmp';
+$route['productAddPackSizeSuplierTmp'] = 'product/product/cProduct/FSoCPDTSupplierAddToTmp';
+$route['productDelSuplierUnitTmp']     = 'product/product/cProduct/FSoCPDTSupplierDeleteTmp';
+$route['productPrictPageDataTable']    = "product/product/cProduct/FSxCPDTGetPrictListPage"; 
+
+
+
+
 
 //Product Set
 $route['productSetDataTable']          = 'product/product/cProduct/FSaCPDTSETCallDataTable';
@@ -32,6 +46,15 @@ $route['productSetEventDelete']        = 'product/product/cProduct/FSaCPDTSETEve
 $route['productSetUpdStaSetPri']       = 'product/product/cProduct/FSaCPDTSETUpdateStaSetPri';
 $route['productSetUpdStaSetShwDT']     = 'product/product/cProduct/FSaCPDTSETUpdateStaSetShwDT';
 $route['productSetUpdPdtStaSetPrcStk'] = 'product/product/cProduct/FSxCPDTSETUpdatePdtStaSetPrcStk';
+
+//Product Service
+$route['productSVCallPageAdd']          = 'product/product/cProduct/FSaCPDTSVCallPageAdd';
+$route['productSVEventAdd']             = 'product/product/cProduct/FSaCPDTSVEventAdd';
+$route['productSetSVCallPageEdit']      = 'product/product/cProduct/FSaCPDTSETSVCallPageEdit';
+$route['productSVDataTable']            = 'product/product/cProduct/FSaCPDTSVCallDataTable';
+$route['productSVEventDelete']          = 'product/product/cProduct/FSaCPDTSVEventDelete';
+$route['productSVGetDetauil']           = 'product/product/cProduct/FSaCPDTSVGetDetail';
+
 
 // Product Modal Price Route
 $route['productCallModalPriceList']    = 'product/phpprice/cPdtPrice/FSvCallPdtPriceList';
@@ -188,7 +211,7 @@ $route['pdtTouchGroupEventDelete']     = 'product/pdttouchgroup/cPdtTouchGroup/F
 $route['pdtDrugPageAdd/(:any)/(:any)'] = 'product/pdtdrug/cPdtDrug/FSvCDrugPageAdd/$1/$2';
 $route['pdtDrugEventAdd']              = 'product/pdtdrug/cPdtDrug/FSaCDrugAddEvent';
 
-//กำหนดเงื่อนไขการควบคุมสต๊อก
+//กำหนดเงื่อนไขการควบคุมสต็อค
 $route['pdtEventPageStockConditionsList']  = 'product/product/cProduct/FSvCPDTCallPageStockConditions';
 $route['pdtEventPageStockConditionsEdit']  = 'product/product/cProduct/FSvCPDTCStockConditionsGetDataById';
 $route['pdtEventAddStockConditions']       = 'product/product/cProduct/FSaCPDTStockConditionsEventAdd';
@@ -221,19 +244,28 @@ $route ['pdtFashionUpdateBarCode']           = 'product/product/Pdtfashion_contr
 $route ['pdtFashionDeleteBarCode']           = 'product/product/Pdtfashion_controller/FSvCPFHBarCodeDelte';
 $route ['pdtFashionCheckModelNo']            = 'product/product/Pdtfashion_controller/FSvCPFHCheckModelNo';
 
-
+//Carinfo
+$route ['masCAIView/(:any)/(:any)/(:any)']   = 'product/carinfo/Carinfo_controller/index/$1/$2/$3';
+$route ['carinfoList']                       = 'product/carinfo/Carinfo_controller/FSvCCAIListPage';
+$route ['carinfoDataTable']                  = 'product/carinfo/Carinfo_controller/FSvCCAIDataList';
+$route ['carinfoPageAdd']                    = 'product/carinfo/Carinfo_controller/FSvCCAIAddPage';
+$route ['carinfoEventAdd']                   = 'product/carinfo/Carinfo_controller/FSaCCAIAddEvent';
+$route ['carinfoPageEdit']                   = 'product/carinfo/Carinfo_controller/FSvCCAIEditPage';
+$route ['carinfoEventEdit']                  = 'product/carinfo/Carinfo_controller/FSaCCAIEditEvent';
+$route ['carinfoEventDelete']                = 'product/carinfo/Carinfo_controller/FSaCCAIDeleteEvent';
 
 //Adjust Prodcut (ปรับปรุงสินค้า)
-$route ['adjustProduct']                     = 'product/adjustproduct/Adjustproduct_controller/index';
-$route ['adjustProductPageFrom']             = 'product/adjustproduct/Adjustproduct_controller/FSvCAJPPageFrom';
-$route ['adjustProductDumpDataToTemp']       = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPDumpDataToTemp';
-$route ['adjustProductDataTable']            = 'product/adjustproduct/Adjustproduct_controller/FSvCAJPDataTable';
-$route ['adjustProductEventEditRowIDInTemp'] = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPEventEditRowIDInTemp';
-$route ['adjustProductEventUpdate']          = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPEventUpdate';
-$route ['adjustProductExportData']           = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPExportData';
-$route ['adjustProductExportDataFhn']        = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPExportDataFhn';
+$route ['adjustProduct']                        = 'product/adjustproduct/Adjustproduct_controller/index';
+$route ['adjustProductPageFrom']                = 'product/adjustproduct/Adjustproduct_controller/FSvCAJPPageFrom';
+$route ['adjustProductDumpDataToTemp']          = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPDumpDataToTemp';
+$route ['adjustProductDataTable']               = 'product/adjustproduct/Adjustproduct_controller/FSvCAJPDataTable';
+$route ['adjustProductEventEditRowIDInTemp']    = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPEventEditRowIDInTemp';
+$route ['adjustProductEventUpdate']             = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPEventUpdate';
+$route ['adjustProductExportData']              = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPExportData';
+$route ['adjustProductExportDataFhn']           = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPExportDataFhn';
+$route ['adjustProductEventEditRowAllInTemp']   = 'product/adjustproduct/Adjustproduct_controller/FSaCAJPEventEditRowAllInTemp';
 
-//หมวดหมุ่สินค้า 1 - 5
+//หน่วยสินค้า
 $route['masPdtcat/(:any)/(:any)/(:any)']    = 'product/pdtcat/Pdtcat_controller/index/$1/$2/$3';
 $route['masPdtCat/(:any)/(:any)/(:any)']    = 'product/pdtcat/Pdtcat_controller/index/$1/$2/$3';
 $route['masPdtCatList']                     = 'product/pdtcat/Pdtcat_controller/FSvCCATListPage';
@@ -244,6 +276,11 @@ $route['masPdtCatEventAdd']                 = 'product/pdtcat/Pdtcat_controller/
 $route['masPdtCatEventEdit']                = 'product/pdtcat/Pdtcat_controller/FSoCCATEditEvent';
 $route['masPdtCatEventDelete']              = 'product/pdtcat/Pdtcat_controller/FSoCCATDeleteEvent'; 
 
+// Product Lot (สินค้าประเภทควบคุมLOT/BATCH)
+$route['productLotsMain']                    = 'product/product/cProduct/FSaCPDTStockLotObject';
+$route['productAddStockLot']                 = 'product/product/cProduct/FSaCPDTStockLotEventAddEdit';
+$route['productEventPageStockLotEdit']       = 'product/product/cProduct/FSaCPDTStockLotEventByid';
+$route['productDeletStockLot']               = 'product/product/cProduct/FSaCPDTStockLotDeleteEvent';
 
 // Category Tab
 $route ['pdtCategoryPageFrom']                = 'product/product/Pdtcategory_controller/FSvCCGYPageFrom';

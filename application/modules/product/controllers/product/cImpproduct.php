@@ -1,15 +1,11 @@
 <?php 
 defined ( 'BASEPATH' ) or exit ( 'No direct script access allowed' );
-include APPPATH . 'third_party/PHPExcel/Classes/PHPExcel.php';
-include APPPATH . 'third_party/PHPExcel/Classes/PHPExcel/IOFactory.php';
-include APPPATH . 'third_party/PHPExcel/Classes/PHPExcel/Writer/Excel2007.php';
 
 class cImpproduct extends MX_Controller {
 
     public function __construct(){
         parent::__construct ();
         $this->load->model('product/product/mImpproduct');
-		$this->load->model('product/product/mProduct');
         date_default_timezone_set("Asia/Bangkok");
     }
 
@@ -222,173 +218,6 @@ class cImpproduct extends MX_Controller {
 	public function FSaCPDTImportGetItemAll(){
 		$aResult  = $this->mImpproduct->FSaMPDTGetTempDataAtAll($this->input->post('tTabName'));
 		echo json_encode($aResult);
-	}
-
-
-	public function FSxCPDTImportModifiFileWithError(){
-		try{
-			$tSesObjFileTmpImtPdt = $this->session->userdata("tSesObjFileTmpImtPdt");
-
-		
-			 $phpExcel = PHPExcel_IOFactory::load($tSesObjFileTmpImtPdt);
-			// Get the first sheet
-			 $sheet = $phpExcel ->getActiveSheet('Product');
-		
-			 $sheet ->setCellValue('M1','Remark');
-			 $sheet->getStyle('M1')->applyFromArray(
-				array(
-					'fill' => array(
-						'type' => PHPExcel_Style_Fill::FILL_SOLID,
-						'color' => array('rgb' => 'E1F8DB')
-					)
-				)
-			);
-			$styleArray = array(
-				'font'  => array(
-					'color' => array('rgb' => 'FF0000'),
-				));
-			$aData = array(
-			'tSessionID'	=> $this->session->userdata("tSesSessionID"),
-			'tTmpTableKey'	=> 'TCNMPdt',
-			);
-			$aReulst  =	$this->mImpproduct->FSaMPDTImportGetDataRmk($aData);
-
-			$nRow=1;
-			if($aReulst['rtCode']=='1'){
-				foreach($aReulst['raItems'] as $aValue){
-					$nRow++;
-					$sheet->setCellValue('M'.$nRow,$aValue['FTTmpRemark']);
-					$sheet->getStyle('M'.$nRow)->applyFromArray($styleArray);
-				}
-			}
-		
-			 $writer = PHPExcel_IOFactory::createWriter($phpExcel, "Excel2007");
-			 $writer->save($tSesObjFileTmpImtPdt);
-			 $aStatus = array(
-				'rtCode' => '1',
-				'rtDesc' => base_url($tSesObjFileTmpImtPdt)
-			);
-			echo json_encode($aStatus);
-		}catch (Exception $Error) {
-			$aStatus = array(
-				'rtCode' => '500',
-				'rtDesc' => $Error->getMessage()
-			);
-			echo json_encode($aStatus);
-		}
-	}
-
-
-	public function FSoCPDTImportExcelPhpProduct(){
-		try{
-
-			$this->session->set_userdata("tSesObjFileTmpImtPdt",'');
-
-			 $tPath = 'tmpimport/';
-			if ($oHandle = opendir($tPath)) {
-
-				while (false !== ($oFile = readdir($oHandle))) { 
-					$dFilelastmodified = filemtime($tPath . $oFile);
-					//24 hours in a day * 3600 seconds per hour
-					$dFilelastmodified = date('Y-m-d',$dFilelastmodified);
-					
-					if($dFilelastmodified < date('Y-m-d'))
-					{
-					@unlink($tPath . $oFile);
-					}
-
-				}
-
-				closedir($oHandle); 
-			}
-
-			$oFile = @$_FILES['oFile'];
-			if(!empty($oFile['tmp_name'])){
-				// $this->session->set_userdata("tSesObjFileTmpImtPdt", $oFile['tmp_name']);
-				$tTarget_dir = 'tmpimport/';
-				$tTarget_file = $tTarget_dir . basename($oFile["name"]);
-				$imageFileType = pathinfo($tTarget_file,PATHINFO_EXTENSION);
-				$tTarget_file = $tTarget_dir .'ImpPdt_'.$this->session->userdata("tSesSessionID").'_'.date("Ymd").'.'.$imageFileType;
-				if(move_uploaded_file($oFile["tmp_name"], $tTarget_file)){
-					$aStatus = array(
-						'rtCode' => '1',
-						'rtDesc' => 'Success'
-					);
-					$this->session->set_userdata("tSesObjFileTmpImtPdt", $tTarget_file);
-				}else{
-					$aStatus = array(
-						'rtCode' => '800',
-						'rtDesc' => 'Err'
-					);
-				}
-			}
-			
-			echo json_encode($aStatus);
-		}catch (Exception $Error) {
-			$this->session->set_userdata("tSesObjFileTmpImtPdt",'');
-            $aStatus = array(
-                'rtCode' => '500',
-                'rtDesc' => $Error->getMessage()
-            );
-            echo json_encode($aStatus);
-        }
-	}
-
-
-
-	//ตรวจสอบข้อมูลสินค้าซ้ำ
-	public function FSxCPDTImportReCheckDataDup(){
-		try{
-
-			$aPdtData = array(
-				'tAgnCode'      => $this->session->userdata("tSesUsrAgnCode"),
-			);
-			$aResultAlwBar = $this->mProduct->FSaMPDTGetConfigAlwBarCode($aPdtData);
-
-			if($aResultAlwBar['rtCode']=='1'){
-				$tStaAlwPdd = $aResultAlwBar['raItems']['FTCfgStaUsrValue'];
-			}else{
-				$tStaAlwPdd = '1';
-			}
-
-			if($tStaAlwPdd!='1' && $aPdtData['tAgnCode']!=''){ //กรณีไม่อนุญาติให้รหัสบาร์โค้ดซ้ำกันภายในร้าน AD
-
-				$aData = array(
-					'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
-					'tTmpTableKey'      => 'TCNMPdt',
-				);
-				$this->mImpproduct->FSaMPDTImportClearDup($aData);
-
-				// CheckBarcode ซ้ำกันใน File Upload เช็ค Barcode count > 1 mark flag type = 1 เหตุผล (ซ้ำภายใน file)
-				$aValidateData = array(
-					'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
-					'tFieldName'        => 'FTPdtCode',
-					'tTableCheck'       => 'TCNMPdtBar_Dup1'
-				);
-				FCNnMasTmpChkCodeDupInDBSpecial($aValidateData);
-
-
-				$aValidateData = array(
-					'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
-					'tFieldName'        => 'FTPdtCode',
-					'tTableCheck'       => 'TCNMPdtBar_Dup2',
-					'tAgnCode'          => $aPdtData['tAgnCode']
-				);
-				FCNnMasTmpChkCodeDupInDBSpecial($aValidateData);
-			}
-			$aStatus = array(
-				'rtCode' => '1',
-				'rtDesc' => 'success'
-			);
-			echo json_encode($aStatus);
-		}catch (Exception $Error) {
-			$aStatus = array(
-				'rtCode' => '500',
-				'rtDesc' => $Error->getMessage()
-			);
-			echo json_encode($aStatus);
-		}
-
 	}
 
 }

@@ -1,3 +1,8 @@
+<?php
+    //Decimal Show ลง 2 ตำแหน่ง
+    $nDecShow =  FCNxHGetOptionDecimalShow();
+?>
+
 <div class="text-right">
     <button id="obtPdtStockConditionsAdd" class="xCNBTNPrimeryPlus" style="margin-bottom:5px;" type="button" onclick="JSvPdtStockConditionsPageAdd()">+</button>
 </div>
@@ -9,6 +14,13 @@
             <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtStockConditionsWah')?></th>
             <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtStockConditionsMin')?></th>
             <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtStockConditionsMax')?></th>
+            <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtStockConditionsLeadTime')?></th>
+            <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtStockConditionsDailyUseAvg')?></th>
+            <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtStockConditionsPerSLA')?></th>
+            <!-- <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtQtySugges')?></th> -->
+            <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtStockConditionsPdtQtyOrdBuy')?></th>
+            <th nowrap="" class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product','tPdtStockConditionsLastUpdOn')?></th>
+
             <th nowrap="" class="text-center xCNTextBold" style="width:5%;"><?php echo language('product/product/product','tPdtStockConditionsDel')?></th>
             <th nowrap="" class="text-center xCNTextBold" style="width:5%;"><?php echo language('product/product/product','tPdtStockConditionsEdit')?></th>
                         
@@ -21,38 +33,45 @@
 
            <td class="text-left"><?php echo $aValue['FTBchName'];?></td>
            <td class="text-left"><?php echo $aValue['FTWahName'];?></td>
-           <td class="text-right"><?php echo $aValue['FCSpwQtyMin'];?></td>
-           <td class="text-right"><?php echo $aValue['FCSpwQtyMax'];?></td>
+           <td class="text-right"><?php echo number_format($aValue['FCSpwQtyMin'],$nDecShow);?></td>
+           <td class="text-right"><?php echo number_format($aValue['FCSpwQtyMax'],$nDecShow);?></td>
+           <td class="text-left"><?php echo number_format($aValue['FCPdtLeadTime'],0)." วัน";?></td>
+           <td class="text-right"><?php echo number_format($aValue['FCPdtDailyUseAvg'],$nDecShow);?></td>
+           <td class="text-right"><?php echo number_format($aValue['FCPdtPerSLA'],$nDecShow)."%";?></td>
+           <!-- <td class="text-right"><?php echo number_format($aValue['FCPdtQtySugges'],$nDecShow);?></td> -->
+           <td class="text-right"><?php echo number_format($aValue['FCPdtQtyOrdBuy'],$nDecShow);?></td>
+           <td class="text-center"><?php echo date_format(date_create($aValue['FDLastUpdOn']),'Y-m-d');?></td>
+
            <td class="text-center"><img class="xCNIconTable" src="<?= base_url().'/application/modules/common/assets/images/icons/delete.png'?>" onClick="JSoPdtStockConditionsDelete('<?php echo $aValue['FTPdtCode'];?>','<?php echo $aValue['FTBchCode'];?>','<?php echo $aValue['FTWahCode'];?>','<?php echo $aValue['FTBchName']; ?>');"></td>
            <td class="text-center"><img class="xCNIconTable" src="<?= base_url().'/application/modules/common/assets/images/icons/edit.png'?>" onClick="JSvPdtStockConditionsPageEdit('<?php echo $aValue['FTPdtCode'];?>','<?php echo $aValue['FTBchCode'];?>','<?php echo $aValue['FTWahCode'];?>')"></td>
 
         </tr>   
     <?php } ?>
     <?php else:?>
-        <tr><td class='text-center xCNTextDetail2' colspan='6'><?= language('common/main/main','tCMNNotFoundData')?></td></tr>
+        <tr><td class='text-center xCNTextDetail2' colspan='100%'><?= language('common/main/main','tCMNNotFoundData')?></td></tr>
     <?php endif;?>
 </tbody>
 </table>
 
 
 <div class="modal fade" id="odvModalStockConditions">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width: 30%;">
         <div class="modal-content">
             <div class="modal-header xCNModalHead">
                 <label class="xCNTextModalHeard"><?php echo language('product/product/product', 'tPdtStockConditions'); ?></label>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="max-height: 500px;overflow: auto;">
             <form class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" id="ofmAddStockConditions">
-            <input type="text" class="form-control xCNHide" id="oetStockConditionPdtCode" name="oetStockConditionPdtCode">
-            <input type="text" class="form-control xCNHide" id="oetStockConditionBchCodeOld" name="oetStockConditionBchCodeOld">
-            <input type="text" class="form-control xCNHide" id="oetStockConditionWahCodeOld" name="oetStockConditionWahCodeOld">
-            <input type="text" class="form-control xCNHide" id="oetStockConditionRoute" name="oetStockConditionRoute">
+                <input type="text" class="form-control xCNHide" id="oetStockConditionPdtCode" name="oetStockConditionPdtCode">
+                <input type="text" class="form-control xCNHide" id="oetStockConditionBchCodeOld" name="oetStockConditionBchCodeOld">
+                <input type="text" class="form-control xCNHide" id="oetStockConditionWahCodeOld" name="oetStockConditionWahCodeOld">
+                <input type="text" class="form-control xCNHide" id="oetStockConditionRoute" name="oetStockConditionRoute">
                 <div class="text-right">
                     <button type="button" class="btn" style="background-color: #D4D4D4; color: #000000;" data-dismiss="modal">
-                        <?php echo language('product/product/product', 'tPdtStockConditionsCancel')?>
+                        <?=language('product/product/product', 'tPdtStockConditionsCancel')?>
                     </button>
-                    <button type="submit" class="btn" style="background-color: rgb(23, 155, 253); color: white;"  onclick="JSvPdtStockConditionsEventAddEdit()"> 
-                        <?php echo  language('product/product/product', 'tPdtStockConditionsSave')?>
+                    <button type="submit" class="btn xCNBTNSubSave" onclick="JSvPdtStockConditionsEventAddEdit()"> 
+                        <?=language('product/product/product', 'tPdtStockConditionsSave')?>
                     </button>
                 </div>
 
@@ -89,37 +108,86 @@
                     <!-- end Berowse warehouse -->
                     
                     <!-- จำนวนต่ำสุด -->
-                    <div class="row">
-                        <div class="col-xs-4 col-md-4">
+                    <!-- <div class="row">
+                        <div class="col-xs-4 col-md-4"> -->
                             <div class="form-group">
                                 <label class="xCNLabelFrm"><span class="text-danger">*</span><?php echo language('product/product/product','tPdtStockConditionsMin')?></label>
-                                <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsMin" name="oetStockConditionsMin" maxlength="13" 
+                                <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsMin" name="oetStockConditionsMin" maxlength="10" 
                                 data-validate-required="<?php echo language('product/product/product','tPdtStockConditionsValidMin');?>"
+                                autocomplete="off"
                                 >
                             </div>
-                        </div>
-                    </div>
+                        <!-- </div>
+                    </div> -->
                     <!-- end จำนวนต่ำสุด -->
 
                     <!-- จำนวนสูงสุด -->
-                    <div class="row">
-                        <div class="col-xs-4 col-md-4">
+                    <!-- <div class="row">
+                        <div class="col-xs-4 col-md-4"> -->
                             <div class="form-group">
                                 <label class="xCNLabelFrm"><span class="text-danger">*</span><?php echo language('product/product/product','tPdtStockConditionsMax')?></label>
-                                <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsMax" name="oetStockConditionsMax" maxlength="13"
+                                <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsMax" name="oetStockConditionsMax" maxlength="10"
                                 data-validate-required="<?php echo language('product/product/product','tPdtStockConditionsValidMax');?>"
+                                autocomplete="off"
                                 >
                             </div>
-                        </div>
-                    </div>
+                        <!-- </div>
+                    </div> -->
                     <!-- end จำนวนสูงสุด -->
+
+                    <!-- ระยะเวลาในการรอสินค้า -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><span class="text-danger">*</span><?php echo language('product/product/product','tPdtStockConditionsLeadTime')?> (วัน)</label>
+                        <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsLeadTime" name="oetStockConditionsLeadTime" maxlength="3"
+                        data-validate-required="<?php echo language('product/product/product','tPdtStockConditionsValidLeadTime');?>"
+                        autocomplete="off"
+                        >
+                    </div>
+                    <!-- end ระยะเวลาในการรอสินค้า -->
+
+                    <!-- จำนวนขายเฉพาะต่อวัน -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product','tPdtStockConditionsDailyUseAvg')?></label>
+                        <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsDailyUseAvg" name="oetStockConditionsDailyUseAvg" maxlength="18" readonly>
+                    </div>
+                    <!-- end จำนวนขายเฉพาะต่อวัน -->
+
+                    <!-- % ระดับสินค้าปลอดภัย -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product','tPdtStockConditionsPerSLA')?></label>
+                        <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsPerSLA" name="oetStockConditionsPerSLA" maxlength="5" autocomplete="off">
+                    </div>
+                    <!-- end % ระดับสินค้าปลอดภัย -->
+
+                    <!-- จำนวนสั่งซื้อเหมาะสม -->
+                    <div class="form-group xCNHide">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product','tPdtQtySugges')?></label>
+                        <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetPdtQtySugges" name="oetPdtQtySugges" maxlength="18" autocomplete="off">
+                    </div>
+                    <!-- end จำนวนสั่งซื้อเหมาะสม -->
+
+                    <!-- จำนวนแนะนำสั่งซื้อ  -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product','tPdtStockConditionsPdtQtyOrdBuy')?></label>
+                        <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsPdtQtyOrdBuy" name="oetStockConditionsPdtQtyOrdBuy" maxlength="18" readonly>
+                    </div>
+                    <!-- end จำนวนแนะนำสั่งซื้อ  -->
+
+                    <!-- วันที่คำนวณล่าสุด  -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product','tPdtStockConditionsLastUpdOn')?></label>
+                        <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockConditionsLastUpdOn" name="oetStockConditionsLastUpdOn" maxlength="18" readonly>
+                    </div>
+                    <!-- end วันที่คำนวณล่าสุด  -->
+
                     
-                    <!-- เหตุผล -->
+                    
+                    <!-- หมายเหตุ -->
                     <div class="form-group">
                         <label class="xCNLabelFrm"><?php echo language('product/product/product','tPdtStockConditionsRemark')?></label>
-                        <textarea class="form-control" name="oetStockConditionsRemark" id="oetStockConditionsRemark" rows="3"></textarea>
+                        <textarea class="form-control" name="oetStockConditionsRemark" id="oetStockConditionsRemark" rows="3" maxlength="50"></textarea>
 					</div>
-                    <!-- end เหตุผล -->
+                    <!-- end หมายเหตุ -->
                 </form>
             </div>
         </div>
@@ -164,26 +232,33 @@
 </div>
 
 <script>
-        // Berowse
-        $('#oimPscBrowseBch').click(function(){JCNxBrowseData('oBrowseBch')});
-        $('#oimPscBrowseWah').click(function(){
 
-            
-                    JSxCheckPinMenuClose();
-        
-            var StockConditionBchCode = $('#oetStockConditionBchCode').val();
-            window.oBrowseWahOption   = undefined;
-            oBrowseWahOption          = oBrowseWah({
-                'tStockConditionBchCode'  : StockConditionBchCode
-            });
-            JCNxBrowseData('oBrowseWahOption');
-            
-            // JCNxBrowseData('oBrowseWah')
+    $("#oetStockConditionsMin , #oetStockConditionsMax").change(function() {
+        $(this).val(parseFloat($(this).val()).toFixed(2));
+    });
+
+    $('#oetStockConditionsPerSLA').blur(function(e) {
+        var nValue = $(this).val();
+        if(nValue > 100){
+            $(this).val(100)
+        }
+    });
+
+    // Berowse
+    $('#oimPscBrowseBch').click(function(){JCNxBrowseData('oBrowseBch')});
+    $('#oimPscBrowseWah').click(function(){
+        JSxCheckPinMenuClose();
+        var StockConditionBchCode = $('#oetStockConditionBchCode').val();
+        window.oBrowseWahOption   = undefined;
+        oBrowseWahOption          = oBrowseWah({
+            'tStockConditionBchCode'  : StockConditionBchCode
         });
+        JCNxBrowseData('oBrowseWahOption');
+    });
 
-        JSxPscSetConditionWah();
+    JSxPscSetConditionWah();
 
-        // Option Branch
+    // Option Branch
     var oBrowseBch = {
         
         Title : ['company/branch/branch','tBCHTitle'],
@@ -216,7 +291,6 @@
 
     }
 
-
     function JSxPscSetConditionWah(){
         
       var StockConditionBchCode = $('#oetStockConditionBchCode').val();
@@ -230,38 +304,38 @@
     // Option Wah
 
     var oBrowseWah    = function(poDataFnc){
-        var tStockConditionBchCode    = poDataFnc.tStockConditionBchCode;
-     
-    var oOptionReturn = {
-        Title : ['company/warehouse/warehouse','tWAHTitle'],
-        Table:{Master:'TCNMWaHouse',PK:'FTWahCode'},
-        Join :{
-            Table:	['TCNMWaHouse_L'],
-            On:['TCNMWaHouse_L.FTWahCode = TCNMWaHouse.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode  AND TCNMWaHouse_L.FNLngID = '+nLangEdits,]
-        },
-        Where   : {
-            Condition : [" AND TCNMWaHouse.FTBchCode = '"+tStockConditionBchCode+"' "]
-        },
-        GrideView:{
-            ColumnPathLang	: 'company/warehouse/warehouse',
-            ColumnKeyLang	: ['tWahCode','tWahName'],
-            ColumnsSize     : ['15%','75%'],
-            WidthModal      : 50,
-            DataColumns		: ['TCNMWaHouse.FTWahCode','TCNMWaHouse_L.FTWahName'],
-            DataColumnsFormat : ['',''],
-            Perpage			: 10,
-            OrderBy			: ['TCNMWaHouse.FDCreateOn DESC'],
-            // SourceOrder		: "ASC"
-        },
-        CallBack:{
-            ReturnType	: 'S',
-            Value		: ["oetStockConditionWahCode","TCNMWaHouse.FTWahCode"],
-            Text		: ["oetStockConditionhWahName","TCNMWaHouse_L.FTWahName"],
-        },
-        RouteAddNew : 'warehouse',
-        BrowseLev : 1
-    }
-    return oOptionReturn;
+        var tStockConditionBchCode  = poDataFnc.tStockConditionBchCode;
+        var oOptionReturn = {
+            Title : ['company/warehouse/warehouse','tWAHTitle'],
+            Table:{Master:'TCNMWaHouse',PK:'FTWahCode'},
+            Join :{
+                Table:	['TCNMWaHouse_L'],
+                On:['TCNMWaHouse_L.FTWahCode = TCNMWaHouse.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode  AND TCNMWaHouse_L.FNLngID = '+nLangEdits,]
+            },
+            Where   : {
+                Condition : [" AND TCNMWaHouse.FTBchCode = '"+tStockConditionBchCode+"' AND TCNMWaHouse.FTWahStaPrcStk = '2' "]
+            },
+            GrideView:{
+                ColumnPathLang	: 'company/warehouse/warehouse',
+                ColumnKeyLang	: ['tWahCode','tWahName'],
+                ColumnsSize     : ['15%','75%'],
+                WidthModal      : 50,
+                DataColumns		: ['TCNMWaHouse.FTWahCode','TCNMWaHouse_L.FTWahName'],
+                DataColumnsFormat : ['',''],
+                Perpage			: 10,
+                OrderBy			: ['TCNMWaHouse.FDCreateOn DESC'],
+                // SourceOrder		: "ASC"
+            },
+            CallBack:{
+                ReturnType	: 'S',
+                Value		: ["oetStockConditionWahCode","TCNMWaHouse.FTWahCode"],
+                Text		: ["oetStockConditionhWahName","TCNMWaHouse_L.FTWahName"],
+            },
+            RouteAddNew : 'warehouse',
+            BrowseLev : 1,
+            // DebugSQL : true
+        }
+        return oOptionReturn;
     }
 
 </script>

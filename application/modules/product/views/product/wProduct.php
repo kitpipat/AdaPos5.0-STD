@@ -5,10 +5,10 @@
         $tPdtforSystemDataTable  = "1";
     }
 ?>
-<input id="ohdPdtStaBrowseType" type="hidden" value="<?php	echo $nPdtBrowseType?>">
-<input id="ohdPdtCallBackOption" type="hidden" value="<?php echo $tPdtBrowseOption?>">
-<input id="ohdPdtCurrentPageDataTable" type="hidden" value="1">
-<input id="ohdPdtforSystemDataTable" type="hidden" value="<?=$tPdtforSystemDataTable?>">
+<input id="ohdPdtStaBrowseType" 		type="hidden"	value="<?php echo $nPdtBrowseType?>">
+<input id="ohdPdtCallBackOption" 		type="hidden"	value="<?php echo $tPdtBrowseOption?>">
+<input id="ohdPdtCurrentPageDataTable" 	type="hidden"	value="1">
+<input id="ohdPdtforSystemDataTable" 	type="hidden"	value="<?=$tPdtforSystemDataTable?>">
 
 <?php if(isset($nPdtBrowseType) && $nPdtBrowseType == 0) : //เข้ามาจาก Menu Product ทางซ้ายมือ?>
 	<!-- Title Bar Menu Product -->
@@ -126,7 +126,7 @@
     </div>
 </div>
 <script type="text/javascript">
-	var objValidateMsg = {
+	var objValidateMsg	= {
 		'tPDTValidPdtPszAndBarCode'	: "<?php echo language('product/product/product','tPDTValidPdtPszAndBarCode');?>",
 		'tPDTValidPdtPsz'			: "<?php echo language('product/product/product','tPDTValidPdtPsz');?>",
 		'tPDTValidPdtBar'			: "<?php echo language('product/product/product','tPDTValidPdtBar');?>"
@@ -145,11 +145,8 @@
 	});
 	
 	$('#obtMainSaveProduct').click(function(){
-		// alert('GotoSUbmit');
 		// $('#obtSubmitProduct').click();
 		JSxPDTCheckBarCodeBeforeSubmit();
 	});
-
 </script>
-<script type="text/javascript" src="<?php echo base_url('application/modules/product/assets/src/product/jProduct.js?v=2')?>"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/TableDnD/0.9.1/jquery.tablednd.js" integrity="sha256-d3rtug+Hg1GZPB7Y/yTcRixO/wlI78+2m08tosoRn7A=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="<?php echo base_url('application/modules/product/assets/src/product/jProduct.js')?>"></script>

@@ -369,7 +369,7 @@ class mImpproduct extends CI_Model {
                                 1 AS FTPdtType,
                                 1 AS FTPdtSaleType,
                                 1 AS FTPdtSetOrSN,
-                                1 AS FTPdtStaSetPri,
+                                2 AS FTPdtStaSetPri,
                                 '$dDateStart' AS FDPdtSaleStart,
                                 '$dDateStop' AS FDPdtSaleStop,
                                 1 AS FCPdtMin,
@@ -438,13 +438,11 @@ class mImpproduct extends CI_Model {
                         ) AS A ON TCNMPDTPackSize.FTPdtCode = A.FTPdtCode AND TCNMPDTPackSize.FTPunCode = A.FTPunCode";
             $this->db->query($tSQL);       
 
-            $tSQL   = " INSERT INTO TCNMPDTPackSize (FTPdtCode,FTPunCode,FCPdtUnitFact,FTPdtStaAlwSale,FTPdtStaAlwBuy,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
+            $tSQL   = " INSERT INTO TCNMPDTPackSize (FTPdtCode,FTPunCode,FCPdtUnitFact,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
                         SELECT DISTINCT 
                             TMP.FTPdtCode,
                             TMP.FTPunCode,
                             TMP.FCPdtUnitFact,
-                            1 AS FTPdtStaAlwSale,
-                            1 AS FTPdtStaAlwBuy,
                             '$dDateOn',
                             '$tUserBy',
                             '$dDateOn',
@@ -1187,7 +1185,7 @@ class mImpproduct extends CI_Model {
                                     1 AS FTPdtType,
                                     1 AS FTPdtSaleType,
                                     1 AS FTPdtSetOrSN,
-                                    1 AS FTPdtStaSetPri,
+                                    2 AS FTPdtStaSetPri,
                                     '$dDateStart' AS FDPdtSaleStart,
                                     '$dDateStop' AS FDPdtSaleStop,
                                     1 AS FCPdtMin,
@@ -1237,7 +1235,7 @@ class mImpproduct extends CI_Model {
                 //                 1 AS FTPdtType,
                 //                 1 AS FTPdtSaleType,
                 //                 1 AS FTPdtSetOrSN,
-                //                 1 AS FTPdtStaSetPri,
+                //                 2 AS FTPdtStaSetPri,
                 //                 '$dDateStart' AS FDPdtSaleStart,
                 //                 '$dDateStop' AS FDPdtSaleStop,
                 //                 1 AS FCPdtMin,
@@ -1629,7 +1627,7 @@ class mImpproduct extends CI_Model {
                                 1 AS FTPdtType,
                                 1 AS FTPdtSaleType,
                                 1 AS FTPdtSetOrSN,
-                                1 AS FTPdtStaSetPri,
+                                2 AS FTPdtStaSetPri,
                                 '$dDateStart' AS FDPdtSaleStart,
                                 '$dDateStop' AS FDPdtSaleStop,
                                 1 AS FCPdtMin,
@@ -1730,13 +1728,11 @@ class mImpproduct extends CI_Model {
             // เพิ่มตาราง TCNMPDTPackSize
             // - ถ้าไม่มีหน่วยอยู่จริงใน Master จะไม่ Insert ลง PackSize
             // - ถ้า อัตราส่วน/หน่วย ซ้ำ จะไม่ Insert ลง PackSize
-            $tSQL   = " INSERT INTO TCNMPDTPackSize (FTPdtCode,FTPunCode,FCPdtUnitFact,FTPdtStaAlwBuy,FTPdtStaAlwSale,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
+            $tSQL   = " INSERT INTO TCNMPDTPackSize (FTPdtCode,FTPunCode,FCPdtUnitFact,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
                         SELECT DISTINCT 
                             TMP.FTPdtCode,
                             TMP.FTPunCode,
                             TMP.FCPdtUnitFact,
-                            1 AS FTPdtStaAlwBuy,
-                            1 AS FTPdtStaAlwSale,
                             '$dDateOn',
                             '$tUserBy',
                             '$dDateOn',
@@ -1759,11 +1755,10 @@ class mImpproduct extends CI_Model {
         
             // เพิ่มข้อมูลลงตาราง TCNMPdtBar
             // - ถ้าไม่มีหน่วยใน PackSize จะไม่ Insert BarCode
-            $tSQL   = " INSERT INTO TCNMPdtBar (FTPdtCode,FTBarCode,FNBarRefSeq,FTPunCode,FTBarStaUse,FTBarStaAlwSale,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
+            $tSQL   = " INSERT INTO TCNMPdtBar (FTPdtCode,FTBarCode,FTPunCode,FTBarStaUse,FTBarStaAlwSale,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy)
                         SELECT DISTINCT
                             IMP.FTPdtCode,
                             IMP.FTBarCode,
-                            1 AS FNBarRefSeq,
                             IMP.FTPunCode,
                             1 AS FTBarStaUse,
                             1 AS FTBarStaAlwSale,
@@ -1811,13 +1806,11 @@ class mImpproduct extends CI_Model {
                                 IMP.FTShpCode,
                                 ''
                             FROM TCNTImpMasTmp IMP WITH(NOLOCK)
-                            LEFT JOIN ( SELECT FTTmpStatus,FTPdtCode FROM TCNTImpMasTmp WITH(NOLOCK) WHERE FTSessionID = '$tSessionID' AND FTTmpTableKey = 'TCNMPDT'  ) PDTIMP ON  IMP.FTPdtCode = PDTIMP.FTPdtCode 
                             LEFT JOIN TCNMPdtSpcBch OTH WITH(NOLOCK) ON IMP.FTPdtCode = OTH.FTPdtCode AND ISNULL(IMP.FTAgnCode, '') != ISNULL(OTH.FTAgnCode, '')
                             LEFT JOIN TCNMPdtSpcBch SPC WITH(NOLOCK) ON IMP.FTPdtCode = SPC.FTPdtCode AND ISNULL(IMP.FTAgnCode, '') = ISNULL(SPC.FTAgnCode, '')
                             WHERE 1=1 
                                 AND IMP.FTSessionID     = '$tSessionID'
                                 AND IMP.FTTmpTableKey   = 'TCNMPdtSpcBch'
-                                AND PDTIMP.FTTmpStatus = '1'
                                 AND SPC.FTPdtCode       IS NULL
                                 AND OTH.FTPdtCode       IS NULL
                         ";
@@ -1879,93 +1872,6 @@ class mImpproduct extends CI_Model {
             return $aStatus;
         }catch(Exception $Error) {
             return $Error;
-        }
-    }
-
-
-
-
-    //ดึงข้อมูลหมายเหตุของสินค้าที่นำเข้า
-    //Functionality : Delete Product Set
-    //Parameters : -
-    //Creator : 10/03/2022 Nale
-    //Return : status
-    //Return Type : array
-    public function FSaMPDTImportGetDataRmk($paData){
-        try{
-            $tSessionID = $paData['tSessionID'];
-            $tTmpTableKey = $paData['tTmpTableKey'];
-            $tSQL = "SELECT
-                PDT.FNTmpSeq,
-                FTTmpRemark
-            FROM
-                TCNTImpMasTmp PDT WITH(NOLOCK)
-            WHERE 
-            PDT.FTTmpTableKey ='$tTmpTableKey'
-            AND PDT.FTSessionID = '$tSessionID'
-            ORDER BY PDT.FNTmpSeq ASC";
-         $oQuery = $this->db->query($tSQL);
-
-         if($oQuery->num_rows()>0){
-            $aDetail = $oQuery->result_array();
-            $aStatus = array(
-                'raItems'   => $aDetail,
-                'rtCode'    => '1',
-                'rtDesc'    => 'success',
-            );
-        } else {
-            //Not Found
-            $aStatus = array(
-                'rtCode' => '800',
-                'rtDesc' => 'data not found.',
-            );
-         }
-         return $aStatus;
-        }catch(Exception $Error) {
-            $aStatus = array(
-				'rtCode' => '500',
-				'rtDesc' => $Error->getMessage()
-			);
-			return $aStatus;
-        }
-    }
-
-    //Functionality : Delete Product Set
-    //Parameters : -
-    //Creator : 10/03/2022 Nale
-    //Return : status
-    //Return Type : array
-    public function FSaMPDTImportClearDup($paData){
-        try{
-            $tSessionID = $paData['tUserSessionID'];
-            $tTmpTableKey = $paData['tTmpTableKey'];
-            $tSQL = "UPDATE TCNTImpMasTmp SET FTTmpRemark = '' , FTTmpStatus = '1'
-                        WHERE 
-                        FTTmpTableKey ='$tTmpTableKey'
-                        AND FTSessionID = '$tSessionID'
-                        AND FTPdtBarDupType IN (1,2)";
-            $oQuery = $this->db->query($tSQL);
-       
-            if ($this->db->affected_rows() > 0) {
-                $aDataReturn    = array(
-                    'tCode' => '1',
-                    'tDesc' => 'Update product set success',
-                );
-            } else {
-                $aDataReturn    = array(
-                    'tCode' => '801',
-                    'tDesc' => 'Eoor update product set',
-                );
-            }
-            return $aDataReturn;
-        }catch(Exception $Error) {
-
-            $aStatus = array(
-                'rtCode' => '500',
-                'rtDesc' => $Error->getMessage()
-            );
-            return $aStatus;
-
         }
     }
 }

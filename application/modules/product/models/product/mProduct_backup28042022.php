@@ -1,31 +1,29 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class mProduct extends CI_Model{
-
-    public function __construct(){
+class mProduct extends CI_Model
+{
+    public function __construct() {
         parent::__construct();
-        $tTableTmp  = "TCNTPdtSet_Tmp" . date("dmY");
-        if ($this->db->table_exists($tTableTmp)) {
+        $tTableTmp = "TCNTPdtSet_Tmp" . date("dmY");
+        if($this->db->table_exists($tTableTmp)){
             // echo 'ถ้ามีแล้วก็ไม่ต้องทำอะไร' herenaha;
-        } else {
+        }else{
             //echo 'ถ้าไม่มีก็ต้องเพิ่ม';
-            $tSQL   = "
-                CREATE TABLE $tTableTmp (
-                FTPdtCode VARCHAR(20) NOT NULL,
-                FTPdtCodeSet VARCHAR(20) NOT NULL,
-                FCPstQty Float(18),
-                FDLastUpdOn DATETIME,
-                FTLastUpdBy VARCHAR(20),
-                FDCreateOn DATETIME,
-                FTCreateBy VARCHAR(20),
-                FTPunCode VARCHAR(5),
-                FCXsdFactor Float(18),
-                FTSessionID VARCHAR(255)
-            );";
+            $tSQL = "CREATE TABLE $tTableTmp (
+                        FTPdtCode VARCHAR(20) NOT NULL,
+                        FTPdtCodeSet VARCHAR(20) NOT NULL,
+                        FCPstQty Float(18),
+                        FDLastUpdOn DATETIME,
+                        FTLastUpdBy VARCHAR(20),
+                        FDCreateOn DATETIME,
+                        FTCreateBy VARCHAR(20),
+                        FTPunCode VARCHAR(5),
+                        FCXsdFactor Float(18),
+                        FTSessionID VARCHAR(255)
+                    );";
             $this->db->query($tSQL);
         }
-        unset($tTableTmp);
     }
 
     // Functionality: ดึงข้อมูลสินค้า
@@ -34,8 +32,9 @@ class mProduct extends CI_Model{
     // Return: ข้อมูลสินค้าแบบ Array
     // ReturnType: Object Array
     public function FSaMPDTGetDataTable($paData){
-        $nLngID     = (empty($paData['FNLngID'])) ? 1 : $paData['FNLngID'];
-        $tSearch    = $paData['tSearchAll'];
+        $aRowLen        = FCNaHCallLenData($paData['nRow'], $paData['nPage']);
+        $nLngID         = (empty($paData['FNLngID'])) ? 1 : $paData['FNLngID'];
+        $tSearch        = $paData['tSearchAll'];
         $nSearchProductType   = $paData['nSearchProductType'];
         $tPdtForSys     = $paData['tPdtForSys'];
         if (isset($tPdtForSys) && !empty($tPdtForSys)) {
@@ -43,168 +42,199 @@ class mProduct extends CI_Model{
         } else {
             $tPdtForSysLine1    = "";
         }
-        $tSesUserCode           = $this->session->userdata('tSesUserCode');
-        $aDataUsrGrp            = $this->db->where('FTUsrCode', $tSesUserCode)->get('TCNTUsrGroup')->row_array();
+        $tSesUserCode   = $this->session->userdata('tSesUserCode');
+        $aDataUsrGrp    = $this->db->where('FTUsrCode',$tSesUserCode)->get('TCNTUsrGroup')->row_array();
+
         $tSesUsrLevel           = $this->session->userdata('tSesUsrLevel');
         $tSessionMerCode        = $this->session->userdata('tSesUsrMerCode');
         $tSessionShopCode       = $this->session->userdata('tSesUsrShpCodeMulti');
         $tSesUsrAgnCode         = $this->session->userdata('tSesUsrAgnCode');
         $tSessionBchCode        = $this->session->userdata('tSesUsrBchCodeMulti');
         $tDefaultBchCode        = $aDataUsrGrp['FTBchCode'];
+        $tDefaultShpCode        = $aDataUsrGrp['FTShpCode'];
         $tWHEREPermission_BCH   = '';
         $tWHEREPermission_SHP   = '';
+
+
         if ($tSesUsrLevel != 'HQ') {
             //---------------------- การมองเห็นเฉพาะสินค้าตามระดับผู้ใช้--------------------------//
             $tWHEREPermission_BCH .= " AND ( (";
-            $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'')      = " . $this->db->escape($tSesUsrAgnCode) . " ";
-            if (!empty($tSessionMerCode)) { //กรณีผู้ใช้ผูก Mer จะเห็นสินค้าภายใต้ Mer
-                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'')  = " . $this->db->escape($tSessionMerCode) . " ";
+            $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'')      = ".$this->db->escape($tSesUsrAgnCode)." ";
+            if(!empty($tSessionMerCode)){ //กรณีผู้ใช้ผูก Mer จะเห็นสินค้าภายใต้ Mer
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'')  = ".$this->db->escape($tSessionMerCode)." ";
             }
-            if (!empty($tDefaultBchCode)) { //กรณีผู้ใช้ผูก Bch จะเห็นสินค้าภายใต้ Bch
+            if(!empty($tDefaultBchCode)){ //กรณีผู้ใช้ผูก Bch จะเห็นสินค้าภายใต้ Bch
                 $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'')  IN ($tSessionBchCode) ";
             }
-            if (!empty($tSessionShopCode)) { //กรณีผู้ใช้ผูก Shp จะเห็นสินค้าภายใต้ Shp
+            if(!empty($tSessionShopCode)){ //กรณีผู้ใช้ผูก Shp จะเห็นสินค้าภายใต้ Shp
                 $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'' ) IN ($tSessionShopCode) ";
             }
-            $tWHEREPermission_BCH .= " ) ";
-            /* |-------------------------------------------------------------------------------------------| */
+                $tWHEREPermission_BCH .= " ) ";
+       /* |-------------------------------------------------------------------------------------------| */
 
-            //---------------------- การมองเห็นสินค้าระดับสาขา (สำหรับผู้ใช้ระดับร้านค้า)--------------------------//
-            if (!empty($tSessionShopCode)) {
+        //---------------------- การมองเห็นสินค้าระดับสาขา (สำหรับผู้ใช้ระดับร้านค้า)--------------------------//
+            if(!empty($tSessionShopCode)){
                 $tWHEREPermission_BCH   .= " OR ("; //กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่อยู่ใน Bch แต่ไม่ผูก Shp
-                $tWHEREPermission_BCH   .= " ISNULL(PDLSPC.FTAgnCode,'')        = " . $this->db->escape($tSesUsrAgnCode) . " ";
-                $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTMerCode,'')    = " . $this->db->escape($tSessionMerCode) . " ";
+                $tWHEREPermission_BCH   .= " ISNULL(PDLSPC.FTAgnCode,'')        = ".$this->db->escape($tSesUsrAgnCode)." ";
+                $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTMerCode,'')    = ".$this->db->escape($tSessionMerCode)." ";
                 $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTBchCode,'') IN ($tSessionBchCode) ";
-                $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTShpCode,'')    = '' ";
+                $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTShpCode,'')    = '' "   ;
                 $tWHEREPermission_BCH   .= " ) ";
 
                 $tWHEREPermission_BCH .= " OR ("; //กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่อยู่ใน Bch แต่ไม่ผูก Shp และไม่ผูก Mer
-                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'')  = " . $this->db->escape($tSesUsrAgnCode) . " ";
+                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'')  = ".$this->db->escape($tSesUsrAgnCode)." ";
                 $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'')  = ''";
                 $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'') IN ($tSessionBchCode) ";
-                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'')  = ''";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'')  = ''"   ;
                 $tWHEREPermission_BCH .= " ) ";
 
                 $tWHEREPermission_BCH .= " OR ("; //กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่ไม่ผูก Bch และ ไม่ผูก Shp
-                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'')  = " . $this->db->escape($tSesUsrAgnCode) . " ";
-                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'')  = " . $this->db->escape($tSessionMerCode) . " ";
+                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'')  = ".$this->db->escape($tSesUsrAgnCode)." ";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'')  = ".$this->db->escape($tSessionMerCode)." ";
                 $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'')  = ''";
-                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'')  = ''";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'')  = ''"   ;
                 $tWHEREPermission_BCH .= " ) ";
 
                 $tWHEREPermission_BCH .= " OR ("; //กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่ไม่ผูก Mer และสินค้าผูก Bch / Shp
-                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'')  = " . $this->db->escape($tSesUsrAgnCode) . " ";
+                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'')  = ".$this->db->escape($tSesUsrAgnCode)." ";
                 $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'')  = ''";
                 $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'')  IN ($tSessionBchCode) ";
-                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'')  IN ($tSessionShopCode) ";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'')  IN ($tSessionShopCode) "   ;
                 $tWHEREPermission_BCH .= " ) ";
+
             }
-            /* |-------------------------------------------------------------------------------------------| */
+       /* |-------------------------------------------------------------------------------------------| */
 
-            //---------------------- การมองเห็นสินค้าระดับตัวแทนขาย--------------------------//
+        //---------------------- การมองเห็นสินค้าระดับตัวแทนขาย--------------------------//
 
-            $tWHEREPermission_BCH   .= " OR (";
-            $tWHEREPermission_BCH   .= "     ISNULL(PDLSPC.FTAgnCode,'')    = " . $this->db->escape($tSesUsrAgnCode) . " ";
-            if (!empty($tSessionMerCode)) { //กรณีผู้ใช้ผูก Mer จะต้องเห็นสินค้าที่ไม่ได้ผูก Mer ด้วย
-                $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTMerCode,'')    = '' ";
-            }
-            if (!empty($tDefaultBchCode)) { //กรณีผู้ใช้ผูก Bch จะต้องเห็นสินค้าที่ไม่ได้ผูก Bch ด้วย
-                $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTBchCode,'')    = '' ";
-            }
-            if (!empty($tSessionShopCode)) { //กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่ไม่ได้ผูก Shp ด้วย
-                $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTShpCode,'')    = ''";
-            }
-            $tWHEREPermission_BCH   .= " ) ";
+                    $tWHEREPermission_BCH   .= " OR (";
+                    $tWHEREPermission_BCH   .= "     ISNULL(PDLSPC.FTAgnCode,'')    = ".$this->db->escape($tSesUsrAgnCode)." ";
+                if(!empty($tSessionMerCode)){ //กรณีผู้ใช้ผูก Mer จะต้องเห็นสินค้าที่ไม่ได้ผูก Mer ด้วย
+                    $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTMerCode,'')    = '' ";
+                }
+                if(!empty($tDefaultBchCode)){ //กรณีผู้ใช้ผูก Bch จะต้องเห็นสินค้าที่ไม่ได้ผูก Bch ด้วย
+                    $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTBchCode,'')    = '' ";
+                }
+                if(!empty($tSessionShopCode)){ //กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่ไม่ได้ผูก Shp ด้วย
+                    $tWHEREPermission_BCH   .= " AND ISNULL(PDLSPC.FTShpCode,'')    = ''"   ;
+                }
+                    $tWHEREPermission_BCH   .= " ) ";
 
-            /* |-------------------------------------------------------------------------------------------| */
+      /* |-------------------------------------------------------------------------------------------| */
 
 
-            //---------------------- การมองเห็นสินค้าระดับส่วนกลางหรือสินค้าที่ไม่ได้ผูกกับอะไรเลย--------------------------//
-            $tWHEREPermission_BCH .= " OR (";
-            $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'') = '' ";
-            $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'') = '' ";
-            $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'') = '' ";
-            $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'') = '' ";
-            $tWHEREPermission_BCH .= " )) ";
-            /* |-------------------------------------------------------------------------------------------| */
+       //---------------------- การมองเห็นสินค้าระดับส่วนกลางหรือสินค้าที่ไม่ได้ผูกกับอะไรเลย--------------------------//
+                $tWHEREPermission_BCH .= " OR (";
+                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'') = '' ";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'') = '' ";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'') = '' ";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'') = '' "   ;
+                $tWHEREPermission_BCH .= " )) ";
+       /* |-------------------------------------------------------------------------------------------| */
+
         }
+
+
         $aSpcJoinTableMaster =  array(
             1 => "", //รหัสสินค้า
-            2 => "LEFT JOIN TCNMPdt_L PDTL WITH (NOLOCK)       ON PDT.FTPdtCode = PDTL.FTPdtCode  AND PDTL.FNLngID  = " . $this->db->escape($nLngID),  //หาชื่อสินค้า
+            2 => "LEFT JOIN TCNMPdt_L PDTL WITH (NOLOCK)       ON PDT.FTPdtCode = PDTL.FTPdtCode  AND PDTL.FNLngID  = ".$this->db->escape($nLngID),  //หาชื่อสินค้า
             3 => "LEFT JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)      ON PDT.FTPdtCode = PBAR.FTPdtCode  AND PPCZ.FTPunCode = PBAR.FTPunCode",  //หาบาร์โค้ด
-            4 => "LEFT JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID   = " . $this->db->escape($nLngID), //หาหน่วย
-            5 => "LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = PDT.FTPgpChain AND PGL.FNLngID = " . $this->db->escape($nLngID), //หากลุ่มสินค้า
-            6 => "LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID = " . $this->db->escape($nLngID), //หาประเภทสินค้า
+            4 => "LEFT JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID   = ".$this->db->escape($nLngID), //หาหน่วย
+            5 => "LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = PDT.FTPgpChain", //หากลุ่มสินค้า
+            6 => "LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID = ".$this->db->escape($nLngID), //หาประเภทสินค้า
         );
+
+
         $aSpcWhereTableMaster =  array(
-            1 => " AND ( PDT.FTPdtCode  COLLATE THAI_BIN    LIKE '%" . $this->db->escape_like_str($tSearch) . "%' ) ", //รหัสสินค้า
-            2 => " AND ( UPPER(PDTL.FTPdtName)  COLLATE THAI_BIN    LIKE UPPER('%" . $this->db->escape_like_str($tSearch) . "%') ) ",  //หาชื่อสินค้า
-            3 => " AND ( PBAR.FTBarCode  COLLATE THAI_BIN   LIKE '%" . $this->db->escape_like_str($tSearch) . "%' ) ",  //หาบาร์โค้ด
-            4 => " AND ( PUNL.FTPunName  COLLATE THAI_BIN   LIKE '%" . $this->db->escape_like_str($tSearch) . "%' OR PUNL.FTPunCode COLLATE THAI_BIN LIKE '%" . $this->db->escape_like_str($tSearch) . "%' ) ", //หาหน่วย
-            5 => " AND ( PGL.FTPgpName   COLLATE THAI_BIN   LIKE '%" . $this->db->escape_like_str($tSearch) . "%' OR PGL.FTPgpChainName COLLATE THAI_BIN LIKE '%" . $this->db->escape_like_str($tSearch) . "%' ) ", //หากลุ่มสินค้า
-            6 => " AND ( PTL.FTPtyName   COLLATE THAI_BIN   LIKE '%" . $this->db->escape_like_str($tSearch) . "%' ) ", //หาประเภทสินค้า
+            1 => " AND ( PDT.FTPdtCode  COLLATE THAI_BIN    LIKE '%".$this->db->escape_like_str($tSearch)."%' ) ", //รหัสสินค้า
+            2 => " AND ( UPPER(PDTL.FTPdtName)  COLLATE THAI_BIN    LIKE UPPER('%".$this->db->escape_like_str($tSearch)."%') ) ",  //หาชื่อสินค้า
+            3 => " AND ( PBAR.FTBarCode  COLLATE THAI_BIN   LIKE '%".$this->db->escape_like_str($tSearch)."%' ) ",  //หาบาร์โค้ด
+            4 => " AND ( PUNL.FTPunName  COLLATE THAI_BIN   LIKE '%".$this->db->escape_like_str($tSearch)."%' OR PUNL.FTPunCode COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearch)."%' ) ", //หาหน่วย
+            5 => " AND ( PGL.FTPgpName   COLLATE THAI_BIN   LIKE '%".$this->db->escape_like_str($tSearch)."%' OR PGL.FTPgpChainName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearch)."%' ) ", //หากลุ่มสินค้า
+            6 => " AND ( PTL.FTPtyName   COLLATE THAI_BIN   LIKE '%".$this->db->escape_like_str($tSearch)."%' ) ", //หาประเภทสินค้า
         );
-        $tSQLPdtMaster = "";
+
+        $tSQLPdtMaster = "  SELECT DISTINCT ";
+        if ($paData['nPage'] == 1) {
+            $tSQLPdtMaster .= "COUNT(PDT.FTPdtCode) OVER() AS rtCountData,";
+        }
+        $tSQLPdtMaster .=  "PDT.FTPdtForSystem,
+                                PDT.FTPdtCode,
+                                PDT.FTPtyCode,
+                                PDT.FTPgpChain,
+                                PDT.FTCreateBy,
+                                PDT.FDCreateOn
+                            FROM
+                                TCNMPdt PDT WITH (NOLOCK)
+                            LEFT JOIN TCNMPdtSpcBch PDLSPC WITH (NOLOCK) ON PDT.FTPdtCode = PDLSPC.FTPdtCode ";
         if (!empty($tSearch)) {
             $tSQLPdtMaster .= $aSpcJoinTableMaster[$nSearchProductType];
         }
-        $tSQLPdtMaster  .= "
-            WHERE PDT.FTPdtCode <> ''
-            " . $tPdtForSysLine1 . "
-            " . $tWHEREPermission_BCH . "
-            " . $tWHEREPermission_SHP . "
-        ";
+        $tSQLPdtMaster .= " WHERE 1=1
+                            " . $tPdtForSysLine1 . "
+                            " . $tWHEREPermission_BCH . "
+                            " . $tWHEREPermission_SHP . "
+                            ";
         if (!empty($tSearch)) {
             $tSQLPdtMaster .= $aSpcWhereTableMaster[$nSearchProductType];
         }
-        $tSQL   = "
-            SELECT
-                PDT.*,
-                PDTL.FTPdtName, 
-                PUNL.FTPunCode, 
-                PUNL.FTPunName, 
-                PBAR.FTBarCode, 
-                PGL.FTPgpName, 
-                PTL.FTPtyName, 
-                PIMG.FTImgObj,
-                CASE WHEN PRI.FCPgdPriceRet IS NOT NULL THEN '1' ELSE '2' END AS rtPdtStaPriRef,
-                ISNULL(PRI.FCPgdPriceRet, 0) AS FCPgdPriceRet,
-                ROW_NUMBER () OVER (ORDER BY PDT.FDCreateOn DESC) AS FNRowID
-            FROM (
-                SELECT TOP ". get_cookie('nShowRecordInPageList')." 
-                    PDT.FTPdtForSystem, 
-                    PDT.FTPdtCode, 
-                    PDT.FTPtyCode, 
-                    PDT.FTPgpChain, 
-                    PDT.FTCreateBy, 
-                    PDT.FDCreateOn
-                FROM TCNMPdt PDT WITH(NOLOCK)
-                LEFT JOIN TCNMPdtSpcBch PDLSPC WITH(NOLOCK) ON PDT.FTPdtCode = PDLSPC.FTPdtCode
-                ".$tSQLPdtMaster."
-                ORDER BY PDT.FDCreateOn DESC
-            ) PDT
-            INNER JOIN TCNMPdtPackSize PPCZ WITH(NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode
-            LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK) ON PDT.FTPdtCode = PDTL.FTPdtCode     AND PDTL.FNLngID = ".$this->db->escape($nLngID)."
-            LEFT JOIN TCNMPdtBar PBAR WITH(NOLOCK) ON PDT.FTPdtCode = PBAR.FTPdtCode    AND PPCZ.FTPunCode = PBAR.FTPunCode
-            LEFT JOIN TCNMImgPdt PIMG WITH(NOLOCK) ON PDT.FTPdtCode = PIMG.FTImgRefID   AND PIMG.FTImgTable = 'TCNMPdt' AND PIMG.FNImgSeq = 1
-            LEFT JOIN TCNMPdtType_L PTL WITH(NOLOCK) ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID = " . $this->db->escape($nLngID) . "
-            LEFT JOIN TCNMPdtUnit_L PUNL WITH(NOLOCK) ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = " . $this->db->escape($nLngID) . "
-            LEFT JOIN TCNMPdtGrp_L PGL WITH(NOLOCK) ON PGL.FTPgpChain = PDT.FTPgpChain
-            LEFT JOIN (
-                SELECT
-                    FCPgdPriceRet,FTPdtCode,FTPunCode
-                FROM
-                    VCN_Price4PdtActive
-            ) AS PRI ON PRI.FTPdtCode = PDT.FTPdtCode
-            AND PPCZ.FTPunCode = PRI.FTPunCode
-            
-        ";
+
+        $tSQL   = "SELECT
+                        PDT.*, PDTL.FTPdtName,
+                        PUNL.FTPunCode,
+                        PUNL.FTPunName,
+                        PBAR.FTBarCode,
+                        PGL.FTPgpName,
+                        PTL.FTPtyName,
+                        PIMG.FTImgObj
+                    FROM
+                        (
+                            SELECT
+                                c.*
+                            FROM
+                                (
+                                    SELECT
+                                        ROW_NUMBER () OVER (ORDER BY FDCreateOn DESC) AS FNRowID,
+                                        *
+                                    FROM
+                                        (
+                                            $tSQLPdtMaster
+                                        ) Base
+                                ) AS c
+                            WHERE
+                                c.FNRowID > $aRowLen[0]
+                            AND c.FNRowID <= $aRowLen[1]
+                        ) PDT
+                    INNER JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode
+                    LEFT JOIN TCNMPdt_L PDTL WITH (NOLOCK)       ON PDT.FTPdtCode = PDTL.FTPdtCode  AND PDTL.FNLngID    = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)      ON PDT.FTPdtCode = PBAR.FTPdtCode  AND PPCZ.FTPunCode  = PBAR.FTPunCode
+                    LEFT JOIN TCNMImgPdt PIMG WITH (NOLOCK)      ON PDT.FTPdtCode = PIMG.FTImgRefID AND PIMG.FTImgTable = 'TCNMPdt' AND PIMG.FNImgSeq = 1
+                    LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID     = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID    = ".$this->db->escape($nLngID)."
+                    LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = PDT.FTPgpChain
+                    WHERE 1=1 ";
+        if (!empty($tSearch)) {
+            $tSQL .= $aSpcWhereTableMaster[$nSearchProductType];
+        }
+        $tSQL .= " ORDER BY
+                        FNRowID
+    ";
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
             $aList  = $oQuery->result_array();
+            if ($paData['nPage'] == 1) {
+                $nFoundRow  = $aList[0]['rtCountData'];
+            } else {
+                $nFoundRow  = $paData['nPagePDTAll'];
+            }
+
+            // หา Page All จำนวน Rec หาร จำนวนต่อหน้า
+            $nPageAll       = ceil($nFoundRow / $paData['nRow']);
             $aDataReturn    = array(
                 'raItems'       => $aList,
+                'rnAllRow'      => $nFoundRow,
                 'rnCurrentPage' => $paData['nPage'],
+                'rnAllPage'     => $nPageAll,
                 'rtCode'        => '1',
                 'rtDesc'        => 'success',
             );
@@ -217,8 +247,29 @@ class mProduct extends CI_Model{
                 'rtDesc'        => 'data not found',
             );
         }
-        unset($nLngID,$tSearch,$nSearchProductType,$tPdtForSys,$tPdtForSysLine1,$tSesUserCode,$aDataUsrGrp,$tSesUsrLevel,$tSessionMerCode,$tSessionShopCode,$tSesUsrAgnCode);
-        unset($tSessionBchCode,$tDefaultBchCode,$tWHEREPermission_BCH,$tWHEREPermission_SHP,$aSpcJoinTableMaster,$aSpcWhereTableMaster,$tSQLPdtMaster,$tSQL,$oQuery,$aList);
+        return $aDataReturn;
+    }
+
+    // Functionality : All Page Of Product
+    // Parameters : function parameters
+    // Creator :  31/01/2019 wasin(Yoshi) - 08/06/2020 wat
+    // Last Modified : -
+    // Return : data
+    // Return Type : Array
+    public function FSaMPDTGetPageAll($ptSQlData){
+        $oQueryNumrows      = $this->db->query($ptSQlData)->num_rows();
+        if ($oQueryNumrows > 0) {
+            $aDataReturn    =  array(
+                'rtCountData'   => $oQueryNumrows,
+                'rtCode'        => '1',
+                'rtDesc'        => 'success',
+            );
+        } else {
+            $aDataReturn    =  array(
+                'rtCode'        => '800',
+                'rtDesc'        => 'Data Not Found',
+            );
+        }
         return $aDataReturn;
     }
 
@@ -243,8 +294,8 @@ class mProduct extends CI_Model{
                 PNSE.FTEvnTFinish,
                 PNSE_L.FTEvnName
             FROM [TCNMPdtNoSleByEvn]  PNSE WITH (NOLOCK)
-            LEFT JOIN TCNMPdtNoSleByEvn_L PNSE_L WITH (NOLOCK) ON PNSE.FTEvnCode = PNSE_L.FTEvnCode AND PNSE_L.FNLngID = " . $this->db->escape($nLngID) . "
-            WHERE PNSE.FTEvnCode    = " . $this->db->escape($tEvnCode) . "
+            LEFT JOIN TCNMPdtNoSleByEvn_L PNSE_L WITH (NOLOCK) ON PNSE.FTEvnCode = PNSE_L.FTEvnCode AND PNSE_L.FNLngID = ".$this->db->escape($nLngID)."
+            WHERE PNSE.FTEvnCode    = ".$this->db->escape($tEvnCode)."
             ORDER BY PNSE.FNEvnSeqNo ASC
         ";
         $oQuery = $this->db->query($tSQL);
@@ -270,8 +321,7 @@ class mProduct extends CI_Model{
     // Last Modified : -
     // Return : Array Data Query For Database
     // Return Type : Array
-    public function FSaMPDTGetDataPdtSet($paData)
-    {
+    public function FSaMPDTGetDataPdtSet($paData){
         $tSQL_Config    = " SELECT FTSysStaUsrValue FROM TsysConfig WHERE FTSysCode='tCN_Cost' AND FTSysSeq='1' ";
         $oQuery_Config  = $this->db->query($tSQL_Config);
         $aDataConfig    = $oQuery_Config->result_array();
@@ -286,12 +336,12 @@ class mProduct extends CI_Model{
                 PDT.FTPdtForSystem
             FROM TCNTPdtSet PSET WITH(NOLOCK)
             LEFT JOIN TCNMPdt PDT WITH(NOLOCK) ON PSET.FTPdtCodeSet = PDT.FTPdtCode
-            LEFT JOIN TCNMPdt_L PDT_L WITH(NOLOCK) ON PSET.FTPdtCodeSet = PDT_L.FTPdtCode   AND PDT_L.FNLngID   = " . $this->db->escape($paData['FNLngID']) . "
+            LEFT JOIN TCNMPdt_L PDT_L WITH(NOLOCK) ON PSET.FTPdtCodeSet = PDT_L.FTPdtCode   AND PDT_L.FNLngID   = ".$this->db->escape($paData['FNLngID'])."
             LEFT JOIN TCNMImgPdt PIMG  WITH (NOLOCK) ON PSET.FTPdtCodeSet = PIMG.FTImgRefID AND PIMG.FTImgTable = 'TCNMPdt' AND PIMG.FNImgSeq = 1
-            LEFT JOIN TCNMPdtUnit_L PUN_L WITH(NOLOCK) ON PSET.FTPunCode = PUN_L.FTPunCode AND PUN_L.FNLngID    = " . $this->db->escape($paData['FNLngID']) . "
+            LEFT JOIN TCNMPdtUnit_L PUN_L WITH(NOLOCK) ON PSET.FTPunCode = PUN_L.FTPunCode AND PUN_L.FNLngID    = ".$this->db->escape($paData['FNLngID'])."
         ";
         if (isset($paData['FTPdtCode'])) {
-            $tSQL   .= " WHERE PSET.FTPdtCode = " . $this->db->escape($paData['FTPdtCode']) . " ";
+            $tSQL   .= " WHERE PSET.FTPdtCode = ".$this->db->escape($paData['FTPdtCode'])." ";
         }
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
@@ -318,8 +368,7 @@ class mProduct extends CI_Model{
     // Last Modified : -
     // Return : Array Data Query For Database
     // Return Type : Array
-    public function FSaMPDTGetDataPdtSetTmp($paData)
-    {
+    public function FSaMPDTGetDataPdtSetTmp($paData){
         $tTable         = "TCNTPdtSet_Tmp" . date("dmY");
         $tSQL_Config    = "SELECT FTSysStaUsrValue FROM TsysConfig WHERE FTSysCode='tCN_Cost' AND FTSysSeq='1'";
         $oQuery_Config  = $this->db->query($tSQL_Config);
@@ -336,13 +385,13 @@ class mProduct extends CI_Model{
                 PDT.FTPdtForSystem
             FROM $tTable PSET WITH(NOLOCK)
             LEFT JOIN TCNMPdt PDT   WITH(NOLOCK) ON PSET.FTPdtCodeSet = PDT.FTPdtCode
-            LEFT JOIN TCNMPdt_L PDT_L WITH(NOLOCK) ON PSET.FTPdtCodeSet = PDT_L.FTPdtCode   AND PDT_L.FNLngID   = " . $this->db->escape($paData['FNLngID']) . "
+            LEFT JOIN TCNMPdt_L PDT_L WITH(NOLOCK) ON PSET.FTPdtCodeSet = PDT_L.FTPdtCode   AND PDT_L.FNLngID   = ".$this->db->escape($paData['FNLngID'])."
             LEFT JOIN TCNMImgPdt PIMG  WITH (NOLOCK) ON PSET.FTPdtCodeSet = PIMG.FTImgRefID AND PIMG.FTImgTable = 'TCNMPdt' AND PIMG.FNImgSeq = 1
-            LEFT JOIN TCNMPdtUnit_L PUN_L WITH(NOLOCK) ON PSET.FTPunCode = PUN_L.FTPunCode  AND PUN_L.FNLngID   = " . $this->db->escape($paData['FNLngID']) . " 
-            WHERE FTSessionID   = " . $this->db->escape($tsession) . "
+            LEFT JOIN TCNMPdtUnit_L PUN_L WITH(NOLOCK) ON PSET.FTPunCode = PUN_L.FTPunCode  AND PUN_L.FNLngID   = ".$this->db->escape($paData['FNLngID'])." 
+            WHERE FTSessionID   = ".$this->db->escape($tsession)."
         ";
         if (isset($paData['FTPdtCode'])) {
-            $tSQL   .= " AND PSET.FTPdtCode = " . $this->db->escape($paData['FTPdtCode']) . " ";
+            $tSQL   .= " AND PSET.FTPdtCode = ".$this->db->escape($paData['FTPdtCode'])." ";
         }
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
@@ -369,8 +418,7 @@ class mProduct extends CI_Model{
     // Last Modified : -
     // Return : Array Data Query For Database
     // Return Type : Array
-    public function FSaMPDTGetDataPdtUnit($paData)
-    {
+    public function FSaMPDTGetDataPdtUnit($paData){
         $FTPunCode  = $paData['FTPunCode'];
         $nLngID     = $paData['FNLngID'];
         $tSQL       = " 
@@ -378,8 +426,8 @@ class mProduct extends CI_Model{
                 PUN.FTPunCode,
                 PUN_L.FTPunName
             FROM TCNMPdtUnit PUN WITH (NOLOCK)
-            LEFT JOIN TCNMPdtUnit_L PUN_L WITH (NOLOCK) ON  PUN.FTPunCode = PUN_L.FTPunCode AND PUN_L.FNLngID = " . $this->db->escape($nLngID) . "
-            WHERE PUN.FDCreateOn <> '' AND PUN.FTPunCode = " . $this->db->escape($FTPunCode) . "
+            LEFT JOIN TCNMPdtUnit_L PUN_L WITH (NOLOCK) ON  PUN.FTPunCode = PUN_L.FTPunCode AND PUN_L.FNLngID = ".$this->db->escape($nLngID)."
+            WHERE PUN.FDCreateOn <> '' AND PUN.FTPunCode = ".$this->db->escape($FTPunCode)."
         ";
         $oQuery     = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
@@ -398,8 +446,7 @@ class mProduct extends CI_Model{
         return $aResult;
     }
 
-    public function FSaMPDTGetDataMasTemp($paData)
-    {
+    public function FSaMPDTGetDataMasTemp($paData){
         $nLngID = $paData['FNLngID'];
         $tSQL   = " 
             SELECT
@@ -419,7 +466,6 @@ class mProduct extends CI_Model{
                 MTT.FTPdtStaAlwPoHQ,
                 MTT.FTPdtStaAlwBuy,
                 MTT.FTPdtStaAlwSale,
-                MTT.FTPdtStaAlwRet,
                 (	SELECT TOP 1 P4PDT.FCPgdPriceRet
                     FROM TCNTPdtPrice4PDT P4PDT WITH (NOLOCK)
                     WHERE 1=1
@@ -433,19 +479,19 @@ class mProduct extends CI_Model{
         ";
         if (isset($paData['FTMttTableKey'])) {
             $FTMttTableKey  = $paData['FTMttTableKey'];
-            $tSQL   .= " AND FTMttTableKey  = " . $this->db->escape($FTMttTableKey) . " ";
+            $tSQL   .= " AND FTMttTableKey  = ".$this->db->escape($FTMttTableKey)." ";
         }
         if (isset($paData['FTMttRefKey'])) {
             $FTMttRefKey = $paData['FTMttRefKey'];
-            $tSQL   .= " AND FTMttRefKey    = " . $this->db->escape($FTMttRefKey) . " ";
+            $tSQL   .= " AND FTMttRefKey    = ".$this->db->escape($FTMttRefKey)." ";
         }
         if (isset($paData['FTPdtCode'])) {
             $FTPdtCode = $paData['FTPdtCode'];
-            $tSQL   .= " AND FTPdtCode      = " . $this->db->escape($FTPdtCode) . " ";
+            $tSQL   .= " AND FTPdtCode      = ".$this->db->escape($FTPdtCode)." ";
         }
         if (isset($paData['FTMttSessionID'])) {
             $FTMttSessionID = $paData['FTMttSessionID'];
-            $tSQL   .= " AND FTMttSessionID = " . $this->db->escape($FTMttSessionID) . " ";
+            $tSQL   .= " AND FTMttSessionID = ".$this->db->escape($FTMttSessionID)." ";
         }
         $tSQL  .= " ORDER BY MTT.FCPdtUnitFact ASC ";
         $oQuery = $this->db->query($tSQL);
@@ -465,8 +511,7 @@ class mProduct extends CI_Model{
         return $aResult;
     }
 
-    public function FSaMPDTGetDataUnitMasTemp($paData)
-    {
+    public function FSaMPDTGetDataUnitMasTemp($paData){
         $nLngID     = $paData['FNLngID'];
         $tSQL       = " 
             SELECT
@@ -486,18 +531,18 @@ class mProduct extends CI_Model{
                 MTT.FTPdtStaAlwPoSPL,
                 MTT.FTPdtStaAlwSale
             FROM TCNMPdtPackSizeTmp MTT WITH (NOLOCK)
-            LEFT JOIN TCNMPdtColor_L CLL WITH (NOLOCK) ON MTT.FTClrCode = CLL.FTClrCode AND CLL.FNLngID = " . $this->db->escape($nLngID) . "
-            LEFT JOIN TCNMPdtUnit_L UNL WITH (NOLOCK) ON MTT.FTPunCode = UNL.FTPunCode AND UNL.FNLngID  = " . $this->db->escape($nLngID) . "
-            LEFT JOIN TCNMPdtSize_L PRZ WITH (NOLOCK) ON MTT.FTPszCode = PRZ.FTPszCode AND PRZ.FNLngID  = " . $this->db->escape($nLngID) . "
+            LEFT JOIN TCNMPdtColor_L CLL WITH (NOLOCK) ON MTT.FTClrCode = CLL.FTClrCode AND CLL.FNLngID = ".$this->db->escape($nLngID)."
+            LEFT JOIN TCNMPdtUnit_L UNL WITH (NOLOCK) ON MTT.FTPunCode = UNL.FTPunCode AND UNL.FNLngID  = ".$this->db->escape($nLngID)."
+            LEFT JOIN TCNMPdtSize_L PRZ WITH (NOLOCK) ON MTT.FTPszCode = PRZ.FTPszCode AND PRZ.FNLngID  = ".$this->db->escape($nLngID)."
             WHERE MTT.FDCreateOn <> ''
         ";
         if (isset($paData['FTPdtCode'])) {
             $FTPdtCode   = $paData['FTPdtCode'];
-            $tSQL .= " AND FTPdtCode = " . $this->db->escape($FTPdtCode) . " ";
+            $tSQL .= " AND FTPdtCode = ".$this->db->escape($FTPdtCode)." ";
         }
         if (isset($paData['FTMttSessionID'])) {
             $FTMttSessionID  = $paData['FTMttSessionID'];
-            $tSQL .= " AND FTSessionID = " . $this->db->escape($FTMttSessionID) . " ";
+            $tSQL .= " AND FTSessionID = ".$this->db->escape($FTMttSessionID)." ";
         }
         $tSQL .= " ORDER BY MTT.FCPdtUnitFact ASC ";
 
@@ -519,8 +564,7 @@ class mProduct extends CI_Model{
     }
 
 
-    public function FSaMPDTGetDataBarcodeMasTemp($paData)
-    {
+    public function FSaMPDTGetDataBarcodeMasTemp($paData){
         $FTPdtCode  = $paData['FTPdtCode'];
         $FTPunCode  = $paData['FTPunCode'];
         $nLngID     = $paData['FNLngID'];
@@ -627,7 +671,7 @@ class mProduct extends CI_Model{
     }
 
 
-
+    
     public function FSaMPDTGetPunData($paData)
     {
         //Show ทศนิยม 2 ตำแหน่ง
@@ -764,6 +808,8 @@ class mProduct extends CI_Model{
             $this->db->where('FTSessionID', $paPdtWhere['FTMttSessionID']);
             $this->db->delete('TCNMPdtBarTmp');
         }
+
+
     }
 
     // Del Spl On Delete Pun
@@ -772,7 +818,7 @@ class mProduct extends CI_Model{
     {
         $FTPdtCode = $paPdtWhere['FTPdtCode'];
         $FTPunCode = $paPdtWhere['FTPunCode'];
-        $FTMttSessionID = $paPdtWhere['FTMttSessionID'];
+        $FTMttSessionID = $paPdtWhere['FTMttSessionID']; 
 
         $this->db->where('FTPunCode', $FTPunCode);
         $this->db->where('FTPdtCode', $FTPdtCode);
@@ -786,7 +832,7 @@ class mProduct extends CI_Model{
     {
         $FTPdtCode = $paPdtWhere['FTPdtCode'];
         $FTPunCode = $paPdtWhere['FTPunCode'];
-        $FTMttSessionID = $paPdtWhere['FTMttSessionID'];
+        $FTMttSessionID = $paPdtWhere['FTMttSessionID']; 
         $tSQL2 = "SELECT FTBarCode
                 FROM TCNMPdtBarTmp
                 WHERE FTPdtCode='$FTPdtCode'
@@ -795,13 +841,14 @@ class mProduct extends CI_Model{
                 ";
         $oQuery2 = $this->db->query($tSQL2);
         $aDataQuery2 = $oQuery2->result_array();
-
-        foreach ($aDataQuery2 as $aValue) {
+        
+        foreach($aDataQuery2 as $aValue){
             $this->db->where('FTBarCode', $aValue['FTBarCode']);
             $this->db->where('FTPdtCode', $FTPdtCode);
             $this->db->where('FTSessionID', $FTMttSessionID);
             $this->db->delete('TCNMPdtSplTmp');
         }
+
     }
 
     // Last Update : Off 10/11/2021
@@ -831,6 +878,7 @@ class mProduct extends CI_Model{
         $this->db->delete('TCNMPdtSplTmp');
     }
 
+
     //ตัวอย่าง
     public function FSaMPDTInsertPackSizeMasTemp($paData)
     {
@@ -842,7 +890,7 @@ class mProduct extends CI_Model{
         $dDate          = $paData['dDate'];
         $tUser          = $paData['tUser'];
 
-        $tSQL           = "INSERT INTO TCNMPdtPackSizeTmp (FTSessionID,FTPdtCode,FTPunCode,FCPdtUnitFact,FTPdtGrade,FCPdtWeight,FTClrCode,FTPszCode,FTPdtUnitDim,FTPdtPkgDim,FTPdtStaAlwPick,FTPdtStaAlwPoHQ,FTPdtStaAlwBuy,FTPdtStaAlwSale,FTPdtStaAlwRet,FTPdtStaAlwPoSPL,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy)
+        $tSQL           = "INSERT INTO TCNMPdtPackSizeTmp (FTSessionID,FTPdtCode,FTPunCode,FCPdtUnitFact,FTPdtGrade,FCPdtWeight,FTClrCode,FTPszCode,FTPdtUnitDim,FTPdtPkgDim,FTPdtStaAlwPick,FTPdtStaAlwPoHQ,FTPdtStaAlwBuy,FTPdtStaAlwSale,FTPdtStaAlwPoSPL,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy)
                             SELECT
                                 '$FTMttSessionID'    AS FTSessionID,
                                 PKS.FTPdtCode,
@@ -858,7 +906,6 @@ class mProduct extends CI_Model{
                                 PKS.FTPdtStaAlwPoHQ,
                                 PKS.FTPdtStaAlwBuy,
                                 PKS.FTPdtStaAlwSale,
-                                PKS.FTPdtStaAlwRet,
                                 PKS.FTPdtStaAlwPoSPL,
                                 '$dDate' AS FDLastUpdOn,
                                 '$dDate' AS FDCreateOn,
@@ -886,62 +933,61 @@ class mProduct extends CI_Model{
     }
 
     //ตัวอย่าง
-    // public function FSaMPDTInsertUnitPackSizeMasTemp($paData)
-    // {
-    //     $FTMttTableKey  = $paData['FTMttTableKey'];
-    //     $FTMttRefKey    = $paData['FTMttRefKey'];
-    //     $FTPdtCode      = $paData['FTPdtCode'];
-    //     $nLngID         = $paData['FNLngID'];
-    //     $FTMttSessionID = $paData['FTMttSessionID'];
-    //     $dDate          = $paData['dDate'];
-    //     $tUser          = $paData['tUser'];
+    public function FSaMPDTInsertUnitPackSizeMasTemp($paData)
+    {
+        $FTMttTableKey  = $paData['FTMttTableKey'];
+        $FTMttRefKey    = $paData['FTMttRefKey'];
+        $FTPdtCode      = $paData['FTPdtCode'];
+        $nLngID         = $paData['FNLngID'];
+        $FTMttSessionID = $paData['FTMttSessionID'];
+        $dDate          = $paData['dDate'];
+        $tUser          = $paData['tUser'];
 
-    //     $tSQL           = "INSERT INTO TsysMasTmp (FTMttTableKey,FTMttRefKey,FTMttSessionID,FTPdtCode,FTPunCode,FTPunName,FCPdtUnitFact,FTPdtGrade,FCPdtWeight,FTClrCode,FTClrName,FTPszCode,FTPszName,FTPdtUnitDim,FTPdtPkgDim,FTPdtStaAlwPick,FTPdtStaAlwPoHQ,FTPdtStaAlwBuy,FTPdtStaAlwSale,FTPdtStaAlwRet,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy)
-    //                         SELECT
-    //                             '$FTMttTableKey' 	 AS FTMttTableKey,
-    //                             '$FTMttRefKey'       AS FTMttRefKey,
-    //                             '$FTMttSessionID'    AS FTMttSessionID,
-    //                             PKS.FTPdtCode,
-    //                             UNI_L.FTPunCode,
-    //                             UNI_L.FTPunName,
-    //                             PKS.FCPdtUnitFact,
-    //                             PKS.FTPdtGrade,
-    //                             PKS.FCPdtWeight,
-    //                             PKS.FTClrCode,
-    //                             CLR_L.FTClrName,
-    //                             PKS.FTPszCode,
-    //                             PSZ_L.FTPszName,
-    //                             PKS.FTPdtUnitDim,
-    //                             PKS.FTPdtPkgDim,
-    //                             PKS.FTPdtStaAlwPick,
-    //                             PKS.FTPdtStaAlwPoHQ,
-    //                             PKS.FTPdtStaAlwBuy,
-    //                             PKS.FTPdtStaAlwSale,
-    //                             PKS.FTPdtStaAlwRet,
-    //                             '$dDate' AS FDLastUpdOn,
-    //                             '$dDate' AS FDCreateOn,
-    //                             '$tUser' AS FTLastUpdBy,
-    //                             '$tUser' AS FTCreateBy
-    //                         FROM TCNMPdtPackSize PKS
-    //                         LEFT JOIN TCNMPdtUnit_L  UNI_L ON UNI_L.FTPunCode = PKS.FTPunCode AND UNI_L.FNLngID = $nLngID
-    //                         LEFT JOIN TCNMPdtColor_L CLR_L ON CLR_L.FTClrCode = PKS.FTClrCode AND CLR_L.FNLngID = $nLngID
-    //                         LEFT JOIN TCNMPdtSize_L  PSZ_L ON PSZ_L.FTPszCode = PKS.FTPszCode AND PSZ_L.FNLngID = $nLngID
-    //                         WHERE PKS.FTPdtCode = '$FTPdtCode'";
+        $tSQL           = "INSERT INTO TsysMasTmp (FTMttTableKey,FTMttRefKey,FTMttSessionID,FTPdtCode,FTPunCode,FTPunName,FCPdtUnitFact,FTPdtGrade,FCPdtWeight,FTClrCode,FTClrName,FTPszCode,FTPszName,FTPdtUnitDim,FTPdtPkgDim,FTPdtStaAlwPick,FTPdtStaAlwPoHQ,FTPdtStaAlwBuy,FTPdtStaAlwSale,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy)
+                            SELECT
+                                '$FTMttTableKey' 	 AS FTMttTableKey,
+                                '$FTMttRefKey'       AS FTMttRefKey,
+                                '$FTMttSessionID'    AS FTMttSessionID,
+                                PKS.FTPdtCode,
+                                UNI_L.FTPunCode,
+                                UNI_L.FTPunName,
+                                PKS.FCPdtUnitFact,
+                                PKS.FTPdtGrade,
+                                PKS.FCPdtWeight,
+                                PKS.FTClrCode,
+                                CLR_L.FTClrName,
+                                PKS.FTPszCode,
+                                PSZ_L.FTPszName,
+                                PKS.FTPdtUnitDim,
+                                PKS.FTPdtPkgDim,
+                                PKS.FTPdtStaAlwPick,
+                                PKS.FTPdtStaAlwPoHQ,
+                                PKS.FTPdtStaAlwBuy,
+                                PKS.FTPdtStaAlwSale,
+                                '$dDate' AS FDLastUpdOn,
+                                '$dDate' AS FDCreateOn,
+                                '$tUser' AS FTLastUpdBy,
+                                '$tUser' AS FTCreateBy
+                            FROM TCNMPdtPackSize PKS
+                            LEFT JOIN TCNMPdtUnit_L  UNI_L ON UNI_L.FTPunCode = PKS.FTPunCode AND UNI_L.FNLngID = $nLngID
+                            LEFT JOIN TCNMPdtColor_L CLR_L ON CLR_L.FTClrCode = PKS.FTClrCode AND CLR_L.FNLngID = $nLngID
+                            LEFT JOIN TCNMPdtSize_L  PSZ_L ON PSZ_L.FTPszCode = PKS.FTPszCode AND PSZ_L.FNLngID = $nLngID
+                            WHERE PKS.FTPdtCode = '$FTPdtCode'";
 
-    //     $oQuery         = $this->db->query($tSQL);
-    //     if ($oQuery > 0) {
-    //         $aResult = array(
-    //             'rtCode'    => '1',
-    //             'rtDesc'    => 'success'
-    //         );
-    //     } else {
-    //         $aResult = array(
-    //             'rtCode'    => '800',
-    //             'rtDesc'    => 'data not found'
-    //         );
-    //     }
-    //     return $aResult;
-    // }
+        $oQuery         = $this->db->query($tSQL);
+        if ($oQuery > 0) {
+            $aResult = array(
+                'rtCode'    => '1',
+                'rtDesc'    => 'success'
+            );
+        } else {
+            $aResult = array(
+                'rtCode'    => '800',
+                'rtDesc'    => 'data not found'
+            );
+        }
+        return $aResult;
+    }
 
     public function FSaMPDTInsertBarCodeMasTemp($paData)
     {
@@ -1183,7 +1229,7 @@ class mProduct extends CI_Model{
         return $aStatus;
     }
 
-    // Functionality : Function Add TSVMPdtCar 
+        // Functionality : Function Add TSVMPdtCar 
     // Parameters : function parameters
     // Creator : 28/06/2021 Off
     // Return : Array Status Add TSVMPdtCar (TSVMPdtCar)
@@ -1282,7 +1328,6 @@ class mProduct extends CI_Model{
                     FTPdtStaAlwPoHQ,
                     FTPdtStaAlwBuy,
                     FTPdtStaAlwSale,
-                    FTPdtStaAlwRet,
                     FDLastUpdOn,
                     FDCreateOn,
                     FTLastUpdBy,
@@ -1301,7 +1346,6 @@ class mProduct extends CI_Model{
                     FTPdtStaAlwPoHQ,
                     FTPdtStaAlwBuy,
                     FTPdtStaAlwSale,
-                    FTPdtStaAlwRet,
                     FDLastUpdOn,
                     FDCreateOn,
                     FTLastUpdBy,
@@ -1472,7 +1516,7 @@ class mProduct extends CI_Model{
         return $aResult;
     }
 
-    // Functionality: Functio Add/Update Pdt Loc
+        // Functionality: Functio Add/Update Pdt Loc
     // Parameters: function parameters
     // Creator:  18/02/2019 Wasin(Yoshi) - Modifly: 26/06/2562 Napat(Jame)
     // Return: Status Add Update BarCode
@@ -1508,8 +1552,8 @@ class mProduct extends CI_Model{
                 WHERE FTPdtCode='$FTPdtCode'";
         $oQuery2 = $this->db->query($tSQL2);
         $aDataQuery2 = $oQuery2->result_array();
-
-        foreach ($aDataQuery2 as $aValue) {
+        
+        foreach($aDataQuery2 as $aValue){
             $this->db->set('FNPldSeq', $aValue['FNPldSeq']);
             $this->db->where('FTBarCode', $aValue['FTBarCode']);
             $this->db->where('FTPdtCode', $aValue['FTPdtCode']);
@@ -1592,8 +1636,9 @@ class mProduct extends CI_Model{
     public function FSaMPDTCheckBarCodeByID($paData)
     {
         $tSQL = "SELECT FTBarCode
-            FROM TsysMasTmp WITH(NOLOCK)
-            WHERE FTPdtCode = '$paData[FTPdtCode]'
+            FROM TsysMasTmp
+            WHERE 1=1
+            AND FTPdtCode = '$paData[FTPdtCode]'
             AND FTBarCode = '$paData[FTBarCode]'
             AND FTMttSessionID =  '$paData[FTMttSessionID]'
         ";
@@ -1618,8 +1663,9 @@ class mProduct extends CI_Model{
     public function FSaMPDTCheckBarOldCodeByID($paData)
     {
         $tSQL = "SELECT FTBarCode
-        FROM TsysMasTmp WITH(NOLOCK)
-        WHERE FTPdtCode = '$paData[FTPdtCode]'
+        FROM TsysMasTmp
+        WHERE 1=1
+        AND FTPdtCode = '$paData[FTPdtCode]'
         AND FTBarCode = '$paData[tOldBarCode]'
         ";
         $oQuery = $this->db->query($tSQL);
@@ -1732,12 +1778,10 @@ class mProduct extends CI_Model{
 
         $tSQL = "INSERT INTO TCNMPdtSpl (FTPdtCode,
                         FTBarCode,
-                        FNBarRefSeq,
                         FTSplCode,
                         FTSplStaAlwPO)
                 SELECT FTPdtCode,
                         FTBarCode,
-                        0 as FNBarRefSeq,
                         FTSplCode,
                         FTSplStaAlwPO
                 FROM TsysMasTmp
@@ -1964,103 +2008,53 @@ class mProduct extends CI_Model{
     // Creator:  20/02/2019 Wasin(Yoshi)
     // Return: Array Data Image
     // ReturnType: Array
-    public function FSaMPDTGetDataInfoByID($paDataWhere){
-        $tAgnCode   = $this->session->userdata('tSesUsrAgnCode');
-        $tAgnType   = $this->session->userdata('tAgnType');
+    public function FSaMPDTGetDataInfoByID($paDataWhere)
+    {
         $tPdtCode   = $paDataWhere['FTPdtCode'];
         $nLngID     = $paDataWhere['FNLngID'];
+        $tSQL       = " SELECT
+                            PDT.FTPdtCode,PDTL.FTPdtName,PDTL.FTPdtNameOth,PDTL.FTPdtNameABB,PDT.FTPdtStkControl,PDT.FTPdtGrpControl,PDT.FTPdtForSystem,
+                            PDT.FCPdtQtyOrdBuy,PDT.FCPdtCostDef,PDT.FCPdtCostOth,PDT.FCPdtCostStd,PDT.FCPdtMax,PDT.FTPdtPoint,PDT.FCPdtPointTime,PDT.FTPdtType,
+                            PDT.FTPdtSaleType,PDT.FTPdtSetOrSN,PDT.FTPdtStaAlwDis,PDT.FTPdtStaAlwReturn,PDT.FTPdtStaVatBuy,PDT.FTPdtStaVat,PDT.FTPdtStaActive,PDT.FTPdtStaAlwReCalOpt,
+                            PDT.FTPdtStaCsm,PDT.FTTcgCode,TCGL.FTTcgName,PDT.FTPgpChain,PGPL.FTPgpChainName,
+                            PDT.FTPtyCode,PTYL.FTPtyName,PDT.FTPbnCode,PBNL.FTPbnName,PDT.FTPmoCode,PMOL.FTPmoName,PDT.FTVatCode,VAT.FCVatRate,
+                            PDT.FTPdtStaLot,
+                            PDT.FTPdtStaAlwWHTax,
+                            PDT.FTPdtStaAlwBook,
+                            PDT.FTPdtStaSetPri,PDT.FTPdtStaSetShwDT, --Napat(Jame) 13/11/2019
+                            PDT.FTPdtType,PDT.FTPdtSaleType, --Napat(Jame) 10/09/2019
+                            SPC.FCPdtMin, --Napat(Jame) 17/09/2019 ย้ายจาก TCNMPdt ไป TCNMPdtSpcBch
+                            FTPdtStaSetPrcStk, --Napat(Jame) 20/11/2020
 
-        if(isset($tAgnCode) && !empty($tAgnCode) && isset($tAgnType) && $tAgnType == 2){
-            // เช็ค สถานะ ตัวแทนขาย / แฟรนไชส์ และ เช็ค สถานะแฟรนไชส์ == 2
-            $tSQL   = "
-                SELECT DISTINCT
-                    PDT.FTPdtCode,PDTL.FTPdtName,PDTL.FTPdtNameOth,PDTL.FTPdtNameABB,PDT.FTPdtStkControl,PDT.FTPdtGrpControl,PDT.FTPdtForSystem,
-                    PDT.FCPdtQtyOrdBuy,
-                    ISNULL(PDT.FCPdtCostDef,0)      AS FCPdtCostDef,
-                    ISNULL(PDT.FCPdtCostOth,0)      AS FCPdtCostOth,
-                    ISNULL(COSTAVG.FCPdtCostStd,0)  AS FCPdtCostStd,
-                    PDT.FCPdtMax,PDT.FTPdtPoint,PDT.FCPdtPointTime,PDT.FTPdtType,PDT.FTPdtSaleType,PDT.FTPdtSetOrSN,PDT.FTPdtStaAlwDis,PDT.FTPdtStaAlwReturn,
-                    PDT.FTPdtStaVatBuy,PDT.FTPdtStaVat,PDT.FTPdtStaActive,PDT.FTPdtStaAlwReCalOpt,
-                    PDT.FTPdtStaCsm,PDT.FTTcgCode,TCGL.FTTcgName,PDT.FTPgpChain,PGPL.FTPgpChainName,
-                    PDT.FTPtyCode,PTYL.FTPtyName,PDT.FTPbnCode,PBNL.FTPbnName,PDT.FTPmoCode,PMOL.FTPmoName,PDT.FTVatCode,VAT.FCVatRate,
-                    PDT.FTPdtStaLot,PDT.FTPdtStaAlwWHTax,PDT.FTPdtStaAlwBook,PDT.FTPdtStaSetPri,PDT.FTPdtStaSetShwDT,
-                    PDT.FTPdtType,PDT.FTPdtSaleType,SPC.FCPdtMin,PDT.FTPdtStaSetPrcStk,
-                    BCHL.FTBchName,MERL.FTMerName,SHPL.FTShpName,
-                    BCHL.FTBchCode,MERL.FTMerCode,SHPL.FTShpCode,
-                    MPGL.FTMgpCode,MPGL.FTMgpName,
-                    AGNL.FTAgnCode,AGNL.FTAgnName,
-                    PDT.FTPdtCtrlRole,
-                    ROLEL.FTRolName,
-                    ROLEL.FTRolCode,
-                    CONVERT(CHAR(10),PDT.FDPdtSaleStart,126)    AS FDPdtSaleStart,
-                    CONVERT(CHAR(10),PDT.FDPdtSaleStop,126)     AS FDPdtSaleStop,
-                    PDTL.FTPdtRmk
-                FROM TCNMPdt PDT WITH(NOLOCK)
-                LEFT JOIN TCNMPdt_L         PDTL    WITH(NOLOCK)    ON PDT.FTPdtCode        = PDTL.FTPdtCode    AND PDTL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtTouchGrp_L TCGL    WITH(NOLOCK)    ON PDT.FTTcgCode        = TCGL.FTTcgCode    AND TCGL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtGrp_L      PGPL    WITH(NOLOCK)    ON PDT.FTPgpChain       = PGPL.FTPgpChain   AND PGPL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtType_L     PTYL    WITH(NOLOCK)    ON PDT.FTPtyCode        = PTYL.FTPtyCode    AND PTYL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtBrand_L    PBNL    WITH(NOLOCK)    ON PDT.FTPbnCode        = PBNL.FTPbnCode    AND PBNL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtModel_L    PMOL    WITH(NOLOCK)    ON PDT.FTPmoCode        = PMOL.FTPmoCode    AND PMOL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN VCN_VatActive     VAT     WITH(NOLOCK)    ON PDT.FTVatCode        = VAT.FTVatCode
-                LEFT JOIN TCNMPdtSpcBch     SPC     WITH(NOLOCK)    ON SPC.FTPdtCode        = PDT.FTPdtCode
-                LEFT JOIN TCNMAgency_L      AGNL    WITH(NOLOCK)    ON SPC.FTAgnCode        = AGNL.FTAgnCode    AND AGNL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMBranch_L      BCHL    WITH(NOLOCK)    ON SPC.FTBchCode        = BCHL.FTBchCode    AND BCHL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMMerchant_L    MERL    WITH(NOLOCK)    ON SPC.FTMerCode        = MERL.FTMerCode    AND MERL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMShop_L        SHPL    WITH(NOLOCK)    ON SPC.FTShpCode        = SHPL.FTShpCode    AND  SPC.FTBchCode  = SHPL.FTBchCode  AND SHPL.FNLngID  = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMMerPdtGrp_L   MPGL    WITH(NOLOCK)    ON SPC.FTMgpCode        = MPGL.FTMgpCode    AND MPGL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMUsrRole_L		ROLEL	WITH(NOLOCK)    ON PDT.FTPdtCtrlRole    = ROLEL.FTRolCode   AND ROLEL.FNLngID   = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtCostAvg	COSTAVG	WITH(NOLOCK)	ON PDT.FTPdtCode		= COSTAVG.FTPdtCode	AND COSTAVG.FTAgnCode   = ".$this->db->escape($tAgnCode)."
-                WHERE PDT.FTPdtCode <> '' AND PDT.FTPdtCode = ".$this->db->escape($tPdtCode)."
-            ";
-        } else {
-            $tSQL   = "
-                SELECT DISTINCT
-                    PDT.FTPdtCode,PDTL.FTPdtName,PDTL.FTPdtNameOth,PDTL.FTPdtNameABB,PDT.FTPdtStkControl,PDT.FTPdtGrpControl,PDT.FTPdtForSystem,
-                    PDT.FCPdtQtyOrdBuy,
-                    ISNULL(PDT.FCPdtCostDef,0)  AS FCPdtCostDef,
-                    ISNULL(PDT.FCPdtCostOth,0)  AS FCPdtCostOth,
-                    ISNULL(PDT.FCPdtCostStd,0)  AS FCPdtCostStd,
-                    PDT.FCPdtMax,PDT.FTPdtPoint,PDT.FCPdtPointTime,PDT.FTPdtType,
-                    PDT.FTPdtSaleType,PDT.FTPdtSetOrSN,PDT.FTPdtStaAlwDis,PDT.FTPdtStaAlwReturn,PDT.FTPdtStaVatBuy,PDT.FTPdtStaVat,PDT.FTPdtStaActive,PDT.FTPdtStaAlwReCalOpt,
-                    PDT.FTPdtStaCsm,PDT.FTTcgCode,TCGL.FTTcgName,PDT.FTPgpChain,PGPL.FTPgpChainName,
-                    PDT.FTPtyCode,PTYL.FTPtyName,PDT.FTPbnCode,PBNL.FTPbnName,PDT.FTPmoCode,PMOL.FTPmoName,PDT.FTVatCode,VAT.FCVatRate,
-                    PDT.FTPdtStaLot,
-                    PDT.FTPdtStaAlwWHTax,
-                    PDT.FTPdtStaAlwBook,
-                    PDT.FTPdtStaSetPri,PDT.FTPdtStaSetShwDT, --Napat(Jame) 13/11/2019
-                    PDT.FTPdtType,PDT.FTPdtSaleType, --Napat(Jame) 10/09/2019
-                    SPC.FCPdtMin, --Napat(Jame) 17/09/2019 ย้ายจาก TCNMPdt ไป TCNMPdtSpcBch
-                    FTPdtStaSetPrcStk, --Napat(Jame) 20/11/2020
-                    BCHL.FTBchName,MERL.FTMerName,SHPL.FTShpName,
-                    BCHL.FTBchCode,MERL.FTMerCode,SHPL.FTShpCode,
-                    MPGL.FTMgpCode,MPGL.FTMgpName,
-                    AGNL.FTAgnCode,AGNL.FTAgnName,
-                    PDT.FTPdtCtrlRole,
-                    ROLEL.FTRolName,
-                    ROLEL.FTRolCode,
-                    CONVERT(CHAR(10),PDT.FDPdtSaleStart,126)    AS FDPdtSaleStart,
-                    CONVERT(CHAR(10),PDT.FDPdtSaleStop,126)     AS FDPdtSaleStop,
-                    PDTL.FTPdtRmk
-                FROM TCNMPdt PDT WITH(NOLOCK)
-                LEFT JOIN TCNMPdt_L         PDTL    WITH(NOLOCK)    ON PDT.FTPdtCode        = PDTL.FTPdtCode    AND PDTL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtTouchGrp_L TCGL    WITH(NOLOCK)    ON PDT.FTTcgCode        = TCGL.FTTcgCode    AND TCGL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtGrp_L      PGPL    WITH(NOLOCK)    ON PDT.FTPgpChain       = PGPL.FTPgpChain   AND PGPL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtType_L     PTYL    WITH(NOLOCK)    ON PDT.FTPtyCode        = PTYL.FTPtyCode    AND PTYL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtBrand_L    PBNL    WITH(NOLOCK)    ON PDT.FTPbnCode        = PBNL.FTPbnCode    AND PBNL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMPdtModel_L    PMOL    WITH(NOLOCK)    ON PDT.FTPmoCode        = PMOL.FTPmoCode    AND PMOL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN VCN_VatActive     VAT     WITH(NOLOCK)    ON PDT.FTVatCode        = VAT.FTVatCode
-                LEFT JOIN TCNMPdtSpcBch     SPC     WITH(NOLOCK)    ON SPC.FTPdtCode        = PDT.FTPdtCode
-                LEFT JOIN TCNMAgency_L      AGNL    WITH(NOLOCK)    ON SPC.FTAgnCode        = AGNL.FTAgnCode    AND AGNL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMBranch_L      BCHL    WITH(NOLOCK)    ON SPC.FTBchCode        = BCHL.FTBchCode    AND BCHL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMMerchant_L    MERL    WITH(NOLOCK)    ON SPC.FTMerCode        = MERL.FTMerCode    AND MERL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMShop_L        SHPL    WITH(NOLOCK)    ON SPC.FTShpCode        = SHPL.FTShpCode    AND  SPC.FTBchCode  = SHPL.FTBchCode  AND SHPL.FNLngID  = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMMerPdtGrp_L   MPGL    WITH(NOLOCK)    ON SPC.FTMgpCode        = MPGL.FTMgpCode    AND MPGL.FNLngID    = ".$this->db->escape($nLngID)."
-                LEFT JOIN TCNMUsrRole_L		ROLEL	WITH(NOLOCK)    ON PDT.FTPdtCtrlRole    = ROLEL.FTRolCode   AND ROLEL.FNLngID   = ".$this->db->escape($nLngID)."
-                WHERE PDT.FTPdtCode <> '' AND PDT.FTPdtCode = ".$this->db->escape($tPdtCode)."
-            ";
-        }
+                            BCHL.FTBchName,MERL.FTMerName,SHPL.FTShpName,
+                            BCHL.FTBchCode,MERL.FTMerCode,SHPL.FTShpCode,
+                            MPGL.FTMgpCode,MPGL.FTMgpName,
+                            AGNL.FTAgnCode,AGNL.FTAgnName,
+                            PDT.FTPdtCtrlRole,
+							              ROLEL.FTRolName,
+                            ROLEL.FTRolCode,
 
+                            CONVERT(CHAR(10),PDT.FDPdtSaleStart,126)    AS FDPdtSaleStart,
+                            CONVERT(CHAR(10),PDT.FDPdtSaleStop,126)     AS FDPdtSaleStop,
+                            PDTL.FTPdtRmk
+                        FROM TCNMPdt PDT
+                        LEFT JOIN TCNMPdt_L         PDTL    ON PDT.FTPdtCode    = PDTL.FTPdtCode    AND PDTL.FNLngID = $nLngID
+                        LEFT JOIN TCNMPdtTouchGrp_L TCGL    ON PDT.FTTcgCode    = TCGL.FTTcgCode    AND TCGL.FNLngID = $nLngID
+                        LEFT JOIN TCNMPdtGrp_L      PGPL    ON PDT.FTPgpChain   = PGPL.FTPgpChain   AND PGPL.FNLngID = $nLngID
+                        LEFT JOIN TCNMPdtType_L     PTYL    ON PDT.FTPtyCode    = PTYL.FTPtyCode    AND PTYL.FNLngID = $nLngID
+                        LEFT JOIN TCNMPdtBrand_L    PBNL    ON PDT.FTPbnCode    = PBNL.FTPbnCode    AND PBNL.FNLngID = $nLngID
+                        LEFT JOIN TCNMPdtModel_L    PMOL    ON PDT.FTPmoCode    = PMOL.FTPmoCode    AND PMOL.FNLngID = $nLngID
+                        LEFT JOIN VCN_VatActive       VAT     ON PDT.FTVatCode    = VAT.FTVatCode
+                        LEFT JOIN TCNMPdtSpcBch     SPC     ON SPC.FTPdtCode    = PDT.FTPdtCode
+                        LEFT JOIN TCNMAgency_L      AGNL    ON SPC.FTAgnCode    = AGNL.FTAgnCode    AND AGNL.FNLngID = $nLngID
+                        LEFT JOIN TCNMBranch_L      BCHL    ON SPC.FTBchCode    = BCHL.FTBchCode    AND BCHL.FNLngID = $nLngID
+                        LEFT JOIN TCNMMerchant_L    MERL    ON SPC.FTMerCode    = MERL.FTMerCode    AND MERL.FNLngID = $nLngID
+                        LEFT JOIN TCNMShop_L        SHPL    ON SPC.FTShpCode    = SHPL.FTShpCode  AND  SPC.FTBchCode = SHPL.FTBchCode  AND SHPL.FNLngID = $nLngID
+                        LEFT JOIN TCNMMerPdtGrp_L   MPGL    ON SPC.FTMgpCode    = MPGL.FTMgpCode    AND MPGL.FNLngID = $nLngID
+                        LEFT JOIN TCNMUsrRole_L		ROLEL	ON PDT.FTPdtCtrlRole = ROLEL.FTRolCode AND ROLEL.FNLngID = $nLngID
+                        WHERE 1=1 AND PDT.FTPdtCode = '$tPdtCode' ";
+        // echo $tSQL;
+        // exit();
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
             $aDataQuery = $oQuery->row_array();
@@ -2121,7 +2115,7 @@ class mProduct extends CI_Model{
         $tSQL       = " SELECT DISTINCT
                             PPSZ.FTPdtCode,PPSZ.FTPunCode,PUNL.FTPunName,PPSZ.FCPdtUnitFact,PPSZ.FTPdtGrade,PPSZ.FCPdtWeight,PPSZ.FTClrCode,
                             PCLL.FTClrName,PPSZ.FTPszCode,PSZL.FTPszName,PPSZ.FTPdtUnitDim,PPSZ.FTPdtPkgDim,PPSZ.FTPdtStaAlwPick,
-                            PPSZ.FTPdtStaAlwPoHQ,PPSZ.FTPdtStaAlwBuy,PPSZ.FTPdtStaAlwSale,PPSZ.FTPdtStaAlwRet,
+                            PPSZ.FTPdtStaAlwPoHQ,PPSZ.FTPdtStaAlwBuy,PPSZ.FTPdtStaAlwSale,
                             ISNULL(P4PDT.FCPgdPriceRet,0) AS FCPgdPriceRet,
                             --ISNULL(P4PDT.FCPgdPriceWhs,0) AS FCPgdPriceWhs,
                             --ISNULL(P4PDT.FCPgdPriceNet,0) AS FCPgdPriceNet
@@ -2374,16 +2368,6 @@ class mProduct extends CI_Model{
             $this->db->where_in('FTPdtCode', $paDataDel['FTPdtCode']);
             $this->db->delete('TCNMPdtCostAvg');
 
-            // Delete Table Product TCNMPDTDrug
-            // Create By WItsarut 21/01/2020
-            $this->db->where_in('FTPdtCode', $paDataDel['FTPdtCode']);
-            $this->db->delete('TFHMPdtFhn');
-
-            // Delete Table Product TCNMPDTDrug
-            // Create By WItsarut 21/01/2020
-            $this->db->where_in('FTPdtCode', $paDataDel['FTPdtCode']);
-            $this->db->delete('TFHMPdtColorSize');
-
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
                 $aStatus = array(
@@ -2559,7 +2543,7 @@ class mProduct extends CI_Model{
         return $aStatus;
     }
 
-    public function FSaMPDTUpdatePackSizeUnitByIDMasTemp($paDataAdd, $paPdtWhere)
+    public function FSaMPDTUpdatePackSizeUnitByIDMasTemp($paDataAdd,$paPdtWhere)
     {
         $this->db->where('FTSessionID', $paPdtWhere['FTMttSessionID']);
         $this->db->where('FTPdtCode', $paPdtWhere['FTPdtCode']);
@@ -2579,7 +2563,7 @@ class mProduct extends CI_Model{
         return $aStatus;
     }
 
-    public function FSaMPDTUpdateBarCodeeUnitByIDMasTemp($paDataAdd, $paPdtWhere)
+    public function FSaMPDTUpdateBarCodeeUnitByIDMasTemp($paDataAdd,$paPdtWhere)
     {
         $this->db->where('FTSessionID', $paPdtWhere['FTMttSessionID']);
         $this->db->where('FTPdtCode', $paPdtWhere['FTPdtCode']);
@@ -2620,7 +2604,7 @@ class mProduct extends CI_Model{
         return $aStatus;
     }
 
-    public function FSaMPDTUpdateSupplierUnitByIDMasTemp($paDataAdd, $paPdtWhere)
+    public function FSaMPDTUpdateSupplierUnitByIDMasTemp($paDataAdd,$paPdtWhere)
     {
         $this->db->where('FTSessionID', $paPdtWhere['FTMttSessionID']);
         $this->db->where('FTPdtCode', $paPdtWhere['FTPdtCode']);
@@ -2702,8 +2686,7 @@ class mProduct extends CI_Model{
     }
 
     // Last Update : Off 10/11/2021
-    public function FSaMPDTCheckUnitMasTempDuplicate($paPdtWhere)
-    {
+    public function FSaMPDTCheckUnitMasTempDuplicate($paPdtWhere){
         $FTPdtCode      = $paPdtWhere['FTPdtCode'];
         $FTPunCode      = $paPdtWhere['FTPunCode'];
         $FTMttSessionID = $paPdtWhere['FTMttSessionID'];
@@ -2731,8 +2714,7 @@ class mProduct extends CI_Model{
     }
 
     // Last Update : Off 10/11/2021
-    public function FSaMPDTCheckBarCodeMasTempDuplicate($paPdtWhere)
-    {
+    public function FSaMPDTCheckBarCodeMasTempDuplicate($paPdtWhere){
         $FTPdtCode      = $paPdtWhere['FTPdtCode'];
         $FTPunCode      = $paPdtWhere['FTPunCode'];
         $FTBarCode      = $paPdtWhere['FTBarCode'];
@@ -2761,8 +2743,7 @@ class mProduct extends CI_Model{
     }
 
     // Last Update : Off 10/11/2021
-    public function FSaMPDTCheckSupplierMasTempDuplicate($paPdtWhere)
-    {
+    public function FSaMPDTCheckSupplierMasTempDuplicate($paPdtWhere){
         $FTPdtCode      = $paPdtWhere['FTPdtCode'];
         $FTPunCode      = $paPdtWhere['FTPunCode'];
         $FTBarCode      = $paPdtWhere['FTBarCode'];
@@ -2916,10 +2897,7 @@ class mProduct extends CI_Model{
                 'FTPdtCode'     => $paData['FTPdtCode'],
                 'FTPunCode'     => $aDataQuery[0]['FTPunCode'],
                 'FCPdtUnitFact' => 1,
-                'FCPdtWeight'   => 0,
-                'FTPdtStaAlwRet' => '1',
-                'FTPdtStaAlwSale' => '1',
-                'FTPdtStaAlwBuy' => '1'
+                'FCPdtWeight'   => 0
             );
             $aDataAddBarCode = array(
                 'FTPdtCode'         => $paData['FTPdtCode'],
@@ -2927,15 +2905,11 @@ class mProduct extends CI_Model{
                 'FTPunCode'         => $aDataQuery[0]['FTPunCode'],
                 'FTBarStaUse'       => '1',
                 'FTBarStaAlwSale'   => '1',
-                'FNBarRefSeq'       => $paData['FNBarRefSeq'],
-                'FTFhnRefCode'      => $paData['FTFhnRefCode'],
+                'FNBarRefSeq'       => 0
             );
 
             $this->db->insert('TCNMPdtPackSize', $aDataAddPackSize);
-
-            if($paData['FTPdtForSystem']!='5'){//ถ้าไม่เป็นสินค้าแฟชั่น อัพเดทบาร์โค้ดปกติ
-                $this->db->insert('TCNMPdtBar', $aDataAddBarCode);
-            }
+            $this->db->insert('TCNMPdtBar', $aDataAddBarCode);
 
             if ($this->db->affected_rows() > 0) {
                 $aStatus    = array(
@@ -2965,9 +2939,10 @@ class mProduct extends CI_Model{
                         EMP.FTVatCode,
                         EVT.FCVatRate,
                         EVT.FDVatStart
-                from TCNMComp EMP WITH(NOLOCK)
+                from TCNMComp EMP
                 LEFT JOIN VCN_VatActive EVT ON EMP.FTVatCode = EVT.FTVatCode
-                WHERE CONVERT(VARCHAR(10),GETDATE(),121) >= CONVERT(VARCHAR(10),EVT.FDVatStart,121)
+                WHERE 1=1
+                AND CONVERT(VARCHAR(10),GETDATE(),121) >= CONVERT(VARCHAR(10),EVT.FDVatStart,121)
                 ";
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
@@ -3017,7 +2992,8 @@ class mProduct extends CI_Model{
                         LEFT JOIN TAPTPiHD  THPIHD  WITH(NOLOCK) ON THPIDT.FTBchCode    = THPIHD.FTBchCode  AND THPIDT.FTXphDocNo = THPIHD.FTXphDocNo
                         LEFT JOIN TCNMSpl   SPL     WITH(NOLOCK) ON THPIHD.FTSplCode    = SPL.FTSplCode
                         LEFT JOIN TCNMSpl_L SPL_L   WITH(NOLOCK) ON SPL.FTSplCode       = SPL_L.FTSplCode   AND SPL_L.FNLngID = '$nLngID'
-                        WHERE THPIDT.FTPdtCode  = '$tPdtCode' AND THPIHD.FTXphStaApv = 1 ORDER BY THPIHD.FDXphDocDate , THPIHD.FTXphDocNo DESC  ";
+                        WHERE 1=1
+                        AND THPIDT.FTPdtCode  = '$tPdtCode' AND THPIHD.FTXphStaApv = 1 ORDER BY THPIHD.FDXphDocDate , THPIHD.FTXphDocNo DESC  ";
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
             $aDataReturn    = $oQuery->result_array();
@@ -3047,8 +3023,9 @@ class mProduct extends CI_Model{
                 LEFT JOIN TCNMImgPdt        PIMG    WITH(NOLOCK)    ON PDT.FTPdtCode    = PIMG.FTImgRefID   AND PIMG.FTImgTable = 'TCNMPdt' AND PIMG.FNImgSeq = '$tLangEdit'
                 LEFT JOIN TCNMPdtType_L     PTL     WITH(NOLOCK)    ON PDT.FTPdtType    = PTL.FTPtyCode     AND PTL.FNLngID     = '$tLangEdit'
                 LEFT JOIN TCNMPdtUnit_L     PUNL    WITH(NOLOCK)    ON PPCZ.FTPunCode   = PUNL.FTPunCode    AND PUNL.FNLngID    = '$tLangEdit'
-                LEFT JOIN TCNMPdtGrp_L      PGL     WITH(NOLOCK)    ON PGL.FTPgpChain   = PDT.FTPgpChain    AND PGL.FNLngID     = '$tLangEdit'
-                WHERE PDT.FTPdtForSystem = '$tPdtForSystem' ";
+                LEFT JOIN TCNMPdtGrp_L      PGL     WITH(NOLOCK)    ON PGL.FTPgpChain   = PDT.FTPgpChain
+                WHERE 1=1
+                AND PDT.FTPdtForSystem = '$tPdtForSystem' ";
 
         /* |-------------------------------------------------------------------------------------------| */
         /* |                            สิทธิในการมองเห็นสินค้า CR.wat                                      | */
@@ -3177,7 +3154,7 @@ class mProduct extends CI_Model{
     {
         // Update TCNTPdtSet_Tmp
         $tTable = "TCNTPdtSet_Tmp" . date("dmY");
-
+        
         $aDataUpdate    = array_merge($paPdtSetData, array(
             'FTSessionID'   => $this->session->userdata('tSesSessionID'),
             'FDLastUpdOn'   => date('Y-m-d H:i:s'),
@@ -3336,7 +3313,7 @@ class mProduct extends CI_Model{
     //Return : status
     //Return Type : array
     public function FSaMPDTGetOthPdt($aDataSearch)
-    {
+    {   
         $tPDTCode = $aDataSearch['FTPdtCode'];
         $tSQL = "SELECT FTPdtCodeSet FROM TCNTPdtSet WITH(NOLOCK) WHERE FTPdtCode = '$tPDTCode' ";
         $oQuery = $this->db->query($tSQL);
@@ -3362,17 +3339,19 @@ class mProduct extends CI_Model{
     //Return : status
     //Return Type : object
     */
-    public function FSaMPDTGetDataPdtSpcWah($paDataWhereSpcWah){
-        $tSQL = "
-            SELECT   
-                Temp.FTPdtCode AS TmpFTPdtCode,
-                Temp.FTBchCode AS TmpFTBchCode,
-                Temp.FTWahCode AS TmpFTWahCode,
-                Temp.FCSpwQtyMin AS TmpFCSpwQtyMin,
-                Temp.FCSpwQtyMax AS TmpFCSpwQtyMax,
-                Temp.FTSpwRmk AS TmpFTSpwRmk 
-            FROM  TsysMasTmp Temp
+    public function FSaMPDTGetDataPdtSpcWah($paDataWhereSpcWah)
+    {
+
+        // $FTPdtCode      = $paDataWhereSpcWah['FTPdtCode'];
+
+        $tSQL = "SELECT   Temp.FTPdtCode AS TmpFTPdtCode,
+        Temp.FTBchCode AS TmpFTBchCode,
+        Temp.FTWahCode AS TmpFTWahCode,
+        Temp.FCSpwQtyMin AS TmpFCSpwQtyMin,
+        Temp.FCSpwQtyMax AS TmpFCSpwQtyMax,
+        Temp.FTSpwRmk AS TmpFTSpwRmk FROM  TsysMasTmp Temp
         ";
+
         $oQuery = $this->db->query($tSQL);
         return $oQuery->result_array();
     }
@@ -3616,19 +3595,20 @@ class mProduct extends CI_Model{
                     LEFT JOIN TCNMPdt_L     PDTL WITH(NOLOCK) ON TMT.FTPdtCode = PDTL.FTPdtCode  AND PDTL.FNLngID   =  $nLngID
                     LEFT JOIN TCNMBranch_L  BCHL WITH(NOLOCK) ON TMT.FTBchCode = BCHL.FTBchCode  AND BCHL.FNLngID   =  $nLngID
                     LEFT JOIN TCNMWaHouse_L WAHL WITH(NOLOCK) ON TMT.FTWahCode = WAHL.FTWahCode AND TMT.FTBchCode = WAHL.FTBchCode  AND WAHL.FNLngID   =  $nLngID
-                    WHERE TMT.FTPdtCode       = '$tPdtCode'
+                    WHERE 1=1
+                        AND TMT.FTPdtCode       = '$tPdtCode'
                         AND TMT.FTMttSessionID  = '$tSessionID'
                         AND TMT.FTMttTableKey   = '$tTableKey' ";
 
         // Check User Login Branch
-        if ($this->session->userdata("tSesUsrLevel") != "HQ") {
+         if( $this->session->userdata("tSesUsrLevel") != "HQ" ){
             $tBchMulti = $this->session->userdata("tSesUsrBchCodeMulti");
-            $tSQL .= " AND TMT.FTBchCode IN (" . $tBchMulti . ") ";
+            $tSQL .= " AND TMT.FTBchCode IN (".$tBchMulti.") ";
         }
 
 
         $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
-
+        
 
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
@@ -3716,7 +3696,8 @@ class mProduct extends CI_Model{
                         LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK)     ON TMT.FTPdtCode = PDTL.FTPdtCode  AND PDTL.FNLngID   =  $nLngID 
                         LEFT JOIN TCNMBranch_L BCHL WITH(NOLOCK)  ON TMT.FTBchCode = BCHL.FTBchCode  AND BCHL.FNLngID   =  $nLngID 
                         LEFT JOIN TCNMWaHouse_L WAHL WITH(NOLOCK) ON TMT.FTWahCode = WAHL.FTWahCode  AND TMT.FTBchCode = WAHL.FTBchCode  AND WAHL.FNLngID   =  $nLngID 
-                        WHERE TMT.FTMttTableKey = 'TCNMPdtSpcWah' 
+                        WHERE 1=1 
+                        AND TMT.FTMttTableKey = 'TCNMPdtSpcWah' 
                         AND TMT.FTPdtCode   = '$tPdtCode'
                         AND TMT.FTBchCode   = '$tBchCode'
                         AND TMT.FTWahCode   = '$tWahCode'
@@ -3883,7 +3864,8 @@ class mProduct extends CI_Model{
         $tSQL       = " SELECT
                         TMT.FTPdtCode
                         FROM TsysMasTmp TMT WITH(NOLOCK)
-                        WHERE TMT.FTPdtCode   = '$tPdtCode'
+                        WHERE 1=1
+                        AND TMT.FTPdtCode   = '$tPdtCode'
                         AND TMT.FTBchCode   = '$tBchCode'
                         AND TMT.FTWahCode   = '$tWahCode'
                     ";
@@ -4012,7 +3994,7 @@ class mProduct extends CI_Model{
         try {
             $tPdtCode = $ptData['FTPdtCode'];
 
-            $nNumrowsData = $this->db->where('FTPdtCodeSet', $tPdtCode)->get('TCNTPdtSet')->num_rows();
+            $nNumrowsData = $this->db->where('FTPdtCodeSet',$tPdtCode)->get('TCNTPdtSet')->num_rows();
 
             return $nNumrowsData;
         } catch (Exception $Error) {
@@ -4049,192 +4031,8 @@ class mProduct extends CI_Model{
         return $aData;
     }
 
-    //Functionality : ตรวจสอบข้อมูลบาร์โค้ดของสินค้า
-    //Parameters : PdtCode,SessionID
-    //Creator : 07/03/2022
-    //Return : array
-    //Return Type : array
-    public function FSaMPDTGetBarCodeInPdt($aPdtData){
-        try {
-
-               $tPdtCode = $aPdtData['tPdtCode'];
-               $tPdtStaActive = $aPdtData['tPdtStaActive'];
-               
-               $tSesSessionID = $aPdtData['tSesSessionID'];
-
-                $tSQL ="SELECT
-                        TMP.FTPdtCode,
-                        TMP.FTBarCode
-                    FROM
-                        TsysMasTmp TMP WITH (NOLOCK)
-                        LEFT JOIN (
-                                    SELECT TMP.FTPdtCode, TMP.FTPunCode,
-                                        TMP.FTPdtStaAlwSale,
-                                        TMP.FTPdtStaAlwBuy
-                                    FROM
-                                        TsysMasTmp TMP WITH (NOLOCK)
-                                    WHERE
-                                        TMP.FTMttTableKey = 'TCNMPdt'
-                                    AND TMP.FTMttRefKey = 'TCNMPdtPackSize'
-                                    AND TMP.FTMttSessionID = '$tSesSessionID'
-                                    AND ISNULL(TMP.FTPdtCode, '') = '$tPdtCode'
-                        ) PACK ON TMP.FTPdtCode = PACK.FTPdtCode AND   TMP.FTPunCode = PACK.FTPunCode
-                    WHERE TMP.FTMttTableKey = 'TCNMPdt'
-                    AND TMP.FTMttRefKey = 'TCNMPdtBar'
-                    AND TMP.FTBarStaUse = '1'
-                    AND PACK.FTPdtStaAlwSale = '1'
-                    AND PACK.FTPdtStaAlwBuy = '1'
-                    AND '1' = '$tPdtStaActive'
-                    AND TMP.FTMttSessionID = '$tSesSessionID'
-                    AND ISNULL(TMP.FTPdtCode,'') = '$tPdtCode' ";
-
-                $oQuery = $this->db->query($tSQL);
-
-                //  echo $this->db->last_query();die();
-                if ($oQuery->num_rows() > 0) {
-                    $aDetail = $oQuery->result_array();
-                    $aResult = array(
-                        'raItems'   => $aDetail,
-                        'rtCode'    => '1',
-                        'rtDesc'    => 'success',
-                    );
-                } else {
-                    //Not Found
-                    $aResult = array(
-                        'rtCode' => '800',
-                        'rtDesc' => 'data not found.',
-                    );
-                }
-                return $aResult;
-        } catch (Exception $Error) {
-            $aStatus = array(
-                'rtCode' => '500',
-                'rtDesc' => $Error->getMessage()
-            );
-            return $aResult;
-        }
-    }
-
-    //Functionality : ตรวจสอบข้อมูล Config ระบบไม่อนุญาตให้มีบาร์โค้ดซ้ำสินค้าที่ซ้ำ
-    //Parameters : System
-    //Creator : 07/03/2022
-    //Return : array
-    //Return Type : array
-    public function FSaMPDTGetConfigAlwBarCode($aPdtData){
-        try {
-
-            $tAgnCode = $aPdtData['tAgnCode'];
-
-            $tSQL ="SELECT
-                    CON.FTSysCode,
-                    CON.FTSysApp,
-                    CON.FTSysKey,
-                    CON.FTSysSeq,
-                    CONSPC.FTAgnCode,
-                    CON.FTSysStaDataType,
-                    CASE WHEN CONSPC.FTCfgStaUsrValue <> '' THEN
-                        CONSPC.FTCfgStaUsrValue 
-                    ELSE
-                        CON.FTSysStaUsrValue 
-                    END AS  FTCfgStaUsrValue,
-                    CASE WHEN CONSPC.FTCfgStaUsrRef <> '' THEN
-                        CONSPC.FTCfgStaUsrRef 
-                    ELSE
-                        CON.FTSysStaUsrRef
-                    END AS  FTCfgStaUsrRef
-                    FROM
-                        TSysConfig CON WITH (NOLOCK)
-                    LEFT JOIN TCNTConfigSpc CONSPC WITH (NOLOCK) ON  CON.FTSysCode = CONSPC.FTSysCode AND CON.FTSysApp = CON.FTSysApp AND CON.FTSysKey = CONSPC.FTSysKey AND  CON.FTSysSeq = CONSPC.FTSysSeq AND  CONSPC.FTAgnCode = '$tAgnCode'
-                    WHERE
-                        CON.FTSysCode = 'SB_AlwBarDup'
-                    AND CON.FTSysApp = 'SB'
-                    AND CON.FTSysKey = 'SB_AlwBarDup'
-                    AND CON.FTSysSeq IN (1)";
-
-                $oQuery = $this->db->query($tSQL);
-                if ($oQuery->num_rows() > 0) {
-                    $aDetail = $oQuery->row_array();
-                    $aResult = array(
-                        'raItems'   => $aDetail,
-                        'rtCode'    => '1',
-                        'rtDesc'    => 'success',
-                    );
-                } else {
-                    //Not Found
-                    $aResult = array(
-                        'rtCode' => '800',
-                        'rtDesc' => 'data not found.',
-                    );
-                }
-                return $aResult;
-        } catch (Exception $Error) {
-            $aStatus = array(
-                'rtCode' => '500',
-                'rtDesc' => $Error->getMessage()
-            );
-            return $aResult;
-        }
-
-    }
-
-    //Functionality : ตรวจสอบข้อมูลบาร์โค้ดของสินค้า
-    //Parameters : PdtCode,SessionID
-    //Creator : 07/03/2022
-    //Return : array
-    //Return Type : array
-    public function FSaMPDTCheckBarCodeInPdt($aDataPdt){
-        try {
-
-               $aPdtListBarCode = $aDataPdt['aPdtListBarCode'];
-               $tAgnCode        = $aDataPdt['tAgnCode'];
-               $tPdtCode        = $aDataPdt['tPdtCode'];
-               $aPdtListBarCodeText = implode("','",$aPdtListBarCode);
-                $tSQL =" SELECT
-                            BAR.FTPdtCode,
-                            BAR.FTBarCode
-                        FROM
-                            TCNMPdtBar BAR WITH (NOLOCK)
-                        LEFT JOIN TCNMPdtSpcBch SPCBCH WITH (NOLOCK) ON BAR.FTPdtCode = SPCBCH.FTPdtCode
-                        LEFT JOIN TCNMPdtPackSize PACK WITH (NOLOCK) ON BAR.FTPdtCode = PACK.FTPdtCode AND BAR.FTPunCode = PACK.FTPunCode
-                        LEFT JOIN TCNMPdt PDT WITH (NOLOCK) ON BAR.FTPdtCode = PDT.FTPdtCode 
-                        WHERE
-                            SPCBCH.FTAgnCode = '$tAgnCode'
-                        AND BAR.FTPdtCode != '$tPdtCode'
-                        AND BAR.FTBarCode IN ('$aPdtListBarCodeText')
-                        AND BAR.FTBarStaUse = '1' 
-                        AND PACK.FTPdtStaAlwSale = '1'
-                        AND PACK.FTPdtStaAlwBuy = '1'
-                        AND PDT.FTPdtStaActive = '1'";
-
-                $oQuery = $this->db->query($tSQL);
-         
-                if ($oQuery->num_rows() > 0) {
-                    $aDetail = $oQuery->result_array();
-                    $aResult = array(
-                        'raItems'   => $aDetail,
-                        'rtCode'    => '1',
-                        'rtDesc'    => 'success',
-                    );
-                } else {
-                    //Not Found
-                    $aResult = array(
-                        'rtCode' => '800',
-                        'rtDesc' => 'data not found.',
-                    );
-                }
-                return $aResult;
-        } catch (Exception $Error) {
-            $aResult = array(
-                'rtCode' => '500',
-                'rtDesc' => $Error->getMessage()
-            );
-            return $aResult;
-        }
-    }
-
     // Creator :  17/06/2021 Napat(Jame)
-    public function FSaMPDTGetDataControlLot($paDataWhere)
-    {
+    public function FSaMPDTGetDataControlLot($paDataWhere){
         $tPdtCode   = $paDataWhere['FTPdtCode'];
         $tAgnCode   = $this->session->userdata("tSesUsrAgnCode");
         $tSQL       = " SELECT
@@ -4246,7 +4044,8 @@ class mProduct extends CI_Model{
                             PDTLOT.FDPdtDateEXP
                         FROM TCNMPdtLot PDTLOT WITH(NOLOCK)
                         INNER JOIN TCNMLot LOT WITH(NOLOCK) ON PDTLOT.FTLotNo = LOT.FTLotNo AND (LOT.FTAgnCode = '$tAgnCode' OR ISNULL(LOT.FTAgnCode,'') = '')
-                        WHERE PDTLOT.FTPdtCode = '$tPdtCode'
+                        WHERE 1=1
+                            AND PDTLOT.FTPdtCode = '$tPdtCode'
                         ORDER BY PDTLOT.FDCreateOn DESC
                       ";
         $oQuery = $this->db->query($tSQL);
@@ -4272,10 +4071,10 @@ class mProduct extends CI_Model{
         $tPmoCode   = $paData['FTPmoCode'];
         $FNLngID    = $paData['FNLngID'];
         $tSqlWhere = '';
-        if ($tPbnCode != '') {
+        if($tPbnCode != ''){
             $tSqlWhere .= "AND TCNMPdtLot.FTPbnCode =  '$tPbnCode'";
         }
-        if ($tPmoCode != '') {
+        if($tPmoCode != ''){
             $tSqlWhere .= "AND TCNMPdtLot.FTPmoCode =  '$tPmoCode'";
         }
 
@@ -4294,10 +4093,10 @@ class mProduct extends CI_Model{
                 LEFT JOIN TCNMPdtBrand_L ON TCNMPdtLot.FTPbnCode = TCNMPdtBrand_L.FTPbnCode AND TCNMPdtBrand_L.FNLngID = '$FNLngID'
 	            LEFT JOIN TCNMPdtModel_L ON TCNMPdtLot.FTPmoCode = TCNMPdtModel_L.FTPmoCode AND TCNMPdtModel_L.FNLngID = '$FNLngID'
                 ";
-
-        if ($tPbnCode != '' || $tPmoCode != '') {
+        
+        if($tPbnCode != '' || $tPmoCode != ''){
             $tSQL .= "WHERE 1=1 $tSqlWhere ";
-        } else {
+        }else{
             $tSQL .= "WHERE TCNMPdtLot.FTPbnCode =  '$tPbnCode' AND TCNMPdtLot.FTPmoCode =  '$tPmoCode'";
         }
 
@@ -4310,16 +4109,17 @@ class mProduct extends CI_Model{
                 'rtCode'        => '1',
                 'rtDesc'        => 'success',
             );
-        } else {
+        }else {
             //No Data
             $aResult = array(
                 'rtCode' => '800',
                 'rtDesc' => 'data not found',
-            );
+        );
         }
         $jResult = json_encode($aResult);
         $aResult = json_decode($jResult, true);
         return $aResult;
+
     }
 
     // Functionality: Func. Get Data ProductLot by ID
@@ -4342,7 +4142,7 @@ class mProduct extends CI_Model{
                 'rtCode'        => '1',
                 'rtDesc'        => 'success',
             );
-        } else {
+        }else {
             //No Data
             $aResult = array(
                 'rtCode' => '800',
@@ -4352,6 +4152,7 @@ class mProduct extends CI_Model{
         $jResult = json_encode($aResult);
         $aResult = json_decode($jResult, true);
         return $aResult;
+
     }
     //Functionality :  insert into  กำหนดเงื่อนไขการควบคุมสต็อค
     //Parameters : function parameters
@@ -4359,32 +4160,32 @@ class mProduct extends CI_Model{
     //Return : array
     //Return Type : array
     public function FSaMPdtLotAddData($paData)
-    {
-        try {
-            $this->db->insert('TCNMPdtLot', array(
-                'FTPdtCode'    => $paData['FTPdtCode'],
-                'FTLotNo'      => $paData['FTLotNo'],
-                'FCPdtCost'    => $paData['FCPdtCost'],
-                'FDPdtDateMFG' => $paData['FDPdtDateMFG'],
-                'FDPdtDateEXP' => $paData['FDPdtDateEXP'],
-                'FDLastUpdOn'  => $paData['FDLastUpdOn'],
-                'FTLastUpdBy'  => $paData['FTLastUpdBy'],
-                'FDCreateOn'   => $paData['FDCreateOn'],
-                'FTCreateBy'   => $paData['FTCreateBy'],
+    { 
+        try{
+            $this->db->insert('TCNMPdtLot',array(
+            'FTPdtCode'    => $paData['FTPdtCode'],
+            'FTLotNo'      => $paData['FTLotNo'],
+            'FCPdtCost'    => $paData['FCPdtCost'],
+            'FDPdtDateMFG' => $paData['FDPdtDateMFG'],
+            'FDPdtDateEXP' => $paData['FDPdtDateEXP'],
+            'FDLastUpdOn'  => $paData['FDLastUpdOn'],
+            'FTLastUpdBy'  => $paData['FTLastUpdBy'],
+            'FDCreateOn'   => $paData['FDCreateOn'],
+            'FTCreateBy'   => $paData['FTCreateBy'],
             ));
-            if ($this->db->affected_rows() > 0) {
+            if($this->db->affected_rows() > 0){
                 $aStatus = array(
-                    'rtCode' => '1',
-                    'rtDesc' => 'Add Master Success',
+                'rtCode' => '1',
+                'rtDesc' => 'Add Master Success',
                 );
-            } else {
+            }else{
                 $aStatus = array(
-                    'rtCode' => '905',
-                    'rtDesc' => 'Error Cannot Add/Edit Master.',
+                'rtCode' => '905',
+                'rtDesc' => 'Error Cannot Add/Edit Master.',
                 );
             }
             return $aStatus;
-        } catch (Exception $Error) {
+        }catch(Exception $Error){
             return $Error;
         }
     }
@@ -4395,7 +4196,7 @@ class mProduct extends CI_Model{
     //Return Type : array
     public function FSaMPDTStockLotEdit($paData)
     {
-        try {
+        try{
             $this->db->set('FTLotNo', $paData['FTLotNo']);
             $this->db->set('FCPdtCost', $paData['FCPdtCost']);
             $this->db->set('FDPdtDateMFG', $paData['FDPdtDateMFG']);
@@ -4407,19 +4208,19 @@ class mProduct extends CI_Model{
             $this->db->where('FTPdtCode', $paData['FTPdtCode']);
             $this->db->where('FTLotNo', $paData['FTLotNo']);
             $this->db->update('TCNMPdtLot');
-            if ($this->db->affected_rows() > 0) {
+            if($this->db->affected_rows() > 0){
                 $aStatus = array(
-                    'rtCode' => '1',
-                    'rtDesc' => 'Edit Master Success',
+                'rtCode' => '1',
+                'rtDesc' => 'Edit Master Success',
                 );
-            } else {
+                }else{
                 $aStatus = array(
-                    'rtCode' => '905',
-                    'rtDesc' => 'Error Cannot Edit Master.',
+                'rtCode' => '905',
+                'rtDesc' => 'Error Cannot Edit Master.',
                 );
             }
             return $aStatus;
-        } catch (Exception $Error) {
+        }catch(Exception $Error){
             return $Error;
         }
     }
@@ -4430,9 +4231,9 @@ class mProduct extends CI_Model{
     // Return Type : array
     public function FSaMPDTStockLotDel($paData)
     {
-        $this->db->where('FTPdtCode', $paData['FTPdtCode']);
-        $this->db->where('FTLotNo', $paData['FTLotNo']);
-        $this->db->delete('TCNMPdtLot');
+       $this->db->where('FTPdtCode', $paData['FTPdtCode']);
+       $this->db->where('FTLotNo', $paData['FTLotNo']);
+       $this->db->delete('TCNMPdtLot');    
         if ($this->db->affected_rows() > 0) {
             //Success
             $aStatus = array(
@@ -4463,6 +4264,7 @@ class mProduct extends CI_Model{
         $this->db->where('FTSessionID', $paPdtWhere['FTMttSessionID']);
         $this->db->where('FTPdtCode', $paPdtWhere['FTPdtCode']);
         $this->db->delete($tTable);
+
     }
 
     // Functionality : ลบข้อมูลในตาราง TCNMPdtLot
@@ -4485,6 +4287,7 @@ class mProduct extends CI_Model{
         $this->db->where('FTSessionID', $paPdtWhere['FTMttSessionID']);
         $this->db->where('FTPdtCode', $paPdtWhere['FTPdtCode']);
         $this->db->delete('TCNMPdtSplTmp');
+
     }
 
     // Functionality : ลบข้อมูลในตาราง SetTMP ADD
@@ -4514,7 +4317,7 @@ class mProduct extends CI_Model{
         $this->db->where('FTSessionID', $paPdtWhere['FTMttSessionID']);
         $this->db->delete('TCNMPdtBarTmp');
 
-
+        
         $this->db->where('FTSessionID', $paPdtWhere['FTMttSessionID']);
         $this->db->delete('TCNMPdtSplTmp');
     }
@@ -4608,28 +4411,28 @@ class mProduct extends CI_Model{
             FROM $tTable
             WHERE FTPdtCode='$FTPdtCode' AND FTSessionID='$FTMttSessionID'";
 
-        $oCheckQuery = $this->db->query($tSQLCheck);
-        $aDataCheckQueryReturn    = $oCheckQuery->result_array();
+            $oCheckQuery = $this->db->query($tSQLCheck);
+            $aDataCheckQueryReturn    = $oCheckQuery->result_array();
 
         // exit;
         if ($oQuery > 0) {
             $this->db->where('FTSessionID', $this->session->userdata('tSesSessionID'));
             $this->db->delete($tTable);
 
-            if (count($aDataCheckQueryReturn) > 0) {
+            if(count($aDataCheckQueryReturn) > 0){
                 $aDataUpdate    = array(
                     'FTPdtSetOrSN'  => '2',
                     'FDLastUpdOn'   => date('Y-m-d H:i:s'),
                     'FTLastUpdBy'   => $this->session->userdata('tSesUsername')
                 );
-            } else {
+            }else{
                 $aDataUpdate    = array(
                     'FTPdtSetOrSN'  => '1',
                     'FDLastUpdOn'   => date('Y-m-d H:i:s'),
                     'FTLastUpdBy'   => $this->session->userdata('tSesUsername')
                 );
             }
-
+            
             $this->db->where('FTPdtCode', $FTPdtCode);
             $this->db->update('TCNMPdt', $aDataUpdate);
 
@@ -4652,24 +4455,23 @@ class mProduct extends CI_Model{
     // Last Modified :
     // Return : array
     // Return Type : array
-    public function FSaMPDTGetPrictListData($paData)
-    {
+    public function FSaMPDTGetPrictListData($paData){
         $nLngID         = $paData['FNLngID'];
-        $aRowLen        = FCNaHCallLenData($paData['nRow'], $paData['nPage']);
+        $aRowLen        = FCNaHCallLenData($paData['nRow'],$paData['nPage']);
         $oAdvanceSearch = $paData['oAdvanceSearch'];
         $tWhere         = "";
         $FTPdtCode      = $paData['FTPdtCode'];
 
-        if ($paData['tDisplayType'] == '1') {
+        if( $paData['tDisplayType'] == '1' ){
             $tOrderBy1 = " ADJP_HD.FTXphDocNo DESC ";
             // $tOrderBy1 = " ADJP_DT.FTPdtCode ASC, ADJP_DT.FTPunCode ASC, ADJP_HD.FDXphDStart ASC ";
             // $tOrderBy2 = " ORDER BY B.FTXphTStart DESC,B.FTPdtCode DESC,B.FTPunCode DESC ";
-        } else {
+        }else{
             $tOrderBy1 = " ADJP_HD.FTXphDocNo DESC ";
             // $tOrderBy1 = " ADJP_HD.FTPplCode ASC, ADJP_DT.FTPdtCode ASC, ADJP_DT.FTPunCode ASC, ADJP_HD.FDXphDStart ASC ";
             // $tOrderBy2 = " ORDER BY B.FTPplCode DESC, B.FTPdtCode ASC,B.FTPunCode ASC,B.FTXphDocNo ASC ";
         }
-
+        
         // @$tSearchList = $oAdvanceSearch['tSearchAll'];
         // if(@$tSearchList != ''){
         //     $tWhere .= " AND ((ADJP_DT.FTPdtCode LIKE '%$tSearchList%') OR (PDTL.FTPdtName LIKE '%$tSearchList%') OR (PUNL.FTPunName LIKE '%$tSearchList%') OR (ADJP_HD.FTXphDocNo LIKE '%$tSearchList%') OR (CONVERT(VARCHAR(10),ADJP_HD.FDXphDStart,121) LIKE '%$tSearchList%') OR '%$tSearchList%' BETWEEN CONVERT(VARCHAR(10),ADJP_HD.FDXphDStart,121) AND CONVERT(VARCHAR(10),ADJP_HD.FDXphDStop,121))";
@@ -4678,7 +4480,7 @@ class mProduct extends CI_Model{
         // จากวันที่เอกสาร - ถึงวันที่เอกสาร
         $tSearchDocDateFrom = $oAdvanceSearch['tSearchDocDateFrom'];
         $tSearchDocDateTo   = $oAdvanceSearch['tSearchDocDateTo'];
-        if (!empty($tSearchDocDateFrom) && !empty($tSearchDocDateTo)) {
+        if(!empty($tSearchDocDateFrom) && !empty($tSearchDocDateTo)){
             $tWhere .= " AND ((CONVERT(VARCHAR(10),ADJP_HD.FDXphDStart,121) BETWEEN '$tSearchDocDateFrom' AND '$tSearchDocDateTo') OR (CONVERT(VARCHAR(10),ADJP_HD.FDXphDStart,121) BETWEEN '$tSearchDocDateTo' AND '$tSearchDocDateFrom'))";
         }
 
@@ -4688,7 +4490,7 @@ class mProduct extends CI_Model{
         // if(!empty($tPunCodeFrom) && !empty($tPunCodeTo)){
         //     $tWhere .= " AND ((ADJP_DT.FTPunCode BETWEEN $tPunCodeFrom AND $tPunCodeTo) OR (ADJP_DT.FTPunCode BETWEEN $tPunCodeTo AND $tPunCodeFrom))";
         // }
-
+                            
         // วันที่มีผล
         // $tWhere .= " AND ( CONVERT(VARCHAR(10),GETDATE(),121) BETWEEN CONVERT(VARCHAR(10), ADJP_HD.FDXphDStart, 121) AND CONVERT(VARCHAR(10), ADJP_HD.FDXphDStop, 121) ) ";
         // $tWhere .= " AND ( CONVERT(VARCHAR(5),GETDATE(),114) BETWEEN ADJP_HD.FTXphTStart AND ADJP_HD.FTXphTStop ) ";
@@ -4696,32 +4498,32 @@ class mProduct extends CI_Model{
         // กลุ่มราคาที่มีผล
         $tPplCodeFrom   = $oAdvanceSearch['tPplCodeFrom'];
         $tPplCodeTo     = $oAdvanceSearch['tPplCodeTo'];
-        if (!empty($tPplCodeFrom) && !empty($tPplCodeTo)) {
-            if ($tPplCodeFrom == 'NA' && $tPplCodeTo != 'NA') {
+        if(!empty($tPplCodeFrom) && !empty($tPplCodeTo)){
+            if( $tPplCodeFrom == 'NA' && $tPplCodeTo != 'NA' ){
                 $tWhere .= " AND (ADJP_HD.FTPplCode = '' OR ADJP_HD.FTPplCode IS NULL) ";
                 $tWhere .= " AND ADJP_HD.FTPplCode = '$tPplCodeTo' ";
             }
 
-            if ($tPplCodeFrom != 'NA' && $tPplCodeTo == 'NA') {
+            if( $tPplCodeFrom != 'NA' && $tPplCodeTo == 'NA' ){
                 $tWhere .= " AND (ADJP_HD.FTPplCode = '' OR ADJP_HD.FTPplCode IS NULL) ";
                 $tWhere .= " AND ADJP_HD.FTPplCode = '$tPplCodeFrom' ";
             }
 
-            if ($tPplCodeFrom != 'NA' && $tPplCodeTo != 'NA') {
+            if( $tPplCodeFrom != 'NA' && $tPplCodeTo != 'NA' ){
                 $tWhere .= " AND ((ADJP_HD.FTPplCode BETWEEN $tPplCodeFrom AND $tPplCodeTo) OR (ADJP_HD.FTPplCode BETWEEN $tPplCodeTo AND $tPplCodeFrom)) ";
             }
 
-            if ($tPplCodeFrom == 'NA' && $tPplCodeTo == 'NA') {
+            if( $tPplCodeFrom == 'NA' && $tPplCodeTo == 'NA' ){
                 $tWhere .= " AND (ADJP_HD.FTPplCode = '' OR ADJP_HD.FTPplCode IS NULL) ";
             }
         }
 
-        if ($this->session->userdata("tSesUsrLevel") != "HQ") {
+        if( $this->session->userdata("tSesUsrLevel") != "HQ" ){
             $tBchCodeMulti = $this->session->userdata("tSesUsrBchCodeMulti");
             $tWhere .= " AND ADJP_HD.FTBchCode IN ($tBchCodeMulti) ";
 
             //ถ้ามี Mer ต้อง Where Mer เพิ่ม
-            if ($this->session->userdata("tSesUsrMerCode") != '') {
+            if($this->session->userdata("tSesUsrMerCode") != ''){
                 $tMerCode = $this->session->userdata("tSesUsrMerCode");
                 $tWhere .= " AND PDTSPC.FTMerCode IN ($tMerCode) ";
             }
@@ -4741,14 +4543,11 @@ class mProduct extends CI_Model{
                         ADJP_HD.FTPplCode,
                         PL.FTPplName,
                         ADJP_HD.FTXphDocNo,
-                        CONVERT(VARCHAR(10),ADJP_HD.FDXphDocDate,121) AS FDXphDocDate,
-                        ADJP_HD.FTXphRmk
-
-        ";
+                        CONVERT(VARCHAR(10),ADJP_HD.FDXphDocDate,121) AS FDXphDocDate ";
 
         $tSQLCount = " SELECT COUNT(ADJP_HD.FTXphDocNo) AS FNCountData ";
 
-        $tSQL1 = "  SELECT B.* FROM ( ";
+        $tSQL1 = "  SELECT B.* FROM ( ";  
         $tSQL2 = "  FROM TCNTPdtAdjPriHD ADJP_HD WITH (NOLOCK)
                     INNER JOIN TCNTPdtAdjPriDT ADJP_DT WITH (NOLOCK) ON ADJP_DT.FTXphDocNo = ADJP_HD.FTXphDocNo AND ADJP_DT.FTBchCode = ADJP_HD.FTBchCode
                     LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON ADJP_DT.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = $nLngID
@@ -4760,28 +4559,28 @@ class mProduct extends CI_Model{
                     $tWhere
                 ";
         $tSQL3 = " ) B WHERE B.FNRowID > $aRowLen[0] AND B.FNRowID <= $aRowLen[1] ";
-
+        
         // Data
-        $tFinalDataQuery = $tSQL1 . $tSQLMain . $tSQL2 . $tSQL3;
+        $tFinalDataQuery = $tSQL1.$tSQLMain.$tSQL2.$tSQL3;
         $oQueryData = $this->db->query($tFinalDataQuery);
 
         // Count Data
-        $tFinalCountQuery = $tSQLCount . $tSQL2;
+        $tFinalCountQuery = $tSQLCount.$tSQL2;
         $oQueryCount = $this->db->query($tFinalCountQuery);
 
-        //    echo  $tFinalDataQuery; 
-        //    echo  $tFinalCountQuery; 
-        //    die(); 
-
+    //    echo  $tFinalDataQuery; 
+    //    echo  $tFinalCountQuery; 
+    //    die(); 
+        
         if ($oQueryData->num_rows() > 0) {
             $aList          = $oQueryData->result_array();
             $aCount         = $oQueryCount->result_array();
-            if ($paData['nPage'] == 1) {
-                $nFoundRow      = $aCount[0]['FNCountData'];
-            } else {
+            if($paData['nPage'] == 1){
+                $nFoundRow      = $aCount[0]['FNCountData'] ;
+            }else{
                 $nFoundRow      = $paData['nPagePDTAll'];
             }
-            $nPageAll       = ceil($nFoundRow / $paData['nRow']);
+            $nPageAll       = ceil($nFoundRow/$paData['nRow']);
             $aResult = array(
                 'raItems'       => $aList,
                 'rnAllRow'      => $nFoundRow,
@@ -4811,22 +4610,21 @@ class mProduct extends CI_Model{
     //Creator : 27/04/2021 Nattakit
     //Return : Array Stutus Add Update
     //Return Type : Array
-    public function FSaMPFHAddUpdateMasterDepartMent($paData)
-    {
-        try {
+    public function FSaMPFHAddUpdateMasterDepartMent($paData){
+        try{
             //ต้องไปอัพเดท วันที่ + เวลา ที่ตาราง TCNMPdt ว่ามีการเปลี่ยนแปลงด้วย
-            $this->db->set('FDLastUpdOn', $paData['FDLastUpdOn']);
-            $this->db->set('FTLastUpdBy', $paData['FTLastUpdBy']);
-            $this->db->where('FTPdtCode', $paData['FTPdtCode']);
+            $this->db->set('FDLastUpdOn',$paData['FDLastUpdOn']);
+            $this->db->set('FTLastUpdBy',$paData['FTLastUpdBy']);
+            $this->db->where('FTPdtCode'      ,$paData['FTPdtCode']);
             $this->db->update('TCNMPdt');
 
-            $this->db->where('FTPdtCode', $paData['FTPdtCode']);
+            $this->db->where('FTPdtCode'      ,$paData['FTPdtCode']);
             $this->db->delete('TCNMPdtCategory');
 
 
             $aResult = array(
                 'FTPdtCode'             => $paData['FTPdtCode'],
-                'FTPdtCat1'             => $paData['FTDepCode'],
+                'FTPdtCat1'             => $paData['FTDepCode'], 
                 'FTPdtCat2'             => $paData['FTClsCode'],
                 'FTPdtCat3'             => $paData['FTSclCode'],
                 'FTPdtCat4'            => $paData['FTPgpCode'],
@@ -4836,94 +4634,27 @@ class mProduct extends CI_Model{
             );
 
             // Add Data Master
-            $this->db->insert('TCNMPdtCategory', $aResult);
+            $this->db->insert('TCNMPdtCategory',$aResult);
 
-            if ($this->db->affected_rows() > 0) {
+            if($this->db->affected_rows() > 0){
                 $aStatus   = array(
                     'reCode'    => '1',
                     'rtDesc'    => 'Add Master Success',
                 );
-            } else {
+            }else{
                 $aStatus = array(
                     'rtCode'    => '905',
                     'rtDesc'    => 'Error Cannot Add MAster',
                 );
             }
 
-
+            
             $jStatus = json_encode($aStatus);
             $aStatus = json_decode($jStatus, true);
             return $aStatus;
-        } catch (Exception $Error) {
+        }catch(Exception $Error){
             return $Error;
         }
     }
-
-
-
-
-
-
-
-    // ===================================================== Function Event PdtSpcCtl =====================================================
-        // Get Data ข้อมูล เงื่อนไขสินค้า
-        public function FSaMGetDataDocCtl($ptPdtCode){
-            $nLngID = $this->session->userdata("tLangEdit");
-            $tSQL   = "
-                SELECT 
-                    DCTLL.FTDctCode,
-                    DCTLL.FTDctTable,
-                    DCTLL.FTDctName,
-                    ISNULL(PSC.FTPscAlwCmp,2)   AS FTPscAlwCmp,
-                    ISNULL(PSC.FTPscAlwAD,2)    AS FTPscAlwAD,
-                    ISNULL(PSC.FTPscAlwBch,2)   AS FTPscAlwBch,
-                    ISNULL(PSC.FTPscAlwMer,2)   AS FTPscAlwMer,
-                    ISNULL(PSC.FTPscAlwShp,2)   AS FTPscAlwShp,
-                    ISNULL(PSC.FTPscAlwOwner,2)	AS FTPscAlwOwner
-                FROM TCNSDocCtl_L DCTLL WITH(NOLOCK)
-                LEFT JOIN TCNMPdtSpcCtl PSC WITH(NOLOCK) ON DCTLL.FTDctCode = PSC.FTDctCode AND PSC.FTPdtCode = ".$this->db->escape($ptPdtCode)."
-                WHERE DCTLL.FTDctStaUse	= '1'
-                AND DCTLL.FNLngID       = ".$this->db->escape($nLngID)."    
-            ";
-            $oQuery = $this->db->query($tSQL);
-            if($oQuery->num_rows() > 0) {
-                $aResult    = array(
-                    'raItems'   => $oQuery->result_array(),
-                    'rtCode'    => '1',
-                    'rtDesc'    => 'data found',
-                );
-            }else{
-                $aResult    = array(
-                    'rtCode'    => '800',
-                    'rtDesc'    => 'data not found',
-                );
-            }
-            return $aResult;
-        }
-
-        // Add / Update ข้อมูล เงื่อนไขสินค้า
-        public function FSxMPdtAddUpdPdtSpcCtl($paDataInsUpd,$paDataWhere){
-            // ลบข้อมูล เงื่อนไขสินค้า
-            $this->db->where('FTPdtCode',$paDataWhere['FTPdtCode']);
-            $this->db->delete('TCNMPdtSpcCtl');
-            if(count($paDataInsUpd) > 0){
-                // Loop Set Insert Data 
-                foreach($paDataInsUpd AS $nKey => $aDataInsUpd){
-                    $aDataInsUpd    = array_merge($aDataInsUpd,[
-                        'FTPdtCode' => $paDataWhere['FTPdtCode']
-                    ]);
-                    $this->db->insert('TCNMPdtSpcCtl',$aDataInsUpd);
-                }
-            }
-            return;
-        }
-
-
-
-    // ====================================================================================================================================
-
-
-
-
 
 }

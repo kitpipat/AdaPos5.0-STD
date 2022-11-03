@@ -1,8 +1,4 @@
 <script type="text/javascript">
-    // $('document').on('keydown', function() {
-    //     alert(event.keyCode);
-    // });
-
     $(document).on("keypress", 'form', function(e) {
         var code = e.keyCode || e.which;
         if (code == 13) {
@@ -10,7 +6,6 @@
             return false;
         }
     });
-
     $('.form-control').on("keypress", function(e) {
         var code = e.keyCode || e.which;
         if (code == 13) {
@@ -18,21 +13,18 @@
             $(".form-control:not(:disabled):input[type='text']:input:not([readonly]):input:not([type=hidden])").eq(nIndex + 1).focus().select();
         }
     });
-
-
     $('#ocmPdtForSystem').on('change',function(){
         JSxPdtTypeControlTap();
     });
-
-
-
     var tBaseURL = '<?php echo base_url(); ?>';
     var nLangEdits = '<?php echo $this->session->userdata("tLangEdit") ?>';
     var nStaAddOrEdit = '<?php echo $nStaAddOrEdit; ?>';
     var nSesUsrShpCount = '<?php echo $this->session->userdata("nSesUsrShpCount") ?>';
     $(document).ready(function() {
-        //เรียกหน้า กำหนดเงื่อนไขการควบคุมสต๊อก 23/01/2020 Saharat(Golf)
+        //เรียกหน้า กำหนดเงื่อนไขการควบคุมสต็อค
         JSvPdtCallpageStockConditions();
+        //เรียกหน้า เรียกหน้าสินค้าประเภทควบคุม LOT/BATCH 28/07/2021 Phaksaran(Golf)
+        JSvCallPagePdtLots();
         if (nStaAddOrEdit != "" && nStaAddOrEdit == 1) {
             var nCountDataImgItem = $('#odvImageTumblr #otbImageListProduct tbody tr td.xWTDImgDataItem').length;
             if (nCountDataImgItem > 0) {
@@ -45,7 +37,6 @@
                 });
             }
         }
-
         if (JSbProductIsCreatePage()) {
             $("#oetPdtCode").attr("disabled", true);
             $('#ocbProductAutoGenCode').change(function() {
@@ -60,17 +51,14 @@
             });
             JSxProductVisibleComponent('#odvReasonAutoGenCode', true);
         }
-
         if (JSbProductIsUpdatePage()) {
             $("#oetPdtCode").attr("readonly", true);
             $('#odvProductAutoGenCode input').attr('disabled', true);
             JSxProductVisibleComponent('#odvProductAutoGenCode', false);
         }
-
         $('#oetPdtCode').blur(function() {
             JSxCheckProductCodeDupInDB();
         });
-
         if (nSesUsrShpCount != 1) {
             //ปิดปุ่ม browse ร้านค้า หากยังไม่เลือกสาขา
             if ($('#oetPdtBchCode').val() == '' || $('#oetPdtBchCode').val() == null) {
@@ -79,7 +67,6 @@
                 $("#obtBrowsePdtInfoShp").attr("disabled", false);
             }
         }
-
         JSxPdtTypeControlTap();
     });
 
@@ -94,12 +81,28 @@
         startDate: new Date(),
     });
 
+    $('.xCNDatePicker2').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    
+
     $('#obtPdtSaleStart').click(function() {
         $('#oetPdtSaleStart').datepicker('show')
     });
 
     $('#obtPdtSaleStop').click(function() {
         $('#oetPdtSaleStop').datepicker('show')
+    });
+
+    $('#obtPdtLotDateStop').click(function() {  //ปุ่มวันที่เริ่มผลิต
+        $('#oetPdtLotDateStop').datepicker('show')
+    });
+
+    $('#obtPdtLotDateStart').click(function() {  //ปุ่มวันที่หมดอายุ
+        $('#oetPdtLotDateStart').datepicker('show')
     });
 
     $('#obtSubmitProduct').click(function() {
@@ -114,11 +117,6 @@
         JSxDelAllPdtEvnNotSale()
     });
 
-    // Browse Modal Image Multiole
-    // $('#odvPdtAddImageBtn,#oimImgMasterProduct').click(function() {
-    //     JSvImageCallTempNEW('1', '2', 'Product')
-    // });
-
     $('#oetModalAebBarCode').keydown(function(event) {
         if (event.keyCode == '32') {
             event.preventDefault();
@@ -127,11 +125,27 @@
 
     $('.xWMenu').click(function() {
         var tMenuType = $(this).data('menutype');
-        if (tMenuType == 'SET') {
-            $('.xWHideSave').hide();
-        } else {
-            $('.xWHideSave').show();
-            $('#obtCallBackProductList').removeClass('xCNHide');
+        var tTaggleType = $(this).hasClass('disabled');
+        
+        if(tTaggleType == false){
+            switch(tMenuType){
+                case 'SET':
+                    $('.xWHideSave').hide();
+                    break;
+                case 'CAT':
+                    $('.xWHideSave').hide();
+                    break;
+                default:
+                    $('.xWHideSave').show();
+                    $('#obtCallBackProductList').removeClass('xCNHide');
+            }
+            // if (tMenuType == 'SET') {
+            //     $('.xWHideSave').hide();
+            //     // $('.xWHideSave').show();
+            // } else {
+            //     $('.xWHideSave').show();
+            //     $('#obtCallBackProductList').removeClass('xCNHide');
+            // }
         }
     });
 
@@ -174,7 +188,6 @@
     //ReturnType: -
     function JSxProductSetValidEventBlur() {
         $('#ofmAddEditProduct').validate().destroy();
-
         // Set Validate Dublicate Code
         $.validator.addMethod('dublicateCode', function(value, element) {
             if ($("#ohdCheckDuplicatePdtCode").val() == 1) {
@@ -183,7 +196,6 @@
                 return true;
             }
         }, '');
-
         // From Summit Validate
         $('#ofmAddEditProduct').validate({
             rules: {
@@ -242,9 +254,11 @@
 
     // Option Browse Product Vat
     var oPdtBrowseVat = function(poReturnInput) {
+        var nDecimal = $("#ohdPdtDecimalShow").val();
         var tInputReturnCode = poReturnInput.tReturnInputCode;
         var tInputReturnName = poReturnInput.tReturnInputName;
         var tTextLeftJoin = "( SELECT Result.* ";
+        var tDecimal = 'Number:'+nDecimal;
         tTextLeftJoin += " FROM ";
         tTextLeftJoin += " ( ";
         tTextLeftJoin += "   SELECT VatAtv.* FROM (  ";
@@ -274,6 +288,7 @@
             GrideView: {
                 ColumnPathLang: 'company/vatrate/vatrate',
                 ColumnKeyLang: ['tVATTBCode', 'tVATTBRate', 'tVATDateStart'],
+                DataColumnsFormat : ['',tDecimal,''],
                 DataColumns: ['TCNMVatRate.FTVatCode', 'TCNMVatRate.FCVatRate', 'TCNMVatRate.FDVatStart'],
                 Perpage: 10,
                 OrderBy: ['TCNMVatRate.FDCreateOn DESC'],
@@ -284,9 +299,23 @@
                 Value: [tInputReturnCode, "TCNMVatRate.FTVatCode"],
                 Text: [tInputReturnName, "TCNMVatRate.FCVatRate"],
             },
+            NextFunc: {
+                FuncName: 'JSxDesimalChange',
+                ArgReturn: ["FCVatRate"]
+            }
             // DebugSQL : true
         };
         return oOptionReturn;
+    }
+
+    //หลังจากเลือกกลุ่มธุรกิจต้องล้างค่า
+    function JSxDesimalChange(ptVatRate) {
+        if (ptVatRate != '' || ptVatRate != 'NULL') {
+            var nDecimal = $("#ohdPdtDecimalShow").val();
+            aData = JSON.parse(ptVatRate);
+            // console.log(parseFloat(aData[0]).toFixed(nDecimal));
+            $('#ocmPdtVatName').val(parseFloat(aData[0]).toFixed(nDecimal)+ " %");
+        }
     }
 
     //กลือกกลุ่มธุรกิจ
@@ -335,19 +364,12 @@
 
     //หลังจากเลือกกลุ่มธุรกิจต้องล้างค่า
     function JSxClearBrowseCondition() {
-        // $('#oetPdtBchName').val('');
-        // $('#oetPdtBchCode').val('');
-
         $('#oetPdtInfoShpCode').val('');
         $('#oetPdtInfoShpName').val('');
-
         $('#oetPdtInfoMgpName').val('');
         $('#oetPdtInfoMgpCode').val('');
-
         $("#obtBrowsePdtInfoMgp").attr("disabled", false);
     }
-
-
 
     //เลือกสาขา
     var oPdtBrowseAgency = function(poReturnInput) {
@@ -392,31 +414,21 @@
 
 
     function JSxClearBrowseConditionAgn(ptData) {
-        // aData = JSON.parse(ptData);
         if (ptData != '' || ptData != 'NULL') {
-
             $('#oetPdtBchCode').val('');
             $('#oetPdtBchName').val('');
-
             $('#oetPdtInfoShpCode').val('');
             $('#oetPdtInfoShpName').val('');
-
             $('#oetPdtTcgCode').val('');
             $('#oetPdtTcgName').val('');
-
             $('#oetPdtPgpChain').val('');
             $('#oetPdtPgpChainName').val('');
-
             $('#oetPdtPtyCode').val('');
             $('#oetPdtPtyName').val('');
-
             $('#oetPdtPbnCode').val('');
             $('#oetPdtPbnName').val('');
-
             $('#oetPdtPmoCode').val('');
             $('#oetPdtPmoName').val('');
-
-
             $('#oetConditionControlCode').val('');
             $('#oetConditionControlName').val('');
         }
@@ -490,8 +502,6 @@
 
     //หลังจากเลือกสาขาต้องล้างค้า
     function JSxClearBrowseConditionBCH(ptData) {
-
-
         $('#oetPdtInfoShpCode').val('');
         $('#oetPdtInfoShpName').val('');
 
@@ -582,6 +592,7 @@
                 ColumnsSize: ['10%', '15%', '40%', '35%'],
                 DataColumns: ['TCNMPdtGrp.FTPgpCode', 'TCNMPdtGrp.FTPgpChain', 'TCNMPdtGrp_L.FTPgpName', 'TCNMPdtGrp_L.FTPgpChainName'],
                 DataColumnsFormat: ['', '', '', ''],
+                DisabledColumns: [3],
                 WidthModal: 50,
                 Perpage: 10,
                 OrderBy: ['TCNMPdtGrp.FDCreateOn DESC'],
@@ -649,6 +660,7 @@
         var tInputReturnCode = poReturnInput.tReturnInputCode;
         var tInputReturnName = poReturnInput.tReturnInputName;
         var tAgnCodeWhere = poReturnInput.tAgnCodeWhere;
+        var tNextFuncName       = poReturnInput.tNextFuncName;
 
         if (tAgnCodeWhere == '' || tAgnCodeWhere == null) {
             tWhereAgn = '';
@@ -685,6 +697,9 @@
                 Value: [tInputReturnCode, "TCNMPdtBrand.FTPbnCode"],
                 Text: [tInputReturnName, "TCNMPdtBrand_L.FTPbnName"],
             },
+            NextFunc: {
+                FuncName    : tNextFuncName
+            },
             // RouteAddNew : 'pdtbrand',
             // BrowseLev : nStaPdtBrowseType
         }
@@ -696,6 +711,8 @@
         var tInputReturnCode = poReturnInput.tReturnInputCode;
         var tInputReturnName = poReturnInput.tReturnInputName;
         var tAgnCodeWhere = poReturnInput.tAgnCodeWhere;
+        var tNextFuncName       = poReturnInput.tNextFuncName;
+
 
         if (tAgnCodeWhere == '' || tAgnCodeWhere == null) {
             tWhereAgn = '';
@@ -731,6 +748,9 @@
                 ReturnType: 'S',
                 Value: [tInputReturnCode, "TCNMPdtModel.FTPmoCode"],
                 Text: [tInputReturnName, "TCNMPdtModel_L.FTPmoName"],
+            },
+            NextFunc: {
+                FuncName    : tNextFuncName
             },
             // RouteAddNew: 'pdtmodel',
             // BrowseLev: nStaPdtBrowseType
@@ -1116,6 +1136,7 @@
             window.oPdtBrowsePdtBrandOption = oPdtBrowsePdtBrand({
                 'tReturnInputCode': 'oetPdtPbnCode',
                 'tReturnInputName': 'oetPdtPbnName',
+                'tNextFuncName'     : 'JSxChangeLots',
                 'tAgnCodeWhere': $('#oetPdtAgnCode').val()
             });
             JCNxBrowseData('oPdtBrowsePdtBrandOption');
@@ -1135,6 +1156,7 @@
             window.oPdtBrowsePdtModelOption = oPdtBrowsePdtModel({
                 'tReturnInputCode': 'oetPdtPmoCode',
                 'tReturnInputName': 'oetPdtPmoName',
+                'tNextFuncName'     : 'JSxChangeLots',
                 'tAgnCodeWhere': $('#oetPdtAgnCode').val()
             });
             JCNxBrowseData('oPdtBrowsePdtModelOption');
@@ -1455,6 +1477,16 @@
         // }
     }
 
+        // Function: Function Get Data Product PackSize
+    // Parameters:  Object In Next Funct Modal Browse
+    // Creator:	08/02/2019 wasin(Yoshi)
+    // Last Update : 09/06/2020 napat(jame)
+    // Return: object View Product Set
+    // Return Type: object
+    function JSxChangeLots() {
+        JSvCallPagePdtLots();
+    }
+
     // Function: Func. Call Back Show Modal Mng Unit Pack Size
     // Parameters: Obj Event Click
     // Creator:	12/02/2019 wasin(Yoshi)
@@ -1466,6 +1498,46 @@
             keyboard: false
         });
         $('#odvModalMngUnitPackSize').modal("show");
+    }
+
+    // Function: Func. Call Back Show Modal Add
+    // Parameters: Obj Event Click
+    // Creator:	10/11/2021 Off
+    // Return: Open Pop Up Modal Manage PackSize Unit
+    // Return Type: -
+    function JSxShowModalAddUnit() {
+ 
+        $('#odvModalAddSup').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#odvModalAddSup').modal("show");
+    }
+
+    // Function: Func. Call Back Show Modal Add
+    // Parameters: Obj Event Click
+    // Creator:	10/11/2021 Off
+    // Return: Open Pop Up Modal Manage PackSize Unit
+    // Return Type: -
+    function JSxShowModalAddBarcode() {
+        $('#odvModalAddSupBarCode').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#odvModalAddSupBarCode').modal("show");
+    }
+
+    // Function: Func. Call Back Show Modal Add
+    // Parameters: Obj Event Click
+    // Creator:	10/11/2021 Off
+    // Return: Open Pop Up Modal Manage PackSize Unit
+    // Return Type: -
+    function JSxShowModalAddSupplier() {
+        $('#odvModalAddSupSupplier').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+        $('#odvModalAddSupSupplier').modal("show");
     }
 
     // Function: Func.Manage Unit PackSize
@@ -1504,6 +1576,7 @@
             $('#oetModalPszClrName').val(tPszClrName);
             $('#oetModalPszSizeCode').val(tPszSizeCode);
             $('#oetModalPszSizeName').val(tPszSizeName);
+
 
             // Chack Data Unit Dim
             if (tPszUnitDim != "") {
@@ -1555,7 +1628,6 @@
             } else {
                 $("#ocbModalPszStaAlwSale").prop('checked', false);
             }
-
 
             // Chk Status Allow Ret
             if (tPszStaAlwRet != "" && tPszStaAlwRet == 1) {
@@ -1659,7 +1731,7 @@
                         $('#ohdPdtStaAlwPoHQRow' + tSaveMngPunCode).val(tSaveMngStaPszStaAlwPoHQ);
                         $('#ohdPdtStaAlwBuyRow' + tSaveMngPunCode).val(tSaveMngStaPszStaAlwBuy);
                         $('#ohdPdtStaAlwSaleRow' + tSaveMngPunCode).val(tSaveMngStaPszStaAlwSale);
-                        $('#ohdPdtStaAlwRetRow' + tSaveMngPunCode).val(tSaveMngStaPszStaAlwBuy);
+                        $('#ohdPdtStaAlwRetRow' + tSaveMngPunCode).val(tSaveMngStaPszStaAlwRet);
 
                         var tPdtCode = $('#oetPdtCode').val();
                         JsxCallPackSizeDataTable(tPdtCode);
@@ -1679,6 +1751,270 @@
             JCNxShowMsgSessionExpired();
         }
     }
+
+    // Function: Func.Save Add Unit Pack
+    // Parameters: Obj Event Click
+    // Creator:	10/11/2021 Off
+    // Return: Save Pop Up Modal Manage PackSize Unit
+    // Return Type: -
+    function JSxPdtSaveNormalUnitPackAdd() {
+        $('#ofmModalUnitPack').validate({
+            rules: {
+                'oetPDTCostSupName'         : {"required" :{}},
+                'oetPDTUnitPerCost'         : {"required" :{}},
+            },
+            messages: {
+                oetPDTCostSupName: {
+                    "required": $('#oetPDTCostSupName').attr('data-validate-required'),
+                },
+                oetPDTUnitPerCost        : {
+                    "required"  : $('#oetPDTUnitPerCost').attr('data-validate-required'),
+                }
+            },
+            errorElement: "em",
+            errorPlacement: function(error, element) {
+                error.addClass("help-block");
+                if (element.prop("type") === "checkbox") {
+                    error.appendTo(element.parent("label"));
+                } else {
+                    var tCheck = $(element.closest('.form-group')).find('.help-block').length;
+                    if (tCheck == 0) {
+                        error.appendTo(element.closest('.form-group')).trigger('change');
+                    }
+                }
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).closest('.form-group').addClass("has-error").removeClass("has-success");
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                var nStaCheckValid = $(element).parents('.form-group').find('.help-block').length
+                if (nStaCheckValid != 0) {
+                    $(element).closest('.form-group').addClass("has-success").removeClass("has-error");
+                }
+            },
+            submitHandler: function(form) {
+            $(".xWPDTSubmitAddPackUnit").attr('disabled',true);
+            var tPdtCode        = $('#oetPdtCode').val();
+            var tUnitPuncode    = $('#oetPDTCostSupCode').val();
+            var tUnitUnitFact   = $('#oetPDTUnitPerCost').val();
+            var tUnitGrade      = $('#oetPDTGrade').val();
+            var tUnitWeight     = $('#oetPDTWeigh').val();
+            var tUnitColorCode  = $('#oetPDTColorCode').val();
+            var tUnitSizeCode   = $('#oetPDTSizeCode').val();
+            var tUnitType       = $('#ohdCostSupType').val();
+            var FTPunCodeOld    = $('#oetPDTCostSupCodeOld').val();
+            
+            var tSaveUnitStaStaAlwPick  = $('#ocbPdtAllowManage').is(':checked') ? '1' : '2';
+            var tSaveUnitStaStaAlwPoHQ  = $('#ocbPdtAllowOrderBch').is(':checked') ? '1' : '2';
+            var tSaveUnitStaStaAlwBuy   = $('#ocbPdtAllowBuy').is(':checked') ? '1' : '2';
+            var tSaveUnitStaStaAlwSale  = $('#ocbPdtAllowSale').is(':checked') ? '1' : '2';
+            var tSaveUnitStaStaPoSPl    = $('#ocbPdtAllowOrderVendor').is(':checked') ? '1' : '2';
+            $.ajax({
+                type: "POST",
+                url: "productAddPackSizeUnitTmp",
+                data: {
+                    FTPdtCode           : tPdtCode,
+                    FTPunCode           : tUnitPuncode,
+                    FTPunCodeOld        : FTPunCodeOld,
+                    FCPdtUnitFact       : tUnitUnitFact,
+                    FTPdtGrade          : tUnitGrade,
+                    FCPdtWeight         : tUnitWeight,
+                    FTClrCode           : tUnitColorCode,
+                    FTPszCode           : tUnitSizeCode,
+                    FTPdtStaAlwPick     : tSaveUnitStaStaAlwPick,
+                    FTPdtStaAlwPoHQ     : tSaveUnitStaStaAlwPoHQ,
+                    FTPdtStaAlwBuy      : tSaveUnitStaStaAlwBuy,
+                    FTPdtStaAlwSale     : tSaveUnitStaStaAlwSale,
+                    FTPdtStaAlwPoSPL    : tSaveUnitStaStaPoSPl,
+                    tUnitType           : tUnitType
+                },
+                cache: false,
+                timeout: 0,
+                async: false,
+                success: function(oResult) {
+                    JsxCallNormalDataTable(tPdtCode);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+            $('#odvModalAddSup').modal("toggle");
+            }
+        });
+    }
+
+    // Function: Func.Save Add Unit Pack Barcode
+    // Parameters: Obj Event Click
+    // Creator:	11/11/2021 Off
+    // Return: Save Pop Up Modal Manage PackSize Unit
+    // Return Type: -
+    function JSxPdtSaveNormalUnitPackBarCodeAdd() {
+        $('#ofmModalUnitBarCode').validate({
+            rules: {
+                oetPDTUnitBarBarCode: "required"
+            },
+            messages: {
+                oetPDTUnitBarBarCode: {
+                    "required": $('#oetPDTUnitBarBarCode').attr('data-validate-required'),
+                }
+            },
+            errorElement: "em",
+            errorPlacement: function(error, element) {
+                error.addClass("help-block");
+                if (element.prop("type") === "checkbox") {
+                    error.appendTo(element.parent("label"));
+                } else {
+                    var tCheck = $(element.closest('.form-group')).find('.help-block').length;
+                    if (tCheck == 0) {
+                        error.appendTo(element.closest('.form-group')).trigger('change');
+                    }
+                }
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).closest('.form-group').addClass("has-error").removeClass("has-success");
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                var nStaCheckValid = $(element).parents('.form-group').find('.help-block').length
+                if (nStaCheckValid != 0) {
+                    $(element).closest('.form-group').addClass("has-success").removeClass("has-error");
+                }
+            },
+            submitHandler: function(form) {
+            $(".xWPDTSubmitAddBarUnit").attr('disabled',true);
+            var tPdtCode        = $('#oetPdtCode').val();
+            var tBarCode        = $('#oetPDTUnitBarBarCode').val();
+            var FTBarCodeOld    = $('#oetPDTUnitBarBarCodeOld').val();
+            var tBarPuncode     = $('#ohdCostSupBarPunCode').val();
+            var tBarPlcCode     = $('#oetPDTUnitBarLocCode').val();
+            var tUnitType       = $('#ohdCostSupBarType').val();
+            
+            // Status Manage 
+            var tSaveBarAlwSale         = $('#ocbPdtBarAlwSale').is(':checked') ? '1' : '2';
+            var tSaveBarAlwStaUse       = $('#ocbPdtBarAlwUsed').is(':checked') ? '1' : '2';
+
+            $.ajax({
+                type: "POST",
+                url: "productAddPackSizeBarCodeTmp",
+                data: {
+                    FTPdtCode       : tPdtCode,
+                    FTBarCode       : tBarCode,
+                    FTBarCodeOld    : FTBarCodeOld,
+                    FTPunCode       : tBarPuncode,
+                    FTBarStaAlwSale : tSaveBarAlwSale,
+                    FTBarStaUse     : tSaveBarAlwStaUse,
+                    FTPlcCode       : tBarPlcCode,
+                    tUnitType       : tUnitType
+                },
+                cache: false,
+                timeout: 0,
+                async: false,
+                success: function(oResult) {
+                    var aReturn = JSON.parse(oResult);
+                    if (aReturn['nStaQuery'] == 1) {
+                    JsxCallNormalBarCodeDataTable(tPdtCode,tBarPuncode);
+                    } else {
+                        JCNxCloseLoading();
+                        alert(aReturn['tStaMessg']);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+            $('#odvModalAddSupBarCode').modal("toggle");
+            }
+        });
+    }
+
+        // Function: Func.Save Add Unit Pack Barcode
+    // Parameters: Obj Event Click
+    // Creator:	11/11/2021 Off
+    // Return: Save Pop Up Modal Manage PackSize Unit
+    // Return Type: -
+    function JSxPdtSaveNormalUnitPackSupplierAdd() {
+        $('#ofmModalUnitSupplier').validate({
+            rules: {
+                oetPDTUnitSupplierName: "required"
+            },
+            messages: {
+                oetPDTUnitSupplierName: {
+                    "required": $('#oetPDTUnitSupplierName').attr('data-validate-required'),
+                }
+            },
+            errorElement: "em",
+            errorPlacement: function(error, element) {
+                error.addClass("help-block");
+                if (element.prop("type") === "checkbox") {
+                    error.appendTo(element.parent("label"));
+                } else {
+                    var tCheck = $(element.closest('.form-group')).find('.help-block').length;
+                    if (tCheck == 0) {
+                        error.appendTo(element.closest('.form-group')).trigger('change');
+                    }
+                }
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).closest('.form-group').addClass("has-error").removeClass("has-success");
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                var nStaCheckValid = $(element).parents('.form-group').find('.help-block').length
+                if (nStaCheckValid != 0) {
+                    $(element).closest('.form-group').addClass("has-success").removeClass("has-error");
+                }
+            },
+            submitHandler: function(form) {
+            $(".xWPDTSubmitAddSupplier").attr('disabled',true);
+            var FTPdtCode       = $('#oetPdtCode').val();
+            var FTBarCode       = $('#ohdPdtSupplierBarCode').val();
+            var FTSplCode       = $('#oetPDTUnitSupplierCode').val();
+            var FTSplCodeOld    = $('#oetPDTUnitSupplierCodeOld').val();
+            var FTUsrCode       = $('#oetPDTSupplierUsrCode').val();
+            var tPunCode        = $('#ohdPdtSupplierPunCode').val();
+            var tUnitType       = $('#ohdCostSupSuplierType').val();
+            
+            // Status Manage 
+            var FTPdtStaAlwOrdSun       = $('#ocbSupAlwSun').is(':checked') ? '1' : '2';
+            var FTPdtStaAlwOrdMon       = $('#ocbSupAlwMon').is(':checked') ? '1' : '2';
+            var FTPdtStaAlwOrdTue       = $('#ocbSupAlwTue').is(':checked') ? '1' : '2';
+            var FTPdtStaAlwOrdWed       = $('#ocbSupAlwWed').is(':checked') ? '1' : '2';
+            var FTPdtStaAlwOrdThu       = $('#ocbSupAlwThu').is(':checked') ? '1' : '2';
+            var FTPdtStaAlwOrdFri       = $('#ocbSupAlwFri').is(':checked') ? '1' : '2';
+            var FTPdtStaAlwOrdSat       = $('#ocbSupAlwSat').is(':checked') ? '1' : '2';
+
+            $.ajax({
+                type: "POST",
+                url: "productAddPackSizeSuplierTmp",
+                data: {
+                    FTPdtCode               : FTPdtCode,
+                    FTBarCode               : FTBarCode,
+                    FTSplCode               : FTSplCode,
+                    FTSplCodeOld            : FTSplCodeOld,
+                    FTUsrCode               : FTUsrCode,
+                    tPunCode                : tPunCode,
+                    FTPdtStaAlwOrdSun       : FTPdtStaAlwOrdSun,
+                    FTPdtStaAlwOrdMon       : FTPdtStaAlwOrdMon,
+                    FTPdtStaAlwOrdTue       : FTPdtStaAlwOrdTue,
+                    FTPdtStaAlwOrdWed       : FTPdtStaAlwOrdWed,
+                    FTPdtStaAlwOrdThu       : FTPdtStaAlwOrdThu,
+                    FTPdtStaAlwOrdFri       : FTPdtStaAlwOrdFri,
+                    FTPdtStaAlwOrdSat       : FTPdtStaAlwOrdSat,
+                    tUnitType               : tUnitType
+                },
+                cache: false,
+                timeout: 0,
+                async: false,
+                success: function(oResult) {
+                    JsxCallNormalVendorDataTable(FTPdtCode,tPunCode,FTBarCode);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+            $('#odvModalAddSupSupplier').modal("toggle");
+            }
+        });
+    }
+
 
     //เปลี่ยนหน่วยสินค้า
     function JSxPDTChangeUnit() {
@@ -1803,6 +2139,157 @@
         }
     }
 
+
+        // Function: Func.Delete Unit Pack Size In Table
+    // Parameters: Obj Event Click
+    // Creator:	11/02/2019 wasin(Yoshi)
+    // Last Update: 09/06/2020 Napat(Jame)
+    // Return: Delete Row Data Unit Pack Size In Table
+    // Return Type: -
+    function JSxPdtDelPszUnitInTableTmp(ptType, paPunCode) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+
+            // ถ้าลบหน่วยเล็กสุด ให้ตรวจสอบว่ามีหน่วยเล็กสุดกี่รายการ
+            var nUnitFactSelf = $('#oetPdtUnitFact'+paPunCode).val();
+            // console.log(nUnitFactSelf);
+            var nCountLowUnitFact = 0;
+            if( parseFloat(nUnitFactSelf) == 1 ){
+                var aDataUnitFact = [];
+                $('.xWPdtUnitFact').each(function() {
+                    aDataUnitFact.push($(this).val());
+                });
+                
+                for(var i=0;i <= aDataUnitFact.length;i++){
+                    if( parseFloat(aDataUnitFact[i]) == 1 ){
+                        nCountLowUnitFact++;
+                    }
+                }
+            }
+            
+            // ถ้ามีหน่วยเล็กสุดมากกว่า 1 รายการ ให้ลบได้
+            if( nCountLowUnitFact > 1 || nCountLowUnitFact == 0 ){
+                // Last Update Napat(Jame) 09/06/2020
+                // เพิ่มฟังค์ชั่นให้มีลบหน่วย ทั้งหมด
+                var aPunCode = paPunCode;
+                var tPdtCode = $('#oetPdtCode').val();
+                var nTypeAction = ptType;
+
+                $.ajax({
+                    type: "POST",
+                    url: "productDelPackSizeUnitTmp",
+                    data: {
+                        FTPunCode       : aPunCode,
+                        FTPdtCode       : tPdtCode,
+                        pnTypeAction    : nTypeAction
+                    },
+                    cache: false,
+                    timeout: 0,
+                    async: false,
+                    success: function(tResult) {
+                        // $('#odvPdtSetPackSizeTable').html(tResult);
+                        // JsxCallPackSizeDataTable(tPdtCode);
+                        JsxCallNormalDataTable(tPdtCode);
+                        JCNxLayoutControll();
+                        JCNxCloseLoading();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    }
+                });
+            }else{
+                JCNxCloseLoading();
+                FSvCMNSetMsgWarningDialog('ไม่สามารถลบหน่วยเล็กสุดได้');
+            }
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    // Function: Func.Delete Unit BarCode In Table
+    // Parameters: Obj Event Click
+    // Creator:	11/02/2019 wasin(Yoshi)
+    // Last Update: 09/06/2020 Napat(Jame)
+    // Return: Delete Row Data Unit Pack Size In Table
+    // Return Type: -
+    function JSxPdtDelBarCodeUnitInTableTmp(ptType, ptBarCode) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+
+        var tPunCode = $("#ohdPdtBarBarCode").val();
+        var tBarCode = ptBarCode;
+        var tPdtCode = $('#oetPdtCode').val();
+        var nTypeAction = ptType;
+
+        $.ajax({
+            type: "POST",
+            url: "productDelBarCodeUnitTmp",
+            data: {
+                FTPunCode       : tPunCode,
+                FTPdtCode       : tPdtCode,
+                FTBarCode       : tBarCode,
+                pnTypeAction    : nTypeAction
+            },
+            cache: false,
+            timeout: 0,
+            async: false,
+            success: function(tResult) {
+                JsxCallNormalBarCodeDataTable(tPdtCode,tPunCode);
+                JCNxLayoutControll();
+                JCNxCloseLoading();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    // Function: Func.Delete Unit BarCode In Table
+    // Parameters: Obj Event Click
+    // Creator:	11/02/2019 wasin(Yoshi)
+    // Last Update: 09/06/2020 Napat(Jame)
+    // Return: Delete Row Data Unit Pack Size In Table
+    // Return Type: -
+    function JSxPdtDelSupplierUnitInTableTmp(ptType, ptSplCode) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+
+        var tBarCode = $("#ohdPdtSupplierBarCode").val();
+        var tSplPuncode = $("#ohdPdtSupplierPunCode").val();
+        var tSplCode = ptSplCode;
+        var tPdtCode = $('#oetPdtCode').val();
+        var nTypeAction = ptType;
+
+        $.ajax({
+            type: "POST",
+            url: "productDelSuplierUnitTmp",
+            data: {
+                FTSplCode       : tSplCode,
+                FTPunCode       : tSplPuncode,
+                FTPdtCode       : tPdtCode,
+                FTBarCode       : tBarCode,
+                pnTypeAction    : nTypeAction
+            },
+            cache: false,
+            timeout: 0,
+            async: false,
+            success: function(tResult) {
+                JsxCallNormalVendorDataTable(tPdtCode,tSplPuncode,tBarCode);
+                JCNxLayoutControll();
+                JCNxCloseLoading();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+    
     var oPdtBrowseLocation = function(poReturnInput) {
         var tInputReturnCode    = poReturnInput.tReturnInputCode;
         var tInputReturnName    = poReturnInput.tReturnInputName;
@@ -1876,6 +2363,36 @@
         } else {
             JCNxShowMsgSessionExpired();
             JCNxBrowseData('oPdtBrowseUnitOption');
+        }
+    });
+
+    $('.xWPDTSubmitAddPackUnit').off('click');
+    $('.xWPDTSubmitAddPackUnit').on('click', function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxPdtSaveNormalUnitPackAdd();
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    $('.xWPDTSubmitAddBarUnit').off('click');
+    $('.xWPDTSubmitAddBarUnit').on('click', function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxPdtSaveNormalUnitPackBarCodeAdd();
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    $('.xWPDTSubmitAddSupplier').off('click');
+    $('.xWPDTSubmitAddSupplier').on('click', function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxPdtSaveNormalUnitPackSupplierAdd();
+        } else {
+            JCNxShowMsgSessionExpired();
         }
     });
 
@@ -1978,6 +2495,351 @@
         }
     }
 
+
+    // Function: Func. Add Unit Pack
+    // Parameters: Obj Event Click
+    // Creator:	10/11/2021 Off
+    // LastUpdate:
+    // Return: -
+    // Return Type: -
+    function JSxPdtCallModalAddEditUnitPack() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxPdtModalUnitPackClear();
+            // Show Modal
+            $('#odvModalAddSup').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#ohdCostSupType').val('1');
+            $(".xWPDTSubmitAddPackUnit").attr('disabled',false);
+            
+            var tPdtName        = $("#oetPdtName").val();
+            if(tPdtName != ''){
+                $("#opdPdtCostSupNamePDTTitle").html($("#oetPdtName").val());
+            }else{
+                $("#opdPdtCostSupNamePDTTitle").html('<?php echo language("product/product/product", "tPDTViewModalNoProduct"); ?>');
+            }
+            $('#odvModalAddSup').modal('show');
+            $.getScript("application/modules/common/assets/src/jFormValidate.js");
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    // Function: Func. Add Unit Pack
+    // Parameters: Obj Event Click
+    // Creator:	10/11/2021 Off
+    // LastUpdate:  
+    // Return: -
+    // Return Type: -
+    function JSxPdtCallModalAddEditUnitBarcode() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxPdtModalUnitPackBarCodeClear();
+            // Show Modal
+            $('#odvModalAddSupBarCode').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#ohdCostSupBarType').val('1');
+            $(".xWPDTSubmitAddBarUnit").attr('disabled',false);
+            var tPdtName        = $("#oetPdtName").val();
+            if(tPdtName != ''){
+                $("#opdPdtCostSupBarNamePDTTitle1").html($("#oetPdtName").val());
+            }else{
+                $("#opdPdtCostSupBarNamePDTTitle1").html('<?php echo language("product/product/product", "tPDTViewModalNoProduct"); ?>');
+            }
+            $("#opdPdtCostSupNameBarPDTTitle2").html($("#ohdPdtBarBarName").val());
+            $('#ohdCostSupBarPunCode').val($('#ohdPdtBarBarCode').val());
+            $('#odvModalAddSupBarCode').modal('show');
+            $.getScript("application/modules/common/assets/src/jFormValidate.js");
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+
+    // Function: Func. Add Unit Suppliere
+    // Parameters: Obj Event Click
+    // Creator:	12/11/2021 Off
+    // LastUpdate:  
+    // Return: -
+    // Return Type: -
+    function JSxPdtCallModalAddEditUnitSupplier() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxPdtModalUnitPackSupplierClear();
+            // Show Modal
+            $('#odvModalAddSupSupplier').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#ohdCostSupSuplierType').val('1');
+            var tPdtName        = $("#oetPdtName").val();
+            $(".xWPDTSubmitAddSupplier").attr('disabled',false);
+            if(tPdtName != ''){
+                $("#opdPdtCostSupSupplierNamePDTTitle1").html($("#oetPdtName").val());
+            }else{
+                $("#opdPdtCostSupSupplierNamePDTTitle1").html('<?php echo language("product/product/product", "tPDTViewModalNoProduct"); ?>');
+            }
+            $("#opdPdtCostSupSupplierNamePDTTitle2").html($("#ohdPdtBarBarName").val());
+            $("#opdPdtCostSupSupplierNamePDTTitle3").html($("#ohdPdtSupplierBarCode").val());
+            $('#ohdCostSupBarPunCode').val($('#ohdPdtBarBarCode').val());
+            $('#odvModalAddSupSupplier').modal('show');
+            $.getScript("application/modules/common/assets/src/jFormValidate.js");
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    // Function: Func. Edit DTTmp Unit Pack
+    // Parameters: Obj Event Click
+    // Creator:	10/11/2021 Off
+    // LastUpdate:
+    // Return: -
+    // Return Type: -
+    function JSxPdtEditUnitInTable(oEvent) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            var tPszUnitCode    = $(oEvent).parents('.xWPdtDataUnitRow').data('puncode');
+            var tPszUnitName    = $(oEvent).parents('.xWPdtDataUnitRow').data('punname');
+            var tPszUnitFact    = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtUnitFactRow"+tPszUnitCode).val();
+            var tPszGrade       = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtGrandRow"+tPszUnitCode).val();
+            var tPszWeight      = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtWeightRow"+tPszUnitCode).val();
+            var tPszClrCode     = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtClrCodeRow"+tPszUnitCode).val();
+            var tPszClrName     = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtClrNameRow"+tPszUnitCode).val();
+            var tPszSizeCode    = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtSizeCodeRow"+tPszUnitCode).val();
+            var tPszSizeName    = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtSizeNameRow"+tPszUnitCode).val();
+            var tPszStaAlwPick  = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtStaAlwPickRow"+tPszUnitCode).val();
+            var tPszStaAlwPoHQ  = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtStaAlwPoHQRow"+tPszUnitCode).val();
+            var tPszStaAlwBuy   = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtStaAlwBuyRow"+tPszUnitCode).val();
+            var tPszStaAlwSale  = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtStaAlwSaleRow"+tPszUnitCode).val();
+            var tPszStaAlwSpl   = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdPdtStaAlwSplRow"+tPszUnitCode).val();
+            var tPdtName        = $("#oetPdtName").val();
+            var nDecimal = $("#ohdPdtDecimalShow").val();
+
+            $('#oetPDTCostSupCode').val(tPszUnitCode);
+            $('#oetPDTCostSupCodeOld').val(tPszUnitCode);
+            $('#oetPDTCostSupName').val(tPszUnitName);
+            $('#oetPDTUnitPerCost').val(parseFloat(tPszUnitFact).toFixed(nDecimal));
+            $('#oetPDTColorCode').val(tPszClrCode);
+            $('#oetPDTColorName').val(tPszClrName);
+            $('#oetPDTSizeCode').val(tPszSizeCode);
+            $('#oetPDTSizeName').val(tPszSizeName);
+            $('#oetPDTGrade').val(tPszGrade);
+            $('#oetPDTWeigh').val(tPszWeight);
+            if(tPdtName != ''){
+                $("#opdPdtCostSupNamePDTTitle").html($("#oetPdtName").val());
+            }else{
+                $("#opdPdtCostSupNamePDTTitle").html('<?php echo language("product/product/product", "tPDTViewModalNoProduct"); ?>');
+            }
+            $('#ohdCostSupType').val('2');
+
+
+            // Chk Status Allow Pick
+            if(tPszStaAlwPick != "" && tPszStaAlwPick == 1){
+                $("#ocbPdtAllowManage").prop('checked', true);
+            }else{
+                $("#ocbPdtAllowManage").prop('checked', false);
+            }
+
+            // Chk Status Allow HQ
+            if(tPszStaAlwPoHQ != "" && tPszStaAlwPoHQ == 1){
+                $("#ocbPdtAllowOrderBch").prop('checked', true);
+            }else{
+                $("#ocbPdtAllowOrderBch").prop('checked', false);
+            }
+
+            // Chk Status Allow Buy
+            if(tPszStaAlwSpl != "" && tPszStaAlwSpl == 1){
+                $("#ocbPdtAllowOrderVendor").prop('checked', true);
+            }else{
+                $("#ocbPdtAllowOrderVendor").prop('checked', false);
+            }
+
+            // Chk Status Allow Sale
+            if(tPszStaAlwSale != "" && tPszStaAlwSale == 1){
+                $("#ocbPdtAllowSale").prop('checked', true);
+            }else{
+                $("#ocbPdtAllowSale").prop('checked', false);
+            }
+
+            // Chk Status Allow Buy
+            if(tPszStaAlwBuy != "" && tPszStaAlwBuy == 1){
+                $("#ocbPdtAllowBuy").prop('checked', true);
+            }else{
+                $("#ocbPdtAllowBuy").prop('checked', false);
+            }
+            // Show Modal
+            $('#odvModalAddSup').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#odvModalAddSup').modal('show');
+            $.getScript("application/modules/common/assets/src/jFormValidate.js");
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    // Function: Func. Edit DTTmp Barcode
+    // Parameters: Obj Event Click
+    // Creator:	11/11/2021 Off
+    // LastUpdate:
+    // Return: -
+    // Return Type: -
+    function JSxPdtEditBarcodeInTable(oEvent) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            var tBarPuneCode    = $(oEvent).parents('.xWPdtDataUnitRow').data('puncode');
+            var tBarPuneName    = $(oEvent).parents('.xWPdtDataUnitRow').data('punname');
+            var tBarBarCode     = $(oEvent).parents('.xWPdtDataUnitRow').data('barcode');
+            var tBarPlcCode     = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdBarPlcCodeRow"+tBarBarCode).val();
+            var tBarPlcName     = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdBarPlcNameRow"+tBarBarCode).val();
+            var tBarStaUse      = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdBarStaUseRow"+tBarBarCode).val();
+            var tBarStaAlwSale  = $(oEvent).parents('.xWPdtDataUnitRow').find("#ohdBarStaAlwSaleRow"+tBarBarCode).val();
+            var tPdtName        = $("#oetPdtName").val();
+
+            $('#oetPDTUnitBarBarCode').val(tBarBarCode);
+            $('#oetPDTUnitBarBarCodeOld').val(tBarBarCode);
+            $('#oetPDTUnitBarLocCode').val(tBarPlcCode);
+            $('#oetPDTUnitBarLocName').val(tBarPlcName);
+            $('#ohdCostSupBarPunCode').val($('#ohdPdtBarBarCode').val());
+            if(tPdtName != ''){
+                $("#opdPdtCostSupBarNamePDTTitle1").html($("#oetPdtName").val());
+            }else{
+                $("#opdPdtCostSupBarNamePDTTitle1").html('<?php echo language("product/product/product", "tPDTViewModalNoProduct"); ?>');
+            }
+            $("#opdPdtCostSupNameBarPDTTitle2").html($("#ohdPdtBarBarName").val());
+            $('#ohdCostSupBarType').val('2');
+
+
+            // Chk Status Allow Pick
+            if(tBarStaAlwSale != "" && tBarStaAlwSale == 1){
+                $("#ocbPdtBarAlwSale").prop('checked', true);
+            }else{
+                $("#ocbPdtBarAlwSale").prop('checked', false);
+            }
+
+            // Chk Status Allow HQ
+            if(tBarStaUse != "" && tBarStaUse == 1){
+                $("#ocbPdtBarAlwUsed").prop('checked', true);
+            }else{
+                $("#ocbPdtBarAlwUsed").prop('checked', false);
+            }
+
+            // Show Modal
+            $('#odvModalAddSupBarCode').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#odvModalAddSupBarCode').modal('show');
+            $.getScript("application/modules/common/assets/src/jFormValidate.js");
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    // Function: Func. Edit DTTmp Barcode
+    // Parameters: Obj Event Click
+    // Creator:	11/11/2021 Off
+    // LastUpdate:
+    // Return: -
+    // Return Type: -
+    function JSxPdtEditSupplierInTable(oEvent) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            var tSplSplCode     = $(oEvent).parents('.xWSplDataUnitRow').data('splcode');
+            var tSplPuneCode    = $(oEvent).parents('.xWSplDataUnitRow').data('puncode');
+            var tSplPuneName    = $(oEvent).parents('.xWSplDataUnitRow').data('punname');
+            var tSplBarCode     = $(oEvent).parents('.xWSplDataUnitRow').data('barcode');
+            var tSplSplName     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplSplNameRow"+tSplSplCode).val();
+            var tSplUsrCode     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplUsrCodeRow"+tSplSplCode).val();
+            var tSplUsrName     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplUsrNameRow"+tSplSplCode).val();
+            var tSplStaDay1     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplStaDay1Row"+tSplSplCode).val();
+            var tSplStaDay2     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplStaDay2Row"+tSplSplCode).val();
+            var tSplStaDay3     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplStaDay3Row"+tSplSplCode).val();
+            var tSplStaDay4     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplStaDay4Row"+tSplSplCode).val();
+            var tSplStaDay5     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplStaDay5Row"+tSplSplCode).val();
+            var tSplStaDay6     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplStaDay6Row"+tSplSplCode).val();
+            var tSplStaDay7     = $(oEvent).parents('.xWSplDataUnitRow').find("#ohdSplStaDay7Row"+tSplSplCode).val();
+            var tPdtName        = $("#oetPdtName").val();
+
+
+            $('#oetPDTUnitSupplierCode').val(tSplSplCode);
+            $('#oetPDTUnitSupplierCodeOld').val(tSplSplCode);
+            $('#oetPDTUnitSupplierName').val(tSplSplName);
+            $('#oetPDTSupplierUsrCode').val(tSplUsrCode);
+            $('#oetPDTSupplierUsrName').val(tSplUsrName);
+            $('#ohdCostSupPunCode').val(tSplBarCode);
+
+            if(tPdtName != ''){
+                $("#opdPdtCostSupSupplierNamePDTTitle1").html($("#oetPdtName").val());
+            }else{
+                $("#opdPdtCostSupSupplierNamePDTTitle1").html('<?php echo language("product/product/product", "tPDTViewModalNoProduct"); ?>');
+            }
+            $("#opdPdtCostSupSupplierNamePDTTitle2").html($("#ohdPdtBarBarName").val());
+            $("#opdPdtCostSupSupplierNamePDTTitle3").html($("#ohdPdtSupplierBarCode").val());
+            $('#ohdCostSupSuplierType').val('2');
+
+
+            // Chk Status Allow Pick
+            if(tSplStaDay1 != "" && tSplStaDay1 == 1){
+                $("#ocbSupAlwMon").prop('checked', true);
+            }else{
+                $("#ocbSupAlwMon").prop('checked', false);
+            }
+
+            if(tSplStaDay2 != "" && tSplStaDay2 == 1){
+                $("#ocbSupAlwTue").prop('checked', true);
+            }else{
+                $("#ocbSupAlwTue").prop('checked', false);
+            }
+
+            if(tSplStaDay3 != "" && tSplStaDay3 == 1){
+                $("#ocbSupAlwWed").prop('checked', true);
+            }else{
+                $("#ocbSupAlwWed").prop('checked', false);
+            }
+
+            if(tSplStaDay4 != "" && tSplStaDay4 == 1){
+                $("#ocbSupAlwThu").prop('checked', true);
+            }else{
+                $("#ocbSupAlwThu").prop('checked', false);
+            }
+
+            if(tSplStaDay5 != "" && tSplStaDay5 == 1){
+                $("#ocbSupAlwFri").prop('checked', true);
+            }else{
+                $("#ocbSupAlwFri").prop('checked', false);
+            }
+
+            if(tSplStaDay6 != "" && tSplStaDay6 == 1){
+                $("#ocbSupAlwSat").prop('checked', true);
+            }else{
+                $("#ocbSupAlwSat").prop('checked', false);
+            }
+
+            if(tSplStaDay7 != "" && tSplStaDay7 == 1){
+                $("#ocbSupAlwSun").prop('checked', true);
+            }else{
+                $("#ocbSupAlwSun").prop('checked', false);
+            }
+
+            // Show Modal
+            $('#odvModalAddSupSupplier').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+            $('#odvModalAddSupSupplier').modal('show');
+            $.getScript("application/modules/common/assets/src/jFormValidate.js");
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+
     // Function: Func.Save BarCode In Unit Pack
     // Parameters: Obj Event Click
     // Creator:	12/02/2019 wasin(Yoshi)
@@ -2021,17 +2883,17 @@
                 var tBarStaAlwSale = 0;
                 var tSplStaAlwPO = 0;
 
-                if ($('#ocbModalAebBarStaUse').prop("checked")==true) {
+                if ($('#ocbModalAebBarStaUse').prop("checked", true)) {
                     tBarStaUse = '1';
                 } else {
                     tBarStaUse = '';
                 }
-                if ($('#ocbModalAebBarStaAlwSale').prop("checked")==true) {
+                if ($('#ocbModalAebBarStaAlwSale').prop("checked", true)) {
                     tBarStaAlwSale = '1';
                 } else {
                     tBarStaAlwSale = '';
                 }
-                if ($('#ocbModalAesSplStaAlwPO').prop("checked")==true) {
+                if ($('#ocbModalAesSplStaAlwPO').prop("checked", true)) {
                     tSplStaAlwPO = '1';
                 } else {
                     tSplStaAlwPO = '';
@@ -2174,6 +3036,158 @@
         }
     });
 
+    // Event Browse UNit In Modal
+    $('#obtModalCostSupBrowse').click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            nKeepBrowseMain = '1';
+            $('#odvModalAddSup').modal('hide');
+            window.oPdtBrowseUnitOption = oPdtBrowseUnit({
+                'tReturnInputCode'  : 'oetPDTCostSupCode',
+                'tReturnInputName'  : 'oetPDTCostSupName',
+                'tNextFuncName'     : 'JSxShowModalAddUnit',
+                'tTypeReturn'       : 'S'
+            });
+            JCNxBrowseData('oPdtBrowseUnitOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    // Event Browse Location In Modal
+    $('#obtModalUnitBarLocBrowse').click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            nKeepBrowseMain = '2';
+            $('#odvModalAddSupBarCode').modal('hide');
+            window.oPdtBrowseLocationOption = oPdtBrowseLocation({
+                'tReturnInputCode'  : 'oetPDTUnitBarLocCode',
+                'tReturnInputName'  : 'oetPDTUnitBarLocName',
+                'tNextFuncName'     : 'JSxShowModalAddBarcode',
+                'tTypeReturn'       : 'S'
+            });
+            JCNxBrowseData('oPdtBrowseLocationOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    $('#obtModalSupplierBrowse').click(function(e) {
+        e.preventDefault();
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            nKeepBrowseMain = '3';
+            $('#odvModalAddSupSupplier').modal("hide");
+            window.oPdtBrowseSupplierOption = oPdtBrowseSupplier({
+                'tReturnInputCode': 'oetPDTUnitSupplierCode',
+                'tReturnInputName': 'oetPDTUnitSupplierName',
+                'tNextFuncName': 'JSxShowModalAddSupplier'
+            })
+            JCNxBrowseData('oPdtBrowseSupplierOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    $('#obtModalSuplierSupplierUsrBrowse').click(function(e) {
+        e.preventDefault();
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            nKeepBrowseMain = '3';
+            $('#odvModalAddSupSupplier').modal("hide");
+            window.oPdtBrowseUserOption = oPdtBrowseUser({
+                'tReturnInputCode': 'oetPDTSupplierUsrCode',
+                'tReturnInputName': 'oetPDTSupplierUsrName',
+                'tNextFuncName': 'JSxShowModalAddSupplier'
+            })
+            JCNxBrowseData('oPdtBrowseUserOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    $('#obtModalCostSupBrowseColor').click(function(e) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            nKeepBrowseMain = '1';
+            $('#odvModalAddSup').modal('hide');
+            window.oPdtBrowseColorOption = oPdtBrowseColor({
+                'tReturnInputCode': 'oetPDTColorCode',
+                'tReturnInputName': 'oetPDTColorName',
+                'tNextFuncName': 'JSxShowModalAddUnit'
+            });
+            JCNxBrowseData('oPdtBrowseColorOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    $('#obtModalCostSupBrowseSize').click(function(e) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            nKeepBrowseMain = '1';
+            $('#odvModalAddSup').modal('hide');
+            window.oPdtBrowseSizeOption = oPdtBrowseSize({
+                'tReturnInputCode': 'oetPDTSizeCode',
+                'tReturnInputName': 'oetPDTSizeName',
+                'tNextFuncName': 'JSxShowModalAddUnit'
+            })
+            JCNxBrowseData('oPdtBrowseSizeOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    //oPdtBrowseUser
+    var oPdtBrowseUser = function(poReturnInput) {
+        var tInputReturnCode    = poReturnInput.tReturnInputCode;
+        var tInputReturnName    = poReturnInput.tReturnInputName;
+        var tNextFuncName       = poReturnInput.tNextFuncName;
+        var tPdtAgnCode         = $('#oetPdtAgnCode').val();
+        var tWhereCondition     = '';
+        if( tPdtAgnCode != '' ){
+            // tWhereCondition += " AND ( TCNMSpl.FTAgnCode = '"+tPdtAgnCode+"' OR ISNULL(TCNMSpl.FTAgnCode,'') = '' ) ";
+        }
+
+        var oOptionReturn = {
+            Title : ['authen/user/user','tUSRTitle'],
+                        Table:{Master:'TCNMUser',PK:'FTUsrCode',PKName:'FTUsrName'},
+                        Join : {
+                            Table:	['TCNMUser_L'],
+                            On:['TCNMUser_L.FTUsrCode = TCNMUser.FTUsrCode AND TCNMUser_L.FNLngID ='+nLangEdits,]
+                        },
+            Where: {
+                Condition   : [tWhereCondition]
+            },
+            GrideView: {
+                ColumnPathLang	: 'authen/user/user',
+                ColumnKeyLang	: ['tUSRCode','tUSRName'],
+                ColumnsSize     : ['15%','75%'],
+                WidthModal      : 50,
+                DataColumns		: ['TCNMUser.FTUsrCode','TCNMUser_L.FTUsrName'],
+                DataColumnsFormat : ['',''],
+                Perpage			: 5,
+                OrderBy			: ['TCNMUser_L.FTUsrName'],
+                SourceOrder		: "ASC"
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: [tInputReturnCode, "TCNMUser.FTUsrCode"],
+                Text: [tInputReturnName, "TCNMUser_L.FTUsrName"],
+            },
+            NextFunc: {
+                FuncName: tNextFuncName,
+            },
+            RouteAddNew: 'usr',
+            BrowseLev: nStaPdtBrowseType
+        }
+        return oOptionReturn;
+    }
+
     var oPdtBrowseSupplier = function(poReturnInput) {
         var tInputReturnCode    = poReturnInput.tReturnInputCode;
         var tInputReturnName    = poReturnInput.tReturnInputName;
@@ -2183,6 +3197,21 @@
         if( tPdtAgnCode != '' ){
             tWhereCondition += " AND ( TCNMSpl.FTAgnCode = '"+tPdtAgnCode+"' OR ISNULL(TCNMSpl.FTAgnCode,'') = '' ) ";
         }
+
+        var nMaxUnitList        = $('.xWSplDataUnitRow').length;
+        var nCountUnitList      = 1;
+        var tTrUnitList         = "'";
+        $('.xWSplDataUnitRow').each(function() {
+            if( nCountUnitList !=  nMaxUnitList ){
+                tTrUnitList += $(this).attr('data-splcode')+"','"
+            }else{
+                tTrUnitList += $(this).attr('data-splcode');
+            }
+            nCountUnitList++;
+        });
+        tTrUnitList += "'";
+
+        tWhereCondition += " AND TCNMSpl.FTSplCode NOT IN ("+tTrUnitList+") ";
 
         var oOptionReturn = {
             Title: ['supplier/supplier/supplier', 'tSPLTitle'],
@@ -2607,6 +3636,23 @@
         JSxPdtSetCallPageAdd();
     });
 
+    $('#obtPdtSVSetAdd').off('click');
+    $('#obtPdtSVSetAdd').on('click', function() {
+        JSxPdtSetCallPageSVAdd();
+        $('.xWAddMargin').hide();
+    });
+
+    $('#obtPdtSVSetBack').off('click');
+    $('#obtPdtSVSetBack').on('click', function() {
+        JSxPdtSetCallSVDataTable();
+        $('.xWAddMargin').show();
+    });
+
+    $('#obtPdtSVSetSave').off('click');
+    $('#obtPdtSVSetSave').on('click', function() {
+        JSxPdtSVEventAdd();
+    });
+
     $('#olbPdtSetInfo').off('click');
     $('#olbPdtSetInfo').on('click', function() {
         JSxPdtSetCallDataTable();
@@ -2621,6 +3667,7 @@
     $('#obtPdtSetSave').on('click', function() {
         JSxPdtSetEventAdd();
     });
+    
 
     // $('.xWPdtStaSetPri').off('click');
     // $('.xWPdtStaSetPri').on('click', function() {
@@ -2635,18 +3682,23 @@
     // });
 
     $('.xWPdtStaSetPri').on('change', function() {
-        var tPdtStaSetPri = $("#ocmPdtStaSetPri").val();
+        var tPdtStaSetPri       = $("#ocmPdtStaSetPri").val();
         JSxPdtSetUpdateStaSetPri(tPdtStaSetPri);
     });
 
     $('.xWPdtStaSetShwDT').on('change', function() {
-        var tPdtStaSetShwDT = $("#ocmPdtStaSetShwDT").val();
+        var tPdtStaSetShwDT     = $("#ocmPdtStaSetShwDT").val();
         JSxPdtSetUpdateStaSetShwDT(tPdtStaSetShwDT);
     });
 
     $('.xWPdtStaSetPrcStk').on('change', function() {
-        var tPdtStaSetPrcStk = $("#ocmPdtStaSetPrcStk").val();
+        var tPdtStaSetPrcStk    = $("#ocmPdtStaSetPrcStk").val();
         JSxPdtSetUpdatePdtStaSetPrcStk(tPdtStaSetPrcStk);
+    });
+
+    $('.xWPdtStaSetShwDTSV').on('change', function() {
+        var tPdtStaSetShwDTSV   = $("#ocmPdtStaSetShwDTSV").val();
+        JSxPdtSetUpdateStaSetShwDT(tPdtStaSetShwDTSV);
     });
 
 
@@ -2934,6 +3986,13 @@
         }
     });
 
+    $('#oliPdtDataAddSVSet').on('click', function(oEvent) {
+        if ($(this).hasClass('xCNCloseTabNav') == false) {
+            JSxPdtSetCallSVDataTable();
+            $('.xWAddMargin').show();
+        }
+    });
+
     $('#oliPdtDataAddFashion').on('click', function(oEvent) {
         if ($(this).hasClass('xCNCloseTabNav') == false) {
             JSxPdtFashionCallPageForm();
@@ -2946,25 +4005,48 @@
         }
     });
 
-
     $('#oliPdtDataAddSetDisable').off('click');
     $('#oliPdtDataAddSetDisable').on('click', function() {
-        // var tMsg = "สินค้านี้เป็นสินค้าชุดของ : " + $(this).data('pdtcode') + " (" + $(this).data('pdtname') + ")";
         var tMsg = "สินค้านี้เป็นสินค้าลูกของสินค้าอื่นแล้ว ไม่สามารถเพิ่มสินค้าชุดได้";
         FSvCMNSetMsgWarningDialog(tMsg);
     });
 
 
+    $('#oliPdtPdtContentNormalBarCode').off('click');
+    $('#oliPdtPdtContentNormalBarCode').on('click', function() {
+        var flagmsg = '1';
+        $(".xWChkPackActive").each(function (indexInArray, valueOfElement) { 
+            if($(this).hasClass("actived")){
+                flagmsg = '2';
+                return;
+            }
+        });
+        if(flagmsg == '1'){
+            var tMsg = "โปรดเลือกหน่วยสินค้าก่อน";
+            FSvCMNSetMsgWarningDialog(tMsg);
+        }
+    });
+
+    $('#oliPdtContentNormalVendor').off('click');
+    $('#oliPdtContentNormalVendor').on('click', function() {
+        var flagmsgVen = '1';
+        $(".xWChkBarActive").each(function (indexInArray, valueOfElement) { 
+            if($(this).hasClass("actived")){
+                flagmsgVen = '2';
+                return;
+            }
+        });
+        if(flagmsgVen == '1'){
+            var tMsg = "โปรดเลือกบาร์โค้ดก่อน";
+            FSvCMNSetMsgWarningDialog(tMsg);
+        }
+    });
+
 
     // function: Get Product Content
-    // Create By Witsarut 16/01/2020
     function JSxPdtGetContent() {
-
         var ptPdtCode = '<?php echo $tPdtCode; ?>';
-
-        // Check Login Expried
         var nStaSession = JCNxFuncChkSessionExpired();
-
         if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
             $.ajax({
                 type: "POST",
@@ -3018,36 +4100,25 @@
     // Return: View
     // ReturnType: View
     function JSxPdtFashionCallPageForm(){
-
         var ptPdtCode = $('#oetPdtCode').val();
-
         // Check Login Expried
-        var nStaSession = JCNxFuncChkSessionExpired();
-        JCNxOpenLoading();
-        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
-            $.ajax({
-                type: "POST",
-                url: "pdtFashionPageFrom",
-                data: {
-                    tPdtCode: ptPdtCode
-                },
-                catch: false,
-                timeout: 0,
-                success: function(tResult) {
-                    $('#odvPdtContentFashion').html(tResult);
-                    $('.xWHideSave').hide();
-      
-                    // JCNxCloseLoading();
-
-                    JSvFhnPdtClrPszLoadDataTable();
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
+        $.ajax({
+            type: "POST",
+            url: "pdtFashionPageFrom",
+            data: {
+                tPdtCode: ptPdtCode
+            },
+            catch: false,
+            timeout: 0,
+            success: function(tResult) {
+                $('#odvPdtContentFashion').html(tResult);
+                // $('.xWHideSave').hide();
+                JSvFhnPdtClrPszLoadDataTable();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
     }
 
     // Function: ฟังก์ชั่น Call View สินค้าหมวดหมู่
@@ -3073,9 +4144,9 @@
                 timeout: 0,
                 success: function(tResult) {
                     $('#odvPdtContentCategory').html(tResult);
-                    $('.xWHideSave').hide();
+                    // $('.xWHideSave').hide();
 
-                   JCNxCloseLoading();
+                JCNxCloseLoading();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -3084,27 +4155,24 @@
         } else {
             JCNxShowMsgSessionExpired();
         }
-        }
+    }
 
-    
+
     function JSvFhnPdtDataTableBtnControl(){
-    $('#olbPdtClrSzeAdd').addClass('xCNHide');
-    $('#olbPdtClrSzeEdit').addClass('xCNHide')
-    $('#obtPdtFashionBack').removeClass('xCNHide');
-    $('#obtPdtFashionSave').removeClass('xCNHide');
-    $('#obtPdtClrSzeAdd').removeClass('xCNHide');
-    $('.odvPdtClrSzePanelSheach').removeClass('xCNHide');
-    $('#obtPdtClrSzeBack').addClass('xCNHide');
-    $('#obtPdtClrSzeSave').addClass('xCNHide');
-    $('#olbFhnPdtClrSzeTitle').addClass('xCNLabelFrm');
-    $('#obtCallBackProductList').addClass('xCNHide');
-    $('#ofmAddEditProductFashion').show();
-    // $('#olbFhnPdtClrSzeTitle').css('color','#232C3D !important');
+        $('#olbPdtClrSzeAdd').addClass('xCNHide');
+        $('#olbPdtClrSzeEdit').addClass('xCNHide')
+        $('#obtPdtFashionBack').removeClass('xCNHide');
+        $('#obtPdtFashionSave').removeClass('xCNHide');
+        $('#obtPdtClrSzeAdd').removeClass('xCNHide');
+        $('.odvPdtClrSzePanelSheach').removeClass('xCNHide');
+        $('#obtPdtClrSzeBack').addClass('xCNHide');
+        $('#obtPdtClrSzeSave').addClass('xCNHide');
+        $('#olbFhnPdtClrSzeTitle').addClass('xCNLabelFrm');
+        $('#obtCallBackProductList').addClass('xCNHide');
+        $('#ofmAddEditProductFashion').show();
+    }
 
-}
-
-
-    // Function: ฟังก์ชั่น Call View กำหนดเงื่อนไขการควบคุมสต๊อก
+    // Function: ฟังก์ชั่น Call View กำหนดเงื่อนไขการควบคุมสต็อค
     // Parameters: -
     // Creator: 23/01/2020 Saharat(GolF)
     // Return: View
@@ -3113,24 +4181,23 @@
         var nPageCurrent = (pnPage === undefined || pnPage == '') ? '1' : pnPage;
         var ptPdtCode = $('#oetPdtCode').val();
         var tSearchFhnPdtColorSze = $('#oetSearchFhnPdtColorSze').val();
-                // Check Login Expried
-       var nStaSession = JCNxFuncChkSessionExpired();
-        JCNxOpenLoading();
+        var nStaSession = JCNxFuncChkSessionExpired();
+        // JCNxOpenLoading();
         if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
            $.ajax({
                 type: "POST",
                 url: 'pdtFashionDataTable',
                 data: {
-                            tPdtCode: ptPdtCode,
-                            tSearchFhnPdtColorSze : tSearchFhnPdtColorSze,
-                            nPageCurrent: nPageCurrent,
-                        },
+                        tPdtCode: ptPdtCode,
+                        tSearchFhnPdtColorSze : tSearchFhnPdtColorSze,
+                        nPageCurrent: nPageCurrent,
+                },
                 cache: false,
                 timeout: 0,
                 success: function(tResult) {
                     $('#odvPdtColorSizeDataTable').html(tResult);
                     JSvFhnPdtDataTableBtnControl();
-                    JCNxCloseLoading();
+                    // JCNxCloseLoading();
                 },
             error: function(jqXHR, textStatus, errorThrown) {
                 JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -3139,11 +4206,9 @@
         } else {
             JCNxShowMsgSessionExpired();
         }
-
     }
 
-
-    // Function: ฟังก์ชั่น Call View กำหนดเงื่อนไขการควบคุมสต๊อก
+    // Function: ฟังก์ชั่น Call View กำหนดเงื่อนไขการควบคุมสต็อค
     // Parameters: -
     // Creator: 23/01/2020 Saharat(GolF)
     // Return: View
@@ -3169,7 +4234,7 @@
         });
     }
 
-    // Function: ฟังก์ชั่น Call Modal Add กำหนดเงื่อนไขการควบคุมสต๊อก
+    // Function: ฟังก์ชั่น Call Modal Add กำหนดเงื่อนไขการควบคุมสต็อค
     // Parameters: -
     // Creator: 23/01/2020 Saharat(GolF)
     // Return: View
@@ -3183,7 +4248,7 @@
 
     }
 
-    // Function: ฟังก์ชั่น Call Modal Edit กำหนดเงื่อนไขการควบคุมสต๊อก
+    // Function: ฟังก์ชั่น Call Modal Edit กำหนดเงื่อนไขการควบคุมสต็อค
     // Parameters: -
     // Creator: 23/01/2020 Saharat(GolF)
     // Return: View
@@ -3208,8 +4273,18 @@
                     $('#oetStockConditionhBchName').val(aReturn['raItems']['FTBchName']);
                     $('#oetStockConditionWahCode').val(aReturn['raItems']['FTWahCode']);
                     $('#oetStockConditionhWahName').val(aReturn['raItems']['FTWahName']);
-                    $('#oetStockConditionsMin').val(aReturn['raItems']['FCSpwQtyMin']);
-                    $('#oetStockConditionsMax').val(aReturn['raItems']['FCSpwQtyMax']);
+                    $('#oetStockConditionsMin').val(parseFloat(aReturn['raItems']['FCSpwQtyMin']).toFixed(2));
+                    $('#oetStockConditionsMax').val(parseFloat(aReturn['raItems']['FCSpwQtyMax']).toFixed(2));
+                    
+                    $('#oetStockConditionsLeadTime').val(accounting.formatNumber(aReturn['raItems']['FCPdtLeadTime'], 0, ','));
+                    $('#oetStockConditionsDailyUseAvg').val(accounting.formatNumber(aReturn['raItems']['FCPdtDailyUseAvg'], 2, ','));
+                    $('#oetStockConditionsPerSLA').val(accounting.formatNumber(aReturn['raItems']['FCPdtPerSLA'], 0, ','));
+                    $('#oetPdtQtySugges').val(accounting.formatNumber(aReturn['raItems']['FCPdtQtySugges'], 2, ','));
+                    
+
+                    $('#oetStockConditionsPdtQtyOrdBuy').val(accounting.formatNumber(aReturn['raItems']['FCPdtQtyOrdBuy'], 2, ','));
+                    $('#oetStockConditionsLastUpdOn').val(aReturn['raItems']['FDLastUpdOn']);
+
                     $('#oetStockConditionsRemark').val(aReturn['raItems']['FTSpwRmk']);
 
                     $('#oetStockConditionBchCodeOld').val(aReturn['raItems']['FTBchCode']);
@@ -3224,7 +4299,7 @@
         });
     }
 
-    // Function: ฟังก์ชั่น บันทึกข้อมูล กำหนดเงื่อนไขการควบคุมสต๊อก
+    // Function: ฟังก์ชั่น บันทึกข้อมูล กำหนดเงื่อนไขการควบคุมสต็อค
     // Parameters: -
     // Creator: 23/01/2020 Saharat(GolF)
     // Return: View
@@ -3243,10 +4318,16 @@
                         "required": {}
                     },
                     oetStockConditionsMin: {
-                        "required": {}
+                        required: true,
+                        number: true
                     },
                     oetStockConditionsMax: {
-                        "required": {}
+                        required: true,
+                        number: true
+                    },
+                    oetStockConditionsLeadTime: {
+                        required: true,
+                        number: true
                     },
                 },
                 messages: {
@@ -3261,6 +4342,9 @@
                     },
                     oetStockConditionsMax: {
                         "required": $('#oetStockConditionsMax').attr('data-validate-required'),
+                    },
+                    oetStockConditionsLeadTime: {
+                        "required": $('#oetStockConditionsLeadTime').attr('data-validate-required'),
                     },
                 },
                 errorElement: "em",
@@ -3358,6 +4442,7 @@
         }
     }
 
+
     //Event Browse TCNMUsrRole
     $('#oimBrowseConControl').click(function() {
         JSxCheckPinMenuClose();
@@ -3365,13 +4450,9 @@
             'tAgnCodeWhere': $('#oetPdtAgnCode').val(),
         });
         JCNxBrowseData('oPdtBrowseConControlOption');
-
-
-        // JCNxBrowseData('oBrowseConControl');
     });
 
     // Option Unit สิทธิ UsrRole
-    // var oBrowseConControl = {
     var oBrowseConControl = function(poReturnInput) {
         var tAgnCodeWhere = poReturnInput.tAgnCodeWhere;
 
@@ -3424,11 +4505,99 @@
             },
         }
         return oOptionReturn;
+    }    
+
+    // Function: ฟังก์ชั่น เรียกหน้าหลักของ Lots
+    // Parameters: -
+    // Creator: 27/07/2021 GolF
+    // Return: View
+    // ReturnType: View
+    function JSvCallPagePdtLots() {
+        try{
+            var tFTPdtCode = $('#oetPdtCode').val();
+            var tFTPbnCode = $('#oetPdtPbnCode').val();
+            var tFTPmoCode = $('#oetPdtPmoCode').val();
+            $.ajax({
+                type    : "POST",
+                url     : "productLotsMain",
+                data    : {
+                    FTPdtCode : tFTPdtCode,
+                    FTPbnCode : tFTPbnCode,
+                    FTPmoCode : tFTPmoCode
+                },
+                cache: false,
+                timeout: 0,
+                success: function(tResult) {
+                    $('#odvPdtContentControlLot').html(tResult);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        }catch(err){
+            console.log('JSvCallPagePdtLots Error: ', err);
+        }
     }
-    
 
+    // Function New Browse Lot
+    var oBrowseLotByShi = function(poDataFnc){
+    var tUsrLevel           = "<?=$this->session->userdata('tSesUsrLevel')?>";
+    var tAgnCode            = "<?=$this->session->userdata("tSesUsrAgnCode"); ?>";
+    var tInputReturnCode    = poDataFnc.tReturnInputCode;
+    var tInputReturnName    = poDataFnc.tReturnInputName;
+    var tNextFuncName       = poDataFnc.tNextFuncName;
+    // Check Agency Code
+    var tSQLWhere           = "";
+    if(tUsrLevel != "HQ"){
+        if(tAgnCode != ''){
+            tSQLWhere   = " AND (TCNMLot.FTAgnCode IN ("+tAgnCode+") OR ISNULL(TCNMLot.FTAgnCode,'') = '')";
+        }else{
+            tSQLWhere   = " AND (ISNULL(TCNMLot.FTAgnCode,'') = '')";
+        }
+    }
+    var oBrowseLot  = {
+        Title   : ['service/pdtlot/pdtlot','tLOTTitle'],
+        Table   : {Master:'TCNMLot',PK:'FTLotNo',PKName:'FTLotBatchNo'},
+        Where   : {
+            Condition : [tSQLWhere]
+        },
+        GrideView:{
+            ColumnPathLang	: 'product/product/product',
+            ColumnKeyLang	: ['tLOTCode','tPDTLotBatchNo'],
+            ColumnsSize     : ['15%','75%'],
+            WidthModal      : 50,
+            DataColumns		: ['TCNMLot.FTLotNo','TCNMLot.FTLotBatchNo'],
+            DataColumnsFormat : ['',''],
+            Perpage			: 10,
+            OrderBy			: ['TCNMLot.FTLotNo DESC'],
+        },
+        CallBack: {
+            ReturnType  : 'S',
+            Value       : [tInputReturnCode, "TCNMLot.FTLotNo"],
+            Text        : [tInputReturnName, "TCNMLot.FTLotBatchNo"]
+        },
+        NextFunc:{
+            FuncName    : tNextFuncName,
+            ArgReturn   : ['FTLotNo','FTLotBatchNo']
+        },
+        // DebugSQL : true
+    }
+        return oBrowseLot;
+    }
 
-    
+    $('#obtPCPBrowsePplFrom').unbind().click(function() {
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+        JSxCheckPinMenuClose();
+        window.oPCPBrowsePplOption = oPCPBrowsePpl({
+            'tReturnInputCode': 'oetPCPPplCodeFrom',
+            'tReturnInputName': 'oetPCPPplNameFrom'
+        });
+        JCNxBrowseData('oPCPBrowsePplOption');
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
+    });
 
     // Function : Call Page Product list  
 	// Parameters : Document Redy And Event Button
@@ -3470,7 +4639,7 @@
                             $('#obtSubmitProduct').click();
                         }
                     }else{
-                        console.log(aReturnData['aPdtListBarCodeDup']);
+                        // console.log(aReturnData['aPdtListBarCodeDup']);
                         FSvCMNSetMsgErrorDialog('<?=language('product/product/product','tPDTAlterBarCodeDup')?> '+aReturnData['aPdtListBarCodeDup'][0]['FTPdtCode']);
                     }
                     JCNxCloseLoading();
@@ -3487,5 +4656,304 @@
     $('#obtConfirmProductBarDup').on('click',function(){
         $('#odvModalWanningProductBarDup').modal('hide');
         $('#obtSubmitProduct').click();
+    });
+
+    $('#obtPCPBrowsePplTo').unbind().click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            window.oPCPBrowsePplOption = oPCPBrowsePpl({
+                'tReturnInputCode': 'oetPCPPplCodeTo',
+                'tReturnInputName': 'oetPCPPplNameTo'
+            });
+            JCNxBrowseData('oPCPBrowsePplOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+        //Browse กลุ่มราคาสินค้า
+    var oPCPBrowsePpl = function(poReturnInput) {
+        var tInputReturnCode = poReturnInput.tReturnInputCode;
+        var tInputReturnName = poReturnInput.tReturnInputName;
+
+        let tAgnCode     = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+
+        let tCondition ='';
+        if(tAgnCode != ''){
+            tCondition += " AND TCNMPdtPriList.FTAgnCode = '"+tAgnCode+"' ";
+        }
+
+        var oOptionReturn = {
+            Title: ['product/pdtpricelist/pdtpricelist', 'tPPLTitle'],
+            Table: {
+                Master: 'TCNMPdtPriList',
+                PK: 'FTPplCode'
+            },
+            Join: {
+                Table: ['TCNMPdtPriList_L'],
+                On: ['TCNMPdtPriList_L.FTPplCode = TCNMPdtPriList.FTPplCode AND TCNMPdtPriList_L.FNLngID = ' +
+                    nLangEdits,
+                ]
+            },
+            Where: {
+                Condition: [tCondition + " UNION SELECT '1' ,'NA','ไม่กำหนดกลุ่มราคา' " ]
+            },
+            GrideView: {
+                ColumnPathLang: 'product/pdtpricelist/pdtpricelist',
+                ColumnKeyLang: ['tPPLTBCode', 'tPPLTBName'],
+                ColumnsSize: ['15%', '75%'],
+                WidthModal: 50,
+                DataColumns: ['TCNMPdtPriList.FTPplCode', 'TCNMPdtPriList_L.FTPplName'],
+                DataColumnsFormat: ['', ''],
+                Perpage: 10,
+                OrderBy: ['TCNMPdtPriList.FDCreateOn DESC'],
+                StartRow: 1
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: [tInputReturnCode, "TCNMPdtPriList.FTPplCode"],
+                Text: [tInputReturnName, "TCNMPdtPriList_L.FTPplName"],
+            },
+            NextFunc: {
+                FuncName: 'FSxPCPCallBackBrowsePpl',
+                ArgReturn: ['FTPplCode', 'FTPplName']
+            },
+            // DebugSQL: true,
+        }
+        return oOptionReturn;
+    };
+
+    function FSxPCPCallBackBrowsePpl(oArgReturn) {
+        if( oArgReturn != "NULL" ){
+            var aArgReturn = JSON.parse(oArgReturn)
+            if ($('#oetPCPPplCodeTo').val() == '') {
+                $('#oetPCPPplCodeTo').val(aArgReturn[0]);
+                $('#oetPCPPplNameTo').val(aArgReturn[1]);
+            }
+            if ($('#oetPCPPplCodeFrom').val() == '') {
+                $('#oetPCPPplCodeFrom').val(aArgReturn[0]);
+                $('#oetPCPPplNameFrom').val(aArgReturn[1]);
+            }
+        }
+    }
+
+
+    // Function: ฟังก์ชั่น เปิดหน้าสำหรับบรรทึกข้อมูล Lot
+    // Parameters: -
+    // Creator: 27/07/2021 GolF
+    // Return: View
+    // ReturnType: View
+    function JSvPdtStocklotsAdd() {
+        let nStaSession = JCNxFuncChkSessionExpired();
+        if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+            JSxCheckPinMenuClose();
+            window.oBrowseLotByShiOption    = undefined;
+            oBrowseLotByShiOption           = oBrowseLotByShi({
+                'tReturnInputCode'  : 'ohdPdtStockLotCode',
+                'tReturnInputName'  : 'ohdPdtStockLotNo',
+                'tNextFuncName'     : 'JSxPdtStockLotAfterSltLots'
+            });
+            JCNxBrowseData('oBrowseLotByShiOption');
+        }else{
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+    
+    function JSxPdtStockLotAfterSltLots(poDataNextFunc){
+        if(poDataNextFunc == '' || poDataNextFunc == 'NULL'){
+        }else{
+            let tPdtCode        = $("#oetPdtCode").val();
+            let tStockLotCode   = $('#ohdPdtStockLotCode').val();
+            let tStockLotNo     = $('#ohdPdtStockLotNo').val();
+            $.ajax({
+                type : "POST",
+                url  : "productAddStockLot",
+                data : {
+                    'ptPdtCode'     : tPdtCode,
+                    'ptStockLotNo'  : tStockLotCode,
+                },
+                cache   : false,
+                timeout : 0,
+                success : function(tResult) {
+                    let aDataReturn = JSON.parse(tResult);
+                    if(aDataReturn['rtCode']=='1'){
+                        JSvCallPagePdtLots();
+                    }else{
+                        var tMsgErrorFunction = aDataReturn['rtDesc'];
+                        FSvCMNSetMsgErrorDialog('<p class="text-left">'+tMsgErrorFunction+'</p>');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        }
+    }
+
+    // Function: ฟังก์ชั่น บันทึกข้อมูล Lot
+    // Parameters: -
+    // Creator: 27/07/2021 GolF
+    // Return: View
+    // ReturnType: View
+    function JSvPdtStockLotEventAdd() {
+        try{
+            var tStockLotCode = $('#oetStockLotCode').val();
+            var tStockLotNo   = $('#oetStockLotNo').val();
+            var tStockLotCost = $('#oetStockLotCost').val();
+            var tStockLotMfg  = $('#oetPdtLotDateStart').val();
+            var tFStockLotExd = $('#oetPdtLotDateStop').val();
+            var tPdtCode      = $("#oetPdtCode").val();
+            $.ajax({
+                type    : "POST",
+                url     : "productAddStockLot",
+                data    : {
+                    tPdtCode        : tPdtCode,
+                    tStockLotNo     : tStockLotCode,
+                    tStockLotCost   : tStockLotCost,
+                    tStockLotMfg    : tStockLotMfg,
+                    tFStockLotExd   : tFStockLotExd				
+                },
+                cache   : false,
+                timeout : 0,
+                success : function(tResult) {
+                    $('#odvModalStockLots').modal('hide');
+                    JSvCallPagePdtLots();
+
+                    $('#ofmAddStockLot .form-group').removeClass('has-success');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        }catch{
+            console.log('JSvPdtStockLotEventAdd Error: ', err);
+        }
+    }
+
+    // Function: ฟังก์ชั่น validate form Dot ยาง
+    // Parameters: -
+    // Creator: 27/07/2021 GolF
+    // Return: View
+    // ReturnType: View
+    $('#ofmAddStockLot').validate({
+        rules: {
+            oetStockLotNo: {"required" :{}},
+        },
+        messages: {
+            oetStockLotNo : {
+                "required"      : $('#oetStockLotNo').attr('data-validate-required'),
+            },
+        },
+        errorElement: "em",
+        errorPlacement: function (error, element ) {
+            error.addClass( "help-block" );
+            if ( element.prop( "type" ) === "checkbox" ) {
+                error.appendTo( element.parent( "label" ) );
+            } else {
+                var tCheck = $(element.closest('.form-group')).find('.help-block').length;
+                if(tCheck == 0){
+                    error.appendTo(element.closest('.form-group')).trigger('change');
+                }
+            }
+        },
+        highlight: function(element, errorClass, validClass) {
+            $( element ).closest('.form-group').addClass( "has-error" ).removeClass( "has-success" );
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $( element ).closest('.form-group').addClass( "has-success" ).removeClass( "has-error" );
+        },
+        submitHandler: function(form) {
+            JSvPdtStockLotEventAdd();
+        }
+    });
+
+
+    // Function: ฟังก์ชั่น แก้ไขข้อมูล Lot
+    // Parameters: -
+    // Creator: 27/01/2021 GolF
+    // Return: View
+    // ReturnType: View
+    function JSvPdtStockLotPageEdit(ptFTPdtCode ,ptFTLotNo ) {
+      document.forms["ofmAddStockLot"].reset();
+
+        $('#ofmAddStockLot .form-group').removeClass('has-success');
+
+        $.ajax({
+            type    : "POST",
+            url     : "productEventPageStockLotEdit",
+            data    : {
+                FTPdtCode   : ptFTPdtCode,
+                FTLotNo     : ptFTLotNo 
+            },
+            cache: false,
+            success: function(oResult) {
+                var aReturn = JSON.parse(oResult);
+                if (aReturn['rtCode'] == 1) {
+                    $('#odvModalStockLots').modal('show');
+                    $('#oetStockLotCode').val(aReturn['oList'][0]['FTLotNo']);
+                    $('#oetStockLotNo').val(aReturn['oList'][0]['FTLotBatchNo']);
+                    $('#oetStockLotCost').val(aReturn['oList'][0]['FCPdtCost']);
+                    $('#oetPdtLotDateStart').val(aReturn['oList'][0]['FDPdtDateMFG']);
+                    $('#oetPdtLotDateStop').val(aReturn['oList'][0]['FDPdtDateEXP']);        
+                } else {
+                    alert(aReturn['rtDesc']);
+                }
+            }
+        });
+    }    
+
+    // Functionality: ลบข้อมูล Lot
+    // Parameters: Event Icon Delete
+    // Creator: 27/7/2021 GolF
+    // Return: object Status Delete
+    // ReturnType: object
+    function JSoPdtStockLotDelete(ptFTPdtCode,ptFTLotNo) {        
+        var tDeleteYesOrNot = $('#oetTextComfirmDeleteYesOrNot').val();
+        $('#odvModalDeleteStockLot #ospTextConfirmDelSingle').html($('#oetTextComfirmDeleteSingle').val() + ptFTLotNo);
+        $('#odvModalDeleteStockLot').modal('show');
+        $('#odvModalDeleteStockLot #osmConfirmDelSingleLot').unbind().click(function() {
+            JCNxOpenLoading();
+            $.ajax({
+                type    : "POST",
+                url     : "productDeletStockLot",
+                data    : {
+                    FTPdtCode   : ptFTPdtCode,
+                    FTLotNo     : ptFTLotNo
+                },
+                cache   : false,
+                timeout : 0,
+                success : function(oResult) {
+                    var aReturn = JSON.parse(oResult);
+                    if (aReturn['nStaEvent'] == 1) {
+                        $('#odvModalDeleteStockLot').modal('hide');
+                        $('#odvModalDeleteStockLot #ospTextConfirmDelSingle').html($('#oetTextComfirmDeleteSingle').val());
+                        $('.modal-backdrop').remove();
+                        JCNxCloseLoading();
+                        JSvCallPagePdtLots();
+                    } else {
+                        alert(aReturn['tStaMessg']);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        });
+    }    
+    
+    var nKeepBrowseMain = '';
+    $(document).on('hidden.bs.modal', '#myModal', function () {
+        if(nKeepBrowseMain == 1){ //ถ้าเป็น browse option ทั่วไป
+            $('#odvModalAddSup').modal('show');
+            nKeepBrowseMain = 0;
+        }else if(nKeepBrowseMain == 2){
+            $('#odvModalAddSupBarCode').modal('show');
+            nKeepBrowseMain = 0;
+        }else if(nKeepBrowseMain == 3){
+            $('#odvModalAddSupSupplier').modal('show');
+            nKeepBrowseMain = 0;
+        }
     });
 </script>

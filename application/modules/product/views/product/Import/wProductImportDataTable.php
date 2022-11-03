@@ -1,8 +1,3 @@
-<?php
-    $tDangerMsg     = "<span class='text-danger' style='font-weight: bold;'>*</span>";
-    $tPrimaryMsg    = "<span class='text-primary' style='font-weight: bold;'>*</span>";
-?>
-
 <div class="row">
     <div class="col-xs-4 col-md-4 col-lg-4">
         <div class="form-group">
@@ -17,34 +12,20 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-5 col-md-5 col-lg-5">
-        <?php
-            $aLangForImp = array(
-                'tUpdItems'             => "ระบบจะทำการอัพเดทข้อมูลในคอลัมที่มี <span class='text-primary' style='font-weight: bold;'>*</span> เท่านั้น",
-                'tUseNewItems'          => "ระบบจะทำการลบข้อมูลเดิม และเพิ่มข้อมูลใหม่",
-                'tUseNewItems_PDT'      => "ระบบจะทำการลบข้อมูลเดิม และเพิ่มข้อมูลใหม่ (หน่วย และบาร์โค้ดจะไม่ถูกลบ)",
-                'tCaseDataInSys'        => "กรณีxxxที่นำเข้ามีอยู่แล้วในระบบ"
-            );
-        ?>
+    <div class="col-xs-5 col-md-3 col-lg-3">
         <div style="margin-bottom: 5px;">
-            <label id="olbCaseAlreadyInSystem" class="xCNLabelFrm">กรณีมีข้อมูลนี้อยู่แล้วในระบบ</label>
+            <label class="xCNLabelFrm">กรณีมีข้อมูลนี้อยู่แล้วในระบบ</label>
         </div>  
         <div class="form-check form-check-inline" style="display: inline; margin-right: 20px;">
-            <input class="xWEventClickRadio form-check-input" type="radio" name="orbPDTCaseInsAgain" id="orbPDTCaseNew" value="1">
+            <input class="form-check-input" type="radio" name="orbPDTCaseInsAgain" id="orbPDTCaseNew" value="1">
             <label class="form-check-label" for="orbPDTCaseNew">ใช้รายการใหม่</label>
         </div>
         <div class="form-check form-check-inline" style="display: inline; margin-right: 20px;">
-            <input class="xWEventClickRadio form-check-input" type="radio" name="orbPDTCaseInsAgain" id="orbPDTCaseUpdate" value="2" checked>
+            <input class="form-check-input" type="radio" name="orbPDTCaseInsAgain" id="orbPDTCaseUpdate" value="2" checked>
             <label class="form-check-label" for="orbPDTCaseUpdate">อัพเดทรายการเดิม</label>
         </div>
-        <div>
-            <label id="olbWarningImpPdt" class="xCNLabelFrm" style='color: #F9354C !important;'></label>
-        </div>
     </div>
-    <div class="col-xs-3 col-md-3 col-lg-3 text-right" style="margin-top:25px;">
-        <button id="oahDowloadModifiTemplate" class="btn btn-success btn-group xCNBTNMngTable" href="<?=base_url('application/modules/common/assets/template/Branch_Template.xlsx')?>" style="display:none">
-            <?=language('common/main/main', 'tDowloadFileAttem');?>
-        </button>
+    <div class="col-xs-3 col-md-5 col-lg-5 text-right" style="margin-top:25px;">
         <div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
             <button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
                 <?= language('common/main/main','tCMNOption')?>
@@ -67,9 +48,6 @@
                     <li class="nav-item active"><a class="nav-link flat-buttons xCNEventTab" data-hiddenID="TCNMPDT" data-toggle="tab" href="#odvPDT" role="tab" aria-expanded="false">สินค้า</a></li>
                     <li class="nav-item"><a class="nav-link flat-buttons xCNEventTab" data-hiddenID="TCNMPdtUnit" data-toggle="tab" href="#odvUNIT" role="tab" aria-expanded="false">หน่วยสินค้า</a></li>
                     <li class="nav-item"><a class="nav-link flat-buttons xCNEventTab" data-hiddenID="TCNMPdtBrand" data-toggle="tab" href="#odvBrand" role="tab" aria-expanded="false">ยี่ห้อ</a></li>
-                    <li class="nav-item"><a class="nav-link flat-buttons xCNEventTab" data-hiddenID="TCNMPdtType" data-toggle="tab" href="#odvPdtType" role="tab" aria-expanded="false">ประเภท</a></li>
-                    <li class="nav-item"><a class="nav-link flat-buttons xCNEventTab" data-hiddenID="TCNMPdtModel" data-toggle="tab" href="#odvPdtModel" role="tab" aria-expanded="false">รุ่น</a></li>
-                    <li class="nav-item"><a class="nav-link flat-buttons xCNEventTab" data-hiddenID="TCNMPdtGrp" data-toggle="tab" href="#odvPdtGrp" role="tab" aria-expanded="false">กลุ่ม</a></li>
                     <li class="nav-item"><a class="nav-link flat-buttons xCNEventTab" data-hiddenID="TCNMPdtTouchGrp" data-toggle="tab" href="#odvPDTTouch" role="tab" aria-expanded="false">กลุ่มสินค้าด่วน</a></li>
                 </ul>
             </div>
@@ -86,22 +64,16 @@
                                         <thead>
                                             <tr>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('company/branch/branch','tBCHChoose');?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "รหัสสินค้า";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ชื่อสินค้า";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ชื่อย่อสินค้า";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "รหัสหน่วยสินค้า";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "รหัสสินค้า";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อสินค้า";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อย่อสินค้า";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "รหัสหน่วยสินค้า";?></th>
                                                 <!-- <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อหน่วยสินค้า";?></th> -->
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "อัตราส่วน/หน่วย";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "บาร์โค้ด";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "รหัสยี่ห้อ";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "อัตราส่วน/หน่วย";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "บาร์โค้ด";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "รหัสยี่ห้อ";?></th>
                                                 <!-- <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อยี่ห้อ";?></th> -->
-
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ภาษี";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "รหัสประเภท";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "รหัสรุ่น";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "รหัสกลุ่ม";?></th>
-
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "รหัสกลุ่มสินค้าด่วน";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "รหัสกลุ่มสินค้าด่วน";?></th>
                                                 <!-- <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อกลุ่มสินค้าด่วน";?></th> -->
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "หมายเหตุ";?></th>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('common/main/main','tCMNActionDelete');?></th>
@@ -122,8 +94,8 @@
                                         <thead>
                                             <tr>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('company/branch/branch','tBCHChoose');?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "รหัสหน่วย";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ชื่อหน่วย";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "รหัสหน่วย";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อหน่วย";?></th>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "หมายเหตุ";?></th>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('common/main/main','tCMNActionDelete');?></th>
                                             </tr>
@@ -143,71 +115,8 @@
                                         <thead>
                                             <tr>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('company/branch/branch','tBCHChoose');?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "รหัสยี่ห้อ";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ชื่อยี่ห้อ";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "หมายเหตุ";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('common/main/main','tCMNActionDelete');?></th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Content Product Type-->
-                    <div class="tab-pane" id="odvPdtType" role="tabpanel" aria-expanded="true" style="padding: 10px 0px;">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="table-responsive">
-                                    <table class="table table-striped nowrap" id="otdTablePdtType" style="width:100% !important;">
-                                        <thead>
-                                            <tr>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('company/branch/branch','tBCHChoose');?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "รหัสประเภท";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ชื่อประเภท";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "หมายเหตุ";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('common/main/main','tCMNActionDelete');?></th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Content Product Model-->
-                    <div class="tab-pane" id="odvPdtModel" role="tabpanel" aria-expanded="true" style="padding: 10px 0px;">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="table-responsive">
-                                    <table class="table table-striped nowrap" id="otdTablePdtModel" style="width:100% !important;">
-                                        <thead>
-                                            <tr>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('company/branch/branch','tBCHChoose');?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "รหัสรุ่น";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ชื่อรุ่น";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "หมายเหตุ";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('common/main/main','tCMNActionDelete');?></th>
-                                            </tr>
-                                        </thead>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--Content Product Group-->
-                    <div class="tab-pane" id="odvPdtGrp" role="tabpanel" aria-expanded="true" style="padding: 10px 0px;">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="table-responsive">
-                                    <table class="table table-striped nowrap" id="otdTablePdtGrp" style="width:100% !important;">
-                                        <thead>
-                                            <tr>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('company/branch/branch','tBCHChoose');?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "รหัสกลุ่ม";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ชื่อกลุ่ม";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "รหัสยี่ห้อ";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อยี่ห้อ";?></th>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "หมายเหตุ";?></th>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('common/main/main','tCMNActionDelete');?></th>
                                             </tr>
@@ -227,8 +136,8 @@
                                         <thead>
                                             <tr>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('company/branch/branch','tBCHChoose');?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tDangerMsg?><?php echo "รหัสกลุ่มสินค้าด่วน";?></th>
-                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?=$tPrimaryMsg?><?php echo "ชื่อกลุ่มสินค้าด่วน";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "รหัสกลุ่มสินค้า";?></th>
+                                                <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อกลุ่มสินค้า";?></th>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "หมายเหตุ";?></th>
                                                 <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('common/main/main','tCMNActionDelete');?></th>
                                             </tr>
@@ -286,15 +195,6 @@ $(document).ready(function() {
     //Render Touch Group HTML
     JSxRenderDataTable_TouchGroup();
 
-    //Render Product Group HTML
-    JSxRenderDataTable_PdtGrp();
-
-    //Render Product Model HTML
-    JSxRenderDataTable_PdtModal();
-
-    //Render Product Type HTML
-    JSxRenderDataTable_PdtType();
-
     //Render Brand HTML 
     JSxRenderDataTable_Brand();
 
@@ -307,32 +207,6 @@ $(document).ready(function() {
 
     // $('.dataTables_scrollBody').css('height', '300px');
 
-    var oDataLang = <?php echo json_encode($aLangForImp);?>;
-    var aDataLang = JSON.parse(JSON.stringify(oDataLang));
-    // console.log(aDataLang);
-
-    // Default ตอนโหลดหน้าจอครั้งแรก
-    $('#olbWarningImpPdt').html(aDataLang['tUpdItems']);
-    $('#olbCaseAlreadyInSystem').html(aDataLang['tCaseDataInSys'].replace('xxx','สินค้า'));
-
-    function JSxChkCaseAlreadyInSys(){
-        var nChkVal = $('input[name=orbPDTCaseInsAgain]:checked').val();
-        if( nChkVal == '2' ){
-            $('#olbWarningImpPdt').html(aDataLang['tUpdItems']);
-        }else{
-            var tTabActive = $('.active').find('.xCNEventTab').attr('data-hiddenid');
-            if( tTabActive == 'TCNMPDT' ){
-                $('#olbWarningImpPdt').html(aDataLang['tUseNewItems_PDT']); 
-            }else{
-                $('#olbWarningImpPdt').html(aDataLang['tUseNewItems']);
-            }
-        }
-    }
-
-    $('.xWEventClickRadio').click(function(){
-        JSxChkCaseAlreadyInSys();
-    });
-
     $('.xCNEventTab').click(function(e) {
         //ทุกครั้งที่กด Tab localstorage จะเคลียร์
         localStorage.removeItem("LocalItemData")
@@ -343,17 +217,10 @@ $(document).ready(function() {
         var tHiddenID = $(this).attr('data-hiddenID');
         $('#ohaTabActiveProduct').val(tHiddenID);
         JSxPDTImportGetItemAll();
-
-        $('#olbCaseAlreadyInSystem').html(aDataLang['tCaseDataInSys'].replace('xxx',$(this).html()));
-
-        setTimeout(function(){ 
-            JSxChkCaseAlreadyInSys();
-        }, 100);
-         
     });
 
     //กดเลือกลบทั้งหมด
-    $('#otdTablePDT , #otdTablePDTUnit , #otdTablePDTBrand , #otdTablePDTTouchGroup , #otdTablePdtGrp , #otdTablePdtModel , #otdTablePdtType , tbody').on('click', '.ocbListItem', function (e) {
+    $('#otdTablePDT , #otdTablePDTUnit , #otdTablePDTBrand , #otdTablePDTTouchGroup tbody').on('click', '.ocbListItem', function (e) {
         var nSeq  = $(this).data('seq');     //seq
         var nCode = $(this).data('code');    //code
         var tName = $(this).data('name');    //name
@@ -425,175 +292,140 @@ function JSxRenderDataTable_PDT(){
                     'nPageNumber'           : data.draw - 1,
                     'tSearch'               : $('#oetPDTImpSearchAll').val()
                 },
-            }).success(function(response) {
-                var oRender = [];   
+                success: function(response) {
+                    var oRender = [];   
                 
-                if(response.recordsTotal == 0){
-                    oRender = [];
-                    var draw            = 1;
-                    var recordsTotal    = 0;
-                    var recordsFiltered = 0;
-                }else{
-                    for (var i=data.start, ien=data.start+data.length; i<ien ; i++ ) {
-                        if(response.data.aResult[i] != null){
+                    if(response.recordsTotal == 0){
+                        oRender = [];
+                        var draw            = 1;
+                        var recordsTotal    = 0;
+                        var recordsFiltered = 0;
+                    }else{
+                        for (var i=data.start, ien=data.start+data.length; i<ien ; i++ ) {
+                            if(response.data.aResult[i] != null){
 
-                            var FTPdtCode       = response.data.aResult[i].FTPdtCode;
-                            var FTPdtName       = response.data.aResult[i].FTPdtName;
-                            var FTPdtNameABB    = (response.data.aResult[i].FTPdtNameABB == null)  ? 'N/A' : response.data.aResult[i].FTPdtNameABB;
-                            var FCPdtUnitFact   = (response.data.aResult[i].FCPdtUnitFact == '')  ? '0.00' : response.data.aResult[i].FCPdtUnitFact;
-                            var FTBarCode       = (response.data.aResult[i].FTBarCode == null)  ? 'N/A' : response.data.aResult[i].FTBarCode;
-                            var FNTmpSeq        = response.data.aResult[i].FNTmpSeq;
-                            var FTTmpStatus     = response.data.aResult[i].FTTmpStatus;
+                                var FTPdtCode       = response.data.aResult[i].FTPdtCode;
+                                var FTPdtName       = response.data.aResult[i].FTPdtName;
+                                var FTPdtNameABB    = (response.data.aResult[i].FTPdtNameABB == null)  ? 'N/A' : response.data.aResult[i].FTPdtNameABB;
+                                var FCPdtUnitFact   = (response.data.aResult[i].FCPdtUnitFact == '')  ? '0.00' : response.data.aResult[i].FCPdtUnitFact;
+                                var FTBarCode       = (response.data.aResult[i].FTBarCode == null)  ? 'N/A' : response.data.aResult[i].FTBarCode;
+                                var FNTmpSeq        = response.data.aResult[i].FNTmpSeq;
+                                var FTTmpStatus     = response.data.aResult[i].FTTmpStatus;
 
-                            var FTPunCode       = (response.data.aResult[i].FTPunCode == null)  ? 'N/A' : response.data.aResult[i].FTPunCode ;
-                            var FTPunName       = (response.data.aResult[i].FTPunName == null)  ? 'N/A' : response.data.aResult[i].FTPunName;
-                            if(FTPunName == 'N/A'){FTPunName = response.data.aResult[i].Master_FTPunName;}
+                                var FTPunCode       = (response.data.aResult[i].FTPunCode == null)  ? 'N/A' : response.data.aResult[i].FTPunCode ;
+                                var FTPunName       = (response.data.aResult[i].FTPunName == null)  ? 'N/A' : response.data.aResult[i].FTPunName;
+                                if(FTPunName == 'N/A'){FTPunName = response.data.aResult[i].Master_FTPunName;}
 
-                            var FTPbnCode       = (response.data.aResult[i].FTPbnCode == '')  ? 'N/A' : response.data.aResult[i].FTPbnCode;
-                            var FTPbnName       = (response.data.aResult[i].FTPbnName == null)  ? 'N/A' : response.data.aResult[i].FTPbnName;
-                            if(FTPbnName == 'N/A'){FTPbnName = response.data.aResult[i].Master_FTPbnName;}
+                                var FTTcgCode       = (response.data.aResult[i].FTTcgCode == '')  ? 'N/A' : response.data.aResult[i].FTTcgCode;
+                                var FTTcgName       = (response.data.aResult[i].FTTcgName == null)  ? 'N/A' : response.data.aResult[i].FTTcgName;
+                                if(FTTcgName == 'N/A'){FTTcgName = response.data.aResult[i].Master_FTTcgName;}
 
-                            var FTPdtStaVat     = (response.data.aResult[i].FTPdtStaVat == '' || response.data.aResult[i].FTPdtStaVat == '1')  ? 'มีภาษี' : 'ไม่มีภาษี';
+                                var FTPbnCode       = (response.data.aResult[i].FTPbnCode == '')  ? 'N/A' : response.data.aResult[i].FTPbnCode;
+                                var FTPbnName       = (response.data.aResult[i].FTPbnName == null)  ? 'N/A' : response.data.aResult[i].FTPbnName;
+                                if(FTPbnName == 'N/A'){FTPbnName = response.data.aResult[i].Master_FTPbnName;}
 
-                            var FTPtyCode       = (response.data.aResult[i].FTPtyCode == '')  ? 'N/A' : response.data.aResult[i].FTPtyCode;
-                            var FTPtyName       = (response.data.aResult[i].FTPtyName == null)  ? 'N/A' : response.data.aResult[i].FTPtyName;
-                            if(FTPtyName == 'N/A'){FTPtyName = response.data.aResult[i].Master_FTPtyName;}
-
-                            var FTPmoCode       = (response.data.aResult[i].FTPmoCode == '')  ? 'N/A' : response.data.aResult[i].FTPmoCode;
-                            var FTPmoName       = (response.data.aResult[i].FTPmoName == null)  ? 'N/A' : response.data.aResult[i].FTPmoName;
-                            if(FTPmoName == 'N/A'){FTPmoName = response.data.aResult[i].Master_FTPmoName;}
-
-                            var FTPgpChain       = (response.data.aResult[i].FTPgpChain == '')  ? 'N/A' : response.data.aResult[i].FTPgpChain;
-                            var FTPgpName       = (response.data.aResult[i].FTPgpName == null)  ? 'N/A' : response.data.aResult[i].FTPgpName;
-                            if(FTPgpName == 'N/A'){FTPgpName = response.data.aResult[i].Master_FTPgpName;}
-
-                            var FTTcgCode       = (response.data.aResult[i].FTTcgCode == '')  ? 'N/A' : response.data.aResult[i].FTTcgCode;
-                            var FTTcgName       = (response.data.aResult[i].FTTcgName == null)  ? 'N/A' : response.data.aResult[i].FTTcgName;
-                            if(FTTcgName == 'N/A'){FTTcgName = response.data.aResult[i].Master_FTTcgName;}
-
-                            
-
-                            if(FTTmpStatus != 1){
-                                var tStyleList  = "color:red !important; font-weight:bold;"; 
-                            }else{
-                                var tStyleList  = '';
-                            }
-                    
-                            var tIDCheckbox     = "ocbListItem" + FNTmpSeq;
-                            var tCheckBoxDelete = "<label class='fancy-checkbox' style='text-align: center;'>";
-                                tCheckBoxDelete += "<input id='"+tIDCheckbox+"' type='checkbox' class='ocbListItem' name='ocbListItem[]' data-code='"+FTPdtCode+"' data-name='"+FTPdtName+"' data-seq='"+FNTmpSeq+"'>";
-                                tCheckBoxDelete += "<span>&nbsp;</span>";
-                                tCheckBoxDelete += "</label>";
-                            var FTTmpRemark     = response.data.aResult[i].FTTmpRemark;
-                            var aRemark         = FTTmpRemark.split("$&");
-                            if(typeof aRemark[0] !== 'undefined'){
-                                if(aRemark[0] == '' || aRemark[0] == null){
-
+                                if(FTTmpStatus != 1){
+                                    var tStyleList  = "color:red !important; font-weight:bold;"; 
                                 }else{
-                                    if(aRemark[0].indexOf('[') !== -1){
-                                        aRemarkIndex = aRemark[0].split("[");
-                                        aRemarkIndex = aRemarkIndex[1].split("]");
-                                        switch(aRemarkIndex[0]){
-                                            case '0':
-                                                FTPdtCode      = aRemark[2];
-                                                FTTmpRemark    = aRemark[1];
-                                            break;
-                                            case '1':
-                                                FTPdtName       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '2':
-                                                FTPdtNameABB    = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '3':
-                                                FTPunCode       = aRemark[2];
-                                                FTPunName       = 'N/A';
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '4':
-                                                FCPdtUnitFact   = "0.00";
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '5':
-                                                FTBarCode       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '6':
-                                                FTPbnCode       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '7':
-                                                FTPdtStaVat     = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '8':
-                                                FTPtyCode       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '9':
-                                                FTPmoCode       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '10':
-                                                FTPgpChain       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '11':
-                                                FTTcgCode       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
+                                    var tStyleList  = '';
+                                }
+                        
+                                var tIDCheckbox     = "ocbListItem" + FNTmpSeq;
+                                var tCheckBoxDelete = "<label class='fancy-checkbox' style='text-align: center;'>";
+                                    tCheckBoxDelete += "<input id='"+tIDCheckbox+"' type='checkbox' class='ocbListItem' name='ocbListItem[]' data-code='"+FTPdtCode+"' data-name='"+FTPdtName+"' data-seq='"+FNTmpSeq+"'>";
+                                    tCheckBoxDelete += "<span>&nbsp;</span>";
+                                    tCheckBoxDelete += "</label>";
+                                var FTTmpRemark     = response.data.aResult[i].FTTmpRemark;
+                                var aRemark         = FTTmpRemark.split("$&");
+                                if(typeof aRemark[0] !== 'undefined'){
+                                    if(aRemark[0] == '' || aRemark[0] == null){
+
+                                    }else{
+                                        if(aRemark[0].indexOf('[') !== -1){
+                                            aRemarkIndex = aRemark[0].split("[");
+                                            aRemarkIndex = aRemarkIndex[1].split("]");
+                                            switch(aRemarkIndex[0]){
+                                                case '0':
+                                                    FTPdtCode      = aRemark[2];
+                                                    FTTmpRemark    = aRemark[1];
+                                                break;
+                                                case '1':
+                                                    FTPdtName       = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '2':
+                                                    FTPdtNameABB    = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '3':
+                                                    FTPunCode       = aRemark[2];
+                                                    FTPunName       = 'N/A';
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '4':
+                                                    FCPdtUnitFact   = "0.00";
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '5':
+                                                    FTBarCode       = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '6':
+                                                    FTPbnCode       = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                                case '7':
+                                                    FTTcgCode       = aRemark[2];
+                                                    FTTmpRemark     = aRemark[1];
+                                                break;
+                                            }
                                         }
                                     }
                                 }
+
+                                var FTTmpRemark     = "<label style='"+tStyleList+"'>"+FTTmpRemark+"<label>";
+                                var tNameShowDelete = FTPdtName.replace(/\s/g, '');
+                                var oEventDelete    = "onClick=JSxPDTDeleteImportList('"+FNTmpSeq+"','"+FTPdtCode+"','"+tNameShowDelete+"','TCNMPDT')";
+                                var tImgDelete      = "<img style='display: block; margin: 0px auto;' class='xCNIconTable xCNIconDel' "+oEventDelete+" src='<?=base_url().'/application/modules/common/assets/images/icons/delete.png'?>'>";
+
+                                oRender.push([ 
+                                    tCheckBoxDelete , 
+                                    FTPdtCode , 
+                                    FTPdtName , 
+                                    FTPdtNameABB , 
+                                    FTPunCode , 
+                                    // FTPunName , 
+                                    FCPdtUnitFact ,
+                                    FTBarCode ,
+                                    FTPbnCode ,
+                                    // FTPbnName ,
+                                    FTTcgCode ,
+                                    // FTTcgName ,
+                                    FTTmpRemark ,
+                                    tImgDelete 
+                                ]);
+
+                                var draw            = data.draw;
+                                var recordsTotal    = response.recordsTotal;
+                                var recordsFiltered = response.recordsFiltered;
                             }
-
-                            var FTTmpRemark     = "<label style='"+tStyleList+"'>"+FTTmpRemark+"<label>";
-                            var tNameShowDelete = FTPdtName.replace(/\s/g, '');
-                            var oEventDelete    = "onClick=JSxPDTDeleteImportList('"+FNTmpSeq+"','"+FTPdtCode+"','"+tNameShowDelete+"','TCNMPDT')";
-                            var tImgDelete      = "<img style='display: block; margin: 0px auto;' class='xCNIconTable xCNIconDel' "+oEventDelete+" src='<?=base_url().'/application/modules/common/assets/images/icons/delete.png'?>'>";
-
-                            oRender.push([ 
-                                tCheckBoxDelete , 
-                                FTPdtCode , 
-                                FTPdtName , 
-                                FTPdtNameABB , 
-                                FTPunCode , 
-                                // FTPunName , 
-                                FCPdtUnitFact ,
-                                FTBarCode ,
-                                FTPbnCode ,
-                                // FTPbnName ,
-                                FTPdtStaVat ,
-                                FTPtyCode ,
-                                FTPmoCode ,
-                                FTPgpChain ,
-                                FTTcgCode ,
-                                // FTTcgName ,
-                                FTTmpRemark ,
-                                tImgDelete 
-                            ]);
-
-                            var draw            = data.draw;
-                            var recordsTotal    = response.recordsTotal;
-                            var recordsFiltered = response.recordsFiltered;
                         }
                     }
-                }
 
-                setTimeout( function () {
-                    callback( {
-                        draw            : data.draw,
-                        data            : oRender,
-                        recordsTotal    : recordsTotal,
-                        recordsFiltered : recordsFiltered
-                    });
-                    JSxControlCheckBoxDeleteAll();
-                }, 50);
-                
-                setTimeout(function(){
-                    JCNxCloseLoading();
-                }, 100)
+                    setTimeout( function () {
+                        callback( {
+                            draw            : data.draw,
+                            data            : oRender,
+                            recordsTotal    : recordsTotal,
+                            recordsFiltered : recordsFiltered
+                        });
+                        JSxControlCheckBoxDeleteAll();
+                    }, 50);
+                    
+                    setTimeout(function(){
+                        JCNxCloseLoading();
+                    }, 100)
+                }
             }).fail(function(err){
                 console.error('error...', err)
             })
@@ -684,348 +516,6 @@ function JSxRenderDataTable_TouchGroup(){
                                 tCheckBoxDelete , 
                                 FTTcgCode , 
                                 FTTcgName , 
-                                FTTmpRemark ,
-                                tImgDelete 
-                            ]);
-
-                            var draw            = data.draw;
-                            var recordsTotal    = response.recordsTotal;
-                            var recordsFiltered = response.recordsFiltered;
-                        }
-                    }
-                }
-
-                setTimeout( function () {
-                    callback( {
-                        draw            : data.draw,
-                        data            : oRender,
-                        recordsTotal    : recordsTotal,
-                        recordsFiltered : recordsFiltered
-                    });
-                    JSxControlCheckBoxDeleteAll();
-                }, 50);
-                
-                setTimeout(function(){
-                    JCNxCloseLoading();
-                }, 100)
-            }).fail(function(err){
-                console.error('error...', err)
-            })
-        },
-        scrollY         : "38vh",
-        scrollX         : true,
-        scrollCollapse  : false,
-        scroller: {
-            loadingIndicator: true
-        }
-    });
-}
-
-//Render Product Group HTML
-function JSxRenderDataTable_PdtGrp(){
-    localStorage.removeItem("LocalItemData");
-    $oNewJqueryVersion('#otdTablePdtGrp').DataTable({
-        serverSide      : true,
-        ordering        : false,
-        searching       : false,
-        lengthChange    : false,
-        bInfo           : false,
-        ajax            : function ( data, callback, settings ) {
-            $.ajax({
-                type		: "POST",
-                url			: "productGetDataImport",
-                async       : false,
-                data: {
-                    'tType'                 : 'TCNMPdtGrp',
-                    'nPageNumber'           : data.draw - 1,
-                    'tSearch'               : $('#oetPDTImpSearchAll').val()
-                },
-            }).success(function(response) {
-                var oRender = [];   
-                
-                if(response.recordsTotal == 0){
-                    oRender = [];
-                    var draw            = 1;
-                    var recordsTotal    = 0;
-                    var recordsFiltered = 0;
-                }else{
-                    for (var i=data.start, ien=data.start+data.length; i<ien ; i++ ) {
-                        if(response.data.aResult[i] != null){
-                            var FTPgpName       = response.data.aResult[i].FTPgpName;
-                            var FTPgpChain       = response.data.aResult[i].FTPgpChain;
-                            var FNTmpSeq        = response.data.aResult[i].FNTmpSeq;
-                            var FTTmpStatus     = response.data.aResult[i].FTTmpStatus;
-                            if(FTTmpStatus != 1){
-                                var tStyleList  = "color:red !important; font-weight:bold;"; 
-                            }else{
-                                var tStyleList  = '';
-                            }
-                    
-                            var tIDCheckbox     = "ocbListItem" + FNTmpSeq;
-                            var tCheckBoxDelete = "<label class='fancy-checkbox' style='text-align: center;'>";
-                                tCheckBoxDelete += "<input id='"+tIDCheckbox+"' type='checkbox' class='ocbListItem' name='ocbListItem[]' data-code='"+FTPgpChain+"' data-name='"+FTPgpName+"' data-seq='"+FNTmpSeq+"'>";
-                                tCheckBoxDelete += "<span>&nbsp;</span>";
-                                tCheckBoxDelete += "</label>";
-                            var FTTmpRemark     = response.data.aResult[i].FTTmpRemark;
-                            var aRemark         = FTTmpRemark.split("$&");
-                            if(typeof aRemark[0] !== 'undefined'){
-                                if(aRemark[0] == '' || aRemark[0] == null){
-
-                                }else{
-                                    if(aRemark[0].indexOf('[') !== -1){
-                                        aRemarkIndex = aRemark[0].split("[");
-                                        aRemarkIndex = aRemarkIndex[1].split("]");
-                                        switch(aRemarkIndex[0]){
-                                            case '0':
-                                                FTPgpChain       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '1':
-                                                FTPgpName       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            var FTTmpRemark     = "<label style='"+tStyleList+"'>"+FTTmpRemark+"<label>";
-                            var tNameShowDelete = FTPgpName.replace(/\s/g, '');
-                            var oEventDelete    = "onClick=JSxPDTDeleteImportList('"+FNTmpSeq+"','"+FTPgpChain+"','"+tNameShowDelete+"','TCNMPdtGrp')";
-                            var tImgDelete      = "<img style='display: block; margin: 0px auto;' class='xCNIconTable xCNIconDel' "+oEventDelete+" src='<?=base_url().'/application/modules/common/assets/images/icons/delete.png'?>'>";
-
-                            oRender.push([ 
-                                tCheckBoxDelete , 
-                                FTPgpChain , 
-                                FTPgpName , 
-                                FTTmpRemark ,
-                                tImgDelete 
-                            ]);
-
-                            var draw            = data.draw;
-                            var recordsTotal    = response.recordsTotal;
-                            var recordsFiltered = response.recordsFiltered;
-                        }
-                    }
-                }
-
-                setTimeout( function () {
-                    callback( {
-                        draw            : data.draw,
-                        data            : oRender,
-                        recordsTotal    : recordsTotal,
-                        recordsFiltered : recordsFiltered
-                    });
-                    JSxControlCheckBoxDeleteAll();
-                }, 50);
-                
-                setTimeout(function(){
-                    JCNxCloseLoading();
-                }, 100)
-            }).fail(function(err){
-                console.error('error...', err)
-            })
-        },
-        scrollY         : "38vh",
-        scrollX         : true,
-        scrollCollapse  : false,
-        scroller: {
-            loadingIndicator: true
-        }
-    });
-}
-
-//Render Product Modal HTML
-function JSxRenderDataTable_PdtModal(){
-    localStorage.removeItem("LocalItemData");
-    $oNewJqueryVersion('#otdTablePdtModel').DataTable({
-        serverSide      : true,
-        ordering        : false,
-        searching       : false,
-        lengthChange    : false,
-        bInfo           : false,
-        ajax            : function ( data, callback, settings ) {
-            $.ajax({
-                type		: "POST",
-                url			: "productGetDataImport",
-                async       : false,
-                data: {
-                    'tType'                 : 'TCNMPdtModel',
-                    'nPageNumber'           : data.draw - 1,
-                    'tSearch'               : $('#oetPDTImpSearchAll').val()
-                },
-            }).success(function(response) {
-                var oRender = [];   
-                
-                if(response.recordsTotal == 0){
-                    oRender = [];
-                    var draw            = 1;
-                    var recordsTotal    = 0;
-                    var recordsFiltered = 0;
-                }else{
-                    for (var i=data.start, ien=data.start+data.length; i<ien ; i++ ) {
-                        if(response.data.aResult[i] != null){
-                            var FTPmoName       = response.data.aResult[i].FTPmoName;
-                            var FTPmoCode       = response.data.aResult[i].FTPmoCode;
-                            var FNTmpSeq        = response.data.aResult[i].FNTmpSeq;
-                            var FTTmpStatus     = response.data.aResult[i].FTTmpStatus;
-                            if(FTTmpStatus != 1){
-                                var tStyleList  = "color:red !important; font-weight:bold;"; 
-                            }else{
-                                var tStyleList  = '';
-                            }
-                    
-                            var tIDCheckbox     = "ocbListItem" + FNTmpSeq;
-                            var tCheckBoxDelete = "<label class='fancy-checkbox' style='text-align: center;'>";
-                                tCheckBoxDelete += "<input id='"+tIDCheckbox+"' type='checkbox' class='ocbListItem' name='ocbListItem[]' data-code='"+FTPmoCode+"' data-name='"+FTPmoName+"' data-seq='"+FNTmpSeq+"'>";
-                                tCheckBoxDelete += "<span>&nbsp;</span>";
-                                tCheckBoxDelete += "</label>";
-                            var FTTmpRemark     = response.data.aResult[i].FTTmpRemark;
-                            var aRemark         = FTTmpRemark.split("$&");
-                            if(typeof aRemark[0] !== 'undefined'){
-                                if(aRemark[0] == '' || aRemark[0] == null){
-
-                                }else{
-                                    if(aRemark[0].indexOf('[') !== -1){
-                                        aRemarkIndex = aRemark[0].split("[");
-                                        aRemarkIndex = aRemarkIndex[1].split("]");
-                                        switch(aRemarkIndex[0]){
-                                            case '0':
-                                                FTPmoCode       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '1':
-                                                FTPmoName       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            var FTTmpRemark     = "<label style='"+tStyleList+"'>"+FTTmpRemark+"<label>";
-                            var tNameShowDelete = FTPmoName.replace(/\s/g, '');
-                            var oEventDelete    = "onClick=JSxPDTDeleteImportList('"+FNTmpSeq+"','"+FTPmoCode+"','"+tNameShowDelete+"','TCNMPdtModel')";
-                            var tImgDelete      = "<img style='display: block; margin: 0px auto;' class='xCNIconTable xCNIconDel' "+oEventDelete+" src='<?=base_url().'/application/modules/common/assets/images/icons/delete.png'?>'>";
-
-                            oRender.push([ 
-                                tCheckBoxDelete , 
-                                FTPmoCode , 
-                                FTPmoName , 
-                                FTTmpRemark ,
-                                tImgDelete 
-                            ]);
-
-                            var draw            = data.draw;
-                            var recordsTotal    = response.recordsTotal;
-                            var recordsFiltered = response.recordsFiltered;
-                        }
-                    }
-                }
-
-                setTimeout( function () {
-                    callback( {
-                        draw            : data.draw,
-                        data            : oRender,
-                        recordsTotal    : recordsTotal,
-                        recordsFiltered : recordsFiltered
-                    });
-                    JSxControlCheckBoxDeleteAll();
-                }, 50);
-                
-                setTimeout(function(){
-                    JCNxCloseLoading();
-                }, 100)
-            }).fail(function(err){
-                console.error('error...', err)
-            })
-        },
-        scrollY         : "38vh",
-        scrollX         : true,
-        scrollCollapse  : false,
-        scroller: {
-            loadingIndicator: true
-        }
-    });
-}
-
-//Render Product Type HTML
-function JSxRenderDataTable_PdtType(){
-    localStorage.removeItem("LocalItemData");
-    $oNewJqueryVersion('#otdTablePdtType').DataTable({
-        serverSide      : true,
-        ordering        : false,
-        searching       : false,
-        lengthChange    : false,
-        bInfo           : false,
-        ajax            : function ( data, callback, settings ) {
-            $.ajax({
-                type		: "POST",
-                url			: "productGetDataImport",
-                async       : false,
-                data: {
-                    'tType'                 : 'TCNMPdtType',
-                    'nPageNumber'           : data.draw - 1,
-                    'tSearch'               : $('#oetPDTImpSearchAll').val()
-                },
-            }).success(function(response) {
-                var oRender = [];   
-                
-                if(response.recordsTotal == 0){
-                    oRender = [];
-                    var draw            = 1;
-                    var recordsTotal    = 0;
-                    var recordsFiltered = 0;
-                }else{
-                    for (var i=data.start, ien=data.start+data.length; i<ien ; i++ ) {
-                        if(response.data.aResult[i] != null){
-                            var FTPtyName       = response.data.aResult[i].FTPtyName;
-                            var FTPtyCode       = response.data.aResult[i].FTPtyCode;
-                            var FNTmpSeq        = response.data.aResult[i].FNTmpSeq;
-                            var FTTmpStatus     = response.data.aResult[i].FTTmpStatus;
-                            if(FTTmpStatus != 1){
-                                var tStyleList  = "color:red !important; font-weight:bold;"; 
-                            }else{
-                                var tStyleList  = '';
-                            }
-                    
-                            var tIDCheckbox     = "ocbListItem" + FNTmpSeq;
-                            var tCheckBoxDelete = "<label class='fancy-checkbox' style='text-align: center;'>";
-                                tCheckBoxDelete += "<input id='"+tIDCheckbox+"' type='checkbox' class='ocbListItem' name='ocbListItem[]' data-code='"+FTPtyCode+"' data-name='"+FTPtyName+"' data-seq='"+FNTmpSeq+"'>";
-                                tCheckBoxDelete += "<span>&nbsp;</span>";
-                                tCheckBoxDelete += "</label>";
-                            var FTTmpRemark     = response.data.aResult[i].FTTmpRemark;
-                            var aRemark         = FTTmpRemark.split("$&");
-                            if(typeof aRemark[0] !== 'undefined'){
-                                if(aRemark[0] == '' || aRemark[0] == null){
-
-                                }else{
-                                    if(aRemark[0].indexOf('[') !== -1){
-                                        aRemarkIndex = aRemark[0].split("[");
-                                        aRemarkIndex = aRemarkIndex[1].split("]");
-                                        switch(aRemarkIndex[0]){
-                                            case '0':
-                                                FTPtyCode       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                            case '1':
-                                                FTPtyName       = aRemark[2];
-                                                FTTmpRemark     = aRemark[1];
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            var FTTmpRemark     = "<label style='"+tStyleList+"'>"+FTTmpRemark+"<label>";
-                            var tNameShowDelete = FTPtyName.replace(/\s/g, '');
-                            var oEventDelete    = "onClick=JSxPDTDeleteImportList('"+FNTmpSeq+"','"+FTPtyCode+"','"+tNameShowDelete+"','TCNMPdtType')";
-                            var tImgDelete      = "<img style='display: block; margin: 0px auto;' class='xCNIconTable xCNIconDel' "+oEventDelete+" src='<?=base_url().'/application/modules/common/assets/images/icons/delete.png'?>'>";
-
-                            oRender.push([ 
-                                tCheckBoxDelete , 
-                                FTPtyCode , 
-                                FTPtyName , 
                                 FTTmpRemark ,
                                 tImgDelete 
                             ]);
@@ -1388,15 +878,6 @@ function JSxPDTSearchImportDataTable(ptTableName){
         case 'TCNMPdtBrand':
             var tTablerefresh = '#otdTablePDTBrand';
         break;
-        case 'TCNMPdtType':
-            var tTablerefresh = '#otdTablePdtType';
-        break;
-        case 'TCNMPdtModel':
-            var tTablerefresh = '#otdTablePdtModel';
-        break;
-        case 'TCNMPdtGrp':
-            var tTablerefresh = '#otdTablePdtGrp';
-        break;
         case 'TCNMPdtTouchGrp':
             var tTablerefresh = '#otdTablePDTTouchGroup';
         break;
@@ -1482,9 +963,5 @@ function JSxPDTImportGetItemAll(){
         }
     });
 }
-
-$('#oahDowloadModifiTemplate').on('click',function(){
-   location.href=$(this).attr('href');
-});
 
 </script>

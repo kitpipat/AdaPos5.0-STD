@@ -1,242 +1,372 @@
 <?php
-//Decimal Save ลง 4 ตำแหน่ง
-$nDecSave   = FCNxHGetOptionDecimalSave();
-//Decimal Show ลง 2 ตำแหน่ง
-$nDecShow =  FCNxHGetOptionDecimalShow();
+    //Decimal Save ลง 4 ตำแหน่ง
+    $nDecSave   = get_cookie('tOptDocSave');
+    //Decimal Show ลง 2 ตำแหน่ง
+    $nDecShow   = get_cookie('tOptDecimalShow');
+    if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
+        $tRoute                     = "productEventEdit";
+        $tMenuTabDisable            = "";
+        $tMenuTabToggle             = "tab";
+        $tMenuTabToggleForForSet5   = "tab";
+        $tMenuTabToggleForForSet2   = "tab";
+        $nUnitCount = '';
+        $tClassHiddenPrice = "";
+    } else {
+        $tRoute                     = "productEventAdd";
+        $tMenuTabDisable            = " disabled xCNCloseTabNav";
+        $tMenuTabToggleForForSet5   = "false";
+        $tMenuTabToggleForForSet2   = "false";
+        $tMenuTabToggle             = "false";
+        $tClassHiddenPrice = "xCNHide";
+        $nUnitCount = $aUnitCount[0]['FTPunCount'];
+    }
 
-if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
-    $tRoute             = "productEventEdit";
-    $tMenuTabDisable    = "";
-    $tMenuTabToggle     = "tab";
-    $nUnitCount = '';
-} else {
-    $tRoute             = "productEventAdd";
-    $tMenuTabDisable    = " disabled xCNCloseTabNav";
-    $tMenuTabToggle     = "false";
-    $nUnitCount = $aUnitCount[0]['FTPunCount'];
-}
-// print_r($this->session->userdata("tSesUsrLevel"));
-if (isset($aPdtRentalData) && $aPdtRentalData['rtCode'] == '1') {
-    //Rental
-    $tPdtRentType   = $aPdtRentalData['raItems']['FTPdtRentType'];
-    $tPdtStaReqRet  = $aPdtRentalData['raItems']['FTPdtStaReqRet'];
-    $tPdtStaPay     = $aPdtRentalData['raItems']['FTPdtStaPay'];
-    $tPdtDeposit    = $aPdtRentalData['raItems']['FCPdtDeposit'];
-    $tPdtRntShpCode = $aPdtRentalData['raItems']['FTShpCode'];
-    $tPdtRntShpName = $aPdtRentalData['raItems']['FTShpName'];
-} else {
-    //Rental
-    $tPdtRentType   = "";
-    $tPdtStaReqRet  = "";
-    $tPdtStaPay     = "";
-    $tPdtDeposit    = "";
-    $tPdtRntShpCode = "";
-    $tPdtRntShpName = "";
-}
+    if (isset($aPdtRentalData) && $aPdtRentalData['rtCode'] == '1') {
+        //Rental
+        $tPdtRentType   = $aPdtRentalData['raItems']['FTPdtRentType'];
+        $tPdtStaReqRet  = $aPdtRentalData['raItems']['FTPdtStaReqRet'];
+        $tPdtStaPay     = $aPdtRentalData['raItems']['FTPdtStaPay'];
+        $tPdtDeposit    = $aPdtRentalData['raItems']['FCPdtDeposit'];
+        $tPdtRntShpCode = $aPdtRentalData['raItems']['FTShpCode'];
+        $tPdtRntShpName = $aPdtRentalData['raItems']['FTShpName'];
+    } else {
+        //Rental
+        $tPdtRentType   = "";
+        $tPdtStaReqRet  = "";
+        $tPdtStaPay     = "";
+        $tPdtDeposit    = "";
+        $tPdtRntShpCode = "";
+        $tPdtRntShpName = "";
+    }
 
-// Set Data Info Tab
-if (isset($aPdtInfoData) && $aPdtInfoData['rtCode'] == '1') {
-    // TabInfo 1
-    $tPdtCode       = $aPdtInfoData['raItems']['FTPdtCode'];
-    $tPdtName       = $aPdtInfoData['raItems']['FTPdtName'];
-    $tPdtNameOth    = $aPdtInfoData['raItems']['FTPdtNameOth'];
-    $tPdtNameABB    = $aPdtInfoData['raItems']['FTPdtNameABB'];
-    $tVatCode       = $aPdtInfoData['raItems']['FTVatCode'];
-    $tVatRate       = number_format($aPdtInfoData['raItems']['FCVatRate'], $nDecShow) . "%";
-    $tStaVatBuy     = $aPdtInfoData['raItems']['FTPdtStaVatBuy'];
-    $tStkControl    = $aPdtInfoData['raItems']['FTPdtStkControl'];
-    $tStaVat        = $aPdtInfoData['raItems']['FTPdtStaVat'];
-    $tStaAlwReturn  = $aPdtInfoData['raItems']['FTPdtStaAlwReturn'];
-    $tStaPoint      = $aPdtInfoData['raItems']['FTPdtPoint'];
-    $tStaAlwDis     = $aPdtInfoData['raItems']['FTPdtStaAlwDis'];
-    $tStaActive     = $aPdtInfoData['raItems']['FTPdtStaActive'];
+    // Set Data Info Tab
+    if (isset($aPdtInfoData) && $aPdtInfoData['rtCode'] == '1') {
+        // TabInfo 1
+        $tPdtCode       = $aPdtInfoData['raItems']['FTPdtCode'];
+        $tPdtName       = $aPdtInfoData['raItems']['FTPdtName'];
+        $tPdtNameOth    = $aPdtInfoData['raItems']['FTPdtNameOth'];
+        $tPdtNameABB    = $aPdtInfoData['raItems']['FTPdtNameABB'];
+        $tVatCode       = $aPdtInfoData['raItems']['FTVatCode'];
+        $tVatRate       = number_format($aPdtInfoData['raItems']['FCVatRate'], $nDecShow) . "%";
+        $tStaVatBuy     = $aPdtInfoData['raItems']['FTPdtStaVatBuy'];
+        $tStkControl    = $aPdtInfoData['raItems']['FTPdtStkControl'];
+        $tStaVat        = $aPdtInfoData['raItems']['FTPdtStaVat'];
+        $tStaAlwReturn  = $aPdtInfoData['raItems']['FTPdtStaAlwReturn'];
+        $tStaPoint      = $aPdtInfoData['raItems']['FTPdtPoint'];
+        $tStaAlwDis     = $aPdtInfoData['raItems']['FTPdtStaAlwDis'];
+        $tStaActive     = $aPdtInfoData['raItems']['FTPdtStaActive'];
+        $tStaLot        = $aPdtInfoData['raItems']['FTPdtStaLot'];
+        $tStaAlwWHTax   = $aPdtInfoData['raItems']['FTPdtStaAlwWHTax'];
+        $tStaAlwBook    = $aPdtInfoData['raItems']['FTPdtStaAlwBook'];
+        $dLotdate       = date('Y-m-d');
 
+        //Napat(Jame) 10/09/2019
+        $tPdtType       = $aPdtInfoData['raItems']['FTPdtType'];
+        $tPdtSaleType   = $aPdtInfoData['raItems']['FTPdtSaleType'];
 
+        //Napat(Jame) 13/11/2019
+        $tPdtStaSetPri  = $aPdtInfoData['raItems']['FTPdtStaSetPri'];
+        $tPdtStaSetShwDT = $aPdtInfoData['raItems']['FTPdtStaSetShwDT'];
 
-    //Napat(Jame) 10/09/2019
-    $tPdtType       = $aPdtInfoData['raItems']['FTPdtType'];
-    $tPdtSaleType   = $aPdtInfoData['raItems']['FTPdtSaleType'];
+        //Napat(Jame) 20/11/2020
+        $tPdtStaSetPrcStk = $aPdtInfoData['raItems']['FTPdtStaSetPrcStk'];
 
-    //Napat(Jame) 13/11/2019
-    $tPdtStaSetPri  = $aPdtInfoData['raItems']['FTPdtStaSetPri'];
-    $tPdtStaSetShwDT = $aPdtInfoData['raItems']['FTPdtStaSetShwDT'];
+        // TabInfo 2
+        $tBchCode       = $aPdtInfoData['raItems']['FTBchCode'];
+        $tBchName       = $aPdtInfoData['raItems']['FTBchName'];
+        $tPdtMerCode    = $aPdtInfoData['raItems']['FTMerCode'];
+        $tPdtMerName    = $aPdtInfoData['raItems']['FTMerName'];
+        $tShpCode       = $aPdtInfoData['raItems']['FTShpCode'];
+        $tShpName       = $aPdtInfoData['raItems']['FTShpName'];
+        $tMgpCode       = $aPdtInfoData['raItems']['FTMgpCode'];
+        $tMgpName       = $aPdtInfoData['raItems']['FTMgpName'];
+        $tPgpChain      = $aPdtInfoData['raItems']['FTPgpChain'];
+        $tPgpChainName  = $aPdtInfoData['raItems']['FTPgpChainName'];
+        $tPtyCode       = $aPdtInfoData['raItems']['FTPtyCode'];
+        $tPtyName       = $aPdtInfoData['raItems']['FTPtyName'];
+        $tPbnCode       = $aPdtInfoData['raItems']['FTPbnCode'];
+        $tPbnName       = $aPdtInfoData['raItems']['FTPbnName'];
+        $tPmoCode       = $aPdtInfoData['raItems']['FTPmoCode'];
+        $tPmoName       = $aPdtInfoData['raItems']['FTPmoName'];
+        $tTcgCode       = $aPdtInfoData['raItems']['FTTcgCode'];
+        $tTcgName       = $aPdtInfoData['raItems']['FTTcgName'];
+        $tPdtSaleStart  = $aPdtInfoData['raItems']['FDPdtSaleStart'];
+        $tPdtSaleStop   = $aPdtInfoData['raItems']['FDPdtSaleStop'];
+        $tPdtPointTime  = $aPdtInfoData['raItems']['FCPdtPointTime'];
+        $tPdtQtyOrdBuy  = $aPdtInfoData['raItems']['FCPdtQtyOrdBuy'];
+        $tPdtMax        = $aPdtInfoData['raItems']['FCPdtMax'];
+        $tPdtMin        = $aPdtInfoData['raItems']['FCPdtMin'];
+        $tPdtCostDef    = number_format($aPdtInfoData['raItems']['FCPdtCostDef'], $nDecShow);
+        $tPdtCostOth    = number_format($aPdtInfoData['raItems']['FCPdtCostOth'], $nDecShow);
+        $tPdtCostStd    = number_format($aPdtInfoData['raItems']['FCPdtCostStd'], $nDecShow);
+        $tPdtRmk        = $aPdtInfoData['raItems']['FTPdtRmk'];
+        $tPdtForSystem  = $aPdtInfoData['raItems']['FTPdtForSystem'];
+        $dGetDataNow    = "";
+        $dGetDataFuture = "";
+        $tConditionCode  = $aPdtInfoData['raItems']['FTRolCode'];
+        $tConditionName  = $aPdtInfoData['raItems']['FTRolName'];
+        $tPdtSetOrSN    = $aPdtInfoData['raItems']['FTPdtSetOrSN'];
 
-    //Napat(Jame) 20/11/2020
-    $tPdtStaSetPrcStk = $aPdtInfoData['raItems']['FTPdtStaSetPrcStk'];
-
-    // TabInfo 2
-    $tBchCode       = $aPdtInfoData['raItems']['FTBchCode'];
-    $tBchName       = $aPdtInfoData['raItems']['FTBchName'];
-    $tPdtMerCode    = $aPdtInfoData['raItems']['FTMerCode'];
-    $tPdtMerName    = $aPdtInfoData['raItems']['FTMerName'];
-    $tShpCode       = $aPdtInfoData['raItems']['FTShpCode'];
-    $tShpName       = $aPdtInfoData['raItems']['FTShpName'];
-    $tMgpCode       = $aPdtInfoData['raItems']['FTMgpCode'];
-    $tMgpName       = $aPdtInfoData['raItems']['FTMgpName'];
-    $tPgpChain      = $aPdtInfoData['raItems']['FTPgpChain'];
-    $tPgpChainName  = $aPdtInfoData['raItems']['FTPgpChainName'];
-    $tPtyCode       = $aPdtInfoData['raItems']['FTPtyCode'];
-    $tPtyName       = $aPdtInfoData['raItems']['FTPtyName'];
-    $tPbnCode       = $aPdtInfoData['raItems']['FTPbnCode'];
-    $tPbnName       = $aPdtInfoData['raItems']['FTPbnName'];
-    $tPmoCode       = $aPdtInfoData['raItems']['FTPmoCode'];
-    $tPmoName       = $aPdtInfoData['raItems']['FTPmoName'];
-    $tTcgCode       = $aPdtInfoData['raItems']['FTTcgCode'];
-    $tTcgName       = $aPdtInfoData['raItems']['FTTcgName'];
-    $tPdtSaleStart  = $aPdtInfoData['raItems']['FDPdtSaleStart'];
-    $tPdtSaleStop   = $aPdtInfoData['raItems']['FDPdtSaleStop'];
-    $tPdtPointTime  = $aPdtInfoData['raItems']['FCPdtPointTime'];
-    $tPdtQtyOrdBuy  = $aPdtInfoData['raItems']['FCPdtQtyOrdBuy'];
-    $tPdtMax        = $aPdtInfoData['raItems']['FCPdtMax'];
-    $tPdtMin        = $aPdtInfoData['raItems']['FCPdtMin'];
-    $tPdtCostDef    = number_format($aPdtInfoData['raItems']['FCPdtCostDef'], $nDecShow);
-    $tPdtCostOth    = number_format($aPdtInfoData['raItems']['FCPdtCostOth'], $nDecShow);
-    $tPdtCostStd    = number_format($aPdtInfoData['raItems']['FCPdtCostStd'], $nDecShow);
-    $tPdtRmk        = $aPdtInfoData['raItems']['FTPdtRmk'];
-    $tPdtForSystem  = $aPdtInfoData['raItems']['FTPdtForSystem'];
-    $dGetDataNow    = "";
-    $dGetDataFuture = "";
-    $tConditionCode  = $aPdtInfoData['raItems']['FTRolCode'];
-    $tConditionName  = $aPdtInfoData['raItems']['FTRolName'];
-
-    //nattakit nale 22-05-2020
-    $tAgnCode      = $aPdtInfoData['raItems']['FTAgnCode'];
-    $tAgnName      = $aPdtInfoData['raItems']['FTAgnName'];
-
-
-} else {
-    // TabInfo 1
-    $tPdtCode       = "";
-    $tPdtName       = "";
-    $tPdtNameOth    = "";
-    $tPdtNameABB    = "";
-    $tVatCode       = $tVatCompany['tVatCode'];
-    $tVatRate       = number_format($tVatCompany['tVatRate'], $nDecShow) . " %";
-    $tStaVatBuy     = "";
-    $tStkControl    = "";
-    $tStaVat        = "";
-    $tStaAlwReturn  = "";
-    $tStaPoint      = "";
-    $tStaAlwDis     = "";
-    $tStaActive     = "";
-
-
-    //Napat(Jame) 10/09/2019
-    $tPdtType       = "";
-    $tPdtSaleType   = "";
-
-    //Napat(Jame) 13/11/2019
-    $tPdtStaSetPri      = "1";
-    $tPdtStaSetShwDT    = "2";
-
-    //Napat(Jame) 20/11/2020
-    $tPdtStaSetPrcStk   = "1";
-
-    // TabInfo 2
-    if ($this->session->userdata("tSesUsrLevel") == "SHP" || $this->session->userdata("tSesUsrLevel") == "BCH") {
-        if(!FCNbUsrIsAgnLevel()){
-        $tBchCode       = $this->session->userdata("tSesUsrBchCodeDefault");
-        $tBchName       = $this->session->userdata("tSesUsrBchNameDefault");
+        //nattakit nale 22-05-2020
+        $tAgnCode      = $aPdtInfoData['raItems']['FTAgnCode'];
+        $tAgnName      = $aPdtInfoData['raItems']['FTAgnName'];
+        if (isset($aPdtCar[0])) {
+            $aPdtCarMaDistance = $aPdtCar[0]['FCPsvMaDistance'];
+            $aPdtCarQtyMonth = $aPdtCar[0]['FNPsvMaQtyMonth'];
+            $aPdtCarQtyTime = $aPdtCar[0]['FCPsvQtyTime'];
+            $aPdtCarWaDistance = $aPdtCar[0]['FCPsvWaDistance'];
+            $aPdtCarWaQtyDay = $aPdtCar[0]['FNPsvWaQtyDay'];
+            $aPdtCarWaCond = $aPdtCar[0]['FTPsvWaCond'];
         }else{
-        $tBchCode       = '';
-        $tBchName       = '';
+            $aPdtCarMaDistance = '';
+            $aPdtCarQtyMonth = '';
+            $aPdtCarQtyTime = '';
+            $aPdtCarWaDistance = 0;
+            $aPdtCarWaQtyDay = '';
+            $aPdtCarWaCond = '';
         }
-        $tPdtMerCode    = $this->session->userdata('tSesUsrMerCode');
-        $tPdtMerName    = $this->session->userdata('tSesUsrMerName');
 
-        if ($this->session->userdata("tSesUsrLevel") == "SHP") {
-            $tShpCode       = $this->session->userdata('tSesUsrShpCodeDefault');
-            $tShpName       = $this->session->userdata('tSesUsrShpNameDefault');
+    } else {
+        // TabInfo 1
+        $tPdtCode       = "";
+        $tPdtName       = "";
+        $tPdtNameOth    = "";
+        $tPdtNameABB    = "";
+        $tVatCode       = $tVatCompany['tVatCode'];
+        $tVatRate       = number_format($tVatCompany['tVatRate'], $nDecShow) . " %";
+        $tStaVatBuy     = "";
+        $tStkControl    = "";
+        $tStaVat        = "";
+        $tStaAlwReturn  = "";
+        $tStaPoint      = "";
+        $tStaAlwDis     = "";
+        $tStaActive     = "";
+        $tStaLot        = "";
+        $tStaAlwWHTax   = "";
+        $tStaAlwBook    = "";
+        $dLotdate       = "";
+
+        //Napat(Jame) 10/09/2019
+        $tPdtType       = "";
+        $tPdtSaleType   = "";
+
+        //Napat(Jame) 13/11/2019
+        $tPdtStaSetPri      = "1";
+        $tPdtStaSetShwDT    = "2";
+
+        //Napat(Jame) 20/11/2020
+        $tPdtStaSetPrcStk   = "1";
+
+        // TabInfo 2
+        if ($this->session->userdata("tSesUsrLevel") == "SHP" || $this->session->userdata("tSesUsrLevel") == "BCH") {
+            if (!FCNbUsrIsAgnLevel()) {
+                $tBchCode       = $this->session->userdata("tSesUsrBchCodeDefault");
+                $tBchName       = $this->session->userdata("tSesUsrBchNameDefault");
+            } else {
+                $tBchCode       = '';
+                $tBchName       = '';
+            }
+            $tPdtMerCode    = $this->session->userdata('tSesUsrMerCode');
+            $tPdtMerName    = $this->session->userdata('tSesUsrMerName');
+
+            if ($this->session->userdata("tSesUsrLevel") == "SHP") {
+                $tShpCode       = $this->session->userdata('tSesUsrShpCodeDefault');
+                $tShpName       = $this->session->userdata('tSesUsrShpNameDefault');
+            } else {
+                $tShpCode       = "";
+                $tShpName       = "";
+            }
         } else {
+            $tBchCode       = "";
+            $tBchName       = "";
+            $tPdtMerCode    = "";
+            $tPdtMerName    = "";
             $tShpCode       = "";
             $tShpName       = "";
         }
-    } else {
-        $tBchCode       = "";
-        $tBchName       = "";
-        $tPdtMerCode    = "";
-        $tPdtMerName    = "";
-        $tShpCode       = "";
-        $tShpName       = "";
+        $tPdtSetOrSN    = "";
+        $tMgpCode       = "";
+        $tMgpName       = "";
+        $tPgpChain      = "";
+        $tPgpChainName  = "";
+        $tPtyCode       = "";
+        $tPtyName       = "";
+        $tPbnCode       = "";
+        $tPbnName       = "";
+        $tPmoCode       = "";
+        $tPmoName       = "";
+        $tTcgCode       = "";
+        $tTcgName       = "";
+        $tPdtSaleStart  = "";
+        $tPdtSaleStop   = "";
+        $tPdtPointTime  = 0;
+        $tPdtQtyOrdBuy  = 0;
+        $tPdtMax        = 0;
+        $tPdtMin        = 0;
+        $tPdtCostDef    = "";
+        $tPdtCostOth    = "";
+        $tPdtCostStd    = "";
+        $tPdtRmk        = "";
+        if(FCNbGetPdtFasionEnabled()){ //ถ้าเป็นแพคเกจสินค้าแฟชั่น
+            $tPdtForSystem  = "5";
+        }else{
+            $tPdtForSystem  = "1";
+        }
+        $dGetDataNow    = $dGetDataNow;
+        $dGetDataFuture = $dGetDataFuture;
+        $tConditionCode  = "";
+        $tConditionName  = "";
+        $tAgnCode      = $this->session->userdata('tSesUsrAgnCode');
+        $tAgnName      = $this->session->userdata('tSesUsrAgnName');
+        $tTextPdtCodeSet = '';
+        $tTextPdtNameSet = '';
+        $aPdtCarMaDistance = '';
+        $aPdtCarQtyMonth = '';
+        $aPdtCarQtyTime = '';
+        $aPdtCarWaDistance = 0;
+        $aPdtCarWaQtyDay = '';
+        $aPdtCarWaCond = '';
     }
-    $tMgpCode       = "";
-    $tMgpName       = "";
-    $tPgpChain      = "";
-    $tPgpChainName  = "";
-    $tPtyCode       = "";
-    $tPtyName       = "";
-    $tPbnCode       = "";
-    $tPbnName       = "";
-    $tPmoCode       = "";
-    $tPmoName       = "";
-    $tTcgCode       = "";
-    $tTcgName       = "";
-    $tPdtSaleStart  = "";
-    $tPdtSaleStop   = "";
-    $tPdtPointTime  = 0;
-    $tPdtQtyOrdBuy  = 0;
-    $tPdtMax        = 0;
-    $tPdtMin        = 0;
-    $tPdtCostDef    = "";
-    $tPdtCostOth    = "";
-    $tPdtCostStd    = "";
-    $tPdtRmk        = "";
-    if(FCNbGetPdtFasionEnabled()){ //ถ้าเป็นแพคเกจสินค้าแฟชั่น
-        $tPdtForSystem  = "5";
+
+    if($tPdtSetOrSN == '2'){
+        $tMenuTabDisableForSet5       = "disabled xCNCloseTabNav";
+        $tMenuTabToggleForForSet5     = "false";
     }else{
-        $tPdtForSystem  = "1";
+        $tMenuTabDisableForSet5       = "";
     }
-    $dGetDataNow    = $dGetDataNow;
-    $dGetDataFuture = $dGetDataFuture;
-    $tConditionCode  = "";
-    $tConditionName  = "";
-    //nattakit nale 22-05-2020
-    $tAgnCode      = $this->session->userdata('tSesUsrAgnCode');
-    $tAgnName      = $this->session->userdata('tSesUsrAgnName');
-}
+
+    if($tPdtSetOrSN == '5'){
+        $tMenuTabDisableForSet2       = "disabled xCNCloseTabNav";
+        $tMenuTabToggleForForSet2     = "false";
+    }else{
+        $tMenuTabDisableForSet2       = "";
+    }
+
+    if ($aPdtCostDef != array()) {
+        $aPdtCostDef = $aPdtCostDef;
+    } else {
+        $aPdtCostDef = 0;
+    }
+
+    if ($aPDTCostExIn != array()) {
+        $aPDTCostExIn = $aPDTCostExIn;
+    } else {
+        $aPDTCostExIn = 0;
+    }
 
 
-if ($aPdtCostDef != array()) {
-    $aPdtCostDef = $aPdtCostDef;
-} else {
-    $aPdtCostDef = 0;
-}
+    if ($tPdtForSystem != '4') {
+        $tMenuTabDisableForSystem    = "disabled xCNCloseTabNav";
+        $tMenuTabToggleForSystem     = "false";
+    } else {
+        $tMenuTabDisableForSystem    = "";
+        $tMenuTabToggleForSystem     = "";
+    }
 
-if ($aPDTCostExIn != array()) {
-    $aPDTCostExIn = $aPDTCostExIn;
-} else {
-    $aPDTCostExIn = 0;
-}
+    if ($tPdtForSystem != '5') {
+        $tMenuTabDisableForSystem5    = "disabled xCNCloseTabNav";
+        $tMenuTabToggleForSystem5     = "false";
+    } else {
+        $tMenuTabDisableForSystem5    = "";
+        $tMenuTabToggleForSystem5     = "";
+    }
 
+    if ($tPdtType != '5') {
+        $tMenuTabDisableForSystem1    = "disabled xCNCloseTabNav";
+        $tMenuTabToggleForSystem1     = "false";
+    } else {
+        $tMenuTabDisableForSystem1    = "";
+        $tMenuTabToggleForSystem1     = "tab";
+    }
+    $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png';
 
+    if( FCNbGetIsCarEnabled() ){
+        $tPDTTabSVSet           = language('product/product/product', 'tPDTTabSVSet');
+        $tTabSVSetDisplay       = "";
+        $tTabServiceRound       = "active";
+        $tTabDurationCond       = "";
+        $tContentServiceRound   = "active in";
+        $tContentDurationCond   = "";
+        $tStyleDurationCond     = "";
+    }else{
+        $tPDTTabSVSet = language('product/product/product', 'tPDTSVWarranty');
+        $tTabSVSetDisplay       = "xCNHide";
+        $tTabServiceRound       = "";
+        $tTabDurationCond       = "active";
+        $tContentServiceRound   = "";
+        $tContentDurationCond   = "active in";
+        $tStyleDurationCond     = "style='padding: 0px;'";
+    }
 
-
-if ($tPdtForSystem != '4') {
-    $tMenuTabDisableForSystem    = "disabled xCNCloseTabNav";
-    $tMenuTabToggleForSystem     = "false";
-} else {
-    $tMenuTabDisableForSystem    = "";
-    $tMenuTabToggleForSystem     = "tab";
-}
-
-if ($tPdtForSystem != '5' || $tRoute != 'productEventEdit') {
-    $tMenuTabDisableForSystem5    = "disabled xCNCloseTabNav";
-    $tMenuTabToggleForSystem5     = "false";
-}else{
-    $tMenuTabDisableForSystem5    = "";
-    $tMenuTabToggleForSystem5     = "tab";
-}
-
-if ($tPdtType != '5') {
-    $tMenuTabDisableForSystem1    = "disabled xCNCloseTabNav";
-    $tMenuTabToggleForSystem1     = "false";
-} else {
-    $tMenuTabDisableForSystem1    = "";
-    $tMenuTabToggleForSystem1     = "tab";
-}
-$ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png';
 ?>
-<!-- Lang for JS -->
+
+<style>
+	.xWEJBoxFilter {
+		border: 1px solid #ccc !important;
+		position: relative !important;
+		padding: 15px !important;
+		margin-top: 10px !important;
+		padding-bottom: 0px !important;
+		margin-bottom: 10px !important;
+	}
+
+	.xWEJBoxFilter .xWEJLabelFilter {
+		position: absolute !important;
+		top: -15px;
+		left: 15px !important;
+		background: #fff !important;
+		padding-left: 10px !important;
+		padding-right: 10px !important;
+	}
+    .xWMenu{
+        cursor: pointer;
+    }
+
+    .custom-tabs-line-sub ul {
+    display: inline-block;
+    vertical-align: middle;
+    *vertical-align: auto;
+    *zoom: 1;
+    *display: inline;
+    }
+
+    .custom-tabs-line-sub ul>li {
+        float: left;
+    }
+
+    .custom-tabs-line-sub ul>li a {
+        color: #8d9093;
+        font-weight: normal;
+    }
+
+    .custom-tabs-line-sub.tabs-line-bottom {
+    border-bottom: 1px solid #eaeaea;
+    }
+    .custom-tabs-line-sub.tabs-line-bottom ul>li {
+    margin-bottom: -1px;
+    }
+
+    .custom-tabs-line-sub.tabs-line-bottom .active a {
+        border-top      : 1px solid #eaeaea;
+        border-left     : 1px solid #eaeaea;
+        border-right    : 1px solid #eaeaea;
+        border-bottom   : 1px solid white;
+    }
+
+    .xWCustomActive.actived {
+        background-color: #4095cbd4 /*#7798bc*/;
+    }
+    .xWCustomActive.actived td {
+        color: #FFFFFF !important;
+    }
+    
+</style>
+<?php 
+    // echo "<pre>";
+    // print_r($this->session->userdata());
+    // echo "</pre>";
+?>
+
 <input type="hidden" id="ohdErrMsgNotHasUnit" value="<?php echo language('product/product/product', 'tErrMsgNotHasUnit') ?>">
 <input type="hidden" id="ohdErrMsgNotHasBarCode" value="<?php echo language('product/product/product', 'tErrMsgNotHasBarCode') ?>">
 <input type="hidden" id="ohdErrMsgDupUnitFact" value="<?php echo language('product/product/product', 'tErrMsgDupUnitFact') ?>">
@@ -246,58 +376,55 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
 <input type="hidden" id="oetShpCode" name="oetShpCode" value="<?php echo $nUsrShpCode; ?>">
 <input type="hidden" id="oetStatus" name="oetStatus" value="">
 <input type="hidden" id="ohdUnitCount" name="ohdUnitCount" value="<?php echo $nUnitCount; ?>">
+<input type="hidden" id="ohdPdtSetOrSN" name="ohdPdtSetOrSN" value="<?php echo $tPdtSetOrSN; ?>">
+<input type="hidden" id="ohdPdtDecimalShow" name="ohdPdtDecimalShow" value="<?php echo $nDecShow; ?>">
+<input type="hidden" id="ohdtRount" name="ohdtRount" value="<?php echo $tRoute; ?>">
 
-<link rel="stylesheet" href="<?php echo base_url(); ?>application/modules/product/assets/css/product/ada.product.css">
+<link rel="stylesheet" href="<?=base_url(); ?>application/modules/product/assets/css/product/ada.product.css">
 <form action="javascript:void(0);" class="validate-form" method="post" id="ofmAddEditProduct">
     <button type="submit" id="obtSubmitProduct" class="btn btn-primary xCNHide"></button>
     <input type="hidden" id="ohdStaAddOrEdit" class="form-control" value="<?php echo $nStaAddOrEdit; ?>">
     <div class="panel-body" style="padding-top:20px !important;">
-        <!-- Nav Tab Add Product -->
         <div id="odvPdtRowNavMenu" class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <div class="custom-tabs-line tabs-line-bottom left-aligned">
                     <ul class="nav" role="tablist">
+
+                        <!--ข้อมูลหลัก-->
                         <li id="oliPdtDataAddInfo1" class="xWMenu active xCNStaHideShow" data-menutype="MN">
                             <a role="tab" data-toggle="tab" data-target="#odvPdtContentInfo1" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabInfo') ?></a>
                         </li>
-                        <!-- <li id="oliPdtDataAddInfo2" class="xWMenu" data-menutype="MN">
-                            <a role="tab" data-toggle="tab" data-target="#odvPdtContentInfo2" aria-expanded="false"><?php //echo language('product/product/product','tPDTTabInfo2')
-                                                                                                                    ?></a>
-                        </li> -->
 
+                        <!--สินค้าเช่า-->
                         <li id="oliPdtDataAddRental" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisableForSystem; ?>" data-menutype="RNT">
                             <a role="tab" data-toggle="<?php echo $tMenuTabToggleForSystem; ?>" data-target="#odvPdtContentRental" aria-expanded="false"><?php echo language('product/product/product', 'tPDTTabRental') ?></a>
                         </li>
 
-                        <?php //if (@$aChkChainPdtSet['tCode'] != "1") :
-                        ?>
-                        <li id="oliPdtDataAddSet" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisable; ?>" data-menutype="SET">
-                            <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvPdtContentSet" aria-expanded="false"><?php echo language('product/product/product', 'tPDTTabSet') ?></a>
+                        <!--สินค้าชุด-->
+                        <li id="oliPdtDataAddSet" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisable; echo $tMenuTabDisableForSet2; ?>" data-menutype="SET">
+                            <a role="tab" data-toggle="<?php echo $tMenuTabToggleForForSet2?>" data-target="#odvPdtContentSet" aria-expanded="false"><?php echo language('product/product/product', 'tPDTTabSet') ?></a>
                         </li>
-                        <?php //else :
-                        ?>
-                        <!-- <li id="oliPdtDataAddSetDisable" class="xWMenu xWSubTab xCNStaHideShow<?php echo $tMenuTabDisable; ?>" data-menutype="SET" data-pdtcode="<?= @$aChkChainPdtSet['aItems'][0]['FTPdtCode']; ?>" data-pdtname="<?= @$aChkChainPdtSet['aItems'][0]['FTPdtName']; ?>">
-                                <a><?php echo language('product/product/product', 'tPDTTabSet') ?></a>
-                            </li> -->
-                        <?php //endif;
-                        ?>
 
-                        <!-- Create BY Witsarut 16/01/2020 -->
-                        <!-- Add  Tab Drug -->
+                        <!--สินค้ายา-->
                         <li id="oliPdtDataDrug" class="xWMenu xWSubTab <?php echo $tMenuTabDisableForSystem1 ?>" data-menutype="DRUG" onclick="JSxPdtGetContent();">
                             <a role="tab" data-toggle="<?php echo $tMenuTabToggleForSystem1; ?>" data-target="#odvPdtContentDrug" aria-expanded="false"><?php echo language('product/product/product', 'tPdtDrug') ?></a>
                         </li>
-                        <?php //if(FCNbGetPdtFasionEnabled()){ ?>
-                        <!-- Create BY Nattakit 26/04/2021 -->
-                        <!-- Add  Tab Fashion -->
+
+                        <!--สินค้าแฟชั่น-->
                         <li id="oliPdtDataAddFashion" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisableForSystem5; ?>" data-menutype="FHN">
                             <a role="tab" data-toggle="<?php echo $tMenuTabToggleForSystem5; ?>" data-target="#odvPdtContentFashion" aria-expanded="false"><?php echo language('product/product/product', 'tPDTTabFashion') ?></a>
                         </li>
-                        <?php //} ?>
 
-                        <li id="oliPdtDataAddCategory" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisable; ?>" data-menutype="FHN">
+                        <!--หมวดหมู่-->
+                        <li id="oliPdtDataAddCategory" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisable; ?>" data-menutype="CAT">
                             <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvPdtContentCategory" aria-expanded="false"><?php echo language('product/product/product', 'tPDTCategoryTab') ?></a>
                         </li>
+
+                        <!-- การรับประกัน / สินค้าศูนย์บริการ -->
+                        <li id="oliPdtDataAddSVSet" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisableForSet5; echo $tMenuTabDisable; ?>" data-menutype="SV">
+                            <a role="tab" data-toggle="<?php echo $tMenuTabToggleForForSet5?>" data-target="#odvPdtContentSVSet" aria-expanded="false"><?=$tPDTTabSVSet?></a>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -310,239 +437,44 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                     <div id="odvPdtContentInfo1" class="tab-pane fade active in">
                         <div class="row">
                             <div class="col-xs-12 col-sm-5 col-md-4 col-lg-4">
+                                <?php
+                                    if ( isset($aPdtImgData['raItems']) && !empty($aPdtImgData['raItems']) ){
+                                        $tFirtImage = $aPdtImgData['raItems'][0]['FTImgObj'];
+                                        $aImgObj    = $aPdtImgData['raItems'];
+                                    }else{
+                                        $tFirtImage = '';
+                                        $aImgObj    = '';
+                                    }
 
-                                <!-- <div class="text-center"><img id="oimImgMasterProduct" src="<?php echo base_url() . 'application/modules/common/assets/images/200x200.png'; ?>" class="img img-respornsive" style="width:100%;cursor:pointer">
-                                    <span class="xCNColorProduct" style="width:100%;cursor:pointer"></span>
-                                </div> -->
-                                <!-- <div id="odvImageTumblr" style="padding-top:10px;overflow-x:auto;" class="table-responsive">
-                                    <table id="otbImageListProduct">
-                                        <tr> -->
-                                            <?php
-                                                // $tFirtImage = '';
-                                                if ( isset($aPdtImgData['raItems']) && !empty($aPdtImgData['raItems']) ){
-                                                    $tFirtImage = $aPdtImgData['raItems'][0]['FTImgObj'];
-                                                    $aImgObj    = $aPdtImgData['raItems'];
-                                                }else{
-                                                    $tFirtImage = '';
-                                                    $aImgObj    = '';
-                                                }
+                                    echo FCNtHGetContentUploadImage(@$tFirtImage,'Product','2');
+                                    echo FCNtHGetContentTumblrImage(@$aImgObj,'Product');
 
-                                                
-                                                echo FCNtHGetContentUploadImage(@$tFirtImage,'Product','2');
-                                                echo FCNtHGetContentTumblrImage(@$aImgObj,'Product');
-                                                echo FCNtHGetContentChooseColor(@$tFirtImage,'Product');
+                                    //ถ้าเป็นขาเพิ่ม จะเป็นเลือกสี
+                                    if($tRoute == "productEventAdd"){
+                                        echo FCNtHGetContentChooseColor(@$tFirtImage,'Product');
+                                    }else{
+                                        //ถ้าเป็นขาแก้ไข จะเช็คว่าเป็นสี หรือรูปภาพ
+                                        $tPatchImg = FCNtHChkImgColor(@$tFirtImage);
+                                        if( $tPatchImg != '0' ){ //เป็นรูปภาพ
 
-                                            ?>
-
-                                                <?php
-                                                    // foreach ($aPdtImgData['raItems'] as $nKey => $aValueImg) :
-                                                    ?>
-                                                <?php
-                                                    // if (isset($aValueImg['FTImgObj']) && !empty($aValueImg['FTImgObj'])) {
-                                                    //     $tImgObj = substr($aValueImg['FTImgObj'], 0, 1);
-                                                ?>
-                                                        <!-- <input type="hidden" id="ohdImgObj" name="ohdImgObj" data-color="<?php echo $tImgObj; ?>" value="<?php echo $aValueImg['FTImgObj']; ?>">
-                                                        <input type="hidden" id="ohdImgObjOld" name="ohdImgObjOld" value=""> -->
-                                                <?php
-                                                    //     if ($tImgObj != '#') {
-                                                    //         $aValueImgExplode = explode('/modules/', $aValueImg['FTImgObj']);
-                                                    //         $tFullPatch = './application/modules/' . $aValueImgExplode[1];
-                                                    //         if (file_exists($tFullPatch)) {
-                                                    //             $tPatchImg = base_url() . 'application/modules/' . $aValueImgExplode[1];
-                                                    //         } else {
-                                                    //             $tPatchImg = base_url() . 'application/modules/common/assets/images/200x200.png';
-                                                    //         }
-                                                    //     } else {
-                                                    //         $tPatchImg = base_url() . 'application/modules/common/assets/images/200x200.png';
-                                                    //     }
-                                                    //     $aExplodeImg    = explode('/', $aValueImg['FTImgObj']);
-
-                                                    //     $tImageName = FCNnHSizeOf($aExplodeImg) - 1;
-
-                                                    // }
-                                                ?>
-                                                    <!-- <td id="otdTumblrProduct<?php echo $nKey; ?>" class="xWTDImgDataItem">
-                                                        <img id="oimTumblrProduct<?php echo $nKey; ?>" src="<?php echo $tPatchImg; ?>" data-img="<?php
-                                                                                                                                                    if (isset($aExplodeImg[$tImageName])) {
-                                                                                                                                                        echo trim($aExplodeImg[$tImageName]);
-                                                                                                                                                    }
-                                                                                                                                                    ?>" data-tumblr="<?php echo $nKey; ?>" class="xCNImgTumblr img img-respornsive" style="z-index:100;width:106px;height:67px;">
-                                                        <div class="xCNImgDelIcon" id="odvImgDelBntProduct<?php echo $nKey; ?>" data-id="<?php echo $nKey; ?>" style="z-index:500;cursor:pointer;text-align:center;display:none;">
-                                                            <i class="fa fa-times" aria-hidden="true"></i> ลบรูป
-                                                        </div> -->
-                                                        <!-- <script type="text/javascript">
-                                                            $('#oimTumblrProduct<?php echo $nKey; ?>').click(function() {
-                                                                $('#oimImgMasterProduct').attr('src', $(this).attr('src'));
-                                                                return false;
-                                                            });
-                                                            $('#oimTumblrProduct<?php echo $nKey; ?>').hover(function() {
-                                                                $('#odvImgDelBntProduct<?php echo $nKey; ?>').show();
-
-                                                            });
-                                                            $('#oimTumblrProduct<?php echo $nKey; ?>').mouseleave(function() {
-                                                                $('#odvImgDelBntProduct<?php echo $nKey; ?>').hide();
-                                                            });
-
-                                                            $('#odvImgDelBntProduct<?php echo $nKey; ?>').hover(function() {
-                                                                $(this).show();
-                                                                $('#<?php echo $nKey; ?>').addClass('xCNImgHover');
-                                                            });
-
-                                                            $('#odvImgDelBntProduct<?php echo $nKey; ?>').mouseleave(function() {
-                                                                $(this).hide();
-                                                            })
-
-                                                            $('#odvImgDelBntProduct<?php echo $nKey; ?>').click(function() {
-                                                                JCNxRemoveImgTumblrNEW(this, 'Product');
-                                                            });
-                                                        </script> -->
-                                                    <!-- </td> -->
-                                                <?php
-                                                    // if( $nKey == 0 ){
-                                                    //     if(isset($aValueImg['FTImgObj']) && !empty($aValueImg['FTImgObj'])){
-                                                    //         $tImgObj = substr($aValueImg['FTImgObj'],0,1);
-                                                    //         $tStyle  = "";
-                                                    //         // ตรวจสอบ Code Color Saharat(Golf)
-                                                    //         if($tImgObj != '#'){
-                                                    //             $aValueImgExplode = explode('/modules/',$aValueImg['FTImgObj']);
-                                                    //             $tFullPatch = './application/modules/'.$aValueImgExplode[1];
-                                                    //             if (file_exists($tFullPatch)){
-                                                    //                 $tPatchImg = base_url().'application/modules/'.$aValueImgExplode[1];
-                                                    //             }else{
-                                                    //                 $tPatchImg = base_url().'application/modules/common/assets/images/Noimage.png';
-                                                    //             }
-                                                    //             $tTmpImgForPdtSetPage =  '<img src="'.$tPatchImg.'" class="img img-respornsive" style="width: 100%">';
-                                                    //         }else{
-                                                    //             $tPatchImg     = "0";
-                                                    //             $tStyleName    = $aValueImg['FTImgObj'];
-
-                                                    //             $tTmpImgForPdtSetPage = '<div class="text-center"> <span  style="height:40px;width:100%;background-color:'.$tStyleName.';display:inline-block;"></span></div>';
-                                                    //     }
-                                                    //     }else{
-                                                    //             $tPatchImg = base_url().'application/modules/common/assets/images/Noimage.png';
-                                                    //     }
-
-
-                                                    // }
-                                                ?>
-                                                <?php //endforeach; ?>
-                                            <?php //endif; ?>
-                                            <!-- <td> -->
-                                                <!-- <img id="oimAddImage" src="<?php echo base_url() . 'application/modules/common/assets/images/icons/plus-501.png'; ?>"class="img img-respornsive" style="cursor:pointer"> -->
-                                                <!-- <input type="hidden" id="oetImgInputProduct" name="oetImgInputProduct">
-                                            </td>
-                                        </tr>
-                                    </table> -->
-                                <!-- </div> -->
-                                <!-- <div class="col-xs-12 col-sm-12 col-md-12 co-lg-12" style="margin-top:15px; text-align:center;">
-                                    <input style="display:none;" type="file" id="oetInputUplodeProduct" onchange="JSxImageUplodeResizeNEW(this,'','Product',2)" accept="image/*">
-                                    <button class="btn xCNBTNDefult" type="button" onclick="$('#oetInputUplodeProduct').click()"><i class="fa fa-picture-o xCNImgButton"></i> <?php echo  language('common/main/main', 'tSelectPic') ?></button> -->
-                                    <!-- <button type="button" class="btn xCNBTNDefult" id="oimImgInputProduct" onclick="JSvImageCallTempNEW('1','2','Product')"><i class="fa fa-picture-o xCNImgButton"></i> <?php echo  language('common/main/main', 'tSelectPic') ?></button> -->
-                                <!-- </div> -->
-
-                                <!-- * เลือกสี กรณีไม่เลือกรูป default 23/03/2020 Sahaart(Golf) -->
-                                <!-- <div class="col-xs-12 col-sm-12" style="margin-top:10%;">
-                                    <label class="xCNLabelFrm"><span class="text-danger">*</span> <?= language('creditcard/creditcard/creditcard', 'tCDCTBONIMG') ?></label>
-                                    <div class="xCNCustomRadios">
-                                        <div title="Blue">
-                                            <input type="radio" id="orbChecked01" class="xCNCheckedORB" name="orbChecked" value="#2184c7" data-name="#2184c7">
-                                            <label for="orbChecked01">
-                                                <span>
-                                                    <img src="<?php echo $ocheck; ?>" alt="Checked Icon" height="20" width="20" />
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div title="Blue">
-                                            <input type="radio" id="orbChecked02" class="xCNCheckedORB" name="orbChecked" value='#2f499e' data-name="#2f499e">
-                                            <label for="orbChecked02">
-                                                <span>
-                                                    <img src="<?php echo $ocheck; ?>" alt="Checked Icon" height="20" width="20" />
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div title="Brown">
-                                            <input type="radio" id="orbChecked03" name="orbChecked" class="xCNCheckedORB" value="#9d4c2e" data-name="#9d4c2e">
-                                            <label for="orbChecked03">
-                                                <span>
-                                                    <img src="<?php echo $ocheck; ?>" alt="Checked Icon" height="20" width="20" />
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div title="Green">
-                                            <input type="radio" id="orbChecked04" name="orbChecked" class="xCNCheckedORB" value="#319845" data-name="#319845">
-                                            <label for="orbChecked04">
-                                                <span>
-                                                    <img src="<?php echo $ocheck; ?>" alt="Checked Icon" height="20" width="20" />
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div title="Orange">
-                                            <input type="radio" id="orbChecked05" name="orbChecked" class="xCNCheckedORB" value="#e45b25" data-name="#e45b25">
-                                            <label for="orbChecked05">
-                                                <span>
-                                                    <img src="<?php echo $ocheck; ?>" alt="Checked Icon" height="20" width="20" />
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div title="Purple">
-                                            <input type="radio" id="orbChecked06" name="orbChecked" class="xCNCheckedORB" value="#582979" data-name="#582979">
-                                            <label for="orbChecked06">
-                                                <span>
-                                                    <img src="<?php echo $ocheck; ?>" alt="Checked Icon" height="20" width="20" />
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div title="Red">
-                                            <input type="radio" id="orbChecked07" name="orbChecked" class="xCNCheckedORB" value="#ee2d24" data-name="#ee2d24">
-                                            <label for="orbChecked07">
-                                                <span>
-                                                    <img src="<?php echo $ocheck; ?>" alt="Checked Icon" height="20" width="20" />
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                        <div title="Black">
-                                            <input type="radio" id="orbChecked08" name="orbChecked" class="xCNCheckedORB" value="#000000" data-name="#000000">
-                                            <label for="orbChecked08">
-                                                <span>
-                                                    <img src="<?php echo $ocheck; ?>" alt="Checked Icon" height="20" width="20" />
-                                                </span>
-                                            </label>
-                                        </div>
-
-                                    </div>
-                                </div> -->
-                                <!-- end เลือกสี กรณีไม่เลือกรูป default -->
-
-                                <!-- * เลือกสี กรณีไม่เลือกรูป 23/03/2020 Sahaart(Golf) -->
-                                <!-- <div class="col-xs-4 col-sm-4" style="margin-top:1%;">
-                                    <label class="xCNLabelFrm"><span class="text-danger">*</span> <?= language('creditcard/creditcard/creditcard', 'tCDCTBONIMG') ?></label>
-                                    <div class="input-group colorpicker-component xCNSltColor">
-                                        <input class="form-control" type="text" id="oetPdtColor" name="oetPdtColor" maxlength="7" value="#">
-                                        <span class="input-group-addon" id="ospCiolor"></span>
-                                    </div>
-                                </div> -->
+                                        }else{ //เป็นสี
+                                            echo FCNtHGetContentChooseColor(@$tFirtImage,'Product');
+                                        }
+                                    }
+                                ?>
                             </div>
-                            <!-- end เลือกสี กรณีไม่เลือกรูป  -->
 
                             <div class="col-xs-12 col-sm-7 col-md-8 col-lg-8">
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPdtForSystemTitle'); ?></label>
                                     <select class="selectpicker form-control" id="ocmPdtForSystem" name="ocmPdtForSystem" maxlength="1" onchange="JSxPdtRentSelectType(this.value)">
-                                        <!-- <option value=""><?php echo language('product/product/product', 'tPdtForSystemTitle') ?></option> -->
                                         <option value="1" <?php echo $tPdtForSystem == "1" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem1') ?></option>
                                         <option value="2" <?php echo $tPdtForSystem == "2" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem2') ?></option>
                                         <option value="3" <?php echo $tPdtForSystem == "3" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem3') ?></option>
                                         <option value="4" <?php echo $tPdtForSystem == "4" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem4') ?></option>
-                                    <?php// if(FCNbGetPdtFasionEnabled()){ ?>
-                                        <option value="5" <?php echo $tPdtForSystem == "5" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem5') ?></option>
-                                    <?php// } ?>
+                                        <?php// if(FCNbGetPdtFasionEnabled()){ ?>
+                                            <option value="5" <?php echo $tPdtForSystem == "5" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem5') ?></option>
+                                        <?php// } ?>
                                     </select>
                                 </div>
 
@@ -582,15 +514,17 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                         <option value="4" <?php echo $tPdtType == "4" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle4') ?></option>
                                         <option value="5" <?php echo $tPdtType == "5" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle5') ?></option>
                                         <option value="6" <?php echo $tPdtType == "6" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle6') ?></option>
+                                        <option value="7" <?php echo $tPdtType == "7" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle7') ?></option>
+                                        <option value="8" <?php echo $tPdtType == "8" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtTypeTitle8') ?></option>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPdtSaleType'); ?></label>
                                     <select class="selectpicker form-control" id="ocmPdtSaleType" name="ocmPdtSaleType" maxlength="1" onchange="JSxPdtRentSelectType(this.value)">
-                                        <option value="1" <?php echo $tPdtSaleType == "1" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtSaleType1') ?></option>
-                                        <option value="2" <?php echo $tPdtSaleType == "2" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtSaleType2') ?></option>
-                                        <option value="3" <?php echo $tPdtSaleType == "3" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtSaleType3') ?></option>
-                                        <option value="4" <?php echo $tPdtSaleType == "4" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtSaleType4') ?></option>
+                                        <option id="ocmPdtSaleType1" value="1" <?php echo $tPdtSaleType == "1" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtSaleType1') ?></option>
+                                        <option id="ocmPdtSaleType2" value="2" <?php echo $tPdtSaleType == "2" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtSaleType2') ?></option>
+                                        <option id="ocmPdtSaleType3" value="3" <?php echo $tPdtSaleType == "3" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtSaleType3') ?></option>
+                                        <option id="ocmPdtSaleType4" value="4" <?php echo $tPdtSaleType == "4" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtSaleType4') ?></option>
                                     </select>
                                 </div>
 
@@ -648,7 +582,7 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                             <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTVatrate'); ?></label>
                                             <div class="input-group">
                                                 <input type="text" id="ocmPdtVatCode" class="form-control xCNHide" name="ocmPdtVatCode" value="<?php echo $tVatCode ?>">
-                                                <input type="text" id="ocmPdtVatName" class="form-control" name="ocmPdtVatName" value="<?php echo $tVatRate; ?>" readonly>
+                                                <input type="text" id="ocmPdtVatName" class="form-control text-right" name="ocmPdtVatName" value="<?php echo $tVatRate; ?>" readonly>
                                                 <span class="input-group-btn">
                                                     <button id="obtBrowseVat" type="button" class="btn xCNBtnBrowseAddOn">
                                                         <img class="xCNIconFind">
@@ -665,17 +599,17 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                         <div class="col-sm-12">
 
                                             <div class="row">
-                                                <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+                                                <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
 
                                                     <div class="row">
-                                                        <div class="col-lg-4 col-md-6 col-xs-12 col-sm-12">
+                                                        <div class="col-lg-2 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
                                                             <!-- มีภาษี -->
                                                             <label class="fancy-checkbox">
                                                                 <script>
                                                                     var tStaCheckVatBuy = "<?php echo $tStaVatBuy; ?>";
                                                                     var tStaVat = "<?php echo $tStaVat; ?>";
                                                                     var tStaNewPdt = "<?php echo $nStaAddOrEdit ?>";
-                                                                    if ((typeof(tStaCheckVatBuy) !== 'undefined' && tStaCheckVatBuy == '1' && typeof(tStaVat) !== 'undefined' && tStaVat == '1')|| tStaNewPdt == '99') {
+                                                                    if ((typeof(tStaCheckVatBuy) !== 'undefined' && tStaCheckVatBuy == '1' && typeof(tStaVat) !== 'undefined' && tStaVat == '1') || tStaNewPdt == '99') {
                                                                         $('#ocbPdtStaHaveVat').prop("checked", true);
                                                                     } else {
                                                                         $('#ocbPdtStaHaveVat').prop("checked", false);
@@ -684,10 +618,9 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                 <input type="checkbox" id="ocbPdtStaHaveVat" name="ocbPdtStaHaveVat">
                                                                 <span><?php echo language('product/product/product', 'มีภาษี') ?></span>
                                                             </label>
-                                                            <!-- end มีภาษี -->
                                                         </div>
 
-                                                        <div class="col-lg-4 col-md-6 col-xs-12 col-sm-12">
+                                                        <div class="col-lg-2 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
                                                             <!--ให้แต้ม -->
                                                             <script>
                                                                 var tStaPoint = "<?php echo $tStaPoint; ?>";
@@ -701,10 +634,9 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                 <input type="checkbox" id="ocbPdtPoint" name="ocbPdtPoint">
                                                                 <span><?php echo language('product/product/product', 'tPDTGivePoint') ?></span>
                                                             </label>
-                                                            <!-- end ให้แต้ม -->
                                                         </div>
 
-                                                        <div class="col-lg-4 col-md-6 col-xs-12 col-sm-12">
+                                                        <div class="col-lg-2 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
                                                             <!-- ตัดสต็อก -->
                                                             <script>
                                                                 var tStaCheckStkControl = "<?php echo $tStkControl; ?>";
@@ -718,17 +650,43 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                 <input type="checkbox" id="ocbPdtStkControl" name="ocbPdtStkControl">
                                                                 <span><?php echo language('product/product/product', 'tPDTStkControl') ?></span>
                                                             </label>
-                                                            <!-- end ตัดสต็อก -->
                                                         </div>
 
-                                                    </div>
-                                                </div>
+                                                        <div class="col-lg-2 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                                                            <!-- ใช้งาน LOT/BAT -->
+                                                            <label class="fancy-checkbox">
+                                                                <script>
+                                                                    var tStaLot = "<?php echo $tStaLot; ?>";
+                                                                    if (tStaLot == '1') {
+                                                                        $('#ocbPdtStaLot').prop("checked", true);
+                                                                    } else {
+                                                                        $('#ocbPdtStaLot').prop("checked", false);
+                                                                        $("#oliPdtContentControlLot").hide();
+                                                                    }
+                                                                </script>
+                                                                <input type="checkbox" id="ocbPdtStaLot" name="ocbPdtStaLot">
+                                                                <span><?=language('product/product/product', 'tPDTStaLot') ?></span>
+                                                            </label>
+                                                        </div>
 
-                                                <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+                                                        <div class="col-lg-2 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                                                            <!-- อนุฌาต จอง-->
+                                                            <label class="fancy-checkbox">
+                                                                <script>
+                                                                    var tStaAlwBook = "<?php echo $tStaAlwBook; ?>";
+                                                                    if (tStaAlwBook == '1') {
+                                                                        $('#ocbPdtStaAlwBook').prop("checked", true);
+                                                                    } else {
+                                                                        $('#ocbPdtStaAlwBook').prop("checked", false);
+                                                                    }
+                                                                </script>
+                                                                <input type="checkbox" id="ocbPdtStaAlwBook" name="ocbPdtStaAlwBook">
+                                                                <span><?php echo language('product/product/product', 'tPDTStaAlwBook') ?></span>
+                                                            </label>
+                                                        </div>
 
-                                                    <div class="row">
-                                                        <div class="col-lg-4 col-md-6 col-xs-12 col-sm-12">
-                                                            <!-- อนุญาติคืน -->
+                                                        <div class="col-lg-2 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                                                            <!-- อนุญาตคืน -->
                                                             <label class="fancy-checkbox">
                                                                 <script>
                                                                     var tStaAlwReturn = "<?php echo $tStaAlwReturn; ?>";
@@ -741,9 +699,9 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                 <input type="checkbox" id="ocbPdtStaAlwReturn" name="ocbPdtStaAlwReturn">
                                                                 <span><?php echo language('product/product/product', 'tPDTAlwReturn') ?></span>
                                                             </label>
-                                                            <!-- end อนุญาติคืน -->
                                                         </div>
-                                                        <div class="col-lg-4 col-md-6 col-xs-12 col-sm-12">
+
+                                                        <div class="col-lg-2 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
                                                             <!-- ลดราคา -->
                                                             <label class="fancy-checkbox">
                                                                 <script>
@@ -757,9 +715,9 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                 <input type="checkbox" id="ocbPdtStaAlwDis" name="ocbPdtStaAlwDis">
                                                                 <span><?php echo language('product/product/product', 'tPDTStaAlwDis') ?></span>
                                                             </label>
-                                                            <!-- end ลดราคา -->
                                                         </div>
-                                                        <div class="col-lg-4 col-md-6 col-xs-12 col-sm-12">
+
+                                                        <div class="col-lg-2 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
                                                             <!-- เคลื่อนไหว -->
                                                             <label class="fancy-checkbox">
                                                                 <script>
@@ -773,9 +731,23 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                 <input type="checkbox" id="ocbPdtStaActive" name="ocbPdtStaActive">
                                                                 <span><?php echo language('product/product/product', 'tPDTStaActive') ?></span>
                                                             </label>
-                                                            <!-- end เคลื่อนไหว -->
                                                         </div>
 
+                                                        <div class="col-lg-4 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                                                            <!-- อนุฌาต หักภาษี ณ. ที่จ่าย-->
+                                                            <label class="fancy-checkbox">
+                                                                <script>
+                                                                    var tStaAlwWHTax = "<?php echo $tStaAlwWHTax; ?>";
+                                                                    if (tStaAlwWHTax == '1') {
+                                                                        $('#ocbPdtStaAlwWHTax').prop("checked", true);
+                                                                    } else {
+                                                                        $('#ocbPdtStaAlwWHTax').prop("checked", false);
+                                                                    }
+                                                                </script>
+                                                                <input type="checkbox" id="ocbPdtStaAlwWHTax" name="ocbPdtStaAlwWHTax">
+                                                                <span><?php echo language('product/product/product', 'tPDTStaAlwWHTax') ?></span>
+                                                            </label>
+                                                        </div>
 
                                                     </div>
                                                 </div>
@@ -787,11 +759,14 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                             </div>
                         </div>
 
-                        <!-- แถบล่าง  18/03/2020 Saharat(Golf)-->
+                        <!-- แถบล่าง-->
                         <div class="custom-tabs-line tabs-line-bottom left-aligned">
                             <ul class="nav" role="tablist">
                                 <li id="oliPdtContentProductUnit" class="xWMenu active" data-menutype="MN">
-                                    <a role="tab" data-toggle="tab" data-target="#odvPdtContentProductUnit" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabPackSizeUnit'); ?></a>
+                                    <a role="tab" data-toggle="tab" data-target="#odvPdtContentNormal" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabNormal'); ?></a>
+                                </li>
+                                <li id="oliPdtContentDocCtl" class="xWMenu" data-menutype="MN">
+                                    <a role="tab" data-toggle="tab" data-target="#odvPdtContentDocCtl" aria-expanded="true"><?php echo language('product/product/product', 'tPdtTabPdtCtlTitle'); ?></a>
                                 </li>
                                 <li id="oliPdtPdtContentMore" class="xWMenu " data-menutype="MN">
                                     <a role="tab" data-toggle="tab" data-target="#odvPdtContentMore" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabOther'); ?></a>
@@ -805,13 +780,16 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 <li id="oliPdtContentPurchaseAdmissionHistory" class="xWMenu <?php echo $tMenuTabDisable; ?>" data-menutype="MN">
                                     <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvPdtContentPurchaseAdmissionHistory" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabHisPI'); ?></a>
                                 </li>
+                                <li id="oliPdtContentControlLot" class="xWMenu <?php echo $tMenuTabDisable; ?>" data-menutype="MN">
+                                    <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvPdtContentControlLot" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabControlLot'); ?></a>
+                                </li>
                             </ul>
                         </div>
                         <!-- end แถบล่าง -->
 
-                        <!-- content ล่าง 18/03/2020 Saharat(Golf) -->
+                        <!-- content ล่าง-->
                         <div class="tab-content">
-                            <div id="odvPdtContentProductUnit" class="tab-pane fade active in">
+                            <div id="odvPdtContentProductUnit" class="tab-pane fade">
                                 <!-- หน่วยสินค้า -->
                                 <div class="row">
                                     <div id="odvPdtSetPackSizeAdd" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-b-10 text-right" style="margin-top:-10px;">
@@ -823,9 +801,273 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 </div>
                                 <!-- End หน่วยสินค้า -->
                             </div>
-                            <!-- เพิ่มเติม -->
-                            <div id="odvPdtContentMore" class="tab-pane fade">
 
+                            <div id="odvPdtContentNormal" class="tab-pane fade active in" style="padding-left : 0px;">
+                                <!-- แถบสำหรับทั่วไป-->
+                                <div class="custom-tabs-line-sub tabs-line-bottom left-aligned">
+                                    <ul class="nav" role="tablist">
+                                        <li id="oliPdtContentNormalProductUnit" class="xWMenu xWMenuTapNormal active" data-menutype="TMN">
+                                            <a role="tab" data-toggle="tab" data-target="#odvPdtTabContentNormal" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabPackSizeUnit'); ?></a>
+                                        </li>
+                                        <li id="oliPdtPdtContentNormalBarCode" class="xWMenu xWMenuTapNormal " data-menutype="TBC">
+                                            <a role="tab" data-toggle="false" data-target="#odvPdtTabContentBarcode" aria-expanded="true"><?php echo language('product/product/product', 'tPDTViewPackBarcode'); ?></a>
+                                        </li>
+                                        <li id="oliPdtContentNormalVendor" class="xWMenu xWMenuTapNormal " data-menutype="TVD">
+                                            <a role="tab" data-toggle="false" data-target="#odvPdtTabContentVendor" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabVendorDetail'); ?></a>
+                                        </li>
+                                        <li id="oliPdtContentSetUpStock" class="xWMenu xWMenuTapNormal  <?php echo $tClassHiddenPrice ?>" data-menutype="TSP">
+                                            <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvPdtTabContentSumPrice" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabSumPrice'); ?></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content">
+                                    <div id="odvPdtTabContentNormal" class="tab-pane fade active in">
+                                        <!-- หน่วยสินค้า -->
+                                        <div class="row">
+                                            <div id="odvPdtNormalAdd" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-b-10 text-right" style="margin-top:-10px;">
+                                                <button id="obtAddProductNormal" class="xCNBTNPrimeryPlus" type="button" onclick="JSxPdtCallModalAddEditUnitPack()">+</button>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                                <div id="odvPdtNormalTable" class="table-responsive"></div>
+                                            </div>
+                                        </div>
+                                        <!-- End หน่วยสินค้า -->
+                                    </div>
+                                    <div id="odvPdtTabContentBarcode" class="tab-pane fade">
+                                        <!-- บาร์โค้ด -->
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                                <!-- <div id="odvPdtNormalTable2" class="table-responsive"></div> -->
+                                                <div id="odvPdtNormalTable2"></div>
+                                            </div>
+                                        </div>
+                                        <!-- End บาร์โค้ด -->
+                                    </div>
+                                    <div id="odvPdtTabContentVendor" class="tab-pane fade">
+                                        
+                                        <!-- ข้อมูลผู้จำหน่าย -->
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                                <div id="odvPdtNormalTable3" class="table-responsive"></div>
+                                            </div>
+                                        </div>
+                                        <!-- End ข้อมูลผู้จำหน่าย -->
+                                    </div>
+                                    <div id="odvPdtTabContentSumPrice" class="tab-pane fade">
+                                        <!-- ราคาขาย -->
+                                        <div class="row">
+                                            <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                                                <div class="row">
+                                                    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                                                        <div class="row">
+                                                            <!-- Browse สาขา -->
+                                                            <div class="col-xs-12 col-md-3 col-lg-3">
+                                                                <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                                    <label
+                                                                        class="xCNLabelFrm"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tFromDocDate'); ?></label>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control input100 xCNDatePicker2" type="text" id="oetPDTPCPSearchDocDateFrom"
+                                                                            name="oetPDTPCPSearchDocDateFrom"
+                                                                            placeholder="<?php echo language('product/pdtcheckprice/pdtcheckprice', 'tFromDocDate'); ?>">
+                                                                        <span class="input-group-btn">
+                                                                            <button id="obtPDTPCPSearchDocDateFrom" type="button" class="btn xCNBtnDateTime">
+                                                                                <img
+                                                                                    src="<?php echo base_url(); ?>application/modules/common/assets/images/icons/icons8-Calendar-100.png">
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Browse ร้านค้า -->
+                                                            <div class="col-xs-12 col-md-3 col-lg-3">
+                                                                <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                                    <label
+                                                                        class="xCNLabelFrm"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tToDocDate'); ?></label>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control input100 xCNDatePicker2" type="text" id="oetPDTPCPSearchDocDateTo"
+                                                                            name="oetPDTPCPSearchDocDateTo"
+                                                                            placeholder="<?php echo language('product/pdtcheckprice/pdtcheckprice', 'tToDocDate'); ?>">
+                                                                        <span class="input-group-btn">
+                                                                            <button id="obtPDTPCPSearchDocDateTo" type="button" class="btn xCNBtnDateTime">
+                                                                                <img
+                                                                                    src="<?php echo base_url(); ?>application/modules/common/assets/images/icons/icons8-Calendar-100.png">
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Browse คลังสินค้า -->
+                                                            <div class="col-xs-12 col-md-3 col-lg-3">
+                                                                <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                                    <label class="xCNLabelFrm"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplFrom'); ?></label>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control xCNHide" id="oetPCPPplCodeFrom" name="oetPCPPplCodeFrom" maxlength="5">
+                                                                        <input class="form-control xWPointerEventNone" type="text" id="oetPCPPplNameFrom"name="oetPCPPplNameFrom" readonly
+                                                                            placeholder="<?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplFrom'); ?>"
+                                                                        >
+                                                                        <span class="input-group-btn">
+                                                                            <button id="obtPCPBrowsePplFrom" type="button" class="btn xCNBtnBrowseAddOn">
+                                                                                <img src="<?php echo base_url() . 'application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Browse สินค้า -->
+                                                            <div class="col-xs-12 col-md-3 col-lg-3">
+                                                                <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                                    <label class="xCNLabelFrm"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplTo'); ?></label>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="input-group">
+                                                                        <input class="form-control xCNHide" id="oetPCPPplCodeTo" name="oetPCPPplCodeTo" maxlength="5">
+                                                                        <input class="form-control xWPointerEventNone" type="text" id="oetPCPPplNameTo" name="oetPCPPplNameTo" readonly
+                                                                            placeholder="<?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplTo'); ?>"
+                                                                        >
+                                                                        <span class="input-group-btn">
+                                                                            <button id="obtPCPBrowsePplTo" type="button" class="btn xCNBtnBrowseAddOn">
+                                                                                <img src="<?php echo base_url() . 'application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                                            </button>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                                                        <div class="row">
+                                                        <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                                    <label></label>
+                                                                </div>
+                                                            <!-- ปุ่มกรองข้อมูล -->
+                                                            <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 text-right">
+                                                            <a id="oahPCPAdvanceSearchSubmit" class="btn xCNBTNPrimery pull-right"
+                                                                    href="javascript:;"
+                                                                    onclick="JSxPDTGetPrictPdtListTable($('#oetPdtCode').val())"><?php echo language('common/main/main', 'tSearch'); ?></a>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                                <div id="odvPdtNormalTable4" class="table-responsive"></div>
+                                            </div>
+                                        </div>
+                                        <!-- End ราคาขาย -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Start เงื่อนไขสินค้า -->
+                            <div id="odvPdtContentDocCtl" class="tab-pane fade">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div class="table-responsive">
+                                            <table id="otbPdtDataDocCtl" class="table table-striped">
+                                                <?php 
+                                                    $nStaIsAgnEnabled   = FCNbGetIsAgnEnabled();
+                                                    $nStaIsShpEnabled   = FCNbGetIsShpEnabled();
+                                                ?>
+                                                <thead>
+                                                    <tr>
+                                                        <th nowrap class="text-center xCNTextBold" style="width:40%;"><?php echo language('product/product/product', 'tPdtTabPdtCtlDctName'); ?></th>
+                                                        <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product', 'tPdtTabPdtCtlPscAlwCmp'); ?></th>
+                                                        <?php if($nStaIsAgnEnabled == 1): ?>
+                                                            <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product', 'tPdtTabPdtCtlPscAlwAD'); ?></th>
+                                                        <?php endif; ?>
+                                                        <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product', 'tPdtTabPdtCtlPscAlwBch'); ?></th>
+                                                        <?php if($nStaIsShpEnabled == 1): ?>
+                                                            <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product', 'tPdtTabPdtCtlPscAlwMer'); ?></th>
+                                                            <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product', 'tPdtTabPdtCtlPscAlwShp'); ?></th>
+                                                        <?php endif; ?>
+                                                        <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product', 'tPdtTabPdtCtlPscAlwOwner'); ?></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php if ( isset($aDataDocCtlL) && !empty($aDataDocCtlL) && $aDataDocCtlL['rtCode'] == '1' ): ?>
+                                                        <?php foreach($aDataDocCtlL['raItems'] AS $nKey => $aValue): ?>
+                                                            <?php 
+                                                                $tPdtDctCode        = $aValue['FTDctCode'];
+                                                                $tPdtPscAlwCmp      = ($aValue['FTPscAlwCmp']   == 1)? 'checked' : '';
+                                                                $tPdtPscAlwAD       = ($aValue['FTPscAlwAD']    == 1)? 'checked' : '';
+                                                                $tPdtPscAlwBch      = ($aValue['FTPscAlwBch']   == 1)? 'checked' : '';
+                                                                $tPdtPscAlwMer      = ($aValue['FTPscAlwMer']   == 1)? 'checked' : '';
+                                                                $tPdtPscAlwShp      = ($aValue['FTPscAlwShp']   == 1)? 'checked' : '';
+                                                                $tPdtPscAlwOwner    = ($aValue['FTPscAlwOwner'] == 1)? 'checked' : '';
+                                                            ?>
+                                                            <tr nowrap class="xCNPdtDocCtl" data-pdtdctcode="<?=@$tPdtDctCode;?>">
+                                                                <td class="text-left"><?php echo $aValue['FTDctName'];?></td>
+                                                                <td class="text-center">
+                                                                    <label class="fancy-checkbox">
+                                                                        <input type="checkbox" id="oetPdtPscAlwCmp<?=@$tPdtDctCode;?>" name="oetPdtPscAlwCmp<?=@$tPdtDctCode;?>" <?=@$tPdtPscAlwCmp?>>
+                                                                        <span>&nbsp;</span>
+                                                                    </label>
+                                                                </td>
+                                                                <?php if($nStaIsAgnEnabled == 1): ?>
+                                                                <td class="text-center">
+                                                                    <label class="fancy-checkbox">
+                                                                        <input type="checkbox" id="oetPdtPscAlwAD<?=@$tPdtDctCode;?>" name="oetPdtPscAlwAD<?=@$tPdtDctCode;?>" <?=@$tPdtPscAlwAD?>>
+                                                                        <span>&nbsp;</span>
+                                                                    </label>
+                                                                </td>
+                                                                <?php endif; ?>
+                                                                <td class="text-center">
+                                                                    <label class="fancy-checkbox">
+                                                                        <input type="checkbox" id="oetPdtPscAlwBch<?=@$tPdtDctCode;?>" name="oetPdtPscAlwBch<?=@$tPdtDctCode;?>" <?=@$tPdtPscAlwBch?>>
+                                                                        <span>&nbsp;</span>
+                                                                    </label>
+                                                                </td>
+                                                                <?php if($nStaIsShpEnabled == 1): ?>
+                                                                <td class="text-center">
+                                                                    <label class="fancy-checkbox">
+                                                                        <input type="checkbox" id="oetPdtPscAlwMer<?=@$tPdtDctCode;?>" name="oetPdtPscAlwMer<?=@$tPdtDctCode;?>" <?=@$tPdtPscAlwMer?>>
+                                                                        <span>&nbsp;</span>
+                                                                    </label>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <label class="fancy-checkbox">
+                                                                        <input type="checkbox" id="oetPdtPscAlwShp<?=@$tPdtDctCode;?>" name="oetPdtPscAlwShp<?=@$tPdtDctCode;?>" <?=@$tPdtPscAlwShp?>>
+                                                                        <span>&nbsp;</span>
+                                                                    </label>
+                                                                </td>
+                                                                <?php endif; ?>
+                                                                <td class="text-center">
+                                                                    <label class="fancy-checkbox">
+                                                                        <input type="checkbox" id="oetPdtPscAlwOwner<?=@$tPdtDctCode;?>" name="oetPdtPscAlwOwner<?=@$tPdtDctCode;?>" <?=@$tPdtPscAlwOwner?>>
+                                                                        <span>&nbsp;</span>
+                                                                    </label>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endforeach;?>
+                                                    <?php else : ?>
+                                                        <tr>
+                                                            <td class='text-center xCNTextDetail2' colspan='100%'><?php echo language('common/main/main', 'tCMNNotFoundData'); ?></td>
+                                                        </tr>
+                                                    <?php endif; ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Start เพิ่มเติม -->
+                            <div id="odvPdtContentMore" class="tab-pane fade">
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="row">
@@ -840,7 +1082,7 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                         <div class="panel-body xCNPDModlue">
 
                                                             <!-- Product Control Branch -->
-                                                            <div class="form-group <?php if( !FCNbGetIsAgnEnabled()) : echo 'xCNHide';  endif;?>">
+                                                            <div class="form-group <?php if (!FCNbGetIsAgnEnabled()) : echo 'xCNHide'; endif; ?>">
                                                                 <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPdtAgency') ?></label>
                                                                 <div class="input-group">
                                                                     <input type="text" id="oetPdtAgnCode" class="form-control xCNHide" name="oetPdtAgnCode" value="<?php echo @$tAgnCode; ?>">
@@ -863,7 +1105,6 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                             </div>
                                                             <!-- End Product Control Branch -->
 
-
                                                             <!-- Product Control Branch -->
                                                             <div class="form-group">
                                                                 <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTBranch') ?></label>
@@ -873,20 +1114,19 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                     <span class="input-group-btn">
                                                                         <?php
                                                                         // Last Update : 21/05/2020 nale  ถ้าเข้ามาเป็น User ระดับ Branch และ อยู่แค่ 1 สาขา
-                                                                        if ($this->session->userdata('tSesUsrLevel')=='SHP' && FCNbUsrIsMerLevel()==false) {
+                                                                        if ($this->session->userdata('tSesUsrLevel') == 'SHP' && FCNbUsrIsMerLevel() == false) {
                                                                             $tDisableBrowseBranch = 'disabled';
                                                                         } else {
                                                                             $tDisableBrowseBranch = '';
                                                                         }
                                                                         ?>
-                                                                        <button id="obtBrowseBranch" type="button" class="btn xCNBtnBrowseAddOn" <?=$tDisableBrowseBranch?>>
+                                                                        <button id="obtBrowseBranch" type="button" class="btn xCNBtnBrowseAddOn" <?= $tDisableBrowseBranch ?>>
                                                                             <img class="xCNIconFind">
                                                                         </button>
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                             <!-- End Product Control Branch -->
-
 
                                                             <!-- Product Merchant -->
                                                             <div class="form-group <?= !FCNbGetIsShpEnabled() ? 'xCNHide' : '' ?>">
@@ -896,7 +1136,6 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                     <input type="text" id="oetPdtMerName" class="form-control" name="oetPdtMerName" value="<?php echo @$tPdtMerName; ?>" readonly>
                                                                     <span class="input-group-btn">
                                                                         <?php
-                                                                        // Last Update : 08/10/2019 Wasin(Yoshi)
                                                                         $tDisableBrowseMechant  = '';
                                                                         if ($tRoute == 'productEventAdd') {
                                                                             // เข้ามาในกรณีก็ต่อเมือ Session User Level เป็นระดับร้านค้า และ Session User Merchant Code ต้องไม่เท่ากับค่าว่าง
@@ -924,7 +1163,6 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                                 </div>
                                                             </div>
                                                             <!-- End Product Merchant -->
-
 
                                                             <!-- Product Shop -->
                                                             <div class="form-group <?= !FCNbGetIsShpEnabled() ? 'xCNHide' : '' ?>">
@@ -1006,15 +1244,13 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
 
                                                             <!-- เงื่อนไขควบคุมการจ่ายโดย -->
                                                             <div class="form-group">
-                                                                <label class="xCNLabelFrm"><?php echo language('product/product/product','tPdtConditionsControl')?></label>
+                                                                <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPdtConditionsControl') ?></label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control xCNHide" id="oetConditionControlCode" name="oetConditionControlCode" value="<?php echo @$tConditionCode?>">
-                                                                    <input type="text" class="form-control xWPointerEventNone" id="oetConditionControlName" name="oetConditionControlName"
-                                                                    placeholder=""
-                                                                    value="<?php echo @$tConditionName?>" readonly>
+                                                                    <input type="text" class="form-control xCNHide" id="oetConditionControlCode" name="oetConditionControlCode" value="<?php echo @$tConditionCode ?>">
+                                                                    <input type="text" class="form-control xWPointerEventNone" id="oetConditionControlName" name="oetConditionControlName" placeholder="" value="<?php echo @$tConditionName ?>" readonly>
                                                                     <span class="input-group-btn">
                                                                         <button id="oimBrowseConControl" type="button" class="btn xCNBtnBrowseAddOn">
-                                                                            <img src="<?php echo  base_url().'/application/modules/common/assets/images/icons/find-24.png'?>">
+                                                                            <img src="<?php echo  base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
                                                                         </button>
                                                                     </span>
                                                                 </div>
@@ -1139,7 +1375,15 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                             <div id="odvPdtContentCost" class="tab-pane fade">
                                 <div class="row">
                                     <div class="col-sm-6">
-
+                                        <?php 
+                                            $aChkInvStaRead = FCNaHCheckAlwFunc('docInvoice/0/0');
+                                            $tInputType     = "";
+                                            if($aChkInvStaRead['tAutStaRead'] == '1'){
+                                                $tInputType = "text";
+                                            }else{
+                                                $tInputType = "password";
+                                            }
+                                        ?>
                                         <!-- เงื่อนไขต้นทุน -->
                                         <div class="panel panel-default" style="margin-bottom: 25px;">
                                             <div class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
@@ -1149,16 +1393,36 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                 <div class="panel-body xCNPDModlue">
                                                     <div class="form-group">
                                                         <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTCostDef'); ?></label>
-                                                        <input type="text" id="oetPdtCostDef" class="form-control text-right xCNInputMaskCurrency" name="oetPdtCostDef" readonly maxlength="18" placeholder="0.00" value="<?php echo number_format($aPdtCostDef[0]['FCXpdSetPrice'], $nDecShow); ?>">
+                                                        <input 
+                                                            type="<?=@$tInputType;?>"
+                                                            class="form-control text-right xCNInputMaskCurrency"
+                                                            id="oetPdtCostDef"
+                                                            name="oetPdtCostDef"
+                                                            maxlength="18"
+                                                            placeholder="0.00"
+                                                            value="<?php echo number_format($aPdtCostDef[0]['FCXpdSetPrice'], $nDecShow); ?>"
+                                                            readonly
+                                                        >
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTCostStd'); ?></label> <label style="color: red;"> <?php echo language('product/product/product', 'tPDTCustom'); ?> </label>
-                                                        <?php if ($tPdtCostStd == null) {
+                                                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTCostStd'); ?></label>
+                                                        <?php 
+                                                        if ($tPdtCostStd == null) {
                                                             $tPdtCostStd = 0;
                                                         } else {
                                                             $tPdtCostStd = $tPdtCostStd;
                                                         } ?>
-                                                        <input type="text" id="oetPdtCostStd" class="form-control text-right xCNInputMaskCurrency" name="oetPdtCostStd" maxlength="18" placeholder="0.00" data-validate="<?php echo language('product/product/product', 'tPDTValidPdtCostStd'); ?>" value="<?php echo number_format($tPdtCostStd, $nDecShow); ?>">
+                                                        <input 
+                                                            type="<?=@$tInputType;?>"
+                                                            class="form-control text-right xCNInputMaskCurrency"
+                                                            id="oetPdtCostStd"
+                                                            name="oetPdtCostStd"
+                                                            maxlength="18"
+                                                            placeholder="0.00"
+                                                            data-validate="<?php echo language('product/product/product', 'tPDTValidPdtCostStd'); ?>"
+                                                            value="<?php echo number_format($tPdtCostStd, $nDecShow); ?>"
+                                                            readonly
+                                                        >
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTCostEx'); ?></label>
@@ -1167,11 +1431,29 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                                         } else {
                                                             $nCostEx = $aPDTCostExIn[0]['FCPdtCostEx'];
                                                         } ?>
-                                                        <input type="text" id="oetPDTCostEx" class="form-control text-right xCNInputMaskCurrency" name="oetPDTCostEx" readonly maxlength="18" placeholder="0.00" value="<?php echo number_format($nCostEx, $nDecShow); ?>">
+                                                        <input
+                                                            type="<?=@$tInputType;?>"
+                                                            class="form-control text-right xCNInputMaskCurrency"
+                                                            id="oetPDTCostEx"
+                                                            name="oetPDTCostEx"
+                                                            maxlength="18"
+                                                            placeholder="0.00"
+                                                            value="<?php echo number_format($nCostEx, $nDecShow); ?>"
+                                                            readonly
+                                                        >
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTCostIn'); ?></label>
-                                                        <input type="text" id="oetPDTCostIn" class="form-control text-right xCNInputMaskCurrency" name="oetPDTCostIn" readonly maxlength="18" placeholder="0.00" value="<?php echo  number_format($aPDTCostExIn[0]['FCPdtCostIn'], $nDecShow); ?>">
+                                                        <input
+                                                            type="<?=@$tInputType;?>"
+                                                            class="form-control text-right xCNInputMaskCurrency"
+                                                            id="oetPDTCostIn"
+                                                            name="oetPDTCostIn"
+                                                            maxlength="18"
+                                                            placeholder="0.00"
+                                                            value="<?php echo number_format($aPDTCostExIn[0]['FCPdtCostIn'], $nDecShow); ?>"
+                                                            readonly
+                                                        >
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTRmk'); ?></label>
@@ -1187,11 +1469,11 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                             <!-- End ต้นทุน -->
 
                             <div id="odvPdtContentSetUpStock" class="tab-pane fade">
-                                <!-- ตั้งค่าสต๊อก -->
+                                <!-- ตั้งค่าสต็อค -->
                                 <div class="table-responsive xCNTableScrollY">
                                     <div id="odvStockConditions"></div>
                                 </div>
-                                <!-- End ตั้งค่าสต๊อก -->
+                                <!-- End ตั้งค่าสต็อค -->
                             </div>
                             <div id="odvPdtContentPurchaseAdmissionHistory" class="tab-pane fade">
                                 <!-- ประวัติการซื้อ/รับเข้า -->
@@ -1243,6 +1525,11 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 </div>
                                 <!-- End ประวัติการซื้อ/รับเข้า -->
                             </div>
+
+                            <!-- สินค้าประเภทควบคุมล็อต -->
+                            <div id="odvPdtContentControlLot" class="tab-pane fade"></div>
+                            <!-- End สินค้าประเภทควบคุมล็อต -->
+
                         </div>
                         <!-- end content ล่าง -->
                     </div>
@@ -1274,23 +1561,14 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                         </div>
                     </div>
 
-                    <!-- Create By Witsarut 16/01/2020 -->
                     <!-- Tab Content Drug -->
-                    <div id="odvPdtContentDrug" class="tab-pane fade">
+                    <div id="odvPdtContentDrug" class="tab-pane fade"></div>
 
-                    </div>
-
-                    <!-- Create By Nattakit 26/04/2021 -->
                     <!-- Tab Content Fashion -->
-                    <div id="odvPdtContentFashion" class="tab-pane fade">
+                    <div id="odvPdtContentFashion" class="tab-pane fade"></div>
 
-                    </div>
-
-                     <!-- Create By Nattakit 26/04/2021 -->
                     <!-- Tab Content Cat -->
-                    <div id="odvPdtContentCategory" class="tab-pane fade">
-
-                    </div>
+                    <div id="odvPdtContentCategory" class="tab-pane fade"></div>
 
                     <!-- Tab Content Product Rental -->
                     <div id="odvPdtContentRental" class="tab-pane fade">
@@ -1354,14 +1632,14 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 <div id="odvPdtSetAndPdtName" class="row">
                                     <div class="col-lg-4" id="odvtTmpImgForPdtSetPage">
                                         <?php
-                                            echo FCNtHGetImagePageList(@$tFirtImage);
-                                            // if(!isset($tTmpImgForPdtSetPage)){
-                                            //     $tPatchImg              = base_url().'application/modules/common/assets/images/Noimage.png';
-                                            //     $tTmpImgForPdtSetPage   = '<img src="'.$tPatchImg.'" class="img img-respornsive" style="width: 100%">';
-                                            //     echo $tTmpImgForPdtSetPage;
-                                            // }else{
-                                            //     echo $tTmpImgForPdtSetPage;
-                                            // }
+                                        echo FCNtHGetImagePageListProductTab(@$tFirtImage);
+                                        // if(!isset($tTmpImgForPdtSetPage)){
+                                        //     $tPatchImg              = base_url().'application/modules/common/assets/images/Noimage.png';
+                                        //     $tTmpImgForPdtSetPage   = '<img src="'.$tPatchImg.'" class="img img-respornsive" style="width: 100%">';
+                                        //     echo $tTmpImgForPdtSetPage;
+                                        // }else{
+                                        //     echo $tTmpImgForPdtSetPage;
+                                        // }
                                         ?>
                                     </div>
                                     <div class="col-lg-8">
@@ -1402,7 +1680,7 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 text-right" style="margin-bottom:10px;">
                                 <button id="obtPdtSetAdd" class="xCNBTNPrimeryPlus" type="button">+</button>
                                 <button id="obtPdtSetBack" class="btn xCNHide" type="button" style="background-color: #D4D4D4; color: #000000;"><?= language('common/main/main', 'tCancel') ?></button>
-                                <button id="obtPdtSetSave" class="btn xCNHide" type="submit" style="background-color: rgb(23, 155, 253); color: white;"><?= language('common/main/main', 'tSave') ?></button>
+                                <button id="obtPdtSetSave" class="btn xCNHide xCNBTNSubSave" type="submit"><?= language('common/main/main', 'tSave') ?></button>
                             </div>
                         </div>
 
@@ -1410,10 +1688,207 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                             <!-- DataTable Product Set -->
                             <div id="odvPdtSetDataTable" class="table-responsive"></div>
                             <!-- End DataTable Product Set -->
-
-                            <input type="hidden" id="ohdPdtSetCode" name="ohdPdtSetCode" value="<?php echo substr(@$tTextPdtCodeSet, 0, -1); ?>">
-                            <input type="hidden" id="ohdPdtSetName" name="ohdPdtSetName" value="<?php echo substr(@$tTextPdtNameSet, 0, -1); ?>">
+                            <?php 
+                            if (isset($tTextPdtCodeSet) && isset($tTextPdtNameSet)) { ?>
+                                <input type="hidden" id="ohdPdtSetCode" name="ohdPdtSetCode" value="<?php echo substr(@$tTextPdtCodeSet, 0, -1); ?>">
+                                <input type="hidden" id="ohdPdtSetName" name="ohdPdtSetName" value="<?php echo substr(@$tTextPdtNameSet, 0, -1); ?>">
+                            <?php }else{ ?>
+                                <input type="hidden" id="ohdPdtSetCode" name="ohdPdtSetCode" value="">
+                                <input type="hidden" id="ohdPdtSetName" name="ohdPdtSetName" value="">
+                            <?php } ?>                                                    
                             <input type="hidden" id="ohdPdtSetStaEditInline" name="ohdPdtSetStaEditInline" value="0">
+                        </div>
+
+                    </div>
+
+                    <!-- Tab Content Product Add SV Set -->
+                    <div id="odvPdtContentSVSet" class="tab-pane fade">
+                        <input id="oetPdtSetPdtCodeDup" class="xCNHide" value="">
+                        <div id="odvPdtSetMenuSelectPdt" class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-bottom:10px;">
+                                <div id="odvPdtSetAndPdtName" class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" id="odvtTmpImgForPdtSVSetPage">
+                                        <?php
+                                            echo FCNtHGetImagePageListProductTab(@$tFirtImage);
+                                        ?>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                <label id="olbPdtSetSVAndPdtName" onclick="JSxPdtSetCallSVDataTable();" class="xCNLabelFrm xCNLinkClick" style="font-size: 22px !important;"><?= language('product/product/product', 'tPDTTitle') ?> : <?php echo $tPdtName; ?> </label>
+                                                <label id="olbPdtSVSetAdd" class="xCNLabelFrm xCNHide"> / <?= language('common/main/main', 'tAdd') ?></label>
+                                                <label id="olbPdtSVSetEdit" class="xCNLabelFrm xCNHide"> / <?= language('common/main/main', 'tEdit') ?></label>
+                                            </div>
+                                            <br>
+                                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="odvSetShwDT">
+                                                <div class="form-group">
+                                                    <label class="xCNLabelFrm" style="margin-right: 10px;"><?= language('product/product/product', 'tPdtStaSetShwDT') ?></label>
+                                                    <select id="ocmPdtStaSetShwDTSV" name="ocmPdtStaSetShwDTSV" class="selectpicker form-control xWPdtStaSetShwDTSV">
+                                                        <option value="1" <?php if ($tPdtStaSetShwDT == '1') {
+                                                            echo "selected";
+                                                        } ?>><?= language('product/product/product', 'tPdtStaSetShwDT1') ?></option>
+                                                        <option value="2" <?php if ($tPdtStaSetShwDT == '2') {
+                                                            echo "selected";
+                                                        } ?>><?= language('product/product/product', 'tPdtStaSetShwDT2') ?></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="odvPdtSetSVSubMenuSta">
+                                            <div class="row">
+                                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                    <div class="custom-tabs-line-sub tabs-line-bottom left-aligned <?=$tTabSVSetDisplay?>">
+                                                        <ul class="nav" role="tablist">
+                                                            <li id="oliPdtSetSVServiceRound" class="xWMenu xWMenuTapNormal <?=$tTabServiceRound?>" data-menutype="SV1">
+                                                                <a role="tab" data-toggle="tab" data-target="#odvPdtSetSVTabContent1" aria-expanded="true"><?=language('product/product/product', 'tPDTSVServiceRound');?></a>
+                                                            </li>
+                                                            <li id="oliPdtSetSVDurationCondition" class="xWMenu xWMenuTapNormal <?=$tTabDurationCond?>" data-menutype="SV2">
+                                                                <a role="tab" data-toggle="tab" data-target="#odvPdtSetSVTabContent2" aria-expanded="false"><?=language('product/product/product', 'tPDTSVDurationCondition');?></a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="tab-content">
+                                                        <div id="odvPdtSetSVTabContent1" class="tab-pane fade <?=$tContentServiceRound?>">
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                                            <div class="form-group">
+                                                                                <label class="xCNLabelFrm"> <?php echo language('product/product/product', 'tPDTSVDistance'); ?></label>
+                                                                                <input 
+                                                                                    type="text"
+                                                                                    class="form-control text-right xCNInputNumericWithDecimal"
+                                                                                    id="oetPdtSVDistance"
+                                                                                    name="oetPdtSVDistance"
+                                                                                    maxlength="100"
+                                                                                    placeholder="<?php echo language('product/product/product', 'tPDTSVKilomate'); ?>"
+                                                                                    data-validate-required="<?php echo language('product/product/product', 'tPDTValidPdtName'); ?>"
+                                                                                    autocomplete="off"
+                                                                                    value="<?php echo (@$aPdtCarMaDistance); ?>"
+                                                                                >
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                                            <div class="form-group">
+                                                                                <label class="xCNLabelFrm"> <?php echo language('product/product/product', 'tPDTSVDuration'); ?></label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    class="form-control text-right xCNInputNumericWithDecimal"
+                                                                                    maxlength="100"
+                                                                                    id="oetPdtSVDuration"
+                                                                                    name="oetPdtSVDuration"
+                                                                                    placeholder="<?php echo language('product/product/product', 'tPDTSVMount'); ?>"
+                                                                                    data-validate-required="<?php echo language('product/product/product', 'tPDTValidPdtName'); ?>"
+                                                                                    autocomplete="off"
+                                                                                    value="<?php echo (@$aPdtCarQtyMonth); ?>"
+                                                                                >
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                                            <div class="form-group">
+                                                                                <label class="xCNLabelFrm"> <?php echo language('product/product/product', 'tPDTSVEstService'); ?></label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    class="form-control text-right xCNInputNumericWithDecimal"
+                                                                                    maxlength="100"
+                                                                                    id="oetPdtSVEst"
+                                                                                    name="oetPdtSVEst"
+                                                                                    placeholder="<?php echo language('product/product/product', 'tPDTSVHour'); ?>"
+                                                                                    autocomplete="off"
+                                                                                    data-validate-required="<?php echo language('product/product/product', 'tPDTValidPdtName'); ?>"
+                                                                                    value="<?php echo (@$aPdtCarQtyTime); ?>"
+                                                                                >
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="odvPdtSetSVTabContent2" class="tab-pane fade <?=$tContentDurationCond?>" <?=$tStyleDurationCond?>>
+                                                            <div class="row">
+                                                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                                            <div class="form-group">
+                                                                                <label class="xCNLabelFrm"> <?php echo language('product/product/product', 'tPDTSVDurationKilo'); ?></label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    class="form-control text-right xCNInputNumericWithDecimal"
+                                                                                    maxlength="100"
+                                                                                    id="oetPdtSVDuratKilo"
+                                                                                    name="oetPdtSVDuratKilo"
+                                                                                    placeholder="<?php echo language('product/product/product', 'tPDTSVKilomate'); ?>"
+                                                                                    autocomplete="off"
+                                                                                    data-validate-required="<?php echo language('product/product/product', 'tPDTValidPdtName'); ?>"
+                                                                                    value="<?php echo number_format(@$aPdtCarWaDistance, $nDecShow, ".", ""); ?>"
+                                                                                >
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                                            <div class="form-group">
+                                                                                <label class="xCNLabelFrm"> <?php echo language('product/product/product', 'tPDTSVDurationTime'); ?></label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    class="form-control text-right xCNInputNumericWithDecimal"
+                                                                                    maxlength="100"
+                                                                                    id="oetPdtSVTime"
+                                                                                    name="oetPdtSVTime"
+                                                                                    placeholder="<?php echo language('product/product/product', 'tPDTSVDays'); ?>"
+                                                                                    autocomplete="off"
+                                                                                    data-validate-required="<?php echo language('product/product/product', 'tPDTValidPdtName'); ?>"
+                                                                                    value="<?php echo (@$aPdtCarWaQtyDay); ?>"
+                                                                                >
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                                                            <div class="form-group">
+                                                                                <label class="xCNLabelFrm"> <?php echo language('product/product/product', 'tPDTSVDurationCondition'); ?></label>
+                                                                                <input
+                                                                                    type="text"
+                                                                                    class="form-control"
+                                                                                    maxlength="100"
+                                                                                    id="oetPdtSVCondit"
+                                                                                    name="oetPdtSVCondit"
+                                                                                    placeholder="<?php echo language('product/product/product', 'tPDTSVDurationCondition'); ?>"
+                                                                                    autocomplete="off"
+                                                                                    data-validate-required="<?php echo language('product/product/product', 'tPDTValidPdtName'); ?>"
+                                                                                    value="<?php echo (@$aPdtCarWaCond); ?>"
+                                                                                >
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right" style="margin-bottom:10px;">
+                                <!-- <button id="obtPdtSVSetAdd" class="xCNBTNPrimeryPlus" type="button">+</button> -->
+                                <button id="obtPdtSVSetBack" class="btn xCNHide" type="button" style="background-color: #D4D4D4; color: #000000;"><?= language('common/main/main', 'tCancel') ?></button>
+                                <button id="obtPdtSVSetSave" class="btn xCNHide xCNBTNSubSave" type="submit"><?= language('common/main/main', 'tAdd') ?></button>
+                            </div>
+                        </div>
+                        <div class="text-right xWAddMargin <?=$tTabSVSetDisplay?>" style="margin-bottom:50px;">
+                                <button id="obtPdtSVSetAdd" class="xCNBTNPrimeryPlus" type="button">+</button>
+                        </div>
+
+                        <div id="odvPdtSetTable" class="<?=$tTabSVSetDisplay?>" style="margin-top:10px">
+                            <!-- DataTable Product Set -->
+                            <div id="odvPdtSetSVDataTable"></div>
+                            <!-- End DataTable Product Set -->
+
+                            <?php if (isset($tTextPdtCodeSet) && isset($tTextPdtNameSet)) { ?>
+                                <input type="hidden" id="ohdPdtSVCode" name="ohdPdtSVCode" value="<?php echo substr(@$tTextPdtCodeSet, 0, -1); ?>">
+                                <input type="hidden" id="ohdPdtSVName" name="ohdPdtSVName" value="<?php echo substr(@$tTextPdtNameSet, 0, -1); ?>">
+                            <?php }else{ ?>
+                                <input type="hidden" id="ohdPdtSVCode" name="ohdPdtSVCode" value="">
+                                <input type="hidden" id="ohdPdtSVName" name="ohdPdtSVName" value="">
+                            <?php } ?>       
                         </div>
 
                     </div>
@@ -1490,6 +1965,19 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                         </tbody>
                                     </table>
                                 </div>
+                                <?php 
+                                    if (isset($tTextEvnCode)) {
+                                        $tTextEvnCode = $tTextEvnCode;
+                                    } else{
+                                        $tTextEvnCode = '';
+                                    }
+
+                                    if (isset($tTextEvnName)) {
+                                        $tTextEvnName = $tTextEvnName;
+                                    } else{
+                                        $tTextEvnName = '';
+                                    }
+                                ?>
                                 <input type="hidden" id="ohdPdtEvnNoSleCode" name="ohdEvnNoSleCode" value="<?php echo substr(@$tTextEvnCode, 0, -1); ?>">
                                 <input type="hidden" id="ohdPdtEvnNoSleName" name="ohdEvnNoSleName" value="<?php echo substr(@$tTextEvnName, 0, -1); ?>">
                             </div>
@@ -1505,6 +1993,99 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
         </div>
 </form>
 
+<!--สินค้า LOT / BATCH -->
+<div class="modal fade" id="odvModalStockLots">
+    <div class="modal-dialog" style="width: 30%;">
+        <div class="modal-content">
+            <div class="modal-header xCNModalHead">
+                <label class="xCNTextModalHeard"><?php echo language('product/product/product', 'tPdtStockLotsHead'); ?></label>
+            </div>
+            <div class="modal-body" style="max-height: 500px; overflow: auto;">
+            <form class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" id="ofmAddStockLot">
+                <div class="text-right">
+                    <button type="button" class="btn" style="background-color: #D4D4D4; color: #000000;" data-dismiss="modal">
+                        <?=language('product/product/product', 'tPdtStockLotsCancel')?>
+                    </button>
+                    <button type="submit" class="btn xCNBTNSubSave">
+                        <?=language('product/product/product', 'tPdtStockLotsSave')?>
+                    </button>
+                </div>
+                    <!-- Berowse LOG/BATCH -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><span class="text-danger">*</span><?php echo language('product/product/product','tPdtStockIdLot')?></label>
+                            <div class="input-group">
+                                <input type="text" class="form-control xCNHide" id="oetStockLotCode" name="oetStockLotCode">
+                                <input type="text" class="form-control xWPointerEventNone" id="oetStockLotNo" name="oetStockLotNo"
+                                data-validate-required="<?php echo language('product/product/product','tPdtStockLotBatchRq');?>" readonly>
+                            <span class="input-group-btn">
+                                <button id="oimLotBrowseLot" type="button" class="btn xCNBtnBrowseAddOn">
+                                    <img src="<?php echo  base_url().'/application/modules/common/assets/images/icons/find-24.png'?>">
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- end Berowse LOG/BATCH -->
+
+                    <!-- Lot COST -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"> <?php echo language('product/product/product','tPdtStockLotQty')?></label>
+                            <input type="text" class="form-control text-right xCNInputNumericWithDecimal" id="oetStockLotCost" name="oetStockLotCost" maxlength="18"
+                                data-validate-required="<?php echo language('product/product/product','tPdtStockLotCost');?>"
+                                autocomplete="off">
+                    </div>
+                    <!-- end จำนวนต่ำสุด -->
+
+                    <!-- Start Date Start -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPdtStockLotDateStart'); ?></label>
+                            <div class="input-group">
+                                <input type="text" id="oetPdtLotDateStart" class="form-control text-center xCNDatePicker2 xCNInputMaskDate" autocomplete="off" name="oetPdtLotDateStart" value= "<?php echo date_format(date_create($dLotdate),"Y-m-d");?>">
+                                 <span class="input-group-btn">
+                                    <button id="obtPdtLotDateStart" type="button" class="btn xCNBtnDateTime">
+                                        <img class="xCNIconCalendar">
+                                    </button>
+                                </span>
+                            </div>
+                    </div>
+                    <!--End Date Start -->
+
+                    <!--Start Date End -->
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPdtStockIdLotDateEnd'); ?></label>
+                            <div class="input-group">
+                                <input type="text" id="oetPdtLotDateStop" class="form-control xCNDatePicker2 xCNInputMaskDate text-center" autocomplete="off" name="oetPdtLotDateStop" value="<?php echo date_format(date_create($dLotdate),"Y-m-d");?>">
+                                <span class="input-group-btn">
+                                    <button id="obtPdtLotDateStop" type="button" class="btn xCNBtnDateTime">
+                                        <img class="xCNIconCalendar">
+                                    </button>
+                                </span>
+                            </div>
+                    </div>
+                    <!-- end Date End -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--ลบข้อมูลสินค้า LOT / BATCH -->
+<div id="odvModalDeleteStockLot" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header xCNModalHead">
+                <label class="xCNTextModalHeard"><?php echo language('common/main/main', 'tModalDelete')?></label>
+            </div>
+            <div class="modal-body">
+                <span id="ospTextConfirmDelSingle" class="xCNTextModal" style="display: inline-block; word-break:break-all"></span>
+            </div>
+            <div class="modal-footer">
+                <button id="osmConfirmDelSingleLot" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"><?php echo language('common/main/main', 'tModalConfirm')?></button>
+                <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal"><?php echo language('common/main/main', 'tModalCancel')?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="odvModallAllData">
     <!-- View Modal Manage Pack Size -->
     <div id="odvModalMngUnitPackSize" class="modal fade" tabindex="-1" role="dialog">
@@ -1516,7 +2097,8 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                             <label class="xCNTextModalHeard"><?php echo language('product/product/product', 'tPDTViewPackManage'); ?></label>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
-                            <!-- <button onclick="JSxPDTChangeUnit()" class="btn xCNBTNPrimery xCNBTNPrimery2Btn"><?php //echo language('product/product/product', 'tPdtChangeUnit'); ?></button> -->
+                            <!-- <button onclick="JSxPDTChangeUnit()" class="btn xCNBTNPrimery xCNBTNPrimery2Btn"><?php //echo language('product/product/product', 'tPdtChangeUnit');
+                                                                                                                    ?></button> -->
                             <button onclick="JSxPdtSaveMngPszUnitInTable()" class="btn xCNBTNPrimery xCNBTNPrimery2Btn"><?php echo language('product/product/product', 'tPDTViewPackSaveManage'); ?></button>
                             <button class="btn xCNBTNDefult xCNBTNDefult2Btn" data-dismiss="modal"><?php echo language('product/product/product', 'tPDTViewPackCancelManage'); ?></button>
                         </div>
@@ -1530,9 +2112,9 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTHisPIUnit'); ?></label>
                                     <div class="input-group">
-                                        <input type="text" id="ohdModalPszUnitCodeOld"  class="form-control xCNHide"    name="ohdModalPszUnitCodeOld">
-                                        <input type="text" id="ohdModalPszUnitCode"     class="form-control xCNHide"    name="oetModalPszSizeCode">
-                                        <input type="text" id="ohdModalPszUnitName"     class="form-control"            name="oetModalPszSizeName" readonly>
+                                        <input type="text" id="ohdModalPszUnitCodeOld" class="form-control xCNHide" name="ohdModalPszUnitCodeOld">
+                                        <input type="text" id="ohdModalPszUnitCode" class="form-control xCNHide" name="oetModalPszSizeCode">
+                                        <input type="text" id="ohdModalPszUnitName" class="form-control" name="oetModalPszSizeName" readonly>
                                         <span class="input-group-btn">
                                             <button id="obtModalUnitBrowse" type="button" class="btn xCNBtnBrowseAddOn">
                                                 <img src="<?php echo base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
@@ -1555,58 +2137,6 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                     <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewPackMDUnitFact'); ?></label>
                                     <input type="text" id="oetModalPszUnitFact" class="form-control text-right xCNInputNumericWithDecimal" maxlength="18" name="oetModalPszUnitFact">
                                 </div>
-
-                                <hr>
-                                <div class="row">
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                    <!-- Modal Manage PackSize StaAlwPick -->
-                                    <label class="fancy-checkbox">
-                                        <input type="checkbox" id="ocbModalPszStaAlwPick" name="ocbModalPszStaAlwPick">
-                                        <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwPick') ?></span>
-                                    </label>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                    <!-- Modal Manage PackSize StaAlwPoHQ -->
-                                    <label class="fancy-checkbox">
-                                        <input type="checkbox" id="ocbModalPszStaAlwPoHQ" name="ocbModalPszStaAlwPoHQ">
-                                        <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwPoHQ') ?></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                    <!-- Modal Manage PackSize StaAlwBuy -->
-                                    <label class="fancy-checkbox">
-                                        <input type="checkbox" id="ocbModalPszStaAlwBuy" name="ocbModalPszStaAlwBuy">
-                                        <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwBuy') ?></span>
-                                    </label>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                    <!-- Modal Manage PackSize StaAlwSale -->
-                                    <label class="fancy-checkbox">
-                                        <input type="checkbox" id="ocbModalPszStaAlwSale" name="ocbModalPszStaAlwSale">
-                                        <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwSale') ?></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                    <!-- Modal Manage PackSize StaAlwBuy -->
-                                    <label class="fancy-checkbox">
-                                        <input type="checkbox" id="ocbModalPszStaAlwRet" name="ocbModalPszStaAlwRet">
-                                        <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwRet') ?></span>
-                                    </label>
-                                </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                                    <!-- Modal Manage PackSize StaAlwSale -->
-                                    <!-- <label class="fancy-checkbox">
-                                        <input type="checkbox" id="ocbModalPszStaAlwSale" name="ocbModalPszStaAlwSale">
-                                        <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwSale') ?></span>
-                                    </label> -->
-                                </div>
-                            </div>
-                              <hr>
-
                                 <!-- Modal Manage PackSize Grade -->
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewPackMDGrade'); ?></label>
@@ -1685,11 +2215,429 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <!-- Modal Manage PackSize StaAlwPick -->
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" id="ocbModalPszStaAlwPick" name="ocbModalPszStaAlwPick">
+                                    <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwPick') ?></span>
+                                </label>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <!-- Modal Manage PackSize StaAlwPoHQ -->
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" id="ocbModalPszStaAlwPoHQ" name="ocbModalPszStaAlwPoHQ">
+                                    <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwPoHQ') ?></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <!-- Modal Manage PackSize StaAlwBuy -->
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" id="ocbModalPszStaAlwBuy" name="ocbModalPszStaAlwBuy">
+                                    <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwBuy') ?></span>
+                                </label>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <!-- Modal Manage PackSize StaAlwSale -->
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" id="ocbModalPszStaAlwSale" name="ocbModalPszStaAlwSale">
+                                    <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwSale') ?></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <!-- Modal Manage PackSize StaAlwRet -->
+                                <label class="fancy-checkbox">
+                                    <input type="checkbox" id="ocbModalPszStaAlwRet" name="ocbModalPszStaAlwRet">
+                                    <span><?php echo language('product/product/product', 'tPDTViewPackMDStaAlwRet') ?></span>
+                                </label>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+<!-- Modal Add หน่วยสินค้า -->
+    <div class="modal fade" id="odvModalAddSup">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header xCNModalHead">
+                    <label class="xCNTextModalHeard"><?php echo language('product/product/product', 'tPdtTabNormalAddSupPDt')?></label>
+                </div>
+                <form action="javascript:void(0);" id="ofmModalUnitPack" class="validate-form">
+                <div class="modal-body" style="max-height: calc(100vh - 180px);overflow-y: auto;">
+                    <div><span style="font-weight: bold; color: black;"><?php echo language('product/product/product', 'tPDTName')?> : </span><span id="opdPdtCostSupNamePDTTitle"></span></div>
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('product/product/product', 'tPDTTabPackSizeUnit'); ?></label>
+                        <div class="input-group">
+                            <input type="text" id="ohdCostSupType" class="form-control xCNHide" name="ohdCostSupType">
+                            <input type="text" id="oetPDTCostSupCodeOld" class="form-control xCNHide" name="oetPDTCostSupCodeOld">
+                            <input type="text" id="oetPDTCostSupCode" class="form-control xCNHide" name="oetPDTCostSupCode" value="">
+                            <input type="text" id="oetPDTCostSupName" class="form-control" name="oetPDTCostSupName" value="" readonly data-validate-required="<?php echo language('product/product/product', 'tPDTValidPdtPsz'); ?>">
+                            <span class="input-group-btn">
+                                <button id="obtModalCostSupBrowse" type="button" class="btn xCNBtnBrowseAddOn">
+                                    <img class="xCNIconFind">
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('product/product/product', 'tPDTUnitFact'); ?></label>
+                        <input type="text" id="oetPDTUnitPerCost" class="form-control text-right xCNInputNumericWithDecimal" name="oetPDTUnitPerCost" maxlength="18" data-validate-required="<?php echo language('product/product/product', 'tPDTViewPackUnitPackFactor'); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewPackMDColor'); ?></label>
+                        <div class="input-group">
+                            <input type="text" id="oetPDTColorCode" class="form-control xCNHide" name="oetPDTColorCode">
+                            <input type="text" id="oetPDTColorName" class="form-control" name="oetPDTColorName" readonly>
+                            <span class="input-group-btn">
+                                <button id="obtModalCostSupBrowseColor" type="button" class="btn xCNBtnBrowseAddOn">
+                                    <img src="<?php echo base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewNorMalPackSize'); ?></label>
+                        <div class="input-group">
+                            <input type="text" id="oetPDTSizeCode" class="form-control xCNHide" name="oetPDTSizeCode">
+                            <input type="text" id="oetPDTSizeName" class="form-control" name="oetPDTSizeName" readonly>
+                            <span class="input-group-btn">
+                                <button id="obtModalCostSupBrowseSize" type="button" class="btn xCNBtnBrowseAddOn">
+                                    <img src="<?php echo base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewPackMDWeight'); ?></label>
+                        <input type="text" id="oetPDTWeigh" class="form-control" name="oetPDTWeigh" maxlength="18" >
+                    </div>
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'เกรด'); ?></label>
+                        <input type="text" id="oetPDTGrade" class="form-control" name="oetPDTGrade" maxlength="18" >
+                    </div>
+                    <span id="ospConfirmDelete" class="xCNTextModal" style="display: inline-block; word-break:break-all"></span>
+                    <input type='hidden' id="ohdConfirmIDDelete">
+
+                    <div class="row">
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                        <!-- อนุญาตสั่งสินค้าจาก สนญ. -->
+                        <label class="fancy-checkbox">
+                            <script>
+                                var tStaCheckVatBuy = "<?php echo $tStaVatBuy; ?>";
+                                var tStaVat = "<?php echo $tStaVat; ?>";
+                                var tStaNewPdt = "<?php echo $nStaAddOrEdit ?>";
+                                if ((typeof(tStaCheckVatBuy) !== 'undefined' && tStaCheckVatBuy == '1' && typeof(tStaVat) !== 'undefined' && tStaVat == '1') || tStaNewPdt == '99') {
+                                    $('#ocbPdtAllowOrderBch').prop("checked", true);
+                                } else {
+                                    $('#ocbPdtAllowOrderBch').prop("checked", false);
+                                }
+                            </script>
+                            <input type="checkbox" id="ocbPdtAllowOrderBch" name="ocbPdtAllowOrderBch">
+                            <span><?php echo language('product/product/product', 'tPDTViewNormalAlwHQ') ?></span>
+                        </label>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                        <!--อนุญาตสั่งจากผู้จำหน่าย -->
+                        <script>
+                            var tStaPoint = "<?php echo $tStaPoint; ?>";
+                            if (typeof(tStaPoint) !== 'undefined' && tStaPoint == '1' || tStaNewPdt == '99') {
+                                $('#ocbPdtAllowOrderVendor').prop("checked", true);
+                            } else {
+                                $('#ocbPdtAllowOrderVendor').prop("checked", false);
+                            }
+                        </script>
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbPdtAllowOrderVendor" name="ocbPdtAllowOrderVendor">
+                            <span><?php echo language('product/product/product', 'tPDTViewNormalAlwBuyer') ?></span>
+                        </label>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 xCNHide" style="margin-top:10px;">
+                        <!-- อนุญาตซื้อ -->
+                        <script>
+                            var tStaCheckStkControl = "<?php echo $tStkControl; ?>";
+                            if (typeof(tStaCheckStkControl) !== 'undefined' && tStaCheckStkControl == '1' || tStaNewPdt == '99') {
+                                $('#ocbPdtAllowBuy').prop("checked", true);
+                            } else {
+                                $('#ocbPdtAllowBuy').prop("checked", false);
+                            }
+                        </script>
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbPdtAllowBuy" name="ocbPdtAllowBuy">
+                            <span><?php echo language('product/product/product', 'tPdtTabNormalAllowBuy') ?></span>
+                        </label>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                        <!-- อนุญาตขาย -->
+                        <script>
+                            var tStaCheckStkControl = "<?php echo $tStkControl; ?>";
+                            if (typeof(tStaCheckStkControl) !== 'undefined' && tStaCheckStkControl == '1' || tStaNewPdt == '99') {
+                                $('#ocbPdtAllowSale').prop("checked", true);
+                            } else {
+                                $('#ocbPdtAllowSale').prop("checked", false);
+                            }
+                        </script>
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbPdtAllowSale" name="ocbPdtAllowSale">
+                            <span><?php echo language('product/product/product', 'tPDTViewPackMDBarAlwSale') ?></span>
+                        </label>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                        <!-- อนุญาตจัด -->
+                        <label class="fancy-checkbox">
+                            <script>
+                                var tStaLot = "<?php echo $tStaLot; ?>";
+                                if (tStaLot == '1') {
+                                    $('#ocbPdtAllowManage').prop("checked", true);
+                                } else {
+                                    $('#ocbPdtAllowManage').prop("checked", false);
+                                }
+                            </script>
+                            <input type="checkbox" id="ocbPdtAllowManage" name="ocbPdtAllowManage">
+                            <span><?=language('product/product/product', 'tPdtTabNormalDefrag') ?></span>
+                        </label>
+                    </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal">
+                        <?php echo language('common/main/main', 'tModalCancel')?>
+                    </button>
+                    <!-- <button id="osmConfirm" onclick="JSxPdtSaveNormalUnitPackAdd()" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button">
+                        <?php echo language('common/main/main', 'tModalConfirm')?>
+                    </button> -->
+                    <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn xWPDTSubmitAddPackUnit"><?php echo language('product/product/product', 'tModalConfirm'); ?></button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+<!-- END Modal Add หน่วยสินค้า -->
+
+<!-- Modal Add บาร์โค้ด -->
+<div class="modal fade" id="odvModalAddSupBarCode">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header xCNModalHead">
+                    <label class="xCNTextModalHeard"><?php echo language('product/product/product', 'tPdtTabNormalAddSupPDtBarCode')?></label>
+                </div>
+                <form action="javascript:void(0);" id="ofmModalUnitBarCode" class="validate-form">
+                <div class="modal-body">
+                    <div><span style="font-weight: bold; color: black;"><?php echo language('product/product/product', 'tPDTName')?> : </span><span id="opdPdtCostSupBarNamePDTTitle1"></span><span> > </span><span id="opdPdtCostSupNameBarPDTTitle2"></span></div>
+                        <input type="text" id="ohdCostSupBarPunCode" class="form-control xCNHide" name="ohdCostSupBarPunCode">
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('product/product/product', 'tPDTViewPackMDBarCode'); ?></label>
+                        <input type="text" id="oetPDTUnitBarBarCodeOld" class="form-control xCNHide" name="oetPDTUnitBarBarCodeOld">
+                        <input type="text" id="oetPDTUnitBarBarCode" class="form-control" name="oetPDTUnitBarBarCode" maxlength="25"  data-validate-required="<?php echo language('product/product/product', 'tPDTViewPackUnitPackBarCode'); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewPackMDBarLocation'); ?></label>
+                        <div class="input-group">
+                            <input type="text" id="ohdCostSupBarType" class="form-control xCNHide" name="ohdCostSupBarType">
+                            <input type="text" id="oetPDTUnitBarLocCodeOld" class="form-control xCNHide" name="oetPDTUnitBarLocCodeOld">
+                            <input type="text" id="oetPDTUnitBarLocCode" class="form-control xCNHide" name="oetPDTUnitBarLocCode" value="">
+                            <input type="text" id="oetPDTUnitBarLocName" class="form-control" name="oetPDTUnitBarLocName" value="" readonly>
+                            <span class="input-group-btn">
+                                <button id="obtModalUnitBarLocBrowse" type="button" class="btn xCNBtnBrowseAddOn">
+                                    <img class="xCNIconFind">
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="col-lg-3 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                        <!-- อนุญาตขาย -->
+                        <label class="fancy-checkbox">
+                            <script>
+                                var tStaCheckVatBuy = "<?php echo $tStaVatBuy; ?>";
+                                var tStaVat = "<?php echo $tStaVat; ?>";
+                                var tStaNewPdt = "<?php echo $nStaAddOrEdit ?>";
+                                if ((typeof(tStaCheckVatBuy) !== 'undefined' && tStaCheckVatBuy == '1' && typeof(tStaVat) !== 'undefined' && tStaVat == '1') || tStaNewPdt == '99') {
+                                    $('#ocbPdtBarAlwSale').prop("checked", true);
+                                } else {
+                                    $('#ocbPdtBarAlwSale').prop("checked", false);
+                                }
+                            </script>
+                            <input type="checkbox" id="ocbPdtBarAlwSale" name="ocbPdtBarAlwSale">
+                            <span><?php echo language('product/product/product', 'tPDTViewPackMDBarAlwSale') ?></span>
+                        </label>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-xs-12 col-sm-12" style="margin-top:10px;">
+                        <!--สถานะใช้งาน -->
+                        <script>
+                            var tStaPoint = "<?php echo $tStaPoint; ?>";
+                            if (typeof(tStaPoint) !== 'undefined' && tStaPoint == '1' || tStaNewPdt == '99') {
+                                $('#ocbPdtBarAlwUsed').prop("checked", true);
+                            } else {
+                                $('#ocbPdtBarAlwUsed').prop("checked", false);
+                            }
+                        </script>
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbPdtBarAlwUsed" name="ocbPdtBarAlwUsed">
+                            <span><?php echo language('product/product/product', 'tPDTViewPackMDBarStaUse') ?></span>
+                        </label>
+                    </div>
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal">
+                        <?php echo language('common/main/main', 'tModalCancel')?>
+                    </button>
+                    <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn xWPDTSubmitAddBarUnit"><?php echo language('product/product/product', 'tModalConfirm'); ?></button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<!-- END Modal Add บาร์โค้ด -->
+
+
+<!-- Modal Add ผู้จำหน่าย -->
+<div class="modal fade" id="odvModalAddSupSupplier">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header xCNModalHead">
+                    <label class="xCNTextModalHeard"><?php echo language('product/product/product', 'tPdtTabNormalAddSupPDtSupplier')?></label>
+                </div>
+                <form action="javascript:void(0);" id="ofmModalUnitSupplier" class="validate-form">
+                <div class="modal-body">
+                    <div><span style="font-weight: bold; color: black;"><?php echo language('product/product/product', 'tPDTName')?> : </span><span id="opdPdtCostSupSupplierNamePDTTitle1"></span><span> > </span><span id="opdPdtCostSupSupplierNamePDTTitle2"></span> > <span id="opdPdtCostSupSupplierNamePDTTitle3"></span></div>
+                        <input type="text" id="ohdCostSupPunCode" class="form-control xCNHide" name="ohdCostSupPunCode">
+
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('product/product/product', 'tPDTHisPISupplier'); ?></label>
+                        <div class="input-group">
+                            <input type="text" id="ohdCostSupSuplierType" class="form-control xCNHide" name="ohdCostSupSuplierType">
+                            <input type="text" id="oetPDTUnitSupplierCodeOld" class="form-control xCNHide" name="oetPDTUnitSupplierCodeOld">
+                            <input type="text" id="oetPDTUnitSupplierCode" class="form-control xCNHide" name="oetPDTUnitSupplierCode" value="">
+                            <input type="text" id="oetPDTUnitSupplierName" class="form-control" name="oetPDTUnitSupplierName" value="" readonly data-validate-required="<?php echo language('product/product/product', 'tPDTViewPackUnitPackBarCode'); ?>">
+                            <span class="input-group-btn">
+                                <button id="obtModalSupplierBrowse" type="button" class="btn xCNBtnBrowseAddOn">
+                                    <img class="xCNIconFind">
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPdtTabNormalPersonRespond'); ?></label>
+                        <div class="input-group">
+                            <input type="text" id="oetPDTSupplierUsrCode" class="form-control xCNHide" name="oetPDTSupplierUsrCode" value="">
+                            <input type="text" id="oetPDTSupplierUsrName" class="form-control" name="oetPDTSupplierUsrName" value="" readonly>
+                            <span class="input-group-btn">
+                                <button id="obtModalSuplierSupplierUsrBrowse" type="button" class="btn xCNBtnBrowseAddOn">
+                                    <img class="xCNIconFind">
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 text-left" style="margin-top:10px;">
+                        <!-- อนุญาติสั่งวัน จ. -->
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbSupAlwMon" name="ocbSupAlwMon" checked>
+                            <span><?php echo language('product/product/product', 'tPdtTabNormalAllowDay1') ?></span>
+                        </label>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 text-left" style="margin-top:10px;">
+                        <!--อนุญาติสั่งวัน อ. -->
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbSupAlwTue" name="ocbSupAlwTue" checked>
+                            <span><?php echo language('product/product/product', 'tPdtTabNormalAllowDay2') ?></span>
+                        </label>
+                    </div>
+
+                    </div>
+
+                    <div class="row">
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 text-left" style="margin-top:10px;">
+                        <!-- อนุญาติสั่งวัน พ. -->
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbSupAlwWed" name="ocbSupAlwWed" checked>
+                            <span><?php echo language('product/product/product', 'tPdtTabNormalAllowDay3') ?></span>
+                        </label>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 text-left" style="margin-top:10px;">
+                        <!--อนุญาติสั่งวัน พฤ. -->
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbSupAlwThu" name="ocbSupAlwThu" checked>
+                            <span><?php echo language('product/product/product', 'tPdtTabNormalAllowDay4') ?></span>
+                        </label>
+                    </div>
+
+                    </div>
+
+                    <div class="row">
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 text-left" style="margin-top:10px;">
+                        <!-- อนุญาติสั่งวัน ศ. -->
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbSupAlwFri" name="ocbSupAlwFri" checked>
+                            <span><?php echo language('product/product/product', 'tPdtTabNormalAllowDay5') ?></span>
+                        </label>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 text-left" style="margin-top:10px;">
+                        <!--อนุญาติสั่งวัน ส. -->
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbSupAlwSat" name="ocbSupAlwSat" checked>
+                            <span><?php echo language('product/product/product', 'tPdtTabNormalAllowDay6') ?></span>
+                        </label>
+                    </div>
+
+                    </div>
+
+                    <div class="row">
+                    <div class="col-lg-6 col-md-6 col-xs-12 col-sm-12 text-left" style="margin-top:10px;">
+                        <!-- อนุญาติสั่งวัน อา. -->
+                        <label class="fancy-checkbox">
+                            <input type="checkbox" id="ocbSupAlwSun" name="ocbSupAlwSun" checked>
+                            <span><?php echo language('product/product/product', 'tPdtTabNormalAllowDay7') ?></span>
+                        </label>
+                    </div>
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal">
+                        <?php echo language('common/main/main', 'tModalCancel')?>
+                    </button>
+                    <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn xWPDTSubmitAddSupplier"><?php echo language('product/product/product', 'tModalConfirm'); ?></button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<!-- END Modal Add ผู้จำหน่าย -->
+
 
     <!-- View Modal Add/Edit BarCode -->
     <div id="odvModalAddEditBarCode" class="modal fade" tabindex="-1" role="dialog">
@@ -1810,134 +2758,46 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                         <div class="xWModalBarCodeDataTable"></div>
                                     </div>
                                 </div>
-
-
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <script src="<?php echo base_url(); ?>application/modules/common/assets/js/jquery.mask.js"></script>
 <script src="<?php echo base_url(); ?>application/modules/common/assets/src/jFormValidate.js"></script>
-<!-- <script src="<?= base_url('application/modules/common/assets/js/bootstrap-colorpicker.min.js') ?>"></script> -->
 <?php include "script/jProductAdd.php"; ?>
 <script type="text/javascript">
-    // $(document).ready(function() {
-    //     $(function() {
-    //         $('.xCNSltColor').colorpicker();
-    //         $('.colorpicker-alpha').remove();
-    //     });
-
-    //     $('#oetPdtColor').attr("disabled", true);
-    //     tImgObj = $('#ohdImgObj').val();
-    //     let tcolor = $('#ohdImgObj').data('color');
-    //     //ตรวจสอบว่าเป็นสีหรือเปล่า
-    //     if (tcolor == "#") {
-    //         $(".xWTDImgDataItem").remove();
-    //         $('#ohdImgObjOld').val(tImgObj);
-    //         $('#oimImgMasterProduct').removeAttr('src');
-    //         $(".xCNColorProduct").css({
-    //             'height': '230px',
-    //             'width': '100%',
-    //             'background-color': tImgObj,
-    //             'display': 'inline-block'
-    //         });
-
-    //         // ตรวจสอบค่า checked ของสี default
-    //         switch (tImgObj) {
-    //             case '#2184c7': //ฟ้า
-    //                 $('#orbChecked01').attr("checked", true);
-    //                 break;
-    //             case '#2f499e': //น้ำเงิน
-    //                 $('#orbChecked02').attr("checked", true);
-    //                 break;
-    //             case '#9d4c2e': // น้ำตาล
-    //                 $('#orbChecked03').attr("checked", true);
-    //                 break;
-    //             case '#319845': // เขียว
-    //                 $('#orbChecked04').attr("checked", true);
-    //                 break;
-    //             case '#e45b25': // ส้ม
-    //                 $('#orbChecked05').attr("checked", true);
-    //                 break;
-    //             case '#582979': // ม่วง
-    //                 $('#orbChecked06').attr("checked", true);
-    //                 break;
-    //             case '#ee2d24': // แดง
-    //                 $('#orbChecked07').attr("checked", true);
-    //                 break;
-    //             case '#000000': // ดำ
-    //                 $('#orbChecked08').attr("checked", true);
-    //                 break;
-    //             default:
-    //                 $('#oetPdtColor').val(tImgObj);
-    //                 $('#oetPdtColor').attr("disabled", true);
-    //         }
-    //     }
-
-    // });
-
-    // // ยกเลิก checked
-    // $("#ospCiolor").click(function() {
-    //     $('.xCNCheckedORB').prop('checked', false);
-    //     $('#oetPdtColor').attr("disabled", false);
-    // });
-
-    // //
-    // $("#oimImgMasterProduct").change(function() {
-    //     $("#oimImgMasterProduct").css({
-    //         'width': ''
-    //     });
-    // });
-
-    // $("#oetPdtColor").change(function() {
-    //     let tCodeColor = $(this).val();
-    //     $('#oimImgMasterProduct').removeAttr('src');
-    //     $(".xCNColorProduct").css({
-    //         'height': '230px',
-    //         'width': '100%',
-    //         'background-color': tCodeColor,
-    //         'display': 'inline-block'
-    //     });
-    //     $(".xWTDImgDataItem").remove();
-    // });
-
-    // //เซต แสดงรูป
-    // $("#oimTumblrProduct").change(function() {
-    //     $("#oimImgMasterProduct").css({
-    //         'width': ''
-    //     });
-    // });
-
-    // //แสดงสีแทนรูป เมื่อ Checked
-    // $(".xCNCheckedORB").change(function() {
-    //     let tNameColor = $(this).data('name');
-    //     $(".xCNColorProduct").hide();
-    //     $(".xWTDImgDataItem").remove();
-    //     $("#oimImgMasterProduct").css({
-    //         'width': ''
-    //     });
-    //     $("#oimImgMasterProduct").css({
-    //         'width': '50%'
-    //     });
-    //     $('#oimImgMasterProduct').removeAttr('src');
-    //     $(".xCNColorProduct").css({
-    //         'height': '230px',
-    //         'width': '100%',
-    //         'background-color': tNameColor,
-    //         'display': 'inline-block'
-    //     });
-
-    //     $('#oetPdtColor').val('#000000');
-    //     $('#oetPdtColor').attr("disabled", true);
-    // });
+    $(document).ready(function() {
+        var nPdtType = $('#ocmPdtType').val();
+        if(nPdtType == 7){
+            $("#ocmPdtSaleType1").attr('disabled',true);
+            $("#ocmPdtSaleType3").attr('disabled',true);
+            $("#ocmPdtSaleType4").attr('disabled',true);
+            $("#ocmPdtSaleType").val(2);
+            $("#ocmPdtSaleType").selectpicker('refresh');
+        }else if(nPdtType == 2){
+            $('#ocbPdtStkControl').prop('checked', false);
+            $("#ocbPdtStkControl").attr('disabled',true);
+            $("#ocbPdtStkControl").parent().find("span").addClass('xCNDocDisabled');
+        }
+        else {
+            $("#ocmPdtSaleType1").attr('disabled',false);
+            $("#ocmPdtSaleType3").attr('disabled',false);
+            $("#ocmPdtSaleType4").attr('disabled',false);
+            // $("#ocmPdtSaleType").val(1);
+            $("#ocmPdtSaleType").selectpicker('refresh');
+        }
+        $('#obtPDTPCPSearchDocDateFrom').click(function() {
+            $('#oetPDTPCPSearchDocDateFrom').datepicker('show');
+        });
+        $('#obtPDTPCPSearchDocDateTo').click(function() {
+            $('#oetPDTPCPSearchDocDateTo').datepicker('show');
+        });
+    });
 
 
     // เวลา Click Tab ให้ Button Show
@@ -1996,26 +2856,35 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
             Value: ["oetModalShopCode", "TCNMShop.FTShpCode"],
             Text: ["oetModalShopName", "TCNMShop_L.FTShpName"],
         },
-        // RouteAddNew : 'shop',
-        // BrowseLev : nStaCmpBrowseType
-        //  DebugSQL : true
     }
 
-    // Create By Witsarut 16/01/2020
-    // Function CheckType = 5 (Drug)
-    // $(function(){
-    //     $('#ocmPdtType').change(function(){
-    //         var nPdtType = $('#ocmPdtType').val();
-    //         if(nPdtType == 5){
-    //             $('#oliPdtDataDrug').removeClass('disabled ').removeClass('xCNCloseTabNav');
-    //             $('#oliPdtDataDrug a').attr('data-toggle','tab');
-    //             // $('#oliPdtDataDrug').addClass('disabled').addClass('xCNCloseTabNav');
-    //             // $('#oliPdtDataDrug a').attr('data-toggle','');
-    //         }
-    //     });
-    // });
+    $('#ocmPdtType').change(function(){
+        var nPdtType = $('#ocmPdtType').val();
+        if(nPdtType == 7){
+          $("#ocmPdtSaleType1").attr('disabled',true);
+          $("#ocmPdtSaleType3").attr('disabled',true);
+          $("#ocmPdtSaleType4").attr('disabled',true);
+          $("#ocmPdtSaleType").val(2);
+          $("#ocmPdtSaleType").selectpicker('refresh');
+        }else {
+          $("#ocmPdtSaleType1").attr('disabled',false);
+          $("#ocmPdtSaleType3").attr('disabled',false);
+          $("#ocmPdtSaleType4").attr('disabled',false);
+          $("#ocmPdtSaleType").val(1);
+          $("#ocmPdtSaleType").selectpicker('refresh');
+        }
 
-    // Create By Witsarut
+        if(nPdtType == 2){
+          $('#ocbPdtStkControl').prop('checked', false);
+          $("#ocbPdtStkControl").attr('disabled',true);
+          $("#ocbPdtStkControl").parent().find("span").addClass('xCNDocDisabled');
+        }else{
+          $('#ocbPdtStkControl').prop("checked", true);
+          $("#ocbPdtStkControl").parent().find("span").removeClass('xCNDocDisabled');
+          $("#ocbPdtStkControl").attr('disabled',false);
+        }
+    });
+
     // Fucntion: Slide Panal
     $('.xCNMenuplus').unbind().click(function() {
         //เปิดแค่ panal เดียว
@@ -2024,4 +2893,36 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
             $('.xCNMenuPanelData').removeClass('in');
         }
     });
+
+
+    tUsrLevel = "<?=$this->session->userdata('tSesUsrLevel')?>";
+    tAgnCode = "<?=$this->session->userdata("tSesUsrAgnCode"); ?>";
+    tSQLWhere = "";
+    if(tUsrLevel != "HQ"){
+        tSQLWhere = " AND (TCNMLot.FTAgnCode IN ("+tAgnCode+") OR ISNULL(TCNMLot.FTAgnCode,'') = '')";
+    }
+
+    $('#oimLotBrowseLot').click(function(){JCNxBrowseData('oBrowseLot')});
+    var oBrowseLot = {
+        Title   : ['service/pdtlot/pdtlot','tLOTTitle'],
+        Table   : {Master:'TCNMLot',PK:'FTLotNo',PKName:'FTLotBatchNo'},
+        Where   : {
+                    Condition : [tSQLWhere]
+                },
+        GrideView:{
+            ColumnPathLang	: 'product/product/product',
+            ColumnKeyLang	: ['tLOTCode','tPDTLotBatchNo'],
+            ColumnsSize     : ['15%','75%'],
+            WidthModal      : 50,
+            DataColumns		: ['TCNMLot.FTLotNo','TCNMLot.FTLotBatchNo'],
+            DataColumnsFormat : ['',''],
+            Perpage			: 10,
+            OrderBy			: ['TCNMLot.FTLotNo DESC'],
+        },
+        CallBack:{
+            ReturnType	: 'S',
+            Value		: ["oetStockLotCode","TCNMLot.FTLotNo"],
+            Text		: ["oetStockLotNo","TCNMLot.FTLotBatchNo"],
+        }
+    }
 </script>

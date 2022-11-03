@@ -23,6 +23,7 @@ $lang['tPDTTBEdits']        = "Edit";
 $lang['tPDTTabInfo']        = "Product Info.";
 $lang['tPDTTabInfo2']       = "Product Info.2";
 $lang['tPDTTabSet']         = "Product Set";
+$lang['tPDTTabSVSet']           = "Service Center Products";
 $lang['tPDTTabAlowEvn']     = "Product Event No Sale";
 // $lang['tPDTTabFashion']     = "สินค้าแฟชั่น";
 // $lang['tPDTTabRental']      = "สินค้าเช่า";
@@ -31,7 +32,7 @@ $lang['tPDTTabAlowEvn']     = "Product Event No Sale";
 // $lang['tPDTTabAge']         = "สินค้าหมดอายุ";
 // $lang['tPDTTabOrther']      = "ตัวเลือก";
 $lang['tPDTTabFashion']         = "Product Fashion";
-
+$lang['tCatPdtMod']            = "Format";
 
 //Form Tab Info
 $lang['tPDTCode']       = "Product Code";
@@ -47,6 +48,10 @@ $lang['tPDTAlwReturn']  = "AllowReturn";
 $lang['tPDTStkControl'] = "StockCControl";
 $lang['tPDTStaAlwDis']  = "Discount";
 $lang['tPDTStaActive']  = "Active";
+
+$lang['tPDTStaLot']  = "Use LOT/BAT ";
+$lang['tPDTStaAlwWHTax']  = "Allowed withholding tax";
+$lang['tPDTStaAlwBook']  = "Allow Book";
 
 $lang['tPDTTitleUnit']  = "Product unit";
 $lang['tPDTUnit']       = "Product unit";
@@ -111,8 +116,9 @@ $lang['tPdtTypeTitle1']         = "General product";
 $lang['tPdtTypeTitle2']         = "Product service";
 $lang['tPdtTypeTitle3']         = "Other products";
 $lang['tPdtTypeTitle4']         = "Giveaway";
-$lang['tPdtTypeTitle5']         = "Special";
+$lang['tPdtTypeTitle5']         = "Special"; //พิเศษ
 $lang['tPdtTypeTitle6']         = "Ingredient";
+$lang['tPdtTypeTitle7']         = "Use Selling Price";
 
 $lang['tPdtSaleType']           = "Use sales price";
 $lang['tPdtSaleType1']          = "Force";
@@ -122,15 +128,20 @@ $lang['tPdtSaleType4']          = "Weight";
 $lang['tPDTTabPackSizeUnit']    = "Product unit";
 $lang['tPDTTabOther']           = "More";
 $lang['tPDTTabHisPI']           = "Purchase / Admission History";
+$lang['tPDTTabControlLot']      = "Control Lot";
 $lang['tPDTViewPackUnit']           = "Product unit";
-$lang['tPDTUnitFact']       = "Ratio / unit";
+$lang['tPDTUnitFact']               = "Ratio / unit";
 $lang['tPDTViewPackBarcode']        = "Barcode";
 $lang['tPDTViewPackPriRet']         = "Sale price";
 $lang['tPDTViewPackPriWhs']         = "Wholesale price";
 $lang['tPDTViewPackPriNet']         = "Online price";
 $lang['tPDTViewPackDelUnit']        = "Delete";
+$lang['tPDTViewPackMDMsgSplPunCodeNotFound']       = "Puncode item not found in product unit. Please add a Puncode";
 $lang['tPDTViewPackMDMsgSplBarCodeNotFound']    = "Barcode item not found in product unit. Please add a barcode.";
-
+$lang['tPDTViewPackMDMsgSplSupCodeNotFound']    = "Supplier item not found in product unit. Please add a Supplier.";
+$lang['tPDTTabNormal']              = "Normal";
+$lang['tPDTTabVendorDetail']        = "Vendor Detail";
+$lang['tPDTTabSumPrice']            = "Sum Price";
 
 // Validate Form Product
 $lang['tPDTValidPdtCodeDup']        = "This product code is already in the system. Please check again.";
@@ -173,7 +184,7 @@ $lang['tPDTSetPstEdit']         = "Edit";
 $lang['tPdtDefineExpressPdt']   = 'Define express products';
 $lang['tPdtExpressGroup']       = 'Express Group';
 
-//กำหนดเงื่อนไขการควบคุมสต๊อก
+//กำหนดเงื่อนไขการควบคุมสต็อค
 $lang['tPdtStockConditions']          = 'StockConditions';
 $lang['tPdtStockConditionsCancel']    = 'Cancel';
 $lang['tPdtStockConditionsSave']      = 'Save';
@@ -181,6 +192,11 @@ $lang['tPdtStockConditionsBch']       = 'Branch';
 $lang['tPdtStockConditionsWah']       = 'warehouse';
 $lang['tPdtStockConditionsMin']       = 'Min Number';
 $lang['tPdtStockConditionsMax']       = 'Max Number';
+$lang['tPdtStockConditionsLeadTime']  = 'Lead Time';
+$lang['tPdtStockConditionsDailyUseAvg']  = 'Daily Use Avg';
+$lang['tPdtStockConditionsPerSLA']    = "%% Product Safety Level";
+$lang['tPdtStockConditionsPdtQtyOrdBuy'] = "Recommended Quantity To Order";
+$lang['tPdtStockConditionsLastUpdOn'] = "Last Calculating Date";
 $lang['tPdtStockConditionsRemark']    = 'Remark';
 $lang['tPdtStockConditionsValidBch']  = 'Please fill out a branch';
 $lang['tPdtStockConditionsValidWah']  = 'Please fill out the warehouse';
@@ -188,6 +204,7 @@ $lang['tPdtStockConditionsValidMin']  = 'Please fill out the minimum amount';
 $lang['tPdtStockConditionsValidMax']  = 'Please fill out the maximum number';
 $lang['tPdtStockConditionswarning']   = 'Warning';
 $lang['tPdtStockConditionswarningBch']   = 'The warehouse in this branch has already been set up for stock control conditions. Please change New warehouse';
+$lang['tPdtQtySugges'] = "Suitable Order Quantity";
 
 //แก้ไข UI 18/03/2020 Saharat(Golf)
 $lang['tPdtSetUpStock']                     = 'Set up stock';
@@ -256,6 +273,7 @@ $lang['tPDTViewPackMDUnit']         = "unit";
 $lang['tPDTViewPackBTNReset']       = "Clear Value";
 
 
+
 $lang['tPdtAgency']          = "Agency";
 
 $lang['tPdtSreachTypeName']       = "Search Type";
@@ -293,7 +311,7 @@ $lang['tFhnPdtGroupName']   = "Category 4 Name";
 $lang['tFhnPdtComLines']       = "Category 5";
 $lang['tFhnPdtComLinesCode']   = "Category 5 Code";
 $lang['tFhnPdtComLinesName']   = "Category 5 Name";
-$lang['tFhnPdtMod']            = "Model No/Style";
+$lang['tFhnPdtMod']            = "Model No";
 $lang['tFhnPdtGender']         = "Gender";
 $lang['tFhnPdtGender1']        = "Male";
 $lang['tFhnPdtGender2']        = "Female";
@@ -332,9 +350,11 @@ $lang['tFhnPdtValidateFactorB4Remove']     = "Data with a unit ratio of 1 cannot
 $lang['tFhnPdtValidateRepleace']     = "The item code will be replaced by the system. Version/Format ID if the value is blank.";
 $lang['tFhnPdtValidateModelNoDup']   = "This model/format code is already available on other items.";
 
-
 $lang['tAdjPdtTitle']               = "Adjust Product";
 $lang['tAdjPdtExport']              = "Export";
+
+
+
 $lang['tAdjPdtTitle']               = "Adjust Product";
 $lang['tAdjPdtExport']              = "Export";
 $lang['tAdjPdtCondition']           = "Adjust Conditions";
@@ -381,6 +401,10 @@ $lang['tAdjPdtStaAlwHQ']             = "สถานะอนุญาตสั�
 $lang['tAdjPdtStaAlwPO']             = "สถานะอนุญาตซื้อ";
 $lang['tAdjPdtStaAlwSale']           = "สถานะอนุญาตขาย";
 $lang['tAdjPdtStaAlwUse']            = "สถานะอนุญาตใช้งาน";
+$lang['tAdjPdtStaAlwDot']            = "สถานะใช้งาน LOT";
+$lang['tAdjPdtStaAlwRent']           = "สถานะอนุญาตจอง";
+$lang['tAdjPdtStaAlwReturn']         = "สถานะอนุญาตคืน";
+$lang['tAdjPdtStaAlwCutVat']         = "สถานะอนุหักภาษี ณ ที่จ่าย";
 
 $lang['tAdjPdtNull']               = "ไม่กำหนด";
 $lang['tAdjPdtStaPoint1']          = "ให้แต้ม";
@@ -401,13 +425,74 @@ $lang['tAdjPdtLevel4']               = "ระดับคุณลักษณ�
 
 $lang['tAdjPdtOrdNo']               = "ลำดับ";
 // Tab Product Control Lot
-$lang['tPDTLotNo']                  = "Lot";
+$lang['tPDTLotNo']                  = "LOT";
+$lang['tPDTLotBatchNo']             = "LOT No.";
+$lang['tPDTLotYear']                = "ปี LOT";
+$lang['tPDTLotBrand']               = "ยี่ห้อ LOT";
+$lang['tPDTLotModel']               = "รุ่น LOT";
 $lang['tPDTLotCost']                = "Cost";
 $lang['tPDTLotDateMFG']             = "Date MFG";
 $lang['tPDTLotDateEXP']             = "Date EXP";
 
+$lang['tPDTStaLot']                 = "LOT";
+
+// Tab Product Sv
+$lang['tPDTSVServiceRound']             = "Service Round";
+$lang['tPDTSVWarranty']                 = "Warranty";
+$lang['tPDTSVDistance']                 = "ระยะทาง (กิโลเมตร)";
+$lang['tPDTSVDuration']                 = "ระยะเวลา (เดือน)";
+$lang['tPDTSVEstService']               = "ระยะเวลาบริการโดยประมาณ (ชั่วโมง)";
+$lang['tPDTSVDurationKilo']             = "ระยะทางรับประกัน";
+$lang['tPDTSVDurationTime']             = "ระยะเวลาการรับประกัน";
+$lang['tPDTSVDurationCondition']        = "เงื่อนไขการรับประกัน";
+$lang['tPDTSVKilomate']                 = "หน่วยเป็นกิโลเมตร";
+$lang['tPDTSVDays']                    = "หน่วยเป็นวัน";
+$lang['tPDTSVMount']                    = "หน่วยเป็นเดือน";
+$lang['tPDTSVHour']                     = "หน่วยเป็นชั่วโมง";
+$lang['tPDTSVRecomment']                 = "แนะนำตรวจสอบ";
+$lang['tPDTSVOptionType1']                 = "แบบระบุหมายเหตุ";
+$lang['tPDTSVOptionType2']                 = "เลือกได้มากกว่าหนึ่งรายการ";
+$lang['tPDTSVOptionType3']                 = "เลือกได้หนึงรายการ";
+$lang['tPDTSVResult']                 = "ผลการตรวจสอบ";
+$lang['tPDTSVFillDetail']                 = "กรอกข้อมูล";
+
+// Lot Batch
+$lang['tPdtStockIdLot']               = "Dot ";
+$lang['tPdtStockLotQty']              = "Quantity";
+$lang['tPdtStockLotDateStart']        = "Date Of Manufacture";
+$lang['tPdtStockIdLotDateEnd']        = "Date of Expiration ";
+$lang['tPdtStockLotBatchRq']          = 'please in put DOT Yang';
 
 $lang['tPDTCategoryTab']             = "Category";
 
+// Tab Normal Product
+$lang['tPdtTabNormalAllowBch']          = 'Permission to order Head office';
+$lang['tPdtTabNormalAllowVendor']       = 'Permission to order Vendor';
+$lang['tPdtTabNormalAllowSale']         = 'Sell license';
+$lang['tPdtTabNormalAllowBuy']          = 'Allow Buy';
+$lang['tPdtTabNormalDefrag']            = 'Allowed to arrange';
+$lang['tPdtTabNormalManage']            = 'Manage';
+$lang['tPdtTabNormalAddSupPDt']         = 'Product Unit / Add';
+$lang['tPdtTabNormalAddSupPDtBarCode']  = 'BarCode / Add';
+$lang['tPdtTabNormalAddSupPDtSupplier'] = 'Supplier / Add';
+$lang['tPdtTabNormalKeep']              = 'Keep';
+$lang['tPdtTabNormalPersonRespond']     = 'Person responsible for purchasing';
+$lang['tPdtTabNormalAllowDay1']         = 'Allow Order Mon.';
+$lang['tPdtTabNormalAllowDay2']         = 'Allow Order Tue.';
+$lang['tPdtTabNormalAllowDay3']         = 'Allow Order Wed.';
+$lang['tPdtTabNormalAllowDay4']         = 'Allow Order Thu.';
+$lang['tPdtTabNormalAllowDay5']         = 'Allow Order Fri.';
+$lang['tPdtTabNormalAllowDay6']         = 'Allow Order Sat.';
+$lang['tPdtTabNormalAllowDay7']         = 'Allow Order Sun.';
+$lang['tPDTViewNorMalPackSize']         = "Product Size";
+$lang['tPDTViewNormalAlwHQ']            = "Allow From HQ.";
+$lang['tPDTViewNormalAlwBuyer']         = "Allow From Buyer.";
+
+
+// Validate Bar
+$lang['tPDTViewPackUnitPackBarCode']    = "Please Fill Barcode";
+$lang['tPDTViewPackUnitPackSupplier']   = "Please Fill Supplier";
+$lang['tPDTViewPackUnitPackFactor']     = "Please Fill Factor";
+$lang['tPDTViewModalNoProduct']         = "The product name has not yet been entered.";
 
 $lang['tPDTAlterBarCodeDup']             = "Duplicate bar codes are not allowed.";

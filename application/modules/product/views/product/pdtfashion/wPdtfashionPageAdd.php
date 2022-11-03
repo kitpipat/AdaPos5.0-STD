@@ -125,7 +125,7 @@
 
         <div class="row xPadding5">
             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" id="odvtTmpImgForPdtFashionPage">
-                <label id="" class="xCNLabelFrm"><?= language('product/product/product', 'tFhnPdtDataTableSize') ?> </label>
+                <label class="xCNLabelFrm"><?= language('product/product/product', 'tFhnPdtDataTableSize') ?> </label>
             </div>
             <div class="col-xs-12 col-sm-3 col-md-6 col-lg-6" id="">
                     <div class="input-group">
@@ -142,7 +142,7 @@
         
         <div class="row xPadding5">
             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" id="odvtTmpImgForPdtFashionPage">
-                <label id="" class="xCNLabelFrm"><span style="color:red">*</span> <?= language('product/product/product', 'tFhnPdtDataTableRefCode') ?> </label>
+                <label class="xCNLabelFrm"><span style="color:red">*</span> <?= language('product/product/product', 'tFhnPdtDataTableRefCode') ?> </label>
             </div>
             <div class="col-xs-12 col-sm-3 col-md-6 col-lg-6" id="">
                 <input type="hidden" id="oetFhnPdtRefCodeOld" class="form-control" name="oetFhnPdtRefCodeOld" maxlength="50" value="<?=$tFhnPdtRefCode?>">
@@ -153,24 +153,23 @@
 
         <div class="row xPadding5"> 
             <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3" id="odvtTmpImgForPdtFashionPage">
-                <label id="" class="xCNLabelFrm"><?= language('product/product/product', 'tFhnPdtStart') ?> </label>
+                <label class="xCNLabelFrm"><?= language('product/product/product', 'tFhnPdtStart') ?> </label>
             </div>
             <div class="col-xs-12 col-sm-3 col-md-6 col-lg-6" id="">
-                   
-                    <div class="form-group">
-                               <div class="input-group">
-                                        <input
-                                            type="text"
-                                            class="form-control xCNDatePicker xCNInputMaskDate"
-                                            id="oetFhnPdtStratDate"
-                                            name="oetFhnPdtStratDate"
-                                            value="<?=$dFhnStart?>"
-                                        >
-                                        <span class="input-group-btn">
-                                            <button id="obtFhnPdtStratDate" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
-                                        </span>
-                                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            class="form-control xCNDatePicker xCNInputMaskDate"
+                            id="oetFhnPdtStratDate"
+                            name="oetFhnPdtStratDate"
+                            value="<?=$dFhnStart?>"
+                        >
+                        <span class="input-group-btn">
+                            <button id="obtFhnPdtStratDate" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                        </span>
                     </div>
+                </div>
             </div>
         </div>
  
@@ -180,10 +179,10 @@
                 <label id="" class="xCNLabelFrm"><?= language('product/product/product', 'tFhnPdtDataTableStatus') ?> </label>
             </div>
             <div class="col-xs-12 col-sm-3 col-md-6 col-lg-6" id="">
-                                <label class="fancy-checkbox">
-                                    <input id="ocbFhnPdtStatus" type="checkbox" class="ocbFhnPdtStatus" name="ocbFhnPdtStatus" value="1" <?php if($nFhnPdtStatus=='1'){ echo 'checked'; }  ?>  >
-                                    <span>&nbsp;<?= language('product/product/product', 'tFhnPdtDataTableUse1') ?></span>
-                                </label>
+                <label class="fancy-checkbox">
+                    <input id="ocbFhnPdtStatus" type="checkbox" class="ocbFhnPdtStatus" name="ocbFhnPdtStatus" value="1" <?php if($nFhnPdtStatus=='1'){ echo 'checked'; }  ?>  >
+                    <span>&nbsp;<?= language('product/product/product', 'tFhnPdtDataTableUse1') ?></span>
+                </label>
             </div>
         </div>
 
