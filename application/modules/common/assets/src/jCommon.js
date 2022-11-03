@@ -1790,4 +1790,68 @@ function JCNxPackDataToMQLog(ptMsgErrorBody,ptErrorStatus,ptDisplayEvent,ptLogFu
             console.log(data);
         }
     });
+
+}
+
+// Create By: Napat(Jame) 22/06/2022
+// var aParams = {
+//     'tBchCode'  : 'สาขาที่ต้องการตรวจสอบสต๊อก',
+//     'tWahCode'  : 'คลังที่ต้องการตรวจสอบสต๊อก',
+//     'tDocNo'    : 'รหัสเอกสารที่ต้องการอนุมัติ',
+//     'tTableHD'  : 'TCNTPdtTboHD'
+//     'tTableDT'  : 'TCNTPdtTboDT'
+// };
+async function JCNaChkStkB4ApvDoc(paParams){
+    JCNxOpenLoading();
+    // console.log(paParams);
+
+    return new Promise(resolve => {
+        $.ajax({
+            type: "POST",
+            url: "cenEventChkStkB4ApvDoc",
+            data: {
+                paParams : paParams
+            },
+            cache: false,
+            timeout: 0,
+            success: function(oResult) {
+                var aResult = JSON.parse(oResult);
+
+                // แสดง Dialog
+                if( aResult['nStaEvent'] == 1 ){
+                    var bStaShwBtnConfirm = true;
+                    var tNextFunc = paParams['tNextFunc'];
+
+                    $('#obtConfirmChkStkB4ApvDoc').removeAttr("onclick");
+                    $('#odvModalChkStkB4ApvDoc .modal-body #odvSection1').html('');
+                    $('#odvModalChkStkB4ApvDoc .modal-body #odvSection2').html('');
+
+                    // เอกสารรออนุมัติ
+                    if( aResult['aSection1']['nStaEvent'] == 1 ){
+                        $('#odvModalChkStkB4ApvDoc .modal-body #odvSection1').html(aResult['aSection1']['tHtmlRender']);
+                    }
+
+                    // สินค้าต้องทำใบรับเข้า
+                    if( aResult['aSection2']['nStaEvent'] == 1 ){
+                        bStaShwBtnConfirm = false;
+                        $('#odvModalChkStkB4ApvDoc .modal-body #odvSection2').html(aResult['aSection2']['tHtmlRender']);
+                    }
+
+                    if( bStaShwBtnConfirm ){
+                        $('#obtConfirmChkStkB4ApvDoc').attr('onclick', tNextFunc+'(false)').show();
+                    }else{
+                        $('#obtConfirmChkStkB4ApvDoc').hide();
+                    }
+
+                    $('#odvModalChkStkB4ApvDoc').modal('show');
+                }
+
+                JCNxCloseLoading();
+                resolve(aResult);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+    });
 }

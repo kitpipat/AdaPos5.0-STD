@@ -42,18 +42,24 @@ class mCheckProductPrice extends CI_Model
     // Return : array
     // Return Type : array
     public function FSaMCPPGetListData($paData){
-        $nLngID         = $paData['FNLngID'];
-        $aRowLen        = FCNaHCallLenData($paData['nRow'],$paData['nPage']);
-        $oAdvanceSearch = $paData['oAdvanceSearch'];
-        $nBrwTopWebCookie = $paData['nBrwTopWebCookie'];
-        $tWhere         = "";
+        $nLngID             = $paData['FNLngID'];
+        $aRowLen            = FCNaHCallLenData($paData['nRow'],$paData['nPage']);
+        $oAdvanceSearch     = $paData['oAdvanceSearch'];
+        $nBrwTopWebCookie   = $paData['nBrwTopWebCookie'];
+        $tWhere             = "";
         
+        // if( $paData['tDisplayType'] == '1' ){
+        //     $tOrderBy1 = " C.FTPdtCode ASC, C.FTPunCode ASC, C.FDXphDStart ASC ";
+        //     // $tOrderBy2 = " ORDER BY B.FTXphTStart DESC,B.FTPdtCode DESC,B.FTPunCode DESC ";
+        // }else{
+        //     $tOrderBy1 = " C.FTPplCode ASC, C.FTPdtCode ASC, C.FTPunCode ASC, C.FDXphDStart ASC ";
+        //     // $tOrderBy2 = " ORDER BY B.FTPplCode DESC, B.FTPdtCode ASC,B.FTPunCode ASC,B.FTXphDocNo ASC ";
+        // }
+
         if( $paData['tDisplayType'] == '1' ){
-            $tOrderBy1 = " C.FTPdtCode ASC, C.FTPunCode ASC, C.FDXphDStart ASC ";
-            // $tOrderBy2 = " ORDER BY B.FTXphTStart DESC,B.FTPdtCode DESC,B.FTPunCode DESC ";
+            $tOrderBy1  = " B.FTPdtCode ASC, B.FTPunCode ASC, B.FDXphDStart DESC,B.FTXphDocNo  DESC";
         }else{
-            $tOrderBy1 = " C.FTPplCode ASC, C.FTPdtCode ASC, C.FTPunCode ASC, C.FDXphDStart ASC ";
-            // $tOrderBy2 = " ORDER BY B.FTPplCode DESC, B.FTPdtCode ASC,B.FTPunCode ASC,B.FTXphDocNo ASC ";
+            $tOrderBy1  = " B.FTPplCode ASC, B.FTPdtCode ASC, B.FTPunCode ASC, B.FDXphDStart DESC ,B.FTXphDocNo  DESC";
         }
         
         @$tSearchList = $oAdvanceSearch['tSearchAll'];
@@ -130,24 +136,83 @@ class mCheckProductPrice extends CI_Model
             }
         }
 
-        $tSQLMain = "   SELECT TOP $nBrwTopWebCookie
-                        ADJP_DT.FTPdtCode,
-                        PDTL.FTPdtName,
-                        ADJP_DT.FTPunCode,
-                        PUNL.FTPunName,
-                        CONVERT(VARCHAR(10),ADJP_HD.FDXphDStart,121) AS FDXphDStart,
-                        CASE WHEN ADJP_HD.FTXphDocType = '2' THEN CONVERT(VARCHAR(10),ADJP_HD.FDXphDStop,121) ELSE '-' END AS FDXphDStop,
-                        ADJP_HD.FTXphTStart,
-                        ADJP_HD.FTXphTStop,
-                        ADJP_DT.FCXpdPriceRet,
-                        ADJP_HD.FTPplCode,
-                        PL.FTPplName,
-                        ADJP_HD.FTXphDocNo,
-                        CONVERT(VARCHAR(10),ADJP_HD.FDXphDocDate,121) AS FDXphDocDate ";
+        // $tSQLMain = "   SELECT TOP $nBrwTopWebCookie
+        //                 ADJP_DT.FTPdtCode,
+        //                 PDTL.FTPdtName,
+        //                 ADJP_DT.FTPunCode,
+        //                 PUNL.FTPunName,
+        //                 CONVERT(VARCHAR(10),ADJP_HD.FDXphDStart,121) AS FDXphDStart,
+        //                 CASE WHEN ADJP_HD.FTXphDocType = '2' THEN CONVERT(VARCHAR(10),ADJP_HD.FDXphDStop,121) ELSE '-' END AS FDXphDStop,
+        //                 ADJP_HD.FTXphTStart,
+        //                 ADJP_HD.FTXphTStop,
+        //                 ADJP_DT.FCXpdPriceRet,
+        //                 ADJP_HD.FTPplCode,
+        //                 PL.FTPplName,
+        //                 ADJP_HD.FTXphDocNo,
+        //                 CONVERT(VARCHAR(10),ADJP_HD.FDXphDocDate,121) AS FDXphDocDate ";
+
+        $tSQLMain   = "SELECT TOP $nBrwTopWebCookie
+                        (
+                            SELECT
+                                A.FCxpdpriceret
+                            FROM
+                                (
+                                SELECT
+                                    ROW_NUMBER ( ) OVER ( PARTITION BY SDT.FTPdtCode ORDER BY SHD.FTPplCode DESC, CONCAT ( CONVERT ( VARCHAR ( 10 ), FDXphDocDate, 121 ), ' ', FTXphDocTime ) DESC) AS PARTTITIONBYDOC_COUNT,
+                                    SHD.FTXphDocNo,
+                                    SHD.FTXphStaAdj,
+                                    SHD.FTPplCode,
+                                    SDT.FTPdtCode,
+                                    SDT.FCxpdpriceret 
+                                FROM
+                                    TCNTPdtAdjPriHD SHD
+                                    LEFT JOIN TCNTPdtAdjPriDT SDT ON SDT.FTXphDocNo = SHD.FTXphDocNo 
+                                    AND SDT.FTBchCode = SHD.FTBchCode 
+                                WHERE
+                                    FTXphDocType = '1' 
+                                    AND CONCAT ( CONVERT ( VARCHAR ( 10 ), FDXphDocDate, 121 ), ' ', FTXphDocTime ) <= CONVERT ( VARCHAR ( 16 ), GETDATE( ), 121 ) 
+                                    AND SDT.FTPdtCode = ADJP_DT.FTPdtCode 
+                                    AND SDT.FTPunCode = ADJP_DT.FTPunCode
+                                    AND (SHD.FTPplCode = ADJP_HD.FTPplCode OR ISNULL(FTPPlCode,'') = '')
+                                ) AS A 
+                            WHERE
+                                A.PARTTITIONBYDOC_COUNT = 1 
+                            ) AS Price2,	
+                            ADJP_DT.FTPdtCode,
+                            ADJP_HD.FTXphStaAdj,
+                            PDTL.FTPdtName,
+                            ADJP_DT.FTPunCode,
+                            PUNL.FTPunName,
+                            CONVERT(VARCHAR(10),ADJP_HD.FDXphDStart,121) AS FDXphDStart,
+                            CASE WHEN ADJP_HD.FTXphDocType = '2' THEN CONVERT(VARCHAR(10),ADJP_HD.FDXphDStop,121) ELSE '-' END AS FDXphDStop,
+                            ADJP_HD.FTXphTStart,
+                            ADJP_HD.FTXphTStop,
+                            ADJP_DT.FCXpdPriceRet,
+                            ADJP_HD.FTPplCode,
+                            PL.FTPplName,
+                            ADJP_HD.FTXphDocNo,
+                            ADJP_HD.FTXphDocType,
+                            CONVERT(VARCHAR(10),ADJP_HD.FDXphDocDate,121) AS FDXphDocDate,
+                            ADJP_HD.FTXphRmk
+                    ";
 
         $tSQLCount = " SELECT COUNT(ADJP_HD.FTXphDocNo) AS FNCountData ";
 
-        $tSQL1 = "  SELECT B.* FROM ( SELECT  ROW_NUMBER () OVER ( ORDER BY $tOrderBy1 ) FNRowID,C.* FROM ( ";  
+        // $tSQL1 = "  SELECT B.* FROM ( SELECT  ROW_NUMBER () OVER ( ORDER BY $tOrderBy1 ) FNRowID,C.* FROM ( ";  
+        $tSQL1 = "  SELECT B.*,
+        CASE
+                WHEN B.FTXphStaAdj = '1' THEN
+                B.FCXpdPriceRet 
+                WHEN B.FTXphStaAdj = '2' THEN
+                (B.Price2 - ((B.Price2/100*FCXpdPriceRet)))
+                WHEN B.FTXphStaAdj = '3' THEN
+                (B.Price2 - FCXpdPriceRet)
+                WHEN B.FTXphStaAdj = '4' THEN
+                (B.Price2 + ((B.Price2/100*FCXpdPriceRet)))
+                WHEN B.FTXphStaAdj = '5' THEN
+                (B.Price2 + FCXpdPriceRet)
+                ELSE 0 
+            END AS SumPrice FROM ( ";  
         $tSQL2 = "  FROM TCNTPdtAdjPriHD ADJP_HD WITH (NOLOCK)
                     INNER JOIN TCNTPdtAdjPriDT ADJP_DT WITH (NOLOCK) ON ADJP_DT.FTXphDocNo = ADJP_HD.FTXphDocNo AND ADJP_DT.FTBchCode = ADJP_HD.FTBchCode
                     LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON ADJP_DT.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = $nLngID
@@ -163,10 +228,14 @@ class mCheckProductPrice extends CI_Model
                     AND PSZ.FTPdtStaAlwSale = '1'
                     $tWhere
                 ";
-        $tSQL3 = " ) C ) B WHERE B.FNRowID > $aRowLen[0] AND B.FNRowID <= $aRowLen[1] ";
-        
+        // $tSQL3 = " ) C ) B WHERE B.FNRowID > $aRowLen[0] AND B.FNRowID <= $aRowLen[1] ";
+        $tSQL3 = " ) B  
+            ORDER BY ".$tOrderBy1."
+        ";
+
         // Data
         $tFinalDataQuery = $tSQL1.$tSQLMain.$tSQL2.$tSQL3;
+        // print_r($tFinalDataQuery); 
         $oQueryData = $this->db->query($tFinalDataQuery);
 
         // Count Data

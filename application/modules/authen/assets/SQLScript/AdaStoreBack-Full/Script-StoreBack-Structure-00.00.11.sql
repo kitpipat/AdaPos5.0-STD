@@ -1884,3 +1884,13 @@ GO
 
 
 /****** End From DB:KPC Date 19/09/2022 By:Ice PHP ******/
+
+
+/****** From DB:Fit Auto Date 06/10/2022 By:Ice PHP ******/
+
+IF NOT EXISTS(SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.Columns WHERE TABLE_NAME = 'TCNTPdtTwxHD' AND COLUMN_NAME = 'FTXthDocType') BEGIN
+	ALTER TABLE TCNTPdtTwxHD ADD FTXthDocType varchar(1) NULL
+END
+GO
+
+/****** End From DB:Fit Auto Date 06/10/2022 By:Ice PHP ******/

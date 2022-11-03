@@ -57,6 +57,7 @@ $lang['tAllBranch']   = "Branch All";
 $lang['tShop']        = "Shop";
 $lang['tBranch']      = "Branch";
 $lang['tPos']         = "Pos";
+$lang['tShopVD']        = "รูปแบบการจัดสินค้า";
 
 //$lang Modal Browse Address
 $lang['tBrowseADDTitle']        = "ข้อมูลที่อยู่";

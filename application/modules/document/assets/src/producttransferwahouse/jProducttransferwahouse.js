@@ -408,6 +408,38 @@ function JSvTFWGetShipAddData(pTAddressInfor) {
 }
 
 
+// Create By: Napat(Jame) 23/06/2022
+async function JSxTFWChkStkB4ApvDoc(pbIsConfirm){
+    console.log('JSxTFWChkStkB4ApvDoc')
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+        // if (pbIsConfirm) {
+            
+        // $("#odvTFWPopupApv").modal("hide");
+        var aParams = {
+            'tBchCode'  : $('#oetBchCode').val(),
+            'tWahCode'  : $('#ohdWahCodeStart').val(),
+            'tDocNo'    : $('#oetXthDocNo').val(),
+            'tTableHD'  : 'TCNTPdtTwxHD',
+            'tTableDT'  : 'TCNTPdtTwxDT',
+            'tNextFunc' : 'JSnTFWApprove'
+        };
+        var aChkStkB4ApvDoc = await JCNaChkStkB4ApvDoc(aParams);
+        if( aChkStkB4ApvDoc['nStaEvent'] == 1 ){
+            return;
+        }else{
+            // JSnTFWApprove();
+            $("#odvTFWPopupApv").modal("show");
+        }
+        
+        // } else {
+            //     $("#odvTFWPopupApv").modal("show");
+            // }
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
+}
+    
 /**
  * Functionality : Action for approve
  * Parameters : pbIsConfirm
@@ -427,6 +459,8 @@ function JSnTFWApprove(pbIsConfirm) {
 
                 var tXthDocNo = $("#oetXthDocNo").val();
                 var tXthStaApv = $("#ohdXthStaApv").val();
+                var tXthBchCode = $('#oetBchCode').val();
+
                 $.ajax({
                     type: "POST",
                     url: "TFWApprove",
@@ -443,6 +477,25 @@ function JSnTFWApprove(pbIsConfirm) {
                         if (oResult["nStaEvent"] == "900") {
                             FSvCMNSetMsgErrorDialog(oResult["tStaMessg"]);
                         } else {
+                            $.ajax({
+                                type: "POST",
+                                url: "TFWCheckProductWahouse",
+                                data: {
+                                    'tDocNo': tXthDocNo,
+                                    'tBchCode': tXthBchCode,
+                                    'tWahCode': $('#ohdWahCodeStart').val()
+                                },
+                                cache: false,
+                                timeout: 0,
+                                success: function(tResult) {
+                                    var aReturnData = JSON.parse(tResult);
+                                    console.log(aReturnData);
+                                }
+                                ,
+                                error: function(jqXHR, textStatus, errorThrown) {
+                                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                                }
+                            });
                             JSoTFWSubscribeMQ();
                         }
 
@@ -465,11 +518,126 @@ function JSnTFWApprove(pbIsConfirm) {
         JCNxShowMsgSessionExpired();
     }
 }
+// function JSnTFWApprove(pbIsConfirm) {
+    
+//     console.log('TFWCheckProductWahouse APPROVE');
+//     var nStaSession = JCNxFuncChkSessionExpired();
+    
+//     if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+//         try {
+//             if (pbIsConfirm) {
+//                 $("#ohdCardShiftTopUpCardStaPrcDoc").val(2); // Set status for processing approve
+//                 $("#odvTFWPopupApv").modal("hide");
+
+//                 var tXthDocNo = $("#oetXthDocNo").val();
+//                 var tXthStaApv = $("#ohdXthStaApv").val();
+//                 var tXthBchCode = $('#oetBchCode').val();
+
+//                 $.ajax({
+//                     type: "POST",
+//                     url: "TFWCheckProductWahouse",
+//                     data: {
+//                         'tDocNo': tXthDocNo,
+//                         'tBchCode': tXthBchCode,
+//                         'tWahCode': $('#ohdWahCodeStart').val()
+//                     },
+//                     cache: false,
+//                     timeout: 0,
+//                     success: function(tResult) {
+//                         var aReturnData = JSON.parse(tResult);
+//                         console.log(aReturnData);
+//                         // if (aReturnData['nStaEvent'] == 1 || aReturnData['nStaEvent'] == 400 || aReturnData['tChkTsysConfig'] == '2') {
+//                         if (aReturnData['nStaEvent'] == 1 || aReturnData['nStaEvent'] == 400) {
+//                             $.ajax({
+//                                 type: "POST",
+//                                 url: "TFWApprove",
+//                                 data: {
+//                                     tXthDocNo: tXthDocNo,
+//                                     tXthStaApv: tXthStaApv,
+//                                     tXthBchCode: $('#ohdBchCode').val()
+//                                 },
+//                                 cache: false,
+//                                 timeout: 0,
+//                                 success: function(tResult) {
+//                                     console.log(tResult, 'TFWApprove APPROVE');
+//                                     tResult = tResult.replace("\r\n", "");
+//                                     let oResult = JSON.parse(tResult);
+//                                     if (oResult["nStaEvent"] == "900") {
+//                                         FSvCMNSetMsgErrorDialog(oResult["tStaMessg"]);
+//                                     } else if (oResult["nStaEvent"] == "905") {
+//                                         FSvCMNSetMsgErrorDialog(oResult["tStaMessg"]);
+//                                         var tLogFunction = 'WARNING';
+//                                         var tDisplayEvent = 'อนุมัติใบโอนสินค้าระหว่างคลัง';
+//                                         var tErrorStatus = '';
+//                                         var tMsgErrorBody = oResult["tStaMessg"];
+//                                         var tLogDocNo = tXthDocNo;
+//                                         JCNxPackDataToMQLog(tMsgErrorBody, tErrorStatus, tDisplayEvent, tLogFunction, tLogDocNo);
+//                                     } else {
+//                                         JSoTFWSubscribeMQ();
+//                                     }
+//                                 },
+//                                 error: function(jqXHR, textStatus, errorThrown) {
+//                                     JCNxResponseError(jqXHR, textStatus, errorThrown);
+//                                     //ส่งขอมูลไปรวบรวมที่ Center ก่อนส่ง MQ เพื่อเก็บ LOG (TYPE:ERROR)
+//                                     if (jqXHR.status != 404) {
+//                                         var tLogFunction = 'ERROR';
+//                                         var tDisplayEvent = 'อนุมัติใบโอนสินค้าระหว่างคลัง';
+//                                         var tErrorStatus = jqXHR.status;
+//                                         var tHtmlError = $(jqXHR.responseText);
+//                                         var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
+//                                         var tLogDocNo = tXthDocNo;
+//                                         JCNxPackDataToMQLog(tMsgErrorBody, tErrorStatus, tDisplayEvent, tLogFunction, tLogDocNo);
+//                                     }
+//                                 }
+//                             });
+//                         } else {
+//                             JSxRefillVDToTransferWahousePageEdit(tXthDocNo);
+//                             var tMessageError = aReturnData['tStaMessg'];
+//                             var aItemFail = aReturnData['aItemFail'];
+//                             //เอาชื่อสินค้าที่ไม่พอ ไปโชว์
+//                             var tTextStockFail = '';
+//                             var tTextStockFailShow = '';
+//                             for (var i = 0; i < aItemFail.length; i++) {
+//                                 tTextStockFail += '(' + aItemFail[i][0] + ')' + ' - ' + aItemFail[i][1] + ' [ร้องขอ : ' + aItemFail[i][2] + ' ชิ้น , พบในคลัง : ' + aItemFail[i][3] + ' ชิ้น] <br>';
+//                             }
+//                             tTextStockFailShow = '<p style="font-weight: bold;">' + tTextStockFail + '</p>';
+
+//                             FSvCMNSetMsgErrorDialog(tMessageError + '<br>' + tTextStockFailShow);
+//                             JCNxCloseLoading();
+//                         }
+//                     },
+//                     error: function(jqXHR, textStatus, errorThrown) {
+//                         JCNxResponseError(jqXHR, textStatus, errorThrown);
+//                         //ส่งขอมูลไปรวบรวมที่ Center ก่อนส่ง MQ เพื่อเก็บ LOG (TYPE:ERROR)
+//                         // if (jqXHR.status != 404) {
+//                         //     var tLogFunction = 'ERROR';
+//                         //     var tDisplayEvent = 'อนุมัติใบโอนสินค้าระหว่างคลัง';
+//                         //     var tErrorStatus = jqXHR.status;
+//                         //     var tHtmlError = $(jqXHR.responseText);
+//                         //     var tMsgErrorBody = tHtmlError.find('p:nth-child(3)').text();
+//                         //     var tLogDocNo = tXthDocNo;
+//                         //     JCNxPackDataToMQLog(tMsgErrorBody, tErrorStatus, tDisplayEvent, tLogFunction, tLogDocNo);
+//                         // }
+//                     }
+//                 });
+//             } else {
+//                 //console.log("StaApvDoc Call Modal");
+//                 $("#odvTFWPopupApv").modal("show");
+//             }
+//         } catch (err) {
+//             console.log("JSnTFWApprove Error: ", err);
+//         }
+//     } else {
+//         JCNxShowMsgSessionExpired();
+//     }
+// }
+
 
 
 //main validate form (validate ขั้นที่ พิเศษ ตรวจสอบเลขที่การขนส่ง)
 function JSxValidateViaOrderBeforeApv(pbIsConfirm) {
-    JSnTFWApprove(pbIsConfirm);
+    // JSnTFWApprove(pbIsConfirm);
+    JSxTFWChkStkB4ApvDoc(pbIsConfirm);
 }
 
 /**
@@ -1047,6 +1215,14 @@ function JSxSubmitEventByButton() {
                                 } else if (aReturn["nStaCallBack"] == "3") {
                                     JSvCallPageTFWList();
                                 }
+                                var nDODocNoCallBack = aReturn['tCodeReturn'];
+                                    var oDOCallDataTableFile = {
+                                        ptElementID: 'odvDOShowDataTable',
+                                        ptBchCode: $('#ohdBchCode').val(),
+                                        ptDocNo: nDODocNoCallBack,
+                                        ptDocKey: 'TCNTPdtTwxHD',
+                                    }
+                                JCNxUPFInsertDataFile(oDOCallDataTableFile);
                             } else {
                                 tMsgBody = aReturn["tStaMessg"];
                                 FSvCMNSetMsgWarningDialog(tMsgBody);

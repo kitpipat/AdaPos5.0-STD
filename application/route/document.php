@@ -82,6 +82,7 @@ $route['TFWCancel']                     = 'document/producttransferwahouse/cProd
 $route['TFWClearDocTemForChngCdt']      = 'document/producttransferwahouse/cProducttransferwahouse/FSxCTFXClearDocTemForChngCdt';
 $route['TFWCheckViaCodeForApv']         = 'document/producttransferwahouse/cProducttransferwahouse/FSxCTWXCheckViaCodeForApv';
 $route['docTFWEventAddPdtIntoDTFhnTemp'] = 'document/producttransferwahouse/cProducttransferwahouse/FSoCTFWEventAddPdtIntoDTFhnTemp';
+$route['TFWCheckProductWahouse']        = 'document/producttransferwahouse/cProducttransferwahouse/FSoCTWXCheckProductWahouse';
 
 
 // TFW (ใบโอนสินค้าระหว่างคลัง ตู้ VD) -

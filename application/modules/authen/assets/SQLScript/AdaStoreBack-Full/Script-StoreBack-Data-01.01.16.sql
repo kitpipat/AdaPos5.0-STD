@@ -452,3 +452,22 @@ GO
 IF NOT EXISTS(SELECT * FROM TSysSyncModule WHERE FTAppCode = 'FC' AND FNSynSeqNo = 111) BEGIN
 	INSERT INTO TSysSyncModule(FTAppCode,FNSynSeqNo) VALUES('FC',111)
 END
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.05') BEGIN
+
+	IF NOT EXISTS(SELECT FTShwTblDT, FTShwFedShw FROM TSysShwDT WHERE FTShwTblDT='TCNTPdtTwxDT' AND FTShwFedShw = 'FTXtdStaPrcStk') BEGIN
+		INSERT INTO [TSysShwDT] ([FTShwTblDT], [FNShwSeq], [FTShwFedShw], [FTShwFedStaUsed], [FTShwFedSetByDef], [FTShwFedSetByUsr], [FNShwColWidth], [FTShwStaAlwEdit]) 
+		VALUES ('TCNTPdtTwxDT', 15, 'FTXtdStaPrcStk', '1', '1', '1', '0', '0')
+	END
+
+	IF NOT EXISTS(SELECT FTShwTblDT, FTShwFedShw FROM TSysShwDT_L WHERE FTShwTblDT='TCNTPdtTwxDT' AND FTShwFedShw = 'FTXtdStaPrcStk') BEGIN
+		INSERT INTO [TSysShwDT_L] ([FTShwTblDT], [FNShwSeq], [FTShwFedShw], [FNLngID], [FTShwNameDef], [FTShwNameUsr]) 
+		VALUES ('TCNTPdtTwxDT', 15, 'FTXtdStaPrcStk', '1', 'สถานะสต็อค', 'สถานะสต็อค')
+		
+		INSERT INTO [TSysShwDT_L] ([FTShwTblDT], [FNShwSeq], [FTShwFedShw], [FNLngID], [FTShwNameDef], [FTShwNameUsr]) 
+		VALUES ('TCNTPdtTwxDT', 15, 'FTXtdStaPrcStk', '2', 'Stock Status', 'Stock Status')
+	END
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.05', getdate() , 'เพิ่ม เมนูตั้งค่าเครื่องชั่ง', 'Nattakit K.');
+END
+GO

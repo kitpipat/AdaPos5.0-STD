@@ -121,11 +121,10 @@ class mProducttransferwahouse extends CI_Model
         /*สถานะประมวลผล*/
         $tSearchStaPrcStk = $oAdvanceSearch['tSearchStaPrcStk'];
         if (!empty($tSearchStaPrcStk) && ($tSearchStaPrcStk != "0")) {
-
             if ($tSearchStaPrcStk == 3) {
-                $tSQL .= " AND (TFW.FTXthStaPrcStk = '$tSearchStaPrcStk' OR ISNULL(TFW.FTXthStaPrcStk,'') = '') ";
+                $tSQL   .= " AND (TFW.FTXthStaPrcStk    = ".$this->db->escape($tSearchStaPrcStk)." OR ISNULL(TFW.FTXthStaPrcStk,'') = '') ";
             } else {
-                $tSQL .= " AND TFW.FTXthStaPrcStk = '$tSearchStaPrcStk'";
+                $tSQL   .= " AND TFW.FTXthStaPrcStk     = ".$this->db->escape($tSearchStaPrcStk)." ";
             }
         }
 
@@ -2236,11 +2235,10 @@ class mProducttransferwahouse extends CI_Model
         /*สถานะประมวลผล*/
         $tSearchStaPrcStk = $oAdvanceSearch['tSearchStaPrcStk'];
         if (!empty($tSearchStaPrcStk) && ($tSearchStaPrcStk != "0")) {
-
             if ($tSearchStaPrcStk == 3) {
-                $tSQL .= " AND (TFW.FTXthStaPrcStk = '$tSearchStaPrcStk' OR ISNULL(TFW.FTXthStaPrcStk,'') = '') ";
+                $tSQL   .= " AND (TFW.FTXthStaPrcStk    = ".$this->db->escape($tSearchStaPrcStk)." OR ISNULL(TFW.FTXthStaPrcStk,'') = '') ";
             } else {
-                $tSQL .= " AND TFW.FTXthStaPrcStk = '$tSearchStaPrcStk'";
+                $tSQL   .= " AND TFW.FTXthStaPrcStk     = ".$this->db->escape($tSearchStaPrcStk)." ";
             }
         }
 
@@ -2330,7 +2328,7 @@ class mProducttransferwahouse extends CI_Model
                     'FTBchCode'             => $paData['FTBchCode'],
 
 
-                    'FTXthMerCode'      => $paData['FTXthMerCode'],
+                    'FTXthMerCode'          => $paData['FTXthMerCode'],
                     'FTXthShopFrm'          => $paData['FTXthShopFrm'],
                     'FTXthShopTo'           => $paData['FTXthShopTo'],
 
@@ -3036,4 +3034,129 @@ class mProducttransferwahouse extends CI_Model
         return $aDataResult;
     }
 
+    public function FSaMTWXGetPdtInTmpForSendToAPI($paData){
+
+        $tBchCode   = $paData['FTBchCode'];
+        $tDocCode   = $paData['FTXshDocNo'];
+        $tDocKey    = $paData['FTXthDocKey'];
+        $tSessionID = $paData['FTSessionID'];
+        $tWahCode   = $paData['FTWahCode'];
+
+        $tSQL       = " SELECT
+                            TMP.FTPdtCode               AS ptPdtCode,
+                            '$tBchCode'                 AS ptBchCode,
+                            '$tWahCode'				    AS ptWahCode,
+                            TMP.FCXtdQty                AS pcQty,
+                            ''                          AS ptAgnCode,
+                            TMP.FTPunCode               AS ptPunCode,
+                            '$tDocCode'                 AS ptDocNo,
+                            ''                          AS ptRefDocNo
+                        FROM TCNTPdtTwxDT           TMP WITH(NOLOCK)
+                        INNER JOIN TCNMPdt          PDT WITH(NOLOCK) ON TMP.FTPdtCode = PDT.FTPdtCode
+                        WHERE TMP.FTXthDocNo = '$tDocCode'
+                          AND TMP.FTBchCode = '$tBchCode'
+                          AND PDT.FTPdtStkControl = '1'
+                          AND ISNULL(TMP.FTXtdStaPrcStk,'') != '1' ";
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $aItem = $oQuery->result_array();
+        } else {
+            $aItem = array();
+        }
+        $jResult = json_encode($aItem);
+        $aResult = json_decode($jResult, true);
+        return $aResult;
+    }
+
+    
+    //เอาสินค้าตัวที่ไม่พอ มาหาชื่อ
+    public function FSxMTWXFindTextNamePDTNoStock($ptTextCodePDT){
+        $nLngID     = $this->session->userdata("tLangEdit");
+        $tSQL       = " SELECT FTPdtName , FTPdtCode from TCNMPdt_L where FNLngID = '$nLngID' AND FTPdtCode IN($ptTextCodePDT) ";
+
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $aItem = $oQuery->result_array();
+        } else {
+            $aItem = array();
+        }
+        $jResult = json_encode($aItem);
+        $aResult = json_decode($jResult, true);
+        return $aResult;
+    }
+
+
+    public function FSxMTWXChkConfig(){
+
+        $tSQL       = " SELECT FTSysStaUsrValue from TSysConfig where FTSysCode = 'tDoc_ChkStkTranfer'";
+
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $aItem = $oQuery->result_array();
+        } else {
+            $aItem = array();
+        }
+        $jResult = json_encode($aItem);
+        $aResult = json_decode($jResult, true);
+        return $aResult;
+    }
+
+    //Get ข้อมูล API
+    public function FSaMTWXGetConfigAPI(){
+        $tSQL       = "SELECT TOP 1 * FROM TCNTUrlObject WHERE FTUrlKey = 'CHKSTK' AND FTUrlTable = 'TCNMComp' AND FTUrlRefID = 'CENTER' ORDER BY FNUrlSeq ASC";
+        $oQuery     = $this->db->query($tSQL);
+        if($oQuery->num_rows() > 0){
+            $oList      = $oQuery->result();
+            $aResult    = array(
+                'raItems'       => $oList,
+                'rtCode'        => '1',
+                'rtDesc'        => 'success'
+            );
+        }else{
+            $oList      = $oQuery->result();
+            $aResult    = array(
+                'raItems'       => '',
+                'rtCode'        => '800',
+                'rtDesc'        => 'data not found'
+            );
+        }
+        $jResult = json_encode($aResult);
+        $aResult = json_decode($jResult, true);
+        return $aResult;
+    }
+
+    public function FSxMTWXUpdatePdtStkPrc($paDataWhere,$paHavePdtInWah){
+        $tBchCode   = $paDataWhere['FTBchCode'];
+        $tDocCode   = $paDataWhere['FTXshDocNo'];
+        $tDocKey    = $paDataWhere['FTXthDocKey'];
+        $tSessionID = $paDataWhere['FTSessionID'];
+
+        $this->db->set('FTXtdRmk','1');
+        $this->db->where_in('FTPdtCode',$paHavePdtInWah);
+        $this->db->where('FTBchCode',$tBchCode);
+        $this->db->where('FTXthDocNo',$tDocCode);
+        $this->db->update('TCNTPdtTwxDT');
+
+
+        return $this->db->last_query();
+    }
+
+    public function FSxMTWXUpdatePdtStkPrcAll($paDataWhere,$ptStatus){
+        $tBchCode   = $paDataWhere['FTBchCode'];
+        $tDocCode   = $paDataWhere['FTXshDocNo'];
+        $tDocKey    = $paDataWhere['FTXthDocKey'];
+        $tSessionID = $paDataWhere['FTSessionID'];
+
+        if($ptStatus == '1'){
+            $this->db->set('FTXtdRmk',$ptStatus);
+        }else{
+            $this->db->set('FTXtdRmk','');
+        }
+        $this->db->where('FTBchCode',$tBchCode);
+        $this->db->where('FTXthDocNo',$tDocCode);
+        $this->db->update('TCNTPdtTwxDT');
+
+
+        return $this->db->last_query();
+    }
 }

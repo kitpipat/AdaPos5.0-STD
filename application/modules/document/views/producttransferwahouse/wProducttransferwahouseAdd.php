@@ -65,6 +65,7 @@ if ($aResult['rtCode'] == "1") {
 	$tFTDstName 		= $aDataHDRef["raItems"]["FTDstName"];
 	$tFTPvnName 		= $aDataHDRef["raItems"]["FTPvnName"];
 	$tFTAddV1PostCode 	= $aDataHDRef["raItems"]["FTAddV1PostCode"];
+	$nStaUploadFile 	= 2;
 
 	// Event Control
 	if (isset($aAlwEvent)) {
@@ -141,6 +142,7 @@ if ($aResult['rtCode'] == "1") {
 	$tSaleAdjBchCompCode = $tBchCompCode;
 	$tSaleAdjBchCompName = $tBchCompName;
 	$nAutStaEdit 		 = 0; 
+	$nStaUploadFile 	= 1;
 
 	if ($tUserLoginLevel == "HQ" || $tUserLoginLevel == "BCH") {
 		$tWahCodeStart 	= $this->session->userdata('tSesUsrWahCode');
@@ -246,6 +248,40 @@ if ($aResult['rtCode'] == "1") {
 								<label><?php echo $tUsrNameCreateBy ?></label>
 							</div>
 						</div>
+						<?php
+							if ($tXthStaDoc == 3) {
+								$tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaDoc3'); //ยกเลิก
+								$tClassStaDoc = 'text-danger';
+							} else {
+								if ($tXthStaApv == 1) {
+									$tNewProcess =  language('document/adjustmentcost/adjustmentcost', 'tADCStaApv1'); //อนุมัติแล้ว
+									$tClassStaDoc = 'text-success';
+								} else {
+									$tNewProcess = language('document/adjustmentcost/adjustmentcost', 'tADCStaApv'); //รออนุมัติ
+									$tClassStaDoc = 'text-warning';
+								}
+							}
+
+							if ($tXthStaPrcStk == 1) {
+								$tClassPrcStk = 'text-success';
+							} else if ($tXthStaPrcStk == 2) {
+								$tClassPrcStk = 'text-warning';
+							} else if ($tXthStaPrcStk == '') {
+								$tClassPrcStk = 'text-warning';
+							} else {
+								$tClassPrcStk = "";
+							}
+						?>
+						<!-- <div class="row">
+							<div class="col-md-6">
+								<label class="xCNLabelFrm"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWTBStaDoc'); ?></label>
+							</div>
+							<div class="col-md-6 text-right">
+								<label><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWStaDoc' . $tXthStaDoc); ?></label>
+							</div>
+						</div> -->
+
+						<!-- สถานะเอกสาร -->
 						<div class="row">
 							<div class="col-md-6">
 								<label class="xCNLabelFrm"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWTBStaDoc'); ?></label>
@@ -254,15 +290,41 @@ if ($aResult['rtCode'] == "1") {
 								<label><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWStaDoc' . $tXthStaDoc); ?></label>
 							</div>
 						</div>
-						<div class="row">
+						<!-- <div class="row">
 							<div class="col-md-6">
 								<label class="xCNLabelFrm"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWTBStaApv'); ?></label>
 							</div>
 							<div class="col-md-6 text-right">
 								<label><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWStaApv' . $tXthStaApv); ?></label>
 							</div>
+						</div> -->
+
+						<!-- สถานะอนุมัติ -->
+						<div class="row">
+							<div class="col-md-6">
+								<label class="xCNLabelFrm"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWTBStaApv'); ?></label>
+							</div>
+							<div class="col-md-6 text-right <?=$tClassStaDoc?>">
+								<label><?php echo $tNewProcess; ?></label>
+							</div>
 						</div>
-						<?php if ($tXthDocNo != '') { ?>
+
+						<!-- สถานะประมวลผลเอกสาร -->
+						<div class="form-group" style="margin:0">
+							<div class="row">
+								<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+									<label class="xCNLabelFrm"><?= language('document/transferreceiptNew/transferreceiptNew', 'tTWIStaPrcStk'); ?></label>
+								</div>
+								<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right">
+									<?php if ($tXthStaDoc == 3) { ?>
+										<label class="text-danger xCNTDTextStatus"><?php echo language('document/adjuststock/adjuststock', 'tASTStaDoc3'); ?></label>
+									<?php }else{ ?>
+										<label class="<?=$tClassPrcStk?> xCNTDTextStatus"><?= language('document/transferreceiptNew/transferreceiptNew', 'tTWIStaPrcStk' . $tXthStaPrcStk); ?></label>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
+						<!--<?php if ($tXthDocNo != '') { ?>
 							<div class="row">
 								<div class="col-md-6">
 									<label class="xCNLabelFrm"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWApvBy'); ?></label>
@@ -270,6 +332,26 @@ if ($aResult['rtCode'] == "1") {
 								<div class="col-md-6 text-right">
 									<input type="text" class="xCNHide" id="oetXthApvCode" name="oetXthApvCode" maxlength="20" value="<?php echo $tXthApvCode ?>">
 									<label><?php echo $tXthUsrNameApv != '' ? $tXthUsrNameApv : language('document/producttransferwahouse/producttransferwahouse', 'tTFWStaDoc'); ?></label>
+								</div>
+							</div>
+						<?php } ?>-->
+
+						<?php if ($tXthDocNo != '') { ?>
+							<div class="row">
+								<div class="col-md-6">
+									<label class="xCNLabelFrm"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWApvBy'); ?></label>
+								</div>
+								<div class="col-md-6 text-right">
+									<input type="text" class="xCNHide" id="oetXthApvCode" name="oetXthApvCode" maxlength="20" value="<?php echo $tXthApvCode ?>">
+									<label>
+										<?php
+											if($tXthStaApv == 1 || $tXthStaApv == 3){
+												echo (isset($tXthUsrNameApv) && !empty($tXthUsrNameApv)) ? $tXthUsrNameApv : "-";
+											}else{
+												echo "-";
+											}
+										?>
+									</label>
 								</div>
 							</div>
 						<?php } ?>
@@ -611,7 +693,7 @@ if ($aResult['rtCode'] == "1") {
 				</div>
 			</div>
 
-			<div class="panel panel-default" style="margin-bottom: 60px;">
+			<div class="panel panel-default" style="margin-bottom: 25px;">
 				<div id="odvHeadAllow" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
 					<label class="xCNTextDetail1"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWOther'); ?></label>
 					<a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvOther" aria-expanded="true">
@@ -683,6 +765,40 @@ if ($aResult['rtCode'] == "1") {
 					</div>
 				</div>
 			</div>
+
+			<!-- ไฟล์แนบ -->
+			<div class="panel panel-default" style="margin-bottom: 60px;">
+                <div id="odvSOReferenceDoc" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
+                    <label class="xCNTextDetail1"><?php echo language('document/saleorder/saleorder', 'ไฟล์แนบ'); ?></label>
+                    <a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvSODataFile" aria-expanded="true">
+                        <i class="fa fa-plus xCNPlus"></i>
+                    </a>
+                </div>
+                <div id="odvSODataFile" class="xCNMenuPanelData panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="odvDOShowDataTable">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    var oSOCallDataTableFile = {
+                        ptElementID		: 'odvDOShowDataTable',
+                        ptBchCode		: $('#ohdBchCode').val(),
+                        ptDocNo			: $('#oetXthDocNo').val(),
+                        ptDocKey		: 'TCNTPdtTwxHD',
+                        ptSessionID		: '<?= $this->session->userdata("tSesSessionID") ?>',
+                        pnEvent			: <?= $nStaUploadFile ?>,
+                        ptCallBackFunct	: '',//JSxSoCallBackUploadFile
+                        ptStaApv        : $('#ohdXthStaApv').val(),
+                        ptStaDoc        : $('#ohdXthStaDoc').val()
+                    }
+                    JCNxUPFCallDataTable(oSOCallDataTableFile);
+                </script>
+            </div>
 		</div>
 
 		<div class="col-md-8" id="odvRightPanal">

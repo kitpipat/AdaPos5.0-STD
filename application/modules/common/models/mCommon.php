@@ -317,4 +317,203 @@ class mCommon extends CI_Model {
 
         // return  $oResult;
     }
+
+        // Create By : Napat(Jame) 22/06/2022
+        public function FCNaMWahChkStk($paParams){
+            $tBchCode   = $paParams['tBchCode'];
+            $tWahCode   = $paParams['tWahCode'];
+    
+            // print_r($tWahCode);
+            $tSQL = " SELECT 1 FROM TCNMWaHouse WHERE FTBchCode = '".$tBchCode."' AND FTWahCode = '".$tWahCode."' AND FTWahStaChkStk IN ('2','3') ";
+            $oQuery = $this->db->query($tSQL);
+    
+            if( $oQuery->num_rows() > 0 ){
+                $aStatus = array(
+                    'nCode'     => 1,
+                    'tDesc'     => 'Wahouse is check stock'
+                );
+            }else{
+                $aStatus = array(
+                    'nCode'     => 800,
+                    'tDesc'     => 'Wahouse is not check stock',
+                );
+            }
+            return $aStatus;
+        }
+    
+        // Create By : Napat(Jame) 22/06/2022
+        // Last Update : Napat(Jame) 29/06/2022 เพิ่มแสดงเอกสารรออนุมัติ เฉพาะเอกสารที่มีสินค้าตรงกัน อย่างน้อย 1 รายการ
+        // ค้นหาเอกสารการโอน รออนุมัติ
+        public function FCNaMGetDocInvPendingApv($paParams){
+            $tBchCode   = $paParams['tBchCode'];
+            $tWahCode   = $paParams['tWahCode'];
+            $nLangEdit  = $this->session->userdata("tLangEdit");
+    
+            $tTableDT   = $paParams['tTableDT'];
+            $tDocNo     = $paParams['tDocNo'];
+            $tDocDT     = " INNER JOIN ".$tTableDT." DOCDT WITH(NOLOCK) ON DOCDT.FTXthDocNo = '".$tDocNo."' AND DT.FTPdtCode = DOCDT.FTPdtCode ";
+    
+            $tSQL = "   SELECT DOC.FTXthDocType,DOC.FDXthDocDate,DOC.FTXthDocNo,USRL.FTUsrName 
+                        FROM (
+                            SELECT DISTINCT 'ใบรับโอน-สาขา' AS FTXthDocType,HD.FDXthDocDate,HD.FTXthDocNo,HD.FTCreateBy
+                            FROM TCNTPdtTbiHD HD WITH(NOLOCK) 
+                            INNER JOIN TCNTPdtTbiDT DT WITH(NOLOCK) ON HD.FTXthDocNo = DT.FTXthDocNo
+                            ".$tDocDT."
+                            WHERE HD.FTXthBchTo = '".$tBchCode."' AND HD.FTXthWhTo = '".$tWahCode."'
+                                AND HD.FTXthStaDoc = '1' 
+                                AND ISNULL(HD.FTXthStaApv,'') = ''
+    
+                            UNION ALL
+                        
+                            SELECT DISTINCT
+                                CASE WHEN HD.FNXthDocType = 1 THEN 'ใบรับเข้า-คลังสินค้า' 
+                                ELSE 'ใบรับโอน - คลังสินค้า' END AS FTXthDocType,
+                                HD.FDXthDocDate,HD.FTXthDocNo,HD.FTCreateBy
+                            FROM TCNTPdtTwiHD HD WITH(NOLOCK) 
+                            INNER JOIN TCNTPdtTwiDT DT WITH(NOLOCK) ON HD.FTXthDocNo = DT.FTXthDocNo
+                            ".$tDocDT."
+                            WHERE HD.FTBchCode = '".$tBchCode."' AND HD.FTXthWhTo = '".$tWahCode."'
+                                AND HD.FTXthStaDoc = '1' 
+                                AND ISNULL(HD.FTXthStaApv,'') = ''
+                        
+                            UNION ALL
+                        
+                            SELECT DISTINCT 'ใบโอนสินค้าระหว่างคลัง'AS FTXthDocType,HD.FDXthDocDate,HD.FTXthDocNo,HD.FTCreateBy
+                            FROM TCNTPdtTwxHD HD WITH(NOLOCK) 
+                            INNER JOIN TCNTPdtTwxDT DT WITH(NOLOCK) ON HD.FTXthDocNo = DT.FTXthDocNo
+                            ".$tDocDT."
+                            WHERE HD.FTBchCode = '".$tBchCode."' AND HD.FTXthWhFrm = '".$tWahCode."'
+                                AND HD.FTXthStaDoc = '1' 
+                                AND ISNULL(HD.FTXthStaApv,'') = ''
+                        
+                            UNION ALL
+                        
+                            SELECT DISTINCT 'ใบตรวจนับ - ยืนยันสินค้าคงคลัง'AS FTXthDocType,HD.FDAjhDocDate AS FDXthDocDate,HD.FTAjhDocNo AS FTXthDocNo,HD.FTCreateBy
+                            FROM TCNTPdtAdjStkHD HD WITH(NOLOCK) 
+                            INNER JOIN TCNTPdtAdjStkDT DT WITH(NOLOCK) ON HD.FTAjhDocNo = DT.FTAjhDocNo
+                            ".$tDocDT."
+                            WHERE HD.FTAjhBchTo = '".$tBchCode."' AND HD.FTAjhWhTo = '".$tWahCode."'
+                                AND HD.FTAjhStaDoc = '1' 
+                                AND ISNULL(HD.FTAjhStaApv,'') = ''
+                                AND HD.FTAjhDocType = '3'
+    
+                            UNION ALL
+    
+                            SELECT DISTINCT 'ใบเบิกออก - คลังสินค้า'AS FTXthDocType,HD.FDXthDocDate,HD.FTXthDocNo,HD.FTCreateBy
+                            FROM TCNTPdtTwoHD HD WITH(NOLOCK) 
+                            INNER JOIN TCNTPdtTwoDT DT WITH(NOLOCK) ON HD.FTXthDocNo = DT.FTXthDocNo
+                            ".$tDocDT."
+                            WHERE HD.FTBchCode = '".$tBchCode."' AND HD.FTXthWhFrm = '".$tWahCode."'
+                                AND HD.FTXthStaDoc = '1' 
+                                AND ISNULL(HD.FTXthStaApv,'') = ''
+    
+                            UNION ALL
+    
+                            SELECT DISTINCT 'ใบจ่ายโอน - สาขา'AS FTXthDocType,HD.FDXthDocDate,HD.FTXthDocNo,HD.FTCreateBy
+                            FROM TCNTPdtTboHD HD WITH(NOLOCK) 
+                            INNER JOIN TCNTPdtTboDT DT WITH(NOLOCK) ON HD.FTXthDocNo = DT.FTXthDocNo
+                            ".$tDocDT."
+                            WHERE HD.FTXthBchFrm = '".$tBchCode."' AND HD.FTXthWhFrm = '".$tWahCode."'
+                                AND HD.FTXthStaDoc = '1' 
+                                AND ISNULL(HD.FTXthStaApv,'') = ''
+    
+                            UNION ALL
+    
+                            SELECT DISTINCT 'ใบจ่ายโอน - คลังสินค้า'AS FTXthDocType,HD.FDXthDocDate,HD.FTXthDocNo,HD.FTCreateBy
+                            FROM TCNTPdtTwoHD HD WITH(NOLOCK) 
+                            INNER JOIN TCNTPdtTwoDT DT WITH(NOLOCK) ON HD.FTXthDocNo = DT.FTXthDocNo
+                            ".$tDocDT."
+                            WHERE HD.FTBchCode = '".$tBchCode."' AND HD.FTXthWhFrm = '".$tWahCode."'
+                                AND HD.FTXthStaDoc = '1' 
+                                AND ISNULL(HD.FTXthStaApv,'') = ''
+                                AND HD.FNXthDocType = '4'
+    
+                            UNION ALL
+    
+                            SELECT DISTINCT 'ใบโอนสินค้าระหว่างสาขา'AS FTXthDocType,HD.FDXthDocDate,HD.FTXthDocNo,HD.FTCreateBy
+                            FROM TCNTPdtTbxHD HD WITH(NOLOCK) 
+                            INNER JOIN TCNTPdtTbxDT DT WITH(NOLOCK) ON HD.FTXthDocNo = DT.FTXthDocNo
+                            ".$tDocDT."
+                            WHERE HD.FTXthBchFrm = '".$tBchCode."' AND HD.FTXthWhFrm = '".$tWahCode."'
+                                AND HD.FTXthStaDoc = '1' 
+                                AND ISNULL(HD.FTXthStaApv,'') = ''
+                        ) DOC
+                        LEFT JOIN TCNMUser_L USRL WITH(NOLOCK) ON USRL.FTUsrCode = DOC.FTCreateBy AND USRL.FNLngID = ".$nLangEdit."
+                        WHERE DOC.FTXthDocNo != '$tDocNo' ";
+                        
+    
+            // TCNTPdtTbiHD ใบรับโอน - สาขา (อนุมัติสต๊อกปลายทางเพิ่ม)
+            // TCNTPdtTwiHD FNXthDocType = 1 ใบรับเข้า - คลังสินค้า (อนุมัติสตีอกเพิ่ม)
+            // TCNTPdtTwiHD FNXthDocType = 5 ใบรับโอน - คลังสินค้า (อนุมัติสต๊อกปลายทางเพิ่ม)
+            // TCNTPdtTwxHD ใบโอนสินค้าระหว่างคลัง (อนุมัติสต๊อกปลายทางเพิ่ม)
+            // TCNTPdtAdjStkHD FTAjhDocType = 3 ใบตรวจนับ - ยืนยันสินค้าคงคลัง (อนุมัติ ปรับปรุงสต๊อก)
+            // TCNTPdtTwoHD FNXthDocType = 2 ใบเบิกออก - คลังสินค้า (อนุมัติ สต๊อกลด)
+    
+            // TCNTPdtTbxHD ใบโอนสินค้าระหว่างสาขา (อนุมัติสต๊อกปลายทางเพิ่ม) แต่ต้นทางต้องเป็นคนอนุมัติ ปลายทางไม่เห็นเอกสาร
+            // TCNTPdtTwoHD FNXthDocType = 4 ใบจ่ายโอน - คลังสินค้า (อนุมัติสต๊อกปลายทางไม่เพิ่ม) ต้องไปทำใบรับโอน - คลังสินค้า
+    
+            $oQuery = $this->db->query($tSQL);
+    
+            if( $oQuery->num_rows() > 0 ){
+                $aStatus = array(
+                    'nCode'     => 1,
+                    'tDesc'     => 'Found Document Pending Approve',
+                    'aItems'    => $oQuery->result_array()
+                );
+            }else{
+                $aStatus = array(
+                    'nCode'     => 800,
+                    'tDesc'     => 'Not Found Document Pending Approve',
+                );
+            }
+            return $aStatus;
+        }
+    
+        // Create By : Napat(Jame) 22/06/2022
+        public function FCNaMGetNotEnoughQty($paParams){
+            $tBchCode   = $paParams['tBchCode'];
+            $tWahCode   = $paParams['tWahCode'];
+            $tDocNo     = $paParams['tDocNo'];
+            $tTableDT   = $paParams['tTableDT'];
+            $nLangEdit  = $this->session->userdata("tLangEdit");
+    
+            $tSQL = "   SELECT 
+                            DT.FTBchCode,
+                            DT.FTWahCode,
+                            DT.FTPdtCode,
+                            PDTL.FTPdtName,
+                            ISNULL(STK.FCStkQty,0) AS FCStkQty,
+                            DT.FCDTQty,
+                            (ISNULL(STK.FCStkQty,0) - ISNULL(DT.FCDTQty,0)) AS FCQtyDiff,
+                            (ISNULL(STK.FCStkQty,0) - ISNULL(DT.FCDTQty,0)) * (-1) AS FCQtyDiff2
+                        FROM (
+                            SELECT
+                                '".$tBchCode."' AS FTBchCode,
+                                '".$tWahCode."' AS FTWahCode,
+                                FTPdtCode,
+                                SUM(FCXtdQtyAll) AS FCDTQty 
+                            FROM ".$tTableDT." WITH(NOLOCK) 
+                            WHERE FTXthDocNo = '".$tDocNo."' 
+                            GROUP BY FTPdtCode
+                        ) DT
+                        LEFT JOIN TCNTPdtStkBal STK WITH(NOLOCK) ON STK.FTPdtCode = DT.FTPdtCode AND STK.FTBchCode = DT.FTBchCode AND STK.FTWahCode = DT.FTWahCode
+                        LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK) ON DT.FTPdtCode = PDTL.FTPdtCode AND PDTL.FNLngID = ".$nLangEdit."
+                        WHERE (ISNULL(STK.FCStkQty,0) - ISNULL(DT.FCDTQty,0)) < 0
+                        ORDER BY DT.FTPdtCode ASC ";
+            $oQuery = $this->db->query($tSQL);
+    
+            if( $oQuery->num_rows() > 0 ){
+                $aStatus = array(
+                    'nCode'     => 1,
+                    'tDesc'     => 'พบสินค้าบางรายการ สต๊อกไม่เพียงพอ.',
+                    'aItems'    => $oQuery->result_array()
+                );
+            }else{
+                $aStatus = array(
+                    'nCode'     => 800,
+                    'tDesc'     => 'สินค้าทุกรายการ มีสต๊อก',
+                );
+            }
+            return $aStatus;
+        }
 }
