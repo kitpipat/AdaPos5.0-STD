@@ -2814,3 +2814,12 @@ ul.activity-timeline>li:last-child:after {
 .resizewidthBlock {
     width: 60% !important;
 }
+
+.xCNBTNSubSave {
+    background-color: rgb(23, 155, 253); 
+    color: white;
+}
+
+.xCNBTNSubSave:hover {
+    color: white;
+}

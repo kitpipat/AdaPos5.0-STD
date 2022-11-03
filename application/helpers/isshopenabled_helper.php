@@ -141,3 +141,48 @@ function FCNbGetPdtFasionEnabled(){
     $ci = &get_instance();
     return $ci->session->userdata("bPdtFasionEnabled");
 }
+
+/* Create By : 23/08/2021 Napat(Jame)*/
+function FCNbGetIsCategoryEnabled($pnCatLevel){
+    $ci = &get_instance();
+    $nCatLevel = intval($pnCatLevel);
+    switch($nCatLevel){
+        case 1:
+            $bReturn = $ci->session->userdata("bCatLvl1Enabled");
+            break;
+        case 2:
+            $bReturn = $ci->session->userdata("bCatLvl2Enabled");
+            break;
+        case 3:
+            $bReturn = $ci->session->userdata("bCatLvl3Enabled");
+            break;
+        case 4:
+            $bReturn = $ci->session->userdata("bCatLvl4Enabled");
+            break;
+        case 5:
+            $bReturn = $ci->session->userdata("bCatLvl5Enabled");
+            break;
+    }
+    return $bReturn;
+}
+
+// Create By : Napat(Jame) 26/10/2022
+function FCNbLoadConfigIsCarEnabled(){
+    $ci = &get_instance();
+    $ci->load->database();
+    $tRoleCode  = $ci->session->userdata('tSesUsrRoleCodeMulti');
+    $tSQL       = " SELECT FTRolCode , FTMnuCode , FTAutStaRead FROM TCNTUsrMenu WHERE FTRolCode IN($tRoleCode) AND FTMnuCode IN('M00111') "; // รหัสเมนูข้อมูลรถ อ้างอิงจากเบส Fitauto
+    $oQuery     = $ci->db->query($tSQL);
+    if ($oQuery->num_rows() > 0) { 
+        $ci->session->set_userdata("bCarEnabled", true);
+    } else { 
+        $ci->session->set_userdata("bCarEnabled", false);
+    }
+    return $ci->session->userdata("bCarEnabled");
+}
+
+// Create By : Napat(Jame) 26/10/2022
+function FCNbGetIsCarEnabled(){
+    $ci = &get_instance();
+    return $ci->session->userdata("bCarEnabled");
+}

@@ -6,7 +6,7 @@ $nDecShow =  FCNxHGetOptionDecimalShow();
     <table id="otbPdtProductSetData" class="table table-striped">
         <thead>
             <tr>
-            <th nowrap class="text-center xCNTextBold" style="width:5%;"><?php echo language('product/product/product','tPDTTBImg')?></th>
+                <th nowrap class="text-center xCNTextBold" style="width:5%;"><?php echo language('product/product/product','tPDTTBImg')?></th>
                 <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product', 'tPDTSetPdtCode') ?></th>
                 <th nowrap class="text-center xCNTextBold" style="width:30%;"><?php echo language('product/product/product', 'tPDTSetPdtName') ?></th>
                 <!-- <th nowrap class="text-center xCNTextBold" style="width:10%;"><?php echo language('product/product/product', 'tPDTCost') ?></th> -->

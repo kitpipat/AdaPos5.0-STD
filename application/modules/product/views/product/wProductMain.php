@@ -1,14 +1,12 @@
 <div class="panel-heading">
     <div class="row">
         <div class="col-xs-12 cols-sm-2 col-md-2 col-lg-2">
-
-            <script>
+            <script type="text/javascript">
                     $('document').ready(function(){
                         var tStaPdtForSystem = $('#ohdPdtforSystemDataTable').val();
                         $('.xWPdtForSystem' + tStaPdtForSystem).prop("selected",true);
                     });
             </script>
-
             <div class="form-group">
                 <label class="xCNLabelFrm"><?=language('product/product/product','tPdtForSystemTitle');?></label>
                 <select class="selectpicker form-control" id="ocmPdtForSystem" name="ocmPdtForSystem" maxlength="1" onchange="JSxSelectPdtForSystem(this.value)">
@@ -16,30 +14,26 @@
                     <option class="xWPdtForSystem2" value="2"><?=language('product/product/product','tPdtForSystem2')?></option>
                     <option class="xWPdtForSystem3" value="3"><?=language('product/product/product','tPdtForSystem3')?></option>
                     <option class="xWPdtForSystem4" value="4"><?=language('product/product/product','tPdtForSystem4')?></option>
-                    <?php// if(FCNbGetPdtFasionEnabled()){ ?>
                     <option class="xWPdtForSystem5" value="5"><?=language('product/product/product','tPdtForSystem5')?></option>
-                    <?php //} ?>
                     <option class="xWPdtForSystem" value=""><?=language('product/product/product','tPdtForSystem0')?></option>
                 </select>
             </div>
         </div>
-
         <div class="col-xs-12 cols-sm-2 col-md-2 col-lg-2">
-            <script>
+            <script type="text/javascript">
                     $('document').ready(function(){
                         var tStaPdtForSystem = $('#ohdPdtforSystemDataTable').val();
                         $('.xWPdtForSystem' + tStaPdtForSystem).prop("selected",true);
                     });
             </script>
             <?php 
-
-            $nCheckPdtType  =  $this->input->cookie("PDTTypeCookie_" . $this->session->userdata("tSesUserCode"), true);
-            $aCheckPdtType = json_decode($nCheckPdtType);
-            if(!empty($aCheckPdtType)){
-                $nFilterPdtType = $aCheckPdtType->nSelectPdtType;
-            }else{
-                $nFilterPdtType = 1 ;
-            }
+                $nCheckPdtType  =  $this->input->cookie("PDTTypeCookie_" . $this->session->userdata("tSesUserCode"), true);
+                $aCheckPdtType = json_decode($nCheckPdtType);
+                if(!empty($aCheckPdtType)){
+                    $nFilterPdtType = $aCheckPdtType->nSelectPdtType;
+                }else{
+                    $nFilterPdtType = 1 ;
+                }
             ?>
             <div class="form-group">
                 <label class="xCNLabelFrm"><?=language('product/product/product','tPdtSreachTypeName');?></label>
@@ -53,7 +47,6 @@
                 </select>
             </div>
         </div>
-
         <div class="col-xs-12 cols-sm-4 col-md-4 col-lg-4">
             <div class="form-group">
                 <label class="xCNLabelFrm"><?php echo language('common/main/main','tSearch')?></label>
@@ -67,7 +60,6 @@
                 </div>
             </div>
         </div>
-
         <?php if($aAlwEventPdt['tAutStaFull'] == 1 || $aAlwEventPdt['tAutStaDelete'] == 1 ) : ?>
             <div class="col-lg-4 col-md-4 col-xs-12 col-sm-4 text-right">
                 <div class="form-group">
@@ -100,7 +92,6 @@
 <div class="panel-body">
     <section id="ostDataProduct"></section>
 </div>
-
 <!-- ===================================================== Modal Delete Product Single ===================================================== -->
     <div id="odvModalDeletePdtSingle" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
@@ -119,9 +110,6 @@
         </div>
     </div>
 <!-- ====================================================== End Modal Delete Product ======================================================= -->
-
-
-
 <!-- Modal Advance Table -->
 <div class="modal fade" id="odvPdtShowOrderColumn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -160,27 +148,22 @@
         </div>
     </div>
 </div>
-
 <script src="<?php echo base_url(); ?>application/modules/common/assets/js/jquery.mask.js"></script>
 <script src="<?php echo base_url(); ?>application/modules/common/assets/src/jFormValidate.js"></script>
 <script type="text"></script>
 <?php include "script/jProductMain.php"; ?>
-
-<script>
-
+<script type="text/javascript">
     //supawat 13/07/2020
 	//กดนำเข้า จะวิ่งไป Modal popup ที่ center
 	$('#odvEventImportFilePDT').click(function() {
-		var tNameModule = 'Product';
-		var tTypeModule = 'master';
-		var tAfterRoute = 'productPageImportDataTable';
-
-		var aPackdata = {
+		let tNameModule = 'Product';
+		let tTypeModule = 'master';
+		let tAfterRoute = 'productPageImportDataTable';
+		let aPackdata = {
 			'tNameModule' : tNameModule,
 			'tTypeModule' : tTypeModule,
 			'tAfterRoute' : tAfterRoute
 		};
 		JSxImportPopUp(aPackdata);
 	});
-
 </script>

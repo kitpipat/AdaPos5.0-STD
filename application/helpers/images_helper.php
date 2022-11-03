@@ -1095,3 +1095,22 @@ function FCNaHUploadMedia($paMediaData){
 
 	}
 }
+
+// Create By : Off 13/07/2021
+function FCNtHGetImagePageListProductTab($poImage,$ptWidth = '100%',$ptImgDefault = 'default', $ptAddClass = ''){
+	$tPatchImg = FCNtHChkImgColor($poImage);
+	if( $tPatchImg == '0' ){ // แสดง background color
+		$tReturnObj = '<div class="text-center"><span style="height:285px;width:'.$ptWidth.';background-color:'.$poImage.';display:inline-block;line-height:2.3;"></span></div>';
+	}else{					 // แสดงรูปภาพ
+		if( $ptImgDefault == 'user' || $ptImgDefault == 'customer' ){
+			// $tImgDefault = 'application/modules/common/assets/images/icons/Customer.png';
+			$tImgDefault = 'application/modules/common/assets/images/NoPhoto.png';
+		}else if( $ptImgDefault == 'logo' ){
+			$tImgDefault = 'application/modules/common/assets/images/logo/AdaPos5_Logo.png';
+		}else{
+			$tImgDefault = 'application/modules/common/assets/images/Noimage.png';
+		}
+		$tReturnObj = '<img src="'.$poImage.'" class="img img-respornsive '.$ptAddClass.' " style="width:'.$ptWidth.'" onerror="this.onerror=null;this.src=\''.$tImgDefault.'\';" >';
+	}
+	return $tReturnObj;
+}

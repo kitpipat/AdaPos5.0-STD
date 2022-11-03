@@ -186,7 +186,7 @@
         </div>
 
         <div class="row">
-            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                 <!-- วันที่ผลิต -->
                 <div class="form-group">
                     <label class="xCNLabelFrm"><?php echo language('product/pdtdrug/pdtdrug','tPdtDrugStartDate')?></label>

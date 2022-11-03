@@ -284,6 +284,9 @@ class cLogin extends MX_Controller {
 					// Set สิทธิในการมองเห็น สินค้าแฟชั่น
 					FCNbLoadPdtFasionEnabled();
 
+					// Set สิทธิในการมองเห็น สินค้าศูนย์บริการ
+					FCNbLoadConfigIsCarEnabled();
+
 					// Delete Doc Temp
 					$this->load->helper('document');
 					FCNoHDOCDeleteDocTmp();
