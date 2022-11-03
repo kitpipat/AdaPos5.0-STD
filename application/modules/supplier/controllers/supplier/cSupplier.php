@@ -293,6 +293,7 @@ class cSupplier extends MX_Controller {
             'FTStyCode'         => $this->input->post('oetStyCode'),
             'FTSlvCode'         => $this->input->post('oetSlvCode'),
             'FTVatCode'         => $this->input->post('ocmVatRate'),
+            'FTFmtCodeExp'      => $this->input->post('oetSqlTypeExporeCode'),
             'FTSplStaVATInOrEx' => $this->input->post('ordSplStaVATInOrEx') == '1' ? '1' : '2',
             'FTSplDiscBillRet'  => $this->input->post('oenSplDiscBillRet'),
             'FTSplDiscBillWhs'  => $this->input->post('oenSplDiscBillWhs'),
@@ -304,7 +305,8 @@ class cSupplier extends MX_Controller {
             'FTUsrCode'         => $this->input->post('oetUsrCode'),
             'FDCreateOn'        => date('Y-m-d H:i:s'),
             'FTCreateBy'        => $this->session->userdata('tSesUsername'),
-            'FTAgnCode'         => $this->input->post('oetSplAgnCode')
+            'FTAgnCode'         => $this->input->post('oetSplAgnCode'),
+            'FTSplStaLocal'     => $this->input->post('ocbSplLocal') == '1' ? '1' : '2'
         ];
         $aDataLang      = [
             'FTSplCode'         => $tSplCode,
@@ -395,6 +397,7 @@ class cSupplier extends MX_Controller {
             'FTSplSex'          => $this->input->post('ordSplSex') == '1' ? '1' : '2',
             'FDSplDob'          => (!empty($this->input->post('oetSplDob')))? $this->input->post('oetSplDob') : null,
             'FTVatCode'         => $this->input->post('ocmVatRate'),
+            'FTFmtCodeExp'      => $this->input->post('oetSqlTypeExporeCode'),
             'FTSplStaVATInOrEx' => $this->input->post('ordSplStaVATInOrEx') == '1' ? '1' : '2',
             'FTSplDiscBillRet'  => $this->input->post('oenSplDiscBillRet'),
             'FTSplDiscBillWhs'  => $this->input->post('oenSplDiscBillWhs'),
@@ -409,7 +412,8 @@ class cSupplier extends MX_Controller {
             'FTSlvCode'         => $this->input->post('oetSlvCode'),
             'FDLastUpdOn'       => date('Y-m-d H:i:s'),
             'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
-            'FTAgnCode'         => $this->input->post('oetSplAgnCode')
+            'FTAgnCode'         => $this->input->post('oetSplAgnCode'),
+            'FTSplStaLocal'     => $this->input->post('ocbSplLocal') == '1' ? '1' : '2'
         ];
         $aDataLang      = [
             'FTSplCode'     => $this->input->post('oetSplCode'),
@@ -725,13 +729,233 @@ class cSupplier extends MX_Controller {
 
 	}
 
+    //ร้านค้า/สาขา ยกมาจาก BigC By IcePHP [21/10/2022]
+    public function FSoCSPLBranch(){
+        $tSplCode = $this->input->post('tSplCode');
+        $tSplName = $this->input->post('tSplName');
+        $tBchCode = $this->input->post('tBchCode');
+        $tBchName = $this->input->post('tBchName');
+        
+        $aDataList =array(
+            'tSplCode' => $tSplCode,
+            'tSplName' => $tSplName,
+            'tBchCode' => $tBchCode,
+            'tBchName' => $tBchName,
+        );
+        $this->load->view('supplier/supplier/branch/wSPLBranch',$aDataList);
+    }
+
+    public function FSoCSPLBranchList(){
+
+        $this->load->view('supplier/supplier/branch/wSPLBranchList');
+    }
 
 
+    //Functionality : Event Add Supplier Branch
+    //Parameters : Ajax Event
+    //Creator : 26/06/2019 Sarun ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : Status Add Event
+    //Return Type : String
+    public function FSoCSPLBranchDataTable(){
+        try{
+            $tSearchAll     = $this->input->post('tSearchAll');
+            $nPage          = ($this->input->post('nPageCurrent') == '' || null)? 1 : $this->input->post('nPageCurrent');   // Check Number Page
+            $nLangResort    = $this->session->userdata("tLangID");
+            $nLangEdit      = $this->session->userdata("tLangEdit");
+       
+            $tSPLBranchSplCode = $this->input->post('tSPLBranchSplCode');
+            $tSPLBranchBchCode = $this->input->post('tSPLBranchBchCode');
+            $aData  = array(
+                'nPage'         => $nPage,
+                'nRow'          => 10,
+                'FNLngID'       => $nLangEdit,
+                'tSearchAll'    => $tSearchAll,
+                'tSPLBranchSplCode' => $tSPLBranchSplCode,
+                'tSPLBranchBchCode' => $tSPLBranchBchCode,
+            );
+            $aSplDataList   = $this->mSupplier->FSaMSPLGetDataBranch($aData);
+            $aGenTable  = array(
+                'aDataList'  => $aSplDataList,
+                'nPage'         => $nPage,
+                'tSearchAll'    => $tSearchAll
+            );
+            $this->load->view('supplier/supplier/branch/wSPLBranchDataTable',$aGenTable);
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
 
 
+    //Functionality : Function CallPage Supplier Add Branch
+    //Parameters : Ajax Call View Add
+    //Creator : 26/06/2019 Sarun ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : String View
+    //Return Type : View
+    public function FSvCSPLAddBranchPage(){
+        try{
+            $aVatList = FCNoHCallVatlist(); //-->Call Vat Active
+            $aDataSupplier = array(
+                'nStaAddOrEdit'   => 99
+            );
+            $this->load->view('supplier/supplier/branch/wSPLBranchAdd',$aDataSupplier);
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+    
+    //Functionality : Event Add Supplier Branch
+    //Parameters : Ajax Event
+    //Creator : 26/06/2019 Sarun ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : Status Add Event
+    //Return Type : String
+    public function FSoCSPLBranchAddEvent(){
+        try{
+                $aData = array(
+                'FTSplCode'             => $this->input->post('oetSBHSplCode'),
+                'FTBchCode'             => $this->input->post('oetSBHBchCode'),
+                'FCSbhLeadTime'         => $this->input->post('oetSBHSbhLeadTime'),
+                'FTSbhOrdDay'           => $this->input->post('oetSBHSSbhOrdDay'),
+                'FTSbhStaAlwOrdSun'     => (!empty($this->input->post('ocbSbhStaAlwOrdSun')))? 1 : 2,
+                'FTSbhStaAlwOrdMon'     => (!empty($this->input->post('ocbSbhStaAlwOrdMon')))? 1 : 2,
+                'FTSbhStaAlwOrdTue'     => (!empty($this->input->post('ocbSbhStaAlwOrdTue')))? 1 : 2,
+                'FTSbhStaAlwOrdWed'     => (!empty($this->input->post('ocbSbhStaAlwOrdWed')))? 1 : 2,
+                'FTSbhStaAlwOrdThu'     => (!empty($this->input->post('ocbSbhStaAlwOrdThu')))? 1 : 2,
+                'FTSbhStaAlwOrdFri'     => (!empty($this->input->post('ocbSbhStaAlwOrdFri')))? 1 : 2,
+                'FTSbhStaAlwOrdSat'     => (!empty($this->input->post('ocbSbhStaAlwOrdSat')))? 1 : 2,
+                'FTSbhStaDefault'       => (!empty($this->input->post('ocbSbhStaDefault')))? 1 : 2
+                );
+
+                $oCountBranch  = $this->mSupplier->FSoMSPLBranchCodeCheckStaDefault($aData);
+                $nStaDefault    = $oCountBranch['counts'];
+                if($nStaDefault == 0){
+                    $aData['FTSbhStaDefault'] = '1';
+                }
+
+                $oCountDup  = $this->mSupplier->FSoMSPLBranchCheckDuplicate($aData);
+
+                $nStaDup    = $oCountDup['counts'];
+                if($nStaDup == 0){
+                    $this->db->trans_begin();
+                    $aStaRsnMaster  = $this->mSupplier->FSaMSPLAddUpdateBranch($aData);
+                    if($this->db->trans_status() === false){
+                        $this->db->trans_rollback();
+                        $aReturn = array(
+                            'nStaEvent'    => '900',
+                            'tStaMessg'    => "Unsucess Add Event"
+                        );
+                    }else{
+                        $this->db->trans_commit();
+                        $aReturn = array(
+                            'nStaEvent'	    => '1',
+                            'tStaMessg'		=> 'Success Add Event'
+                        );
+                    }
+                }else{
+                    $aReturn = array(
+                        'nStaEvent'    => '801',
+                        'tStaMessg'    => language('supplier/supplier/supplier','tSbhValidateDuppicate')
+                    );
+                }
+                echo json_encode($aReturn);
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+    //Functionality : Event Add Supplier Branch
+    //Parameters : Ajax Event
+    //Creator : 26/06/2019 Sarun ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : Status Add Event
+    //Return Type : String
+    public function FSvCSPLEBranchEditPage(){
+        try{
+            $tSplCode       = $this->input->post('ptSplCode');
+            $tBchCode         = $this->input->post('ptBchCode');
+            $nLangEdit      = $this->session->userdata("tLangEdit");
+            $aData  = array(
+                'FTSplCode' => $tSplCode,
+                'FTBchCode'   => $tBchCode,
+                'nLangEdit'  => $nLangEdit
+            );
+            // $aVatList = FCNoHCallVatlist(); //-->Call Vat Active
+            $aSplBranchData       = $this->mSupplier->FSaMSPLGetBranchDataByID($aData);
+            $aDataSupplier  = array(
+                'nStaAddOrEdit' => 1,
+                'aSplBranchData'       => $aSplBranchData,
+            );
+            $this->load->view('supplier/supplier/branch/wSPLBranchAdd',$aDataSupplier);
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+    //Functionality : Event Add Supplier Branch
+    //Parameters : Ajax Event
+    //Creator : 26/06/2019 Sarun ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : Status Add Event
+    //Return Type : String
+    public function FSoCSPLBranchEditEvent(){
+        try{
+                $aData = array(
+                'FTSplCode'             => $this->input->post('oetSBHSplCode'),
+                'FTBchCode'             => $this->input->post('oetSBHBchCode'),
+                'FCSbhLeadTime'         => $this->input->post('oetSBHSbhLeadTime'),
+                'FTSbhOrdDay'           => $this->input->post('oetSBHSSbhOrdDay'),
+                'FTSbhStaAlwOrdSun'     => (!empty($this->input->post('ocbSbhStaAlwOrdSun')))? 1 : 2,
+                'FTSbhStaAlwOrdMon'     => (!empty($this->input->post('ocbSbhStaAlwOrdMon')))? 1 : 2,
+                'FTSbhStaAlwOrdTue'     => (!empty($this->input->post('ocbSbhStaAlwOrdTue')))? 1 : 2,
+                'FTSbhStaAlwOrdWed'     => (!empty($this->input->post('ocbSbhStaAlwOrdWed')))? 1 : 2,
+                'FTSbhStaAlwOrdThu'     => (!empty($this->input->post('ocbSbhStaAlwOrdThu')))? 1 : 2,
+                'FTSbhStaAlwOrdFri'     => (!empty($this->input->post('ocbSbhStaAlwOrdFri')))? 1 : 2,
+                'FTSbhStaAlwOrdSat'     => (!empty($this->input->post('ocbSbhStaAlwOrdSat')))? 1 : 2,
+                'FTSbhStaDefault'       => (!empty($this->input->post('ocbSbhStaDefault')))? 1 : 2
+                );
+         
+                    $this->db->trans_begin();
+                    $aStaRsnMaster  = $this->mSupplier->FSaMSPLAddUpdateBranch($aData);
+                    if($this->db->trans_status() === false){
+                        $this->db->trans_rollback();
+                        $aReturn = array(
+                            'nStaEvent'    => '900',
+                            'tStaMessg'    => "Unsucess Add Event"
+                        );
+                    }else{
+                        $this->db->trans_commit();
+                        $aReturn = array(
+                            'nStaEvent'	    => '1',
+                            'tStaMessg'		=> 'Success Add Event'
+                        );
+                    }
+                    echo json_encode($aReturn);
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+    //Functionality : Event Delete Supplier
+    //Parameters : Ajax
+    //Creator : 22/10/2018 Phisan ยกมาจาก BigC By IcePHP [21/10/2022]
+    //Return : Status Delete Event
+    //Return Type : String
+    public function FSoCSPLBranchDeleteEvent(){
+        try{
+            $tSplCode       = $this->input->post('ptSplCode');
+            $tBchCode         = $this->input->post('ptBchCode');
+            $aDataMaster  = array(
+                'FTSplCode' => $tSplCode,
+                'FTBchCode'   => $tBchCode
+            );
+            $aResDel        = $this->mSupplier->FSnMSPLBranchDel($aDataMaster);
 
 
-
-
+            $aReturn    = array(
+                'nStaEvent' => $aResDel['rtCode'],
+                'tStaMessg' => $aResDel['rtDesc']
+            );
+            echo json_encode($aReturn);
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
 
 }

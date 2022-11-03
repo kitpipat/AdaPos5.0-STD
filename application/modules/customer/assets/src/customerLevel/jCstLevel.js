@@ -139,36 +139,36 @@ function JSnAddEditCstLev(ptRoute) {
             unhighlight: function(element, errorClass, validClass) {
                 $( element ).closest('.form-group').addClass( "has-success" ).removeClass( "has-error" );
             },
-        submitHandler: function(form) {
-            $.ajax({
-                type: "POST",
-                url: ptRoute,
-                data: $('#ofmAddCstLev').serialize(),
-                cache: false,
-                timeout: 0,
-                success: function(tResult) {
-                    if (nStaCstLevBrowseType != 1) {
-                        var aReturn = JSON.parse(tResult);
-                        if (aReturn['nStaEvent'] == 1) {
-                            if (aReturn['nStaCallBack'] == '1' || aReturn['nStaCallBack'] == null) {
-                                JSvCallPageCstLevEdit(aReturn['tCodeReturn'])
-                            } else if (aReturn['nStaCallBack'] == '2') {
-                                JSvCallPageCstLevAdd();
-                            } else if (aReturn['nStaCallBack'] == '3') {
-                                JSvCallPageCstLev();
+            submitHandler: function(form) {
+                $.ajax({
+                    type: "POST",
+                    url: ptRoute,
+                    data: $('#ofmAddCstLev').serialize(),
+                    cache: false,
+                    timeout: 0,
+                    success: function(tResult) {
+                        if (nStaCstLevBrowseType != 1) {
+                            var aReturn = JSON.parse(tResult);
+                            if (aReturn['nStaEvent'] == 1) {
+                                if (aReturn['nStaCallBack'] == '1' || aReturn['nStaCallBack'] == null) {
+                                    JSvCallPageCstLevEdit(aReturn['tCodeReturn'])
+                                } else if (aReturn['nStaCallBack'] == '2') {
+                                    JSvCallPageCstLevAdd();
+                                } else if (aReturn['nStaCallBack'] == '3') {
+                                    JSvCallPageCstLev();
+                                }
+                            } else {
+                                alert(aReturn['tStaMessg']);
                             }
                         } else {
-                            alert(aReturn['tStaMessg']);
+                            JCNxBrowseData(tCallCstLevBackOption);
                         }
-                    } else {
-                        JCNxBrowseData(tCallCstLevBackOption);
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
                     }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
-        },
+                });
+            },
         });
     }   
 }

@@ -61,3 +61,12 @@ $route ['shipviaEventAdd']            = 'shipvia/shipvia/cShipVia/FSoCVIAAddEven
 $route ['shipviaEventEdit']           = 'shipvia/shipvia/cShipVia/FSoCVIAEditEvent';
 $route ['shipviaEventDelete']         = 'shipvia/shipvia/cShipVia/FSoCVIADeleteEvent';
 
+//สโตรบัดดดี้
+$route ['supplierBranch']              = 'supplier/supplier/cSupplier/FSoCSPLBranch';
+$route ['supplierBranchList']          = 'supplier/supplier/cSupplier/FSoCSPLBranchList';
+$route ['supplierBranchDataTable']     = 'supplier/supplier/cSupplier/FSoCSPLBranchDataTable';
+$route ['supplierPageAddBranch']       = 'supplier/supplier/cSupplier/FSvCSPLAddBranchPage';
+$route ['supplierEventAddBranch']      = 'supplier/supplier/cSupplier/FSoCSPLBranchAddEvent';
+$route ['supplierBranchPageEdit']      = 'supplier/supplier/cSupplier/FSvCSPLEBranchEditPage';
+$route ['supplierEventEditBranch']     = 'supplier/supplier/cSupplier/FSoCSPLBranchEditEvent';
+$route ['supplierBranchEventDelete']   = 'supplier/supplier/cSupplier/FSoCSPLBranchDeleteEvent';

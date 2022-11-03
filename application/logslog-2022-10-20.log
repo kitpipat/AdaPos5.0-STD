@@ -1,0 +1,85 @@
+ERROR - 2022-10-20 13:54:07 --> Could not find the language line "รหัสผ่านใหม่เหมือนกับรหัสผ่านเก่าไม่อนุญาตให้ใช้"
+ERROR - 2022-10-20 13:54:08 --> Severity: Notice --> Undefined variable: aDataPdtUnit D:\WebServer\Apache24\htdocs\AdaPos5.0-STD\application\modules\common\views\wFooter.php 93
+ERROR - 2022-10-20 13:54:08 --> Could not find the language line "tLodingData"
+ERROR - 2022-10-20 13:54:09 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:09 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:09 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:09 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:09 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:09 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:09 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:09 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:11 --> 404 Page Not Found: /index
+ERROR - 2022-10-20 13:54:19 --> Severity: Warning --> Use of undefined constant php - assumed 'php' (this will throw an Error in a future version of PHP) D:\WebServer\Apache24\htdocs\AdaPos5.0-STD\application\modules\product\views\product\wProductMain.php 19
+ERROR - 2022-10-20 13:54:20 --> Query error: [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Incorrect syntax near the keyword 'FROM'. - Invalid query: DECLARE @TotalProduct INT
+
+                            SET @TotalProduct = (
+                            SELECT
+                                COUNT (PDT.FTPdtCode)
+                            FROM
+                            TCNMPdt PDT WITH (NOLOCK)
+                            LEFT JOIN TCNMPdtSpcBch PDLSPC WITH (NOLOCK) ON PDT.FTPdtCode = PDLSPC.FTPdtCode  WHERE ISNULL(PDT.FTPdtCode,'') != ''
+                             AND PDT.FTPdtForSystem = 1
+                            
+                            
+                            
+                            ) 
+                             
+                    SELECT DISTINCT
+                    PDT.*, PDTL.FTPdtName,
+                    PUNL.FTPunCode,
+                    PUNL.FTPunName,
+                    PBAR.FTBarCode,
+                    PGL.FTPgpName,
+                    PTL.FTPtyName,
+                    PIMG.FTImgObj,
+                     @TotalProduct AS rtCountData,
+                    CASE WHEN PRI.FCPgdPriceRet IS NOT NULL THEN '1' ELSE '2' END AS rtPdtStaPriRef ,
+                ISNULL(PRI.FCPgdPriceRet, 0) AS FCPgdPriceRet
+                FROM
+                    (
+                        SELECT
+                            c.*
+                        FROM
+                            (
+                                SELECT
+                                    ROW_NUMBER () OVER (ORDER BY FDCreateOn DESC) AS FNRowID,
+                                    *
+                                FROM
+                                    (
+                                          SELECT      PDT.FTPdtForSystem,
+                                PDT.FTPdtCode,
+                                PDT.FTPbnCode,
+                                PDT.FTPtyCode,
+                                PDT.FTPgpChain,
+                                PDT.FTCreateBy,
+                                PDT.FDCreateOn,
+                            FROM
+                                TCNMPdt PDT WITH (NOLOCK)
+                            LEFT JOIN TCNMPdtSpcBch PDLSPC WITH (NOLOCK) ON PDT.FTPdtCode = PDLSPC.FTPdtCode  WHERE 1=1
+                             AND PDT.FTPdtForSystem = 1
+                            
+                            
+                            
+                                    ) Base
+                            ) AS c
+                        WHERE
+                            c.FNRowID > 0
+                        AND c.FNRowID <= 50
+                    ) PDT
+                LEFT JOIN TCNMPdt_L PDTL WITH (NOLOCK)       ON PDT.FTPdtCode = PDTL.FTPdtCode  AND PDTL.FNLngID    = 1
+                LEFT JOIN TCNMPdtPackSize PPCZ WITH (NOLOCK) ON PDT.FTPdtCode = PPCZ.FTPdtCode
+                LEFT JOIN TCNMPdtBar PBAR WITH (NOLOCK)      ON PDT.FTPdtCode = PBAR.FTPdtCode  AND PPCZ.FTPunCode = PBAR.FTPunCode
+                LEFT JOIN TCNMImgPdt PIMG WITH (NOLOCK)      ON PDT.FTPdtCode = PIMG.FTImgRefID AND PIMG.FTImgTable = 'TCNMPdt' AND PIMG.FNImgSeq = 1
+                LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID = 1
+                LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = 1
+                LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = PDT.FTPgpChain AND PGL.FNLngID = 1
+                LEFT JOIN TCNMPdtBrand_L PBNL WITH (NOLOCK)     ON PDT.FTPbnCode = PBNL.FTPbnCode AND PBNL.FNLngID = 1
+                LEFT JOIN (
+                    SELECT
+                        FCPgdPriceRet,FTPdtCode,FTPunCode
+                    FROM
+                        VCN_Price4PdtActive
+                ) AS PRI ON PRI.FTPdtCode = PDT.FTPdtCode
+                AND PPCZ.FTPunCode = PRI.FTPunCode
+                WHERE 1=1  ORDER BY FNRowID

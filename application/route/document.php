@@ -856,28 +856,41 @@ $route['TWOTransferwarehouseoutEventAddPdtIntoDTFhnTemp']   = 'document/transfer
 
 
 //ใบจ่ายโอน - สาขา
-$route['docTransferBchOut/(:any)/(:any)']      = 'document/transfer_branch_out/cTransferBchOut/index/$1/$2';
-$route['docTransferBchOutList']                = 'document/transfer_branch_out/cTransferBchOut/FSxCTransferBchOutList';
-$route['docTransferBchOutDataTable']           = 'document/transfer_branch_out/cTransferBchOut/FSxCTransferBchOutDataTable';
-$route['docTransferBchOutCallPageAdd']         = 'document/transfer_branch_out/cTransferBchOut/FSxCTransferBchOutAddPage';
-$route['docTransferBchOutEventAdd']            = 'document/transfer_branch_out/cTransferBchOut/FSaCTransferBchOutAddEvent';
-$route['docTransferBchOutCallPageEdit']        = 'document/transfer_branch_out/cTransferBchOut/FSvCTransferBchOutEditPage';
-$route['docTransferBchOutEventEdit']           = 'document/transfer_branch_out/cTransferBchOut/FSaCTransferBchOutEditEvent';
-$route['docTransferBchOutUniqueValidate']      = 'document/transfer_branch_out/cTransferBchOut/FStCTransferBchOutUniqueValidate/$1';
-$route['docTransferBchOutDocApprove']          = 'document/transfer_branch_out/cTransferBchOut/FStCTransferBchOutDocApprove';
-$route['docTransferBchOutDocCancel']           = 'document/transfer_branch_out/cTransferBchOut/FStCTransferBchOutDocCancel';
-$route['docTransferBchOutDelDoc']              = 'document/transfer_branch_out/cTransferBchOut/FStTransferBchOutDeleteDoc';
-$route['docTransferBchOutDelDocMulti']         = 'document/transfer_branch_out/cTransferBchOut/FStTransferBchOutDeleteMultiDoc';
-$route['docTransferBchOutInsertPdtToTmp']      = 'document/transfer_branch_out/cTransferBchOutPdt/FSaCTransferBchOutInsertPdtToTmp';
-$route['docTransferBchOutGetPdtInTmp']         = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutGetPdtInTmp';
-$route['docTransferBchOutUpdatePdtInTmp']      = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutUpdatePdtInTmp';
-$route['docTransferBchOutDeletePdtInTmp']      = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutDeletePdtInTmp';
-$route['docTransferBchOutDeleteMorePdtInTmp']  = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutDeleteMorePdtInTmp';
-$route['docTransferBchOutClearPdtInTmp']       = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutClearPdtInTmp';
-$route['docTransferBchOutGetPdtColumnList']    = 'document/transfer_branch_out/cTransferBchOutPdt/FStCTransferBchOutGetPdtColumnList';
-$route['docTransferBchOutUpdatePdtColumn']     = 'document/transfer_branch_out/cTransferBchOutPdt/FStCTransferBchOutUpdatePdtColumn';
-$route['docTBOEventAddPdtIntoDTFhnTemp']       = 'document/transfer_branch_out/cTransferBchOutPdt/FSoCTBOEventAddPdtIntoDTFhnTemp';
+$route['docTransferBchOut/(:any)/(:any)']                   = 'document/transfer_branch_out/cTransferBchOut/index/$1/$2';
+$route['docTransferBchOutList']                             = 'document/transfer_branch_out/cTransferBchOut/FSxCTransferBchOutList';
+$route['docTransferBchOutDataTable']                        = 'document/transfer_branch_out/cTransferBchOut/FSxCTransferBchOutDataTable';
+$route['docTransferBchOutCallPageAdd']                      = 'document/transfer_branch_out/cTransferBchOut/FSxCTransferBchOutAddPage';
+$route['docTransferBchOutEventAdd']                         = 'document/transfer_branch_out/cTransferBchOut/FSaCTransferBchOutAddEvent';
+$route['docTransferBchOutCallPageEdit']                     = 'document/transfer_branch_out/cTransferBchOut/FSvCTransferBchOutEditPage';
+$route['docTransferBchOutEventEdit']                        = 'document/transfer_branch_out/cTransferBchOut/FSaCTransferBchOutEditEvent';
+$route['docTransferBchOutUniqueValidate']                   = 'document/transfer_branch_out/cTransferBchOut/FStCTransferBchOutUniqueValidate/$1';
+$route['docTransferBchOutDocApprove']                       = 'document/transfer_branch_out/cTransferBchOut/FStCTransferBchOutDocApprove';
+$route['docTransferBchOutDocCancel']                        = 'document/transfer_branch_out/cTransferBchOut/FStCTransferBchOutDocCancel';
+$route['docTransferBchOutDelDoc']                           = 'document/transfer_branch_out/cTransferBchOut/FStTransferBchOutDeleteDoc';
+$route['docTransferBchOutDelDocMulti']                      = 'document/transfer_branch_out/cTransferBchOut/FStTransferBchOutDeleteMultiDoc';
+$route['docTransferBchOutInsertPdtToTmp']                   = 'document/transfer_branch_out/cTransferBchOutPdt/FSaCTransferBchOutInsertPdtToTmp';
+$route['docTransferBchOutGetPdtInTmp']                      = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutGetPdtInTmp';
+$route['docTransferBchOutUpdatePdtInTmp']                   = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutUpdatePdtInTmp';
+$route['docTransferBchOutDeletePdtInTmp']                   = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutDeletePdtInTmp';
+$route['docTransferBchOutDeleteMorePdtInTmp']               = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutDeleteMorePdtInTmp';
+$route['docTransferBchOutClearPdtInTmp']                    = 'document/transfer_branch_out/cTransferBchOutPdt/FSxCTransferBchOutClearPdtInTmp';
+$route['docTransferBchOutGetPdtColumnList']                 = 'document/transfer_branch_out/cTransferBchOutPdt/FStCTransferBchOutGetPdtColumnList';
+$route['docTransferBchOutUpdatePdtColumn']                  = 'document/transfer_branch_out/cTransferBchOutPdt/FStCTransferBchOutUpdatePdtColumn';
 
+$route['docTransferBchOutRefIntDoc']                        = 'document/transfer_branch_out/cTransferBchOutPdt/FSoCTransferBchOutRefIntDoc';
+$route['docTransferBchOutRefIntDocDataTable']               = 'document/transfer_branch_out/cTransferBchOutPdt/FSoCTransferBchOutCallRefIntDocDataTable';
+$route['docTransferBchOutRefIntDocDetailDataTable']         = 'document/transfer_branch_out/cTransferBchOutPdt/FSoCTransferBchOutCallRefIntDocDetailDataTable';
+$route['docTransferBchOutRefIntDocInsertDTToTemp']          = 'document/transfer_branch_out/cTransferBchOutPdt/FSoCTransferBchOutCallRefIntDocInsertDTToTemp';
+
+$route['docTBOPageHDDocRef']                                = 'document/transfer_branch_out/cTransferBchOut/FSaCTBOPageHDDocRef';
+$route['docTBOEventAddEditHDDocRef']                        = 'document/transfer_branch_out/cTransferBchOut/FSaCTBOEventAddEditHDDocRef';
+$route['docTBOEventDelHDDocRef']                            = 'document/transfer_branch_out/cTransferBchOut/FSoCTBOEventDelHDDocRef';
+$route['docTBOEventGenDocPacking']                          = 'document/transfer_branch_out/cTransferBchOut/FSxCTBOEventGenDocPacking';
+$route['docTBOEventChkPdtB4Apv']                            = 'document/transfer_branch_out/cTransferBchOut/FSaCTBOEventChkPdtB4Apv';
+$route['docTBOEventGetConfigGenDocPack']                    = 'document/transfer_branch_out/cTransferBchOut/FSoCTBOEventGetConfigGenDocPack';
+$route['docTBOEventSaveConfigGenDocPack']                   = 'document/transfer_branch_out/cTransferBchOut/FSoCTBOEventSaveConfigGenDocPack';
+
+$route['docTBOCancelOnApv']                                 = 'document/transfer_branch_out/cTransferBchOut/FSoCTBOEventCancelOnApv';
 // ========================================= ใบมัดจำ - DepositDoc =========================================== //
 $route['dcmDPS/(:any)/(:any)']                       = 'document/depositdoc/Deposit_controller/index/$1/$2';
 $route['dcmDPSFormSearchList']                       = 'document/depositdoc/Deposit_controller/FSvCDPSFormSearchList';

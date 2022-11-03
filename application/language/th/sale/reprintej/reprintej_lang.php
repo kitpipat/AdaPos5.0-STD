@@ -27,15 +27,15 @@ $lang['tEJDocumentTypeXBNK']        = "เอกสารการส่งเ�
 // Lang Browse Slipe
 $lang['tEJSlipBrowseTitle']         = "เอกสารใบกำกับภาษีอย่างย่อ";
 $lang['tEJSlipBrowseBranch']        = "สาขา";
-$lang['tEJSlipBrowsePos']          = "จุดขาย";
+$lang['tEJSlipBrowsePos']           = "จุดขาย";
 $lang['tEJSlipBrowseType']          = "ประเภท";
-$lang['tEJSlipBrowseType1']          = "บิลขาย";
-$lang['tEJSlipBrowseType2']          = "บิลคืน";
+$lang['tEJSlipBrowseType1']         = "บิลขาย";
+$lang['tEJSlipBrowseType2']         = "บิลคืน";
 
 
-$lang['tEJSlipBrowseDateSale']          = "วันที่ขาย";
-$lang['tEJSlipBrowseNo']          = "เลขที่";
-$lang['tEJSlipBrowseUsr']          = "แคชเชียร์";
+$lang['tEJSlipBrowseDateSale']      = "วันที่ขาย";
+$lang['tEJSlipBrowseNo']            = "เลขที่";
+$lang['tEJSlipBrowseUsr']           = "แคชเชียร์";
 $lang['tEJSlipBrowseShop']          = "ร้านค้า";
 $lang['tEJSlipBrowseDocumentNo']    = "เลขที่เอกสาร";
 $lang['tEJSlipBrowseDocumentDate']  = "วันที่เอกสาร";
@@ -45,5 +45,7 @@ $lang['tRPEJFilterSerch']           = "แสดงใหม่";
 // Viewer EJ
 $lang['tEJNotFoundData']            = "ไม่พบข้อมูลใบกำกับภาษีอย่างย่อ";
 
+$lang['tEJA4Size']                  = "A4";
+$lang['tEJThermalSize']             = "Thermal";
 
 

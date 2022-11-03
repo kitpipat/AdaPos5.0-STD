@@ -204,7 +204,7 @@ class mBrowserPDTCallView extends CI_Model
                 $tSesUsrBchCodeMulti        = $this->session->userdata("tSesUsrBchCodeMulti");
                 
                 // $tShpSession        = $this->session->userdata("tSesUsrShpCodeMulti");
-                // $tMerSession        = $this->session->userdata("tSesUsrMerCode");
+                $tMerSession        = $this->session->userdata("tSesUsrMerCode");
                 $tSesUsrLevel       = $this->session->userdata('tSesUsrLevel');
                 $tSesRealUsrLevel    = $this->session->userdata('tSesRealUsrLevel');
                 $tSesUsrBchCodeMulti = ($tSesUsrBchCodeMulti) ? '' : FCNtAddSingleQuote($tSesUsrBchCodeMulti); 
@@ -225,7 +225,7 @@ class mBrowserPDTCallView extends CI_Model
                 }
 
                 if ($paData['tMER'] == '') {
-                    $tMER   = $tSesUsrBchCodeMulti;
+                    $tMER   = $tMerSession;
                 } else {
                     $tMER   = $paData['tMER'];
                 }
@@ -244,15 +244,14 @@ class mBrowserPDTCallView extends CI_Model
                     $nMaxTopPage = 0;
                 }
                 
-                $tCallStore = "{CALL SP_CNoBrowseProduct(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+                $tCallStore = "{CALL SP_CNoBrowseProduct_dev(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
                 $aDataStore = array(
                     'ptUsrCode'           => $tSesUserCode,
-                    'ptUsrLevel'          => $tSesRealUsrLevel,  //$tSesUsrLevel
+                    'ptUsrLevel'          => $tSesUsrLevel,  //$tSesUsrLevel
                     'tSesUsrAgnCode'      => $tSesUsrAgnCode,
                     'ptSesBchCodeMulti'   => $tBCH,
                     'ptSesShopCodeMulti'  => $tSHP,
                     'ptSesMerCode'        => $tMER,
-                    'ptWahCode'           => $tWAH,
                     'pnRow'               => $paData['nRow'],
                     'pnPage'              => $paData['nPage'],
                     'pnMaxTopPage'        => $nMaxTopPage,
@@ -269,7 +268,6 @@ class mBrowserPDTCallView extends CI_Model
                     'ptSqlCode'           => $aDataParamExe['ptSqlCode'],
                     'ptPriceType'         => $aDataParamExe['ptPriceType'],
                     'ptPplCode'           => $aDataParamExe['ptPplCode'],
-                    'ptPdtSpcCtl'         => $aDataParamExe['ptPdtSpcCtl'],
                     'FNResult'            => $nLngID
                 );
                 // echo "<pre>";

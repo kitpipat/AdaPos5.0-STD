@@ -12,27 +12,31 @@ class mCustomerLevel extends CI_Model {
      * Return Type : array
      */
     public function FSaMCstLevSearchByID($ptAPIReq, $ptMethodReq, $paData){
-        $tCstLevCode   = $paData['FTCstLevCode'];
-        $nLngID     = $paData['FNLngID'];
+        $tCstLevCode    = $paData['FTCstLevCode'];
+        $nLngID         = $paData['FNLngID'];
         $tSQL       = "SELECT
-                            CstLev.FTClvCode   AS rtCstLevCode,
-                            CstLevL.FTClvName  AS rtCstLevName,
-                            CstLevL.FTClvRmk   AS rtCstLevRmk,
-                            CstLev.FTAgnCode   AS rtAgnCode,
-                            AGNL.FTAgnName  AS rtAgnName,
-                            CstLev.FTLevStaAlwPnt   AS rtCClvAlwPnt,
-                            CstLev.FCLevRtePntAmt   AS rtCClvCalAmt,
-                            CstLev.FCLevRtePntQty   AS rtCClvCalPnt,
-                            CstLev.FTPplCode     AS rtCClvCode,
-                            TCNMPdtPriList_L.FTPplName  AS rtPplName
+                            CstLev.FTClvCode        AS rtCstLevCode,
+                            CstLevL.FTClvName       AS rtCstLevName,
+                            CstLevL.FTClvRmk        AS rtCstLevRmk,
+                            CstLev.FTAgnCode        AS rtAgnCode,
+                            AGNL.FTAgnName          AS rtAgnName,
+                            --CstLev.FTLevStaAlwPnt   AS rtCClvAlwPnt,
+                            --CstLev.FCLevRtePntAmt   AS rtCClvCalAmt,
+                            --CstLev.FCLevRtePntQty   AS rtCClvCalPnt,
+                            CstLev.FCLevRtePntAge   AS rtCstLevRtePntAge,
+                            CstLev.FTLevStaAlwPnt   AS rtCstLevStaAlwPnt,
+                            CstLev.FCLevRtePntAmt   AS rtCstLevRtePntAmt,
+                            CstLev.FCLevRtePntQty   AS rtCstLevRtePntQty,
+                            CstLev.FTPplCode        AS rtCstLevPplCode,
+                            PLL.FTPplName           AS rtCstLevPplName
                        FROM [TCNMCstLev] CstLev
-                       LEFT JOIN [TCNMCstLev_L]  CstLevL ON CstLev.FTClvCode = CstLevL.FTClvCode AND CstLevL.FNLngID = $nLngID
-                       LEFT JOIN TCNMAgency_L AGNL ON  CstLev.FTAgnCode = AGNL.FTAgnCode AND AGNL.FNLngID  = $nLngID
-                       LEFT JOIN TCNMPdtPriList  ON  TCNMPdtPriList.FTPplCode = CstLev.FTPplCode
-                       LEFT JOIN TCNMPdtPriList_L  ON  TCNMPdtPriList_L.FTPplCode = TCNMPdtPriList.FTPplCode AND TCNMPdtPriList_L.FNLngID  = $nLngID
-                       WHERE 1=1 ";
-        if($tCstLevCode!= ""){
-            $tSQL .= "AND CstLev.FTClvCode = '$tCstLevCode'";
+                       LEFT JOIN [TCNMCstLev_L]     CstLevL    ON  CstLev.FTClvCode      = CstLevL.FTClvCode     AND CstLevL.FNLngID     = $nLngID
+                       LEFT JOIN TCNMAgency_L       AGNL       ON  CstLev.FTAgnCode      = AGNL.FTAgnCode        AND AGNL.FNLngID        = $nLngID
+                       --LEFT JOIN TCNMPdtPriList  ON  TCNMPdtPriList.FTPplCode = CstLev.FTPplCode
+                       LEFT JOIN TCNMPdtPriList_L   PLL        ON  CstLev.FTPplCode      = PLL.FTPplCode         AND PLL.FNLngID         = $nLngID
+                       ";
+        if($tCstLevCode != ""){
+            $tSQL .= "WHERE CstLev.FTClvCode = '$tCstLevCode'";
         }
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0){
@@ -68,22 +72,32 @@ class mCustomerLevel extends CI_Model {
         $nLngID     = $paData['FNLngID'];
 
         $tSesAgnCode = $paData['tSesAgnCode'];
-        $tSQL       = "SELECT c.* FROM(
-                       SELECT  ROW_NUMBER() OVER(ORDER BY FDCreateOn DESC , rtCstLevCode DESC) AS rtRowID,*
-                       FROM
-                       (SELECT DISTINCT
-                                CstLev.FTClvCode   AS rtCstLevCode,
-                                CstLevL.FTClvName  AS rtCstLevName,
-                                CstLev.FDCreateOn,
-                                CST.FTClvCode AS rtCstClvCodeLef,
-                                CstLev.FTLevStaAlwPnt   AS rtCClvAlwPnt,
-                                CstLev.FCLevRtePntAmt      AS rtCClvCalAmt,
-                                CstLev.FCLevRtePntQty      AS rtCClvCalPnt
-                        FROM [TCNMCstLev] CstLev
-                        LEFT JOIN [TCNMCstLev_L] CstLevL ON CstLevL.FTClvCode = CstLev.FTClvCode AND CstLevL.FNLngID = $nLngID
-                        LEFT JOIN ( SELECT DISTINCT CST.FTClvCode FROM TCNMCst CST WITH ( nolock )) CST ON CstLev.FTClvCode = CST.FTClvCode
-                        WHERE 1=1";
-        
+        /*$tSQL       = "SELECT c.* FROM(
+                            SELECT  ROW_NUMBER() OVER(ORDER BY FDCreateOn DESC , rtCstLevCode DESC) AS rtRowID,*
+                            FROM (
+                                    SELECT DISTINCT
+                                            CstLev.FTClvCode   AS rtCstLevCode,
+                                            CstLevL.FTClvName  AS rtCstLevName,
+                                            CstLev.FDCreateOn,
+                                            CST.FTClvCode AS rtCstClvCodeLef,
+                                            CstLev.FTLevStaAlwPnt   AS rtCClvAlwPnt,
+                                            CstLev.FCLevRtePntAmt      AS rtCClvCalAmt,
+                                            CstLev.FCLevRtePntQty      AS rtCClvCalPnt
+                                    FROM [TCNMCstLev] CstLev
+                                    LEFT JOIN [TCNMCstLev_L] CstLevL ON CstLevL.FTClvCode = CstLev.FTClvCode AND CstLevL.FNLngID = $nLngID
+                                    LEFT JOIN ( SELECT DISTINCT CST.FTClvCode FROM TCNMCst CST WITH ( nolock )) CST ON CstLev.FTClvCode = CST.FTClvCode
+                                    WHERE 1=1";*/
+        $tSQL       = "SELECT c.* FROM (
+                            SELECT  ROW_NUMBER() OVER(ORDER BY FDCreateOn DESC , rtCstLevCode DESC) AS rtRowID,*
+                            FROM (
+                                    SELECT DISTINCT
+                                            CstLev.FTClvCode   AS rtCstLevCode,
+                                            CstLevL.FTClvName  AS rtCstLevName,
+                                            CstLev.FDCreateOn
+                                    FROM [TCNMCstLev] CstLev
+                                    LEFT JOIN [TCNMCstLev_L] CstLevL ON CstLevL.FTClvCode = CstLev.FTClvCode AND CstLevL.FNLngID = $nLngID
+                                    WHERE 1=1";                            
+                        
         $tSearchList = $paData['tSearchAll'];
         if ($tSearchList != ''){
             // $tSQL .= " AND (CstLev.FTClvCode LIKE '%$tSearchList%'";
@@ -100,10 +114,10 @@ class mCustomerLevel extends CI_Model {
         $oQuery = $this->db->query($tSQL);
         if($oQuery->num_rows() > 0){
             $oList = $oQuery->result();
-            $aFoundRow = $this->FSnMCstLevGetPageAll(/*$tWhereCode,*/ $tSearchList, $nLngID,$tSesAgnCode);
-            $nFoundRow = $aFoundRow[0]->counts;
-            $nPageAll = ceil($nFoundRow/$paData['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
-            $aResult = array(
+            $aFoundRow  = $this->FSnMCstLevGetPageAll(/*$tWhereCode,*/ $tSearchList, $nLngID,$tSesAgnCode);
+            $nFoundRow  = $aFoundRow[0]->counts;
+            $nPageAll   = ceil($nFoundRow/$paData['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
+            $aResult    = array(
                 'raItems'       => $oList,
                 'rnAllRow'      => $nFoundRow,
                 'rnCurrentPage' => $paData['nPage'],
@@ -114,11 +128,11 @@ class mCustomerLevel extends CI_Model {
         }else{
             //No Data
             $aResult = array(
-                'rnAllRow' => 0,
+                'rnAllRow'      => 0,
                 'rnCurrentPage' => $paData['nPage'],
-                "rnAllPage"=> 0,
-                'rtCode' => '800',
-                'rtDesc' => 'data not found',
+                "rnAllPage"     => 0,
+                'rtCode'        => '800',
+                'rtDesc'        => 'data not found',
             );
         }
         
@@ -193,9 +207,15 @@ class mCustomerLevel extends CI_Model {
             // Update Master
             $this->db->set('FDLastUpdOn' , $paData['FDLastUpdOn']);
             $this->db->set('FTLastUpdBy' , $paData['FTLastUpdBy']);
+            $this->db->set('FTPplCode' , $paData['FTPplCode']);
+            $this->db->set('FCLevRtePntAmt' , $paData['FCLevRtePntAmt']);
+            $this->db->set('FCLevRtePntQty' , $paData['FCLevRtePntQty']);
+            $this->db->set('FTLevStaAlwPnt' , $paData['FTLevStaAlwPnt']);
+            $this->db->set('FCLevRtePntAge' , $paData['FCLevRtePntAge']);
             $this->db->set('FTAgnCode' , $paData['FTAgnCode']);
             $this->db->where('FTClvCode', $paData['FTCstLevCode']);
             $this->db->update('TCNMCstLev');
+
             if($this->db->affected_rows() > 0){
                 $aStatus = array(
                     'rtCode' => '1',
@@ -210,6 +230,12 @@ class mCustomerLevel extends CI_Model {
                     'FDLastUpdOn'   => $paData['FDLastUpdOn'],
                     'FTLastUpdBy'   => $paData['FTLastUpdBy'],
                     'FTAgnCode'     => $paData['FTAgnCode'],
+                    'FCLevRtePntAge' => $paData['FCLevRtePntAge'],
+                    'FCLevRtePntAmt' => $paData['FCLevRtePntAmt'],
+                    'FCLevRtePntQty' => $paData['FCLevRtePntQty'],
+                    'FTLevStaAlwPnt' => $paData['FTLevStaAlwPnt'],
+                    'FCLevRtePntAge' => $paData['FCLevRtePntAge'],
+                    'FTPplCode'      => $paData['FTPplCode']
                 ));
                 if($this->db->affected_rows() > 0){
                     $aStatus = array(

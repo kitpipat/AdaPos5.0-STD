@@ -19,7 +19,7 @@
 		width: 30px;
 		height: 30px;
 		line-height: 30px;
-		background-color: #179BFD;
+		background-color: #1866ae;
 		text-align: center;
 		margin-top: 8px;
 		/* margin-right: -15px; */
@@ -31,11 +31,11 @@
 		-ms-border-radius: 50%;
 		-o-border-radius: 50%;
 	}
-	/* .fancy-checkbox {
+	.fancy-checkbox {
 		display: inline-block;
 		font-weight: normal;
 		width: 120px;
-	} */
+	}
 	.xCNTransferBchOutTotalLabel {
 		background-color: #f5f5f5;
 		padding: 5px 10px;
@@ -121,6 +121,9 @@
 		$tUserWahCodeTo = $aResult['raItems']['FTXthWhTo'];
 		$tUserWahNameTo = $aResult['raItems']['FTXthWhToName'];
 
+		$tStaPrcDoc = $aResult['raItems']['FTXthStaPrcDoc'];
+		$nStaUploadFile = 2;
+
 	} else { // New
 		$tUserLevel = $this->session->userdata('tSesUsrLevel');
 		$tBchCode = $this->session->userdata("tSesUsrBchCodeDefault");
@@ -179,13 +182,16 @@
 		$tUserMchNameFrom = $this->session->userdata('tSesUsrMerName');
 		$tUserShpCodeFrom = $this->session->userdata('tSesUsrShpCodeDefault');
 		$tUserShpNameFrom = $this->session->userdata('tSesUsrShpNameDefault');
-		$tUserWahCodeFrom = $this->session->userdata('tSesUsrWahCode');
-		$tUserWahNameFrom = $this->session->userdata('tSesUsrWahName');
+		$tUserWahCodeFrom = "";//$this->session->userdata('tSesUsrWahCode');
+		$tUserWahNameFrom = "";//$this->session->userdata('tSesUsrWahName');
 
 		$tUserBchCodeTo = "";
 		$tUserBchNameTo = "";
 		$tUserWahCodeTo = "";
 		$tUserWahNameTo = "";
+
+		$tStaPrcDoc = "";
+		$nStaUploadFile = 1;
 
 		// if ($this->session->userdata('tSesUsrLevel') == 'HQ') {
 		// 	$tUserBchCodeFrom = $tBchCompCode;
@@ -210,17 +216,27 @@
 		// }
 	}
 
+	// if( $tStaPrcDoc != "" ){
+	// 	if( $tStaPrcDoc != "1" ){
+	// 		$bIsPacking = true;
+	// 	}else{
+	// 		$bIsPacking = false;
+	// 	}
+	// }else{
+	// 	$bIsPacking = false;
+	// }
+
 	$nLangEdit = $this->session->userdata("tLangEdit");
 	$tUsrApv = $this->session->userdata("tSesUsername");
 	$tUserLoginLevel = $this->session->userdata("tSesUsrLevel");
 	$bIsAddPage = empty($tDocNo) ? true : false;
 	$bIsApv = empty($tStaApv) ? false : true;
+	$bIsPrcStk = ($tStaPrcStk == "1") ? true : false;
 	$bIsCancel = ($tStaDoc == "3") ? true : false;
 	$bIsApvOrCancel = ($bIsApv || $bIsCancel);
 	$bIsMultiBch = $this->session->userdata("nSesUsrBchCount") > 1;
 	$bIsShpEnabled = FCNbGetIsShpEnabled();
-
-	$aCompanyInfo  = FCNaGetCompanyForDocument();
+	$bIsPacking = ( $tStaPrcDoc != "" && $tStaPrcDoc != "1" ? true : false );
 ?>
 
 <script>
@@ -230,21 +246,21 @@
 	var bIsAddPage = <?php echo ($bIsAddPage) ? 'true' : 'false'; ?>;
 	var bIsApv = <?php echo ($bIsApv) ? 'true' : 'false'; ?>;
 	var bIsCancel = <?php echo ($bIsCancel) ? 'true' : 'false'; ?>;
+	var bIsPrcStk = <?php echo ($bIsPrcStk) ? 'true' : 'false'; ?>;
 	var bIsApvOrCancel = <?php echo ($bIsApvOrCancel) ? 'true' : 'false'; ?>;
 	var tStaApv = '<?php echo $tStaApv; ?>';
 	var bIsMultiBch = <?php echo ($bIsMultiBch) ? 'true' : 'false'; ?>;
 	var bIsShpEnabled = <?php echo ($bIsShpEnabled) ? 'true' : 'false'; ?>;
+	var bIsPacking = <?php echo ($tStaPrcDoc != "" && $tStaPrcDoc != "1") ? 'true' : 'false'; ?>;
 </script>
 
 <form class="contact100-form validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmTransferBchOutForm">
-    <input type="hidden" id="ohdTransferBchOutVatRate" name="ohdTransferBchOutVatRate" value="<?php echo $aCompanyInfo['cVatRate']; ?>">
-	<input type="hidden" id="ohdTransferBchOutVatInOrEx" name="ohdTransferBchOutVatInOrEx" value="<?php echo $aCompanyInfo['tCmpRetInOrEx']; ?>">
+	<input type="hidden" id="ohdTBOStaPrcDoc" name="ohdTBOStaPrcDoc" value="<?php echo $tStaPrcDoc; ?>">
 	<input type="hidden" id="ohdTransferBchOutBchLogin" name="ohdTransferBchOutBchLogin" value="<?php echo $tBchCode; ?>">
 	<input type="hidden" id="ohdTransferBchOutStaApv" name="ohdTransferBchOutStaApv" value="<?php echo $tStaApv; ?>">
 	<input type="hidden" id="ohdTransferBchOutStaDelMQ" name="ohdTransferBchOutStaDelMQ" value="<?php echo $tStaDelMQ; ?>">
 	<input type="text" class="xCNHide" id="oetTransferBchOutApvCodeUsrLogin" name="oetTransferBchOutApvCodeUsrLogin" maxlength="20" value="<?php echo $this->session->userdata('tSesUsername'); ?>">
 	<input type="text" class="xCNHide" id="ohdLangEdit" name="ohdLangEdit" maxlength="1" value="<?php echo $this->session->userdata("tLangEdit"); ?>">
-	<input type="hidden" id="ohdTBRoute" name="ohdTBRoute" value="<?php echo $tRoute; ?>">
 	<button style="display:none" type="submit" id="obtTransferBchOutSubmit" onclick="JSxTransferBchOutValidateForm();"></button>
 
 	<div class="row">
@@ -292,7 +308,7 @@
 						<?php } else { ?>
 							<div class="form-group" id="odvPunCodeForm">
 								<div class="validate-input">
-									<input type="text" class="form-control xCNInputWithoutSpcNotThai xCNApvOrCanCelDisabled" maxlength="20" id="oetTransferBchOutDocNo" name="oetTransferBchOutDocNo" data-is-created="<?php  ?>" placeholder="<?= language('document/transfer_branch_out/transfer_branch_out', 'tTFWDocNo') ?>" value="<?php echo $tDocNo; ?>" readonly onfocus="this.blur()">
+									<input type="text" class="form-control xCNInputWithoutSpcNotThai " maxlength="20" id="oetTransferBchOutDocNo" name="oetTransferBchOutDocNo" data-is-created="<?php  ?>" placeholder="<?= language('document/transfer_branch_out/transfer_branch_out', 'tTFWDocNo') ?>" value="<?php echo $tDocNo; ?>" readonly onfocus="this.blur()">
 								</div>
 							</div>
 						<?php } ?>
@@ -391,13 +407,7 @@
 										value="<?php echo $tBchName; ?>"
 										readonly>
 										<span class="input-group-btn xWConditionSearchPdt">
-											<button id="obtTransferBchOutBrowseBch" type="button" class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled" 
-											<?php 
-												if($tRoute != "docTransferBchOutEventAdd"){
-														echo 'disabled';
-												}
-											?>
-											>
+											<button id="obtTransferBchOutBrowseBch" type="button" class="btn xCNBtnBrowseAddOn xCNApvOrCanCelDisabled">
 												<img src="<?php echo  base_url().'application/modules/common/assets/images/icons/find-24.png'?>">
 											</button>
 										</span>
@@ -451,7 +461,7 @@
 								<div class="input-group">
 									<input
 									type="text"
-									class="input100 xCNHide xCNApvOrCanCelDisabled xFhnBchCodeShw"
+									class="input100 xCNHide xCNApvOrCanCelDisabled"
 									id="oetTransferBchOutXthBchFrmCode"
 									name="oetTransferBchOutXthBchFrmCode"
 									maxlength="5"
@@ -500,7 +510,7 @@
 								<div class="input-group">
 									<input
 									type="text"
-									class="input100 xCNHide xCNApvOrCanCelDisabled xFhnWahCodeShw"
+									class="input100 xCNHide xCNApvOrCanCelDisabled"
 									id="oetTransferBchOutXthWhFrmCode"
 									name="oetTransferBchOutXthWhFrmCode"
 									maxlength="5"
@@ -541,6 +551,7 @@
 									type="text"
 									id="oetTransferBchOutXthBchToName"
 									name="oetTransferBchOutXthBchToName"
+									placeholder="<?php echo language('document/transferreceiptbranch/transferreceiptbranch', 'tTBIBranch'); ?>"
 									value="<?php echo $tUserBchNameTo; ?>"
 									readonly
 									data-validate-required="<?php echo language('document/transfer_branch_out/transfer_branch_out', 'tTBPlsEnterBch'); ?>">
@@ -565,6 +576,7 @@
 									value="<?php echo $tUserWahCodeTo; ?>">
 									<input
 									class="form-control xWPointerEventNone xCNApvOrCanCelDisabled"
+									placeholder="<?php echo language('document/transfer_branch_out/transfer_branch_out', 'คลังสินค้า'); ?>"
 									type="text"
 									id="oetTransferBchOutXthWhToName"
 									name="oetTransferBchOutXthWhToName"
@@ -585,7 +597,7 @@
 			</div>
 
 			<!--Section : อ้างอิงเอกสาร -->
-			<div class="panel panel-default" style="margin-bottom: 25px;">
+			<div class="panel panel-default" style="margin-bottom: 25px;display:none;">
 				<div class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
 					<label class="xCNTextDetail1"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'อ้างอิงเอกสาร'); ?></label>
 					<a class="xCNMenuplus" role="button" data-toggle="collapse" href="#odvTransferBchOutDocReferPanel" aria-expanded="true">
@@ -594,47 +606,40 @@
 				</div>
 				<div id="odvTransferBchOutDocReferPanel" class="panel-collapse collapse in" role="tabpanel">
 					<div class="panel-body xCNPDModlue">
-						<!-- เลขที่อ้างอิงเอกสารภายนอก -->
-						<div class="row">
-							<div class="col-md-12">
-								<div class="form-group">
-									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'เอกสารอ้างอิงภายนอก'); ?></label>
-									<input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" id="oetTransferBchOutXthRefExt" name="oetTransferBchOutXthRefExt" maxlength="20" value="<?php echo $tRefExt; ?>">
-								</div>
-							</div>
-						</div>
-						<!-- วันที่เอกสารภายนอก -->
-						<div class="row">
-							<div class="col-md-12">
-								<div class="form-group">
-									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'วันที่ เอกสารภายนอก'); ?></label>
-									<div class="input-group">
-										<input type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" id="oetTransferBchOutXthRefExtDate" name="oetTransferBchOutXthRefExtDate" value="<?php echo $tRefExtDate; ?>">
-										<span class="input-group-btn">
-											<button id="obtTransferBchOutXthRefExtDate" type="button" class="btn xCNBtnDateTime xCNApvOrCanCelDisabled">
-												<img src="<?php echo  base_url().'application/modules/common/assets/images/icons/icons8-Calendar-100.png'?>">
-											</button>
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
 						<!-- เอกสารอ้างอิงภายใน -->
-						<div class="row">
+						<!-- <div class="row">
 							<div class="col-md-12">
 								<div class="form-group">
 									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'เอกสารอ้างอิงภายใน'); ?></label>
 									<input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" id="oetTransferBchOutXthRefInt" name="oetTransferBchOutXthRefInt" maxlength="20" value="<?php echo $tRefInt; ?>">
 								</div>
 							</div>
+						</div> -->
+						<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label class="xCNLabelFrm"><?= language('document/adjustmentcost/adjustmentcost', 'tADCRefInt'); ?></label>
+								<div class="input-group" style="width:100%;">
+									<input type="hidden" id="oetTransferBchOutXthRefIntOld" name="oetTransferBchOutXthRefIntOld" value="<?=@$tRefInt?>">
+									<input type="text" class="input100 xCNHide" id="oetTransferBchOutXthRefInt" name="oetTransferBchOutXthRefInt" value="<?=@$tRefInt?>">
+									<input class="form-control xWPointerEventNone" type="text" id="oetTransferBchOutXthRefIntName" name="oetTransferBchOutXthRefIntName" value="<?=@$tRefInt?>" readonly placeholder="<?= language('document/adjustmentcost/adjustmentcost', 'tADCRefInt'); ?>">
+									<span class="input-group-btn">
+										<button id="obtTransferBchOutRefInt" type="button" class="btn xCNBtnBrowseAddOn" >
+											<img src="<?=  base_url() . '/application/modules/common/assets/images/icons/find-24.png'; ?>">
+										</button>
+									</span>
+								</div>
+							</div>
 						</div>
+					</div>
 						<!-- วันที่เอกสารภายใน -->
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-group">
-									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'วันที่ เอกสารภายใน'); ?></label>
+									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'วันที่เอกสารภายใน'); ?></label>
 									<div class="input-group">
-										<input type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" id="oetTransferBchOutXthRefIntDate" name="oetTransferBchOutXthRefIntDate" value="<?php echo $tRefIntDate; ?>">
+										<input type="text" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled"
+										placeholder="YYYY-MM-DD" id="oetTransferBchOutXthRefIntDate" name="oetTransferBchOutXthRefIntDate" value="<?php echo $tRefIntDate; ?>">
 										<span class="input-group-btn">
 											<button id="obtTransferBchOutXthRefIntDate" type="button" class="btn xCNBtnDateTime xCNApvOrCanCelDisabled">
 												<img src="<?php echo  base_url().'application/modules/common/assets/images/icons/icons8-Calendar-100.png'?>">
@@ -644,6 +649,32 @@
 								</div>
 							</div>
 						</div>
+						<!-- เลขที่อ้างอิงเอกสารภายนอก -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'เอกสารอ้างอิงภายนอก'); ?></label>
+									<input type="text" placeholder="<?php echo language('document/transfer_branch_out/transfer_branch_out', 'เอกสารอ้างอิงภายนอก'); ?>" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" id="oetTransferBchOutXthRefExt" name="oetTransferBchOutXthRefExt" maxlength="20" value="<?php echo $tRefExt; ?>">
+								</div>
+							</div>
+						</div>
+						<!-- วันที่เอกสารภายนอก -->
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'วันที่เอกสารภายนอก'); ?></label>
+									<div class="input-group">
+										<input type="text" placeholder="YYYY-MM-DD" class="form-control xCNDatePicker xCNInputMaskDate xCNApvOrCanCelDisabled" id="oetTransferBchOutXthRefExtDate" name="oetTransferBchOutXthRefExtDate" value="<?php echo $tRefExtDate; ?>">
+										<span class="input-group-btn">
+											<button id="obtTransferBchOutXthRefExtDate" type="button" class="btn xCNBtnDateTime xCNApvOrCanCelDisabled">
+												<img src="<?php echo  base_url().'application/modules/common/assets/images/icons/icons8-Calendar-100.png'?>">
+											</button>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -693,7 +724,7 @@
 							<div class="col-md-12">
 								<div class="form-group">
 									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'อ้างอิงเลขที่ใบขนส่ง'); ?></label>
-									<input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="20" id="oetTransferBchOutXthRefTnfID" name="oetTransferBchOutXthRefTnfID" value="<?php echo $tRefTnfID; ?>">
+									<input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="100" id="oetTransferBchOutXthRefTnfID" name="oetTransferBchOutXthRefTnfID" value="<?php echo $tRefTnfID; ?>">
 								</div>
 							</div>
 						</div>
@@ -704,7 +735,7 @@
 							<div class="col-md-12">
 								<div class="form-group">
 									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'อ้างอิงเลขที่ยานพาหนะขนส่ง'); ?></label>
-									<input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="50" id="oetTransferBchOutXthRefVehID" name="oetTransferBchOutXthRefVehID" value="<?php echo $tRefVehID; ?>">
+									<input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="100" id="oetTransferBchOutXthRefVehID" name="oetTransferBchOutXthRefVehID" value="<?php echo $tRefVehID; ?>">
 								</div>
 							</div>
 						</div>
@@ -715,7 +746,7 @@
 							<div class="col-md-12">
 								<div class="form-group">
 									<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'ลักษณะหีบห่อ'); ?></label>
-									<input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="30" id="oetTransferBchOutXthQtyAndTypeUnit" name="oetTransferBchOutXthQtyAndTypeUnit" value="<?php echo $tQtyAndTypeUnit; ?>">
+									<input type="text" class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" maxlength="100" id="oetTransferBchOutXthQtyAndTypeUnit" name="oetTransferBchOutXthQtyAndTypeUnit" value="<?php echo $tQtyAndTypeUnit; ?>">
 								</div>
 							</div>
 						</div>
@@ -770,7 +801,7 @@
 			</div>
 
 			<!--Section : อื่นๆ-->
-			<div class="panel panel-default" style="margin-bottom: 60px;">
+			<div class="panel panel-default" style="margin-bottom: 25px;">
 				<div id="odvHeadAllow" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
 					<label class="xCNTextDetail1"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'tOther'); ?></label>
 					<a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvOther" aria-expanded="true">
@@ -809,7 +840,7 @@
 						<!-- หมายเหตุ -->
 						<div class="form-group">
 							<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'หมายเหตุ'); ?></label>
-							<textarea class="form-control xCNInputWithoutSpc xCNApvOrCanCelDisabled" id="otaTransferBchOutXthRmk" name="otaTransferBchOutXthRmk" maxlength="200"><?php echo $tRmk; ?></textarea>
+							<textarea class="form-control xCNInputWithoutSpc " id="otaTransferBchOutXthRmk" name="otaTransferBchOutXthRmk" maxlength="200"><?php echo $tRmk; ?></textarea>
 						</div>
 						<!-- หมายเหตุ -->
 
@@ -817,7 +848,7 @@
 						<div class="form-group">
 							<label class="fancy-checkbox">
 								<input
-								class="xCNApvOrCanCelDisabled"
+
 								type="checkbox"
 								value="1"
 								<?php echo ($nStaDocAct == 1)?'checked':''; ?>
@@ -852,94 +883,151 @@
 						<div class="form-group">
 							<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'ตัวเลือกในการเพิ่มรายการสินค้าจากเมนูสแกนสินค้าในหน้าเอกสาร * กรณีเพิ่มสินค้าเดิม'); ?></label>
 							<select class="selectpicker form-control xCNApvOrCanCelDisabled" id="ocmTransferBchOutOptionAddPdt" name="ocmTransferBchOutOptionAddPdt">
-								<option value="1" selected><?php echo language('document/transfer_branch_out/transfer_branch_out', 'บวกจำนวนในรายการเดิม'); ?></option>
-								<option value="2" ><?php echo language('document/transfer_branch_out/transfer_branch_out', 'เพิ่มแถวใหม่'); ?></option>
+								<option value="1"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'บวกจำนวนในรายการเดิม'); ?></option>
+								<option value="2"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'เพิ่มแถวใหม่'); ?></option>
 							</select>
 						</div>
 						<!-- ตัวเลือกในการเพิ่มรายการสินค้าจากเมนูสแกนสินค้าในหน้าเอกสาร * กรณีเพิ่มสินค้าเดิม -->
 					</div>
 				</div>
 			</div>
+
+			<!-- Panel ไฟลแนบ -->
+            <div class="panel panel-default" style="margin-bottom: 25px;">
+                <div id="odvTBOReferenceDoc" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
+                    <label class="xCNTextDetail1"><?php echo language('document/saleorder/saleorder', 'ไฟล์แนบ'); ?></label>
+                    <a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvTBODataFile" aria-expanded="true">
+                        <i class="fa fa-plus xCNPlus"></i>
+                    </a>
+                </div>
+                <div id="odvTBODataFile" class="xCNMenuPanelData panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="odvTBOShowDataTable">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    let oTBOCallDataTableFile = {
+                        ptElementID		: 'odvTBOShowDataTable',
+                        ptBchCode		: $('#oetTransferBchOutBchCode').val(),
+                        ptDocNo			: $('#oetTransferBchOutDocNo').val(),
+                        ptDocKey		: 'TCNTPdtTboHD',
+                        ptSessionID		: '<?=$this->session->userdata("tSesSessionID") ?>',
+                        pnEvent			: <?=$nStaUploadFile?>,
+                        ptCallBackFunct	: ''
+                    }
+                    JCNxUPFCallDataTable(oTBOCallDataTableFile);
+                </script>
+            </div>
+
 		</div>
 
 		<!--Panel ตารางฝั่งขวา-->
 		<div class="col-md-9" id="odvRightPanal">
 			<div class="panel panel-default xCNTransferBchOutPdtContainer" style="margin-bottom: 25px;">
 
-				<!-- รายการสินค้า -->
+
 				<div class="panel-collapse collapse in" role="tabpanel">
 					<div class="panel-body xCNPDModlue">
 
-						<!-- Options รายการสินค้า-->
-						<div class="row p-t-10">
-							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-								<div class="form-group">
-									<div class="input-group">
-										<input type="text" class="form-control" maxlength="100" id="oetTransferBchOutPdtSearchAll" name="oetTransferBchOutPdtSearchAll" onkeyup="Javascript:if(event.keyCode==13) JSxTransferBchOutGetPdtInTmp(1, true)" placeholder="<?=language('document/purchaseinvoice/purchaseinvoice','tPIFrmFilterTablePdt')?>" style="display: block;">
-										<input type="text" class="form-control" maxlength="100" id="oetScanPdtHTML" name="oetScanPdtHTML" onkeyup="Javascript:if(event.keyCode==13) JSvTBScanPdtHTML()" placeholder="แสกนสินค้า" style="display: none;" data-validate="ไม่พบข้อมูลที่แสกน">
-										<span class="input-group-btn">
-											<div id="odvMngTableList" class="xCNDropDrownGroup input-group-append">
-												<button id="oimMngPdtIconSearch" type="button" class="btn xCNBTNMngTable xCNBtnDocSchAndScan" onclick="JSxTransferBchOutGetPdtInTmp(1, true)" style="display: inline-block;">
-													<img src="<?php echo  base_url('application/modules/common/assets/images/icons/search-24.png'); ?>" style="width:20px;">
-												</button>
-												<button id="oimMngPdtIconScan" type="button" class="btn xCNBTNMngTable xCNBtnDocSchAndScan" style="display: none;" onclick="JSvTBScanPdtHTML()">
-													<img class="oimMngPdtIconScan" src="<?php echo  base_url('application/modules/common/assets/images/icons/scanner.png'); ?>" style="width:20px;">
-												</button>
 
-												<!-- <button type="button" class="btn xCNDocDrpDwn xCNBtnDocSchAndScan" data-toggle="dropdown" aria-expanded="false">
-													<i class="fa fa-chevron-down f-s-14 t-plus-1" style="font-size: 12px;"></i>
-												</button>
-												<ul class="dropdown-menu" role="menu">
-													<li>
-														<a id="oliMngPdtSearch"><label>ค้นหาสินค้า</label></a>
-														<a id="oliMngPdtScan">แสกนสินค้า</a>
-													</li>
-												</ul> -->
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<div class="custom-tabs-line tabs-line-bottom left-aligned">
+									<ul class="nav" role="tablist">
 
-											</div>
-										</span>
-									</div>
+										<!-- สินค้า -->
+										<li class="xWMenu active xCNStaHideShow" style="cursor:pointer;">
+											<a role="tab" data-toggle="tab" data-target="#odvTBOContentProduct" aria-expanded="true"><?= language('document/document/document', 'ข้อมูลสินค้า') ?></a>
+										</li>
+
+										<!-- อ้างอิง -->
+										<li class="xWMenu xWSubTab xCNStaHideShow" style="cursor:pointer;">
+											<a role="tab" data-toggle="tab" data-target="#odvTBOContentHDDocRef" aria-expanded="false"><?= language('document/document/document', 'เอกสารอ้างอิง') ?></a>
+										</li>
+
+									</ul>
 								</div>
 							</div>
-
-							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
-								<!-- <div id="odvTransferBchOutMngAdvTableList" class="btn-group xCNDropDrownGroup">
-									<button onclick="JSxTransferBchOutPdtColumnControl()" type="button" class="btn xCNBTNMngTable <?php echo (!$bIsApvOrCancel)?'m-r-20':''; ?> xCNTransferBchOutColumnControl"><?=language('common/main/main', 'tModalAdvTable') ?></button>
-								</div> -->
-								<?php //if(!$bIsApvOrCancel) { ?>
-									<div id="odvTransferBchOutMngDelPdtInTableDT" class="btn-group xCNDropDrownGroup">
-										<button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
-											<?=language('common/main/main','tCMNOption')?> <span class="caret"></span>
-										</button>
-										<ul class="dropdown-menu" role="menu">
-											<li id="oliTransferBchOutPdtBtnDeleteMulti" class="disabled">
-												<a data-toggle="modal"  data-target="#odvTbxModalDelPdtInDTTempMultiple"><?=language('common/main/main','tDelAll')?></a>
-											</li>
-										</ul>
-									</div>
-								<?php //} ?>
-							</div>
-							<?php //if(!$bIsApvOrCancel) { ?>
-
-								<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 text-right">
-											<!--ค้นหาจากบาร์โค๊ด-->
-											<div class="form-group">
-												<input type="text" class="form-control xCNPdtEditInLine" id="oetTboInsertBarcode"  autocomplete="off" name="oetTboInsertBarcode" maxlength="50" value="" onkeypress="Javascript:if(event.keyCode==13) JSxSearchFromBarcode(event,this);"  placeholder="เพิ่มสินค้าด้วยบาร์โค้ด หรือ รหัสสินค้า" >
-											</div>
-								</div>
-
-
-								<div class="col-xs-12 col-sm-1 col-md-1 col-lg-1">
-									<div class="form-group">
-										<div style="position: absolute;right: 15px;">
-											<button type="button" class="xCNBTNPrimeryPlus xCNTransferBchOutBtnBrowsePdt" onclick="JCNvTransferBchOutBrowsePdt()">+</button>
-										</div>
-									</div>
-								</div>
-							<?php //} ?>
 						</div>
 
-						<div id="odvTransferBchOutPdtDataTable"></div>
+						<div class="tab-content">
+
+							<!--รายการสินค้า-->
+							<div id="odvTBOContentProduct" class="tab-pane fade active in" style="padding: 0px !important;">
+								<div class="row p-t-15">
+									<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+										<div class="form-group">
+											<div class="input-group">
+												<input type="text" class="form-control" maxlength="100" id="oetTransferBchOutPdtSearchAll" name="oetTransferBchOutPdtSearchAll" onkeyup="Javascript:if(event.keyCode==13) JSxTransferBchOutGetPdtInTmp(1, true)" placeholder="<?=language('document/purchaseinvoice/purchaseinvoice','tPIFrmFilterTablePdt')?>" style="display: block;">
+												<input type="text" class="form-control" maxlength="100" id="oetScanPdtHTML" name="oetScanPdtHTML" onkeyup="Javascript:if(event.keyCode==13) JSvTBScanPdtHTML()" placeholder="แสกนสินค้า" style="display: none;" data-validate="ไม่พบข้อมูลที่แสกน">
+												<span class="input-group-btn">
+													<div id="odvMngTableList" class="xCNDropDrownGroup input-group-append">
+														<button id="oimMngPdtIconSearch" type="button" class="btn xCNBTNMngTable xCNBtnDocSchAndScan" onclick="JSxTransferBchOutGetPdtInTmp(1, true)" style="display: inline-block;">
+															<img src="<?php echo  base_url('application/modules/common/assets/images/icons/search-24.png'); ?>" style="width:20px;">
+														</button>
+														<button id="oimMngPdtIconScan" type="button" class="btn xCNBTNMngTable xCNBtnDocSchAndScan" style="display: none;" onclick="JSvTBScanPdtHTML()">
+															<img class="oimMngPdtIconScan" src="<?php echo  base_url('application/modules/common/assets/images/icons/scanner.png'); ?>" style="width:20px;">
+														</button>
+													</div>
+												</span>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-xs-12 <?php echo ( ($bIsApvOrCancel === false && $bIsPacking === false) )?'col-sm-5 col-md-5 col-lg-5':'col-sm-6 col-md-6 col-lg-6'; ?> text-right">
+										<!-- <div id="odvTransferBchOutMngAdvTableList" class="btn-group xCNDropDrownGroup">
+											<button onclick="JSxTransferBchOutPdtColumnControl()" type="button" class="btn xCNBTNMngTable <?php echo (!$bIsApvOrCancel)?'m-r-20':''; ?> xCNTransferBchOutColumnControl"><?=language('common/main/main', 'tModalAdvTable') ?></button>
+										</div> -->
+										<?php if( ($bIsApvOrCancel === false && $bIsPacking === false) ) { ?>
+											<div id="odvTransferBchOutMngDelPdtInTableDT" class="btn-group xCNDropDrownGroup">
+												<button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
+													<?=language('common/main/main','tCMNOption')?> <span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu" role="menu">
+													<li id="oliTransferBchOutPdtBtnDeleteMulti" class="disabled">
+														<a href="javascript:;" onclick="JSxTransferBchOutCallPdtDataTableDeleteMore()"><?=language('common/main/main','tDelAll')?></a>
+													</li>
+												</ul>
+											</div>
+										<?php } ?>
+									</div>
+									<?php if( ($bIsApvOrCancel === false && $bIsPacking === false) ) { ?>
+										<div class="col-xs-12 col-sm-1 col-md-1 col-lg-1">
+											<div class="form-group">
+												<div style="position: absolute;right: 15px;">
+													<button type="button" class="xCNBTNPrimeryPlus xCNTransferBchOutBtnBrowsePdt" onclick="JCNvTransferBchOutBrowsePdt()">+</button>
+												</div>
+											</div>
+										</div>
+									<?php } ?>
+								</div>
+
+								<div id="odvTransferBchOutPdtDataTable"></div>
+
+							</div>
+							<!--รายการสินค้า-->
+
+							<!-- อ้างอิงเอกสาร -->
+							<div id="odvTBOContentHDDocRef" class="tab-pane fade" style="padding: 0px !important;">
+								<div class="row p-t-15">
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-right">
+										<div style="margin-top:-2px;">
+											<button type="button" id="obtTBOAddDocRef" class="xCNBTNPrimeryPlus xCNDocBrowsePdt xCNHideWhenCancelOrApprove">+</button>
+										</div>
+									</div>
+									<div id="odvTBOTableHDRef"></div>
+									<div>
+									</div>
+								</div>
+							</div>
+							<!-- อ้างอิงเอกสาร -->
+
+						</div>
 					</div>
 				</div>
 			</div>
@@ -1057,31 +1145,35 @@
 		</div>
 	</div>
 	<!-- End Approve Doc -->
+<?php } ?>
 
-	<!-- Begin Cancel Doc -->
-	<div class="modal fade" id="odvTransferBchOutPopupCancel">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header xCNModalHead">
-					<label class="xCNTextModalHeard"><?php echo language('document/document/document', 'tDocDocumentCancel') ?></label>
-				</div>
-				<div class="modal-body">
-					<p id="obpMsgApv"><?php echo language('document/document/document', 'tDocCancelText1') ?></p>
-					<p><strong><?php echo language('document/document/document', 'tDocCancelText2') ?></strong></p>
-				</div>
-				<div class="modal-footer">
-					<button onclick="JSvTransferBchOutCancel(true)" type="button" class="btn xCNBTNPrimery">
-						<?php echo language('common/main/main', 'tModalConfirm'); ?>
-					</button>
-					<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
-						<?php echo language('common/main/main', 'tModalCancel'); ?>
-					</button>
-				</div>
+<!-- Begin Cancel Doc -->
+<div class="modal fade" id="odvTransferBchOutPopupCancel">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header xCNModalHead">
+				<label class="xCNTextModalHeard"><?php echo language('document/document/document', 'tDocDocumentCancel') ?></label>
+			</div>
+			<div class="modal-body">
+				<p id="obpMsgApv"><?php echo language('document/document/document', 'tDocCancelText1') ?></p>
+				<p><strong><?php echo language('document/document/document', 'tDocCancelText2') ?></strong></p>
+			</div>
+			<div class="modal-footer">
+				<button id="obtTBOShwBtnCancel" onclick="JSvTransferBchOutCancel(true)" type="button" class="btn xCNBTNPrimery">
+					<?php echo language('common/main/main', 'tModalConfirm'); ?>
+				</button>
+				<button id="obtTBOShwBtnCancelOnApv" onclick="JSxTBOCancelOnApv(true)" type="button" class="btn xCNBTNPrimery">
+					<?php echo language('common/main/main', 'tModalConfirm'); ?>
+				</button>
+				<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
+					<?php echo language('common/main/main', 'tModalCancel'); ?>
+				</button>
 			</div>
 		</div>
 	</div>
-	<!-- End Cancel Doc -->
-<?php } ?>
+</div>
+<!-- End Cancel Doc -->
+
 
 <!-- Begin Pdt Column Control Panel -->
 <div class="modal fade" id="odvTransferBchOutPdtColumnControlPanel" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1105,322 +1197,301 @@
 </div>
 <!-- End Add Cash Panel -->
 
-<!-- Modal -->
-<div class="modal fade" id="odvTBPopupCancel">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header xCNModalHead">
-				<label class="xCNTextModalHeard"><?=language('document/producttransferbranch/producttransferbranch','tTBPMsgCancel')?></label>
-			</div>
-			<div class="modal-body">
-                <p id="obpMsgApv"><?=language('document/producttransferbranch/producttransferbranch','tTBPMsgDocProcess')?></p>
-                <p><strong><?=language('document/producttransferbranch/producttransferbranch','tTBPMsgCanCancel')?></strong></p>
-			</div>
-			<div class="modal-footer">
-                <button onclick="JSnTBCancel(true)" type="button" class="btn xCNBTNPrimery">
-					<?=language('common/main/main', 'tModalConfirm'); ?>
-				</button>
-				<button type="button" class="btn xCNBTNDefult" data-dismiss="modal">
-					<?=language('common/main/main', 'tModalCancel'); ?>
-				</button>
-			</div>
-		</div>
-	</div>
-</div>
-
-<!-- ======================================================================== Modal ไม่พบรหัสสินค้า ======================================================================== -->
-<div id="odvTbxModalPDTNotFound" class="modal fade">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="xCNHeardModal modal-title" style="display:inline-block"><?=language('common/main/main', 'tMessageAlert')?></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>ไม่พบข้อมูลสินค้า กรุณาลองใหม่อีกครั้ง</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn xCNBTNPrimery" data-dismiss="modal" onclick="JSxNotFoundClose();" >
-                        <?php echo language('common/main/main', 'tModalConfirm'); ?>
-                    </button>
-                </div>
+<!-- =========================================== อ้างอิงเอกสารภายใน ======================================= -->
+<div id="odvTransferBchOutBchModalRefIntDoc" class="modal fade" tabindex="2" role="dialog">
+    <div class="modal-dialog" role="document" style="width: 1200px;">
+        <div class="modal-content">
+            <div class="modal-header xCNModalHead">
+                <label class="xCNTextModalHeard"><?=language('document/transfer_branch_out/transfer_branch_out','อ้างอิงเอกสารภายใน')?></label>
+            </div>
+            <div class="modal-body">
+                <div class="row" id="odvTransferBchOutBchFromRefIntDoc"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="obtConfirmRefDocInt" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button" data-dismiss="modal"><?= language('common/main/main', 'tModalConfirm')?></button>
+                <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal"><?= language('common/main/main', 'tModalCancel')?></button>
             </div>
         </div>
     </div>
+</div>
 
 
-	
-<!-- ============================================================================================================================================================================= -->
-
-<div id="odvTbxModalPDTMoreOne" class="modal fade">
-        <div class="modal-dialog" role="document" style="width: 85%; margin: 1.75rem auto;">
-            <div class="modal-content">
-                <div class="modal-header">
+<!-- ===========================================  อ้างอิงเอกสารภายใน (ภายใน หรือ ภายนอก) =========================================== -->
+<div id="odvTBOModalAddDocRef" class="modal fade" tabindex="1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="ofmTBOFormAddDocRef" class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data">
+                <div class="modal-header xCNModalHead">
+                    <label class="xCNTextModalHeard"><?php echo language('common/main/main', 'อ้างอิงเอกสาร') ?></label>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control xCNHide" id="oetTBORefDocNoOld" name="oetTBORefDocNoOld">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <label class="xCNTextModalHeard" style="font-weight: bold; font-size: 20px;">กรุณาเลือกสินค้า</label>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('common/main/main', 'ประเภทการอ้างอิงเอกสาร'); ?></label>
+                                <select class="selectpicker form-control" id="ocbTBORefType" name="ocbTBORefType">
+                                    <option value="1" selected><?php echo language('common/main/main', 'อ้างอิงภายใน'); ?></option>
+                                    <option value="3"><?php echo language('common/main/main', 'อ้างอิงภายนอก'); ?></option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
-                            <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn" onclick="JCNxConfirmPDTMoreOne(1)" data-dismiss="modal">เลือก</button>
-                            <button class="btn xCNBTNDefult xCNBTNDefult2Btn" onclick="JCNxConfirmPDTMoreOne(2)" data-dismiss="modal">ปิด</button>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12 xWShowRefInt">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('common/main/main', 'เอกสาร'); ?></label>
+                                <select class="selectpicker form-control" id="ocbTBORefDoc" name="ocbTBORefDoc">
+                                    <option value="1" selected><?php echo language('common/main/main', 'ใบขอโอน - สาขา'); ?></option>
+                                    <!-- <option value="2"><?php echo language('common/main/main', 'ใบสั่งงาน'); ?></option> -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12 xWShowRefInt">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('common/main/main', 'เลขที่เอกสารอ้างอิง') ?></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control xCNHide xCNInputWithoutSpcNotThai xCNInputWithoutSingleQuote" id="oetTBODocRefInt" name="oetTBODocRefInt" maxlength="20" value="">
+                                    <input type="text" class="form-control xWPointerEventNone" id="oetTBODocRefIntName" name="oetTBODocRefIntName" maxlength="20" placeholder="<?php echo language('common/main/main', 'เลขที่เอกสารอ้างอิง') ?>" value="" readonly>
+                                    <span class="input-group-btn">
+                                        <button id="obtTBOBrowseRefDoc" type="button" class="btn xCNBtnBrowseAddOn">
+                                            <img src="<?php echo  base_url() . '/application/modules/common/assets/images/icons/find-24.png' ?>">
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12 xWShowRefExt">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><span class="text-danger">*</span><?php echo language('common/main/main', 'เลขที่เอกสารอ้างอิง'); ?></label>
+                                <input type="text" class="form-control" id="oetTBORefDocNo" name="oetTBORefDocNo" placeholder="<?php echo language('common/main/main', 'เลขที่เอกสารอ้างอิง'); ?>" maxlength="20" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('document/document/document', 'วันที่เอกสารอ้างอิง'); ?></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetTBORefDocDate" name="oetTBORefDocDate" placeholder="YYYY-MM-DD" autocomplete="off">
+                                    <span class="input-group-btn">
+                                        <button id="obtTBORefDocDate" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-xs-12 xWShowRefExt">
+                            <div class="form-group">
+                                <label class="xCNLabelFrm"><?php echo language('common/main/main', 'ค่าอ้างอิง'); ?></label>
+                                <input type="text" class="form-control" id="oetTBORefKey" name="oetTBORefKey" placeholder="<?php echo language('common/main/main', 'ค่าอ้างอิง'); ?>" maxlength="10" autocomplete="off">
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-body">
-                    <table class="table table-striped xCNTablePDTMoreOne">
-                        <thead>
-                            <tr>
-                                <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('common/main/main', 'tModalcodePDT')?></th>
-                                <th class="xCNTextBold" style="text-align:center; width:160px;"><?=language('common/main/main', 'tModalnamePDT')?></th>
-                                <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('common/main/main', 'tModalPriceUnit')?></th>
-                                <th class="xCNTextBold" style="text-align:center; width:160px;"><?=language('common/main/main', 'tModalbarcodePDT')?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-<!-- ============================================================================================================================================================================= -->
-
-<!-- ============================================================== View Modal Delete Product In DT DocTemp Multiple  ============================================================ -->
-<div id="odvTbxModalDelPdtInDTTempMultiple" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header xCNModalHead">
-                    <label class="xCNTextModalHeard"><?php echo language('common/main/main','tModalDelete')?></label>
-                </div>
-                <div class="modal-body">
-                    <span id="ospTextConfirmDelMultiple" class="xCNTextModal" style="display: inline-block; word-break:break-all"></span>
-                    <input type="hidden" id="ohdConfirmPIDocNoDelete"   name="ohdConfirmPIDocNoDelete">
-                    <input type="hidden" id="ohdConfirmPISeqNoDelete"   name="ohdConfirmPISeqNoDelete">
-                    <input type="hidden" id="ohdConfirmPIPdtCodeDelete" name="ohdConfirmPIPdtCodeDelete">
-                    <input type="hidden" id="ohdConfirmPIPunCodeDelete" name="ohdConfirmPIPunCodeDelete">
-
-                </div>
                 <div class="modal-footer">
-                    <button id="osmConfirmDelMultiple" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"><?php echo language('common/main/main', 'tModalConfirm')?></button>
-                    <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal"><?php echo language('common/main/main', 'tModalCancel')?></button>
+                    <button id="obtTBOConfirmAddDocRef" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="submit"><?php echo language('common/main/main', 'tModalConfirm') ?></button>
+                    <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button" data-dismiss="modal"><?php echo language('common/main/main', 'tModalCancel') ?></button>
                 </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================== สร้างใบจัดสินค้า ======================================= -->
+<div id="odvTBOGenDocPacking" class="modal fade" tabindex="2" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header xCNModalHead">
+                <label class="xCNTextModalHeard"><?=language('document/transfer_branch_out/transfer_branch_out','tTBOGenDocPackTitle')?></label>
+            </div>
+            <div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-xs-12">
+						<b>ยืนยันสร้างใบจัดสินค้า</b>
+					</div>
+				</div>
+            </div>
+            <div class="modal-footer">
+				<button id="obtTBOConfigGenDocPacking" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button" data-dismiss="modal"><?= language('common/main/main', 'กำหนดค่า')?></button>
+                <button id="obtTBOConfirmGenDocPacking" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button" data-dismiss="modal"><?= language('common/main/main', 'tModalConfirm')?></button>
+                <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal"><?= language('common/main/main', 'tModalCancel')?></button>
             </div>
         </div>
     </div>
-<!-- ============================================================================================================================================================================= -->
+</div>
 
+<div id="odvTBOConfigGenDocPacking" class="modal fade" tabindex="2" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header xCNModalHead">
+                <label class="xCNTextModalHeard"><?=language('document/transfer_branch_out/transfer_branch_out','tTBODocPackCondition')?></label>
+            </div>
+            <div class="modal-body">
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-xs-12">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" class="xWTBOSysSeq0" name="ocbTBOCondtionGenPacking" value="0">สร้างใบจัดตามที่เก็บ
+							</label>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" class="xWTBOSysSeq1" name="ocbTBOCondtionGenPacking" value="1">สร้างใบจัดตามหมวดสินค้า 1
+							</label>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" class="xWTBOSysSeq2" name="ocbTBOCondtionGenPacking" value="2">สร้างใบจัดตามหมวดสินค้า 2
+							</label>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" class="xWTBOSysSeq3" name="ocbTBOCondtionGenPacking" value="3">สร้างใบจัดตามหมวดสินค้า 3
+							</label>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" class="xWTBOSysSeq4" name="ocbTBOCondtionGenPacking" value="4">สร้างใบจัดตามหมวดสินค้า 4
+							</label>
+						</div>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" class="xWTBOSysSeq5" name="ocbTBOCondtionGenPacking" value="5">สร้างใบจัดตามหมวดสินค้า 5
+							</label>
+						</div>
+
+
+
+						<!-- <div class="checkbox disabled">
+							<label>
+								<input type="checkbox" value="" disabled>
+								Option two is disabled
+							</label>
+						</div> -->
+					</div>
+				</div>
+            </div>
+            <div class="modal-footer">
+                <button id="obtTBOConfirmConfigGenDocPacking" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button" data-dismiss="modal"><?= language('common/main/main', 'tModalConfirm')?></button>
+                <button id="obtTBOCancelConfigGenDocPacking" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"  data-dismiss="modal"><?= language('common/main/main', 'tModalCancel')?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================== สร้างใบจัดสินค้า ======================================= -->
 
 
 <?php include('script/jTransferBchOutPageadd.php') ?>
+<script src="<?php echo base_url('application/modules/common/assets/js/jquery.mask.js')?>"></script>
 <script src="<?php echo  base_url('application/modules/common/assets/src/jFormValidate.js')?>"></script>
+
 <script>
-    function JSxNotFoundClose(){
-        $('#oetTboInsertBarcode').focus();
-    }
+	// $('#obtTransferBchOutRefInt').on('click',function(){
+    //     JSxCallPageTransferBchOutRefIntDoc();
+    // });
 
-	//กดเลือกบาร์โค๊ด
-	function  JSxSearchFromBarcode(e,elem){
-        var tValue = $(elem).val();
-        // if($('#oetPIFrmSplCode').val() != ""){
-            JSxCheckPinMenuClose();
-            if(tValue.length === 0){
-            }else{
-                $('#oetTboInsertBarcode').attr('readonly',true);
-                JCNSearchBarcodePdt(tValue);
-                $('#oetTboInsertBarcode').val('');
-            }
-        // }else{
-        //     $('#odvPIModalPleseselectCustomer').modal('show');
-        //     $('#oetTboInsertBarcode').val('');
-        // }
-        e.preventDefault();
-    }
+	//Ref เอกสาร
+	function JSxCallPageTransferBchOutRefIntDoc(){
+        var tBCHCode = $('#oetTransferBchOutBchCode').val()
+        var tBCHName = $('#oetTransferBchOutBchName').val()
 
-	//ค้นหาบาร์โค๊ด
-	function JCNSearchBarcodePdt(ptTextScan){
 
-        var tWhereCondition = "";
 
+        JCNxOpenLoading();
         $.ajax({
-            type : "POST",
-            url : "BrowseDataPDTTableCallView",
-            data :{
-                Qualitysearch   : [],
-                ReturnType  : "M",
-                aPriceType  : ["Cost","tCN_Cost","Company","1"],
-                // aPriceType  : ['Price4Cst',tPISplCode],
-                NextFunc    : "",
-                SelectTier  : ["Barcode"],
-                SPL: "",
-                BCH: $("#oetTransferBchOutXthBchFrmCode").val(),
-                MER: $('#oetTransferBchOutXthMerchantFrmCode').val(),
-                SHP: $('#oetTransferBchOutXthShopFrmCode').val(),
-                Where       : [tWhereCondition],
-                tTextScan   : ptTextScan,
+            type: "POST",
+            url: "docTransferBchOutRefIntDoc",
+            data: {
+                'tBCHCode'      : tBCHCode,
+                'tBCHName'      : tBCHName,
             },
-            catch : false,
-            timeout : 0,
-            success : function (tResult){
-				// localStorage.removeItem('TBX_LocalItemDataDelDtTemp');
+            cache: false,
+            Timeout: 0,
+            success: function (oResult){
                 JCNxCloseLoading();
-                $('#ohdTbxObjPdtFhnCallBack').val(tResult);
-                var oText = JSON.parse(tResult);
-                console.log('Event Scan',oText);
-                if(oText == '800'){
-                    $('#oetTboInsertBarcode').attr('readonly',false);
-                    $('#odvTbxModalPDTNotFound').modal('show');
-                    $('#oetTboInsertBarcode').val('');
-                }else{
-                    // พบสินค้ามีหลายบาร์โค้ด
-                    if(oText.length > 1){
-                        $('#odvTbxModalPDTMoreOne').modal('show');
-                        $('#odvTbxModalPDTMoreOne .xCNTablePDTMoreOne tbody').html('');
+                $('#odvTransferBchOutBchModalRefIntDoc #odvTransferBchOutBchFromRefIntDoc').html(oResult);
 
-                        for(i=0; i<oText.length; i++){
-                            var aNewReturn      = JSON.stringify(oText[i]);
-                            var tTest = "["+aNewReturn+"]";
-                            var oEncodePackData = window.btoa(unescape(encodeURIComponent(tTest)));
-                            var tHTML = "<tr class='xCNColumnPDTMoreOne"+i+" xCNColumnPDTMoreOne' data-information='"+oEncodePackData+"' style='cursor: pointer;'>";
-                                tHTML += "<td>"+oText[i].pnPdtCode+"</td>";
-                                tHTML += "<td>"+oText[i].packData.PDTName+"</td>";
-                                tHTML += "<td>"+oText[i].packData.PUNName+"</td>";
-                                tHTML += "<td>"+oText[i].ptBarCode+"</td>";
-                                tHTML += "</tr>";
-                            $('#odvTbxModalPDTMoreOne .xCNTablePDTMoreOne tbody').append(tHTML);
-                        }
+				// $('#odvTBOModalAddDocRef').modal('hide');
+				setTimeout(function(){
+					$('#odvTransferBchOutBchModalRefIntDoc').modal({backdrop : 'static' , show : true});
+				}, 500);
 
-                        //เลือกสินค้า
-                        $('.xCNColumnPDTMoreOne').off();
-
-                        //ดับเบิ้ลคลิก
-                        $('.xCNColumnPDTMoreOne').on('dblclick',function(e){
-                            $('#odvTbxModalPDTMoreOne').modal('hide');
-                            var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
-                            FSvTBXAddPdtIntoDocDTTempScan(tJSON); //Client
-                            JSvTransferBchOutInsertPdtToTemp(tJSON); //Server
-                            // var oPIObjPdtFhnCallBack =  $('#ohdTbxObjPdtFhnCallBack').val();
-                            var oJSONPdt = JSON.parse(tJSON);
-                            var oOptionForFashion = {
-                                    'bListItemAll'  : false,
-                                    'tSpcControl'  : 0,
-                                    'tNextFunc' : 'JSvTransferBchOutInsertPdtToTemp'
-                                }
-                                JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
-
-                        });
-
-                        //คลิกได้เลย
-                        $('.xCNColumnPDTMoreOne').on('click',function(e){
-                            //เลือกสินค้าแบบตัวเดียว
-                            $('.xCNColumnPDTMoreOne').removeClass('xCNActivePDT');
-                            $('.xCNColumnPDTMoreOne').children().attr('style', 'background-color:transparent !important; color:#232C3D !important;');
-                            // $('.xCNColumnPDTMoreOne').children(':last-child').css('text-align','right');
-                            $(this).addClass('xCNActivePDT');
-                            $(this).children().attr('style', 'background-color:#179bfd !important; color:#FFF !important;');
-                            // $(this).children().last().css('text-align','right');
-                        });
-
-                    }else{
-                        //มีตัวเดียว
-                        var aNewReturn  = JSON.stringify(oText);
-                        console.log('aNewReturn: '+aNewReturn);
-                        FSvTBXAddPdtIntoDocDTTempScan(aNewReturn); //Client
-                        JSvTransferBchOutInsertPdtToTemp(aNewReturn); //Server
-               
-                        var oOptionForFashion = {
-                                'bListItemAll'  : false,
-                                'tSpcControl'  : 0,
-                                'tNextFunc' : 'JSvTransferBchOutInsertPdtToTemp'
-                            }
-                    JSxCheckProductSerialandFashion(oText,oOptionForFashion,'insert');
-                    }
-                }
             },
-            error: function (jqXHR,textStatus,errorThrown){
-                JCNSearchBarcodePdt(ptTextScan);
+            error: function (jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
             }
         });
     }
 
+	//กดยืนยัน Ref เอกสารใบรับของ
+	$('#obtConfirmRefDocInt').click(function(){
+		var tRefIntDocNo    =  $('.xDocuemntRefInt.active').data('docno');
+		var tRefIntDocDate  =  $('.xDocuemntRefInt.active').data('docdate');
+		// var tRefIntBchCode  =  $('.xDocuemntRefInt.active').data('bchcode');
+		// var aSeqNo 			=  $('.ocbRefIntDocDT:checked').map(function(elm){ return $(this).val(); }).get();
 
+		//ถ้าไม่เลือกเอกสารอ้างอิงมา
+		if( tRefIntDocNo != undefined ){
 
-    //เลือกสินค้า กรณีพบมากกว่าหนึ่งตัว
-    function JCNxConfirmPDTMoreOne($ptType){
-        if($ptType == 1){
-            $("#odvTbxModalPDTMoreOne .xCNTablePDTMoreOne tbody .xCNActivePDT").each(function( index ) {
-                var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
-                FSvTBXAddPdtIntoDocDTTempScan(tJSON);
-                JSvTransferBchOutInsertPdtToTemp(tJSON);
-   
-                var oJSONPdt = JSON.parse(tJSON);
-                var oOptionForFashion = {
-                                    'bListItemAll'  : false,
-                                    'tSpcControl'  : 0,
-                                    'tNextFunc' : 'JSvTransferBchOutInsertPdtToTemp'
-                                }
-             JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
-            });
-        }else{
-            $('#oetTboInsertBarcode').attr('readonly',false);
-            $('#oetTboInsertBarcode').val('');
-        }
-    }
+			// var tSplStaVATInOrEx =  $('.xDocuemntRefInt.active').data('vatinroex');
+			// var cSplCrLimit      =  $('.xDocuemntRefInt.active').data('crtrem');
+			// var nSplCrTerm       =  $('.xDocuemntRefInt.active').data('crlimit');
+			// var tSplCode         =  $('.xDocuemntRefInt.active').data('splcode');
+			// var tSplName         =  $('.xDocuemntRefInt.active').data('splname');
+			// var tSPlPaidType     =  $('.xDocuemntRefInt.active').data('dstpain');
+			// var tVatcode         =  $('.xDocuemntRefInt.active').data('vatcode');
+			// var nVatrate         =  $('.xDocuemntRefInt.active').data('vatrate');
 
+			// var poParams = {
+			// 	FTSplCode           : tSplCode,
+			// 	FTSplName           : tSplName,
+			// 	FTSplStaVATInOrEx   : tSplStaVATInOrEx,
+			// 	FTRefIntDocNo       : tRefIntDocNo,
+			// 	FTRefIntDocDate     : tRefIntDocDate,
+			// 	FNXphCrTerm         : nSplCrTerm
+			// };
 
-	
-	//Function : เพิ่มสินค้าจาก ลง Table ฝั่ง Client
-	//Create : 2018-08-28 Krit(Copter)
-	function JSvTransferBchOutInsertPdtToTemp(pjPdtData) {
-			var nStaSession = JCNxFuncChkSessionExpired();
-			if (typeof nStaSession !== "undefined" && nStaSession == 1) {
-				pnXthVATInOrEx = 2;
+			//อ้างอิงเอกสารภายใน
+			$('#oetTBODocRefInt').val(tRefIntDocNo);
+			$('#oetTBODocRefIntName').val(tRefIntDocNo);
 
-				console.log(pjPdtData);
+			//วันที่อ้างอิงเอกสารใน
+			$('#oetTBORefDocDate').val(tRefIntDocDate).datepicker("refresh");
 
-				// JCNxOpenLoading();
-				var ptXthDocNoSend = "";
-				if ($("#ohdTBRoute").val() == "docTransferBchOutEventEdit") {
-				ptXthDocNoSend = $("#oetTransferBchOutDocNo").val();
-				}
+			// JCNxOpenLoading();
+			// $.ajax({
+			// 	type    : "POST",
+			// 	url     : "docTransferBchOutRefIntDocInsertDTToTemp",
+			// 	data    : {
+			// 		'tTransferBchOutDocNo'          : $('#oetTransferBchOutDocNo').val(),
+			// 		'tTransferBchOutFrmBchCode'     : $('#oetTransferBchOutBchCode').val(),
+			// 		'tRefIntDocNo'      			: tRefIntDocNo,
+			// 		'tRefIntBchCode'    			: tRefIntBchCode,
+			// 		'tSplStaVATInOrEx'  			: tSplStaVATInOrEx,
+			// 		'aSeqNo'            			: aSeqNo
+			// 	},
+			// 	cache: false,
+			// 	Timeout: 0,
+			// 	success: function (oResult){
+			// 		//โหลดสินค้าใน Temp
+			// 		JSxTransferBchOutGetPdtInTmp();
+			// 		JCNxCloseLoading();
+			// 	},
+			// 	error: function (jqXHR, textStatus, errorThrown) {
+			// 		JCNxResponseError(jqXHR, textStatus, errorThrown);
+			// 	}
+			// });
 
-				$('#oetTboInsertBarcode').attr('readonly',false);
-            	$('#oetTboInsertBarcode').val('');
+		}else{
+			//อ้างอิงเอกสารภายใน
+			$('#oetTBODocRefInt').val('');
+			$('#oetTBODocRefIntName').val('');
 
-				$.ajax({
-				type: "POST",
-				url: "docTransferBchOutInsertPdtToTmp",
-				data: {
-					ptBchCode        : $("#oetTransferBchOutBchCode").val(),
-					ptXthDocNo          : ptXthDocNoSend,
-					pnXthVATInOrEx      : pnXthVATInOrEx,
-					tPdtData             : pjPdtData,
-					pnTBOptionAddPdt    : $("#ocmTransferBchOutOptionAddPdt").val()
-				},
-				cache: false,
-				timeout: 0,
-				success: function (oResult) {
-					// console.log(oResult);
-					// JSvTBLoadPdtDataTableHtml();
-					// var aResult = JSON.parse(oResult);
-                    // if(aResult['nStaEvent']==1){
-                        // JCNxCloseLoading();
-                    // }
+			//วันที่อ้างอิงเอกสารใน
+			$('#oetTBORefDocDate').val('').datepicker("refresh");
+		}
 
-				},
-				error: function (jqXHR, textStatus, errorThrown) {
-					JCNxResponseError(jqXHR, textStatus, errorThrown);
-				}
-				});
-			} else {
-				JCNxShowMsgSessionExpired();
-			}
-	}
+		// setTimeout(function(){
+		// 	$('#odvTBOModalAddDocRef').modal('show');
+		// }, 500);
 
-
-
-
+	});
 
 </script>

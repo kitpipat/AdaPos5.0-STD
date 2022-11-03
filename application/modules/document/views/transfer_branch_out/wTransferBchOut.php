@@ -1,6 +1,8 @@
 <input id="oetTransferBchOutStaBrowse" type="hidden" value="<?= $nBrowseType ?>">
 <input id="oetTransferBchOutCallBackOption" type="hidden" value="<?= $tBrowseOption ?>">
-
+<input id="oetTransferBchOutJumpDocNo" type="hidden" value="<?php echo $aParams['tDocNo'] ?>">
+<input id="oetTransferBchOutJumpBchCode" type="hidden" value="<?php echo $aParams['tBchCode'] ?>">
+<input id="oetTransferBchOutJumpAgnCode" type="hidden" value="<?php echo $aParams['tAgnCode'] ?>">
 <div id="odvTransferBchOutMainMenu" class="main-menu">
     <div class="xCNMrgNavMenu">
         <div class="row xCNavRow" style="width:inherit;">
@@ -8,7 +10,7 @@
                 <div class="col-xs-12 col-md-6">
                     <ol id="oliMenuNav" class="breadcrumb">
                         <?php FCNxHADDfavorite('deposit/0/0');?> 
-                        <li id="oliTransferBchOutTitle" class="xCNLinkClick" onclick="JSvTransferBchOutCallPageList()"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTitle') ?></li>
+                        <li id="oliTransferBchOutTitle" class="xCNLinkClick"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTitle') ?></li>
                         <li id="oliTransferBchOutTitleAdd" class="active"><a><?= language('document/transfer_branch_out/transfer_branch_out', 'tTitleAdd') ?></a></li>
                         <li id="oliTransferBchOutTitleEdit" class="active"><a><?= language('document/transfer_branch_out/transfer_branch_out', 'tTitleEdit') ?></a></li>
                         <li id="oliTransferBchOutTitleDetail" class="active"><a><?= language('document/purchaseinvoice/purchaseinvoice', 'tPITitleDetail'); ?></a></li>
@@ -24,17 +26,23 @@
                         <div id="odvBtnAddEdit">
                             <div class="demo-button xCNBtngroup" style="width:100%;">
                                 <button onclick="JSvTransferBchOutCallPageList()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tBack') ?></button>
+
+                                
                                 <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)) : ?>
-                                    <?php if($aAlwEvent['tAutStaPrint'] == 1 ) : ?>
+                                    <button id="obtTBOGenPacking" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('document/transfer_branch_out/transfer_branch_out', 'tTBOBtnGenPacking') ?></button>
+                                <?php endif; ?>
+                                <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaPrint'] == 1)) : ?>
                                     <button id="obtTransferBchOutPrint" onclick="JSxTransferBchOutPrintDoc()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCMNPrint') ?></button>
-                                    <?php endif; ?>
-                                    <?php if($aAlwEvent['tAutStaCancel'] == 1 ) : ?>
+                                <?php endif; ?>
+                                <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaCancel'] == 1)) : ?>
+                                    <button id="obtTBOCancelOnApv" onclick="JSxTBOCancelOnApv(false)" class="btn xCNBTNDefult xCNBTNDefult2Btn xCNHide" type="button"> <?php echo language('common/main/main', 'tCancel') ?></button>
                                     <button id="obtTransferBchOutCancel" onclick="JSvTransferBchOutCancel(false)" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCancel') ?></button>
-                                    <?php endif; ?>
-                                    <?php if($aAlwEvent['tAutStaAppv'] == 1 ) : ?>
-                                    <button id="obtTransferBchOutApprove" onclick="JSvTransferBchOutApprove(false)" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('common/main/main', 'tCMNApprove') ?></button>                                 
-                                    <?php endif; ?>
-                                    <div class="btn-group">
+                                <?php endif; ?>
+                                <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAppv'] == 1)) : ?>
+                                    <button id="obtTransferBchOutApprove" onclick="JSxTBOChkPdtB4Apv(false)" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('common/main/main', 'tCMNApprove') ?></button>                                 
+                                <?php endif; ?>
+                                <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)) : ?>
+                                    <div id="odvTBOBtnGrpSave" class="btn-group">
                                         <button type="button" class="btn xWBtnGrpSaveLeft" onclick="$('#obtTransferBchOutSubmit').click()"> <?php echo language('common/main/main', 'tSave') ?></button>
                                         <?php echo $vBtnSave ?>
                                     </div>

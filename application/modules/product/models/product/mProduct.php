@@ -93,6 +93,7 @@ class mProduct extends CI_Model
             }
        /* |-------------------------------------------------------------------------------------------| */
 
+
         //---------------------- การมองเห็นสินค้าระดับตัวแทนขาย--------------------------//
 
                     $tWHEREPermission_BCH .= " OR (";
@@ -106,23 +107,28 @@ class mProduct extends CI_Model
                 if(!empty($tSessionShopCode)){ //กรณีผู้ใช้ผูก Shp จะต้องเห็นสินค้าที่ไม่ได้ผูก Shp ด้วย
                     $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'') = ''"   ;
                 }
-                    $tWHEREPermission_BCH .= " )) ";
+                    $tWHEREPermission_BCH .= " ) ";
             
       /* |-------------------------------------------------------------------------------------------| */
 
 
        //---------------------- การมองเห็นสินค้าระดับส่วนกลางหรือสินค้าที่ไม่ได้ผูกกับอะไรเลย--------------------------//
-                // $tWHEREPermission_BCH .= " OR (";
-                // $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'') = '' ";
-                // $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'') = '' ";
-                // $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'') = '' ";
-                // $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'') = '' "   ;
-                // $tWHEREPermission_BCH .= " )) ";
+                if($tSesUsrLevel=='BCH' &&  $tSesUsrAgnCode==''){
+
+                $tWHEREPermission_BCH .= " OR (";
+                $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'') = '' ";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTMerCode,'') = '' ";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTBchCode,'') = '' ";
+                $tWHEREPermission_BCH .= " AND ISNULL(PDLSPC.FTShpCode,'') = '' "   ;
+                $tWHEREPermission_BCH .= " ) ";
+
+                }
+                $tWHEREPermission_BCH .= " ) ";
        /* |-------------------------------------------------------------------------------------------| */
 
+             
         }
       
-
         $aSpcJoinTableMaster =  array(
             1 => '', //รหัสสินค้า
             2 => 'LEFT JOIN TCNMPdt_L PDTL WITH (NOLOCK)       ON PDT.FTPdtCode = PDTL.FTPdtCode  AND PDTL.FNLngID    =' . $nLngID,  //หาชื่อสินค้า
@@ -172,7 +178,7 @@ class mProduct extends CI_Model
         if (!empty($tSearch)) {
             $tSQLPdtMaster .= $aSpcWhereTableMaster[$nSearchProductType];
         }
-        //  echo $tSQLPdtMaster;
+        //   echo $tSQLPdtMaster;
         // die();
 
 

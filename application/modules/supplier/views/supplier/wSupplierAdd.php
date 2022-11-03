@@ -1,96 +1,104 @@
 <?php
     date_default_timezone_set("Asia/Bangkok");
     if(isset($nStaAddOrEdit) && $nStaAddOrEdit == 1){
-        $tRoute             = "supplierEventEdit";
-        @$aSplAddress       = $aSplDataAddress['raItems'];
-        $tSplCode           = $aSplData['raItems']['rtSplCode'];
-        $tSplName           = $aSplData['raItems']['rtSplName'];
-        $tSplTel            = $aSplData['raItems']['rtSplTel'];
-        $tSplEmail          = $aSplData['raItems']['rtSplEmail'];
-        $tSplFax            = $aSplData['raItems']['rtSplFax'];
-        $tSplSex            = $aSplData['raItems']['rtSplSex'];
-        $tSplDob            = (!empty($aSplData['raItems']['rtSplDob']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplDob'])) : null;//
-        $tSgpCode           = $aSplData['raItems']['rtSgpCode'];
-        $tSgpName           = $aSplData['raItems']['rtSgpName'];
-        $tStyCode           = $aSplData['raItems']['rtStyCode'];
-        $tStyName           = $aSplData['raItems']['rtStyName'];
-        $tSlvCode           = $aSplData['raItems']['rtSlvCode'];
-        $tSlvName           = $aSplData['raItems']['rtSlvName'];
-        $tVatCode           = $aSplData['raItems']['rtVatCode'];
-        $tSplStaVATInOrEx   = $aSplData['raItems']['rtSplStaVATInOrEx'];
-        $tSplDiscBillRet    = $aSplData['raItems']['rtSplDiscBillRet'];
-        $tSplDiscBillWhs    = $aSplData['raItems']['rtSplDiscBillWhs'];
-        $tSplDiscBillNet    = $aSplData['raItems']['rtSplDiscBillNet'];
-        $tSplBusiness       = $aSplData['raItems']['rtSplBusiness'];
-        $tSplStaBchOrHQ     = $aSplData['raItems']['rtSplStaBchOrHQ'];
-        $tSplBchCode        = $aSplData['raItems']['rtSplBchCode'];
-        $tSplStaActive      = $aSplData['raItems']['rtSplStaActive'];
-        $tUsrCode           = $aSplData['raItems']['rtUsrCode'];
-        $tSplCrTerm         = $aSplData['raItems']['rtSplCrTerm'];
-        $tSplCrLimit        = number_format($aSplData['raItems']['rtSplCrLimit'],$nOptDecimalShow);
-        $tSplDayCta         = $aSplData['raItems']['rtSplDayCta'];
-        $tSplLastCta        = (!empty($aSplData['raItems']['rtSplLastCta']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplLastCta'])) : null;//
-        $tSplLastPay        = (!empty($aSplData['raItems']['rtSplLastPay']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplLastPay'])) : null;//
-        $tSplLimitRow       = $aSplData['raItems']['rtSplLimitRow'];
-        $tSplLeadTime       = $aSplData['raItems']['rtSplLeadTime'];
-        $tSplTspPaid        = $aSplData['raItems']['rtSplTspPaid'];
-        $tViaCode           = $aSplData['raItems']['rtViaCode'];
-        $tViaName           = $aSplData['raItems']['rtViaName'];
-        $tSplApply          = $aSplData['raItems']['rtSplApply'];
-        $tSplRefExCrdNo     = $aSplData['raItems']['rtSplRefExCrdNo'];
-        $tSplCrdIssue       = (!empty($aSplData['raItems']['rtSplCrdIssue']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplCrdIssue'])) : null;//
-        $tSplCrdExpire      = (!empty($aSplData['raItems']['rtSplCrdExpire']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplCrdExpire'])) : null;//
-        $tSplPayRmk         = $aSplData['raItems']['rtSplPayRmk'];
-        $tSplBillRmk        = $aSplData['raItems']['rtSplBillRmk'];
-        $tSplViaRmk         = $aSplData['raItems']['rtSplViaRmk'];
-        $tSplRmk            = $aSplData['raItems']['rtSplRmk'];
-        $tAgnCode           = $aSplData['raItems']['FTAgnCode']; 
-        $tAgnName           = $aSplData['raItems']['FTAgnName'];
+        $tRoute                 = "supplierEventEdit";
+        @$aSplAddress           = $aSplDataAddress['raItems'];
+        $tSplCode               = $aSplData['raItems']['rtSplCode'];
+        $tSplName               = $aSplData['raItems']['rtSplName'];
+        $tSplTel                = $aSplData['raItems']['rtSplTel'];
+        $tSplEmail              = $aSplData['raItems']['rtSplEmail'];
+        $tSplFax                = $aSplData['raItems']['rtSplFax'];
+        $tSplSex                = $aSplData['raItems']['rtSplSex'];
+        $tSplDob                = (!empty($aSplData['raItems']['rtSplDob']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplDob'])) : null;//
+        $tSgpCode               = $aSplData['raItems']['rtSgpCode'];
+        $tSgpName               = $aSplData['raItems']['rtSgpName'];
+        $tStyCode               = $aSplData['raItems']['rtStyCode'];
+        $tStyName               = $aSplData['raItems']['rtStyName'];
+        $tSlvCode               = $aSplData['raItems']['rtSlvCode'];
+        $tSlvName               = $aSplData['raItems']['rtSlvName'];
+        $tVatCode               = $aSplData['raItems']['rtVatCode'];
+        $tSplStaVATInOrEx       = $aSplData['raItems']['rtSplStaVATInOrEx'];
+        $tSplDiscBillRet        = $aSplData['raItems']['rtSplDiscBillRet'];
+        $tSplDiscBillWhs        = $aSplData['raItems']['rtSplDiscBillWhs'];
+        $tSplDiscBillNet        = $aSplData['raItems']['rtSplDiscBillNet'];
+        $tSplBusiness           = $aSplData['raItems']['rtSplBusiness'];
+        $tSplStaBchOrHQ         = $aSplData['raItems']['rtSplStaBchOrHQ'];
+        $tSplStaLocal           = $aSplData['raItems']['rtSplStaLocal'];
+        $tSplBchCode            = $aSplData['raItems']['rtSplBchCode'];
+        $tSplStaActive          = $aSplData['raItems']['rtSplStaActive'];
+        $tSqlTypeExporeCode     = $aSplData['raItems']['rtFmtCodeExp'];
+        $tSqlTypeExporeName     = $aSplData['raItems']['rtFTRfsName'];
+        $tUsrCode               = $aSplData['raItems']['rtUsrCode'];
+        $tSqlUsrName            = $aSplData['raItems']['rtUsrName'];
+        $tSplCrTerm             = $aSplData['raItems']['rtSplCrTerm'];
+        $tSplCrLimit            = number_format($aSplData['raItems']['rtSplCrLimit'],$nOptDecimalShow);
+        $tSplDayCta             = $aSplData['raItems']['rtSplDayCta'];
+        $tSplLastCta            = (!empty($aSplData['raItems']['rtSplLastCta']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplLastCta'])) : null;//
+        $tSplLastPay            = (!empty($aSplData['raItems']['rtSplLastPay']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplLastPay'])) : null;//
+        $tSplLimitRow           = $aSplData['raItems']['rtSplLimitRow'];
+        $tSplLeadTime           = $aSplData['raItems']['rtSplLeadTime'];
+        $tSplTspPaid            = $aSplData['raItems']['rtSplTspPaid'];
+        $tViaCode               = $aSplData['raItems']['rtViaCode'];
+        $tViaName               = $aSplData['raItems']['rtViaName'];
+        $tSplApply              = $aSplData['raItems']['rtSplApply'];
+        $tSplRefExCrdNo         = $aSplData['raItems']['rtSplRefExCrdNo'];
+        $tSplCrdIssue           = (!empty($aSplData['raItems']['rtSplCrdIssue']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplCrdIssue'])) : null;//
+        $tSplCrdExpire          = (!empty($aSplData['raItems']['rtSplCrdExpire']))? date("Y-m-d", strtotime($aSplData['raItems']['rtSplCrdExpire'])) : null;//
+        $tSplPayRmk             = $aSplData['raItems']['rtSplPayRmk'];
+        $tSplBillRmk            = $aSplData['raItems']['rtSplBillRmk'];
+        $tSplViaRmk             = $aSplData['raItems']['rtSplViaRmk'];
+        $tSplRmk                = $aSplData['raItems']['rtSplRmk'];
+        $tAgnCode               = $aSplData['raItems']['FTAgnCode']; 
+        $tAgnName               = $aSplData['raItems']['FTAgnName'];
     }else{
-        $tRoute             = "supplierEventAdd";
-        $tSplCode           = '';
-        $tSplName           = '';
-        $tSplTel            = '';
-        $tSplEmail          = '';
-        $tSplFax            = '';
-        $tSplSex            = '';
-        $tSplDob            = date('Y-m-d');
-        $tSgpCode           = '';
-        $tSgpName           = '';
-        $tStyCode           = '';
-        $tStyName           = '';
-        $tSlvCode           = '';
-        $tSlvName           = '';
-        $tVatCode           = '';
-        $tSplStaVATInOrEx   = '';
-        $tSplDiscBillRet    = '';
-        $tSplDiscBillWhs    = '';
-        $tSplDiscBillNet    = '';
-        $tSplBusiness       = '';
-        $tSplStaBchOrHQ     = '';
-        $tSplBchCode        = '';
-        $tSplStaActive      = '';
-        $tUsrCode           = '';
-        $tSplCrTerm         = '';
-        $tSplCrLimit        = number_format(0,$nOptDecimalShow);
-        $tSplDayCta         = '';
-        $tSplLastCta        = '';
-        $tSplLastPay        = '';
-        $tSplLimitRow       = '';
-        $tSplLeadTime       = '';
-        $tViaCode           = '';
-        $tViaName           = '';
-        $tSplTspPaid        = '';
-        $tSplApply          = '';
-        $tSplRefExCrdNo     = '';
-        $tSplCrdIssue       = '';
-        $tSplCrdExpire      = '';
-        $tSplPayRmk         = '';
-        $tSplBillRmk        = '';
-        $tSplViaRmk         = '';
-        $tSplRmk            = '';
-        $tAgnCode           = $this->session->userdata("tSesUsrAgnCode");
-        $tAgnName           = $this->session->userdata("tSesUsrAgnName");
+        $tRoute                 = "supplierEventAdd";
+        $tSplCode               = '';
+        $tSplName               = '';
+        $tSplTel                = '';
+        $tSplEmail              = '';
+        $tSplFax                = '';
+        $tSplSex                = '';
+        $tSplDob                = date('Y-m-d');
+        $tSgpCode               = '';
+        $tSgpName               = '';
+        $tStyCode               = '';
+        $tStyName               = '';
+        $tSlvCode               = '';
+        $tSlvName               = '';
+        $tVatCode               = '';
+        $tSplStaVATInOrEx       = '';
+        $tSplDiscBillRet        = '';
+        $tSplDiscBillWhs        = '';
+        $tSplDiscBillNet        = '';
+        $tSplBusiness           = '';
+        $tSplStaBchOrHQ         = '';
+        $tSplStaLocal           = '';
+        $tSplBchCode            = '';
+        $tSplStaActive          = '';
+        $tSqlTypeExporeCode     = '';
+        $tSqlTypeExporeName     = '';
+        $tUsrCode               = '';
+        $tSqlUsrName            = '';
+        $tSplCrTerm             = '';
+        $tSplCrLimit            = number_format(0,$nOptDecimalShow);
+        $tSplDayCta             = '';
+        $tSplLastCta            = '';
+        $tSplLastPay            = '';
+        $tSplLimitRow           = '';
+        $tSplLeadTime           = '';
+        $tViaCode               = '';
+        $tViaName               = '';
+        $tSplTspPaid            = '';
+        $tSplApply              = '';
+        $tSplRefExCrdNo         = '';
+        $tSplCrdIssue           = '';
+        $tSplCrdExpire          = '';
+        $tSplPayRmk             = '';
+        $tSplBillRmk            = '';
+        $tSplViaRmk             = '';
+        $tSplRmk                = '';
+        $tAgnCode               = $this->session->userdata("tSesUsrAgnCode");
+        $tAgnName               = $this->session->userdata("tSesUsrAgnName");
     }
 
     if($nStaAddOrEdit == 99){
@@ -156,7 +164,7 @@
                         <div class="custom-tabs-line tabs-line-bottom left-aligned">
                             <div class="row">
                                 <ul class="nav" role="tablist">
-                                    <li id="" class="active" onclick="JSxSelectTabSpl('Info1')">
+                                <li id="" class="active" onclick="JSxSelectTabSpl('Info1')">
                                         <a class="xCNMenuTab" role="tab" data-toggle="tab" data-menutype="Info"  data-target="#odvInfo1" aria-expanded="true"><?php echo language('supplier/supplier/supplier','tInfo1')?></a>
                                     </li>
                                     <li id="" class="xWDisTab" onclick="JSxSelectTabSpl('Info2')">
@@ -167,6 +175,9 @@
                                     </li>
                                     <li id="" class="xWDisTab" onclick="JSxSelectTabSpl('Address')">
                                         <a class="xCNMenuTab" role="tab" data-toggle="<?=$tDisabledTab;?>" data-menutype="InfoAddr"  data-target="#odvAddress" aria-expanded="false"><?php echo language('supplier/supplier/supplier','tAddress')?></a>
+                                    </li>
+                                    <li id="" class="xWDisTab" onclick="JSxSelectTabSpl('SPLBranchTab')">
+                                        <a class="xCNMenuTab" role="tab" data-toggle="<?=$tDisabledTab;?>" data-menutype="InfoSPLBranchTab"  data-target="#odvSPLBranchTab" aria-expanded="false"><?php echo language('supplier/supplier/supplier','tSPLBranchTitle')?></a>
                                     </li>
                                 </ul>
                             </div>
@@ -342,8 +353,9 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6 col-sm-12">
+                                    <div class="col-md-6 col-sm-12" style="border-top: 1px solid #f1f1f1;padding-top: 10px;margin-top: 10px;">
                                         <div class="form-group">
+                                            <span style="font-weight: bold;font-size: 20px !important;">ประเภท</span>
                                             <div class="row">
                                                 <div class="col-md-6 col-sm-12">
                                                     <label class="fancy-radio xCNRadioMain">
@@ -382,8 +394,9 @@
                                     </div>
                                 </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-6" style="border-top: 1px solid #f1f1f1;padding-top: 10px;margin-top: 10px;">
                                     <div class="form-group">
+                                        <span style="font-weight: bold;font-size: 20px !important;">เงื่อนไขภาษี</span>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12">
                                                 <label class="fancy-radio xCNRadioMain">
@@ -402,7 +415,7 @@
                                     </div>
                                 </div>
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-8" style="border-bottom: 1px solid #f1f1f1;margin-bottom: 20px;padding-bottom: 5px;">
                                     <div class="form-group">
                                         <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tVat')?></label>
                                         <select class="selectpicker form-control xCNSelectBox" id="ocmVatRate" name="ocmVatRate" data-live-search="true">
@@ -415,38 +428,76 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <!-- <div class="col-md-3">
                                     <div class="form-group">
                                         <label class="xCNLabelFrm">&nbsp;</label>
-                                            <?php
-                                                if(isset($tRoute) && $tRoute == "supplierEventEdit"){
-                                                    if(isset($tSplStaActive ) && $tSplStaActive == 1){
-                                                        $tSplDisableStaActive   = ' checked';
-                                                    }else{
-                                                        $tSplDisableStaActive   = '';
-                                                    }
+                                        <?php
+                                            if(isset($tRoute) && $tRoute == "supplierEventEdit"){
+                                                if(isset($tSplStaActive ) && $tSplStaActive == 1){
+                                                    $tSplDisableStaActive   = ' checked';
                                                 }else{
-                                                    $tSplDisableStaActive   = 'checked';
+                                                    $tSplDisableStaActive   = '';
                                                 }
-                                            ?>
-                                            <label class="fancy-checkbox">
-                                                <input type="checkbox" id="ocbSplStaActive" name="ocbSplStaActive"<?php echo @$tSplDisableStaActive;?>>
-                                                <span>&nbsp;<?php echo language('supplier/supplier/supplier','tStaContact')?></span>
-                                            </label>
-                                        </div>
+                                            }else{
+                                                $tSplDisableStaActive   = 'checked';
+                                            }
+                                        ?>
+                                        <label class="fancy-checkbox">
+                                            <input type="checkbox" id="ocbSplStaActive" name="ocbSplStaActive"<?php echo @$tSplDisableStaActive;?>>
+                                            <span>&nbsp;<?php echo language('supplier/supplier/supplier','tStaContact')?></span>
+                                        </label>
                                     </div>
-                                </div>
+                                </div> -->
+                            </div>
+
+                            <!--  START เบาวน์ประเภทการส่งออก  -->
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="form-group">
-                                            <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tResponsible')?></label>
-                                            <input type="text" class="form-control" maxlength="20" id="oetUsrCode" name="oetUsrCode"
-                                            placeholder="<?php echo language('supplier/supplier/supplier','tResponsible')?>"
-                                            autocomplete="off"
-                                            value="<?php echo $tUsrCode; ?>"  data-validate="<?php echo  language('supplier/supplier/supplier','tResponsible');?>">
+                                        <label class="xCNLabelFrm"><span class="text-danger"></span><?php echo language('supplier/supplier/supplier','tTypeExpore')?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control xCNHide" id="oetSqlTypeExporeCode" name="oetSqlTypeExporeCode" value="<?=@$tSqlTypeExporeCode?>">
+                                            <input type="text" class="form-control xWPointerEventNone" id="oetSqlTypeExporeName" name="oetSqlTypeExporeName" placeholder="<?php echo language('supplier/supplier/supplier','tTypeExpore')?>" value="<?=@$tSqlTypeExporeName?>"  readonly>
+                                            <span class="input-group-btn">
+                                                <button id="obtSqlTypeExpore" type="button" class="btn xCNBtnBrowseAddOn">
+                                                    <img src="<?php echo  base_url().'/application/modules/common/assets/images/icons/find-24.png'?>">
+                                                </button>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- <div class="row">
+                                <div class="col-md-8" style="border-top: 1px solid #f1f1f1;padding-top: 10px;margin-top: 10px;">
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('supplier/supplier/supplier','tResponsible')?></label>
+                                        <input type="text" class="form-control" maxlength="20" id="oetUsrCode" name="oetUsrCode"
+                                        placeholder="<?php echo language('supplier/supplier/supplier','tResponsible')?>"
+                                        autocomplete="off"
+                                        value="<?php echo $tUsrCode; ?>"  data-validate="<?php echo  language('supplier/supplier/supplier','tResponsible');?>">
+                                    </div>
+                                </div>
+                            </div> -->
+
+                            <!--  START เบาวน์ User  -->
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span class="text-danger"></span><?php echo language('supplier/supplier/supplier','tResponsible')?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control xCNHide" id="oetUsrCode" name="oetUsrCode" value="<?=@$tUsrCode?>">
+                                            <input type="text" class="form-control xWPointerEventNone" id="oetUsrName" name="oetUsrName" placeholder="<?php echo language('supplier/supplier/supplier','tResponsible')?>" value="<?=@$tSqlUsrName?>"  readonly>
+                                            <span class="input-group-btn">
+                                                <button id="obtSqlUSerCode" type="button" class="btn xCNBtnBrowseAddOn">
+                                                    <img src="<?php echo  base_url().'/application/modules/common/assets/images/icons/find-24.png'?>">
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-8 col-sm-12">
                                     <div class="form-group">
@@ -455,6 +506,39 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="fancy-checkbox">
+                                            <input type="checkbox" id="ocbSplLocal" name="ocbSplLocal" value="1" <?php echo $tSplStaLocal == 1 ? 'checked' : '';?>>
+                                            <span> <?php echo language('supplier/supplier/supplier','tLocalSpl')?></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <!-- <label class="xCNLabelFrm">&nbsp;</label> -->
+                                        <?php
+                                            if(isset($tRoute) && $tRoute == "supplierEventEdit"){
+                                                if(isset($tSplStaActive ) && $tSplStaActive == 1){
+                                                    $tSplDisableStaActive   = ' checked';
+                                                }else{
+                                                    $tSplDisableStaActive   = '';
+                                                }
+                                            }else{
+                                                $tSplDisableStaActive   = 'checked';
+                                            }
+                                        ?>
+                                        <label class="fancy-checkbox">
+                                            <input type="checkbox" id="ocbSplStaActive" name="ocbSplStaActive"<?php echo @$tSplDisableStaActive;?>>
+                                            <span>&nbsp;<?php echo language('supplier/supplier/supplier','tStaContact')?></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
                         </form>
                     </div>
                     <!-- end tab 1  -->
@@ -586,9 +670,16 @@
                                 //step 4 เอามา เปะ odvContentAddress
                             </script>
                     </div>
-                    <?php } ?>
                     <!-- end tab 4 -->
 
+                    <!-- tab 5 ร้านค้า/สาขา-->
+                    <div id="odvSPLBranchTab" class="tab-pane" role="tabpanel">
+                        
+                        <div id="odvSPLBranch" class="row"></div>
+                        
+                    </div>
+                    <?php } ?>
+                    <!-- end tab 5 ร้านค้า/สาขา-->
 
                     </div>
                 </div>
@@ -604,7 +695,7 @@
 	$('.xWBtnHide').show();
 	$('.xCNMenuTab').click(function() {
         var tMenuType = $(this).data('menutype');
-		if (tMenuType == 'InfoContact' || tMenuType == 'InfoAddr') {
+		if (tMenuType == 'InfoContact' || tMenuType == 'InfoAddr' || tMenuType == 'InfoSPLBranchTab') {
             $('.xWBtnHide').hide();
 		} else {
             $('.xWBtnHide').show();
@@ -635,6 +726,9 @@
                 break;
             case 'Credit':
                 $('#odvBtnAddEdit').show();
+                break;
+            case 'SPLBranchTab':
+                JSxSPLBranch();
                 break;
         }
     }
@@ -895,7 +989,57 @@
         }
     });
 
+    // เบาวน์  ประเภทการส่งออก
+    $('#obtSqlTypeExpore').click(function(){JCNxBrowseData('oBrowseSqlTypeExpore')});
+        var oBrowseSqlTypeExpore = {
+            Title   : ['supplier/supplier/supplier','tTypeExpore'],
+            Table   : {Master:'TRPSRptFormat',PK:'FTRfsCode'},
+            Join    : {
+                    Table:	['TRPSRptFormat_L'],
+                    On:[' TRPSRptFormat.FTRfsCode = TRPSRptFormat_L.FTRfsCode '] //+ tJoinBranch + tJoinShop
+                    },
+            GrideView:{
+                ColumnPathLang	: 'supplier/supplier/supplier',
+                ColumnKeyLang	: ['tTypeCode','tTypeName'],
+                ColumnsSize     : ['15%','75%'],
+                WidthModal      : 50,
+                DataColumns		: ['TRPSRptFormat.FTRfsCode','TRPSRptFormat_L.FTRfsName'],
+                DataColumnsFormat : ['',''],
+                Perpage			: 10,
+                OrderBy			: ['TRPSRptFormat.FTRfsCode DESC'],
+            },
+            CallBack:{
+                ReturnType	: 'S',
+                Value		: ["oetSqlTypeExporeCode","TRPSRptFormat.FTRfsCode"],
+                Text		: ["oetSqlTypeExporeName","TRPSRptFormat_L.FTRfsName"],
+            }
+        }
 
+    // เบาวน์  User
+    $('#obtSqlUSerCode').click(function(){JCNxBrowseData('oBrowseSqlUserCode')});
+    var oBrowseSqlUserCode = {
+        Title   : ['supplier/supplier/supplier','tResponsible'],
+        Table   : {Master:'TCNMUser',PK:'FTUsrCode'},
+        Join    : {
+                Table:	['TCNMUser_L'],
+                On:[' TCNMUser.FTUsrCode = TCNMUser_L.FTUsrCode AND TCNMUser_L.FNLngID = '+nLangEdits,] //+ tJoinBranch + tJoinShop
+                },
+        GrideView:{
+            ColumnPathLang	: 'supplier/supplier/supplier',
+            ColumnKeyLang	: ['tTypeCode','tTypeUsername'],
+            ColumnsSize     : ['10%','80%'],
+            WidthModal      : 50,
+            DataColumns		: ['TCNMUser.FTUsrCode','TCNMUser_L.FTUsrName'],
+            DataColumnsFormat : ['',''],
+            Perpage			: 10,
+            OrderBy			: ['TCNMUser.FTUsrCode DESC'],
+        },
+        CallBack:{
+            ReturnType	: 'S',
+            Value		: ["oetUsrCode","TCNMUser.FTUsrCode"],
+            Text		: ["oetUsrName","TCNMUser_L.FTUsrName"],
+        }
+    }
 
 
 
