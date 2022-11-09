@@ -456,6 +456,7 @@
                                         class="form-control"
                                         id="oetPIRefExtDoc"
                                         name="oetPIRefExtDoc"
+                                        maxlength="20"
                                         placeholder="<?=language('document/purchaseinvoice/purchaseinvoice','tPILabelIntDoc');?>"
                                         value="<?php echo $tPIRefExtDoc;?>"
                                     >
