@@ -312,14 +312,16 @@
 
                             if(aResult.nStaEvent == 500){
                                 FSvCMNSetMsgWarningDialog('เกิดข้อผิดพลาด กรุณาลองทำรายการใหม่อีกครั้ง');
+                                JCNxCloseLoading();
                             }else if(aResult.nStaEvent == 550){
                                 FSvCMNSetMsgWarningDialog('เกิดข้อผิดพลาด กรุณาลองตรวจสอบเลขที่ใบกำกับภาษีอย่างย่อ ใหม่อีกครั้ง');
                                 $('#odvModalAproveDocument').modal("hide");
                                 $('#obtConfirmApprDoc').attr("disabled",false);
                                 $('#obtApproveDocument').attr("disabled",false);
-                                //JCNxOpenLoading();
+                                JCNxCloseLoading();
                             }else if(aResult.nStaEvent == 800){
                                 JSvCMNSetMsgErrorDialog(aResult.tStaMessg);
+                                JCNxCloseLoading();
                             }else{
                                 $('#odvModalAproveDocument').modal("hide");
                                 $('#obtConfirmApprDoc').attr("disabled",false);
@@ -328,6 +330,7 @@
                                 // JCNxOpenLoading();
                                 // var tDocABB = $('#oetTAXABBCode').val();
                                 // JSxINMSubScribeQName(tBCH,tDocABB);
+                                JCNxCloseLoading();
                                 JSxControlGetMassageByServer();
                             }
                         },
