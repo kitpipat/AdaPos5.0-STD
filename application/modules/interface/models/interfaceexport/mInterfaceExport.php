@@ -64,10 +64,10 @@ class mInterfaceExport extends CI_Model {
         $tSQL = "SELECT aData.*  FROM
                     ( SELECT
                         0 + ROW_NUMBER () OVER (ORDER BY FTXshDocNo ASC) AS rtRowID,
-                        TPSTTaxHD.FTBchCode AS FTBchCode,
-                        TPSTTaxHD.FTXshDocNo AS FTXshDocNo
+                        TPSTSalHD.FTBchCode AS FTBchCode,
+                        TPSTSalHD.FTXshDocNo AS FTXshDocNo
                     FROM
-                        TPSTTaxHD WITH (NOLOCK)
+                        TPSTSalHD WITH (NOLOCK)
                     ) AS aData
                     WHERE 1=1
                     ";

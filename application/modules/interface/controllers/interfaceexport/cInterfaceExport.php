@@ -155,7 +155,7 @@ class cInterfaceExport extends MX_Controller {
                                 'nAlwDupFlag'           => $nAlwDupFlag,
                                 'aConnStr'              => $aConnStr
                             );
-                            print_r($aPackData);
+                            // print_r($aPackData);
                              $this->FSaCIFXGetFormatParam($nValue,$aPackData);
                             
                         }
@@ -225,7 +225,6 @@ class cInterfaceExport extends MX_Controller {
             $paPackData['dDateToFinance'] = $aDateToFinance[0].'-'.$aDateToFinance[1].'-'.$aDateToFinance[2];
         }
 
-
         //ถ้าไม่เลือกเลขที่เอกสารมา จะต้องส่งไปหาแบบช่วง วันที่ ทั้งหมด
         if(($paPackData['tDocNoFrom'] == '' || $paPackData['tDocNoFrom'] == null) && ($paPackData['tDocNoTo'] == '' || $paPackData['tDocNoTo'] == null)){
             $aMQParams = [
@@ -252,9 +251,9 @@ class cInterfaceExport extends MX_Controller {
             $this->FCNxCallRabbitMQSale($aMQParams,true,$paPackData['tPasswordMQ']);
         }else{
             //ถ้าไม่เลือกวันที่มา จะต้อส่งไปหาแบบช่วง เลขที่เอกสาร
-            $aGetDataDocNo = $this->mInterfaceExport->FSaMINMGetDataDocNo($paPackData['tDocNoFrom'],$paPackData['tDocNoTo'],$paPackData['tBchCodeSale']);
-            foreach($aGetDataDocNo as $aValue){
-                $aMQParams[1] = [
+            // $aGetDataDocNo = $this->mInterfaceExport->FSaMINMGetDataDocNo($paPackData['tDocNoFrom'],$paPackData['tDocNoTo'],$paPackData['tBchCodeSale']);
+            // foreach($aGetDataDocNo as $aValue){
+                $aMQParams = [
                     "queueName"     => $paPackData['tQueueName'],
                     "exchangname"   => "",
                     "params"        => [
@@ -265,8 +264,8 @@ class cInterfaceExport extends MX_Controller {
                             "ptFilter"      => $paPackData['tBchCodeSale'],
                             "ptDateFrm"     => $paPackData['dDateFromSale'],
                             "ptDateTo"      => $paPackData['dDateToSale'],
-                            "ptDocNoFrm"    => $aValue['FTXshDocNo'],
-                            "ptDocNoTo"     => $aValue['FTXshDocNo'],
+                            "ptDocNoFrm"    => $paPackData['tDocNoFrom'],
+                            "ptDocNoTo"     => $paPackData['tDocNoTo'],
                             "ptWaHouse"     => '',
                             "ptPosCode"     => '',
                             "ptRound"       => '1',
@@ -276,7 +275,7 @@ class cInterfaceExport extends MX_Controller {
                     ]
                 ];
                 $this->FCNxCallRabbitMQSale($aMQParams,true,$paPackData['tPasswordMQ']);
-            }
+            // }
         }
     }
 
