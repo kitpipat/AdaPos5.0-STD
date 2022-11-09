@@ -63,7 +63,7 @@
                 success: function(tResult){
                     var aResult = JSON.parse(tResult);
                     $("#ohdCheckDuplicateSmgCode").val(aResult["rtCode"]);
-                    JSxSmgSetValidEventBlur();
+                    // JSxSmgSetValidEventBlur();
                     $('#ofmAddSlipMessage').submit();
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

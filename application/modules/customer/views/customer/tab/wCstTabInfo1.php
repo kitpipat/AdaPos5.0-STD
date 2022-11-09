@@ -183,7 +183,7 @@
 
                         <div class="form-group">
                                 <label class="xCNLabelFrm"><?php echo language('customer/customer/customer','tCSTTel'); ?></label>
-                                <input type="text" class="form-control" maxlength="100" id="oetCstTel" name="oetCstTel" value="<?=$tCstTel?>"
+                                <input type="text" class="form-control" maxlength="50" id="oetCstTel" name="oetCstTel" value="<?=$tCstTel?>"
                                 placeholder="<?php echo language('customer/customer/customer','tCSTTel'); ?>" 
                                 autocomplete="off"
                             >

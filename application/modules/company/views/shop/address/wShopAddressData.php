@@ -1,4 +1,9 @@
 <div class="row">
+    <?php 
+    print_r($aAlwShopAddress);
+    ?>
+
+
     <input type="hidden" id="ohdShpAddrBchCode" name="ohdShpAddrBchCode" value="<?php echo @$tShopAddrBchCode;?>">
     <input type="hidden" id="ohdShpAddrShpCode" name="ohdShpAddrShpCode" value="<?php echo @$tShopAddrShpCode;?>">
     <input type="hidden" id="ohdShpAddrShpName" name="ohdShpAddrShpName" value="<?php echo @$tShopAddrShpName;?>">

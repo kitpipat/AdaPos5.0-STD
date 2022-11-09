@@ -324,7 +324,7 @@
                                 <label class="xCNLabelFrm"><?php echo language('company/branch/branch','tBCHAddContactTel')?></label>
                                 <input
                                     type="text"
-                                    class="form-control xCNInputNumericWithDecimal"
+                                    class="form-control "
                                     maxlength="50"
                                     id="oetAddressTel"
                                     name="oetAddressTel"
@@ -336,7 +336,7 @@
                                 <label class="xCNLabelFrm"><?php echo language('company/branch/branch','tBCHAddContactFax')?></label>
                                 <input
                                     type="text"
-                                    class="form-control xCNInputNumericWithDecimal"
+                                    class="form-control "
                                     maxlength="50"
                                     id="oetAddressFax"
                                     name="oetAddressFax"

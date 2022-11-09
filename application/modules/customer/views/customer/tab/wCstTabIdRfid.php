@@ -8,6 +8,7 @@
                         type="text" 
                         id="oetAddRfidCode" 
                         name="oetAddRfidCode" 
+                        maxlength="30" 
                         placeholder="<?php echo language('customer/customer/customer','tCSTVAlidateRFIDCard');?>"
                         data-validate ="<?php echo language('customer/customer/customer','tCSTVAlidateRFIDCard');?>">
                 </div>
@@ -19,6 +20,7 @@
                         type="text" 
                         id="oetAddRfidName" 
                         name="oetAddRfidName" 
+                        maxlength="200" 
                        placeholder="<?php echo language('customer/customer/customer','tCSTVAlidateCardName');?>"
                         data-validate ="<?php echo language('customer/customer/customer','tCSTVAlidateCardName');?>">
                 </div>
@@ -57,6 +59,7 @@
                                             name="oetRfidCode<?=$rfidKey?>" 
                                             id="oetRfidCode<?=$rfidKey?>" 
                                             type="text" 
+                                            maxlength="30" 
                                             class="xWRfid xWCstRfidCode input100 xCNTextDetail2" 
                                             value="<?=$aRfidVal['rtCstID']?>" 
                                             onkeyup="JSxCSTRfidCodeRecordValidate(this, event);"
@@ -69,6 +72,7 @@
                                             name="oetRfidName<?=$rfidKey?>" 
                                             id="oetRfidName<?=$rfidKey?>" 
                                             type="text" 
+                                            maxlength="200" 
                                             class="xWRfid xWCstRfidName input100 xCNTextDetail2" 
                                             value="<?=$aRfidVal['rtCrfName']?>"
                                             onkeyup="JSxCSTRfidNameRecordValidate(this, event);"

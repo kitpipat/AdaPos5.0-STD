@@ -558,6 +558,7 @@
                                         id="oetSOFrmCstHNNumber"
                                         name="oetSOFrmCstHNNumber"
                                         value="<?php echo $tSOCstCode;?>"
+                                        maxlength="20"
                                         lavudate-label="<?=language('document/saleorder/saleorder','tSOCstHNNumber')?>"
                                     >
                                 </div>
@@ -571,6 +572,7 @@
                                         class="form-control"
                                         id="oetSOFrmCstCtzID"
                                         name="oetSOFrmCstCtzID"
+                                        maxlength="20"
                                         value="<?php echo $tSOCstCardID;?>"
                                     >
                                 </div>
@@ -679,6 +681,7 @@
                                         class="form-control"
                                         id="oetSORefExtDoc"
                                         name="oetSORefExtDoc"
+                                        maxlength="20"
                                         value="<?php echo $tSORefExtDoc;?>"
                                     >
                                 </div>

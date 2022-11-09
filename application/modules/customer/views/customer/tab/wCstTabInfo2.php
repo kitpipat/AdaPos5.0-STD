@@ -102,7 +102,7 @@
                 <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                     <div class="form-group">
                         <label class="xCNLabelFrm"><?php echo language('customer/customer/customer','tCSTDiscRet')?></label>
-                        <input type="text" class="form-control" maxlength="100" id="oetCstDiscRet" name="oetCstDiscRet" value="<?php echo @$tCstDiscRet;?>">
+                        <input type="text" class="form-control" maxlength="50" id="oetCstDiscRet" name="oetCstDiscRet" value="<?php echo @$tCstDiscRet;?>">
                     </div>
                 </div>
             </div>

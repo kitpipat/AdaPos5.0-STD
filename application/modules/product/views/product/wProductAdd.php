@@ -1610,11 +1610,11 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 <!-- Modal Manage PackSize Grade -->
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewPackMDGrade'); ?></label>
-                                    <input type="text" id="oetModalPszGrade" class="form-control text-right xCNInputWithoutSpc" name="oetModalPszGrade">
+                                    <input type="text" id="oetModalPszGrade" class="form-control text-right xCNInputWithoutSpc" name="oetModalPszGrade"  maxlength="50">
                                 </div>
                                 <div class="form-group">
                                     <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewPackMDWeight'); ?></label>
-                                    <input type="text" id="oetModalPszWeight" class="form-control text-right xCNInputNumericWithDecimal" name="oetModalPszWeight">
+                                    <input type="text" id="oetModalPszWeight" class="form-control text-right xCNInputNumericWithDecimal" name="oetModalPszWeight" >
                                 </div>
                                 <!-- Modal Manage PackSize Browse Size -->
                                 <div class="form-group">
@@ -1653,15 +1653,15 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 <label class="xCNLabelFrm"><?php echo language('product/product/product', 'tPDTViewPackMDUnitDim'); ?></label>
                                 <div class="form-group">
                                     <label class="xCNLabelFrm" style="font-size:18px !important"><?php echo language('product/product/product', 'tPDTViewPackMDWidth'); ?></label>
-                                    <input type="text" id="oetModalPszUnitDimWidth" class="form-control" name="oetModalPszUnitDimWidth">
+                                    <input type="text" id="oetModalPszUnitDimWidth" class="form-control" name="oetModalPszUnitDimWidth" maxlength="16">
                                 </div>
                                 <div class="form-group">
                                     <label class="xCNLabelFrm" style="font-size:18px !important"><?php echo language('product/product/product', 'tPDTViewPackMDLength'); ?></label>
-                                    <input type="text" id="oetModalPszUnitDimLength" class="form-control" name="oetModalPszUnitDimLength">
+                                    <input type="text" id="oetModalPszUnitDimLength" class="form-control" name="oetModalPszUnitDimLength" maxlength="16">
                                 </div>
                                 <div class="form-group">
                                     <label class="xCNLabelFrm" style="font-size:18px !important"><?php echo language('product/product/product', 'tPDTViewPackMDHeight'); ?></label>
-                                    <input type="text" id="oetModalPszUnitDimHeight" class="form-control" name="oetModalPszUnitDimHeight">
+                                    <input type="text" id="oetModalPszUnitDimHeight" class="form-control" name="oetModalPszUnitDimHeight" maxlength="16">
                                 </div>
 
                                 <hr>
@@ -1670,15 +1670,15 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
 
                                 <div class="form-group">
                                     <label class="xCNLabelFrm" style="font-size:18px !important"><?php echo language('product/product/product', 'tPDTViewPackMDWidth'); ?></label>
-                                    <input type="text" id="oetModalPszPackageDimWidth" class="form-control" name="oetModalPszPackageDimWidth">
+                                    <input type="text" id="oetModalPszPackageDimWidth" class="form-control" name="oetModalPszPackageDimWidth" maxlength="16">
                                 </div>
                                 <div class="form-group">
                                     <label class="xCNLabelFrm" style="font-size:18px !important"><?php echo language('product/product/product', 'tPDTViewPackMDLength'); ?></label>
-                                    <input type="text" id="oetModalPszPackageDimLength" class="form-control" name="oetModalPszPackageDimLength">
+                                    <input type="text" id="oetModalPszPackageDimLength" class="form-control" name="oetModalPszPackageDimLength" maxlength="16">
                                 </div>
                                 <div class="form-group">
                                     <label class="xCNLabelFrm" style="font-size:18px !important"><?php echo language('product/product/product', 'tPDTViewPackMDHeight'); ?></label>
-                                    <input type="text" id="oetModalPszPackageDimHeight" class="form-control" name="oetModalPszPackageDimHeight">
+                                    <input type="text" id="oetModalPszPackageDimHeight" class="form-control" name="oetModalPszPackageDimHeight" maxlength="16">
                                 </div>
 
 

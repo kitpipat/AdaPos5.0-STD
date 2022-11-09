@@ -113,6 +113,7 @@
                                     class="form-control"
                                     id="oetCtyName"
                                     name="oetCtyName"
+                                    maxlength= "100" 
                                     value="<?php echo $tCtyName;?>"
                                     data-validate-required = "<?php echo language('payment/cardtype/cardtype','tCTYValidName')?>"
                                 >

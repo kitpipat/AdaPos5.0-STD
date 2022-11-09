@@ -249,6 +249,7 @@
                 <input type="text" class="form-control XCNHideinputCard"
                     id="oetCardCode"
                     name="oetCardCode"
+                    maxlength="50"
                     autocomplete="off"
                     value="<?php echo $tCstCode;?>"
                     placeholder="<?php echo language('customer/customer/customer','tCstCode')?>" <?=$tReadOnly;?>>
@@ -412,7 +413,7 @@
             <!-- หมายเหตุ -->
             <div class="form-group">
                 <label class="xCNLabelFrm"><?= language('customer/customer/customer','tCstLRemark'); ?></label>
-                <textarea class="form-group" rows="4" maxlength="100" id="oetCstlogRemark" name="oetCstlogRemark" autocomplete="off"   placeholder="<?php echo language('customer/customer/customer','tCstLRemark')?>"><?php echo $tRemark;?></textarea>
+                <textarea class="form-group" rows="4" maxlength="50" id="oetCstlogRemark" name="oetCstlogRemark" autocomplete="off"   placeholder="<?php echo language('customer/customer/customer','tCstLRemark')?>"><?php echo $tRemark;?></textarea>
             </div>
 
             <!-- สถานะ -->

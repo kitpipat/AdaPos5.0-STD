@@ -168,7 +168,7 @@ if ($nStaAddOrEdit == 1) {
 														<input 
 														type="text"
 														class="form-control" 
-														maxlength="100" 
+														maxlength="50" 
 														id="oetMcnEmail" 
 														name="oetMcnEmail" 
 														value="<?= $tMcnEmail ?>" 

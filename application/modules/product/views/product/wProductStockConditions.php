@@ -117,7 +117,7 @@
                     <!-- เหตุผล -->
                     <div class="form-group">
                         <label class="xCNLabelFrm"><?php echo language('product/product/product','tPdtStockConditionsRemark')?></label>
-                        <textarea class="form-control" name="oetStockConditionsRemark" id="oetStockConditionsRemark" rows="3"></textarea>
+                        <textarea class="form-control" name="oetStockConditionsRemark" id="oetStockConditionsRemark" rows="3" maxlength="50"></textarea>
 					</div>
                     <!-- end เหตุผล -->
                 </form>

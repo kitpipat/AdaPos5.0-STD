@@ -52,7 +52,7 @@
                     <input 
                         type="text" 
                         class="form-control" 
-                        maxlength="100" 
+                        maxlength="200" 
                         id="oetCstContactName"
                         name="oetCstContactName" 
                         value=""
@@ -63,7 +63,7 @@
                     <input 
                         type="text" 
                         class="form-control"
-                        maxlength="100" 
+                        maxlength="50" 
                         id="oetCstContactEmail" 
                         name="oetCstContactEmail" 
                         data-validate="<?php echo language('customer/customer/customer','tCstValidateEmail');?>"
@@ -75,7 +75,7 @@
                     <input 
                         type="text" 
                         class="form-control" 
-                        maxlength="100" 
+                        maxlength="50" 
                         id="oetCstContactTel" 
                         name="oetCstContactTel" 
                         data-validate="<?php echo language('customer/customer/customer','tCstValidateTel');?>"
@@ -87,7 +87,7 @@
                     <input 
                         type="text" 
                         class="form-control"
-                        maxlength="100" 
+                        maxlength="50" 
                         id="oetCstContactFax" 
                         name="oetCstContactFax"
                         data-validate="<?php echo language('customer/customer/customer','tCstValidateFax');?>"
