@@ -409,9 +409,11 @@
 		let tSessionUserCode  = '<?=$this->session->userdata('tSesUserCode')?>'
 		let BchCode		     = $('#'+poReturnInput.tUsrCode).val();
 
+		tWhere = " AND TPSTSalHD.FTXshStaDoc = '1' AND (EXISTS ( SELECT FTXshDocNo FROM TPSTSalRC WHERE FTXshDocNo = TPSTSalHD.FTXshDocNo AND FTBchCode = TPSTSalHD.FTBchCode AND FTRcvCode IN ( '002' ) ) OR EXISTS ( SELECT FTXshDocNo FROM TPSTSalHDDis WHERE FTXshDocNo = TPSTSalHD.FTXshDocNo AND FTBchCode = TPSTSalHD.FTBchCode AND FTXhdDisChgType = '10' )) ";
+
 		if(dDateFrom){
 			// tWhere = " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) BETWEEN CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121) AND CONVERT(VARCHAR(10),CONVERT(datetime,'"+dDateTo+"',121),121)";
-			tWhere = " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) = CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121)";
+			tWhere += " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) = CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121)";
 		}
 
 		if(BchCode && BchCode != 'undefined'){
@@ -451,7 +453,7 @@
             },
             // RouteAddNew: 'branch',
             // BrowseLev: 1
-			// DebugSQL: true
+			DebugSQL: true
         };
         return oOptionReturn;
 	};
