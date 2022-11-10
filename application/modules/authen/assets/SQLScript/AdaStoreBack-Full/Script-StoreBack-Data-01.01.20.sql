@@ -810,6 +810,6 @@ INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FN
 INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FNLngID], [FTSysName], [FTSysDesc], [FTSysRmk]) VALUES ('tCN_AlwSeePdtCenter', 'CN', 'Comppany', '1', '2', 'Allowed to Product Center', '1 : Allow, 0 : Not  Allow', '');
 
 --ทุกครั้งที่รันสคริปใหม่
-INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.20', getdate() , 'แก้ไขกลุ่มของรายงานคลังที่อยู่ในหมวดเมนูรายงานขาย', 'Nale')
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.20', getdate() , 'เพิ่ม OPTION Config KEY  tCN_AlwSeePdtCenter', 'Nale')
 END
 GO
