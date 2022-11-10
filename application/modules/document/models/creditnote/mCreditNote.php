@@ -322,6 +322,7 @@ class mCreditNote extends CI_Model {
     public function FSaMCreditNoteInsertTmpToDT($paDataWhere){
         $tDocNo = $paDataWhere['tDocNo'];
         $tDocKey = $paDataWhere['tDocKey'];
+        $tBchCode = $paDataWhere['tBchCode'];
         $tSessionID = $paDataWhere['tSessionID']; 
         
         // ทำการลบ ใน DT ก่อนการย้าย DT Temp ไป DT
@@ -345,7 +346,7 @@ class mCreditNote extends CI_Model {
 
         $tSQL .= "  
             SELECT 
-                DOCTMP.FTBchCode,
+                '$tBchCode' AS FTBchCode,
                 '$tDocNo' AS FTXphDocNo,
                 DOCTMP.FNXtdSeqNo AS FNXpdSeqNo,
                 DOCTMP.FTPdtCode,
@@ -523,6 +524,7 @@ class mCreditNote extends CI_Model {
      */
     public function FSaMCreditNoteInsertTmpToDTDis($paDataWhere = []){
         $tDocNo = $paDataWhere['tDocNo'];
+        $tBchCode = $paDataWhere['tBchCode'];
         $tSessionID = $paDataWhere['tSessionID']; 
         
         // ทำการลบ ใน DTDis ก่อนการย้าย DTDis Temp ไป DTDis
@@ -541,7 +543,7 @@ class mCreditNote extends CI_Model {
 
         $tSQL .= "  
             SELECT 
-                DTDISTMP.FTBchCode,
+                '$tBchCode' AS FTBchCode,
                 '$tDocNo' AS FTXphDocNo,
                 DTDISTMP.FNXtdSeqNo AS FNXpdSeqNo,
                 DTDISTMP.FDXtdDateIns,
@@ -700,6 +702,7 @@ class mCreditNote extends CI_Model {
      */
     public function FSaMCreditNoteInsertTmpToHDDis($paDataWhere = []){
         $tDocNo = $paDataWhere['tDocNo'];
+        $tBchCode = $paDataWhere['tBchCode'];
         $tSessionID = $paDataWhere['tSessionID']; 
         
         // ทำการลบ ใน DTDis ก่อนการย้าย DTDis Temp ไป DTDis
@@ -719,7 +722,7 @@ class mCreditNote extends CI_Model {
 
         $tSQL .= "  
             SELECT 
-                HDDISTMP.FTBchCode,
+                '$tBchCode' AS FTBchCode,
                 '$tDocNo' AS FTXphDocNo,
                 HDDISTMP.FDXtdDateIns AS FDXphDateIns,
                 HDDISTMP.FTXtdDisChgTxt AS FTXphDisChgTxt,

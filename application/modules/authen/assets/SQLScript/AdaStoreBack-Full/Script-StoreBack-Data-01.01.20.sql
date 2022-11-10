@@ -800,3 +800,16 @@ UPDATE TSysReport SET FTGrpRptModCode = '009',FTGrpRptCode='009001'  WHERE FTRpt
 --ทุกครั้งที่รันสคริปใหม่
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.19', getdate() , 'แก้ไขกลุ่มของรายงานคลังที่อยู่ในหมวดเมนูรายงานขาย', 'Nale')
 END
+GO
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.20') BEGIN
+
+INSERT INTO [TSysConfig] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FTGmnCode], [FTSysStaAlwEdit], [FTSysStaDataType], [FNSysMaxLength], [FTSysStaDefValue], [FTSysStaDefRef], [FTSysStaUsrValue], [FTSysStaUsrRef], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('tCN_AlwSeePdtCenter', 'CN', 'Company', '1', 'COMP', '0', '0', '0', NULL, NULL, '1', NULL, '2022-11-10 10:28:39.000', 'Nattakit', '2022-11-10 10:28:52.000', 'Nattakit');
+INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FNLngID], [FTSysName], [FTSysDesc], [FTSysRmk]) VALUES ('tCN_AlwSeePdtCenter', 'CN', 'Comppany', '1', '1', 'อนุญาตมองเห็นสินค้าส่วนกลาง', '1:อนุญาต , 2:ไม่อนุญาต', NULL);
+INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FNLngID], [FTSysName], [FTSysDesc], [FTSysRmk]) VALUES ('tCN_AlwSeePdtCenter', 'CN', 'Comppany', '1', '2', 'Allowed to Product Center', '1 : Allow, 0 : Not  Allow', '');
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.20', getdate() , 'แก้ไขกลุ่มของรายงานคลังที่อยู่ในหมวดเมนูรายงานขาย', 'Nale')
+END
+GO

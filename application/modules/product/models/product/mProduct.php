@@ -30,6 +30,17 @@ class mProduct extends CI_Model
         $tSesUserCode = $this->session->userdata('tSesUserCode');
         $aDataUsrGrp = $this->db->where('FTUsrCode',$tSesUserCode)->get('TCNTUsrGroup')->row_array();
 
+        $aConfigAlwPdtCenter = $this->db->where('FTSysCode','tCN_AlwSeePdtCenter')->get('TSysConfig')->row_array();
+        if(!empty($aConfigAlwPdtCenter)){
+                if(!empty($aConfigAlwPdtCenter['FTSysStaUsrValue'])){
+                    $nStaAlwPdtCenter = $aConfigAlwPdtCenter['FTSysStaUsrValue'];
+                }else{
+                    $nStaAlwPdtCenter = 1;
+                }
+        }else{
+            $nStaAlwPdtCenter = 1;
+        }
+
         $tSesUsrLevel           = $this->session->userdata('tSesUsrLevel');             
         $tSessionMerCode        = $this->session->userdata('tSesUsrMerCode');           
         $tSessionShopCode       = $this->session->userdata('tSesUsrShpCodeMulti');     
@@ -113,7 +124,7 @@ class mProduct extends CI_Model
 
 
        //---------------------- การมองเห็นสินค้าระดับส่วนกลางหรือสินค้าที่ไม่ได้ผูกกับอะไรเลย--------------------------//
-                if($tSesUsrLevel=='BCH' &&  $tSesUsrAgnCode==''){
+                if($nStaAlwPdtCenter==1){
 
                 $tWHEREPermission_BCH .= " OR (";
                 $tWHEREPermission_BCH .= "     ISNULL(PDLSPC.FTAgnCode,'') = '' ";
