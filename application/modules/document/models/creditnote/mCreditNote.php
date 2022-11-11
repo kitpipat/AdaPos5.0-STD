@@ -2831,6 +2831,42 @@ class mCreditNote extends CI_Model {
 
     }
 
+    public function FSaMCreditSearchVat ($paData){
+        $tVatCode   = $paData['FTVatCode'];
+        $tSQL   = "SELECT c.* FROM(
+                        SELECT ROW_NUMBER() OVER(ORDER BY rtVatCode ASC , rtVatStart ASC) AS rtRowID, * 
+                        FROM (
+                            SELECT DISTINCT 
+                                VAT.FTVatCode 	AS rtVatCode,
+                                VAT.FCVatRate	AS rtVatRate,
+                                VAT.FDVatStart	AS rtVatStart
+                            FROM TCNMVatRate VAT
+                            WHERE 1=1 ";
+        if ($tVatCode != '') {
+            $tSQL .= "AND VAT.FTVatCode = '$tVatCode'";
+        }
+        
+        $tSQL .= ") Base) AS c ";
+        $oQuery = $this->db->query($tSQL);
+        
+        if ($oQuery->num_rows() > 0) { // Found
+            $oDetail = $oQuery->result();
+            $aResult = array(
+                'raItems' => $oDetail,
+                'rtCode' => '1',
+                'rtDesc' => 'success',
+            );
+        }else{ // Not Found
+            $aResult = array(
+                'rtCode' => '800',
+                'rtDesc' => 'data not found.',
+            );
+        }
+        
+        $jResult = json_encode($aResult);
+        $aResult = json_decode($jResult, true);
+        return $aResult;
+    }
 
 }
 

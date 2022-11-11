@@ -418,11 +418,10 @@
             Title: ['supplier/supplier/supplier', 'tSPLTitle'],
             Table: {Master:'TCNMSpl', PK:'FTSplCode'},
             Join: {
-                Table: ['TCNMSpl_L', 'TCNMSplCredit' , 'TCNMVatRate'],
+                Table: ['TCNMSpl_L', 'TCNMSplCredit'],
                 On: [
                     'TCNMSpl_L.FTSplCode = TCNMSpl.FTSplCode AND TCNMSpl_L.FNLngID = '+nLangEdits,
-                    'TCNMSpl_L.FTSplCode = TCNMSplCredit.FTSplCode',
-                    'TCNMSpl.FTVatCode = TCNMVatRate.FTVatCode'
+                    'TCNMSpl_L.FTSplCode = TCNMSplCredit.FTSplCode'
                 ]
             },
             Where:{
@@ -433,9 +432,9 @@
                 ColumnKeyLang: ['tSPLTBCode', 'tSPLTBName'],
                 ColumnsSize: ['15%', '75%'],
                 WidthModal: 50,
-                DataColumns: ['TCNMSpl.FTSplCode', 'TCNMSpl_L.FTSplName', 'TCNMSplCredit.FNSplCrTerm', 'TCNMSplCredit.FCSplCrLimit', 'TCNMSpl.FTSplStaVATInOrEx', 'TCNMSplCredit.FTSplTspPaid', 'TCNMSpl.FTVatCode','TCNMVatRate.FCVatRate'],
+                DataColumns: ['TCNMSpl.FTSplCode', 'TCNMSpl_L.FTSplName', 'TCNMSplCredit.FNSplCrTerm', 'TCNMSplCredit.FCSplCrLimit', 'TCNMSpl.FTSplStaVATInOrEx', 'TCNMSplCredit.FTSplTspPaid', 'TCNMSpl.FTVatCode'],
                 DataColumnsFormat: ['',''],
-                DisabledColumns: [2, 3, 4, 5, 6 , 7],
+                DisabledColumns: [2, 3, 4, 5, 6],
                 Perpage: 10,
                 OrderBy: ['TCNMSpl.FDCreateOn DESC']
             },
@@ -446,11 +445,11 @@
             },
             NextFunc:{
                 FuncName:'JSxCreditNoteCallbackAfterSelectSpl',
-                ArgReturn:['FNSplCrTerm', 'FCSplCrLimit', 'FTSplStaVATInOrEx', 'FTSplTspPaid', 'FTSplCode', 'FTSplName', 'FTVatCode' , 'FCVatRate']
+                ArgReturn:['FNSplCrTerm', 'FCSplCrLimit', 'FTSplStaVATInOrEx', 'FTSplTspPaid', 'FTSplCode', 'FTSplName', 'FTVatCode']
             },
             RouteAddNew: 'supplier',
-            BrowseLev: nStaCreditNoteBrowseType
-
+            BrowseLev: nStaCreditNoteBrowseType,
+            // DebugSQL: true
         };
         // Option WareHouse
         JCNxBrowseData('oCreditNoteBrowseSpl');
@@ -674,18 +673,34 @@
         var aData;
         if (ptJsonData != "NULL") {
             aData = JSON.parse(ptJsonData);
-            var poParams = {
-                FNSplCrTerm         : aData[0],
-                FCSplCrLimit        : aData[1],
-                FTSplStaVATInOrEx   : aData[2],
-                FTSplTspPaid        : aData[3],
-                FTSplCode           : aData[4],
-                FTSplName           : aData[5],
-                FTVatCode           : aData[6],
-                FCVatRate           : aData[7]
-            };
+            $.ajax({
+                type: "POST",
+                url: "creditNoteCheckvatactive",
+                data: {FTVatCode: aData[6]},
+                cache: false,
+                Timeout: 0,
+                success: function (oResult) {
+                    aJData = JSON.parse(oResult);
+                     var poParams = {
+                        FNSplCrTerm         : aData[0],
+                        FCSplCrLimit        : aData[1],
+                        FTSplStaVATInOrEx   : aData[2],
+                        FTSplTspPaid        : aData[3],
+                        FTSplCode           : aData[4],
+                        FTSplName           : aData[5],
+                        FTVatCode           : aData[6],
+                        FCVatRate           : aJData['aVatActive']['rtVatRate']
+                    };
 
-            JSxCreditNoteSetPanelSpl(poParams);
+                    JSxCreditNoteSetPanelSpl(poParams);
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
+            // JSxCreditNoteSetPanelSpl(poParams);
         }
     }
     /*===================== End Callback Browse ==================================*/

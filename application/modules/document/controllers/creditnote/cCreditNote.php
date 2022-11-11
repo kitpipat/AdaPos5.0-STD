@@ -1899,5 +1899,21 @@ class cCreditNote extends MX_Controller
         FSaCCNDocumentUpdateHDDisAgain($aPackDataCalCulate);
     }
 
+    
+    public function FSaCCreditCheckVatActive(){
+		$dGetDataNow    = date('Y-m-d');
+        $tVatCode = $this->input->post('FTVatCode');
+        $aData  = array(
+            'FTVatCode' => $tVatCode,
+            'dGetDataNow'  => $dGetDataNow
+        );
+        $aResList = $this->mCreditNote->FSaMCreditSearchVat($aData); // vat rate by vat code
+        $aVatActive = FCNaHVATDateActive($aResList); // return vat rate is active
+        $aDataEdit      = array(
+            'aVatActive'    => $aVatActive,
+        );
+        echo json_encode($aDataEdit);
+    }
 
 }
+

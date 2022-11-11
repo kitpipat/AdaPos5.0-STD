@@ -513,6 +513,7 @@ $route['creditNoteDisChgDTList']           = 'document/creditnote/cCreditNoteDis
 $route['creditNoteCalEndOfBillNonePdt']    = 'document/creditnote/cCreditNote/FSoCreditNoteCalEndOfBillNonePdt';
 $route['creditNoteChangeSPLAffectNewVAT']  = 'document/creditnote/cCreditNote/FSoCCreditNoteChangeSPLAffectNewVAT';
 $route['creditNoteMovePdtPIToDocTmp']      = 'document/creditnote/cCreditNote/FSvCCreditNoteMovePdtPIToDocTmp';
+$route['creditNoteCheckvatactive']         = 'document/creditnote/cCreditNote/FSaCCreditCheckVatActive'; //NEW สำหรับการหา Vat ที่ใช้งาน
 
 
 //ใบจ่ายโอนระหว่างคลัง - ใบจ่ายโอนระหว่างสาขา - ใบเบิกออก
