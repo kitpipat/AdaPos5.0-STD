@@ -445,6 +445,7 @@ class cBrowserPDTCallView extends MX_Controller
             'tWhere'                => $tWhere,
             'nBrwTopWebCookie'      => $nBrwTopWebCookie,
             'nStaTopPdt'            => $nStaTopPdt,
+            'insertToTmp'           => $this->input->post('insertToTmp'),
         );
         // echo "<pre>";print_r($aDataSearch);exit;
 

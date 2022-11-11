@@ -277,7 +277,9 @@ class mBrowserPDTCallView extends CI_Model
             
             if ($oQuery->num_rows() > 0) {
                 $aList      = $oQuery->result_array();
-
+                if($paData['insertToTmp'] == 'true'){
+                    $this->FSaMinsertPdtToTmp($paData,$aList);
+                }
                 // print_r($aList);die();
                 if ($paData['nPage'] == 1) {
                     //ถ้าเป็น page 1 ต้องวิ่งไปหาทั้งหมด
