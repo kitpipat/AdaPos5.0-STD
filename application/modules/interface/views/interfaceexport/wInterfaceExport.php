@@ -453,7 +453,7 @@
             },
             // RouteAddNew: 'branch',
             // BrowseLev: 1
-			DebugSQL: true
+			// DebugSQL: true
         };
         return oOptionReturn;
 	};

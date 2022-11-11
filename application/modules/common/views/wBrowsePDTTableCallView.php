@@ -127,7 +127,7 @@
                     'nCostSTD'  => 0,
                     'NetAfHD'   => str_replace(",",'',number_format($nPriceNet, $nOptDecimalShow, '.', ',')),
                     'PDTSpc'    => $tPDTFaishion,
-                    'nStaLot'   => $aValue['FTPdtStaLot'], //สินค้าล็อต
+                    // 'nStaLot'   => $aValue['FTPdtStaLot'], //สินค้าล็อต
                     'tTypePDT'  => $aValue['FTPdtType'], //ประเภทสินค้า 1:สินค้าทั่วไป , 2:สินค้าบริการ , 3:สินค้าอื่นๆ , 4:ของแถม , 5:พิเศษ  , 6:สินค้าเพื่อประกอบการขาย , 7:ค่าใช้จ่าย
                     'SetOrSN'   => $aValue['FTPdtSetOrSN'] //ระดับสินค้าชุด 1:สินค้าปกติ , 2:สินค้าปกติชุด , 3:สินค้าSerial , 4:สินค้าSerial Set , 5: สินค้าชุดบริการ
                 );
@@ -169,7 +169,7 @@
                     'nVat'      => $aValue['FCVatRate'],
                     'NetAfHD'   => $nCost,
                     'PDTSpc'    => $tPDTFaishion,
-                    'nStaLot'   => $aValue['FTPdtStaLot'], //สินค้าล็อต
+                    // 'nStaLot'   => $aValue['FTPdtStaLot'], //สินค้าล็อต
                     'tTypePDT'  => $aValue['FTPdtType'], //ประเภทสินค้า 1:สินค้าทั่วไป , 2:สินค้าบริการ , 3:สินค้าอื่นๆ , 4:ของแถม , 5:พิเศษ  , 6:สินค้าเพื่อประกอบการขาย , 7:ค่าใช้จ่าย
                     'SetOrSN'   => $aValue['FTPdtSetOrSN'] //ระดับสินค้าชุด 1:สินค้าปกติ , 2:สินค้าปกติชุด , 3:สินค้าSerial , 4:สินค้าSerial Set , 5: สินค้าชุดบริการ
                 );

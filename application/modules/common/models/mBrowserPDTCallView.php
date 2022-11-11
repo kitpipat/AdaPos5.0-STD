@@ -186,156 +186,146 @@ class mBrowserPDTCallView extends CI_Model
     public function FSaMGetProductBCH($ptFilter, $ptLeftJoinPrice, $paData, $pnTotalResult , $aDataParamExe)
     {
         try {
-                $tSesUserCode = $this->session->userdata('tSesUserCode');
-                // $tSesUsrAgnCode     = $this->session->userdata('tSesUsrAgnCode');
-                // $tBchSession        = $this->session->userdata("tSesUsrBchCodeMulti");
-                // $tShpSession        = $this->session->userdata("tSesUsrShpCodeMulti");
-                // $tMerSession        = $this->session->userdata("tSesUsrMerCode");
-                $aRowLen            = FCNaHCallLenData($paData['nRow'], $paData['nPage']);
-                $nLngID             = $this->session->userdata("tLangEdit");
-                $aDataUsrGrp        = $this->db->where('FTUsrCode',$tSesUserCode)->get('TCNTUsrGroup')->row_array();
-                $tDefaultBchCode    = $aDataUsrGrp['FTBchCode'];
+            $tSesUserCode = $this->session->userdata('tSesUserCode');
+            $tSesUsrAgnCode     = $this->session->userdata('tSesUsrAgnCode');
+            $tBchSession        = $this->session->userdata("tSesUsrBchCodeMulti");
+            $tShpSession        = $this->session->userdata("tSesUsrShpCodeMulti");
+            $tMerSession        = $this->session->userdata("tSesUsrMerCode");
+            $aRowLen            = FCNaHCallLenData($paData['nRow'], $paData['nPage']);
+            $nLngID             = $this->session->userdata("tLangEdit");
+            $aDataUsrGrp        = $this->db->where('FTUsrCode',$tSesUserCode)->get('TCNTUsrGroup')->row_array();
+            $tDefaultBchCode    = $aDataUsrGrp['FTBchCode'];
+    
+            $tSQL = '';
 
-                $tSQL = '';
-
-                // $tSesUserCode       = $this->session->userdata('tSesUserCode');
-                $tSesUsrAgnCode     = $this->session->userdata('tSesUsrAgnCode');
-                $tSesUsrShpCodeMulti        = $this->session->userdata("tSesUsrShpCodeMulti");
-                $tSesUsrBchCodeMulti        = $this->session->userdata("tSesUsrBchCodeMulti");
-                
-                // $tShpSession        = $this->session->userdata("tSesUsrShpCodeMulti");
-                // $tMerSession        = $this->session->userdata("tSesUsrMerCode");
-                $tSesUsrLevel       = $this->session->userdata('tSesUsrLevel');
-                $tSesRealUsrLevel    = $this->session->userdata('tSesRealUsrLevel');
-                $tSesUsrBchCodeMulti = ($tSesUsrBchCodeMulti) ? '' : FCNtAddSingleQuote($tSesUsrBchCodeMulti); 
-                $tSesUsrShpCodeMulti = ($tSesUsrShpCodeMulti) ? '' : FCNtAddSingleQuote($tSesUsrShpCodeMulti); 
-
-                $tSesUsrWahCode      = $this->session->userdata("tSesUsrWahCode");
-
-                if ($paData['tBCH'] == '') {
-                    $tBCH   = $tSesUsrBchCodeMulti;
-                } else {
-                    $tBCH   = "'" . str_replace(",", "','", $paData['tBCH']) . "'";
-                }
-
-                if ($paData['tSHP'] == '') {
-                    $tSHP   = $tSesUsrShpCodeMulti;
-                } else {
-                    $tSHP   = $paData['tSHP'];
-                }
-
-                if ($paData['tMER'] == '') {
-                    $tMER   = $tSesUsrBchCodeMulti;
-                } else {
-                    $tMER   = $paData['tMER'];
-                }
-
-                if ($paData['tWAH'] == '') {
-                    $tWAH   = $tSesUsrWahCode;
-                } else {
-                    $tWAH   = $paData['tWAH'];
-                }
+            $tSesUserCode       = $this->session->userdata('tSesUserCode');
+            $tSesUsrAgnCode     = $this->session->userdata('tSesUsrAgnCode');
+            $tSesUsrShpCodeMulti        = $this->session->userdata("tSesUsrShpCodeMulti");
+            $tSesUsrBchCodeMulti        = $this->session->userdata("tSesUsrBchCodeMulti");
             
-                $nCheckPage  =  $this->input->cookie("PDTCookie_" . $this->session->userdata("tSesUserCode"), true);
-                $tCookieVal = json_decode($nCheckPage);
-                if (!empty($nCheckPage)) {
-                    $nMaxTopPage = intval($tCookieVal->nMaxPage);
-                } else {
-                    $nMaxTopPage = 0;
-                }
-                
-                $tCallStore = "{CALL SP_CNoBrowseProduct(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-                $aDataStore = array(
-                    'ptUsrCode'           => $tSesUserCode,
-                    'ptUsrLevel'          => $tSesRealUsrLevel,  //$tSesUsrLevel
-                    'tSesUsrAgnCode'      => $tSesUsrAgnCode,
-                    'ptSesBchCodeMulti'   => $tBCH,
-                    'ptSesShopCodeMulti'  => $tSHP,
-                    'ptSesMerCode'        => $tMER,
-                    'ptWahCode'           => $tWAH,
-                    'pnRow'               => $paData['nRow'],
-                    'pnPage'              => $paData['nPage'],
-                    'pnMaxTopPage'        => $nMaxTopPage,
-                    'ptFilterBy'          => $aDataParamExe['ptFilterBy'],
-                    'ptSearch'            => $aDataParamExe['ptSearch'],
-                    'ptWhere'             => $aDataParamExe['ptWhere'],
-                    'ptNotInPdtType'      => $aDataParamExe['ptNotInPdtType'],
-                    'ptPdtCodeIgnorParam' => $aDataParamExe['ptPdtCodeIgnorParam'],
-                    'ptPDTMoveon'         => $aDataParamExe['ptPDTMoveon'],
-                    'ptPlcCodeConParam'   => $aDataParamExe['ptPlcCodeConParam'],
-                    'ptDISTYPE'           => $aDataParamExe['ptDISTYPE'],
-                    'ptPagename'          => $aDataParamExe['ptPagename'],
-                    'ptNotinItemString'   => $aDataParamExe['ptNotinItemString'],
-                    'ptSqlCode'           => $aDataParamExe['ptSqlCode'],
-                    'ptPriceType'         => $aDataParamExe['ptPriceType'],
-                    'ptPplCode'           => $aDataParamExe['ptPplCode'],
-                    'ptPdtSpcCtl'         => $aDataParamExe['ptPdtSpcCtl'],
-                    'FNResult'            => $nLngID
-                );
-                // echo "<pre>";
-                // print_r($paData);
-                // echo "<br>";
-                // exit;
+            $tShpSession        = $this->session->userdata("tSesUsrShpCodeMulti");
+            $tMerSession        = $this->session->userdata("tSesUsrMerCode");
+            $tSesUsrLevel       = $this->session->userdata('tSesUsrLevel');
+            // $tSesUsrBchCodeMulti = ($tSesUsrBchCodeMulti) ? '' : FCNtAddSingleQuote($tSesUsrBchCodeMulti); 
+            // $tSesUsrShpCodeMulti = ($tSesUsrShpCodeMulti) ? '' : FCNtAddSingleQuote($tSesUsrShpCodeMulti); 
 
-                $oQuery = $this->db->query($tCallStore, $aDataStore);
+            if ($paData['tBCH'] == '') {
+                $tBCH   = $tSesUsrBchCodeMulti;
+            } else {
+                $tBCH   = "'" . str_replace(",", "','", $paData['tBCH']) . "'";
+            }
 
-               
-                // echo $this->db->last_query();
-                // die();
-            
-                if ($oQuery->num_rows() > 0) {
-                    $aList      = $oQuery->result_array();
-                    if($paData['insertToTmp'] == 'true'){
-                        $this->FSaMinsertPdtToTmp($paData,$aList);
+
+            if ($paData['tSHP'] == '') {
+                $tSHP   = $tSesUsrShpCodeMulti;
+            } else {
+                $tSHP   = $paData['tSHP'];
+            }
+
+            if ($paData['tMER'] == '') {
+                $tMER   = $tMerSession;
+            } else {
+                $tMER   = $paData['tMER'];
+            }
+     
+                    if($paData['nStaTopPdt']==2){
+                        $nCheckPage  =  $this->input->cookie("PDTCookie_" . $this->session->userdata("tSesUserCode"), true);
+                        $tCookieVal = json_decode($nCheckPage);
+                        if (!empty($nCheckPage)) {
+                            $nMaxTopPage = str_replace(',','',$tCookieVal->nMaxPage);
+                        } else {
+                            $nMaxTopPage = '';
+                        }
+                    }else{
+                        $nMaxTopPage = $paData['nBrwTopWebCookie'];
                     }
-                    // print_r($aList);die();
-                    if ($paData['nPage'] == 1) {
-                        //ถ้าเป็น page 1 ต้องวิ่งไปหาทั้งหมด
-                        if ($paData['tFindOnlyPDT'] == 'normal') {
-                            $oFoundRow  = $aList[0]['rtCountData'];
-                        } else {
-                            $oFoundRow  = 1;
-                        }
-                        $nFoundRow  = $oFoundRow;
-                        if ($oFoundRow > 5000) {
-                            $nPDTAll  = $aList[0]['rtCountData'];
-                        } else {
-                            $nPDTAll  = 0;
-                        }
+                            
+                                    $tCallStore = "{CALL SP_CNoBrowseProduct(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+                                    $aDataStore = array(
+                                        'ptUsrCode'           => $tSesUserCode,
+                                        'ptUsrLevel'          => $tSesUsrLevel,
+                                        'tSesUsrAgnCode'      => $tSesUsrAgnCode,
+                                        'ptSesBchCodeMulti'   => $tBCH,
+                                        'ptSesShopCodeMulti'  => $tSHP,
+                                        'ptSesMerCode'        => $tMER,
+                                        'pnRow'               => $paData['nRow'],
+                                        'pnPage'              => $paData['nPage'],
+                                        'pnMaxTopPage'        => $nMaxTopPage,
+                                        'ptFilterBy'          => $aDataParamExe['ptFilterBy'],
+                                        'ptSearch'            => $aDataParamExe['ptSearch'],
+                                        'ptWhere'             => $aDataParamExe['ptWhere'],
+                                        'ptNotInPdtType'      => $aDataParamExe['ptNotInPdtType'],
+                                        'ptPdtCodeIgnorParam' => $aDataParamExe['ptPdtCodeIgnorParam'],
+                                        'ptPDTMoveon'         => $aDataParamExe['ptPDTMoveon'],
+                                        'ptPlcCodeConParam'   => $aDataParamExe['ptPlcCodeConParam'],
+                                        'ptDISTYPE'           => $aDataParamExe['ptDISTYPE'],
+                                        'ptPagename'          => $aDataParamExe['ptPagename'],
+                                        'ptNotinItemString'   => $aDataParamExe['ptNotinItemString'],
+                                        'ptSqlCode'           => $aDataParamExe['ptSqlCode'],
+                                        'ptPriceType'         => $aDataParamExe['ptPriceType'],
+                                        'ptPplCode'           => $aDataParamExe['ptPplCode'],
+                                        'FNResult'            => $nLngID
+                                    );
+                                    // print_r($aDataStore);
+                                    // exit;
+                            
+                                    $oQuery = $this->db->query($tCallStore, $aDataStore);
+
+
+            // echo $this->db->last_query();
+            // die();
+            
+            if ($oQuery->num_rows() > 0) {
+                $aList      = $oQuery->result_array();
+
+                // print_r($aList);die();
+                if ($paData['nPage'] == 1) {
+                    //ถ้าเป็น page 1 ต้องวิ่งไปหาทั้งหมด
+                    if ($paData['tFindOnlyPDT'] == 'normal') {
+                        $oFoundRow  = $aList[0]['rtCountData'];
                     } else {
-                        //ถ้า page 2 3 4 5 6 7 8 9 เราอยู่เเล้ว ว่ามัน total_page เท่าไหร่
-                        $nFoundRow = $pnTotalResult;
-                        $nPDTAll   = 0;
+                        $oFoundRow  = 1;
                     }
-
-                    $nPageAll   = ceil($nFoundRow / $paData['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
-
-                    $aResult    = array(
-                        'raItems'       => $aList,
-                        'rnAllRow'      => $nFoundRow,
-                        'rnCurrentPage' => $paData['nPage'],
-                        'rnAllPage'     => $nPageAll,
-                        'rtCode'        => '1',
-                        'rtDesc'        => 'success',
-                        'sql'           => $tSQL,
-                        'nTotalResult'  => $nFoundRow,
-                        'nPDTAll'       => $nPDTAll,
-                        'nRow'          => $paData['nRow']
-                    );
+                    $nFoundRow  = $oFoundRow;
+                    if ($oFoundRow > 5000) {
+                        $nPDTAll  = $aList[0]['rtCountData'];
+                    } else {
+                        $nPDTAll  = 0;
+                    }
                 } else {
-                    //No Data
-                    $aResult    = array(
-                        'rnAllRow'      => 0,
-                        'rnCurrentPage' => $paData['nPage'],
-                        "rnAllPage"     => 0,
-                        'rtCode'        => '800',
-                        'rtDesc'        => 'data not found',
-                        'sql'           => $tSQL,
-                        'nPDTAll'       => 0,
-                        'nRow'          => $paData['nRow']
-                    );
+                    //ถ้า page 2 3 4 5 6 7 8 9 เราอยู่เเล้ว ว่ามัน total_page เท่าไหร่
+                    $nFoundRow = $pnTotalResult;
+                    $nPDTAll   = 0;
                 }
-                return $aResult;
+
+                $nPageAll   = ceil($nFoundRow / $paData['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
+
+                $aResult    = array(
+                    'raItems'       => $aList,
+                    'rnAllRow'      => $nFoundRow,
+                    'rnCurrentPage' => $paData['nPage'],
+                    'rnAllPage'     => $nPageAll,
+                    'rtCode'        => '1',
+                    'rtDesc'        => 'success',
+                    'sql'           => $tSQL,
+                    'nTotalResult'  => $nFoundRow,
+                    'nPDTAll'       => $nPDTAll,
+                    'nRow'          => $paData['nRow']
+                );
+            } else {
+                //No Data
+                $aResult    = array(
+                    'rnAllRow'      => 0,
+                    'rnCurrentPage' => $paData['nPage'],
+                    "rnAllPage"     => 0,
+                    'rtCode'        => '800',
+                    'rtDesc'        => 'data not found',
+                    'sql'           => $tSQL,
+                    'nPDTAll'       => 0,
+                    'nRow'          => $paData['nRow']
+                );
+            }
+            return $aResult;
         } catch (Exception $Error) {
             echo $Error;
         }
