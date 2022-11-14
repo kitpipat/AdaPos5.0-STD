@@ -451,7 +451,9 @@ class mCustomer extends CI_Model {
                     'FTCstBchCode'          => $paData['FTCstBchCode'],
                     'FTAgnCode'             => $paData['FTAgnCode'],
                     'FDCreateOn'            => $paData['FDCreateOn'],
-                    'FTCreateBy'            => $paData['FTCreateBy']
+                    'FTCreateBy'            => $paData['FTCreateBy'],
+                    'FDLastUpdOn'           => $paData['FDLastUpdOn'],
+                    'FTLastUpdBy'           => $paData['FTLastUpdBy'],
                 ));
                 if($this->db->affected_rows() > 0){
                     $aStatus = array(
