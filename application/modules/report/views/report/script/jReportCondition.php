@@ -2726,20 +2726,27 @@
             let tRptPosTCodeFrom = $('#oetRptPosTCodeFrom').val();
             let tRptPosTCodeTo = $('#oetRptPosTCodeTo').val();
 
-            // เช็คในกรณีเลือกเฉพาะคลังสาขา
-            if ((tRptBchCodeFrom != 'undefined' && tRptBchCodeFrom != "") && (tRptBchCodeTo != 'undefined' && tRptBchCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (1,2,5))";
+            let tDataBranch = $('#oetRptBchCodeSelect').val();
+            let tDataBranchReplace = tDataBranch.replaceAll(",", "','");
+
+            if (tDataBranchReplace != 'undefined' && tDataBranchReplace != '') {
+                tWhereCondition = " AND (TCNMWaHouse.FTBchCode IN ('" + tDataBranchReplace + "')) ";
             }
 
-            // เช็คในกรณีเลือกเฉพาะร้านค้า
-            if ((tRptShopTCodeFrom != 'undefined' && tRptShopTCodeFrom != "") && (tRptShopTCodeTo != 'undefined' && tRptShopTCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (4))";
-            }
+            // // เช็คในกรณีเลือกเฉพาะคลังสาขา
+            // if ((tRptBchCodeFrom != 'undefined' && tRptBchCodeFrom != "") && (tRptBchCodeTo != 'undefined' && tRptBchCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (1,2,5))";
+            // }
 
-            // เช็คในกรณีเลือกเฉพาะร้านค้า
-            if ((tRptPosTCodeFrom != 'undefined' && tRptPosTCodeFrom != "") && (tRptPosTCodeTo != 'undefined' && tRptPosTCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (6))";
-            }
+            // // เช็คในกรณีเลือกเฉพาะร้านค้า
+            // if ((tRptShopTCodeFrom != 'undefined' && tRptShopTCodeFrom != "") && (tRptShopTCodeTo != 'undefined' && tRptShopTCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (4))";
+            // }
+
+            // // เช็คในกรณีเลือกเฉพาะร้านค้า
+            // if ((tRptPosTCodeFrom != 'undefined' && tRptPosTCodeFrom != "") && (tRptPosTCodeTo != 'undefined' && tRptPosTCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (6))";
+            // }
             window.oRptWarehouseTFromOption = undefined;
             oRptWarehouseTFromOption = oRptWarehouseOption({
                 'tReturnInputCode': 'oetRptWahTCodeFrom',
@@ -2775,21 +2782,26 @@
             let tRptShopTCodeTo = $('#oetRptShpTCodeTo').val();
             let tRptPosTCodeFrom = $('#oetRptPosTCodeFrom').val();
             let tRptPosTCodeTo = $('#oetRptPosTCodeTo').val();
+            let tDataBranch = $('#oetRptBchCodeSelect').val();
+            let tDataBranchReplace = tDataBranch.replaceAll(",", "','");
 
-            // เช็คในกรณีเลือกเฉพาะคลังสาขา
-            if ((tRptBchCodeFrom != 'undefined' && tRptBchCodeFrom != "") && (tRptBchCodeTo != 'undefined' && tRptBchCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (1,2,5))";
+            if (tDataBranchReplace != 'undefined' && tDataBranchReplace != '') {
+                tWhereCondition = " AND (TCNMWaHouse.FTBchCode IN ('" + tDataBranchReplace + "')) ";
             }
+            // // เช็คในกรณีเลือกเฉพาะคลังสาขา
+            // if ((tRptBchCodeFrom != 'undefined' && tRptBchCodeFrom != "") && (tRptBchCodeTo != 'undefined' && tRptBchCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (1,2,5))";
+            // }
 
-            // เช็คในกรณีเลือกเฉพาะร้านค้า
-            if ((tRptShopTCodeFrom != 'undefined' && tRptShopTCodeFrom != "") && (tRptShopTCodeTo != 'undefined' && tRptShopTCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (4))";
-            }
+            // // เช็คในกรณีเลือกเฉพาะร้านค้า
+            // if ((tRptShopTCodeFrom != 'undefined' && tRptShopTCodeFrom != "") && (tRptShopTCodeTo != 'undefined' && tRptShopTCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (4))";
+            // }
 
-            // เช็คในกรณีเลือกเฉพาะร้านค้า
-            if ((tRptPosTCodeFrom != 'undefined' && tRptPosTCodeFrom != "") && (tRptPosTCodeTo != 'undefined' && tRptPosTCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (6))";
-            }
+            // // เช็คในกรณีเลือกเฉพาะร้านค้า
+            // if ((tRptPosTCodeFrom != 'undefined' && tRptPosTCodeFrom != "") && (tRptPosTCodeTo != 'undefined' && tRptPosTCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (6))";
+            // }
             window.oRptWarehouseTToOption = undefined;
             oRptWarehouseTToOption = oRptWarehouseOption({
                 'tReturnInputCode': 'oetRptWahTCodeTo',
@@ -2816,21 +2828,26 @@
             let tRptShopRCodeTo = $('#oetRptShpRCodeTo').val();
             let tRptPosRCodeFrom = $('#oetRptPosRCodeFrom').val();
             let tRptPosRCodeTo = $('#oetRptPosRCodeTo').val();
+            let tDataBranch = $('#oetRptBchCodeSelect').val();
+            let tDataBranchReplace = tDataBranch.replaceAll(",", "','");
 
+            if (tDataBranchReplace != 'undefined' && tDataBranchReplace != '') {
+                tWhereCondition = " AND (TCNMWaHouse.FTBchCode IN ('" + tDataBranchReplace + "')) ";
+            }
             // เช็คในกรณีเลือกเฉพาะคลังสาขา
-            if ((tRptBchCodeFrom != 'undefined' && tRptBchCodeFrom != "") && (tRptBchCodeTo != 'undefined' && tRptBchCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (1,2,5))";
-            }
+            // if ((tRptBchCodeFrom != 'undefined' && tRptBchCodeFrom != "") && (tRptBchCodeTo != 'undefined' && tRptBchCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (1,2,5))";
+            // }
 
-            // เช็คในกรณีเลือกเฉพาะร้านค้า
-            if ((tRptShopRCodeFrom != 'undefined' && tRptShopRCodeFrom != "") && (tRptShopRCodeTo != 'undefined' && tRptShopRCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (4))";
-            }
+            // // เช็คในกรณีเลือกเฉพาะร้านค้า
+            // if ((tRptShopRCodeFrom != 'undefined' && tRptShopRCodeFrom != "") && (tRptShopRCodeTo != 'undefined' && tRptShopRCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (4))";
+            // }
 
-            // เช็คในกรณีเลือกเฉพาะร้านค้า
-            if ((tRptPosRCodeFrom != 'undefined' && tRptPosRCodeFrom != "") && (tRptPosRCodeTo != 'undefined' && tRptPosRCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (6))";
-            }
+            // // เช็คในกรณีเลือกเฉพาะร้านค้า
+            // if ((tRptPosRCodeFrom != 'undefined' && tRptPosRCodeFrom != "") && (tRptPosRCodeTo != 'undefined' && tRptPosRCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (6))";
+            // }
             window.oRptWarehouseRFromOption = undefined;
             oRptWarehouseRFromOption = oRptWarehouseOption({
                 'tReturnInputCode': 'oetRptWahRCodeFrom',
@@ -2855,21 +2872,26 @@
             let tRptShopRCodeTo = $('#oetRptShpRCodeTo').val();
             let tRptPosRCodeFrom = $('#oetRptPosRCodeFrom').val();
             let tRptPosRCodeTo = $('#oetRptPosRCodeTo').val();
+            let tDataBranch = $('#oetRptBchCodeSelect').val();
+            let tDataBranchReplace = tDataBranch.replaceAll(",", "','");
 
+            if (tDataBranchReplace != 'undefined' && tDataBranchReplace != '') {
+                tWhereCondition = " AND (TCNMWaHouse.FTBchCode IN ('" + tDataBranchReplace + "')) ";
+            }
             // เช็คในกรณีเลือกเฉพาะคลังสาขา
-            if ((tRptBchCodeFrom != 'undefined' && tRptBchCodeFrom != "") && (tRptBchCodeTo != 'undefined' && tRptBchCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (1,2,5))";
-            }
+            // if ((tRptBchCodeFrom != 'undefined' && tRptBchCodeFrom != "") && (tRptBchCodeTo != 'undefined' && tRptBchCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (1,2,5))";
+            // }
 
-            // เช็คในกรณีเลือกเฉพาะร้านค้า
-            if ((tRptShopRCodeFrom != 'undefined' && tRptShopRCodeFrom != "") && (tRptShopRCodeTo != 'undefined' && tRptShopRCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (4))";
-            }
+            // // เช็คในกรณีเลือกเฉพาะร้านค้า
+            // if ((tRptShopRCodeFrom != 'undefined' && tRptShopRCodeFrom != "") && (tRptShopRCodeTo != 'undefined' && tRptShopRCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (4))";
+            // }
 
-            // เช็คในกรณีเลือกเฉพาะร้านค้า
-            if ((tRptPosRCodeFrom != 'undefined' && tRptPosRCodeFrom != "") && (tRptPosRCodeTo != 'undefined' && tRptPosRCodeTo != "")) {
-                tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (6))";
-            }
+            // // เช็คในกรณีเลือกเฉพาะร้านค้า
+            // if ((tRptPosRCodeFrom != 'undefined' && tRptPosRCodeFrom != "") && (tRptPosRCodeTo != 'undefined' && tRptPosRCodeTo != "")) {
+            //     tWhereCondition = " AND (TCNMWaHouse.FTWahStaType IN (6))";
+            // }
             window.oRptWarehouseRToOption = undefined;
             oRptWarehouseRToOption = oRptWarehouseOption({
                 'tReturnInputCode': 'oetRptWahRCodeTo',

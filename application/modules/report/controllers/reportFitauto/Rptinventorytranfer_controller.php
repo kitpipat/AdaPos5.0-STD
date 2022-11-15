@@ -170,7 +170,16 @@ class Rptinventorytranfer_controller extends MX_Controller
             'tRptRcvFromTo' => language('report/report/report', 'tRptSalByPaymentRcvFromTo'),
             'tRptBchFrom'               => language('report/report/report', 'tRptBchFrom'),
             'tRptBchTo'                 => language('report/report/report', 'tRptBchTo'),
+            'tPdtGrpFrom' => language('report/report/report', 'tPdtGrpFrom'),
+            'tPdtGrpTo' => language('report/report/report', 'tPdtGrpTo'),
+            'tPdtTypeFrom' => language('report/report/report', 'tPdtTypeFrom'),
+            'tPdtTypeTo' => language('report/report/report', 'tPdtTypeTo'),
+            'tRptAdjWahFrom' => language('report/report/report', 'tRptAdjWahFrom'),
+            'tRptAdjWahTo' => language('report/report/report', 'tRptAdjWahTo'),
 
+            'tRptBrandFrom'      => language('report/report/report', 'tRptBrandFrom'),
+            'tRptBrandTo'        => language('report/report/report', 'tRptBrandTo'),
+      
             'tPdtCodeFrom' => language('report/report/report', 'tPdtCodeFrom'),
             'tPdtCodeTo' => language('report/report/report', 'tPdtCodeTo'),
 
@@ -226,6 +235,24 @@ class Rptinventorytranfer_controller extends MX_Controller
             //Fillter ข้อมูลสินค้า
             'tSubByCodeSelect' => !empty($this->input->post('ocmRptSubBy')) ? $this->input->post('ocmRptSubBy') : "",
 
+            // กลุ่มสินค้า(chain product)
+            'tPdtGrpCodeFrom'      => !empty($this->input->post('oetRptPdtGrpCodeFrom')) ? $this->input->post('oetRptPdtGrpCodeFrom') : "",
+            'tPdtGrpCodeTo'        => !empty($this->input->post('oetRptPdtGrpCodeTo')) ? $this->input->post('oetRptPdtGrpCodeTo') : "",
+            'tPdtGrpNameFrom'      => !empty($this->input->post('oetRptPdtGrpNameFrom')) ? $this->input->post('oetRptPdtGrpNameFrom') : "",
+            'tPdtGrpNameTo'        => !empty($this->input->post('oetRptPdtGrpNameTo')) ? $this->input->post('oetRptPdtGrpNameTo') : "",
+
+            // ประเภทสินค้า(Type product)
+            'tPdtTypeCodeFrom'      => !empty($this->input->post('oetRptPdtTypeCodeFrom')) ? $this->input->post('oetRptPdtTypeCodeFrom') : "",
+            'tPdtTypeCodeTo'        => !empty($this->input->post('oetRptPdtTypeCodeTo')) ? $this->input->post('oetRptPdtTypeCodeTo') : "",
+            'tPdtTypeNameFrom'      => !empty($this->input->post('oetRptPdtTypeNameFrom')) ? $this->input->post('oetRptPdtTypeNameFrom') : "",
+            'tPdtTypeNameTo'        => !empty($this->input->post('oetRptPdtTypeNameTo')) ? $this->input->post('oetRptPdtTypeNameTo') : "",
+            
+            
+            // ยี่ห้อ(brand)
+            'tPbnCodeFrom'      => !empty($this->input->post('oetRptBrandCodeFrom')) ? $this->input->post('oetRptBrandCodeFrom') : "",
+            'tPbnCodeTo'        => !empty($this->input->post('oetRptBrandCodeTo')) ? $this->input->post('oetRptBrandCodeTo') : "",
+            'tPbnNameFrom'      => !empty($this->input->post('oetRptBrandNameFrom')) ? $this->input->post('oetRptBrandNameFrom') : "",
+            'tPbnNameTo'        => !empty($this->input->post('oetRptBrandNameTo')) ? $this->input->post('oetRptBrandNameTo') : "",
 
             // คลังสินค้า(Warehouse)
             'tWahCodeFrom'      => !empty($this->input->post('oetRptWahCodeFrom')) ? $this->input->post('oetRptWahCodeFrom') : "",
@@ -240,12 +267,16 @@ class Rptinventorytranfer_controller extends MX_Controller
             'tPdtNameTo'        => !empty($this->input->post('oetRptPdtNameTo')) ? $this->input->post('oetRptPdtNameTo') : "",
 
             // คลังที่โอน
-            'tWahCodeFromOut'  => !empty($this->input->post('oetRptWahCodeFromOut'))  ? $this->input->post('oetRptWahCodeFromOut')   : "",
-            'tWahNameFromOut'  => !empty($this->input->post('oetRptWahNameFromOut'))  ? $this->input->post('oetRptWahNameFromOut')   : "",
-
+            'tWahCodeFromOut'  => !empty($this->input->post('oetRptWahTCodeFrom'))  ? $this->input->post('oetRptWahTCodeFrom')   : "",
+            'tWahNameFromOut'  => !empty($this->input->post('oetRptWahTNameFrom'))  ? $this->input->post('oetRptWahTNameFrom')   : "",
+            'tWahCodeToOut'  => !empty($this->input->post('oetRptWahTCodeTo'))  ? $this->input->post('oetRptWahTCodeTo')   : "",
+            'tWahNameToOut'  => !empty($this->input->post('oetRptWahTNameTo'))  ? $this->input->post('oetRptWahTNameTo')   : "",
+            
             // คลังที่รับโอน
-            'tWahCodeFromIn'  => !empty($this->input->post('oetRptWahCodeFromIn'))  ? $this->input->post('oetRptWahCodeFromIn')   : "",
-            'tWahNameFromIn'  => !empty($this->input->post('oetRptWahNameFromIn'))  ? $this->input->post('oetRptWahNameFromIn')   : "",
+            'tWahCodeFromIn'  => !empty($this->input->post('oetRptWahRCodeFrom'))  ? $this->input->post('oetRptWahRCodeFrom')   : "",
+            'tWahNameFromIn'  => !empty($this->input->post('oetRptWahRNameFrom'))  ? $this->input->post('oetRptWahRNameFrom')   : "",
+            'tWahCodeToIn'  => !empty($this->input->post('oetRptWahRCodeTo'))  ? $this->input->post('oetRptWahRCodeTo')   : "",
+            'tWahNameToIn'  => !empty($this->input->post('oetRptWahRNameTo'))  ? $this->input->post('oetRptWahRNameTo')   : "",
 
         ];
 
@@ -757,6 +788,87 @@ class Rptinventorytranfer_controller extends MX_Controller
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
+  
+        // ฟิวเตอร์ข้อมูล คลังต้นทาง =========================================== -->
+        if ((isset($this->aRptFilter['tWahCodeFromOut']) && !empty($this->aRptFilter['tWahCodeFromOut'])) && (isset($this->aRptFilter['tWahCodeToOut']) && !empty($this->aRptFilter['tWahCodeToOut']))) {
+            $aCells = [
+                WriterEntityFactory::createCell('จากคลังต้นทาง : ' . $this->aRptFilter['tWahNameFromOut'] . ' ถึงคลังต้นทาง : ' . $this->aRptFilter['tWahNameToOut']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        // ฟิวเตอร์ข้อมูล คลังปลายทาง =========================================== -->
+        if ((isset($this->aRptFilter['tWahCodeFromIn']) && !empty($this->aRptFilter['tWahCodeFromIn'])) && (isset($this->aRptFilter['tWahCodeToIn']) && !empty($this->aRptFilter['tWahCodeToIn']))) {
+            $aCells = [
+                WriterEntityFactory::createCell('จากคลังปลายทาง : ' . $this->aRptFilter['tWahNameFromIn'] . ' ถึงคลังปลายทาง : ' . $this->aRptFilter['tWahNameToIn']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        // ฟิวเตอร์ข้อมูล กลุ่มสินค้า =========================================== -->
+        if ((isset($this->aRptFilter['tPdtGrpCodeFrom']) && !empty($this->aRptFilter['tPdtGrpCodeFrom'])) && (isset($this->aRptFilter['tPdtGrpCodeTo']) && !empty($this->aRptFilter['tPdtGrpCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tPdtGrpFrom'] .' : ' . $this->aRptFilter['tPdtGrpNameFrom'] . ' '.$this->aText['tPdtGrpTo'].' : ' . $this->aRptFilter['tPdtGrpNameTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+
+        // ฟิวเตอร์ข้อมูล ประเภท =========================================== -->
+        if ((isset($this->aRptFilter['tPdtTypeCodeFrom']) && !empty($this->aRptFilter['tPdtTypeCodeFrom'])) && (isset($this->aRptFilter['tPdtTypeCodeTo']) && !empty($this->aRptFilter['tPdtTypeCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tPdtTypeFrom'] .' : ' . $this->aRptFilter['tPdtTypeNameFrom'] . ' '.$this->aText['tPdtTypeTo'].' : ' . $this->aRptFilter['tPdtTypeNameTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        // ฟิวเตอร์ข้อมูล ยี่ห้อ =========================================== -->
+        if ((isset($this->aRptFilter['tPbnCodeFrom']) && !empty($this->aRptFilter['tPbnCodeFrom'])) && (isset($this->aRptFilter['tPbnCodeTo']) && !empty($this->aRptFilter['tPbnCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptBrandFrom'] .' : ' . $this->aRptFilter['tPbnNameFrom'] . ' '.$this->aText['tRptBrandTo'].' : ' . $this->aRptFilter['tPbnNameTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
         return $aMulltiRow;
     }
 }

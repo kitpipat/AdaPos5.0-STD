@@ -7879,3 +7879,305 @@ SET @nLngID = @pnLngID
         ,ERROR_MESSAGE() AS ErrorMessage; 
 END
 GO
+
+
+/****** Object:  StoredProcedure [dbo].[SP_RPTxPdtHisTnfWah]    Script Date: 11/11/2022 18:20:21 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPdtHisTnfWah]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPdtHisTnfWah
+GO
+CREATE PROCEDURE SP_RPTxPdtHisTnfWah 
+--ALTER PROCEDURE [dbo].[SP_RPTxPdtHisTnfWah]
+        @pnLngID int , 
+        @pnComName Varchar(100),
+        @ptRptCode Varchar(100),
+        @ptUsrSession Varchar(255),
+        @pnFilterType int, --1 BETWEEN 2 IN
+        @ptAgnCode VARCHAR(20),
+        --สาขา
+        @ptBchL Varchar(8000),
+
+        --คลังต้นทาง SOURCE
+        @ptWahSF Varchar(20), 
+        @ptWahST Varchar(20),
+
+        --คลังปลายทาง Destination
+        @ptWahDF Varchar(20), 
+        @ptWahDT Varchar(20),
+
+        --@ptWahL Varchar(8000),
+        --สินค้า
+        @ptPdtF Varchar(20),
+        @ptPdtT Varchar(20),
+
+		--14/11/2022
+		--กลุ่มสินค้า
+		@ptPdtChanF Varchar(30),
+		@ptPdtChanT Varchar(30),
+		--ประเภทสินค้า
+		@ptPdtTypeF Varchar(5),
+		@ptPdtTypeT Varchar(5),
+
+		--NUI 22-09-05 RQ2208-020
+		--ยี่ห้อ
+		@ptPbnF Varchar(5),
+		@ptPbnT Varchar(5),
+
+        --วันที่โออนออก FDLastUpdOn
+        @ptDocDateF Varchar(10), 
+        @ptDocDateT Varchar(10), 
+        @FNResult INT OUTPUT 
+    AS
+	--------------------------------------
+-- Modify By Watcharakorn 
+-- V 02.00.00
+-- V 01.00.00
+-- Create ไม่ได้ระบุ
+-- Modify 14/11/2022
+-- Temp name  TRPTPdtHisTnfWahTmp
+-- @pnLngID ภาษา
+-- @ptRptCdoe ชื่อรายงาน
+-- @ptUsrSession UsrSession
+-- @ptBchF จากรหัสสาขา
+-- @ptBchT ถึงรหัสสาขา
+-- @ptPdtCodeF จากสินค้า
+-- @ptPdtCodeT ถึงสินค้า
+-- @ptPdtChanF จากกลุ่มสินค้า
+-- @ptPdtChanT ถึงกลุ่มสินค้า
+-- @ptPdtTypeF จากประเภทสินค้า
+-- @ptPdtTypeT ถึงประเภท
+
+-- @ptDocDateF จากวันที่
+-- @ptDocDateT ถึงวันที่
+-- @FNResult
+
+
+--------------------------------------
+    BEGIN TRY
+        DECLARE @nLngID int 
+        DECLARE @nComName Varchar(100)
+        DECLARE @tRptCode Varchar(100)
+        DECLARE @tUsrSession Varchar(255)
+        DECLARE @tSql VARCHAR(8000)
+        DECLARE @tSql1 VARCHAR(8000)
+
+        DECLARE @tBchF Varchar(5)
+        DECLARE @tBchT Varchar(5)
+        DECLARE @tWahF Varchar(5)
+        DECLARE @tWahT Varchar(5)
+        DECLARE @tPdtF Varchar(20)
+        DECLARE @tPdtT Varchar(20)
+		DECLARE @tPdtChanF Varchar(30)
+		DECLARE @tPdtChanT Varchar(30)
+		DECLARE @tPdtTypeF Varchar(5)
+		DECLARE @tPdtTypeT Varchar(5)
+
+		DECLARE @tPbnF Varchar(5)
+		DECLARE @tPbnT Varchar(5)
+
+		SET @tPdtChanF = @ptPdtChanF
+		SET @tPdtChanT = @ptPdtChanT 
+		SET @tPdtTypeF = @ptPdtTypeF
+		SET @tPdtTypeT = @ptPdtTypeT
+
+		SET @tPbnF = @ptPbnF
+		SET @tPbnT = @ptPbnT
+
+        SET @nLngID = @pnLngID
+        SET @nComName = @pnComName
+        SET @tUsrSession = @ptUsrSession
+        SET @tRptCode = @ptRptCode
+
+        --SET @tBchF = @ptBchF
+        --SET @tBchT = @ptBchT
+        --SET @tWahF = @ptWahF
+        --SET @tWahT = @ptWahT
+
+
+        SET @tPdtF = @ptPdtF
+        SET @tPdtT = @ptPdtT
+
+        SET @ptDocDateF = CONVERT(VARCHAR(10),@ptDocDateF,121)
+        SET @ptDocDateT = CONVERT(VARCHAR(10),@ptDocDateT,121)
+
+        SET @FNResult= 0
+
+
+        IF @nLngID = null
+        BEGIN
+            SET @nLngID = 1
+        END	
+
+IF @tPdtChanF = null
+	BEGIN
+		SET @tPdtChanF = ''
+	END 
+	IF @tPdtChanT = null OR @tPdtChanT =''
+	BEGIN
+		SET @tPdtChanT = @tPdtChanF
+	END 
+
+	IF @tPdtTypeF = null
+	BEGIN
+		SET @tPdtTypeF = ''
+	END 
+	IF @tPdtTypeT = null OR @tPdtTypeT =''
+	BEGIN
+		SET @tPdtTypeT = @tPdtTypeF
+	END 
+
+	IF @tPbnF = null
+	BEGIN
+		SET @tPbnF = ''
+	END 
+	IF @tPbnT = null OR @tPbnT =''
+	BEGIN
+		SET @tPbnT = @tPbnF
+	END 
+
+        IF @tBchF = null
+        BEGIN
+            SET @tBchF = ''
+        END
+        IF @tBchT = null OR @tBchT = ''
+        BEGIN
+            SET @tBchT = @tBchF
+        END
+
+        --Branch
+        IF @ptBchL = null
+        BEGIN
+            SET @ptBchL = ''
+        END
+
+        ------------------
+        IF @ptWahSF = null
+        BEGIN
+            SET @ptWahSF = ''
+        END 
+        IF @ptWahST = null OR @ptWahST =''
+        BEGIN
+            SET @ptWahST = @ptWahSF
+        END 
+
+        IF @ptWahDF = null
+        BEGIN
+            SET @ptWahDF = ''
+        END 
+        IF @ptWahDT = null OR @ptWahDT =''
+        BEGIN
+            SET @ptWahDT = @ptWahDF
+        END 
+
+
+        IF @tPdtF = null
+        BEGIN
+            SET @tPdtF = ''
+        END 
+        IF @tPdtT = null OR @tPdtT =''
+        BEGIN
+            SET @tPdtT = @tPdtF
+        END 
+
+
+        SET @tSql1 =   ' '
+        --SET @tSql1 +=' WHERE 1=1 AND TFW.FNXthStaDocAct = 1 '
+        SET @tSql1 +=' WHERE 1=1 AND TFW.FTXthStaDoc = 1 AND TFW.FTXthStaApv = 1 '
+        IF @pnFilterType = '2'
+        BEGIN
+            IF (@ptBchL <> '' )
+            BEGIN
+                SET @tSql1 +=' AND TFW.FTBchCode IN (' + @ptBchL + ')'
+            END	
+
+        END
+
+        --IF (@ptWahL <> '')
+        --BEGIN
+        --	SET @tSql1 +=' AND HD.FTXthWhFrm IN (' + @ptWahL + ')'
+        --END
+
+        IF (@ptWahSF <> '' )
+        BEGIN
+            SET @tSql1 +=' AND TFW.FTXthWhFrm BETWEEN ''' + @ptWahSF + '''  AND ''' + @ptWahST + ''''
+        END
+
+		IF (@ptWahDF <> '' )
+		BEGIN
+            SET @tSql1 +=' AND TFW.FTXthWhTo BETWEEN ''' + @ptWahDF + '''  AND ''' + @ptWahDT + ''''
+        END
+        --    F (@ptWahT <> '')
+        --BEGIN
+        --        SET @tSql1 +=' AND TFW.FTXthWhTo = ''' + @ptWahT + ''' '
+        --END
+
+        IF (@tPdtF <> '' AND @tPdtT <> '')
+        BEGIN
+            SET @tSql1 +=' AND TFWDT.FTPdtCode BETWEEN ''' + @tPdtF + ''' AND ''' + @tPdtT + ''''
+        END
+
+
+	IF (@tPdtChanF <> '' AND @tPdtChanT <> '')
+	BEGIN
+		SET @tSql1 +=' AND Pdt.FTPgpChain BETWEEN ''' + @tPdtChanF + ''' AND ''' + @tPdtChanT + ''''
+	END
+
+	IF (@tPdtTypeF <> '' AND @tPdtTypeT <> '')
+	BEGIN
+		SET @tSql1 +=' AND Pdt.FTPtyCode BETWEEN ''' + @tPdtTypeF + ''' AND ''' + @tPdtTypeT + ''''
+	END
+
+	IF (@tPbnF <> '' AND @tPbnT <> '')
+	BEGIN
+		SET @tSql1 +=' AND Pdt.FTPbnCode BETWEEN ''' + @tPbnF + ''' AND ''' + @tPbnT + ''''
+	END
+
+
+        IF (@ptDocDateF <> '' AND @ptDocDateT <> '')
+        BEGIN
+            SET @tSql1 +=' AND CONVERT(VARCHAR(10),FDXthDocDate,121) BETWEEN ''' + @ptDocDateF + ''' AND ''' + @ptDocDateT + ''''
+        END
+
+    DELETE FROM TRPTPdtHisTnfWahTmp WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''
+    SET @tSql = ' INSERT INTO TRPTPdtHisTnfWahTmp'
+    SET @tSql +=' (FTComName,FTRptCode,FTUsrSession,'
+    SET @tSql+=' FTBchCode, FTBchName, FTXthDocNo, FDXthDocDate, FTXthWhFrm,  FTWahNameFrm, FTXthWhTo,FTWahNameTo,  '
+    SET @tSql+=' FTXthApvCode,  FTUsrName,FTPdtCode,FTXtdPdtName,  FTPunName,FTXtdBarCode,FCXtdQty,FTPbnCode,FTPbnName '
+    SET @tSql +=' )'
+    SET @tSql +=' SELECT '''+ @nComName + ''' AS FTComName,'''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'       
+    SET @tSql+=' FTBchCode, FTBchName, FTXthDocNo, FDXthDocDate, FTXthWhFrm,  FTWahNameFrm, FTXthWhTo,FTWahNameTo,'
+    SET @tSql+=' FTXthApvCode,  FTUsrName,FTPdtCode,FTXtdPdtName,  FTPunName,FTXtdBarCode,FCXtdQty,FTPbnCode,FTPbnName '
+    SET @tSql +=' FROM'
+    SET @tSql +=' ('			
+    SET @tSql+=' SELECT TFW.FTBchCode, BCHL.FTBchName,  TFW.FTXthDocNo, TFW.FDXthDocDate, TFW.FTXthWhFrm,  WahLF.FTWahName AS FTWahNameFrm, TFW.FTXthWhTo, WahLT.FTWahName AS FTWahNameTo,'
+    SET @tSql+=' TFW.FTXthApvCode,  USRLAPV.FTUsrName,TFWDT.FTPdtCode, TFWDT.FTXtdPdtName,  TFWDT.FTPunName, TFWDT.FTXtdBarCode,TFWDT.FCXtdQty, '
+	SET @tSql+=' Pdt.FTPbnCode,PbnL.FTPbnName'
+    SET @tSql+=' FROM TCNTPdtTwxHD TFW WITH(NOLOCK) '
+    SET @tSql+=' LEFT JOIN TCNTPdtTwxDT TFWDT WITH(NOLOCK) ON TFW.FTXthDocNo = TFWDT.FTXthDocNo'
+	SET @tSql+=' LEFT JOIN TCNMPdt Pdt WITH (NOLOCK) ON TFWDT.FTPdtCode = Pdt.FTPdtCode '
+    SET @tSql+=' LEFT JOIN TCNMBranch_L BCHL WITH(NOLOCK) ON TFW.FTBchCode = BCHL.FTBchCode
+                                                    AND BCHL.FNLngID = ''' + CAST(@nLngID AS VARCHAR(10)) + ''''
+    SET @tSql+=' LEFT JOIN TCNMUser_L USRL WITH(NOLOCK) ON TFW.FTCreateBy = USRL.FTUsrCode
+                                                AND USRL.FNLngID = ''' + CAST(@nLngID AS VARCHAR(10)) + ''''
+    SET @tSql+=' LEFT JOIN TCNMUser_L USRLAPV WITH(NOLOCK) ON TFW.FTXthApvCode = USRLAPV.FTUsrCode
+                                                    AND USRLAPV.FNLngID = ''' + CAST(@nLngID AS VARCHAR(10)) + ''''
+    SET @tSql+=' LEFT JOIN TCNMWahouse_L WahLT WITH(NOLOCK) ON TFW.FTBchCode = WahLT.FTBchCode
+                                                    AND TFW.FTXthWhTo = WahLT.FTWahCode
+                                                    AND WahLT.FNLngID = ''' + CAST(@nLngID AS VARCHAR(10)) + ''''
+    SET @tSql+=' LEFT JOIN TCNMWahouse_L WahLF WITH(NOLOCK) ON TFW.FTBchCode = WahLF.FTBchCode
+                                                    AND TFW.FTXthWhFrm = WahLF.FTWahCode
+                                                    AND WahLF.FNLngID = ''' + CAST(@nLngID AS VARCHAR(10)) + ''''
+	SET @tSql +=' LEFT JOIN TCNMPdtBrand_L PbnL WITH (NOLOCK) ON Pdt.FTPbnCode = PbnL.FTPbnCode AND PbnL.FNLngID = '''  + CAST(@nLngID  AS VARCHAR(10)) + ''''
+    SET @tSql += @tSql1
+    SET @tSql +=' ) TnfWah'
+	--PRINT (@tSql)
+    EXECUTE(@tSql)
+    END TRY
+    BEGIN CATCH 
+        SET @FNResult= -1
+    END CATCH	
+GO

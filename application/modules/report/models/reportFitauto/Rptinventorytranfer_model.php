@@ -11,7 +11,7 @@ class Rptinventorytranfer_model extends CI_Model
         // สาขา
         $tBchCodeSelect = ($paDataFilter['bBchStaSelectAll']) ? '' : FCNtAddSingleQuote($paDataFilter['tBchCodeSelect']);
 
-        $tCallStore = "{ CALL SP_RPTxPdtHisTnfWah(?,?,?,?,?,?,?,?,?,?,?,?,?,?) }";
+        $tCallStore = "{ CALL SP_RPTxPdtHisTnfWah(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) }";
         $aDataStore = array(
             'pnLngID'       => $paDataFilter['nLangID'],
             'pnComName'     => $paDataFilter['tCompName'],
@@ -20,10 +20,18 @@ class Rptinventorytranfer_model extends CI_Model
             'pnFilterType'  => $paDataFilter['tTypeSelect'],
             'ptAgnCode'     => $paDataFilter['tAgnCodeSelect'],
             'ptBchL'        => $tBchCodeSelect,
-            'ptWahF'        => $paDataFilter['tWahCodeFromOut'],
-            'ptWahT'        => $paDataFilter['tWahCodeFromIn'],
+            'ptWahOutF'     => $paDataFilter['tWahCodeFromOut'],
+            'ptWahOutT'     => $paDataFilter['tWahCodeToOut'],
+            'ptWahInF'      => $paDataFilter['tWahCodeFromIn'],
+            'ptWahInT'      => $paDataFilter['tWahCodeToIn'],
             'ptPdtF'        => $paDataFilter['tPdtCodeFrom'],
             'ptPdtT'        => $paDataFilter['tPdtCodeTo'],
+            'ptPdtChanF'    => $paDataFilter['tPdtGrpCodeFrom'],
+            'ptPdtChanT'    => $paDataFilter['tPdtGrpCodeTo'],
+            'ptPdtTypeF'    => $paDataFilter['tPdtTypeCodeFrom'],
+            'ptPdtTypeT'    => $paDataFilter['tPdtTypeCodeTo'],
+            'ptPbnF'        => $paDataFilter['tPbnCodeFrom'],
+            'ptPbnT'        => $paDataFilter['tPbnCodeTo'],
             'ptDocDateF'    => $paDataFilter['tDocDateFrom'],
             'ptDocDateT'    => $paDataFilter['tDocDateTo'],
             'FNResult'      => 0

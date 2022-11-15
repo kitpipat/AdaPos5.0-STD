@@ -217,25 +217,54 @@ $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
                 </div>
             <?php endif; ?>
 
-            <?php if ((isset($aDataFilter['tWahCodeFromOut']) && !empty($aDataFilter['tWahCodeFromOut']))) : ?>
+            <?php if ((isset($aDataFilter['tWahCodeFromOut']) && !empty($aDataFilter['tWahCodeFromOut'])) && (isset($aDataFilter['tWahCodeToOut']) && !empty($aDataFilter['tWahCodeToOut']))) : ?>
                 <!-- ============================ ฟิวเตอร์ข้อมูล คลังที่โอน ============================ -->
                 <div class="xCNRptFilterBox">
                     <div class="text-left xCNRptFilter">
-                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo 'คลังโอน' . ' : </span>' . $aDataFilter['tWahNameFromOut']; ?></label>
-                        
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo 'จากคลังต้นทาง' . ' : </span>' . $aDataFilter['tWahNameFromOut']; ?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo 'ถึงคลังต้นทาง' . ' : </span>' . $aDataFilter['tWahNameToOut']; ?></label>
                     </div>
                 </div>
             <?php endif; ?>
 
-            <?php if ((isset($aDataFilter['tWahCodeFromIn']) && !empty($aDataFilter['tWahCodeFromIn']))) : ?>
-                <!-- ============================ ฟิวเตอร์ข้อมูล คลังที่รับโอน ============================ -->
+            <?php if ((isset($aDataFilter['tWahCodeFromIn']) && !empty($aDataFilter['tWahCodeFromIn'])) && (isset($aDataFilter['tWahCodeToIn']) && !empty($aDataFilter['tWahCodeToIn']))) : ?>
+                <!-- ============================ ฟิวเตอร์ข้อมูล คลังที่โอน ============================ -->
                 <div class="xCNRptFilterBox">
                     <div class="text-left xCNRptFilter">
-                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo 'คลังรับ'  . ' : </span>' . $aDataFilter['tWahNameFromIn']; ?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo 'จากคลังปลายทาง' . ' : </span>' . $aDataFilter['tWahNameFromIn']; ?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo 'ถึงคลังปลายทาง' . ' : </span>' . $aDataFilter['tWahNameToIn']; ?></label>
                     </div>
                 </div>
             <?php endif; ?>
+            <!-- ============================ ฟิวเตอร์ข้อมูล กลุ่มสินค้า ============================ -->
+            <?php if( (isset($aDataFilter['tPdtGrpCodeFrom']) && !empty($aDataFilter['tPdtGrpCodeFrom'])) && (isset($aDataFilter['tPdtGrpCodeTo']) && !empty($aDataFilter['tPdtGrpCodeTo']))) { ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtGrpFrom'].' : </span>'.$aDataFilter['tPdtGrpNameFrom'];?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtGrpTo'].' : </span>'.$aDataFilter['tPdtGrpNameTo'];?></label>
+                    </div>
+                </div>
+            <?php } ;?>
 
+            <!-- ============================ ฟิวเตอร์ข้อมูล ประเภทสินค้า ============================ -->
+            <?php if( (isset($aDataFilter['tPdtTypeCodeFrom']) && !empty($aDataFilter['tPdtTypeCodeFrom'])) && (isset($aDataFilter['tPdtTypeCodeTo']) && !empty($aDataFilter['tPdtTypeCodeTo']))) { ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtTypeFrom'].' : </span>'.$aDataFilter['tPdtTypeNameFrom'];?></label>
+                        <label class="xCNRptLabel xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tPdtTypeTo'].' : </span>'.$aDataFilter['tPdtTypeNameTo'];?></label>
+                    </div>
+                </div>
+            <?php } ;?>
+
+            <!-- ============================ ฟิวเตอร์ข้อมูล ยี่ห้อ ============================ -->
+            <?php if ((isset($aDataFilter['tPbnCodeFrom']) && !empty($aDataFilter['tPbnCodeFrom'])) && (isset($aDataFilter['tPbnCodeTo']) && !empty($aDataFilter['tPbnCodeTo']))) : ?>
+                <div class="xCNRptFilterBox">
+                    <div class="text-left xCNRptFilter">
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptBrandFrom'] . ' : </span>' . $aDataFilter['tPbnNameFrom']; ?></label>
+                        <label class="xCNRptDisplayBlock"><span class="xCNRptFilterHead"><?php echo $aDataTextRef['tRptBrandTo'] . ' : </span>' . $aDataFilter['tPbnNameTo']; ?></label>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

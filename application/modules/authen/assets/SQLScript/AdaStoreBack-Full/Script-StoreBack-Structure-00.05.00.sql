@@ -4676,3 +4676,47 @@ GO
 IF EXISTS(SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'TCNTPdtStkCrd' AND COLUMN_NAME = 'FTStkSysType') BEGIN
 	ALTER TABLE TCNTPdtStkCrd ALTER COLUMN FTStkSysType VARCHAR(2)
 END
+GO
+
+/****** Object:  Table [dbo].[TRPTPdtHisTnfWahTmp]    Script Date: 14/11/2022 14:47:50 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'[dbo].TRPTPdtHisTnfWahTmp')) --and OBJECTPROPERTY(id, U'IsView') = 1)
+drop TABLE TRPTPdtHisTnfWahTmp
+GO
+CREATE TABLE [dbo].[TRPTPdtHisTnfWahTmp](
+	[FTRptRowSeq] [bigint] IDENTITY(1,1) NOT NULL,
+	[FNRowPartID] [bigint] NULL,
+	[FTUsrSession] [varchar](255) NULL,
+	[FTComName] [varchar](100) NULL,
+	[FTRptCode] [varchar](100) NULL,
+	[FTBchCode] [varchar](5) NULL,
+	[FTBchName] [varchar](200) NULL,
+	[FTXthDocNo] [varchar](20) NULL,
+	[FDXthDocDate] [datetime] NULL,
+	[FTXthWhFrm] [varchar](5) NULL,
+	[FTWahNameFrm] [varchar](200) NULL,
+	[FTXthWhTo] [varchar](5) NULL,
+	[FTWahNameTo] [varchar](200) NULL,
+	[FTXthApvCode] [varchar](5) NULL,
+	[FTUsrName] [varchar](200) NULL,
+	[FTPdtCode] [varchar](20) NULL,
+	[FTXtdPdtName] [varchar](200) NULL,
+	[FTPunName] [varchar](50) NULL,
+	[FTXtdBarCode] [nchar](50) NULL,
+	[FCXtdQty] [numeric](18, 4) NULL,
+	--14/11/2022
+	--RQ2210-041
+	[FTPbnCode][varchar](5) NULL,
+	[FTPbnName] [varchar](255) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRptRowSeq] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
