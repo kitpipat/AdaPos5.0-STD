@@ -113,7 +113,7 @@ $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
                         <tr>
                             <th nowrap class="text-left  xCNRptColumnHeader" style="border-bottom: 1px solid black !important;padding-left: 30px !important;"><?php echo language('report/report/report', 'tRptPdtCode'); ?></th>
                             <th nowrap class="text-left  xCNRptColumnHeader" style="border-bottom: 1px solid black !important;"><?php echo language('report/report/report', 'tRptPdtName'); ?></th>
-                            <th nowrap class="text-left  xCNRptColumnHeader" style="border-bottom: 1px solid black !important;"></th>
+                            <th nowrap class="text-left  xCNRptColumnHeader" style="border-bottom: 1px solid black !important;"><?php echo language('report/report/report', 'tFTPbnName'); ?></th>
                             <th nowrap class="text-left  xCNRptColumnHeader" style="border-bottom: 1px solid black !important;"></th>
                             <th nowrap class="text-left  xCNRptColumnHeader" style="border-bottom: 1px solid black !important;"><?php echo language('report/report/report', 'tRptUnit'); ?></th>
                             <th nowrap class="text-left  xCNRptColumnHeader" style="border-bottom: 1px solid black !important;"><?php echo language('report/report/report', 'tRptBarCode'); ?></th>
@@ -148,7 +148,7 @@ $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
                                     <td nowrap class="xCNRptDetail text-left" style="padding-left: 30px !important;"><?= $aValue['FTPdtCode']; ?></td>
                                     <td nowrap class="xCNRptDetail text-left"><?= $aValue['FTXtdPdtName']; ?></td>
                                     <!-- <td nowrap class="xCNRptDetail" colspan="2"></td> -->
-                                    <td nowrap class="xCNRptDetail text-left"></td>
+                                    <td nowrap class="xCNRptDetail text-left"><?= $aValue['FTPbnName']; ?></td>
                                     <td nowrap class="xCNRptDetail text-left"></td>
                                     <td nowrap class="xCNRptDetail text-left"><?= $aValue['FTPunName']; ?></td>
                                     <td nowrap class="xCNRptDetail text-left"><?= $aValue['FTXtdBarCode']; ?></td>

@@ -6126,7 +6126,7 @@ BEGIN TRY
 		SET @tSQL += ' LEFT JOIN TCNMMerchant_L MER ON PSB.FTMerCode = MER.FTMerCode AND MER.FNLngID =  ' + @tLangID
 		SET @tSQL += ' LEFT JOIN TCNMShop_L SHP ON  S.FTShpCode = SHP.FTShpCode AND SHP.FNLngID =   ' + @tLangID
 		SET @tSQL += @tSQLFilter2
-		SET @tSQL += ' GROUP BY MER.FTMerCode,MER.FTMerName,S.FTShpCode,SHP.FTShpName,S.FTPdtCode,S.FTXsdPdtName,S.FTPunName  '
+		SET @tSQL += ' GROUP BY MER.FTMerCode,MER.FTMerName,S.FTShpCode,SHP.FTShpName,S.FTPdtCode,S.FTXsdPdtName,S.FTPunName HAVING SUM (CASE WHEN S.FNXshDocType = 1 THEN S.FCXsdQtyAll ELSE S.FCXsdQtyAll * - 1 END)> 0 '
 
 		--PRINT(@tSQL)
 		execute(@tSQL)

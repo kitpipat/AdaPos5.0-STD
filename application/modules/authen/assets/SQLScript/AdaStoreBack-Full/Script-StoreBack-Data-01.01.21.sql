@@ -813,3 +813,12 @@ INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FN
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.20', getdate() , 'เพิ่ม OPTION Config KEY  tCN_AlwSeePdtCenter', 'Nale')
 END
 GO
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.21') BEGIN
+UPDATE [TSysReport] SET [FTRptCode]='009001013', [FTGrpRptModCode]='009', [FTGrpRptCode]='009001', [FTRptRoute]='rptRptInventoryTranfer', [FTRptStaUseFrm]=NULL, [FTRptTblView]=NULL, [FTRptFilterCol]='1,4,13,78,79,33,34,8,9,53', [FTRptFileName]=NULL, [FTRptStaShwBch]='1', [FTRptStaShwYear]='1', [FTRptSeqNo]='13', [FTRptStaUse]='1', [FTLicPdtCode]='SB-RPT001002038' WHERE ([FTRptCode]='009001013');
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.21', getdate() , 'รายงานการโอนสินค้าระหว่างคลังเพิ่ม Filter ยี่ห้อประเภทกลุ่มของสินค้า', 'Nale')
+END
+GO
