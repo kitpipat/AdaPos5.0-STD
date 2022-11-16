@@ -71,14 +71,11 @@ class Rptpackageusageinfo_model extends CI_Model
 
         // Check ว่าเป็นหน้าสุดท้ายหรือไม่ ถ้าเป็นหน้าสุดท้ายให้ไป Sum footer ข้อมูลมา
         if ($nPage == $nTotalPage) {
-            $tJoinFoooter   =   "   SELECT DISTINCT
+            $tJoinFoooter   =   "   SELECT 
                                             FTUsrSession_Footer,
-                                            SUM(SUB.FCCpnAmtAmt) AS FCCpnAmtAmt_Footer,
-                                            SUM(SUB.FCCpnAmtTatal) AS FCCpnAmtTatal_Footer,
-                                            SUM(SUB.FCCpnQtyUse) AS FCCpnQtyUse_Footer,
-                                            SUM(SUB.FCCpnQtyLeft) AS FCCpnQtyLeft_Footer
+                                            SUM(SUB.FCCpnAmtAmt) AS FCCpnAmtAmt_Footer
                                         FROM (
-                                                SELECT DISTINCT 
+                                                SELECT  
                                                         FTCpnNo,
                                                         FTUsrSessID	        AS FTUsrSession_Footer,
                                                         CONVERT(FLOAT,FCXshCpnAmt)  AS FCCpnAmtAmt,
@@ -96,28 +93,67 @@ class Rptpackageusageinfo_model extends CI_Model
             // ถ้าไม่ใช่ให้ Select 0 เพื่อให้ Join ได้แต่จะไม่มีการ Sum
             $tJoinFoooter  =   "   SELECT
                                         '$tSession' AS FTUsrSession_Footer,
-                                        '0'           AS FCStkQtyMonEnd_Footer,
-                                        '0'           AS FCStkQtyIn_Footer,
-                                        '0'           AS FCStkQtyOut_Footer,
-                                        '0'           AS FCStkQtySale_Footer,
-                                        '0'           AS FCStkQtyAdj_Footer,
-                                        '0'           AS FCStkQtyBal_Footer
+                                        '0'           AS FCCpnAmtAmt_Footer
                                     ) T ON  L.FTUsrSessID = T.FTUsrSession_Footer
             ";
         }
 
         $tSQL   = " SELECT
                         L.*,
-                        T.*
+                        T.*,
+                        K.*,
+                        Y.*
                     FROM (
                         SELECT DISTINCT
-                        ROW_NUMBER() OVER(ORDER BY DATA.FTCpnNo ASC) AS RowID,
-                        ROW_NUMBER() OVER(PARTITION BY FTCpnNo ORDER BY DATA.FTCpnNo ASC) AS FNRowPartCpn,
+                        ROW_NUMBER() OVER(ORDER BY DATA.FTCpnNo ASC,DATA.FDXshDocDate ASC) AS RowID,
+                        ROW_NUMBER() OVER(PARTITION BY FTCpnNo ORDER BY DATA.FTCpnNo ASC,DATA.FDXshDocDate ASC) AS FNRowPartCpn,
                             DATA.*
                         FROM TRPTPackageCpnHisTmp DATA WITH(NOLOCK)
                         WHERE 1=1
                         AND DATA.FTUsrSessID	    = '$tSession'
                     ) L
+                    LEFT JOIN (
+                        SELECT 
+							F.FTCpnNo,
+							F.FTUsrSession_Footer2,
+							SUM(F.FCCpnAmtTatal) AS FCCpnAmtTatalGroupByCpn,
+							SUM(F.FCCpnQtyUse) AS FCCpnQtyUseGroupByCpn,
+							SUM(F.FCCpnQtyLeft) AS FCCpnQtyLeftGroupByCpn
+							FROM (
+							SELECT  
+											FTCpnNo,
+											FTUsrSessID	        AS FTUsrSession_Footer2,
+											CONVERT(FLOAT,CAST(FCXshCpnAmtTatal AS FLOAT))  AS FCCpnAmtTatal,
+											CONVERT(FLOAT,CAST(FCXshCpnQtyUse AS FLOAT))  AS FCCpnQtyUse,
+											CONVERT(FLOAT,CAST(FCXshCpnQtyLeft as FLOAT))  AS FCCpnQtyLeft
+							FROM TRPTPackageCpnHisTmp WITH(NOLOCK)
+							WHERE 1=1
+							AND FTUsrSessID    = '$tSession'
+							GROUP BY FTCpnNo,FCXshCpnAmtTatal,FCXshCpnQtyUse,FCXshCpnQtyLeft,FTUsrSessID
+							) F
+							GROUP BY  F.FTCpnNo,F.FTUsrSession_Footer2
+                    ) K ON  L.FTUsrSessID = K.FTUsrSession_Footer2 AND L.FTCpnNo=K.FTCpnNo
+                    LEFT JOIN (
+                        SELECT 
+							F.FTUsrSession_Footer3,
+							SUM(F.FCCpnAmtTatal) AS FCCpnAmtTatal_Footer,
+							SUM(F.FCCpnQtyUse) AS FCCpnQtyUse_Footer,
+							SUM(F.FCCpnQtyLeft) AS FCCpnQtyLeft_Footer
+							FROM (
+							SELECT  
+											FTCpnNo,
+											FTUsrSessID	        AS FTUsrSession_Footer3,
+											CONVERT(FLOAT,CAST(FCXshCpnAmtTatal AS FLOAT))  AS FCCpnAmtTatal,
+											CONVERT(FLOAT,CAST(FCXshCpnQtyUse AS FLOAT))  AS FCCpnQtyUse,
+											CONVERT(FLOAT,CAST(FCXshCpnQtyLeft as FLOAT))  AS FCCpnQtyLeft
+							FROM TRPTPackageCpnHisTmp WITH(NOLOCK)
+							WHERE 1=1
+							AND FTUsrSessID    = '$tSession'
+							GROUP BY FTCpnNo,FCXshCpnAmtTatal,FCXshCpnQtyUse,FCXshCpnQtyLeft,FTUsrSessID
+							) F
+							GROUP BY F.FTUsrSession_Footer3
+                    ) Y ON  L.FTUsrSessID = Y.FTUsrSession_Footer3 
+
                     LEFT JOIN (
                         " . $tJoinFoooter . "
         ";

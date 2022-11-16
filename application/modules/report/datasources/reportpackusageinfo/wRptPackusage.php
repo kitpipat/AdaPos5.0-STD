@@ -126,21 +126,23 @@ $nOptDecimalShow    = $aDataViewRpt['nOptDecimalShow'];
                             <?php foreach ($aDataReport['aRptData'] as $nKey => $aValue) : 
                                 $aCpnAmt = $aValue["FCXshCpnAmt"];
                                 if($aValue['FTCpnNo'] == $tCpnCode){
-                                    $tCpnAmt = '';
+                                    $tStyleCpn = '';
+                                    $tCpnAmt = number_format($aCpnAmt, $nOptDecimalShow);
                                     $tCpnAmtTotal = '';
                                     $tCpnQtyUse = '';
                                     $tCpnQtyUse = '';
                                     $tCpnQtyLeft = '';
                                 }else{
+                                    $tStyleCpn = 'border-top: dashed 1px #333 !important;';
                                     $tCpnAmt = number_format($aCpnAmt, $nOptDecimalShow);
-                                    $tCpnAmtTotal = number_format($aValue["FCXshCpnAmtTatal"], $nOptDecimalShow);
-                                    $tCpnQtyUse = number_format($aValue["FCXshCpnQtyUse"], $nOptDecimalShow);
-                                    $tCpnQtyLeft = number_format($aValue['FCXshCpnQtyLeft'], $nOptDecimalShow);
+                                    $tCpnAmtTotal = number_format($aValue["FCCpnAmtTatalGroupByCpn"], $nOptDecimalShow);
+                                    $tCpnQtyUse = number_format($aValue["FCCpnQtyUseGroupByCpn"], $nOptDecimalShow);
+                                    $tCpnQtyLeft = number_format($aValue['FCCpnQtyLeftGroupByCpn'], $nOptDecimalShow);
                                 }
                             ?>
                                
-                                <tr class="">
-                                    <td class="xCNRptDetail"><?php echo $aValue['FTCpnNo']; ?></td>
+                                <tr class="" style="<?=$tStyleCpn?>">
+                                    <td class="xCNRptDetail" ><?php echo $aValue['FTCpnNo']; ?></td>
                                     <td class="text-left xCNRptDetail"><?php echo $aValue['FTCpnName']; ?></td>
                                     <td class="text-left xCNRptDetail"><?php echo $aValue['FTPosName']; ?></td>
                                     <td class="text-left xCNRptDetail"><?php echo $aValue['FTXshDocNo']; ?></td>

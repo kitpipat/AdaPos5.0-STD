@@ -4720,3 +4720,106 @@ PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
+
+
+/****** Object:  Table [dbo].[TRPSRptFormat]    Script Date: 15/11/2565 16:48:20 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TRPSRptFormat]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TRPSRptFormat](
+	[FTRfsCode] [varchar](5) NOT NULL,
+	[FTRfsDocType] [varchar](20) NULL,
+	[FTRfsStaDefStd] [varchar](1) NULL,
+	[FTRfsFormType] [varchar](1) NULL,
+	[FTRfsStaAlwEdit] [varchar](1) NULL,
+	[FTRfsRefCode] [varchar](20) NULL,
+	[FTRfsRptFileName] [varchar](200) NULL,
+	[FTRfsPath] [varchar](255) NULL,
+	[FDLastUpdOn] [datetime] NULL,
+	[FTLastUpdBy] [varchar](20) NULL,
+	[FDCreateOn] [datetime] NULL,
+	[FTCreateBy] [varchar](20) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRfsCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+/****** Object:  Table [dbo].[TRPSRptFormat_L]    Script Date: 15/11/2565 16:48:21 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TRPSRptFormat_L]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TRPSRptFormat_L](
+	[FTRfsCode] [varchar](5) NOT NULL,
+	[FNLngID] [bigint] NOT NULL,
+	[FTRfsName] [varchar](100) NOT NULL,
+	[FTRfsRemark] [varchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRfsCode] ASC,
+	[FNLngID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO
+
+
+
+/****** Object:  Table [dbo].[TRPTRptFmtUsr]    Script Date: 15/11/2565 16:52:04 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TRPTRptFmtUsr]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TRPTRptFmtUsr](
+	[FTAgnCode] [varchar](5) NOT NULL,
+	[FTRfsCode] [varchar](5) NOT NULL,
+	[FTRfuDocType] [varchar](20) NULL,
+	[FTRfuStaDefStd] [varchar](1) NULL,
+	[FTRfuFormType] [varchar](1) NULL,
+	[FTRfuStaAlwEdit] [varchar](1) NULL,
+	[FTRfuRefCode] [varchar](20) NULL,
+	[FTRfuFileName] [text] NULL,
+	[FTRfuPath] [text] NULL,
+	[FTRfuStaUsrDef] [varchar](1) NULL,
+	[FDLastUpdOn] [datetime] NULL,
+	[FTLastUpdBy] [varchar](20) NULL,
+	[FDCreateOn] [datetime] NULL,
+	[FTCreateBy] [varchar](20) NULL,
+	[FTRfuCode] [varchar](5) NOT NULL,
+	[FTRfuStaUse] [varchar](1) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRfuCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+END
+GO
+/****** Object:  Table [dbo].[TRPTRptFmtUsr_L]    Script Date: 15/11/2565 16:52:05 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TRPTRptFmtUsr_L]') AND type in (N'U'))
+BEGIN
+CREATE TABLE [dbo].[TRPTRptFmtUsr_L](
+	[FTRfuCode] [varchar](5) NOT NULL,
+	[FNLngID] [bigint] NOT NULL,
+	[FTRfuName] [varchar](100) NOT NULL,
+	[FTRfuRemark] [varchar](255) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[FTRfuCode] ASC,
+	[FNLngID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+END
+GO

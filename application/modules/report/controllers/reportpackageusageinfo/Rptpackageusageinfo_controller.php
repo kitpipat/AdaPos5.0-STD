@@ -435,7 +435,7 @@ class Rptpackageusageinfo_controller extends MX_Controller
             'aDataFilter' => $aDataFilter,
         );
         // Load View Advance Table
-        $tRptView = JCNoHLoadViewAdvanceTable('report/datasources/rptpdtstock', 'wRptPdtStockHtml', $aDataViewPdt);
+        $tRptView = JCNoHLoadViewAdvanceTable('report/datasources/reportpackusageinfo', 'wRptPackusage', $aDataViewPdt);
 
         // Data Viewer Center Report
         $aDataViewer = array(
@@ -633,16 +633,16 @@ class Rptpackageusageinfo_controller extends MX_Controller
             foreach ($aDataReport['aRptData'] as $nKey => $aValue) {
                 $aCpnAmt = $aValue["FCXshCpnAmt"];
                 if($aValue['FTCpnNo'] == $tCpnCode){
-                    $tCpnAmt = '';
+                    $tCpnAmt = FCNnGetNumeric($aCpnAmt);
                     $tCpnAmtTotal = '';
                     $tCpnQtyUse = '';
                     $tCpnQtyUse = '';
                     $tCpnQtyLeft = '';
                 }else{
-                    $tCpnAmt = number_format($aCpnAmt, $this->nOptDecimalShow);
-                    $tCpnAmtTotal = number_format($aValue["FCXshCpnAmtTatal"], $this->nOptDecimalShow);
-                    $tCpnQtyUse = number_format($aValue["FCXshCpnQtyUse"], $this->nOptDecimalShow);
-                    $tCpnQtyLeft = number_format($aValue['FCXshCpnQtyLeft'], $this->nOptDecimalShow);
+                    $tCpnAmt = FCNnGetNumeric($aCpnAmt);
+                    $tCpnAmtTotal = FCNnGetNumeric($aValue["FCCpnAmtTatalGroupByCpn"]);
+                    $tCpnQtyUse = FCNnGetNumeric($aValue["FCCpnQtyUseGroupByCpn"]);
+                    $tCpnQtyLeft = FCNnGetNumeric($aValue['FCCpnQtyLeftGroupByCpn']);
                 }
 
                 $values = [
@@ -693,13 +693,13 @@ class Rptpackageusageinfo_controller extends MX_Controller
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($nFCCpnAmtAmt_Footer, $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCCpnAmtAmt_Footer)),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($nFCCpnAmtTatal_Footer, $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCCpnAmtTatal_Footer)),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($nFCCpnQtyUse_Footer, $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCCpnQtyUse_Footer)),
                         WriterEntityFactory::createCell(null),
-                        WriterEntityFactory::createCell(number_format($nFCCpnQtyLeft_Footer, $this->nOptDecimalShow)),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($nFCCpnQtyLeft_Footer)),
                         WriterEntityFactory::createCell(null),
                     ];
                     $aRow = WriterEntityFactory::createRow($values, $oStyleColums);
