@@ -137,5 +137,102 @@
         });
     }
 
+    // ระบบ
+    $('#oimRcvSpcBrowseMrk').click(function() {
+        JSxCheckPinMenuClose();
+        JCNxBrowseData('oBrowseMrk');
+    });
 
+    // ระบบ
+    var oBrowseMrk = {
+        Title: ['payment/recivespc/recivespc', 'tBrowseAppTitle'],
+        Table: {
+            Master: 'TCNSMarket_L',
+            PK: 'FTMrkCode'
+        },
+        Where:{
+            Condition: [' AND TCNSMarket_L.FTMrkStaUse = 1']
+        },
+        GrideView: {
+            ColumnPathLang: 'payment/recivespc/recivespc',
+            ColumnKeyLang: ['tBrowseAppCode', 'tBrowseAppName'],
+            ColumnsSize: ['15%', '75%'],
+            DataColumns: ['TCNSMarket_L.FTMrkCode', 'TCNSMarket_L.FTMrkName'],
+            DataColumnsFormat: ['', ''],
+            WidthModal: 50,
+            Perpage: 10,
+            OrderBy: ['TCNSMarket_L.FTMrkCode ASC'],
+        },
+        CallBack: {
+            ReturnType: 'S',
+            Value: ["oetRcvSpcMrkCode", "TCNSMarket_L.FTMrkCode"],
+            Text: ["oetRcvSpcMrkName", "TCNSMarket_L.FTMrkName"]
+        },
+        // NextFunc: {
+        //     FuncName: 'JSxNextFuncRcvSpc',
+        //     ArgReturn: ['FTAppCode']
+        // },
+    };
+
+
+
+// Create By: Napat(Jame) 10/06/2022
+function JSxCHNSpcEMarket(){
+    console.log('awd');
+    $('#ofmAddChaneleMarket').each(function(key, form) { 
+        $('#ofmAddChaneleMarket').validate().destroy();
+        $('#ofmAddChaneleMarket').validate({
+            // focusInvalid: false,
+            // onclick: false,
+            // onfocusout: false,
+            // onkeyup: false,
+            rules: {
+                oetRcvSpcMrkName: { "required": {} },
+            },
+            messages: {
+                oetRcvSpcMrkName: { "required": $('#oetRcvSpcMrkName').attr('data-validate') },
+            },
+            errorElement: "em",
+            errorPlacement: function(error, element) {
+                error.addClass("help-block");
+                if (element.prop("type") === "checkbox") {
+                    error.appendTo(element.parent("label"));
+                } else {
+                    var tCheck = $(element.closest('.form-group')).find('.help-block').length;
+                    if (tCheck == 0) {
+                        error.appendTo(element.closest('.form-group')).trigger('change');
+                    }
+                }
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).closest('.form-group').addClass("has-error").removeClass("has-success");
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).closest('.form-group').addClass("has-success").removeClass("has-error");
+            },
+            submitHandler: function(form) {
+                // JCNxOpenLoading();
+                // $.ajax({
+                //     type: "POST",
+                //     url: ptRoute,
+                //     data: $('#ofmCSWAddEdit').serialize()+'&oetCSWChnCode='+$('#oetChnCode').val(),
+                //     catch: false,
+                //     timeout: 0,
+                //     success: function(oResult) {
+                //         var aResult = JSON.parse(oResult);
+                //         if (aResult["nStaEvent"] == 1) {
+                //             JSvCHNPageSpcWah();
+                //         } else {
+                //             FSvCMNSetMsgWarningDialog(aResult['tStaMessg']);
+                //             JCNxCloseLoading();
+                //         }
+                //     },
+                //     error: function(jqXHR, textStatus, errorThrown) {
+                //         JCNxResponseError(jqXHR, textStatus, errorThrown);
+                //     }
+                // });
+            },
+        });
+    });
+}
 </script>

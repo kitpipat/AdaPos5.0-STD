@@ -201,6 +201,24 @@ if ($aResult['rtCode'] == 1) {
         </div>
     </div>
     <input type="hidden" id="ohdRcvSpcBch">
+    
+    <!-- ช่องทางการขาย New : 21/11/2022 --> 
+    <div class="row">
+        <div class="col-xl-6 col-sm-6 col-md-6 col-lg-6">
+            <!-- ช่องทางการขาย -->
+            <div class="form-group">
+                <label class="xCNLabelFrm"><?php echo language('payment/recivespc/recivespc', 'ช่องทางการขาย'); ?></label>
+                <div class="input-group">
+                    <input type="text" class="form-control xCNHide" id="oetRcvSpcChlCode" name="oetRcvSpcChlCode" value="<?php echo @$tRcvSpcAppCode; ?>">
+                    <input type="text" class="form-control xWPointerEventNone" id="oetRcvSpcChlName" name="oetRcvSpcChlName" placeholder="<?php echo language('payment/recivespc/recivespc', 'ช่องทางการขาย'); ?>" value="<?php echo @$tRcvSpcAppName; ?>" data-validate="<?php echo  language('payment/recivespc/recivespc', 'ช่องทางการขาย'); ?>" readonly>
+                    <span class="input-group-btn">
+                        <button id="oimRcvSpcBrowseChl" type="button" class="btn xCNBtnBrowseAddOn"><img class="xCNIconFind"></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-xl-6 col-sm-6 col-md-6 col-lg-6">
             <!-- กลุ่มธุรกิจ -->

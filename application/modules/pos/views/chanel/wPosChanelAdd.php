@@ -129,6 +129,9 @@ $tEndReceiptPlaceholder = "End of Receipt";
                         <li id="oliChnInfo2" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisable; ?>">
                             <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvChnContentInfo2" aria-expanded="false"><?php echo language('pos/poschannel/poschannel', 'กำหนดคลัง') ?></a>
                         </li>
+                        <li id="oliChnInfo3" class="xWMenu xWSubTab xCNStaHideShow <?php echo $tMenuTabDisable; ?>">
+                            <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvChnContentInfo3" aria-expanded="false"><?php echo language('pos/poschannel/poschannel', 'เปิดใช้งาน eMarket') ?></a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -171,7 +174,6 @@ $tEndReceiptPlaceholder = "End of Receipt";
                                         <div class="form-group">
                                             <div class="validate-input">
                                                 <label class="xCNLabelFrm"><span style="color:red">*</span><?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelName'); ?></label>
-
                                                 <input type="text" class="form-control" maxlength="70" id="oetChnName" name="oetChnName" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'tCHNLabelChannelName'); ?>" value="<?php echo $tChnName; ?>" data-validate-required="<?php echo language('pos/poschannel/poschannel', 'tCHNValidName'); ?>">
                                             </div>
                                         </div>
@@ -339,6 +341,89 @@ $tEndReceiptPlaceholder = "End of Receipt";
                     </div>
                     <!-- Tab Content Info 2 -->
 
+                    <!-- Tab Content Info 3 -->
+                    <div id="odvChnContentInfo3" class="tab-pane fade">
+                    <form class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmAddChaneleMarket">
+
+                        <div class="row" style="margin-bottom:10px;">
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <label class="xCNLabelFrm" style="color: #1866ae !important; cursor:pointer;"><?php echo language('pos/poschannel/poschannel', 'tCHNTitle'); ?> : <?=$tChnName?></label>
+                                <label class="xCNLabelFrm xWCSWPageEdit" style="color: #aba9a9 !important;display: none;"> / <?php echo language('common/main/main', 'tEdit') ?> </label>
+                                <label class="xCNLabelFrm xWCSWPageAdd" style="color: #aba9a9 !important;display: none;"> / <?php echo language('common/main/main', 'tAdd') ?> </label>
+                            </div>
+                            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right xWCSWBtnAdd">
+                                <button type="button" onclick="JSxCHNSpcEMarket();" style="background-color: rgb(23, 155, 253); color: white;" class="btn"> <?php echo  language('common/main/main', 'Syns Data') ?></button>
+                            </div>
+                            <!-- <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right xWCSWPageAddEdit" style="display: none;">
+                                <button type="button" onclick="JSvCHNPageSpcWah();" class="btn" style="background-color: #D4D4D4; color: #000000;"><?php echo language('common/main/main', 'tCancel') ?></button>
+                                <button type="button" id="obtCSWClickSave" style="background-color: rgb(23, 155, 253); color: white;" class="btn"> <?php echo  language('common/main/main', 'tSave') ?></button>
+                            </div> -->
+                        </div>
+
+                        <div class="panel-body">
+                            <div class="row">
+                                    <div class="col-xs-12 col-md-5 col-lg-5">
+                                        <!-- สาขา -->
+                                        <div class="form-group">
+                                            <label class="xCNLabelFrm"><?php echo language('payment/recivespc/recivespc', 'Market'); ?></label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control xCNHide" id="oetRcvSpcMrkCode" name="oetRcvSpcMrkCode" value="">
+                                                <input type="text" class="form-control xWPointerEventNone" id="oetRcvSpcMrkName" name="oetRcvSpcMrkName" placeholder="<?php echo language('payment/recivespc/recivespc', 'Market'); ?>" value="" data-validate="<?php echo  language('payment/recivespc/recivespc', 'Market'); ?>" readonly>
+                                                <span class="input-group-btn">
+                                                    <button id="oimRcvSpcBrowseMrk" type="button" class="btn xCNBtnBrowseAddOn"><img class="xCNIconFind"></button>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="validate-input">
+                                                <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'API URL'); ?></label>
+                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPIURL" name="oetChnAPIURL" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'API URL'); ?>" value="">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="validate-input">
+                                                <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'API Token'); ?></label>
+                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPITOKEN" name="oetChnAPITOKEN" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'API Token'); ?>" value="">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="validate-input">
+                                                <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'APP Key'); ?></label>
+                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPPKEY" name="oetChnAPPKEY" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'APP Key'); ?>" value="">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="validate-input">
+                                                <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'APP Sign'); ?></label>
+                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPPSIGN" name="oetChnAPPSIGN" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'APP Sign'); ?>" value="">
+                                            </div>
+                                        </div>
+
+                                        <!-- รับ S/N ในใบจัด -->
+                                        <div class="form-group"> 
+                                            <label class="fancy-checkbox"> 
+                                                <?php if (isset($tChnStaAlwSNPL) && $tChnStaAlwSNPL == 1) {
+                                                    $tChecked   = 'checked'; 
+                                                } else {
+                                                    $tChecked   = ''; 
+                                                } ?> 
+                                                <input type="checkbox" id="ocbChnStaAlwSNPL" name="ocbChnStaAlwSNPL" <?php echo $tChecked; ?>> 
+                                                    <span> <?php echo language('company/warehouse/warehouse', 'ใช้งาน'); ?></span> 
+                                            </label> 
+                                        </div>
+
+                                    </div>
+                            </div>
+                        </div>
+                        </form>
+
+                    </div>
+                    <!-- Tab Content Info 3 -->
+
                 </div>
             </div>
         </div>
@@ -372,6 +457,9 @@ $tEndReceiptPlaceholder = "End of Receipt";
                 case 'oliChnInfo2':
                     $('#odvChnBtnSave').hide();
                     JSvCHNPageSpcWah();
+                    break;
+                case 'oliChnInfo3':
+                    $('#odvChnBtnSave').show();
                     break;
             }
         }

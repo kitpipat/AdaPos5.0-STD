@@ -475,6 +475,13 @@
         JCNxBrowseData('oBrowsetSysApp');
     });
 
+    // ช่องทางการขาย
+    $('#oimRcvSpcBrowseChl').click(function() {
+        JSxCheckPinMenuClose();
+        oRcvSpcChlBrwOption = oBrowseChannel({});
+        JCNxBrowseData('oRcvSpcChlBrwOption');
+    });
+
     //สาขา
     $('#oimRcvSpcBrowseBch').click(function() {
         JSxCheckPinMenuClose();
@@ -581,6 +588,55 @@
     //     $('#oetRcvSpcAggName').val('');
     // }
 
+    // ช่องทางการขาย
+    var oBrowseChannel = function(poDataFnc) {
+        var tWhereAgn = '';
+        var nAggCode = $('#oetRcvSpcAggCode').val();
+        if (nAggCode != '') {
+            tWhereAgn = " AND TCNMChannelSpc.FTAgnCode = '" + nAggCode + "'"
+        }
+
+        var nBchCode = $('#oetRcvSpcBchCode').val();
+        var tWhereBchCode = '';
+        if (nBchCode != '') {
+            tWhereBchCode = ' AND TCNMChannelSpc.FTBchCode = ' + nBchCode + ' '
+        }
+
+        var oOptionReturn = {
+            Title: ['authen/user/user', 'tBrowseBCHTitle'],
+            Table: {
+                Master: 'TCNMChannel',
+                PK: 'FTChnCode'
+            },
+            Join: {
+                Table: ['TCNMChannel_L','TCNMChannelSpc'],
+                On: ['TCNMChannel.FTChnCode = TCNMChannel_L.FTChnCode AND TCNMChannel_L.FNLngID = ' + nLangEdits,'TCNMChannel.FTChnCode = TCNMChannelSpc.FTChnCode']
+            },
+            Where: {
+                Condition: [tWhereAgn + tWhereBchCode]
+            },
+            GrideView: {
+                ColumnPathLang: 'authen/user/user',
+                ColumnKeyLang: ['tBrowseBCHCode', 'tBrowseBCHName'],
+                ColumnsSize: ['10%', '75%'],
+                DataColumns: ['TCNMChannel.FTChnCode', 'TCNMChannel_L.FTChnName'],
+                DataColumnsFormat: ['', ''],
+                WidthModal: 50,
+                Perpage: 10,
+                OrderBy: ['TCNMChannel.FDCreateOn DESC'],
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: ["oetRcvSpcChlCode", "TCNMChannel.FTChnCode"],
+                Text: ["oetRcvSpcChlName", "TCNMChannel_L.FTChnName"]
+            },
+            RouteAddNew: 'Channel',
+            BrowseLev: nStaRcvBrowseType,
+            // DebugSQL:true,
+        };
+        return oOptionReturn;
+    }
+
     // สาขา
     var oBrowseBranch = function(poDataFnc) {
         var tWhereModal = poDataFnc.tHiddenRcvSpc;
@@ -657,6 +713,9 @@
 
         $('#oetRcvSpcPosCode').val('');
         $('#oetRcvSpcPosName').val('');
+
+        $('#oetRcvSpcChlCode').val('');
+        $('#oetRcvSpcChlName').val('');
 
         // $("#oimRcvSpcBrowseShp").attr("disabled", true); //ร้านค้า
         // $("#oimRcvSpcBrowsePos").attr("disabled", true); //จุดขาย
@@ -880,6 +939,9 @@
 
         $('#oetRcvSpcShpCode').val('');
         $('#oetRcvSpcShpName').val('');
+
+        $('#oetRcvSpcChlCode').val('');
+        $('#oetRcvSpcChlName').val('');
 
     }
 
