@@ -90,7 +90,7 @@
         }
 
         /*===== Begin Control สาขาที่สร้าง ================================================*/
-        if ((tUserLoginLevel == "HQ") || (!bIsAddPage) || (!bIsMultiBch)) {
+        if (!bIsAddPage) {
             $("#obtDepositBrowseBch").attr('disabled', true);
         }
         /*===== End Control สาขาที่สร้าง ==================================================*/
@@ -144,6 +144,12 @@
     /*===== Begin Event Browse =========================================================*/
     // สาขาที่สร้าง
     $("#obtDepositBrowseBch").click(function() {
+        tUsrLevel   = "<?=$this->session->userdata('tSesUsrLevel')?>";
+        tBchMulti   = "<?=$this->session->userdata("tSesUsrBchCodeMulti"); ?>";
+        tSQLWhere   = "";
+        if(tUsrLevel != "HQ"){
+            tSQLWhere = " AND TCNMBranch.FTBchCode IN ("+tBchMulti+") ";
+        }
         // option
         window.oDepositBrowseBch = {
             Title: ['authen/user/user', 'tBrowseBCHTitle'],
@@ -156,7 +162,7 @@
                 On: ['TCNMBranch_L.FTBchCode = TCNMBranch.FTBchCode AND TCNMBranch_L.FNLngID = ' + nLangEdits]
             },
             Where: {
-                Condition: [" AND TCNMBranch.FTBchCode IN(<?php echo $this->session->userdata('tSesUsrBchCodeMulti'); ?>)"]
+                Condition: [tSQLWhere]
             },
             GrideView: {
                 ColumnPathLang: 'authen/user/user',
@@ -1285,10 +1291,19 @@
         var aInfor = [
             {"Lang"         : '<?=FCNaHGetLangEdit(); ?>'}, // Lang ID
             {"ComCode"      : '<?=FCNtGetCompanyCode(); ?>'}, // Company Code
-            {"BranchCode"   : '<?=FCNtGetAddressBranch($tBbkBchName ); ?>' }, // สาขาที่ออกเอกสาร
+            {"BranchCode"   : '<?=FCNtGetAddressBranch($tBchCode ); ?>' }, // สาขาที่ออกเอกสาร
             {"DocCode"      : $('#oetDepositDocNo').val()  }, // เลขที่เอกสาร
-            {"DocBchCode"   : '<?=$tBbkBchName;?>'}
+            {"DocBchCode"   : '<?=$tBchCode;?>'}
         ];
-        window.open('<?=base_url()?>'+"formreport/Frm_SQL_FCBnkDeposit?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open('<?=base_url()?>'+"formreport/Frm_SQL_FCBnkDeposit?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00019' ,
+                tDocBchCode : '<?=$tBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 </script>

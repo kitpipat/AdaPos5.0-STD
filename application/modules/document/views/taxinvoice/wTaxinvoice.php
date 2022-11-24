@@ -619,7 +619,21 @@
                     {"DocCode"      : tDocCode},
                     {"DocBchCode"   : tDocBCH}
                 ];
-                    window.open("<?=base_url(); ?>formreport/TaxInvoice?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL' , '_blank');
+                    // window.open("<?=base_url(); ?>formreport/TaxInvoice?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL' , '_blank');
+                    var aRftData = {
+                                tRtfCode    : '00001' ,
+                                tDocBchCode : tDocBCH ,
+                                tIframeNameID : '' ,
+                                oParameter  : {
+                                                StaPrint : 0 ,
+                                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                                Grand : tGrandText,
+                                                PrintOriginal : tOrginalRight,
+                                                PrintCopy : tCopyRight,
+                                                PrintByPage : 'ALL'
+                                             }
+                                }
+                       JCNxRftDataTable(aRftData);
                 }else{ //เอกสารคืน
                     var aInfor = [
                     {"Lang"         : '<?=FCNaHGetLangEdit(); ?>'},
@@ -629,7 +643,21 @@
                     {"DocBchCode"   : tDocBCH},
                     {"tRsnName"     : $('#ohdTAXRsnName').val() }
                 ];
-                    window.open("<?=base_url(); ?>formreport/TaxInvoice_refund?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL', '_blank');
+                var aRftData = {
+                                tRtfCode    : '00002' ,
+                                tDocBchCode : tDocBCH ,
+                                tIframeNameID : '' ,
+                                oParameter  : {
+                                                StaPrint : 0 ,
+                                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                                Grand : tGrandText,
+                                                PrintOriginal : tOrginalRight,
+                                                PrintCopy : tCopyRight,
+                                                PrintByPage : 'ALL'
+                                             }
+                                }
+                        JCNxRftDataTable(aRftData);
+                    // window.open("<?=base_url(); ?>formreport/TaxInvoice_refund?StaPrint=0&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL', '_blank');
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -687,9 +715,37 @@
                     JCNxOpenLoading();
 
                     if(tTypeABB == 4){//เอกสารขาย
-                        $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoice?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
+                        var aRftData = {
+                                tRtfCode    : '00001' ,
+                                tDocBchCode : tDocBCH ,
+                                tIframeNameID : 'oifPrint' ,
+                                oParameter  : {
+                                                StaPrint : 1 ,
+                                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                                Grand : tGrandText,
+                                                PrintOriginal : tOrginalRight,
+                                                PrintCopy : tCopyRight,
+                                                // PrintByPage : nPrintOnlyPage
+                                             }
+                                }
+                        JCNxRftDataTable(aRftData);
+                        // $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoice?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
                     }else{ //เอกสารคืน
-                        $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoice_refund?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
+                        var aRftData = {
+                                tRtfCode    : '00002' ,
+                                tDocBchCode : tDocBCH ,
+                                tIframeNameID : 'oifPrint' ,
+                                oParameter  : {
+                                                StaPrint : 1 ,
+                                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                                Grand : tGrandText,
+                                                PrintOriginal : tOrginalRight,
+                                                PrintCopy : tCopyRight,
+                                                // PrintByPage : nPrintOnlyPage
+                                             }
+                                }
+                        JCNxRftDataTable(aRftData);
+                        // $("#oifPrint").prop('src', "<?=base_url();?>formreport/TaxInvoice_refund?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + nPrintOnlyPage);
                     }
 
                     JCNxCloseLoading();
@@ -740,8 +796,17 @@
                     ];
 
                     JCNxOpenLoading();
-
-                    $("#oifPrintABB").prop('src', "<?=base_url();?>formreport/InvoiceSaleABB?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText);
+                    var aRftData = {
+                                tRtfCode    : '00003' ,
+                                tDocBchCode : tDocBCH ,
+                                tIframeNameID : 'oifPrintABB' ,
+                                oParameter  : {
+                                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                                Grand : tGrandText
+                                             }
+                                }
+                        JCNxRftDataTable(aRftData);
+                    // $("#oifPrintABB").prop('src', "<?=base_url();?>formreport/InvoiceSaleABB?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText);
                     JCNxCloseLoading();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {

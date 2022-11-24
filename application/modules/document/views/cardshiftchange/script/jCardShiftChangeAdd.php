@@ -2043,7 +2043,16 @@
 			{"DocCode"      : tDocNo }, // เลขที่เอกสาร
             {"DocBchCode"   : '<?=$tUserBchCode?>' } 
 		];
-        window.open("<?php echo base_url(); ?>formreport/Frm_SQL_FCCardChgCash?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open("<?php echo base_url(); ?>formreport/Frm_SQL_FCCardChgCash?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00010' ,
+                tDocBchCode : '<?=$tUserBchCode?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 </script>
 

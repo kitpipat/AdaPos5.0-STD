@@ -1,5 +1,5 @@
 <div class="panel panel-headline">
-	<div class="panel-heading">
+	<div class="panel-body">
 		<section id="ostSearchTransferBchOut">
 			<div class="row">
 				<div class="col-xs-3 col-md-3">
@@ -129,15 +129,10 @@
 					</div>
 					<div class="form-group">
 						<select class="selectpicker form-control" id="ocmStaDoc" name="ocmStaDoc">
-							<option value=''><?php echo language('common/main/main', 'tStaDocAll'); ?></option>
-
-                            <option value='D1'><?php echo language('common/main/main', 'tStaDoc'); ?></option>
-                            <option value='D2'><?php echo language('common/main/main', 'tStaDoc1'); ?></option>
-                            <option value='D3'><?php echo language('common/main/main', 'tStaDoc3'); ?></option>
-
-							<option value='D4'><?php echo language('document/transfer_branch_out/transfer_branch_out', 'tTBOIsWaitGenDocPack'); ?></option>
-							<option value='D5'><?php echo language('document/transfer_branch_out/transfer_branch_out', 'tTBOIsWaitPackPdt'); ?></option>
-							<option value='D6'><?php echo language('document/transfer_branch_out/transfer_branch_out', 'tTBOIsPackingPdt'); ?></option>
+							<option value='0'><?php echo language('common/main/main', 'tStaDocAll'); ?></option>
+                            <option value='1'><?php echo language('common/main/main', 'tStaDocApv'); ?></option>
+                            <option value='2'><?php echo language('common/main/main', 'tStaDocPendingApv'); ?></option>
+                            <option value='3'><?php echo language('common/main/main', 'tStaDocCancel'); ?></option>
 						</select>
 					</div>
 				</div>

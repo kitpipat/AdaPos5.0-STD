@@ -2062,9 +2062,27 @@
         ];
 
         if (tTWODocType == 4) { //ใบจ่ายโอน
-            window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillTnfOutWah?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+            // window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillTnfOutWah?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+            var aRftData = {
+                tRtfCode    : '00030' ,
+                tDocBchCode : '<?= $tTWOBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
         }else{ //ใบเบิกออก
-            window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillTnfOut?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+            // window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillTnfOut?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+            var aRftData = {
+                tRtfCode    : '00031' ,
+                tDocBchCode : '<?= $tTWOBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
         }
     }  
 </script>

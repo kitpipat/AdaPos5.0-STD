@@ -1519,7 +1519,17 @@
             {"DocBchCode"   : '<?=$tPOBchCode;?>'}
         ];
         var tGrandText = $('#odvDataTextBath').text();
-        window.open("<?php echo base_url(); ?>formreport/Frm_SQL_SMBillPO?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText, '_blank');
+        // window.open("<?php echo base_url(); ?>formreport/Frm_SQL_SMBillPO?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText, '_blank');
+        var aRftData = {
+                tRtfCode    : '00022' ,
+                tDocBchCode : '<?=$tPOBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                Grand : tGrandText
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }        
 
 

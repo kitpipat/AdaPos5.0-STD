@@ -1878,6 +1878,15 @@
             {"DocCode"      : $('#oetTWIDocNo').val()  }, // เลขที่เอกสาร
             {"DocBchCode"   : '<?= $tTWIBchCode;?>'}
         ];
-        window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillTnfIn?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillTnfIn?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00028' ,
+                tDocBchCode : '<?=$tTWIBchCode?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 </script>

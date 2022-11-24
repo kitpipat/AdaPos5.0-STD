@@ -36,6 +36,7 @@ class Rptpackageusageinfo_model extends CI_Model
         // echo '</pre>';
         // die();
         $oQuery = $this->db->query($tCallStore, $aDataStore);
+        // echo $this->db->last_query();die();
         if ($oQuery !== FALSE) {
             unset($oQuery);
             return 1;

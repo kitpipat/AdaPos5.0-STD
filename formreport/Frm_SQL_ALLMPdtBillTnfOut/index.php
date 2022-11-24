@@ -13,6 +13,15 @@ require_once('../../config_deploy.php');
                 "Lang", "ComCode", "BranchCode", "DocCode" ,"DocBchCode"
             );
             $aDataMQ = FSaHDeCodeUrlParameter($_GET["infor"], $aParamiterMap);
+			$tAgncode 	= $_GET["Agncode"];
+			$tFilename 	= $_GET["Filename"];
+			$tPathFile = '';
+			if(!empty($tAgncode)){
+				$tPathFile=$tFilename;
+			}else{
+				$tPathFile='reports/'.$tFilename;
+			}
+			$tStaEdit 	= @$_GET["StaEdit"];
         } else {
             $aDataMQ = false;
         }
@@ -23,8 +32,10 @@ require_once('../../config_deploy.php');
 	<title>Frm_SQL_ALLMPdtBillTnfOut.mrt - Viewer</title>
 
 	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReport/css/stimulsoft.viewer.office2013.whiteblue.css">
+	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReport/css/stimulsoft.designer.office2013.whiteblue.css">
 	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.reports.js"></script>
 	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.viewer.js"></script> 
+	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.designer.js"></script>
 
 	<?php
 		$options = StiHelper::createOptions();
@@ -48,7 +59,7 @@ require_once('../../config_deploy.php');
 			Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile("<?=BASE_URL?>/formreport/AdaCoreFrmReport/localization/en.xml", true);
 
 			var report = new Stimulsoft.Report.StiReport();
-			report.loadFile("reports/Frm_SQL_ALLMPdtBillTnfOut.mrt");
+			report.loadFile("<?=$tPathFile?>");
 
 			report.dictionary.variables.getByName("SP_nLang").valueObject 		= "<?php echo $aDataMQ["Lang"]; ?>";
 			report.dictionary.variables.getByName("nLanguage").valueObject 		= "<?php echo $aDataMQ["Lang"]; ?>";
@@ -57,7 +68,7 @@ require_once('../../config_deploy.php');
 			report.dictionary.variables.getByName("SP_tDocNo").valueObject 		= "<?php echo $aDataMQ["DocCode"]; ?>";
 			report.dictionary.variables.getByName("SP_nAddSeq").valueObject 	= 1;
 			report.dictionary.variables.getByName("SP_tDocBch").valueObject 	= "<?=$aDataMQ["DocBchCode"];?>";
-
+			<?php if($tStaEdit!='1'){ ?>
 			var options = new Stimulsoft.Viewer.StiViewerOptions();
 			options.appearance.fullScreenMode = true;
 			options.toolbar.displayMode = Stimulsoft.Viewer.StiToolbarDisplayMode.Separated;
@@ -70,13 +81,37 @@ require_once('../../config_deploy.php');
 
 			viewer.report = report;
 			viewer.renderHtml("viewerContent");
+			<?php }else{ ?>
+				var options = new Stimulsoft.Designer.StiDesignerOptions();
+				console.log(options);
+				options.appearance.fullScreenMode = true;
+				options.toolbar.showSaveButton = false;
+				options.toolbar.showFileMenuSave = false;
+				
+				var designer = new Stimulsoft.Designer.StiDesigner(options, "StiDesigner", false);
+
+				designer.onBeginProcessData = function (args, callback) {
+					<?php StiHelper::createHandler(); ?>
+				}
+
+				designer.onSaveReport = function (args) {
+					<?php StiHelper::createHandler(); ?>
+				}
+
+				designer.report = report;
+				designer.renderHtml("designerContent");
+				<?php } ?>
 		}
 		</script>
         <?php } ?>
     </head>
     <body onload="Start()">
         <?php if ($aDataMQ) { ?>
-            <div id="viewerContent"></div>
+			<?php if($tStaEdit!='1'){ ?>
+		<div id="viewerContent"></div>
+	<?php }else{ ?>
+		<div id="designerContent"></div>
+		<?php } ?>
             <?php
         } else {
             echo "ไม่สามารถเข้าถึงข้อมูลนี้ได้";

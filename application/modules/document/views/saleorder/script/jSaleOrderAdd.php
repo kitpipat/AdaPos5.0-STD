@@ -1593,7 +1593,16 @@
             {"tDocTime": '<?php echo $dSODocTime; ?>'},
             {"DocBchCode" : '<?=$tSOBchCode;?>'}
         ];
-        window.open("<?php echo base_url(); ?>formreport/SMBillSO?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open("<?php echo base_url(); ?>formreport/SMBillSO?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00034' ,
+                tDocBchCode : '<?= $tSOBchCode?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }        
 
     function JSxSOClearDTTmp(ptDataDisTmp){

@@ -1506,9 +1506,19 @@
             {"Lang"         : '<?php echo FCNaHGetLangEdit(); ?>'}, // Lang ID
             {"ComCode"      : '<?php echo FCNtGetCompanyCode(); ?>'}, // Company Code
             {"BranchCode"   : '<?=FCNtGetAddressBranch($tUserBchCode); ?>' }, // สาขาที่ออกเอกสาร
-            {"DocCode"      : $('#oetTVODocNo').val() } // เลขที่เอกสาร
+            {"DocCode"      : $('#oetTVODocNo').val() },// เลขที่เอกสาร
+            {"DocBchCode"   : $('#oetTVOBCHCode').val() }
         ];
-        window.open("<?php echo base_url(); ?>formreport/Frm_SQL_SMBillReFundVD?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open("<?php echo base_url(); ?>formreport/Frm_SQL_SMBillReFundVD?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00029' ,
+                tDocBchCode : $('#oetTVOBCHCode').val(),
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 
     // Delete DT Temp All Clear Data

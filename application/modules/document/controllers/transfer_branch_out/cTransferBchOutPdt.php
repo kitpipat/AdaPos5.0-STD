@@ -23,12 +23,11 @@ class cTransferBchOutPdt extends MX_Controller
         $tSearchAll = $this->input->post('tSearchAll');
         $tIsApvOrCancel = $this->input->post('tIsApvOrCancel');
         $nPage = $this->input->post('nPageCurrent');
-        $aAlwEvent = FCNaHCheckAlwFunc('docTransferBchOut/0/0');
+        $aAlwEvent = FCNaHCheckAlwFunc('deposit/0/0');
         $nOptDecimalShow = FCNxHGetOptionDecimalShow();
         $tUserSessionID = $this->session->userdata("tSesSessionID");
-        $tDocNo = 'TBODOCTEMP';
+        $tDocNo = $this->input->post('tDocNo');
         $tDocKey = 'TCNTPdtTboHD';
-        $tStaPrcDoc = $this->input->post('ptStaPrcDoc');
 
         if ($nPage == '' || $nPage == null) {
             $nPage = 1;
@@ -37,48 +36,12 @@ class cTransferBchOutPdt extends MX_Controller
         }
         $nLangEdit = $this->session->userdata("tLangEdit");
 
-        // $aColumnShow = FCNaDCLGetColumnShow('TCNTPdtTboDT');
-
-        $bIsAddPage = $this->input->post('pbIsAddPage');
-        $tTBODocNo  = $this->input->post('ptDocNo');
-
-        // ตรวจสอบว่าใบจ่ายโอน-สาขา มีการสร้างใบจัดสินค้าไหม ?
-        // ถ้ามีใบจัด จะแสดง คอลัม จำนวนสั่ง, จำนวนจัด
-        $aChkHDDocRef = $this->mTransferBchOutPdt->FSbMTBOChkHaveHDDocRef($tTBODocNo);
-        
-        // var_dump($bIsAddPage);exit;
-        if( $bIsAddPage == 'false' && $aChkHDDocRef === true ){
-            $aColumnShow = array(
-                (object) array('FNShwSeq' => 1,  'FTShwFedShw' => 'FNXtdSeqNo',         'FTShwNameUsr' => 'ลำดับ',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 2,  'FTShwFedShw' => 'FTPdtCode',          'FTShwNameUsr' => 'รหัสสินค้า',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 3,  'FTShwFedShw' => 'FTXtdPdtName',       'FTShwNameUsr' => 'ชื่อสินค้า',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 4,  'FTShwFedShw' => 'FTXtdBarCode',       'FTShwNameUsr' => 'บาร์โค้ด',    'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 5,  'FTShwFedShw' => 'FTPunName',          'FTShwNameUsr' => 'หน่วยสินค้า',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 0),
-                
-                (object) array('FNShwSeq' => 6,  'FTShwFedShw' => 'FCXtdQtyOrd',        'FTShwNameUsr' => 'จำนวนสั่ง',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 7,  'FTShwFedShw' => 'FCXtdQtyPick',       'FTShwNameUsr' => 'จำนวนจัด',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 0),
-
-                (object) array('FNShwSeq' => 8,  'FTShwFedShw' => 'FCXtdQty',           'FTShwNameUsr' => 'จำนวน',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 1)
-            );
-        }else{
-            $aColumnShow = array(
-                (object) array('FNShwSeq' => 1,  'FTShwFedShw' => 'FNXtdSeqNo',         'FTShwNameUsr' => 'ลำดับ',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 2,  'FTShwFedShw' => 'FTPdtCode',          'FTShwNameUsr' => 'รหัสสินค้า',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 3,  'FTShwFedShw' => 'FTXtdPdtName',       'FTShwNameUsr' => 'ชื่อสินค้า',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 4,  'FTShwFedShw' => 'FTXtdBarCode',       'FTShwNameUsr' => 'บาร์โค้ด',    'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 5,  'FTShwFedShw' => 'FTPunName',          'FTShwNameUsr' => 'หน่วยสินค้า',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 6,  'FTShwFedShw' => 'FCXtdQty',           'FTShwNameUsr' => 'จำนวน',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 1)
-            );
-        }
-
-        // echo "<pre>";
-        // print_r($aColumnShow);
-        // exit;
-
+        $aColumnShow = FCNaDCLGetColumnShow('TCNTPdtTboDT');
+        $aCompanyInfo  = FCNaGetCompanyForDocument();
         // Calcurate Document DT Temp
         $aCalcDTParams = [
             'tDataDocEvnCall'   => '',
-            'tDataVatInOrEx'    => '2',
+            'tDataVatInOrEx'    => $aCompanyInfo['tCmpRetInOrEx'],
             'tDataDocNo'        => $tDocNo,
             'tDataDocKey'       => $tDocKey,
             'tDataSeqNo'        => ''
@@ -86,7 +49,7 @@ class cTransferBchOutPdt extends MX_Controller
         FCNbHCallCalcDocDTTemp($aCalcDTParams);
 
         $aEndOfBillParams = [
-            'tSplVatType' => '2',
+            'tSplVatType' => $aCompanyInfo['tCmpRetInOrEx'],
             'tDocNo' => $tDocNo,
             'tDocKey' => $tDocKey,
             'nLngID' => FCNaHGetLangEdit(),
@@ -98,31 +61,22 @@ class cTransferBchOutPdt extends MX_Controller
         $aEndOfBill['tTextBath'] = FCNtNumberToTextBaht($aEndOfBill['aEndOfBillCal']['cCalFCXphGrand']);
 
         $aGetPdtInTmpParams  = array(
-            'FNLngID'           => $nLangEdit,
-            'nPage'             => $nPage,
-            'nRow'              => 10,
-            'tSearchAll'        => $tSearchAll,
-            'tUserSessionID'    => $tUserSessionID,
-            'tDocKey'           => $tDocKey,
-            'tTBODocNo'         => $tTBODocNo
+            'FNLngID' => $nLangEdit,
+            'nPage' => $nPage,
+            'nRow' => 900000,
+            'tSearchAll' => $tSearchAll,
+            'tUserSessionID' => $tUserSessionID,
+            'tDocKey' => $tDocKey
         );
-        $aResList       = $this->mTransferBchOutPdt->FSaMGetPdtInTmp($aGetPdtInTmpParams);
-        $aWhere = array(
-            'FTUfrGrpRef'   => '068',
-            'FTUfrRef'      => 'KB037'
-        );
-        $bAlwEditQty    = FCNbGetUsrFuncRpt($aWhere); //ตรวจสอบสิทธิ์การแก้ไขจำนวน
+        $aResList = $this->mTransferBchOutPdt->FSaMGetPdtInTmp($aGetPdtInTmpParams);
 
         $aGenTable = array(
-            'aAlwEvent'         => $aAlwEvent,
-            'aDataList'         => $aResList,
-            'bIsApvOrCancel'    => ($tIsApvOrCancel=="1")?true:false,
-            'bIsPacking'        => ( $tStaPrcDoc != "" && $tStaPrcDoc != "1" ? true : false ),
-            'bIsPacked'         => ( $tStaPrcDoc != "" && $tStaPrcDoc == "4" ? true : false ),
-            'aColumnShow'       => $aColumnShow,
-            'nPage'             => $nPage,
-            'nOptDecimalShow'   => $nOptDecimalShow,
-            'bAlwEditQty'       => $bAlwEditQty
+            'aAlwEvent' => $aAlwEvent,
+            'aDataList' => $aResList,
+            'bIsApvOrCancel' => ($tIsApvOrCancel=="1")?true:false,
+            'aColumnShow' => $aColumnShow,
+            'nPage' => $nPage,
+            'nOptDecimalShow' => $nOptDecimalShow
         );
         $tHtml = $this->load->view('document/transfer_branch_out/advance_table/wTransferBchOutPdtDatatable', $aGenTable, true);
 
@@ -144,14 +98,14 @@ class cTransferBchOutPdt extends MX_Controller
      */
     public function FSaCTransferBchOutInsertPdtToTmp()
     {
-        $tDocNo             = 'TBODOCTEMP';
+        $tDocNo             = $this->input->post('ptXthDocNo');
         $tDocKey            = 'TCNTPdtTboHD';
         $nLngID             = $this->session->userdata("tLangID");
         $tUserSessionID     = $this->session->userdata('tSesSessionID');
         $tUserLevel         = $this->session->userdata('tSesUsrLevel');
         $tBchCode           = $this->input->post('ptBchCode');
 
-        $tTransferBchOutOptionAddPdt = $this->input->post('tTransferBchOutOptionAddPdt');
+        $tTransferBchOutOptionAddPdt = $this->input->post('pnTBOptionAddPdt');
         $tIsByScanBarCode = $this->input->post('tIsByScanBarCode');
         $tBarCodeByScan = $this->input->post('tBarCodeByScan');
         $tPdtData = $this->input->post('tPdtData');
@@ -183,7 +137,7 @@ class cTransferBchOutPdt extends MX_Controller
                     'tPdtCode' => $tPdtCode, // จาก Browse Pdt
                     'tPunCode' => $tPunCode, // จาก Browse Pdt
                     'tBarCode' => $tBarCode, // จาก Browse Pdt
-                    'pcPrice' => $cPrice, // ราคาสินค้าจาก Browse Pdt
+                    'pcPrice' => str_replace(',', '', $cPrice), // ราคาสินค้าจาก Browse Pdt
                     'nMaxSeqNo' => $nMaxSeqNo + 1, // จำนวนล่าสุด Seq
                     // 'nCounts' => $nCounts,
                     'nLngID' => $nLngID, // รหัสภาษาที่ login
@@ -275,42 +229,90 @@ class cTransferBchOutPdt extends MX_Controller
      */
     public function FSxCTransferBchOutUpdatePdtInTmp()
     {
-        $tFieldName = $this->input->post('tFieldName');
-        $tValue = $this->input->post('tValue');
-        $nSeqNo = $this->input->post('nSeqNo');
-        $tDocNo = 'TBODOCTEMP';
-        $tDocKey = 'TCNTPdtTboHD';
-        $tBchCode = $this->input->post('tBchCode');
-        $tUserSessionID = $this->session->userdata("tSesSessionID");
-        $tUserLoginCode = $this->session->userdata("tSesUsername");
+        // $tFieldName = $this->input->post('tFieldName');
+        // $tValue = $this->input->post('tValue');
+        // $nSeqNo = $this->input->post('nSeqNo');
+        // $tDocNo = $this->input->post('tDocNo');
+        // $tDocKey = 'TCNTPdtTboHD';
+        // $tBchCode = $this->input->post('tBchCode');
+        // $tUserSessionID = $this->session->userdata("tSesSessionID");
+        // $tUserLoginCode = $this->session->userdata("tSesUsername");
 
-        $this->db->trans_begin();
+        // $this->db->trans_begin();
 
-        $aUpdatePdtInTmpBySeqParams = [
-            'tFieldName' => $tFieldName,
-            'tValue' => $tValue,
-            'tUserSessionID' => $tUserSessionID,
-            'tDocNo' => $tDocNo,
-            'tDocKey' => $tDocKey,
-            'nSeqNo' => $nSeqNo,
-        ];
-        $this->mTransferBchOutPdt->FSbUpdatePdtInTmpBySeq($aUpdatePdtInTmpBySeqParams);
+        // $aUpdatePdtInTmpBySeqParams = [
+        //     'tFieldName' => $tFieldName,
+        //     'tValue' => $tValue,
+        //     'tUserSessionID' => $tUserSessionID,
+        //     'tDocNo' => $tDocNo,
+        //     'tDocKey' => $tDocKey,
+        //     'nSeqNo' => $nSeqNo,
+        // ];
+        // $this->mTransferBchOutPdt->FSbUpdatePdtInTmpBySeq($aUpdatePdtInTmpBySeqParams);
 
-        if ($this->db->trans_status() === FALSE) {
-            $this->db->trans_rollback();
-            $aReturn = array(
-                'nStaEvent'    => '900',
-                'tStaMessg'    => "Unsucess UpdatePdtInTmp"
+        // if ($this->db->trans_status() === FALSE) {
+        //     $this->db->trans_rollback();
+        //     $aReturn = array(
+        //         'nStaEvent'    => '900',
+        //         'tStaMessg'    => "Unsucess UpdatePdtInTmp"
+        //     );
+        // } else {
+        //     $this->db->trans_commit();
+        //     $aReturn = array(
+        //         'nStaEvent'    => '1',
+        //         'tStaMessg' => 'Success UpdatePdtInTmp'
+        //     );
+        // }
+
+        // $this->output->set_content_type('application/json')->set_output(json_encode($aReturn));
+        try {
+            $tBchCode         = $this->input->post('tBchCode');
+            $tDocNo           = $this->input->post('tDocNo');
+            $tVATInOrEx       = $this->input->post('tVATInOrEx');
+            $nSeqNo           = $this->input->post('nSeqNo');
+            $nIsDelDTDis      = $this->input->post('nStaDelDis');
+            $tSessionID       = $this->session->userdata('tSesSessionID');
+
+            $aDataWhere = array(
+                'tBchCode'    => $tBchCode,
+                'tDocNo'      => $tDocNo,
+                'nSeqNo'      => $nSeqNo,
+                'tSessionID'  => $this->session->userdata('tSesSessionID'),
+                'tDocKey'       => 'TCNTPdtTboHD',
+                'nStaDis'     =>  $nIsDelDTDis 
             );
-        } else {
-            $this->db->trans_commit();
-            $aReturn = array(
-                'nStaEvent'    => '1',
-                'tStaMessg' => 'Success UpdatePdtInTmp'
+            $aDataUpdateDT = array(
+                // 'tPIFieldName'  => $tPIFieldName,
+                // 'tPIValue'      => $tPIValue,
+                'FCXtdQty'      => $this->input->post('nQty'),
+                'FCXtdSetPrice' => $this->input->post('cPrice'),
+                'FCXtdNet'      => $this->input->post('cNet')
+            );
+
+            $this->db->trans_begin();
+
+            $this->mTransferBchOutPdt->FSbUpdatePdtInTmpBySeq($aDataUpdateDT, $aDataWhere);
+
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $aReturnData = array(
+                    'nStaEvent' => '500',
+                    'tStaMessg' => "Error Update Inline Into Document DT Temp."
+                );
+            } else {
+                $this->db->trans_commit();
+                $aReturnData = array(
+                    'nStaEvent' => '1',
+                    'tStaMessg' => "Update Inline Into Document DT Temp."
+                );
+            }
+        } catch (Exception $Error) {
+            $aReturnData = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
             );
         }
-
-        $this->output->set_content_type('application/json')->set_output(json_encode($aReturn));
+        echo json_encode($aReturnData);
     }
 
     /**
@@ -323,6 +325,7 @@ class cTransferBchOutPdt extends MX_Controller
      */
     public function FSxCTransferBchOutDeletePdtInTmp()
     {
+        $tDocNo = $this->input->post('tDocNo');
         $nSeqNo = $this->input->post('nSeqNo');
         $tUserSessionID = $this->session->userdata("tSesSessionID");
 
@@ -330,7 +333,7 @@ class cTransferBchOutPdt extends MX_Controller
 
         $aDeleteInTmpBySeqParams = [
             'tUserSessionID' => $tUserSessionID,
-            'tDocNo' => 'TBODOCTEMP',
+            'tDocNo' => $tDocNo,
             'tDocKey' => 'TCNTPdtTboHD',
             'nSeqNo' => $nSeqNo,
         ];
@@ -367,10 +370,10 @@ class cTransferBchOutPdt extends MX_Controller
         $tUserSessionID = $this->session->userdata("tSesSessionID");
 
         $this->db->trans_begin();
-
+        
         $aDeleteInTmpBySeqParams = [
             'tUserSessionID' => $tUserSessionID,
-            'tDocNo' => 'TBODOCTEMP',
+            'tDocNo' => $this->input->post('tDocNo'),
             'tDocKey' => 'TCNTPdtTboHD',
             'aSeqNo' => $this->input->post('paSeqNo'),
         ];
@@ -481,118 +484,140 @@ class cTransferBchOutPdt extends MX_Controller
         $this->output->set_content_type('application/json')->set_output(json_encode($aReturn));
     }
 
-    //////////////////////////////////////////// อ้างอิงเอกสารภายใน //////////////////////////
-
-    //อ้างอิงเอกสารภายใน
-    public function FSoCTransferBchOutRefIntDoc(){
-        $tBCHCode   = $this->input->post('tBCHCode');
-        $tBCHName   = $this->input->post('tBCHName');
-
-        $aDataParam = array(
-            'tBCHCode' => $tBCHCode,
-            'tBCHName' => $tBCHName
-        );
-
-        $this->load->view('document/transfer_branch_out/refintdocument/wTransferBchOutRefDoc', $aDataParam);
-
-    }
-
-    // เลขที่เอกสารอ้างอิงมาแสดงในตาราง browse & Search
-    public function FSoCTransferBchOutCallRefIntDocDataTable(){
-
-        $nPage                              = $this->input->post('nTransferBchOutRefIntPageCurrent');
-        $tTransferBchOutRefIntBchCode       = $this->input->post('tTransferBchOutRefIntBchCode');
-        $tTransferBchOutRefIntDocNo         = $this->input->post('tTransferBchOutRefIntDocNo');
-        $tTransferBchOutRefIntDocDateFrm    = $this->input->post('tTransferBchOutRefIntDocDateFrm');
-        $tTransferBchOutRefIntDocDateTo     = $this->input->post('tTransferBchOutRefIntDocDateTo');
-        $tTransferBchOutRefIntStaDoc        = $this->input->post('tTransferBchOutRefIntStaDoc');
-
-        // Page Current
-        if ($nPage == '' || $nPage == null) {
-            $nPage = 1;
-        } else {
-            $nPage = $this->input->post('nTransferBchOutRefIntPageCurrent');
-        }
-
-        // Lang ภาษา
-        $nLangEdit = $this->session->userdata("tLangEdit");
 
 
-        $aDataParamFilter = array(
-            'tTransferBchOutRefIntBchCode'      => $tTransferBchOutRefIntBchCode,
-            'tTransferBchOutRefIntDocNo'        => $tTransferBchOutRefIntDocNo,
-            'tTransferBchOutRefIntDocDateFrm'   => $tTransferBchOutRefIntDocDateFrm,
-            'tTransferBchOutRefIntDocDateTo'    => $tTransferBchOutRefIntDocDateTo,
-            'tTransferBchOutRefIntStaDoc'       => $tTransferBchOutRefIntStaDoc,
-        );
+    
 
-        // Data Conditon Get Data Document
-        $aDataCondition = array(
-            'FNLngID'        => $nLangEdit,
-            'nPage'          => $nPage,
-            'nRow'           => 10,
-            'aAdvanceSearch' => $aDataParamFilter
-        );
-        
-        $aDataParam = $this->mTransferBchOutPdt->FSoMTransferBchOutCallRefIntDocDataTable($aDataCondition);
 
-        $aConfigView = array(
-            'nPage'     => $nPage,
-            'aDataList' => $aDataParam,
-        );
+    //เพิ่มสินค้าลงตาราง Tmp
+    public function FSoCTBOEventAddPdtIntoDTFhnTemp(){
+        try {
+            $aCompanyInfo  = FCNaGetCompanyForDocument();
+            
+            $tTWOUserLevel       = $this->session->userdata('tSesUsrLevel');
+            $tTBODocNo           = $this->input->post('tTBODocNo');
+            $tTBOBCHCode         = $this->input->post('tTBOBCH');
+            $tTBOPdtDataFhn      = $this->input->post('tTBOPdtDataFhn');
+            $aTBXPdtData         = JSON_decode($tTBOPdtDataFhn);
+            $tTBOVATInOrEx       = $aCompanyInfo['tCmpRetInOrEx'];
+            $tTypeInsPDT         = $this->input->post('tTBOType');
+            $nEvent         = $this->input->post('nEvent');
+            $tOptionAddPdt    = $this->input->post('tOptionAddPdt');
 
-            $this->load->view('document/transfer_branch_out/refintdocument/wTransferBchOutRefDocDataTable', $aConfigView);
-    }
-
-    // เอารายการจากเอกสารอ้างอิงมาแสดงในตาราง browse
-    public function FSoCTransferBchOutCallRefIntDocDetailDataTable(){
-
-        $nLangEdit          = $this->session->userdata("tLangEdit");
-        $tBchCode           = $this->input->post('ptBchCode');
-        $tDocNo             = $this->input->post('ptDocNo');
-        $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
-        $aDataCondition = array(
-            'FNLngID'   => $nLangEdit,
-            'tBchCode'  => $tBchCode,
-            'tDocNo'    => $tDocNo
-        );
-        $aDataParam = $this->mTransferBchOutPdt->FSoMTransferBchOutCallRefIntDocDTDataTable($aDataCondition);
-
-        $aConfigView = array(
-            'aDataList'         => $aDataParam,
-            'nOptDecimalShow'   => $nOptDecimalShow
+            $aDataWhere = array(
+                'tBchCode'  => $tTBOBCHCode,
+                'tDocNo'    => $tTBODocNo,
+                'tDocKey'   => 'TCNTPdtTboHD',
             );
-        $this->load->view('document/transfer_branch_out/refintdocument/wTransferBchOutRefDocDetailDataTable', $aConfigView);
+            $this->db->trans_begin();
+            if($aTBXPdtData->tType=='confirm'){
+                // $aDataWhere['tPdtCode'] = $aTBXPdtData->aResult[0]->tPDTCode;
+                // FCNxClearDTFhnTmp($aDataWhere);
+                // ทำทีรายการ ตามรายการสินค้าที่เพิ่มเข้ามา
+                $nPdtParentQty = 0;
+                for ($nI = 0; $nI < FCNnHSizeOf($aTBXPdtData->aResult); $nI++) {
+
+                    $aItem          = $aTBXPdtData->aResult[$nI];
+                    $tTBOPdtCode    = $aItem->tPDTCode;
+                    $tTBOtRefCode   = $aItem->tRefCode;
+                    $tTBOtBarCode   = $aItem->tBarCode;
+                    $tTBOtPunCode   = $aItem->tPunCode;
+                    $nTBXnQty       = $aItem->nQty;
+
+                    $nPdtParentQty  = $nPdtParentQty + $nTBXnQty;
+
+                    $aDataWhere['tPdtCode'] = $tTBOPdtCode;
+                    $aDataWhere['tBarCode'] = $tTBOtBarCode;
+                    $aDataWhere['tPunCode'] = $tTBOtPunCode;
+                    
+                    
+                    if($nEvent==1){
+                        $nTBXSeqNo = FCNnGetMaxSeqDTFhnTmp($aDataWhere);
+                    }else{
+                        $nDTSeq         = $aItem->nDTSeq;
+                        $nTBXSeqNo      =  $nDTSeq;
+                    }
+
+                    $aDataPdtParams = array(
+                        'tDocNo'            => $tTBODocNo,
+                        'tBchCode'          => $tTBOBCHCode,
+                        'tPdtCode'          => $tTBOPdtCode,
+                        'tRefCode'          => $tTBOtRefCode,
+                        'nMaxSeqNo'         => $nTBXSeqNo,
+                        'nQty'              => $nTBXnQty,
+                        'tOptionAddPdt'     => $tOptionAddPdt,
+                        'nLngID'            => $this->session->userdata("tLangID"),
+                        'tSessionID'        => $this->session->userdata('tSesSessionID'),
+                        'tDocKey'           => 'TCNTPdtTboHD',
+                    );
+                    // นำรายการสินค้าเข้า DT Temp
+                    if($nEvent==1){
+                    $nStaInsPdtToTmp    = FCNaInsertPDTFhnToTemp($aDataPdtParams);
+                    }else{
+                    $nStaInsPdtToTmp    = FCNaUpdatePDTFhnToTemp($aDataPdtParams);    
+                    }
+
+                }
+
+                $aDataUpdateQtyParent = array(
+                    'tDocNo'        => $tTBODocNo,
+                    'nXtdSeq'       => $nTBXSeqNo,
+                    'tSessionID'    => $this->session->userdata('tSesSessionID'),
+                    'tDocKey'       => 'TCNTPdtTboHD',
+                    'tValue'        => $nPdtParentQty
+                );
+                FCNaUpdateInlineDTTmp($aDataUpdateQtyParent);
+            }else{
+                $tTBOPdtCode = $aTBXPdtData->aResult->tPDTCode;
+                $aDataPdtParams = array(
+                    'tDocNo'            => $tTBODocNo,
+                    'tBchCode'          => $tTBOBCHCode,
+                    'tPdtCode'          => $tTBOPdtCode,
+                    'tSessionID'        => $this->session->userdata('tSesSessionID'),
+                    'tDocKey'           => 'TCNTPdtTboHD',
+                );
+                $nStaInsPdtToTmp    = FCNxDeletePDTInTmp($aDataPdtParams);
+            }
+
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $aReturnData = array(
+                    'nStaEvent' => '500',
+                    'tStaMessg' => 'Error Insert Product Error Please Contact Admin.'
+                );
+            } else {
+                $this->db->trans_commit();
+                // Calcurate Document DT Temp Array Parameter
+                $aCalcDTParams = [
+                    'tDataDocEvnCall'   => '1',
+                    'tDataVatInOrEx'    => $tTBOVATInOrEx,
+                    'tDataDocNo'        => $tTBODocNo,
+                    'tDataDocKey'       => 'TCNTPdtTboHD',
+                    'tDataSeqNo'        => ''
+                ];
+                $tStaCalcuRate = FCNbHCallCalcDocDTTemp($aCalcDTParams);
+                if ($tStaCalcuRate === TRUE) {
+    
+                    $aReturnData = array(
+                        'nStaEvent' => '1',
+                        'tStaMessg' => 'Success Add Product Into Document DT Temp.'
+                    );
+                } else {
+                    $aReturnData = array(
+                        'nStaEvent' => '500',
+                        'tStaMessg' => 'Error Calcurate Document DT Temp Please Contact Admin.'
+                    );
+                }
+            }
+        } catch (Exception $Error) {
+            $aReturnData = array(
+                'nStaEvent' => '500',
+                'tStaMessg' => $Error->getMessage()
+            );
+        }
+        echo json_encode($aReturnData);
     }
 
-    // เอารายการที่เลือกจากเอกสารอ้างอิงภายในลงตาราง temp dt
-    public function FSoCTransferBchOutCallRefIntDocInsertDTToTemp(){
-        $tTransferBchOutDocNo           =  $this->input->post('tTransferBchOutDocNo');
-        $tTransferBchOutFrmBchCode      =  $this->input->post('tTransferBchOutFrmBchCode');
-        $tRefIntDocNo                   =  $this->input->post('tRefIntDocNo');
-        $tRefIntBchCode                 =  $this->input->post('tRefIntBchCode');
-        $aSeqNo                         =  $this->input->post('aSeqNo');
-        $tSplStaVATInOrEx               = $this->input->post('tSplStaVATInOrEx');
 
-        $aDataParam = array(
-            'tTransferBchOutDocNo'       => $tTransferBchOutDocNo,
-            'tTransferBchOutFrmBchCode'  => $tTransferBchOutFrmBchCode,
-            'tRefIntDocNo'   => $tRefIntDocNo,
-            'tRefIntBchCode' => $tRefIntBchCode,
-            'aSeqNo'         => $aSeqNo,
-        );
 
-        $aDataResult = $this->mTransferBchOutPdt->FSoMTransferBchOutCallRefIntDocInsertDTToTemp($aDataParam);
-
-        // Calcurate Document DT Temp Array Parameter
-        $aCalcDTParams = [
-            'tDataDocEvnCall'   => '12',
-            'tDataVatInOrEx'    => $tSplStaVATInOrEx,
-            'tDataDocNo'        => $tTransferBchOutDocNo,
-            'tDataDocKey'       => 'TAPTPiDT',
-            'tDataSeqNo'        => ''
-        ];
-
-        return  $aDataResult;
-    }
 }

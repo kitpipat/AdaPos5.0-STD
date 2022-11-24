@@ -54,7 +54,7 @@
 
         
         /*===== Begin Control สาขาที่สร้าง ================================================*/
-        if ((tUserLoginLevel == "HQ") || (!bIsAddPage) || (!bIsMultiBch)) {
+        if ((!bIsAddPage)) {
             $("#obtPTUBrowseBch").attr('disabled', true);
         }
 
@@ -562,7 +562,17 @@
 			{"DocCode"      : tDocNo }, // เลขที่เอกสาร
             {"DocBchCode"   : '<?=$tBchCode?>'}
 		];
-        window.open("<?php echo base_url(); ?>formreport/Frm_SQL_FCPmtCardCash?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open("<?php echo base_url(); ?>formreport/Frm_SQL_FCPmtCardCash?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00032' ,
+                tDocBchCode : '<?= $tBchCode?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
+    
 
 </script>

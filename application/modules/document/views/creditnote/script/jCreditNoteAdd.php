@@ -1243,13 +1243,22 @@
         var aInfor = [
             {"Lang"         : '<?= FCNaHGetLangEdit(); ?>'}, // Lang ID
             {"ComCode"      : '<?= FCNtGetCompanyCode(); ?>'}, // Company Code
-            {"BranchCode"   : '<?= FCNtGetAddressBranch($tUserBchCode); ?>' }, // สาขาที่ออกเอกสาร
+            {"BranchCode"   : '<?= FCNtGetAddressBranch($tBchCode); ?>' }, // สาขาที่ออกเอกสาร
             {"DocCode"      : '<?= $tDocNo; ?>'}, // เลขที่เอกสาร
-            {"FormName"     : 'PC'},
-            {"DocBchCode"   : '<?= $tUserBchCode;?>'}
+            {"DocBchCode"   : '<?= $tBchCode;?>'}
         ];
         var tGrandText = $('#odvCreditNoteTextBath').text();
-        window.open("<?php echo base_url(); ?>formreport/SMBillPc?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText,  '_blank');
+        // window.open("<?php echo base_url(); ?>formreport/SMBillPc?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText,  '_blank');
+        var aRftData = {
+                tRtfCode    : '00035' ,
+                tDocBchCode : '<?= $tBchCode?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                Grand : tGrandText
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 
 

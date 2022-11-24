@@ -587,7 +587,7 @@ if ($aResult['rtCode'] == "1") {
 
        if(nPDSWeightDec!=0 && nPDSWeightDec != ''){
        var nValue1 = (parseInt(nPDSLenWeight)-parseInt(nPDSWeightDec));
-       var nPDSPdtWeightNew = nPDSPdtWeight.substr(0,nValue1)+'.'+nPDSPdtPri.substr(nValue1,parseInt(nPDSWeightDec));
+       var nPDSPdtWeightNew = nPDSPdtWeight.substr(0,nValue1)+'.'+nPDSPdtWeight.substr(nValue1,parseInt(nPDSWeightDec));
        }else{
         var nPDSPdtWeightNew = nPDSPdtWeight;
        }

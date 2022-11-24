@@ -8181,3 +8181,112 @@ IF @tPdtChanF = null
         SET @FNResult= -1
     END CATCH	
 GO
+
+
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxPackageCpnHisTmp]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxPackageCpnHisTmp
+GO
+CREATE  PROCEDURE [dbo].[SP_RPTxPackageCpnHisTmp]
+	-- Add the parameters for the stored procedure here
+	@tAgnCode VARCHAR(30),
+	@tSessionID VARCHAR(150),
+	@tLangID VARCHAR(1),
+	@tBchCode VARCHAR(MAX),
+	@tPosCode VARCHAR(20),
+	@tDocDateF VARCHAR(10),
+	@tDocDateT VARCHAR(10),
+	@tCpnF VARCHAR(30),
+	@tCpnT VARCHAR(30)
+
+AS
+BEGIN TRY
+
+DELETE FROM TRPTPackageCpnHisTmp WHERE FTUsrSessID = @tSessionID
+
+DECLARE @tSQL VARCHAR(MAX)
+SET @tSQL = ''
+
+
+DECLARE @tSQLFilter VARCHAR(MAX)
+SET @tSQLFilter = ''
+
+IF(@tBchCode <> '')
+  BEGIN
+     SET @tSQLFilter += ' AND HD.FTBchCode IN('+@tBchCode+') '
+  END
+
+IF(@tPosCode <> '')
+  BEGIN
+    SET @tSQLFilter += ' AND HD.FTPosCode = ''' + @tPosCode + ''' '
+  END
+
+IF(@tDocDateF <> '' AND @tDocDateT <> '')
+  BEGIN
+    SET @tSQLFilter += ' AND CONVERT(VARCHAR(10),HD.FDXshDocDate,121) BETWEEN '''+ @tDocDateF + ''' AND '''+ @tDocDateT +''' '
+  END
+
+IF(@tCpnF <> '' AND @tCpnT <> '')
+  BEGIN
+    SET @tSQLFilter += ' AND HIS.FTCpdBarCpn BETWEEN '''+@tCpnF+''' AND '''+@tCpnT+''' '
+  END
+
+        SET @tSQL += ' INSERT INTO TRPTPackageCpnHisTmp '
+		SET @tSQL += ' SELECT '
+		SET @tSQL += ' HIS.FTCpdBarCpn, '
+		SET @tSQL += ' CPNL.FTCpnName, '
+		SET @tSQL += ' POS.FTPosName, '
+		SET @tSQL += ' HD.FTXshDocNo, '
+		SET @tSQL += ' ''ตัดจ่าย/ขาย'' AS FTXshDocTypeName, '
+		SET @tSQL += ' USR.FTUsrName, '
+		SET @tSQL += ' HD.FDXshDocDate, '
+		SET @tSQL += ' DIS.FCXhdAmt, '
+		SET @tSQL += ' SumUsed.FCXhdAmt AS SAmount, '
+		SET @tSQL += ' CPNUsed.FNCpdQtyUsed, '
+		SET @tSQL += ' CPDT.FNCpdAlwMaxUse - CPNUsed.FNCpdQtyUsed AS FNCpdQtyLeft , '
+		SET @tSQL += '''' + @tSessionID + ''''
+	   
+		SET @tSQL += ' FROM TPSTSalHD HD '
+		SET @tSQL += ' INNER JOIN TFNTCouponDTHis HIS ON HD.FTXshDocNo = HIS.FTCpbFrmSalRef AND HIS.FTCpbStaBook = ''1'' '
+		--SET @tSQL += ' INNER JOIN TPSTSalHDDis DIS ON HD.FTBchCode = DIS.FTBchCode AND HD.FTXshDocNo = DIS.FTXshDocNo '
+		SET @tSQL += ' INNER JOIN ('
+		SET @tSQL += ' SELECT DIS.FTBchCode,DIS.FTXshDocNo,DIS.FTXhdRefCode,DIS.FTXhdDisChgType,SUM(DIS.FCXhdAmt) AS FCXhdAmt FROM TPSTSalHDDis DIS GROUP BY DIS.FTBchCode,DIS.FTXshDocNo,DIS.FTXhdRefCode,DIS.FTXhdDisChgType'
+		SET @tSQL += ' ) DIS ON HD.FTBchCode = DIS.FTBchCode AND HD.FTXshDocNo = DIS.FTXshDocNo AND HIS.FTCpdBarCpn = DIS.FTXhdRefCode AND DIS.FTXhdDisChgType = ''5'' '
+		--SET @tSQL += ' AND HIS.FTCpdBarCpn = DIS.FTXhdRefCode AND DIS.FTXhdDisChgType = ''5'' '
+		SET @tSQL += ' LEFT JOIN TFNTCouponHD_L CPNL ON HIS.FTCphDocNo = CPNL.FTCphDocNo AND CPNL.FNLngID =  ' + @tLangID
+		SET @tSQL += ' LEFT JOIN TFNTCouponDT CPDT ON HIS.FTCphDocNo = CPDT.FTCphDocNo AND HIS.FTCpdBarCpn = CPDT.FTCpdBarCpn '
+		SET @tSQL += ' LEFT JOIN TCNMPos_L POS ON HD.FTBchCode = POS.FTBchCode AND HD.FTPosCode = POS.FTPosCode AND POS.FNLngID =  ' + @tLangID
+		SET @tSQL += ' LEFT JOIN TCNMUser_L USR ON  HD.FTUsrCode = USR.FTUsrCode AND POS.FNLngID =  ' + @tLangID
+		SET @tSQL += ' INNER JOIN  ( '
+		SET @tSQL += ' SELECT FTCphDocNo,FTCpdBarCpn, COUNT(FTCpdBarCpn) AS FNCpdQtyUsed '
+		SET @tSQL += ' FROM TFNTCouponDTHis '
+		SET @tSQL += ' WHERE FTCpbStaBook = ''1'' '
+		SET @tSQL += ' GROUP BY FTCphDocNo,FTCpdBarCpn '
+		SET @tSQL += ' ) CPNUsed '
+		SET @tSQL += ' ON  HIS.FTCphDocNo = CPNUsed.FTCphDocNo AND HIS.FTCpdBarCpn = CPNUsed.FTCpdBarCpn '
+
+		SET @tSQL += ' INNER JOIN ( '
+		SET @tSQL += ' SELECT H.FTCphDocNo,H.FTCpdBarCpn,SUM(D.FCXhdAmt) AS FCXhdAmt '
+		SET @tSQL += ' FROM TFNTCouponDTHis H '
+		--SET @tSQL += ' INNER JOIN TPSTSalHDDis D ON H.FTCpbFrmSalRef = D.FTXshDocNo AND H.FTCpdBarCpn = D.FTXhdRefCode AND D.FTXhdDisChgType = ''5'' '
+		SET @tSQL += ' INNER JOIN ('
+		SET @tSQL += ' SELECT DIS.FTBchCode,DIS.FTXshDocNo,DIS.FTXhdRefCode,DIS.FTXhdDisChgType,SUM(DIS.FCXhdAmt) AS FCXhdAmt FROM TPSTSalHDDis DIS GROUP BY DIS.FTBchCode,DIS.FTXshDocNo,DIS.FTXhdRefCode,DIS.FTXhdDisChgType'
+		SET @tSQL += ' ) D ON H.FTBchCode = D.FTBchCode AND H.FTCpbFrmSalRef = D.FTXshDocNo AND H.FTCpdBarCpn = D.FTXhdRefCode AND D.FTXhdDisChgType = ''5'' '
+		SET @tSQL += ' WHERE H.FTCpbStaBook = ''1'' '
+		SET @tSQL += ' GROUP BY H.FTCphDocNo,H.FTCpdBarCpn '
+		SET @tSQL += ' ) SumUsed ON HIS.FTCphDocNo = SumUsed.FTCphDocNo AND HIS.FTCpdBarCpn = SumUsed.FTCpdBarCpn '
+
+		SET @tSQL += ' WHERE HD.FTXshStaDoc = ''1'' '
+		SET @tSQL += @tSQLFilter
+
+
+		--PRINT(@tSQL)
+		EXEC(@tSQL)
+
+   return 1
+END TRY
+
+BEGIN CATCH
+   return -1
+END CATCH
+GO

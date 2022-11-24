@@ -1490,10 +1490,20 @@ function JSxTFWPrintDoc(){
     var aInfor = [
         {"Lang": '<?php echo FCNaHGetLangEdit(); ?>'}, // Lang ID
         {"ComCode": '<?php echo FCNtGetCompanyCode(); ?>'}, // Company Code
-        {"BranchCode": '<?php echo $tBchCode; ?>'}, // สาขาที่ออกเอกสาร
+        {"BranchCode": '<?=FCNtGetAddressBranch($tBchCode); ?>'}, // สาขาที่ออกเอกสาร
         {"DocCode": '<?php echo $tXthDocNo; ?>'} // เลขที่เอกสาร
+		{"DocBchCode": '<?php echo $tBchCode; ?>'} // เลขที่เอกสาร
     ];
-    window.open("<?php echo base_url(); ?>formreport/ALLMPdtBillTnfVD?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    // window.open("<?php echo base_url(); ?>formreport/ALLMPdtBillTnfVD?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+	var aRftData = {
+                tRtfCode    : '00037' ,
+                tDocBchCode : '<?=$tBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
 }            
 </script>
 

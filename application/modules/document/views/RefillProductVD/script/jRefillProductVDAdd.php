@@ -335,10 +335,20 @@
             {"Lang"         : '<?=FCNaHGetLangEdit(); ?>'},
             {"ComCode"      : '<?=FCNtGetCompanyCode(); ?>'}, 
             {"BranchCode"   : '<?=FCNtGetAddressBranch($tRVDBchCode); ?>' }, 
-            {"DocCode"      : $('#oetRVDDocNo').val() } 
+            {"DocCode"      : $('#oetRVDDocNo').val() } ,
+            {"DocBchCode"   : $('#oetRVDBchCode').val() } 
         ];
 
-        window.open("<?=base_url(); ?>formreport/Frm_SQL_SMBillRefillSet?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open("<?=base_url(); ?>formreport/Frm_SQL_SMBillRefillSet?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00023' ,
+                tDocBchCode : $('#oetRVDBchCode').val(),
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 
     //กดพิมพ์เอกสารลูก - เอกสารใบเติมสินค้าแบบเดียว
@@ -350,10 +360,20 @@
                 {"Lang"         : '<?=FCNaHGetLangEdit(); ?>'},
                 {"ComCode"      : '<?=FCNtGetCompanyCode(); ?>'}, 
                 {"BranchCode"   : '<?=FCNtGetAddressBranch($tRVDBchCode); ?>' }, 
-                {"DocCode"      : aTextDocument[i] } 
+                {"DocCode"      : aTextDocument[i] } ,
+                {"DocBchCode"   : $('#oetRVDBchCode').val() } 
             ];
 
-            window.open("<?=base_url(); ?>formreport/Frm_SQL_SMBillRefill?infor=" + JCNtEnCodeUrlParameter(aInfor), '');
+            // window.open("<?=base_url(); ?>formreport/Frm_SQL_SMBillRefill?infor=" + JCNtEnCodeUrlParameter(aInfor), '');
+            var aRftData = {
+                tRtfCode    : '00024' ,
+                tDocBchCode : $('#oetRVDBchCode').val(),
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
         }
     }
 

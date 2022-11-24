@@ -323,9 +323,37 @@
                     ];
                     var nXshDocType = '<?=$nXshDocType?>';
                     if( nXshDocType == '1' ){   //เอกสารขาย - Full Tax
-                        $("#oifABBPrintFullTax").prop('src', "<?=base_url();?>formreport/TaxInvoice?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage="+tPrintByPage);
-                    }else{                      //เอกสารคืน - CN Full Tax
-                        $("#oifABBPrintFullTax").prop('src', "<?=base_url();?>formreport/TaxInvoice_refund?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage="+tPrintByPage);
+                        var aRftData = {
+                                tRtfCode    : '00001' ,
+                                tDocBchCode : tDocBCH ,
+                                tIframeNameID : '' ,
+                                oParameter  : {
+                                                StaPrint : 0 ,
+                                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                                Grand : tGrandText,
+                                                PrintOriginal : tOrginalRight,
+                                                PrintCopy : tCopyRight,
+                                                PrintByPage : 'ALL'
+                                             }
+                                }
+                       JCNxRftDataTable(aRftData);
+                        // $("#oifABBPrintFullTax").prop('src', "<?=base_url();?>formreport/TaxInvoice?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage="+tPrintByPage);
+                    }else{   
+                        var aRftData = {
+                                tRtfCode    : '00002' ,
+                                tDocBchCode : tDocBCH ,
+                                tIframeNameID : '' ,
+                                oParameter  : {
+                                                StaPrint : 0 ,
+                                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                                Grand : tGrandText,
+                                                PrintOriginal : tOrginalRight,
+                                                PrintCopy : tCopyRight,
+                                                PrintByPage : 'ALL'
+                                             }
+                                }
+                        JCNxRftDataTable(aRftData);                   //เอกสารคืน - CN Full Tax
+                        // $("#oifABBPrintFullTax").prop('src', "<?=base_url();?>formreport/TaxInvoice_refund?StaPrint=1&infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage="+tPrintByPage);
                     }
                     JCNxCloseLoading();
                 }
@@ -388,7 +416,20 @@
                     ];
                     // console.log(aInfor);
                     JCNxOpenLoading();
-                    $("#oifABBPrint").prop('src', "<?=base_url();?>formreport/InvoiceSaleABB?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL');
+                    var aRftData = {
+                                tRtfCode    : '00003' ,
+                                tDocBchCode : tDocBCH ,
+                                tIframeNameID : 'oifPrintABB' ,
+                                oParameter  : {
+                                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                                Grand : tGrandText,
+                                                PrintOriginal : tOrginalRight,
+                                                PrintCopy : tCopyRight,
+                                                PrintByPage : 'ALL'
+                                             }
+                                }
+                        JCNxRftDataTable(aRftData);
+                    // $("#oifABBPrint").prop('src', "<?=base_url();?>formreport/InvoiceSaleABB?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText + "&PrintOriginal="+tOrginalRight + "&PrintCopy="+tCopyRight + "&PrintByPage=" + 'ALL');
                     JCNxCloseLoading();
                 }
             } catch (oErr) {

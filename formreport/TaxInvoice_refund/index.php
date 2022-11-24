@@ -14,18 +14,30 @@ require_once('../../config_deploy.php');
 	<script type="text/javascript" src="scripts/stimulsoft.viewer.js"></script> -->
 
 	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReport/css/stimulsoft.viewer.office2013.whiteblue.css">
+	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReport/css/stimulsoft.designer.office2013.whiteblue.css">
 	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.reports.js"></script>
 	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.viewer.js"></script> 
+	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.designer.js"></script>
 
 	<?php
+	// print_r($_GET["infor"]);die();
 		if(isset($_GET["infor"])){
 			$aParamiterMap = array(
 				"Lang","ComCode","BranchCode","DocCode","DocBchCode","tRsnName"
 			);
 			$aDataMQ 		= FSaHDeCodeUrlParameter($_GET["infor"],$aParamiterMap);
+			// print_r($aDataMQ);die();
 			$tGrandText 	= $_GET["Grand"];
 			$PrintByPage 	= $_GET["PrintByPage"];
-
+			$tAgncode 	= $_GET["Agncode"];
+			$tFilename 	= $_GET["Filename"];
+			$tPathFile = '';
+			if(!empty($tAgncode)){
+				$tPathFile=$tFilename;
+			}else{
+				$tPathFile='reports/'.$tFilename;
+			}
+			$tStaEdit 	= @$_GET["StaEdit"];
 		}else{
 			$aDataMQ = false;
 		}
@@ -82,7 +94,7 @@ require_once('../../config_deploy.php');
 			Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile("<?=BASE_URL?>/formreport/AdaCoreFrmReport/localization/en.xml", true);
 
 			var report = new Stimulsoft.Report.StiReport();
-			report.loadFile("reports/Frm_PSInvoiceRefund.mrt?v=<?=date('YmdHis')?>");
+			report.loadFile("<?=$tPathFile?>");
 
 			if(staprint == "Print") {
 				report.onBeginProcessData = function (args, callback) {
@@ -97,7 +109,7 @@ require_once('../../config_deploy.php');
 				report.dictionary.variables.getByName("SP_tStaPrn").valueObject 	= i.toString();
 				report.dictionary.variables.getByName("SP_tGrdStr").valueObject 	= "<?=$tGrandText?>";
 				report.dictionary.variables.getByName("SP_tDocBch").valueObject     = "<?=$aDataMQ['DocBchCode']?>";
-				report.dictionary.variables.getByName("SP_tRsnName").valueObject 	= "<?=$aDataMQ['tRsnName']?>";
+				report.dictionary.variables.getByName("SP_tRsnName").valueObject     = "<?=$aDataMQ['tRsnName']?>";
 				report.renderAsync(function(){
 					if('<?=$PrintByPage?>' == 'ALL'){
 						report.print();
@@ -132,12 +144,33 @@ require_once('../../config_deploy.php');
 				options.toolbar.showSaveButton = false;
 				options.toolbar.showDesignButton = false;
 				options.toolbar.showAboutButton = false;
+				<?php if($tStaEdit!='1'){ ?>
 				var viewer = new Stimulsoft.Viewer.StiViewer(options, "StiViewer", false);
 				viewer.onBeginProcessData = function (args, callback) {
 					<?php StiHelper::createHandler(); ?>
 				}
 				viewer.report = report;
 				viewer.renderHtml("viewerContent");
+				<?php }else{ ?>
+				var options = new Stimulsoft.Designer.StiDesignerOptions();
+				console.log(options);
+				options.appearance.fullScreenMode = true;
+				options.toolbar.showSaveButton = false;
+				options.toolbar.showFileMenuSave = false;
+				
+				var designer = new Stimulsoft.Designer.StiDesigner(options, "StiDesigner", false);
+
+				designer.onBeginProcessData = function (args, callback) {
+					<?php StiHelper::createHandler(); ?>
+				}
+
+				designer.onSaveReport = function (args) {
+					<?php StiHelper::createHandler(); ?>
+				}
+
+				designer.report = report;
+				designer.renderHtml("designerContent");
+				<?php } ?>
 			}
 		}
 	</script>
@@ -145,7 +178,13 @@ require_once('../../config_deploy.php');
 		}
 	?>
 </head>
+<?php if($tStaEdit!='1'){ ?>
 <body onload="ProcessForm()">
 	<div id="viewerContent"></div>
 </body>
+<?php }else{ ?>
+<body onload="Start()">
+		<div id="designerContent"></div>
+		</body>
+<?php } ?>
 </html>

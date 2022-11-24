@@ -1504,7 +1504,7 @@ class mCreditNote extends CI_Model {
                             SELECT  ',' + DOCCONCAT.FTXtdDisChgTxt
                             FROM TCNTDocHDDisTmp DOCCONCAT
                             WHERE  1=1 
-                            AND DOCCONCAT.FTBchCode 		= '$tBchCode'
+                           --AND DOCCONCAT.FTBchCode 		= '$tBchCode'
                             AND DOCCONCAT.FTXthDocNo		= '$tDocNo'
                             AND DOCCONCAT.FTSessionID		= '$tSessionID'
                         FOR XML PATH('')), 1, 1, '') AS FTXphDisChgTxt,
@@ -1531,7 +1531,7 @@ class mCreditNote extends CI_Model {
                     
                     WHERE HDDISTMP.FTXthDocNo   = '$tDocNo' 
                     AND HDDISTMP.FTSessionID    = '$tSessionID'
-                    AND HDDISTMP.FTBchCode      = '$tBchCode'
+                  --  AND HDDISTMP.FTBchCode      = '$tBchCode'
 
                     GROUP BY HDDISTMP.FTSessionID
                 ";
@@ -1890,7 +1890,7 @@ class mCreditNote extends CI_Model {
                                 SELECT  ',' + DOCCONCAT.FTXtdWhtCode
                                 FROM TCNTDocDTTmp DOCCONCAT
                                 WHERE  1=1 
-                                AND DOCCONCAT.FTBchCode = '$tBchCode'
+                                --AND DOCCONCAT.FTBchCode = '$tBchCode'
                                 AND DOCCONCAT.FTXthDocNo = '$tDocNo'
                                 AND DOCCONCAT.FTSessionID = '$tSessionID'
                             FOR XML PATH('')), 1, 1, '') AS FTXphWpCode,
@@ -1902,7 +1902,7 @@ class mCreditNote extends CI_Model {
                         WHERE DTTMP.FTXthDocNo  = '$tDocNo' 
                         AND DTTMP.FTXthDocKey   = '$tDocKey' 
                         AND DTTMP.FTSessionID   = '$tSessionID'
-                        AND DTTMP.FTBchCode     = '$tBchCode'
+                        --AND DTTMP.FTBchCode     = '$tBchCode'
                         GROUP BY DTTMP.FTSessionID ";
             
             $oQuery = $this->db->query($tSQL);

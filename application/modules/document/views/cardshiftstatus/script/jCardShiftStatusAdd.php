@@ -1592,7 +1592,16 @@
 			{"DocCode"      : tDocNo }, // เลขที่เอกสาร
             {"DocBchCode"   : tUsrBchCode}
 		];
-		window.open("<?php echo base_url(); ?>formreport/Frm_SQL_FCCardChgStaCashCrd?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+		// window.open("<?php echo base_url(); ?>formreport/Frm_SQL_FCCardChgStaCashCrd?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00015' ,
+                tDocBchCode : tUsrBchCode,
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 </script>
 
