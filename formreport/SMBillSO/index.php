@@ -7,7 +7,7 @@ require_once('../../config_deploy.php');
 
 <html>
 <head>
-	<?php
+<?php
 		if(isset($_GET["infor"])){
 			$aParamiterMap = array(
 				"Lang","ComCode","BranchCode","DocCode","tDocDate","tDocTime","DocBchCode"
@@ -24,31 +24,35 @@ require_once('../../config_deploy.php');
 	<script type="text/javascript" src="scripts/stimulsoft.reports.maps.js"></script>
 	<script type="text/javascript" src="scripts/stimulsoft.viewer.js"></script> -->
 
-	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReport/css/stimulsoft.viewer.office2013.whiteblue.css">
-	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.reports.js"></script>
-	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.reports.maps.js"></script>
-	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReport/scripts/stimulsoft.viewer.js"></script> 
+	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/css/stimulsoft.viewer.office2013.whiteblue.css">
+	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/css/stimulsoft.designer.office2013.whiteblue.css">
+	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/scripts/stimulsoft.reports.engine.pack.js"></script>
+	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/scripts/stimulsoft.reports.export.pack.js"></script>
+	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/scripts/stimulsoft.viewer.pack.js"></script>
+	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/scripts/stimulsoft.designer.pack.js"></script> 
 
 	<?php
-		$options = StiHelper::createOptions();
-		$options->handler = "handler.php";
-		$options->timeout = 30;
-		StiHelper::initialize($options);
+		StiHelper::init("handler.php", 30);
 	?>
 	<script type="text/javascript">
 		function Start() {
 			Stimulsoft.Base.StiLicense.key =
-				"6vJhGtLLLz2GNviWmUTrhSqnOItdDwjBylQzQcAOiHkxDG+leACqcJbQlrJsaUMElz5Nz1s+qGrEWbGH" +
-				"/hph9erB9ABPLWZHptIyxtmuwTKyc7ALvWW+SG2vxRzJvI6h/u+f/YDW8AUpj/jDgjkzzcvKbFhU5T1D" +
-				"SVvHgjkgjfgMV4lzSqMA9s2tUN4uGMUkMyoO1WEHlBOsV3XDGm7/yLOGRn8k4LUbuF08ezB+VcaSQbTi" +
-				"mKjlo6NACsTEHrNCNDH0Jsjr2KTWcGrIWt14PGpJLlL/2OsI6+joR7N1NW3mHQIbTH7YixFYS2nVx1OM" +
-				"9hSAQ/24iG0kjwVs13G7KN8A6UgBfmEhL8Y+F67uMBhmkKvvDnPv++WnekA1GED2fInVPJuAv7ELTPh5" +
-				"1C+sZyIuOIs0yIIUKJd2aMDSkIXq5EP3lDJSkRyjHTMeO9vUKAAN7BzdWo5u5oZg8eVjp7urBoVjTwIx" +
-				"wG/5kh+QERagvSrGt5TYOrYVr55Eir2ZYQH1yzOMzHRZr3BP2m+4nL1PVkhJCo1nK73KgDipCxNED0NJ" +
-				"Rrv+t3HUBgAHVPPCh4OFtB4v/SeBvmNUWMxyC8fSA5KNfRcJ/whkj/EGL7fGzwBTmTmlY2bJauIioygR" +
-				"zBaShmni7wvlNOBHW4kcUfMcUNinsvqTaxDH4drkzNLT+RIR1oT/Kr3grt+YpCUD";
+				"6vJhGtLLLz2GNviWmUTrhSqnOItdDwjBylQzQcAOiHkPkIhwQCkyxCcx+aTuRu0+xbRyp8PLcMKXOwrM" +
+				"hrjtWYJwLTDjgOVM1u8uRFaIkPKP9UBWkoaJynxEz+9YAfX4iyvtQBygjWULd1kMgGAp2p6IXaINnSsy" +
+				"H0AFogx4QryK3+DtNECTST+nh6eCuG5NyQDmAHmIFdx6pLY5ESinVhr4/PHiBbRuFZ+qWU9jSTbRpKSZ" +
+				"HSjvKEsmjCNX5orRYljJ4IocxWAwta2X87BwjjZnjC1y6AS8WmjRCNHfLL02cC76IpvgWy483LQKVLEH" +
+				"OG5JejXpIVLGM7qw5O+rUyUWePKxQLBMDnUPbiYF5fRDYwvTXzZYaB7t+6eUukdE51lclE/oQlg059Pv" +
+				"7rLVYQBz2LH/KRdBB+sbOZf7+jP9uVj9ZW83nap0CPePbi5VXguTfyXd/BgTyyUKmvRMNuNDyMoUre3q" +
+				"khlrMk/OPBma6TZgjbuM92By58BnK74zRS1Ln6dODBJh1X0S+W2seqQIEijtRxm02M0m8AgfV0Fqy/fC" +
+				"fQh7iFOJoGZHfjWSGy3R9JVY3cChaFoZd6BuphvMQ3VmWzjLePR3Y4IonqPsuMWPlSsIfaEmTerjliAu" +
+				"jOze3KxBVLq3mQdg2xKtMRo+GfPjZ+QlhHhVzzeAvJ06Wseyjw7LbH1NPWOgtlQpszzWewAbFn4C7km1" +
+				"O6AUPS6ZjZvfSTzAYywJq0qWmsOpJYdP0K1Bq+D9qm94KhP6rB6HRYYkK3DqA/9KvTkvFlrTIsrbA96Z" +
+				"5wQPxugzhFBP6OXn5mC2O0E+rn0EO0K8GhyYKarmIR+ZsNW/RkjoSYRE+u2id4/4tyxEKzbWDxrP+iQa" +
+				"4045yI3AIH5mNHq09eXk3HiNPwMS6zwNakAaBbJKXYuJw4XPAsrLs/76V3Ee29cr4JExHUxvhR6g9hnl" +
+				"mZs9eAaTOR1X7hGMdI/UTB/uw3d2otehXTkTLSKzXi/p7/t5ivhjJwVKZlsA1mzB5fcxxT3ckL0jjs6c" +
+				"iEDKr3ZEwmB4Sm5nKQ/Z4C/APUU=";
 
-			Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile("<?=BASE_URL?>/formreport/AdaCoreFrmReport/localization/en.xml", true);
+			Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile("<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/localization/en-so.xml", true);
 
 			var report = new Stimulsoft.Report.StiReport();
 			report.loadFile("reports/Frm_SQL_SMBillSO.mrt");
