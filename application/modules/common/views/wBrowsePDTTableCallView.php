@@ -61,23 +61,23 @@
     <thead>
         <tr>
             <?php if($aPriceType[0] == 'Cost'){ ?>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:10%;'><?=language('common/main/main','tModalcodePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:51%;'><?=language('common/main/main','tModalnamePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:26%;'><?=language('common/main/main','tModalPriceUnit')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:13%;'><?=language('common/main/main','tModalbarcodePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; display:none;'><?=language('common/main/main','tModalPricecost')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:220px;'><?=language('common/main/main','tModalcodePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:220px;'><?=language('common/main/main','tModalnamePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:220px;'><?=language('common/main/main','tModalPriceUnit')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:220px;'><?=language('common/main/main','tModalbarcodePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:220px; display:none;'><?=language('common/main/main','tModalPricecost')?></th>
             <?php }else if($aPriceType[0] == 'Pricesell'){ ?>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:10%;'><?=language('common/main/main','tModalcodePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:51%;'><?=language('common/main/main','tModalnamePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:26%;'><?=language('common/main/main','tModalPriceUnit')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:13%;'><?=language('common/main/main','tModalbarcodePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; display:none;'><?=language('common/main/main','tModalPriceSellPLE')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:120px;'><?=language('common/main/main','tModalcodePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:160px;'><?=language('common/main/main','tModalnamePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:120px;'><?=language('common/main/main','tModalPriceUnit')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:160px;'><?=language('common/main/main','tModalbarcodePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:120px; display:none;'><?=language('common/main/main','tModalPriceSellPLE')?></th>
             <?php }else if($aPriceType[0] == 'Price4Cst'){ ?>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:9%;'><?=language('common/main/main','tModalcodePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:46%;'><?=language('common/main/main','tModalnamePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:23%;'><?=language('common/main/main','tModalPriceUnit')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:11%;'><?=language('common/main/main','tModalbarcodePDT')?></th>
-                <th nowarp class='xCNTextBold' style='text-align:center; width:11%;'><?=language('common/main/main','tModalPriceSellPLE')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:120px;'><?=language('common/main/main','tModalcodePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:160px;'><?=language('common/main/main','tModalnamePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:120px;'><?=language('common/main/main','tModalPriceUnit')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:160px;'><?=language('common/main/main','tModalbarcodePDT')?></th>
+                <th class='xCNTextBold' style='text-align:center; width:120px;'><?=language('common/main/main','tModalPriceSellPLE')?></th>
             <?php } ?>
         </tr>
     </thead>    
@@ -100,9 +100,8 @@
                 $tPDTFaishion = '-';
             }
 
-            if($aPriceType[0] == 'Pricesell' || $aPriceType[0] == 'Price4Cst'){ 
-                $nPriceNet = intval($aValue['FCPgdPriceRet']);
 
+            if($aPriceType[0] == 'Pricesell' || $aPriceType[0] == 'Price4Cst'){ 
                 $aPackData = array(
                     'SHP'       => $aValue['FTShpCode'],
                     'BCH'       => $aValue['FTPdtSpcBch'],
@@ -122,14 +121,9 @@
                     'CookHeat'  => ($aValue['FCPdtCookHeat'] == '') ? 0 : $aValue['FCPdtCookHeat'],
                     'AlwDis'    => ($aValue['FTPdtStaAlwDis'] == '' || $aValue['FTPdtStaAlwDis'] == null ) ? 2 : $aValue['FTPdtStaAlwDis'],
                     'AlwVat'    => $aValue['FTPdtStaVat'],
-                    'tVatCode'  => $aValue['FTVatCode'],
                     'nVat'      => $aValue['FCVatRate'],
-                    'nCostSTD'  => 0,
-                    'NetAfHD'   => str_replace(",",'',number_format($nPriceNet, $nOptDecimalShow, '.', ',')),
-                    'PDTSpc'    => $tPDTFaishion,
-                    // 'nStaLot'   => $aValue['FTPdtStaLot'], //สินค้าล็อต
-                    'tTypePDT'  => $aValue['FTPdtType'], //ประเภทสินค้า 1:สินค้าทั่วไป , 2:สินค้าบริการ , 3:สินค้าอื่นๆ , 4:ของแถม , 5:พิเศษ  , 6:สินค้าเพื่อประกอบการขาย , 7:ค่าใช้จ่าย
-                    'SetOrSN'   => $aValue['FTPdtSetOrSN'] //ระดับสินค้าชุด 1:สินค้าปกติ , 2:สินค้าปกติชุด , 3:สินค้าSerial , 4:สินค้าSerial Set , 5: สินค้าชุดบริการ
+                    'NetAfHD'   => number_format($aValue['FCPgdPriceRet'], $nOptDecimalShow, '.', ','),
+                    'PDTSpc'    => $tPDTFaishion
                 );
                 $aPackData = JSON_encode($aPackData);
                 $tNameFunctionClickPDT      = 'JSxPDTClickData(this,'.$aPackData.')';
@@ -161,17 +155,12 @@
                     'PUNName'   => $aValue['FTPunName'],
                     'IMAGE'     => $aValue['FTImgObj'],
                     'Price'     => $nCost,
-                    'nCostSTD'  => $aValue['FCPdtCostStd'],
                     'LOCSEQ'    => '',
                     'AlwDis'    => ($aValue['FTPdtStaAlwDis'] == '' || $aValue['FTPdtStaAlwDis'] == null ) ? 2 : $aValue['FTPdtStaAlwDis'],
                     'AlwVat'    => $aValue['FTPdtStaVat'],
-                    'tVatCode'  => $aValue['FTVatCode'],
                     'nVat'      => $aValue['FCVatRate'],
                     'NetAfHD'   => $nCost,
-                    'PDTSpc'    => $tPDTFaishion,
-                    // 'nStaLot'   => $aValue['FTPdtStaLot'], //สินค้าล็อต
-                    'tTypePDT'  => $aValue['FTPdtType'], //ประเภทสินค้า 1:สินค้าทั่วไป , 2:สินค้าบริการ , 3:สินค้าอื่นๆ , 4:ของแถม , 5:พิเศษ  , 6:สินค้าเพื่อประกอบการขาย , 7:ค่าใช้จ่าย
-                    'SetOrSN'   => $aValue['FTPdtSetOrSN'] //ระดับสินค้าชุด 1:สินค้าปกติ , 2:สินค้าปกติชุด , 3:สินค้าSerial , 4:สินค้าSerial Set , 5: สินค้าชุดบริการ
+                    'PDTSpc'    => $tPDTFaishion
                 );
                 $aPackData = JSON_encode($aPackData);
                 $tNameFunctionClickPDT      = 'JSxPDTClickData(this,'.$aPackData.')';
@@ -213,13 +202,9 @@
         <input type="hidden" id="ohdProductAllRow" name="ohdProductAllRow" value="<?=$aProduct['rnAllRow']?>" >
         <input type="hidden" id="ohdPDTEndPage" name="ohdPDTEndPage" value="<?=$aProduct['rnAllPage']?>" >
         <input type="hidden" id="ohdPDTRowPage" name="ohdPDTRowPage" value="<?=$aProduct['nRow']?>" >
-
-        <?php $nShowRecord = (isset($aProduct['nTotalResult'])) ? $aProduct['nTotalResult'] : 0 ; ?>
-        <p>แสดงข้อมูลรายการล่าสุด <?=$nShowRecord?> รายการ</p>
-
         <?php if($this->session->userdata("tSesGetAllRow") > 5000) : ?>
             <!-- กรณีที่มีข้อมูลไม่ถึง 5000 รายการ ระบบจะแสดงข้อความดังนี้ พบข้อมูล 320 รายการ หน้า 1/32 -->
-            <!-- <i class="glyphicon glyphicon-list" style="cursor:pointer; font-size:15px;" id="ospClickShowPDTConfig"></i>
+            <i class="glyphicon glyphicon-list" style="cursor:pointer; font-size:15px;" id="ospClickShowPDTConfig"></i>
             <span  <?php if($nStaTopPdt==1){ echo 'style="display:none"'; } ?>>
             <p style="display: inline;" ><?php echo language('common/main/main','tCommonShowAllRecord')?></p><p id="ospAllPDTRow" style="display: inline; padding: 5px;"><?php echo ($aProduct['rnAllRow'])?></p><p style="display: inline;"><?php echo language('common/main/main','tRecord')?>  [<?php echo language('common/main/main','tCommonAllRecord');?> <?php echo ($this->session->userdata("tSesGetAllRow"));?> <?php echo language('common/main/main','tRecord');?> ] <?php echo language('common/main/main', 'tCommonPage');?> <?php echo $aProduct['rnCurrentPage']; ?> / <?php echo $aProduct['rnAllPage']; ?></p>
             </span>
@@ -232,10 +217,10 @@
                }
                ?>
             <p style="display: inline;"><?php echo language('common/main/main','tCommonShowAllRecord')?> <?php echo number_format($nBrwTopWebCookie)?> <?php echo language('common/main/main','tRecord')?>  <?php echo language('common/main/main','tCommonAllRecord');?> </p>
-            <?php } ?> -->
+            <?php } ?>
             <?php else : ?>
             <!-- กรณีมีข้อมูลมากกว่า 5000 รายการ ระบบจะแสดงข้อความดังนี้ แสดงรายการสูงสุด 5000 รายการ [จากรายการทั้งหมด 72500 รายการ ] หน้า 1/500 -->
-            <!-- <i  class="glyphicon glyphicon-list" style="cursor:pointer; font-size:15px;" id="ospClickShowPDTConfig"></i>
+            <i  class="glyphicon glyphicon-list" style="cursor:pointer; font-size:15px;" id="ospClickShowPDTConfig"></i>
             <span  <?php if($nStaTopPdt==1){ echo 'style="display:none"'; } ?>>
             <p style="display: inline;"><?php echo language('common/main/main','tResultTotalRecord')?></p><p id="ospAllPDTRow" style="display: inline; padding: 5px;"><?=$aProduct['rnAllRow']?></p><p style="display: inline;"><?php echo language('common/main/main','tRecord')?> <?php echo language('common/main/main','tCurrentPage')?> <?php echo $aProduct['rnCurrentPage']; ?> / <?php echo $aProduct['rnAllPage']; ?> </p>
             </span>
@@ -248,18 +233,18 @@
                }
                ?>
             <p style="display: inline;"><?php echo language('common/main/main','tCommonShowAllRecord')?> <?php echo number_format($nBrwTopWebCookie)?> <?php echo language('common/main/main','tRecord')?>  <?php echo language('common/main/main','tCommonAllRecord');?> </p>
-            <?php } ?> -->
+            <?php } ?>
             <?php endif;?>
     </div>
     <div class="col-md-6">
-        <!-- <div class="xWPagePrinter btn-toolbar pull-right"  <?php if($nStaTopPdt==1){ echo 'style="display:none"'; } ?>> -->
+        <div class="xWPagePrinter btn-toolbar pull-right"  <?php if($nStaTopPdt==1){ echo 'style="display:none"'; } ?>>
             <?php if($nPage == 1){ $tDisabledLeft = 'disabled'; }else{ $tDisabledLeft = '-';} ?>
-            <!-- <button onclick="JSvPDTBrowseClickPage('Fisrt')" class="btn btn-white btn-sm" <?php echo $tDisabledLeft ?> style="padding: 5px 10px;">
+            <button onclick="JSvPDTBrowseClickPage('Fisrt')" class="btn btn-white btn-sm" <?php echo $tDisabledLeft ?> style="padding: 5px 10px;">
                 <i class="fa fa-chevron-left f-s-14 t-plus-1"></i><i class="fa fa-chevron-left f-s-14 t-plus-1" style="margin-left: -3px;"></i>
             </button>
             <button onclick="JSvPDTBrowseClickPage('previous')" class="btn btn-white btn-sm" <?php echo $tDisabledLeft ?>  style="padding: 5px 10px;"> 
                 <i class="fa fa-chevron-left f-s-14 t-plus-1"></i>
-            </button> -->
+            </button>
             <?php for($i=max($nPage-2, 1); $i<=max(0, min($aProduct['rnAllPage'],$nPage+2)); $i++){?> 
                 <?php 
                     if($nPage == $i){ 
@@ -270,16 +255,16 @@
                         $tDisPageNumber = '';
                     }
                 ?>
-                <!-- <button onclick="JSvPDTBrowseClickPage('<?php echo $i?>')" type="button" class="btn xCNBTNNumPagenation <?php echo $tActive ?>" <?php echo $tDisPageNumber ?>><?php echo $i?></button> -->
+                <button onclick="JSvPDTBrowseClickPage('<?php echo $i?>')" type="button" class="btn xCNBTNNumPagenation <?php echo $tActive ?>" <?php echo $tDisPageNumber ?>><?php echo $i?></button>
             <?php } ?>
             <?php if($nPage >= $aProduct['rnAllPage']){  $tDisabledRight = 'disabled'; }else{  $tDisabledRight = '-';  } ?>
-            <!-- <button onclick="JSvPDTBrowseClickPage('next')" class="btn btn-white btn-sm" <?php echo $tDisabledRight ?> style="padding: 5px 10px;"> 
+            <button onclick="JSvPDTBrowseClickPage('next')" class="btn btn-white btn-sm" <?php echo $tDisabledRight ?> style="padding: 5px 10px;"> 
                 <i class="fa fa-chevron-right f-s-14 t-plus-1"></i>
             </button>
             <button onclick="JSvPDTBrowseClickPage('Last')" class="btn btn-white btn-sm" <?php echo $tDisabledRight ?> style="padding: 5px 10px;">
                 <i class="fa fa-chevron-right f-s-14 t-plus-1"></i><i class="fa fa-chevron-right f-s-14 t-plus-1" style="margin-left: -3px;"></i>
             </button>
-        </div> -->
+        </div>
     </div>
 </div>
 <!--end pagenation-->
@@ -293,20 +278,20 @@
     </div><hr style="border-top: 1px solid black; margin-top: 35px; width:100%;" > 
     <form id="ofmAddPdtConfig" class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data">
 
-        <!-- <div class="row"> Fast
+        <div class="row"> <!--Fast-->
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
              <label class="xCNLabelFrm"> <input type="radio" name="ordBWStaTopPdt" value="1" class="ordBWStaTopPdt" <?php if($nStaTopPdt==1){ echo 'checked'; } ?>> <?php echo language('common/main/main','tStaTopPdtDres1')?></label>
             </div>
         </div>
-        <div class="row">  Count Page
+        <div class="row">  <!--Count Page-->
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <label class="xCNLabelFrm"><input type="radio" name="ordBWStaTopPdt" value="2" class="ordBWStaTopPdt" <?php if($nStaTopPdt==2){ echo 'checked'; } ?>> <?php echo language('common/main/main','tStaTopPdtDres2')?></label>
             </div>
        
         </div>
 
-        <div class="row xStaTopPdtCout" <?php if($nStaTopPdt==1){ echo 'style="display:none;padding-top: 10px;"'; } ?> > จำนวน Top Page -->
-        <div class="row"> <!--จำนวน Top Page-->
+        <div class="row xStaTopPdtCout" <?php if($nStaTopPdt==1){ echo 'style="display:none;padding-top: 10px;"'; } ?> > <!--จำนวน Top Page-->
+
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                 <label class="xCNLabelFrm"><?php echo language('common/main/main','tCommonShowAllRecord')?></label>
             </div>
@@ -317,8 +302,7 @@
                 <label class="xCNLabelFrm" style="position: relative; left:-15px;">(<?php echo language('common/main/main','tCommonlabelShow')?>)</label>
             </div>
         </div>
-        <!-- <div class="row xStaTopPdtCout" <?php if($nStaTopPdt==1){ echo  'style="display:none"';  } ?>>  จำนวน PerPage -->
-        <div class="row">  <!--จำนวน PerPage-->
+        <div class="row xStaTopPdtCout" <?php if($nStaTopPdt==1){ echo  'style="display:none"';  } ?>>  <!--จำนวน PerPage-->
             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                 <label class="xCNLabelFrm"><?php echo language('common/main/main','tCommonPerPage')?></label>
             </div>

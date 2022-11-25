@@ -194,6 +194,7 @@ class mCustomerLevel extends CI_Model {
             $this->db->set('FDLastUpdOn' , $paData['FDLastUpdOn']);
             $this->db->set('FTLastUpdBy' , $paData['FTLastUpdBy']);
             $this->db->set('FTAgnCode' , $paData['FTAgnCode']);
+            $this->db->set('FTPplCode' , $paData['FTPplCode']);
             $this->db->where('FTClvCode', $paData['FTCstLevCode']);
             $this->db->update('TCNMCstLev');
             if($this->db->affected_rows() > 0){
@@ -205,6 +206,7 @@ class mCustomerLevel extends CI_Model {
                 // Add Master
                 $this->db->insert('TCNMCstLev',array(
                     'FTClvCode'     => $paData['FTCstLevCode'],
+                    'FTPplCode'     => $paData['FTPplCode'],
                     'FDCreateOn'    => $paData['FDCreateOn'],
                     'FTCreateBy'    => $paData['FTCreateBy'],
                     'FDLastUpdOn'   => $paData['FDLastUpdOn'],
