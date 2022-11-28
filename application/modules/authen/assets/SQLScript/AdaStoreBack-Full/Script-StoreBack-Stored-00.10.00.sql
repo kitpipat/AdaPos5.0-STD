@@ -8290,3 +8290,286 @@ BEGIN CATCH
    return -1
 END CATCH
 GO
+
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SP_RPTxIncomeNotReturnCardTmp]') AND type in (N'P', N'PC'))
+DROP PROCEDURE SP_RPTxIncomeNotReturnCardTmp
+GO
+CREATE PROCEDURE [dbo].[SP_RPTxIncomeNotReturnCardTmp]
+	@pnLngID int , 
+	@pnComName Varchar(100),
+	@ptRptCode Varchar(100),
+	@ptUsrSession Varchar(255),
+	@pnFilterType int, --1 BETWEEN 2 IN
+
+	--สาขา
+	@ptBchL Varchar(8000), --สาขา Condition IN
+	@ptBchF Varchar(5),
+	@ptBchT Varchar(5),
+
+	--Shop Code
+	@ptShpL Varchar(8000), --กรณี Condition IN
+	@ptShpF Varchar(10),
+	@ptShpT Varchar(10),
+
+    --Mer Code
+	@ptMerL Varchar(8000), --กรณี Condition IN
+	@ptMerF Varchar(10),
+	@ptMerT Varchar(10),
+
+	--เครื่องจุดขาย
+	@ptPosL Varchar(8000), --กรณี Condition IN
+	@ptPosF Varchar(20),
+	@ptPosT Varchar(20),
+
+	@ptDocDateF Varchar(10),
+	@ptDocDateT Varchar(10),
+
+	@FNResult INT OUTPUT
+
+AS 
+
+BEGIN TRY	
+
+	-- Last Update : Napat(Jame) 05/10/2022 ตรวจสอบบัตรหมดอายุ FDCrdExpireDate
+
+	DECLARE @nLngID int 
+	DECLARE @nComName Varchar(100)
+	DECLARE @tRptCode Varchar(100)
+	DECLARE @tUsrSession Varchar(255)
+	DECLARE @tSql nVARCHAR(Max)
+	DECLARE @tSqlIns VARCHAR(8000)
+	DECLARE @tSql1 nVARCHAR(Max)
+	
+	--Branch Code
+	DECLARE @tBchF Varchar(5)
+	DECLARE @tBchT Varchar(5)
+
+	--Shop Code
+	DECLARE @tShpF Varchar(10)
+	DECLARE @tShpT Varchar(10)
+
+	--Mer Code
+	DECLARE @tMerF Varchar(10)
+	DECLARE @tMerT Varchar(10)
+
+	--Pos Code
+	DECLARE @tPosF Varchar(20)
+	DECLARE @tPosT Varchar(20)
+
+	DECLARE @tDocDateF Varchar(10)
+	DECLARE @tDocDateT Varchar(10)
+
+	SET @nLngID = @pnLngID
+	SET @nComName = @pnComName
+	SET @tUsrSession = @ptUsrSession
+	SET @tRptCode = @ptRptCode
+
+	--Branch
+	SET @tBchF  = @ptBchF
+	SET @tBchT  = @ptBchT
+
+	--Shop
+	SET @tShpF  = @ptShpF
+	SET @tShpT  = @ptShpT
+
+		--Mer
+	SET @tMerF  = @ptShpF
+	SET @tMerT  = @ptShpT
+
+	--Pos
+	SET @tPosF  = @ptPosF 
+	SET @tPosT  = @ptPosT
+
+	SET @tDocDateF = @ptDocDateF
+	SET @tDocDateT = @ptDocDateT
+	SET @FNResult  = 0
+
+	SET @tDocDateF = CONVERT(VARCHAR(10),@tDocDateF,121)
+	SET @tDocDateT = CONVERT(VARCHAR(10),@tDocDateT,121)
+
+	IF @nLngID = null
+	BEGIN
+		SET @nLngID = 1
+	END	
+
+	IF @ptBchL = null
+	BEGIN
+		SET @ptBchL = ''
+	END
+
+	IF @tBchF = null
+	BEGIN
+		SET @tBchF = ''
+	END
+
+	IF @tBchT = null OR @tBchT = ''
+	BEGIN
+		SET @tBchT = @tBchF
+	END
+
+	IF @ptShpL =null
+	BEGIN
+		SET @ptShpL = ''
+	END
+
+	IF @tShpF =null
+	BEGIN
+		SET @tShpF = ''
+	END
+	IF @tShpT =null OR @tShpT = ''
+	BEGIN
+		SET @tShpT = @tShpF
+	END
+
+	IF @ptMerL =null
+	BEGIN
+		SET @ptMerL = ''
+	END
+
+	IF @tMerF =null
+	BEGIN
+		SET @tMerF = ''
+	END
+	IF @tMerT =null OR @tMerT = ''
+	BEGIN
+		SET @tMerT = @tMerF
+	END
+
+	IF @tPosF = null
+	BEGIN
+		SET @tPosF = ''
+	END
+	IF @tPosT = null OR @tPosT = ''
+	BEGIN
+		SET @tPosT = @tPosF
+	END
+
+	IF @tDocDateF = null
+	BEGIN 
+		SET @tDocDateF = ''
+	END
+
+	IF @tDocDateT = null OR @tDocDateT =''
+	BEGIN 
+		SET @tDocDateT = @tDocDateF
+	END
+
+	--SET @tSql1 = ' WHERE CRD.FTCrdStaShift = ''2'' AND TOPUP.FDTxnDocDate >= DO.FDXshDocDate '
+	SET @tSql1 = '  '
+
+	IF @pnFilterType = '1'
+		BEGIN
+		IF (@tBchF <> '' AND @tBchT <> '')
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTBchCode BETWEEN ''' + @tBchF + ''' AND ''' + @tBchT + ''''
+		END
+
+		IF (@tShpF <> '' AND @tShpT <> '')
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTShpCode BETWEEN ''' + @tShpF + ''' AND ''' + @tShpT + ''''
+		END
+
+	--	IF (@tMerF <> '' AND @tMerT <> '')
+	--	BEGIN
+			--SET @tSql1 +=' AND TOPUP.FTMerCode BETWEEN ''' + @tMerF + ''' AND ''' + @tMerT + ''''
+	--	END
+
+		IF (@tPosF <> '' AND @tPosT <> '')
+		BEGIN
+			SET @tSql1 += ' AND TOPUP.FTTxnPosCode BETWEEN ''' + @tPosF + ''' AND ''' + @tPosT + ''''
+		END	
+	END
+
+	IF @pnFilterType = '2'
+	BEGIN	
+		IF (@ptBchL <> '' )
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTBchCode IN (' + @ptBchL + ')'
+		END
+
+		IF (@ptShpL <> '')
+		BEGIN
+			SET @tSql1 +=' AND TOPUP.FTShpCode IN (' + @ptShpL + ')'
+		END
+
+	--	IF (@ptMerL <> '')
+		--BEGIN
+		--	SET @tSql1 +=' AND TOPUP.FTMerCode IN (' + @ptMerL + ')'
+	--	END
+
+		IF (@ptPosL <> '')
+		BEGIN
+			SET @tSql1 += ' AND TOPUP.FTTxnPosCode IN (' + @ptPosL + ')'
+		END	
+	END
+
+	IF (@tDocDateF <> '' AND @tDocDateT <> '')
+	BEGIN
+    SET @tSql1 +=' AND CONVERT(VARCHAR(10),TOPUP.FDTxnDocDate,121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+	END
+
+	--SET @tSql1 += ' AND CONVERT(VARCHAR(10), TOPUP.FDTxnDocDate, 121) BETWEEN ''' + @tDocDateF + ''' AND ''' + @tDocDateT + ''''
+
+	DELETE FROM TRPTIncomeNotReturnCardTmp WITH (ROWLOCK) WHERE FTComName =  '' + @nComName + ''  AND FTRptCode = '' + @tRptCode + '' AND FTUsrSession = '' + @tUsrSession + ''
+
+
+SET @tSql  = ' INSERT INTO TRPTIncomeNotReturnCardTmp (FTComName,FTRptCode,FTUsrSession, FTBchCode,FTBchName,FTCrdCode,FCTxnCrdValue,FCCrdClear,FCCrdTopUpAuto,FCCrdTxnPmt) '
+
+SET @tSql += ' SELECT K.* FROM ('
+SET @tSql += ' SELECT '''+ @nComName + ''' AS FTComName, '''+ @tRptCode +''' AS FTRptCode, '''+ @tUsrSession +''' AS FTUsrSession,'
+SET @tSql += ' B.FTBchCode,BCH.FTBchName,B.FTCrdCode,'
+SET @tSql += ' CASE WHEN B.CrdTxnSale<B.CrdTopUpAuto THEN B.CrdTopUpManual ELSE  CASE WHEN (B.CrdClear  - B.CrdTxnPmt) > 0 THEN B.CrdClear - B.CrdTxnPmt ELSE 0 END END AS FCCrdInCome,'
+
+SET @tSql += ' B.CrdClear,B.CrdTopUpAuto,B.CrdTxnPmt'
+SET @tSql += ' FROM 	('
+
+
+
+
+	SET @tSql += ' SELECT	M.FTBchCode,M.FTCrdCode,M.FDTxnDocDate,M.CrdClear,'
+	SET @tSql += ' M.CrdTopUpAuto,'
+	SET @tSql += ' M.CrdTxnPmt,M.CrdTxnSale,M.CrdTopUpManual'
+	SET @tSql += ' FROM ('
+		SET @tSql += ' SELECT'
+			SET @tSql += ' CONVERT(VARCHAR(10),A.FDTxnDocDate,120) AS FDTxnDocDate,'
+			SET @tSql += ' A.FTBchCode,A.FTCrdCode,'
+			SET @tSql += ' SUM (CASE WHEN A.FTTxnDocType = ''10'' AND A.StaCrdAuto = ''2'' THEN ISNULL(A.FCTxnValue, 0) ELSE 0	END) AS CrdClear,'
+			SET @tSql += ' SUM (CASE WHEN A.FTTxnDocType = ''1'' AND A.StaCrdAuto = ''1'' THEN ISNULL(A.FCTxnValue, 0) ELSE 0 END) AS CrdTopUpAuto,'
+			SET @tSql += ' SUM (CASE WHEN A.FTTxnDocType = ''1'' THEN ISNULL(A.FCTxnPmt, 0) ELSE 0 END) AS CrdTxnPmt,'
+			SET @tSql += ' SUM (CASE WHEN A.FTTxnDocType = ''3'' THEN ISNULL(A.FCTxnValue, 0) ELSE 0	END) AS CrdTxnSale,'
+			SET @tSql += ' SUM (CASE WHEN A.FTTxnDocType = ''1'' AND A.StaCrdAuto=''2'' THEN ISNULL(A.FCTxnValue, 0) ELSE 0 END) AS CrdTopUpManual'
+		SET @tSql += ' FROM ('
+				SET @tSql += ' SELECT'
+					SET @tSql += ' TOPUP.FTBchCode,TOPUP.FTShpCode,TOPUP.FTTxnPosCode,TOPUP.FTTxnDocNoRef,TOPUP.FTTxnDocType,TOPUP.FTCrdCode,'
+					SET @tSql += ' TOPUP.FDTxnDocDate,TOPUP.FCTxnValue,TOPUP.FCTxnCrdValue,TOPUP.FCTxnPmt,'
+					SET @tSql += ' CASE	WHEN ISNULL(HD.FTXshRmk, '''') = ''Auto Topup'' THEN ''1'' ELSE ''2'' END AS StaCrdAuto'
+				SET @tSql += ' FROM TFNTCrdTopUp TOPUP WITH (NOLOCK)'
+				SET @tSql += ' LEFT JOIN TFNTCrdTopUpHD HD WITH (NOLOCK) ON HD.FTBchCode = TOPUP.FTBchCode AND HD.FTXshDocNo = TOPUP.FTTxnDocNoRef'
+				SET @tSql += ' WHERE FTTxnDocType != ''5'' '
+				SET @tSql += @tSql1
+				SET @tSql += ' UNION ALL'
+					SET @tSql += ' SELECT'
+						SET @tSql += ' TOPUP.FTBchCode,TOPUP.FTShpCode,TOPUP.FTTxnPosCode,TOPUP.FTTxnDocNoRef,TOPUP.FTTxnDocType,TOPUP.FTCrdCode,'
+						SET @tSql += ' TOPUP.FDTxnDocDate,TOPUP.FCTxnValue,TOPUP.FCTxnCrdValue,0 AS FCTxnPmt,''2'' AS StaCrdAuto'
+					SET @tSql += ' FROM TFNTCrdSale TOPUP WITH (NOLOCK)'
+					SET @tSql += ' WHERE	ISNULL(TOPUP.FTCrdCode, '''') != '''' '
+
+					SET @tSql += @tSql1
+
+			SET @tSql += ' ) A GROUP BY CONVERT(VARCHAR(10),A.FDTxnDocDate,120),A.FTBchCode,A.FTCrdCode ) M'
+
+
+SET @tSql += ' ) B'
+SET @tSql += ' LEFT JOIN TCNMBranch_L BCH WITH(NOLOCK) ON B.FTBchCode = BCH.FTBchCode AND BCH.FNLngID = ''1''  '
+SET @tSql += ') K '
+SET @tSql += ' WHERE K.FCCrdInCome > 0 '
+	--SELECT @tSql
+	EXECUTE(@tSql)
+
+END TRY
+
+BEGIN CATCH 
+	SET @FNResult= -1
+END CATCH	
+GO
