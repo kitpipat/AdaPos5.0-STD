@@ -1274,7 +1274,7 @@ class cHome extends MX_Controller
                                 // print_r($aDataPdtWhere);
                                 // exit();
                                 $aDataPdtMaster = $this->mCommon->FCNaMCMMImportExcelFindPdtInfoByBarCode($aDataPdtWhere); // Data Master Pdt
-    
+                                // echo $this->db->last_query();
                                 if($aDataPdtMaster['rtCode']=='1'){
     
                                             $cTWOPrice    = $this->mTransferwarehouseout->FSaMTWOGetPriceBYPDT($tADJPdtCode);
@@ -1298,11 +1298,11 @@ class cHome extends MX_Controller
                                                 'FTPunName'         => $aDataPdtMaster['raItem']['FTPunName'],
                                                 'FTXtdBarCode'      => $tADJBarCode,
                                                 'FTXtdVatType'      => $aDataPdtMaster['raItem']['FTPdtStaVatBuy'],
-                                                'FTVatCode'         => $aDataPdtMaster['raItem']['FTVatCode'],
-                                                'FCXtdVatRate'      => $aDataPdtMaster['raItem']['FCVatRate'],
+                                                'FTVatCode'         => $tImportSplVatCode,
+                                                'FCXtdVatRate'      => $tImportSplVatRate,
                                                 'FTXtdStaAlwDis'    => $aDataPdtMaster['raItem']['FTPdtStaAlwDis'],
                                                 'FTXtdSaleType'     => $aDataPdtMaster['raItem']['FTPdtSaleType'],
-                                                'FCXtdSalePrice'    => $aDataPdtMaster['raItem']['FTPdtSalePrice'],
+                                                'FCXtdSalePrice'    => $nPrice,
                                                 'FCXtdQty'          => $nADJQY,
                                                 'FCXtdQtyAll'       => $nADJQY * $aDataPdtMaster['raItem']['FCPdtUnitFact'],
                                                 'FCXtdSetPrice'     => $nPrice * $nADJQY,
@@ -1663,6 +1663,96 @@ class cHome extends MX_Controller
                     // );
                     // FCNnDocTmpChkCodeMultiDupInTemp($aValidateData, $aWhereData);
                  break;
+                 case "adjstock":
+                    //validate ข้อมูลอ้างอิงมีจริงไหม _ FTPdtCode
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTPdtCode',
+                        'tTableName'        => 'TCNMPDT',
+                        'tErrMsg'           => 'ไม่พบสินค้าในระบบ'
+                    );
+                    FCNnDocTmpChkCodeInDB($aValidateData);
+    
+                    //validate เช็คซ้ำกันใน temp
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTPdtCode',
+                        'tAGNCode'          =>  $this->session->userdata('tSesUsrAgnCode'),
+                        'tTableName'        => 'TCNTPdtAdjStkHD',
+                        'tErrMsg'           => 'ไม่พบสินค้าในระบบ'
+                    );
+                    //ถ้าไม่ใช่ HQ ต้อง validate ว่าสินค้านั้น อยู่ใน AD ของคุณหรือเปล่า
+                    if ($this->session->userdata('tSesUsrLevel') != 'HQ') {
+                        FCNnDocTmpChkPDTCodeINADSelf($aValidateData, $aWhereData);
+                    }
+    
+                    //validate เช็คซ้ำกันใน temp
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'aFieldName'        => ['FTBchCode', 'FTPdtCode']
+                    );
+                    FCNnDocTmpChkCodeMultiDupInTemp($aValidateData, $aWhereData);
+                break;
+                case "adjstocksub":
+                    //validate ข้อมูลอ้างอิงมีจริงไหม _ FTPdtCode
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTPdtCode',
+                        'tTableName'        => 'TCNMPDT',
+                        'tErrMsg'           => 'ไม่พบสินค้าในระบบ'
+                    );
+                    FCNnDocTmpChkCodeInDB($aValidateData);
+    
+                    //validate เช็คซ้ำกันใน temp
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTPdtCode',
+                        'tAGNCode'          =>  $this->session->userdata('tSesUsrAgnCode'),
+                        'tTableName'        => 'TCNTPdtAdjStkHD',
+                        'tErrMsg'           => 'ไม่พบสินค้าในระบบ'
+                    );
+                    //ถ้าไม่ใช่ HQ ต้อง validate ว่าสินค้านั้น อยู่ใน AD ของคุณหรือเปล่า
+                    if ($this->session->userdata('tSesUsrLevel') != 'HQ') {
+                        FCNnDocTmpChkPDTCodeINADSelf($aValidateData, $aWhereData);
+                    }
+    
+                    //validate เช็คซ้ำกันใน temp
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'aFieldName'        => ['FTBchCode', 'FTPdtCode']
+                    );
+                    FCNnDocTmpChkCodeMultiDupInTemp($aValidateData, $aWhereData);
+                break;
+                case "transferwahouseout":
+                    //validate ข้อมูลอ้างอิงมีจริงไหม _ FTPdtCode
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTPdtCode',
+                        'tTableName'        => 'TCNMPDT',
+                        'tErrMsg'           => 'ไม่พบสินค้าในระบบ'
+                    );
+                    FCNnDocTmpChkCodeInDB($aValidateData);
+    
+                    //validate เช็คซ้ำกันใน temp
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTPdtCode',
+                        'tAGNCode'          =>  $this->session->userdata('tSesUsrAgnCode'),
+                        'tTableName'        => 'TCNTPdtTwoHD',
+                        'tErrMsg'           => 'ไม่พบสินค้าในระบบ'
+                    );
+                    //ถ้าไม่ใช่ HQ ต้อง validate ว่าสินค้านั้น อยู่ใน AD ของคุณหรือเปล่า
+                    if ($this->session->userdata('tSesUsrLevel') != 'HQ') {
+                        FCNnDocTmpChkPDTCodeINADSelf($aValidateData, $aWhereData);
+                    }
+    
+                    //validate เช็คซ้ำกันใน temp
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'aFieldName'        => ['FTBchCode', 'FTPdtCode']
+                    );
+                    FCNnDocTmpChkCodeMultiDupInTemp($aValidateData, $aWhereData);
+                break;
         }
     }
 }

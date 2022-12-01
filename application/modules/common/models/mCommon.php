@@ -179,7 +179,10 @@ class mCommon extends CI_Model {
                     PSZ.FCPdtUnitFact,
                     BAR.FTFhnRefCode,
                     BAR.FNBarRefSeq,
-                    BAR.FTPlcCode
+                    BAR.FTPlcCode,
+                    PDT.FTPdtStaVatBuy,
+                    PDT.FTPdtStaAlwDis,
+                    PDT.FTPdtSaleType
                 FROM
                     TCNMPdtBar BAR WITH(NOLOCK)
                 LEFT OUTER JOIN TCNMPdt PDT WITH(NOLOCK) ON BAR.FTPdtCode = PDT.FTPdtCode

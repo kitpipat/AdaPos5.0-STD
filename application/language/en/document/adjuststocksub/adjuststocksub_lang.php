@@ -197,5 +197,6 @@ $lang['tASTFilterTitleSpl']             = "Supplier";
 $lang['tASTFilterTitleProduct']         = "Product";
 
 
+$lang['tASTErrorPdtCodeNotMatch']        = "Product not Found Code ";
 
 

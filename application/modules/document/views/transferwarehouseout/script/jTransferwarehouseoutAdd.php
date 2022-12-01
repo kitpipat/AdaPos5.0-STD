@@ -2205,9 +2205,16 @@
     }
 
 
-    function JSxImportExcelCallback(){
-
+    function JSxImportExcelCallback(oRespone){
+        // console.log(oRespone);
+        var aRespone = JSON.parse(oRespone);
+        console.log(aRespone);
+        if(aRespone['rtCode']=='99'){
+            var tMessageError = aRespone['rtMassage'];
+            FSvCMNSetMsgErrorDialog(tMessageError);
+        }else{
         JSvTRNLoadPdtDataTableHtml();
+        }
 
     }
 </script>
