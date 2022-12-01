@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class mPromotion extends CI_Model
 {
-    /** ยกมาจาก Fit Auto 16/09/2022 */
+
     /**
      * Functionality : HD List
      * Parameters : -
@@ -16,6 +16,7 @@ class mPromotion extends CI_Model
     {
         $aRowLen = FCNaHCallLenData($paParams['nRow'], $paParams['nPage']);
         $nLngID = $paParams['FNLngID'];
+
         $tSQL = "
             SELECT c.* FROM(
                 SELECT  ROW_NUMBER() OVER(ORDER BY FDCreateOn DESC) AS FNRowID,* FROM
@@ -55,50 +56,28 @@ class mPromotion extends CI_Model
                         USRL.FTUsrName AS FTCreateByName,
                         USRLAPV.FTUsrName AS FTXthApvName
                     FROM TCNTPdtPmtHD HD WITH (NOLOCK)
-                    LEFT JOIN TCNTPdtPmtHDBch HDBch WITH(NOLOCK) ON HD.FTBchCode = HDBch.FTBchCode AND HD.FTPmhDocNo = HDBch.FTPmhDocNo
-                    LEFT JOIN TCNTPdtPmtHD_L HDL WITH (NOLOCK) ON HDL.FTPmhDocNo = HD.FTPmhDocNo AND HDL.FNLngID = ".$this->db->escape($nLngID)."
-                    LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON BCHL.FTBchCode = HD.FTBchCode AND BCHL.FNLngID = ".$this->db->escape($nLngID)."
-                    LEFT JOIN TCNMUser_L USRL WITH (NOLOCK) ON USRL.FTUsrCode = HD.FTCreateBy AND USRL.FNLngID = ".$this->db->escape($nLngID)."
-                    LEFT JOIN TCNMUser_L USRLAPV WITH (NOLOCK) ON HD.FTPmhUsrApv = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = ".$this->db->escape($nLngID)."
-                    WHERE HD.FDCreateOn <> ''
+                    LEFT JOIN TCNTPdtPmtHD_L HDL WITH (NOLOCK) ON HDL.FTPmhDocNo = HD.FTPmhDocNo AND HDL.FNLngID = $nLngID
+                    LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON BCHL.FTBchCode = HD.FTBchCode AND BCHL.FNLngID = $nLngID
+                    LEFT JOIN TCNMUser_L USRL WITH (NOLOCK) ON USRL.FTUsrCode = HD.FTCreateBy AND USRL.FNLngID = $nLngID
+                    LEFT JOIN TCNMUser_L USRLAPV WITH (NOLOCK) ON HD.FTPmhUsrApv = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = $nLngID
+                    WHERE 1=1
         ";
-        $tUserLoginLevel        = $this->session->userdata("tSesUsrLevel");
-        $tSesUsrBchCodeMulti    = $this->session->userdata("tSesUsrBchCodeMulti");
-        $tSesUsrAgnCodeMulti    = $this->session->userdata("tSesUsrAgnCode");
-
-        if ($tUserLoginLevel != 'HQ') {
-        ////////////////// เห็นเฉพาะของตัวเองและ Not IN
-        //     $tSQL .= "
-        // AND HDBch.FTPmhStaType = 1
-        // AND HDBch.FTPmhBchTo IN(" . $tSesUsrBchCodeMulti . ") OR (HDBch.FTPmhStaType = 2 AND HDBch.FTPmhBchTo NOT IN(" . $tSesUsrBchCodeMulti . "))
-        // OR (HD.FTBchCode IN(" . $tSesUsrBchCodeMulti . "))";
-
-        //////////////// แบบเห็น Center ด้วย
-        $tSQL   .= "
-            AND (
-                ( HDBch.FTPmhAgnTo IN ( '".$tSesUsrAgnCodeMulti."' ) AND HDBch.FTPmhBchTo IN ( " . $tSesUsrBchCodeMulti . " ) AND HDBch.FTPmhStaType = 1 ) 
-                OR ( HDBch.FTPmhAgnTo NOT IN ( '".$tSesUsrAgnCodeMulti."' ) AND HDBch.FTPmhBchTo NOT IN ( " . $tSesUsrBchCodeMulti . " ) AND HDBch.FTPmhStaType = 2 ) 
-                OR ( ISNULL( HDBch.FTPmhAgnTo, '' ) = '' AND ISNULL( HDBch.FTPmhBchTo, '' ) = '' ) 
-                OR HD.FTBchCode IN ( " . $tSesUsrBchCodeMulti . " ) 
-            )
-        ";
-        }
 
         $aAdvanceSearch = $paParams['aAdvanceSearch'];
-        $tSearchList    = $aAdvanceSearch['tSearchAll'];
-        $tSQLSearchAll  = '';
+        $tSearchList = $aAdvanceSearch['tSearchAll'];
+        $tSQLSearchAll = '';
         if ($tSearchList != '') {
-            $tSQL .= " AND ((HD.FTPmhDocNo COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (HDL.FTPmhName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (BCHL.FTBchName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (USRL.FTUsrName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (USRLAPV.FTUsrName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%'))";
-            $tSQLSearchAll  = " AND ((HD.FTPmhDocNo COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (HDL.FTPmhName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (BCHL.FTBchName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (USRL.FTUsrName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (USRLAPV.FTUsrName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%'))";
+            $tSQL .= " AND ((HD.FTPmhDocNo COLLATE THAI_BIN LIKE '%$tSearchList%') OR (HDL.FTPmhName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (BCHL.FTBchName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (USRL.FTUsrName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (USRLAPV.FTUsrName COLLATE THAI_BIN LIKE '%$tSearchList%'))";
+            $tSQLSearchAll = " AND ((HD.FTPmhDocNo COLLATE THAI_BIN LIKE '%$tSearchList%') OR (HDL.FTPmhName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (BCHL.FTBchName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (USRL.FTUsrName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (USRLAPV.FTUsrName COLLATE THAI_BIN LIKE '%$tSearchList%'))";
         }
 
         // จากสาขา - ถึงสาขา
         $tSearchBchCodeFrom = $aAdvanceSearch['tSearchBchCodeFrom'];
-        $tSearchBchCodeTo   = $aAdvanceSearch['tSearchBchCodeTo'];
-        $tSQLSearchBch      = '';
+        $tSearchBchCodeTo = $aAdvanceSearch['tSearchBchCodeTo'];
+        $tSQLSearchBch = '';
         if (!empty($tSearchBchCodeFrom) && !empty($tSearchBchCodeFrom)) {
-            $tSQL .= " AND ((HD.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeFrom)." AND ".$this->db->escape($tSearchBchCodeTo).") OR (HD.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeTo)." AND ".$this->db->escape($tSearchBchCodeFrom)."))";
-            $tSQLSearchBch = " AND ((HD.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeFrom)." AND ".$this->db->escape($tSearchBchCodeTo).") OR (HD.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeTo)." AND ".$this->db->escape($tSearchBchCodeFrom)."))";
+            $tSQL .= " AND ((HD.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (HD.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
+            $tSQLSearchBch = " AND ((HD.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (HD.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
         }
 
         // จากวันที่ - ถึงวันที่
@@ -106,19 +85,19 @@ class mPromotion extends CI_Model
         $tSearchDocDateTo = $aAdvanceSearch['tSearchDocDateTo'];
         $tSQLSearchDocDate = '';
         if (!empty($tSearchDocDateFrom) && !empty($tSearchDocDateTo)) {
-            $tSQL .= " AND ((HD.FDCreateOn BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 23:59:59").")) OR (HD.FDCreateOn BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 23:59:59").")))";
-            $tSQLSearchDocDate = " AND ((HD.FDCreateOn BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 23:59:59").")) OR (HD.FDCreateOn BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 23:59:59").")))";
+            $tSQL .= " AND ((HD.FDCreateOn BETWEEN CONVERT(datetime,'$tSearchDocDateFrom 00:00:00') AND CONVERT(datetime,'$tSearchDocDateTo 23:59:59')) OR (HD.FDCreateOn BETWEEN CONVERT(datetime,'$tSearchDocDateTo 00:00:00') AND CONVERT(datetime,'$tSearchDocDateFrom 23:59:59')))";
+            $tSQLSearchDocDate = " AND ((HD.FDCreateOn BETWEEN CONVERT(datetime,'$tSearchDocDateFrom 00:00:00') AND CONVERT(datetime,'$tSearchDocDateTo 23:59:59')) OR (HD.FDCreateOn BETWEEN CONVERT(datetime,'$tSearchDocDateTo 00:00:00') AND CONVERT(datetime,'$tSearchDocDateFrom 23:59:59')))";
         }
 
         // ค้นหาสถานะเอกสาร
         $tSearchStaDoc = $aAdvanceSearch['tSearchStaDoc'];
-        if (isset($tSearchStaDoc) && !empty($tSearchStaDoc)) {
+        if(isset($tSearchStaDoc) && !empty($tSearchStaDoc)){
             if ($tSearchStaDoc == 3) {
-                $tSQL   .= " AND HD.FTPmhStaDoc = ".$this->db->escape($tSearchStaDoc)." ";
+                $tSQL .= " AND HD.FTPmhStaDoc = '$tSearchStaDoc'";
             } elseif ($tSearchStaDoc == 2) {
-                $tSQL   .= " AND ISNULL(HD.FTPmhStaApv,'') = '' AND HD.FTPmhStaDoc != '3'";
+                $tSQL .= " AND ISNULL(HD.FTPmhStaApv,'') = '' AND HD.FTPmhStaDoc != '3'";
             } elseif ($tSearchStaDoc == 1) {
-                $tSQL   .= " AND HD.FTPmhStaApv = ".$this->db->escape($tSearchStaDoc)." ";
+                $tSQL .= " AND HD.FTPmhStaApv = '$tSearchStaDoc'";
             }
         }
 
@@ -136,91 +115,90 @@ class mPromotion extends CI_Model
         // ค้นหาสถานะเคลื่อนไหว
         if (isset($tSearchStaDocAct) && !empty($tSearchStaDocAct)) {
             if ($tSearchStaDocAct == 1) {
-                $tSQL   .= " AND HD.FNPmhStaDocAct = 1";
+                $tSQL .= " AND HD.FNPmhStaDocAct = 1";
             } else {
-                $tSQL   .= " AND HD.FNPmhStaDocAct = 0";
+                $tSQL .= " AND HD.FNPmhStaDocAct = 0";
             }
         }
 
         // สถานะการใช้งาน
         $tSearchUsedStatus = $aAdvanceSearch['tSearchUsedStatus'];
         $tSQLSearchUsedStatus = "";
-        switch ($tSearchUsedStatus) {
-            case '1': { // หยุดการใช้งาน
-                    $tSQL .= "
+        switch($tSearchUsedStatus){
+            case '1' : { // หยุดการใช้งาน
+                $tSQL .= "
                     AND (
                         HD.FTPmhStaDoc <> '3' AND HD.FTPmhStaClosed = '1' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStart,120),' ',CONVERT(CHAR(8), HD.FDPmhTStart, 108)) <= CONVERT(CHAR(19), GETDATE(), 120) 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) >= CONVERT(CHAR(19), GETDATE(), 120) 
                     )
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND (
                         HD.FTPmhStaDoc <> '3' AND HD.FTPmhStaClosed = '1' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStart,120),' ',CONVERT(CHAR(8), HD.FDPmhTStart, 108)) <= CONVERT(CHAR(19), GETDATE(), 120) 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) >= CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    break;
-                }
-            case '2': { // ใช้งาน
-                    $tSQL .= "
+                break;
+            }
+            case '2' : { // ใช้งาน
+                $tSQL .= "
                     AND (
                         HD.FTPmhStaDoc <> '3' AND HD.FTPmhStaClosed = '0' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStart,120),' ',CONVERT(CHAR(8), HD.FDPmhTStart, 108)) <= CONVERT(CHAR(19), GETDATE(), 120) 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) >= CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND (
                         HD.FTPmhStaDoc <> '3' AND HD.FTPmhStaClosed = '0' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStart,120),' ',CONVERT(CHAR(8), HD.FDPmhTStart, 108)) <= CONVERT(CHAR(19), GETDATE(), 120) 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) >= CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    break;
-                }
-            case '3': { // ยังไม่เริ่ม
-                    $tSQL .= "
+                break;
+            }
+            case '3' : { // ยังไม่เริ่ม
+                $tSQL .= "
                     AND (
                         HD.FTPmhStaDoc <> '3' 
                         AND CONVERT(CHAR(10),HD.FDPmhDStart,120) > CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND (
                         HD.FTPmhStaDoc <> '3' 
                         AND CONVERT(CHAR(10),HD.FDPmhDStart,120) > CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    break;
-                }
-            case '4': { // หมดอายุ
-                    $tSQL .= "
+                break;
+            }
+            case '4' : { // หมดอายุ
+                $tSQL .= "
                     AND (
                         HD.FTPmhStaDoc <> '3' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) < CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND (
                         HD.FTPmhStaDoc <> '3' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) < CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    break;
-                }
-            case '5': { // ยกเลิก
-                    $tSQL .= "
+                break;
+            }
+            case '5' : { // ยกเลิก
+                $tSQL .= "
                     AND HD.FTPmhStaDoc = '3'
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND HD.FTPmhStaDoc = '3'
                 ";
-                    break;
-                }
-            default: {
-                }
+                break;
+            }
+            default : {}
         }
 
         // สถานะประมวลผล
@@ -362,11 +340,11 @@ class mPromotion extends CI_Model
             ";
         } */
 
-        $tSQL .= ") Base) AS c WHERE c.FNRowID > ".$this->db->escape($aRowLen[0])." AND c.FNRowID <= ".$this->db->escape($aRowLen[1])." ";
+        $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
+
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
             $oList = $oQuery->result();
-            // print_r($oList);
             $nFoundRow = $this->FSnMHDListGetPageAll($paParams);
             $nPageAll = ceil($nFoundRow / $paParams['nRow']); // หา Page All จำนวน Rec หาร จำนวนต่อหน้า
             $aResult = array(
@@ -403,15 +381,15 @@ class mPromotion extends CI_Model
     public function FSnMHDListGetPageAll($paParams = [])
     {
         $nLngID = $paParams['FNLngID'];
-
+        
         $tSQL = "
             SELECT DISTINCT
                 HD.FTPmhDocNo
             FROM TCNTPdtPmtHD HD WITH (NOLOCK)
-            LEFT JOIN TCNTPdtPmtHD_L HDL WITH (NOLOCK) ON HDL.FTPmhDocNo = HD.FTPmhDocNo AND HDL.FNLngID = ".$this->db->escape($nLngID)."
-            LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON BCHL.FTBchCode = HD.FTBchCode AND BCHL.FNLngID = ".$this->db->escape($nLngID)."
-            LEFT JOIN TCNMUser_L USRL WITH (NOLOCK) ON USRL.FTUsrCode = HD.FTCreateBy AND USRL.FNLngID = ".$this->db->escape($nLngID)."
-            LEFT JOIN TCNMUser_L USRLAPV WITH (NOLOCK) ON HD.FTPmhUsrApv = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = ".$this->db->escape($nLngID)."
+            LEFT JOIN TCNTPdtPmtHD_L HDL WITH (NOLOCK) ON HDL.FTPmhDocNo = HD.FTPmhDocNo AND HDL.FNLngID = $nLngID
+            LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON BCHL.FTBchCode = HD.FTBchCode AND BCHL.FNLngID = $nLngID
+            LEFT JOIN TCNMUser_L USRL WITH (NOLOCK) ON USRL.FTUsrCode = HD.FTCreateBy AND USRL.FNLngID = $nLngID
+            LEFT JOIN TCNMUser_L USRLAPV WITH (NOLOCK) ON HD.FTPmhUsrApv = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = $nLngID
             WHERE 1=1
         ";
 
@@ -419,8 +397,8 @@ class mPromotion extends CI_Model
         $tSearchList = $aAdvanceSearch['tSearchAll'];
         $tSQLSearchAll = '';
         if ($tSearchList != '') {
-            $tSQL .= " AND ((HD.FTPmhDocNo COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (HDL.FTPmhName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (BCHL.FTBchName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (USRL.FTUsrName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (USRLAPV.FTUsrName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%'))";
-            $tSQLSearchAll = " AND ((HD.FTPmhDocNo COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (HDL.FTPmhName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (BCHL.FTBchName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (USRL.FTUsrName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%') OR (USRLAPV.FTUsrName COLLATE THAI_BIN LIKE '%".$this->db->escape_like_str($tSearchList)."%'))";
+            $tSQL .= " AND ((HD.FTPmhDocNo COLLATE THAI_BIN LIKE '%$tSearchList%') OR (HDL.FTPmhName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (BCHL.FTBchName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (USRL.FTUsrName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (USRLAPV.FTUsrName COLLATE THAI_BIN LIKE '%$tSearchList%'))";
+            $tSQLSearchAll = " AND ((HD.FTPmhDocNo COLLATE THAI_BIN LIKE '%$tSearchList%') OR (HDL.FTPmhName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (BCHL.FTBchName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (USRL.FTUsrName COLLATE THAI_BIN LIKE '%$tSearchList%') OR (USRLAPV.FTUsrName COLLATE THAI_BIN LIKE '%$tSearchList%'))";
         }
 
         // จากสาขา - ถึงสาขา
@@ -428,8 +406,8 @@ class mPromotion extends CI_Model
         $tSearchBchCodeTo = $aAdvanceSearch['tSearchBchCodeTo'];
         $tSQLSearchBch = '';
         if (!empty($tSearchBchCodeFrom) && !empty($tSearchBchCodeFrom)) {
-            $tSQL .= " AND ((HD.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeFrom)." AND ".$this->db->escape($tSearchBchCodeTo).") OR (HD.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeTo)." AND ".$this->db->escape($tSearchBchCodeFrom)."))";
-            $tSQLSearchBch = " AND ((HD.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeFrom)." AND ".$this->db->escape($tSearchBchCodeTo).") OR (HD.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeTo)." AND ".$this->db->escape($tSearchBchCodeFrom)."))";
+            $tSQL .= " AND ((HD.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (HD.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
+            $tSQLSearchBch = " AND ((HD.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (HD.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
         }
 
         // จากวันที่ - ถึงวันที่
@@ -437,22 +415,21 @@ class mPromotion extends CI_Model
         $tSearchDocDateTo = $aAdvanceSearch['tSearchDocDateTo'];
         $tSQLSearchDocDate = '';
         if (!empty($tSearchDocDateFrom) && !empty($tSearchDocDateTo)) {
-            $tSQL .= " AND ((HD.FDCreateOn BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 23:59:59").")) OR (HD.FDCreateOn BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 23:59:59").")))";
-            $tSQLSearchDocDate = " AND ((HD.FDCreateOn BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 23:59:59").")) OR (HD.FDCreateOn BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 23:59:59").")))";
+            $tSQL .= " AND ((HD.FDCreateOn BETWEEN CONVERT(datetime,'$tSearchDocDateFrom 00:00:00') AND CONVERT(datetime,'$tSearchDocDateTo 23:59:59')) OR (HD.FDCreateOn BETWEEN CONVERT(datetime,'$tSearchDocDateTo 00:00:00') AND CONVERT(datetime,'$tSearchDocDateFrom 23:59:59')))";
+            $tSQLSearchDocDate = " AND ((HD.FDCreateOn BETWEEN CONVERT(datetime,'$tSearchDocDateFrom 00:00:00') AND CONVERT(datetime,'$tSearchDocDateTo 23:59:59')) OR (HD.FDCreateOn BETWEEN CONVERT(datetime,'$tSearchDocDateTo 00:00:00') AND CONVERT(datetime,'$tSearchDocDateFrom 23:59:59')))";
         }
 
         // ค้นหาสถานะเอกสาร
         $tSearchStaDoc = $aAdvanceSearch['tSearchStaDoc'];
-        if (isset($tSearchStaDoc) && !empty($tSearchStaDoc)) {
+        if(isset($tSearchStaDoc) && !empty($tSearchStaDoc)){
             if ($tSearchStaDoc == 3) {
-                $tSQL .= " AND HD.FTPmhStaDoc = ".$this->db->escape($tSearchStaDoc)." ";
+                $tSQL .= " AND HD.FTPmhStaDoc = '$tSearchStaDoc'";
             } elseif ($tSearchStaDoc == 2) {
                 $tSQL .= " AND ISNULL(HD.FTPmhStaApv,'') = '' AND HD.FTPmhStaDoc != '3'";
             } elseif ($tSearchStaDoc == 1) {
-                $tSQL .= " AND HD.FTPmhStaApv = ".$this->db->escape($tSearchStaDoc)." ";
+                $tSQL .= " AND HD.FTPmhStaApv = '$tSearchStaDoc'";
             }
         }
-
 
         // $tSearchStaPrcStk = $aAdvanceSearch['tSearchStaPrcStk'];
         // // ค้นหาสถานะประมวลผล
@@ -478,81 +455,80 @@ class mPromotion extends CI_Model
         // สถานะการใช้งาน
         $tSearchStaPrcStk = $aAdvanceSearch['tSearchUsedStatus'];
         $tSQLSearchUsedStatus = "";
-        switch ($tSearchStaPrcStk) {
-            case '1': { // หยุดการใช้งาน
-                    $tSQL .= "
+        switch($tSearchStaPrcStk){
+            case '1' : { // หยุดการใช้งาน
+                $tSQL .= "
                     AND (
                         HD.FTPmhStaDoc <> '3' AND HD.FTPmhStaClosed = '1' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStart,120),' ',CONVERT(CHAR(8), HD.FDPmhTStart, 108)) <= CONVERT(CHAR(19), GETDATE(), 120) 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) >= CONVERT(CHAR(19), GETDATE(), 120) 
                     )
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND (
                         HD.FTPmhStaDoc <> '3' AND HD.FTPmhStaClosed = '1' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStart,120),' ',CONVERT(CHAR(8), HD.FDPmhTStart, 108)) <= CONVERT(CHAR(19), GETDATE(), 120) 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) >= CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    break;
-                }
-            case '2': { // ใช้งาน
-                    $tSQL .= "
+                break;
+            }
+            case '2' : { // ใช้งาน
+                $tSQL .= "
                     AND (
                         HD.FTPmhStaDoc <> '3' AND HD.FTPmhStaClosed = '0' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStart,120),' ',CONVERT(CHAR(8), HD.FDPmhTStart, 108)) <= CONVERT(CHAR(19), GETDATE(), 120) 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) >= CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND (
                         HD.FTPmhStaDoc <> '3' AND HD.FTPmhStaClosed = '0' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStart,120),' ',CONVERT(CHAR(8), HD.FDPmhTStart, 108)) <= CONVERT(CHAR(19), GETDATE(), 120) 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) >= CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    break;
-                }
-            case '3': { // ยังไม่เริ่ม
-                    $tSQL .= "
+                break;
+            }
+            case '3' : { // ยังไม่เริ่ม
+                $tSQL .= "
                     AND (
                         HD.FTPmhStaDoc <> '3' 
                         AND CONVERT(CHAR(10),HD.FDPmhDStart,120) > CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND (
                         HD.FTPmhStaDoc <> '3' 
                         AND CONVERT(CHAR(10),HD.FDPmhDStart,120) > CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    break;
-                }
-            case '4': { // หมดอายุ
-                    $tSQL .= "
+                break;
+            }
+            case '4' : { // หมดอายุ
+                $tSQL .= "
                     AND (
                         HD.FTPmhStaDoc <> '3' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) < CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                     AND (
                         HD.FTPmhStaDoc <> '3' 
                         AND CONCAT(CONVERT(CHAR(10),HD.FDPmhDStop,120),' ',CONVERT(CHAR(8), HD.FDPmhTStop, 108)) < CONVERT(CHAR(19), GETDATE(), 120)
                     )
                 ";
-                    break;
-                }
-            case '5': { // ยกเลิก
-                    $tSQL .= "
+                break;
+            }
+            case '5' : { // ยกเลิก
+                $tSQL .= "
                     AND HD.FTPmhStaDoc = '3'
                 ";
-                    $tSQLSearchUsedStatus = "
+                $tSQLSearchUsedStatus = "
                 ";
-                    break;
-                }
-            default: {
-                }
+                break;
+            }
+            default : {}
         }
 
         // สถานะประมวลผล
@@ -693,7 +669,7 @@ class mPromotion extends CI_Model
                 )
             ";
         } */
-        // print_r($tSQL);
+
         $oQuery = $this->db->query($tSQL);
         return $oQuery->num_rows();
     }
@@ -863,101 +839,6 @@ class mPromotion extends CI_Model
 			OR (TMP.FTPmdStaType = '2' AND TMP.FTSessionID = '$tUserSessionID')
             ORDER BY TMP.FTPmdGrpName ASC
         ";
-
-        $this->db->query($tSQL);
-    }
-
-        /**
-     * Functionality : Insert Temp to PdtPmtDTLOT
-     * Parameters : -
-     * Creator : 04/02/2020 piya
-     * Last Modified : -
-     * Return : Status
-     * Return Type : Array
-     */
-    public function FSaMTempToPdtPmtDTLOT($paParams = [])
-    {
-
-        $tDocNo = $paParams['tDocNo'];
-        $tUserSessionID = $paParams['tUserSessionID']; // User Session
-        $tBchCode = $paParams['tBchCode'];
-
-        // ทำการลบ ใน TCNTPdtPmtDT ก่อนการย้าย Temp ไป TCNTPdtPmtDT
-        $this->db->where('FTPmhDocNo', $tDocNo);
-        $this->db->delete('TCNTPdtPmtDTLot');
-
-        // Update Seq Lot Tmp
-        // $tSQLUpdate = "  SELECT
-        //         FTPmhDocNo,
-        //         FNPmdSeq,
-        //         FTPmdRefCode,
-        //         FTPmdSubRef,
-        //         FTPmdBarCode
-        //     FROM TCNTPdtPmtDT DT WITH(NOLOCK)
-        //     WHERE FTPmhDocNo = '$tDocNo'
-        // ";
-
-        // $oQuery = $this->db->query($tSQLUpdate);
-        // $oList = $oQuery->result_array();
-
-        // foreach($oList as $nKey => $aValue){
-        //     $this->db->set('FNPmdSeq', $aValue['FNPmdSeq']);
-        //     $this->db->where('FTPmhDocNo', $aValue['FTPmhDocNo']);
-        //     $this->db->where('FTPmdRefCode', $aValue['FTPmdRefCode']);
-        //     $this->db->where('FTSessionID', $tUserSessionID);
-        //     $this->db->update('TCNTPdtPmtDTLot_Tmp');
-        // }
-
-
-        // Insert DTLOT
-
-        $tSQLChangeSeq = "UPDATE TCNTPdtPmtDTLot_Tmp WITH ( ROWLOCK ) 
-        SET FNPmdSeq = x.FNPmdSeq 
-        FROM
-            TCNTPdtPmtDTLot_Tmp DT
-            LEFT JOIN (
-                SELECT
-                    ROW_NUMBER ( ) OVER ( ORDER BY TMP.FTPmdGrpName ASC, TMP.FNPmdSeq ASC ) AS FNPmdSeq,
-                    TMP.FNPmdSeq AS OldSeq 
-                FROM
-                    TCNTPdtPmtDT_Tmp TMP WITH ( NOLOCK ) 
-                WHERE
-                    TMP.FTSessionID = '$tUserSessionID' 
-                    AND (
-                        TMP.FTPmdGrpName IN ( SELECT DISTINCT CB.FTPmdGrpName FROM TCNTPdtPmtCB_Tmp CB WITH ( NOLOCK ) WHERE CB.FTSessionID = '$tUserSessionID' ) 
-                        OR TMP.FTPmdGrpName IN ( SELECT DISTINCT CG.FTPmdGrpName FROM TCNTPdtPmtCG_Tmp CG WITH ( NOLOCK ) WHERE CG.FTSessionID = '$tUserSessionID' ) 
-                    ) 
-                    OR ( TMP.FTPmdStaType = '2' AND TMP.FTSessionID = '$tUserSessionID' ) 
-            ) x ON DT.FNPmdSeq = x.OldSeq 
-        WHERE
-        DT.FTSessionID = '$tUserSessionID' 
-        ";
-
-        $this->db->query($tSQLChangeSeq);
-
-
-        $tSQL = "   
-            INSERT TCNTPdtPmtDTLot 
-                (FTBchCode,
-                FTPmhDocNo,
-                FNPmdSeq,
-                FTPmdRefCode,
-                FTPmdLotNo)
-        ";
-
-        $tSQL .= "  
-            SELECT DISTINCT
-                '$tBchCode' AS FTBchCode,
-                TMP.FTPmhDocNo,
-                TMP.FNPmdSeq,
-                TMP.FTPmdRefCode,
-                TMP.FTPmdLotNo
-            FROM TCNTPdtPmtDTLot_Tmp TMP WITH(NOLOCK)
-            LEFT JOIN TCNTPdtPmtDT_Tmp DT ON TMP.FNPmdSeq = DT.FNPmdSeq AND DT.FTSessionID = '$tUserSessionID'
-            LEFT JOIN TCNTPdtPmtDT DTT ON TMP.FTPmdRefCode = DTT.FTPmdRefCode AND DT.FTPmdBarCode = DTT.FTPmdBarCode AND DT.FTPmdSubRef = DTT.FTPmdSubRef AND DTT.FTPmhDocNo = DT.FTPmhDocNo
-            WHERE TMP.FTSessionID = '$tUserSessionID'
-        ";
-        
 
         $this->db->query($tSQL);
     }
@@ -1305,52 +1186,6 @@ class mPromotion extends CI_Model
         $this->db->query($tSQL);
     }
 
-        /**
-     * Functionality : Insert PdtPmtDT to Temp
-     * Parameters : -
-     * Creator : 04/02/2020 piya
-     * Last Modified : -
-     * Return : Status
-     * Return Type : Array
-     */
-    public function FSaMPdtPmtDTLotToTemp($paParams = [])
-    {
-        $tDocNo = $paParams['tDocNo'];
-        $nLngID = $paParams['nLngID'];
-        $tUserSessionID = $paParams['tUserSessionID']; // User Session
-        $tUserSessionDate = $paParams['tUserSessionDate']; // User Session Date
-
-        // ทำการลบ ใน Temp ก่อนการย้าย TCNTPdtPmtCB ไป Temp
-        $this->db->where('FTSessionID', $tUserSessionID);
-        $this->db->delete('TCNTPdtPmtDTLot_Tmp');
-
-        $tSQL = "   
-            INSERT TCNTPdtPmtDTLot_Tmp 
-                (FTBchCode,
-                FTPmhDocNo,
-                FNPmdSeq,
-                FTPmdRefCode,
-                FTPmdLotNo,
-                FDCreateOn,
-                FTSessionID)
-        ";
-
-        $tSQL .= "  
-            SELECT DISTINCT 
-                LOT.FTBchCode,
-                LOT.FTPmhDocNo,
-                LOT.FNPmdSeq,
-                LOT.FTPmdRefCode,
-                LOT.FTPmdLotNo,
-                '$tUserSessionDate' AS FDCreateOn,
-                '$tUserSessionID' AS FTSessionID
-                FROM TCNTPdtPmtDTLot LOT WITH(NOLOCK)
-                WHERE LOT.FTPmhDocNo = '$tDocNo'
-        ";
-
-        $this->db->query($tSQL);
-    }
-
     /**
      * Functionality : Insert PdtPmtCB to Temp
      * Parameters : -
@@ -1645,11 +1480,8 @@ class mPromotion extends CI_Model
         $this->db->where('FTSessionID', $paParams['tUserSessionID']);
         $this->db->delete('TCNTPdtPmtHDPay_Tmp');
 
-        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->delete('TCNTPdtPmtHDSeq_Tmp');
-
-        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->delete('TCNTPdtPmtDTLot_Tmp');
+        
+			 
     }
 
     /**
@@ -1753,7 +1585,7 @@ class mPromotion extends CI_Model
             $this->db->set('FTPmhStaOnTopDis', $paParams['FTPmhStaOnTopDis']);
             $this->db->set('FTPmhStaOnTopPmt', $paParams['FTPmhStaOnTopPmt']);
             // $this->db->set('FTPmhStaSpcGrpDis', $paParams['FTPmhStaSpcGrpDis']);
-
+            
             $this->db->set('FTPmhStaAlwCalPntStd', $paParams['FTPmhStaAlwCalPntStd']);
             $this->db->set('FTPmhStaRcvFree', $paParams['FTPmhStaRcvFree']);
             $this->db->set('FTPmhStaLimitGet', $paParams['FTPmhStaLimitGet']);
@@ -1958,14 +1790,6 @@ class mPromotion extends CI_Model
         $this->db->update('TCNTPdtPmtHDPay_Tmp');
 
 
-        $this->db->set('FTPmhDocNo', $paParams['tDocNo']);
-        $this->db->where('FTPmhDocNo', 'PMTDOCTEMP');
-        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->update('TCNTPdtPmtHDSeq_Tmp');
-
-        $this->db->set('FTPmhDocNo', $paParams['tDocNo']);
-        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->update('TCNTPdtPmtDTLot_Tmp');
     }
 
     /**
@@ -2114,17 +1938,12 @@ class mPromotion extends CI_Model
             $this->db->where('FTPmhDocNo', $tDocNo);
             $this->db->delete('TCNTPdtPmtHDChn');
 
-            $this->db->where('FTPmhDocNo', $tDocNo);
-            $this->db->delete('TCNTPdtPmtHDSeq');
-
-            $this->db->where('FTPmhDocNo', $tDocNo);
-            $this->db->delete('TCNTPdtPmtDTLot');
         } catch (Exception $Error) {
             return $Error;
         }
     }
 
-    /**
+        /**
      * Functionality : Insert Temp to PdtPmtHDChn
      * Parameters : -
      * Creator : 04/01/2021 Worakorn
@@ -2165,7 +1984,7 @@ class mPromotion extends CI_Model
         $this->db->query($tSQL);
     }
 
-    /**
+       /**
      * Functionality : Insert PdtPmtHDChn to Temp
      * Parameters : -
      * Creator : 04/01/2021 Worakorn
@@ -2217,7 +2036,7 @@ class mPromotion extends CI_Model
 
 
 
-    /**
+     /**
      * Functionality : Insert Temp to PdtPmtHDRcv
      * Parameters : -
      * Creator : 21/09/2021 Worakorn
@@ -2258,7 +2077,7 @@ class mPromotion extends CI_Model
         $this->db->query($tSQL);
     }
 
-    /**
+       /**
      * Functionality : Insert PdtPmtHDRcv to Temp
      * Parameters : -
      * Creator : 21/09/2021 Worakorn
@@ -2311,7 +2130,7 @@ class mPromotion extends CI_Model
 
 
 
-    /**
+         /**
      * Functionality : Insert Temp to PdtPmtHDCst
      * Parameters : -
      * Creator : 21/09/2021 Worakorn
@@ -2352,7 +2171,7 @@ class mPromotion extends CI_Model
         $this->db->query($tSQL);
     }
 
-    /**
+       /**
      * Functionality : Insert PdtPmtHDCst to Temp
      * Parameters : -
      * Creator : 21/09/2021 Worakorn
@@ -2376,6 +2195,7 @@ class mPromotion extends CI_Model
                 (FTBchCode,
                 FTPmhDocNo,
                 FTClvCode,
+                FTClvName,
                 FTPmhStaType,
                 FDCreateOn,
                 FTSessionID)
@@ -2386,6 +2206,7 @@ class mPromotion extends CI_Model
             HDCSTCST.FTBchCode,
                 'PMTDOCTEMP' AS FTPmhDocNo,
                 HDCSTCST.FTClvCode,
+                CLVL.FTClvName,
                 HDCSTCST.FTPmhStaType,
                 '$tUserSessionDate' AS FDCreateOn,
                 '$tUserSessionID' AS FTSessionID
@@ -2398,431 +2219,6 @@ class mPromotion extends CI_Model
         // print_r($tSQL); die();
 
         $this->db->query($tSQL);
-    }
-
-
-
-    /**
-     * Functionality : Insert Temp to PdtPmtHDCst
-     * Parameters : -
-     * Creator : 21/09/2021 Worakorn
-     * Last Modified : -
-     * Return : Status
-     * Return Type : Array
-     */
-    public function FSaMTempToPdtPmtHDPnp($paParams = [])
-    {
-
-        $tDocNo = $paParams['tDocNo'];
-        $tUserSessionID = $paParams['tUserSessionID']; // User Session
-        $tBchCode = $paParams['tBchCode'];
-
-        // ทำการลบ ใน TCNTPdtPmtHDChn ก่อนการย้าย Temp ไป TCNTPdtPmtHDChn
-        $this->db->where('FTPmhDocNo', $tDocNo);
-        $this->db->delete('TCNTPdtPmtHDSeq');
-
-        $tSQL = "   
-            INSERT TCNTPdtPmtHDSeq
-                (FTBchCode,
-                FTPmhDocNo,
-                FTPmhDocRef,
-                FTPmhStaType)
-        ";
-
-        $tSQL .= "  
-            SELECT
-                '$tBchCode' AS FTBchCode,
-                TMP.FTPmhDocNo,
-                TMP.FTPmhDocRef,
-                TMP.FTPmhStaType
-            FROM TCNTPdtPmtHDSeq_Tmp TMP WITH(NOLOCK)
-            WHERE TMP.FTSessionID = '$tUserSessionID'
-            ORDER BY TMP.FTPmhDocNo ASC
-        ";
-
-        $this->db->query($tSQL);
-    }
-
-    /**
-     * Functionality : Insert PdtPmtHDCPnp to Temp
-     * Parameters : -
-     * Creator : 21/09/2021 Worakorn
-     * Last Modified : -
-     * Return : Status
-     * Return Type : Array
-     */
-    public function FSaMPdtPmtHDPnpToTemp($paParams = [])
-    {
-        $tDocNo = $paParams['tDocNo'];
-        $nLngID = $paParams['nLngID'];
-        $tUserSessionID = $paParams['tUserSessionID']; // User Session
-        $tUserSessionDate = $paParams['tUserSessionDate']; // User Session Date
-
-        // ทำการลบ ใน Temp ก่อนการย้าย TCNTPdtPmtHDChn ไป Temp
-        $this->db->where('FTSessionID', $tUserSessionID);
-        $this->db->delete('TCNTPdtPmtHDSeq_Tmp');
-
-        $tSQL = "   
-            INSERT TCNTPdtPmtHDSeq_Tmp 
-                (FTBchCode,
-                FTPmhDocNo,
-                FTPmhDocRef,
-                FTPmhStaType,
-                FDCreateOn,
-                FTSessionID)
-        ";
-
-        $tSQL .= "  
-            SELECT
-            HDCSTCST.FTBchCode,
-                'PMTDOCTEMP' AS FTPmhDocNo,
-                HDCSTCST.FTPmhDocRef,
-                HDCSTCST.FTPmhStaType,
-                '$tUserSessionDate' AS FDCreateOn,
-                '$tUserSessionID' AS FTSessionID
-            FROM TCNTPdtPmtHDSeq HDCSTCST WITH(NOLOCK)
-            LEFT JOIN TCNTPdtPmtHD_L CLVL ON CLVL.FTPmhDocNo = HDCSTCST.FTPmhDocRef  AND CLVL.FNLngID = $nLngID
-            WHERE HDCSTCST.FTPmhDocNo = '$tDocNo'
-            ORDER BY CLVL.FTPmhName ASC
-        ";
-
-        // print_r($tSQL); die();
-
-        $this->db->query($tSQL);
-    }
-
-    //Functionality : Copy Promotion Document
-    //Parameters : function parameters
-    //Creator : 17/03/2022 Off
-    public function FSaMPromotionCopyHD($ptDocumentNumber,$ptPromotionDocNo){
-
-        //Copy TCNTPdtPmtHD
-        $tSQLInsert = " INSERT TCNTPdtPmtHD (
-        FTBchCode,
-        FTPmhDocNo,
-        FDPmhDStart,
-        FDPmhDStop,
-        FDPmhTStart,
-        FDPmhTStop,
-        FTPmhStaLimitCst,
-        FTPmhStaClosed,
-        FTPmhStaDoc,
-        FTPmhStaPrcDoc,
-        FNPmhStaDocAct,
-        FTUsrCode,
-        FTPmhStaGrpPriority,
-        FTPmhStaGetPri,
-        FTPmhStaChkQuota,
-        FTPmhStaOnTopDis,
-        FTPmhStaOnTopPmt,
-        FTPmhStaAlwCalPntStd,
-        FTPmhStaRcvFree,
-        FTPmhStaLimitGet,
-        FTPmhStaLimitTime,
-        FTPmhStaGetPdt,
-        FTPmhRefAccCode,
-        FTRolCode,
-        FNPmhLimitQty,
-        FTPmhStaChkLimit,
-        FTPmhStaChkCst,
-        FDCreateOn,
-        FTCreateBy,
-        FDLastUpdOn,
-        FTLastUpdBy
-        )SELECT 
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FDPmhDStart,
-        FDPmhDStop,
-        FDPmhTStart,
-        FDPmhTStop,
-        FTPmhStaLimitCst,
-        FTPmhStaClosed,
-        '1',
-        FTPmhStaPrcDoc,
-        FNPmhStaDocAct,
-        FTUsrCode,
-        FTPmhStaGrpPriority,
-        FTPmhStaGetPri,
-        FTPmhStaChkQuota,
-        FTPmhStaOnTopDis,
-        FTPmhStaOnTopPmt,
-        FTPmhStaAlwCalPntStd,
-        FTPmhStaRcvFree,
-        FTPmhStaLimitGet,
-        FTPmhStaLimitTime,
-        FTPmhStaGetPdt,
-        FTPmhRefAccCode,
-        FTRolCode,
-        FNPmhLimitQty,
-        FTPmhStaChkLimit,
-        FTPmhStaChkCst,
-        GETDATE(),
-        FTCreateBy,
-        GETDATE(),
-        FTLastUpdBy
-        FROM TCNTPdtPmtHD WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        //Copy TCNTPdtPmtHD_L
-        $tSQLInsert = " INSERT TCNTPdtPmtHD_L (
-        FTBchCode,
-        FTPmhDocNo,
-        FTPmhName,
-        FTPmhNameSlip,
-        FTPmhRmk,
-        FNLngID
-        )SELECT 
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FTPmhName,
-        FTPmhNameSlip,
-        FTPmhRmk,
-        FNLngID
-        FROM TCNTPdtPmtHD_L WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        //Copy TCNTPdtPmtHDCst
-        $tSQLInsert = " INSERT TCNTPdtPmtHDCst (
-        FTBchCode,
-        FTPmhDocNo,
-        FTSpmStaLimitCst,
-        FNSpmMemAgeLT,
-        FTSpmStaChkCstDOB,
-        FNPmhCstDobPrev,
-        FNPmhCstDobNext
-        )SELECT 
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FTSpmStaLimitCst,
-        FNSpmMemAgeLT,
-        FTSpmStaChkCstDOB,
-        FNPmhCstDobPrev,
-        FNPmhCstDobNext
-        FROM TCNTPdtPmtHDCst WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        //Copy TCNTPdtPmtDT
-        $tSQLInsert = " INSERT TCNTPdtPmtDT (
-        FTBchCode,
-        FTPmhDocNo,
-        FNPmdSeq,
-        FTPmdStaType,
-        FTPmdGrpName,
-        FTPmdRefCode,
-        FTPmdSubRef,
-        FTPmdBarCode
-        )SELECT 
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FNPmdSeq,
-        FTPmdStaType,
-        FTPmdGrpName,
-        FTPmdRefCode,
-        FTPmdSubRef,
-        FTPmdBarCode
-        FROM TCNTPdtPmtDT WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtDTLot
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtDTLot (
-        FTBchCode,
-        FTPmhDocNo,
-        FNPmdSeq,
-        FTPmdRefCode,
-        FTPmdLotNo
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FNPmdSeq,
-        FTPmdRefCode,
-        FTPmdLotNo
-        FROM TCNTPdtPmtDTLot WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtCB
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtCB (
-        FTBchCode,
-        FTPmhDocNo,
-        FNPbySeq,
-        FTPmdGrpName,
-        FTPbyStaCalSum,
-        FTPbyStaBuyCond,
-        FTPbyStaPdtDT,
-        FCPbyPerAvgDis,
-        FCPbyMinSetPri,
-        FCPbyMinValue,
-        FCPbyMaxValue,
-        FTPbyMinTime,
-        FTPbyMaxTime
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FNPbySeq,
-        FTPmdGrpName,
-        FTPbyStaCalSum,
-        FTPbyStaBuyCond,
-        FTPbyStaPdtDT,
-        FCPbyPerAvgDis,
-        FCPbyMinSetPri,
-        FCPbyMinValue,
-        FCPbyMaxValue,
-        FTPbyMinTime,
-        FTPbyMaxTime
-        FROM TCNTPdtPmtCB WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtCG
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtCG (
-        FTBchCode,
-        FTPmhDocNo,
-        FNPgtSeq,
-        FTPmdGrpName,
-        FTPgtStaGetEffect,
-        FTPgtStaGetType,
-        FTPgtStaGetPdt,
-        FTRolCode,
-        FCPgtGetvalue,
-        FTPplCode,
-        FCPgtGetQty,
-        FCPgtPerAvgDis,
-        FTPgtStaPoint,
-        FTPgtStaPntCalType,
-        FTPgtStaPdtDT,
-        FNPgtPntGet,
-        FNPgtPntBuy,
-        FTPgtStaCoupon,
-        FTPgtCpnText,
-        FTCphDocNo
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FNPgtSeq,
-        FTPmdGrpName,
-        FTPgtStaGetEffect,
-        FTPgtStaGetType,
-        FTPgtStaGetPdt,
-        FTRolCode,
-        FCPgtGetvalue,
-        FTPplCode,
-        FCPgtGetQty,
-        FCPgtPerAvgDis,
-        FTPgtStaPoint,
-        FTPgtStaPntCalType,
-        FTPgtStaPdtDT,
-        FNPgtPntGet,
-        FNPgtPntBuy,
-        FTPgtStaCoupon,
-        FTPgtCpnText,
-        FTCphDocNo
-        FROM TCNTPdtPmtCG WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtHDBch
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtHDBch (
-        FTBchCode,
-        FTPmhDocNo,
-        FTPmhAgnTo,
-        FTPmhBchTo,
-        FTPmhMerTo,
-        FTPmhShpTo,
-        FTPmhStaType
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FTPmhAgnTo,
-        FTPmhBchTo,
-        FTPmhMerTo,
-        FTPmhShpTo,
-        FTPmhStaType
-        FROM TCNTPdtPmtHDBch WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtHDCstPri
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtHDCstPri (
-        FTBchCode,
-        FTPmhDocNo,
-        FTPplCode,
-        FTPmhStaType
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FTPplCode,
-        FTPmhStaType
-        FROM TCNTPdtPmtHDCstPri WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtHDChn
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtHDChn (
-        FTBchCode,
-        FTPmhDocNo,
-        FTChnCode,
-        FTPmhStaType
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FTChnCode,
-        FTPmhStaType
-        FROM TCNTPdtPmtHDChn WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtHDPay
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtHDPay (
-        FTBchCode,
-        FTPmhDocNo,
-        FTRcvCode,
-        FTPmhStaType
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FTRcvCode,
-        FTPmhStaType
-        FROM TCNTPdtPmtHDPay WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtHDCstPri
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtHDCstPri (
-        FTBchCode,
-        FTPmhDocNo,
-        FTPplCode,
-        FTPmhStaType
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FTPplCode,
-        FTPmhStaType
-        FROM TCNTPdtPmtHDCstPri WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-        ////Copy TCNTPdtPmtHDSeq
-        $tSQLInsert = " INSERT INTO TCNTPdtPmtHDSeq (
-        FTBchCode,
-        FTPmhDocNo,
-        FTPmhDocRef,
-        FTPmhStaType
-        )SELECT
-        FTBchCode,
-        ".$this->db->escape($ptPromotionDocNo).",
-        FTPmhDocRef,
-        FTPmhStaType
-        FROM TCNTPdtPmtHDSeq WHERE FTPmhDocNo = ".$this->db->escape($ptDocumentNumber)."
-        ";
-        $oQuery = $this->db->query($tSQLInsert);
-
-
-        return;
     }
 
 }

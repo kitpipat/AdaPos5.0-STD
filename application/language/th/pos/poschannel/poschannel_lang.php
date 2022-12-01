@@ -43,9 +43,9 @@ $lang['tRcvLabelChannelName']               = "ชื่อประเภทก
 $lang['tRcvLabelRefCode']                   = "รหัสอ้างอิง";
 
 
-$lang['tCstLabelTitle']                     = "ประเภทลูกค้า";
-$lang['tCstLabelChannelCode']               = "รหัสประเภทลูกค้า";
-$lang['tCstLabelChannelName']               = "ชื่อประเภทลูกค้า";
+$lang['tCstLabelTitle']                     = "ระดับลูกค้า";
+$lang['tCstLabelChannelCode']               = "รหัสระดับลูกค้า";
+$lang['tCstLabelChannelName']               = "ชื่อระดับลูกค้า";
 $lang['tCstLabelRefCode']                   = "รหัสอ้างอิง";
 
 

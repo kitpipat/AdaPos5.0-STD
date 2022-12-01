@@ -20,11 +20,11 @@ class cPromotionStep3Point extends MX_Controller
      */
     public function FStCPromotionGetPointInTmp()
     {
-        $nLangEdit          = $this->session->userdata("tLangEdit");
-        $tUserSessionID     = $this->session->userdata("tSesSessionID");
-        $tUserLoginCode     = $this->session->userdata("tSesUsername");
-        $tUserLevel         = $this->session->userdata('tSesUsrLevel');
-        $tBchCodeLogin      = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
+        $nLangEdit = $this->session->userdata("tLangEdit");
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
+        $tUserLoginCode = $this->session->userdata("tSesUsername");
+        $tUserLevel = $this->session->userdata('tSesUsrLevel');
+        $tBchCodeLogin = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
 
         $aGetPointInTmpParams = [
             'tUserSessionID' => $tUserSessionID
@@ -44,28 +44,28 @@ class cPromotionStep3Point extends MX_Controller
      */
     public function FSaCPromotionInsertOrUpdatePointToTmp()
     {
-        $tPgtPntBuy         = $this->input->post('tPgtPntBuy');
-        $tPgtPntGet         = $this->input->post('tPgtPntGet');
-        $tPgtStaPoint       = $this->input->post('tPgtStaPoint');
-        $tPgtStaPntCalType  = $this->input->post('tPgtStaPntCalType');
-        $nLangEdit          = $this->session->userdata("tLangEdit");
-        $tUserSessionID     = $this->session->userdata("tSesSessionID");
-        $tUserSessionDate   = $this->session->userdata("tSesSessionDate");
-        $tUserLoginCode     = $this->session->userdata("tSesUsername");
-        $tUserLevel         = $this->session->userdata('tSesUsrLevel');
-        $tBchCodeLogin      = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
+        $tPgtPntBuy = $this->input->post('tPgtPntBuy');
+        $tPgtPntGet = $this->input->post('tPgtPntGet');
+        $tPgtStaPoint = $this->input->post('tPgtStaPoint');
+        $tPgtStaPntCalType = $this->input->post('tPgtStaPntCalType');
+        $nLangEdit = $this->session->userdata("tLangEdit");
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
+        $tUserSessionDate = $this->session->userdata("tSesSessionDate");
+        $tUserLoginCode = $this->session->userdata("tSesUsername");
+        $tUserLevel = $this->session->userdata('tSesUsrLevel');
+        $tBchCodeLogin = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
 
         $this->db->trans_begin();
 
         $aAddUpdatePointInTempParams = [
-            'tUserSessionID'    => $tUserSessionID,
-            'tUserSessionDate'  => $tUserSessionDate,
-            'tPgtPntBuy'        => empty($tPgtPntBuy)?NULL:$tPgtPntBuy,
-            'tPgtPntGet'        => empty($tPgtPntGet)?NULL:$tPgtPntGet,
-            'tPgtStaPoint'      => $tPgtStaPoint,
+            'tUserSessionID' => $tUserSessionID,
+            'tUserSessionDate' => $tUserSessionDate,
+            'tPgtPntBuy' => empty($tPgtPntBuy)?NULL:$tPgtPntBuy,
+            'tPgtPntGet' => empty($tPgtPntGet)?NULL:$tPgtPntGet,
+            'tPgtStaPoint' => $tPgtStaPoint,
             'tPgtStaPntCalType' => $tPgtStaPntCalType,
-            'tBchCodeLogin'     => $tBchCodeLogin,
-            'tDocNo'            => 'PMTDOCTEMP'
+            'tBchCodeLogin' => $tBchCodeLogin,
+            'tDocNo' => 'PMTDOCTEMP'
         ];
         $this->mPromotionStep3Point->FSaMAddUpdatePointInTemp($aAddUpdatePointInTempParams);
 
@@ -78,8 +78,8 @@ class cPromotionStep3Point extends MX_Controller
         } else {
             $this->db->trans_commit();
             $aReturn = array(
-                'nStaEvent'     => '1',
-                'tStaMessg'     => 'Success InsertOrUpdatePointToTmp'
+                'nStaEvent'    => '1',
+                'tStaMessg' => 'Success InsertOrUpdatePointToTmp'
             );
         }
 
@@ -129,8 +129,8 @@ class cPromotionStep3Point extends MX_Controller
         $this->db->trans_begin();
 
         $aDeletePointInTmpParams = [
-            'tUserSessionID'    => $tUserSessionID,
-            'tDocNo'            => 'PMTDOCTEMP',
+            'tUserSessionID' => $tUserSessionID,
+            'tDocNo' => 'PMTDOCTEMP',
         ];
         $this->mPromotionStep3Point->FSbDeletePointInTmp($aDeletePointInTmpParams);
 
@@ -143,8 +143,8 @@ class cPromotionStep3Point extends MX_Controller
         } else {
             $this->db->trans_commit();
             $aReturn = array(
-                'nStaEvent'     => '1',
-                'tStaMessg'     => 'Success DeletePointInTmp'
+                'nStaEvent'    => '1',
+                'tStaMessg' => 'Success DeletePointInTmp'
             );
         }
 

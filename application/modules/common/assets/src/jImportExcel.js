@@ -86,8 +86,14 @@ function JSxImportPopUp(poPackdata){
         case 'adjstock':
             var tPathTemplate = $('#ohdBaseUrlUseInJS').val() + 'application/modules/common/assets/template/AdjustStock_Template.xlsx?v=' + tFormatVersion;
         break;
+        case 'adjstocksub':
+            var tPathTemplate = $('#ohdBaseUrlUseInJS').val() + 'application/modules/common/assets/template/AdjustStockSub_Template.xlsx?v=' + tFormatVersion;
+        break;
         case 'printbarcode':
-            var tPathTemplate = $('#ohdBaseUrlUseInJS').val() + 'application/modules/common/assets/template/PrintPriceTags_Template.xlsx?v=1.0.0';
+            var tPathTemplate = $('#ohdBaseUrlUseInJS').val() + 'application/modules/common/assets/template/PrintPriceTags_Template.xlsx?v=' + tFormatVersion;
+        break;
+        case 'transferwahouseout':
+            var tPathTemplate = $('#ohdBaseUrlUseInJS').val() + 'application/modules/common/assets/template/Transferwahouseout_Template.xlsx?v=' + tFormatVersion;
         break;
     }
     $('#odvModalImportFile #oahDowloadTemplate').attr("href",tPathTemplate);
@@ -1678,6 +1684,113 @@ function JSxWirteImportFile(evt) {
                         ///////////////////////////////////////////// DATATYPE
                     }
                 break;
+                case 'adjstocksub':
+                    //ตรวจสอบชื่อชิทว่าถูกต้องไหม
+                    if(typeof(aJSON['Adjust StockSub']) == 'undefined'){
+                        alert('รูปแบบเอกสารไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+                        return;
+                    }
+
+                    var aJSONData           = aJSON["Adjust StockSub"];
+                    var nCount              = aJSONData.length;
+                    var aNewPackData        = [];
+                    var aError              = [];
+
+                    //ตรวจสอบ excel cell ที่มันเป็นค่าว่าง
+                    for(var k=0; k<nCount; k++){
+                        if(aJSONData[k].length > 0){
+                            aNewPackData.push(aJSONData[k]);
+                        }
+                    }
+                    var nCount              = aNewPackData.length;
+                    var aJSONData           = aNewPackData;
+
+                    //ในลูปนี้จะเช็ค 2 step status 3:เช็ค MaxLen ,status 4:เช็ค DataType
+                    for(var j=0; j<nCount; j++){
+                        var tValueOld = '';
+
+                        //Template_Filed_ราคา
+                        if(typeof(aJSONData[j][3]) != 'undefined' || null){
+                            if(aJSONData[j][3] == null){
+                                aJSONData[j][3] = '0';
+                            }else{
+                                var Letters = /^[ก-๛A-Za-z]+$/;
+                                var nValue = aJSONData[j][3].toString();
+                                var nValue = nValue.replace(" ", "");
+                                if(nValue.match(Letters)){
+                                    //เอาตัวที่ผิดออก
+                                    var tValueOld  = aJSONData[j][3];
+                                    aJSONData[j].pop();
+                                    aJSONData[j].push(3);
+                                    aError.push('3','[3]'+'รูปแบบจำนวนผิด'+tValueOld);
+                                }
+                            }
+                        }else{
+                            aJSONData[j][2] = '0';
+                        }
+
+                        //Template_Filed_รหัสสินค้า
+                        if(typeof(aJSONData[j][0]) != 'undefined' || null){
+                            if(aJSONData[j][0] == null){
+                                aJSONData[j][0] = 'N/A';
+                                aError.push('7','[0]'+'รหัสสินค้าไม่ได้ระบุข้อมูล'+'N/A');
+                            }else{
+                                if(aJSONData[j][0].length > 20){
+                                    var tValueOld   = aJSONData[j][0];
+                                    aJSONData[j][0] = aJSONData[j][0].substring(0, 20);
+                                    aError.push('4','[0]'+'รหัสสินค้ายาวเกินกำหนด'+tValueOld);
+                                }
+                            }
+                        }else{
+                            aJSONData[j][0] = 'N/A';
+                            aError.push('4','[0]'+'รหัสสินค้ายาวเกินกำหนด'+tValueOld);
+                        }
+
+
+                        //Template_Filed_รหัสบาร์โคด
+                        if(typeof(aJSONData[j][1]) != 'undefined' || null){
+                            if(aJSONData[j][1] == null){
+                                aJSONData[j][1] = 'N/A';
+                                aError.push('7','[1]'+'รหัสบาร์โคดไม่ได้ระบุข้อมูล'+'N/A');
+                            }else{
+                                if(aJSONData[j][1].length > 25){
+                                    var tValueOld   = aJSONData[j][1];
+                                    aJSONData[j][1] = aJSONData[j][1].substring(0, 25);
+                                    aError.push('4','[1]'+'รหัสบาร์โคดยาวเกินกำหนด'+tValueOld);
+                                }
+                            }
+                        }else{
+                            aJSONData[j][1] = 'N/A';
+                            aError.push('4','[1]'+'รหัสบาร์โคดยาวเกินกำหนด'+tValueOld);
+                        }
+
+                        //Template_Filed_รหัสควบคุมสต็อก
+                        if(typeof(aJSONData[j][3]) != 'undefined' || null){
+                            if(aJSONData[j][3] == null){
+                                aJSONData[j][3] = 'N/A';
+                                aError.push('7','[3]'+'รหัสควบคุมสต็อกไม่ได้ระบุข้อมูล'+'N/A');
+                            }else{
+                                if(aJSONData[j][3].length > 25){
+                                    var tValueOld   = aJSONData[j][3];
+                                    aJSONData[j][3] = aJSONData[j][3].substring(0, 25);
+                                    aError.push('4','[3]'+'รหัสควบคุมสต็อกยาวเกินกำหนด'+tValueOld);
+                                }
+                            }
+                        }else{
+                            aJSONData[j][3] = 'N/A';
+                            aError.push('4','[3]'+'รหัสควบคุมสต็อกยาวเกินกำหนด'+tValueOld);
+                        }
+
+                        //ถ้าผ่านทุกอัน
+                        if(aError.length > 0){
+                            aJSONData[j].push(aError[0],aError[1]);
+                            aError = [];
+                        }else{
+                            aJSONData[j].push('1','');
+                        }
+                        ///////////////////////////////////////////// DATATYPE
+                    }
+                break;
                 case 'printbarcode':
                     //ตรวจสอบชื่อชิทว่าถูกต้องไหม
                     if (typeof(aJSON['Print Price Tags']) == 'undefined') {
@@ -1745,6 +1858,96 @@ function JSxWirteImportFile(evt) {
                             aError = [];
                         } else {
                             aJSONData[j].push('1', '');
+                        }
+                        ///////////////////////////////////////////// DATATYPE
+                    }
+                break;
+                case 'transferwahouseout':
+                    //ตรวจสอบชื่อชิทว่าถูกต้องไหม
+                    if(typeof(aJSON['Transferwahouseout']) == 'undefined'){
+                        alert('รูปแบบเอกสารไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
+                        return;
+                    }
+
+                    var aJSONData           = aJSON["Transferwahouseout"];
+                    var nCount              = aJSONData.length;
+                    var aNewPackData        = [];
+                    var aError              = [];
+
+                    //ตรวจสอบ excel cell ที่มันเป็นค่าว่าง
+                    for(var k=0; k<nCount; k++){
+                        if(aJSONData[k].length > 0){
+                            aNewPackData.push(aJSONData[k]);
+                        }
+                    }
+                    var nCount              = aNewPackData.length;
+                    var aJSONData           = aNewPackData;
+
+                    //ในลูปนี้จะเช็ค 2 step status 3:เช็ค MaxLen ,status 4:เช็ค DataType
+                    for(var j=0; j<nCount; j++){
+                        var tValueOld = '';
+
+                        //Template_Filed_ราคา
+                        if(typeof(aJSONData[j][2]) != 'undefined' || null){
+                            if(aJSONData[j][2] == null){
+                                aJSONData[j][2] = '0';
+                            }else{
+                                var Letters = /^[ก-๛A-Za-z]+$/;
+                                var nValue = aJSONData[j][2].toString();
+                                var nValue = nValue.replace(" ", "");
+                                if(nValue.match(Letters)){
+                                    //เอาตัวที่ผิดออก
+                                    var tValueOld  = aJSONData[j][2];
+                                    aJSONData[j].pop();
+                                    aJSONData[j].push(2);
+                                    aError.push('3','[2]'+'รูปแบบจำนวนผิด'+tValueOld);
+                                }
+                            }
+                        }else{
+                            aJSONData[j][2] = '0';
+                        }
+
+                        //Template_Filed_รหัสสินค้า
+                        if(typeof(aJSONData[j][0]) != 'undefined' || null){
+                            if(aJSONData[j][0] == null){
+                                aJSONData[j][0] = 'N/A';
+                                aError.push('7','[0]'+'รหัสสินค้าไม่ได้ระบุข้อมูล'+'N/A');
+                            }else{
+                                if(aJSONData[j][0].length > 20){
+                                    var tValueOld   = aJSONData[j][0];
+                                    aJSONData[j][0] = aJSONData[j][0].substring(0, 20);
+                                    aError.push('4','[0]'+'รหัสสินค้ายาวเกินกำหนด'+tValueOld);
+                                }
+                            }
+                        }else{
+                            aJSONData[j][0] = 'N/A';
+                            aError.push('4','[0]'+'รหัสสินค้ายาวเกินกำหนด'+tValueOld);
+                        }
+
+
+                        //Template_Filed_รหัสบาร์โคด
+                        if(typeof(aJSONData[j][1]) != 'undefined' || null){
+                            if(aJSONData[j][1] == null){
+                                aJSONData[j][1] = 'N/A';
+                                aError.push('7','[1]'+'รหัสบาร์โคดไม่ได้ระบุข้อมูล'+'N/A');
+                            }else{
+                                if(aJSONData[j][1].length > 25){
+                                    var tValueOld   = aJSONData[j][1];
+                                    aJSONData[j][1] = aJSONData[j][1].substring(0, 25);
+                                    aError.push('4','[1]'+'รหัสบาร์โคดยาวเกินกำหนด'+tValueOld);
+                                }
+                            }
+                        }else{
+                            aJSONData[j][1] = 'N/A';
+                            aError.push('4','[1]'+'รหัสบาร์โคดยาวเกินกำหนด'+tValueOld);
+                        }
+
+                        //ถ้าผ่านทุกอัน
+                        if(aError.length > 0){
+                            aJSONData[j].push(aError[0],aError[1]);
+                            aError = [];
+                        }else{
+                            aJSONData[j].push('1','');
                         }
                         ///////////////////////////////////////////// DATATYPE
                     }

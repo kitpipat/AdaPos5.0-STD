@@ -488,7 +488,7 @@ class mAdjustStock extends CI_Model
                                     DOCTMP.FCXtdPriceNet,DOCTMP.FTXtdShpTo,DOCTMP.FTXtdBchTo,DOCTMP.FTSrnCode,DOCTMP.FTXtdSaleType,DOCTMP.FCXtdSalePrice,
                                     DOCTMP.FCXtdAmtB4DisChg,DOCTMP.FTXtdDisChgTxt,DOCTMP.FCXtdDis,DOCTMP.FCXtdChg,DOCTMP.FCXtdNetAfHD,DOCTMP.FCXtdWhtAmt,
                                     DOCTMP.FTXtdWhtCode,DOCTMP.FCXtdWhtRate,DOCTMP.FCXtdQtyLef,DOCTMP.FCXtdQtyRfn,DOCTMP.FTXtdStaAlwDis,DOCTMP.FTSessionID,
-                                    DOCTMP.FTPdtName,DOCTMP.FCPdtUnitFact,DOCTMP.FCAjdWahB4Adj,DOCTMP.FNAjdLayCol,DOCTMP.FNAjdLayRow,
+                                    DOCTMP.FTPdtName,DOCTMP.FCPdtUnitFact,DOCTMP.FCAjdWahB4Adj,DOCTMP.FNAjdLayCol,DOCTMP.FNAjdLayRow,DOCTMP.FTTmpStatus,
                                     DOCTMP.FCAjdSaleB4AdjC1,DOCTMP.FDAjdDateTimeC1,DOCTMP.FCAjdUnitQtyC1,DOCTMP.FCAjdQtyAllC1,DOCTMP.FCAjdSaleB4AdjC2,DOCTMP.FDAjdDateTimeC2,
                                     DOCTMP.FCAjdUnitQtyC2,DOCTMP.FCAjdQtyAllC2,DOCTMP.FCAjdUnitQty,DOCTMP.FDAjdDateTime,DOCTMP.FCAjdQtyAll,DOCTMP.FCAjdQtyAllDiff,
                                     DOCTMP.FTAjdPlcCode,DOCTMP.FTPgpChain,DOCTMP.FDLastUpdOn,DOCTMP.FDCreateOn,DOCTMP.FTLastUpdBy,DOCTMP.FTCreateBy,
@@ -1876,4 +1876,141 @@ class mAdjustStock extends CI_Model
         }
         return $aReturn;
     }
+
+
+
+     /**
+     * Functionality : Function Get Max Seq From Temp
+     * Parameters : -
+     * Creator : 04/02/2020 piya
+     * Last Modified : -
+     * Return : Max Seq
+     * Return Type : array
+     */
+    public function FSnMASTGetMaxSeqDTTemp($paParams = [])
+    {
+        $tDocNo = $paParams['tDocNo'];
+        $tDocKey = $paParams['tDocKey'];
+        $tUserSessionID = $paParams['tUserSessionID'];
+
+        $tSQL = "
+            SELECT 
+                MAX(DOCTMP.FNXtdSeqNo) AS maxSeqNo
+            FROM TCNTDocDTTmp DOCTMP WITH (NOLOCK)
+            WHERE 1 = 1
+        ";
+
+        $tSQL .= " AND DOCTMP.FTXthDocNo = '$tDocNo'";
+
+        $tSQL .= " AND DOCTMP.FTXthDocKey = '$tDocKey'";
+
+        $tSQL .= " AND DOCTMP.FTSessionID = '$tUserSessionID'";
+
+        $oQuery = $this->db->query($tSQL);
+
+        if ($oQuery->num_rows() > 0) {
+            $oDetail = $oQuery->result_array();
+            $aResult = $oDetail[0]['maxSeqNo'];
+        } else {
+            $aResult = 0;
+        }
+
+        return empty($aResult) ? 0 : $aResult;
+    }
+
+
+
+    
+        /**
+     * Functionality : Insert DT to Temp
+     * Parameters : -
+     * Creator : 04/02/2020 piya
+     * Last Modified : -
+     * Return : Status
+     * Return Type : array
+     */
+    public function FSaMASTInsertPDTToTemp($paData = [], $paDataWhere = []){
+        
+
+ 
+            $tSQL = "   
+                SELECT 
+                    FNXtdSeqNo, 
+                    FCAjdUnitQtyC1,
+                    FCPdtUnitFact,
+                    FCAjdQtyAllC1 
+                FROM TCNTDocDTTmp 
+                WHERE 
+                 FTXthDocNo = '".$paDataWhere['tDocNo']."'
+                AND FTXthDocKey = '".$paDataWhere['tDocKey']."'
+                AND FTSessionID = '".$paDataWhere['tUserSessionID']."'
+                AND FTPdtCode = '".$paData["FTPdtCode"]."' 
+                AND FTXtdBarCode = '".$paData["FTXtdBarCode"]."'
+                ORDER BY FNXtdSeqNo
+            ";
+            
+            $oQuery = $this->db->query($tSQL);
+            
+            if($oQuery->num_rows() > 0){ // เพิ่มจำนวนให้รายการที่มีอยู่แล้ว
+                $aResult = $oQuery->row_array();
+                $tSQL = "
+                    UPDATE TCNTDocDTTmp SET
+                        FCAjdUnitQtyC1 = ".($aResult["FCAjdUnitQtyC1"] + 1 ).",
+                        FCAjdQtyAllC1 = FCAjdQtyAllC1+".$paData["FCAjdQtyAllC1"] ."
+                    WHERE 
+                    
+                    FTXthDocNo  = '".$paDataWhere['tDocNo']."' AND
+                    FNXtdSeqNo = '".$aResult["FNXtdSeqNo"]."' AND
+                    FTXthDocKey = '".$paDataWhere['tDocKey']."' AND
+                    FTSessionID = '".$paDataWhere['tUserSessionID']."' AND
+                    FTPdtCode = '".$paData["FTPdtCode"]."' AND 
+                    FTXtdBarCode = '".$paData["FTXtdBarCode"]."'";
+                
+                $this->db->query($tSQL);
+                
+                $aStatus = array(
+                    'rtCode' => '1',
+                    'rtDesc' => 'Add Success.',
+                );
+            }else{
+                
+    
+                        
+                $this->db->insert('TCNTDocDTTmp',$paData);
+
+                // $this->db->last_query();  
+
+                if($this->db->affected_rows() > 0){
+                    $aStatus = array(
+                        'rtCode' => '1',
+                        'rtDesc' => 'Add Success.',
+                    );
+                }else{
+                    $aStatus = array(
+                        'rtCode' => '905',
+                        'rtDesc' => 'Error Cannot Add.',
+                    );
+                }
+            }
+       
+
+            // $this->db->last_query();  
+
+            if($this->db->affected_rows() > 0){
+                $aStatus = array(
+                    'rtCode' => '1',
+                    'rtDesc' => 'Add Success.',
+                );
+            }else{
+                $aStatus = array(
+                    'rtCode' => '905',
+                    'rtDesc' => 'Error Cannot Add.',
+                );
+            }
+        
+        
+        return $aStatus;
+        
+    }
+
 }

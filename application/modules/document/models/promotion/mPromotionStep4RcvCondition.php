@@ -15,7 +15,7 @@ class mPromotionStep4RcvCondition extends CI_Model
     {
         $tUserSessionID = $paParams['tUserSessionID'];
         $aRowLen = FCNaHCallLenData($paParams['nRow'], $paParams['nPage']);
-        // $nLngID = $paParams['FNLngID'];
+        $nLngID = $paParams['FNLngID'];
 
         $tSQL = "
             SELECT c.* FROM(
@@ -28,8 +28,8 @@ class mPromotionStep4RcvCondition extends CI_Model
                         TMP.FTPmhStaType,
                         TMP.FTSessionID
                     FROM TCNTPdtPmtHDPay_Tmp TMP WITH(NOLOCK)
-                    INNER JOIN  TFNMRcv_L RCVL ON  RCVL.FTRcvCode = TMP.FTRcvCode
-                    WHERE TMP.FTSessionID = '$tUserSessionID'
+                    INNER JOIN  TFNMRcv_L RCVL ON  RCVL.FTRcvCode = TMP.FTRcvCode AND RCVL.FNLngID = $nLngID
+                    WHERE TMP.FTSessionID = '$tUserSessionID' 
         ";
 
         $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";

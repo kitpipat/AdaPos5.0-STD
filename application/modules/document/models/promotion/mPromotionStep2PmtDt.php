@@ -107,10 +107,9 @@ class mPromotionStep2PmtDt extends CI_Model
 
         $tSQL = "
             SELECT DISTINCT
-                TMP.FTPmdGrpName,
-                TMP.FTPbyStaPdtDT
+                TMP.FTPmdGrpName
             FROM TCNTPdtPmtCB_Tmp TMP WITH(NOLOCK)
-            WHERE TMP.FTSessionID = ".$this->db->escape($tUserSessionID)."
+            WHERE TMP.FTSessionID = '$tUserSessionID'
             AND (TMP.FTPmdGrpName IS NOT NULL OR TMP.FTPmdGrpName <> '')
         ";
 
@@ -133,16 +132,14 @@ class mPromotionStep2PmtDt extends CI_Model
 
         $tSQL = "
             SELECT DISTINCT
-                TMP.FTPmdGrpName,
-                TMP.FTPgtStaPdtDT
+                TMP.FTPmdGrpName
             FROM TCNTPdtPmtCG_Tmp TMP WITH(NOLOCK)
-            WHERE TMP.FTSessionID = ".$this->db->escape($tUserSessionID)."
+            WHERE TMP.FTSessionID = '$tUserSessionID'
             AND (TMP.FTPmdGrpName IS NOT NULL OR TMP.FTPmdGrpName <> '')
         ";
 
         $oQuery = $this->db->query($tSQL);
-        $aResult = $oQuery->result_array();
 
-        return $aResult;
+        return $oQuery->result_array();
     }
 }

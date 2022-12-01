@@ -23,7 +23,7 @@
                 JCNxOpenLoading();
             }
 
-            (pnPage == '' || (typeof pnPage) == 'undefined') ? pnPage = 1 : pnPage = pnPage;
+            (pnPage == '' || (typeof pnPage) == 'undefined') ? pnPage = 1: pnPage = pnPage;
 
             $.ajax({
                 type: "POST",
@@ -142,22 +142,6 @@
         return bStatus;
     }
 
-        /*
-    function : ข้อมูลในกลุ่มซื้อว่างหรือไม่
-    Parameters : -
-    Creator : 04/02/2020 Piya
-    Return : Status
-    Return Type : boolean
-    */
-    function JCNbPromotionStep2PmtDtGroupSaleIsEmpty() {
-        var bStatus = true;
-        nRowLength = $('.xCNPromotionStep2GroupGet .xCNPromotionStep2GroupNameType1Item').length;
-        if(nRowLength > 0){
-            bStatus = false;
-        }
-        return bStatus;
-    }
-
     /*
     function : ข้อมูลในกลุ่มรับว่างหรือไม่
     Parameters : -
@@ -184,7 +168,6 @@
     function JCNbPromotionStep2IsValid() {
         var bStatus = false;
         var bPmtDtGroupBuyIsEmpty = JCNbPromotionStep2PmtDtGroupBuyIsEmpty();   
-        var bPmtDtGroupSaleIsEmpty = JCNbPromotionStep2PmtDtGroupSaleIsEmpty();   
 
         if(!bPmtDtGroupBuyIsEmpty){
             bStatus = true;

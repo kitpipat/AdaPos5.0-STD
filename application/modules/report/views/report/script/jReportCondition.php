@@ -1406,7 +1406,7 @@
     var oRptBrandOption = function(poReturnInputBrand) {
         var tSesAgnCode = '<?php echo $this->session->userdata("tSesUsrAgnCode")?>';
         if (tSesAgnCode != ''){
-            tWhereAngCode = " AND ( ISNULL(TCNMPdtBrand.FTAgnCode,'') = '"+tAgnCode+"' OR ISNULL(TCNMPdtBrand.FTAgnCode,'') = '') ";
+            tWhereAngCode = " AND ( ISNULL(TCNMPdtBrand.FTAgnCode,'') = '"+tSesAgnCode+"' OR ISNULL(TCNMPdtBrand.FTAgnCode,'') = '') ";
         }else{
             tWhereAngCode = '';
         }

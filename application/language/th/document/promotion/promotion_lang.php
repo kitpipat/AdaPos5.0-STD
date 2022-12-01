@@ -199,7 +199,7 @@ $lang['tAmountToReceive'] = "จำนวนที่จะได้รับ";
 $lang['tMembershipDuration'] = "ระยะเวลา การเป็นสมาชิก";
 $lang['tMemberMonthBirth'] = "ตรง เดือนเกิด สมาชิก";
 $lang['tSpecialConditions_PaymentType'] = "เงื่อนไขพิเศษ - ประเภทการชำระเงิน";
-$lang['tSpecialConditions_CustomerLevel'] = "เงื่อนไขพิเศษ - ประเภทลูกค้า";
+$lang['tSpecialConditions_CustomerLevel'] = "เงื่อนไขพิเศษ - ระดับลูกค้า";
 $lang['tSpecialConditions_PromotionOnPromotion'] = "เงื่อนไขพิเศษ - โปรโมชั่นซ้อน";
 
 // Nav Menu

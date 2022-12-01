@@ -277,6 +277,18 @@ class cHome extends MX_Controller
                 $aTableRefPK = ['TCNTPrnLabelTmp'];
                 $tTableRefPK = $aTableRefPK[0];
                 break;
+            case "adjstock":
+                $aTableRefPK = ['TCNTPdtAdjStkHD'];
+                $tTableRefPK = $aTableRefPK[0];
+                break;
+            case "adjstocksub":
+                $aTableRefPK = ['TCNTPdtAdjStkDT'];
+                $tTableRefPK = $aTableRefPK[0];
+                break;
+            case "transferwahouseout":
+                $aTableRefPK = ['TCNTPdtTwoHD'];
+                $tTableRefPK = $aTableRefPK[0];
+                break;
         }
 
         //เงื่อนไข ที่มีผลต่อตาราง
@@ -1093,6 +1105,244 @@ class cHome extends MX_Controller
                                     'FTPlbStaImport'       => (isset($aPackData[$i][2]) == '') ? '' : $aPackData[$i][2],
                                     'FTPlbImpDesc'       => (isset($aPackData[$i][3]) == '') ? '' : $aPackData[$i][3],
                                 );
+    
+                            break;
+                            case "adjstock":
+
+                                $aDataPdtWhere = array(
+                                    'FTPdtCode'     => trim($aPackData[$i][0]),
+                                    'FTBarCode'     => trim($aPackData[$i][1]), 
+                                    'FNLngID'       => $this->session->userdata("tLangID")
+                                );
+                                // echo '<pre>';
+                                // print_r($aDataPdtWhere);
+                                // exit();
+                                $aDataPdtMaster = $this->mCommon->FCNaMCMMImportExcelFindPdtInfoByBarCode($aDataPdtWhere); // Data Master Pdt
+    
+                                if($aDataPdtMaster['rtCode']=='1'){
+                                        $aObject = array(
+                                            'FTBchCode'         => $tImportFrmBchCode,
+                                            'FTXthDocNo'        => $tImportDocumentNo,
+                                            'FNXtdSeqNo'        => $i,
+                                            'FTXthDocKey'       => $tTableRefPK,
+                                            'FTPdtCode'         => $aDataPdtMaster['raItem']['FTPdtCode'],
+                                            'FTXtdPdtName'      => $aDataPdtMaster['raItem']['FTPdtName'],
+                                            'FTAjdPlcCode'      => $aDataPdtMaster['raItem']['FTPlcCode'],
+                                            'FCPdtUnitFact'     => $aDataPdtMaster['raItem']['FCPdtUnitFact'],
+                                            'FTPunCode'         => $aDataPdtMaster['raItem']['FTPunCode'],
+                                            'FTPunName'         => $aDataPdtMaster['raItem']['FTPunName'],
+                                            'FTXtdBarCode'      => $aDataPdtMaster['raItem']['FTBarCode'],
+                                            'FTSessionID'       => $this->session->userdata("tSesSessionID"),
+                                            'FDAjdDateTimeC1'   => date('Y-m-d H:i:s'),
+                                            'FCAjdUnitQtyC1'    => $aPackData[$i][2],
+                                            'FCAjdQtyAllC1'     => $aPackData[$i][2]*$aDataPdtMaster['raItem']['FCPdtUnitFact'],
+                                            'FTTmpStatus'       => $aDataPdtMaster['raItem']['FTPdtForSystem'],
+                                            'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                                            'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                                            'FDCreateOn'        => date('Y-m-d H:i:s'),
+                                            'FTCreateBy'        => $this->session->userdata('tSesUsername')
+                                        );
+    
+                                    if($aDataPdtMaster['raItem']['FTPdtForSystem']=='5'){
+                                        $aObject['FCAjdUnitQtyC1'] = 0;
+                                        $aObject['FCAjdQtyAllC1'] = 0;
+                                        $aObjectPdtCallBack['pnPdtCode'] = $aDataPdtMaster['raItem']['FTPdtCode'];
+                                        $aObjectPdtCallBack['ptPunCode'] = $aDataPdtMaster['raItem']['FTPunCode'];
+                                        $aObjectPdtCallBack['ptBarCode'] = $aDataPdtMaster['raItem']['FTBarCode'];
+                                        $aObjectPdtCallBack['packData'] = array(
+                                            "PDTCode" => $aDataPdtMaster['raItem']['FTPdtCode'],
+                                            'PUNCode' => $aDataPdtMaster['raItem']['FTPunCode'],
+                                            'Barcode' => $aDataPdtMaster['raItem']['FTBarCode'],
+                                            "PDTName" => $aDataPdtMaster['raItem']['FTPdtName'],
+                                            "PDTSpc" =>  $aDataPdtMaster['raItem']['PDTSpc'],
+                                        );  
+                                    }else{
+                                        $aObjectPdtCallBack = array();
+                                    }
+                                }else{
+                                        $aObject = array();
+                                }
+    
+                            break;
+                            case "adjstocksub":
+                                $aDataTempDT = array();
+                                $tADJPdtCode  = trim($aPackData[$i][0]);
+                                $tADJBarCode  = trim($aPackData[$i][1]);
+                                $tADJRefCode  = trim($aPackData[$i][2]);
+                                $nADJQY  = $aPackData[$i][3];
+    
+                                $aDataPdtWhere = array(
+                                    'FTPdtCode'     => $tADJPdtCode,
+                                    'FTBarCode'     => $tADJBarCode, 
+                                    'FNLngID'       => $this->session->userdata("tLangID")
+                                );
+                                // echo '<pre>';
+                                // print_r($aDataPdtWhere);
+                                // exit();
+                                $aDataPdtMaster = $this->mCommon->FCNaMCMMImportExcelFindPdtInfoByBarCode($aDataPdtWhere); // Data Master Pdt
+    
+                                if($aDataPdtMaster['rtCode']=='1'){
+    
+    
+                                        if ($aDataPdtMaster['raItem']['FTPdtForSystem'] == '5') { //กรณีเป็นสินค้าแฟชั่น ให้เก็บ DTFhn ด้วย
+                                            $tFhnRefCode = $tADJRefCode;
+                                            if($tFhnRefCode==''){
+                                                $aReturnData = array(
+                                                    'rtCode' => '99',
+                                                    'rtMassage' => language('document/adjuststocksub/adjuststocksub', 'tASTErrorStockControlEmpty').$tADJPdtCode,
+                                                );
+                                                echo json_encode($aReturnData);
+                                                return;
+                                            }
+                                            $aDataPdtWhere['FTFhnRefCode'] = $tFhnRefCode;
+                                           $aDataPdtMasterFhn = $this->mCommon->FCNaMCMMICheckRefCodePdtFashion($aDataPdtWhere); // Check RefCode Data Master Pdt
+                                            if($aDataPdtMasterFhn['rtCode']!='1'){
+                                                $aReturnData = array(
+                                                    'rtCode' => '99',
+                                                    'rtMassage' => language('document/adjuststocksub/adjuststocksub', 'tASTErrorStockControlEmpty').$tADJPdtCode,
+                                                );
+                                                echo json_encode($aReturnData);
+                                                return;
+                                            }
+                                            $aObjectFahsion = array(
+                                                'FTBchCode'         => $tImportFrmBchCode,
+                                                'FTXshDocNo'        => $tImportDocumentNo,
+                                                'FNXsdSeqNo'        => $i,
+                                                'FTXthDocKey'       => $tTableRefPK,
+                                                'FTPdtCode'         => $aDataPdtMaster['raItem']['FTPdtCode'],
+                                                'FTXtdPdtName'      => $aDataPdtMaster['raItem']['FTPdtName'],
+                                                'FTXtdBarCode'      => $aDataPdtMaster['raItem']['FTBarCode'],
+                                                'FDAjdDateTimeC1'   => date('Y-m-d H:i:s'),
+                                                'FCAjdUnitQtyC1'    => $nADJQY,
+                                                'FCAjdQtyAllC1'     => $nADJQY*$aDataPdtMaster['raItem']['FCPdtUnitFact'],
+                                                'FTFhnRefCode'      => $tFhnRefCode,
+                                                'FTSessionID'       => $this->session->userdata("tSesSessionID"),
+                                                'FDCreateOn'        => date('Y-m-d h:i:s'),
+                                                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                                            );
+                                            $aObject = array();
+                                        } else {
+                                            $aObjectFahsion = array();
+                                            $aObject = array(
+                                                'FTBchCode'         => $tImportFrmBchCode,
+                                                'FTXthDocNo'        => $tImportDocumentNo,
+                                                'FNXtdSeqNo'        => FCNnHSizeOf($aInsPackdata)+1,
+                                                'FTXthDocKey'       => $tTableRefPK,
+                                                'FTPdtCode'         => $aDataPdtMaster['raItem']['FTPdtCode'],
+                                                'FTXtdPdtName'      => $aDataPdtMaster['raItem']['FTPdtName'],
+                                                'FTAjdPlcCode'      => $aDataPdtMaster['raItem']['FTPlcCode'],
+                                                'FCPdtUnitFact'     => $aDataPdtMaster['raItem']['FCPdtUnitFact'],
+                                                'FTPunCode'         => $aDataPdtMaster['raItem']['FTPunCode'],
+                                                'FTPunName'         => $aDataPdtMaster['raItem']['FTPunName'],
+                                                'FTXtdBarCode'      => $aDataPdtMaster['raItem']['FTBarCode'],
+                                                'FTXtdBchRef'       => $aDataPdtMaster['raItem']['PDTSpc'],
+                                                'FTSessionID'       => $this->session->userdata("tSesSessionID"),
+                                                'FDAjdDateTimeC1'   => date('Y-m-d H:i:s'),
+                                                'FCAjdUnitQtyC1'    => $nADJQY,
+                                                'FCAjdQtyAllC1'     => $nADJQY*$aDataPdtMaster['raItem']['FCPdtUnitFact'],
+                                                'FTTmpStatus'       => $aDataPdtMaster['raItem']['FTPdtForSystem'],
+                                                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                                                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                                                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                                                'FTCreateBy'        => $this->session->userdata('tSesUsername')
+                                            );
+                                        }
+                                }else{
+                                        $aObject = array();
+                                        $aReturnData = array(
+                                            'rtCode' => '99',
+                                            'rtMassage' => language('document/adjuststocksub/adjuststocksub', 'tASTErrorPdtCodeNotMatch').$tADJPdtCode,
+                                        );
+                                        echo json_encode($aReturnData);
+                                        return;
+                                }
+    
+                            break;
+                            case "transferwahouseout":
+                                $this->load->model('document/transferwarehouseout/mTransferwarehouseout');
+                                $aDataTempDT = array();
+                                $tADJPdtCode  = trim($aPackData[$i][0]);
+                                $tADJBarCode  = trim($aPackData[$i][1]);
+                                $nADJQY  = $aPackData[$i][2];
+    
+                                $aDataPdtWhere = array(
+                                    'FTPdtCode'     => $tADJPdtCode,
+                                    'FTBarCode'     => $tADJBarCode, 
+                                    'FNLngID'       => $this->session->userdata("tLangID")
+                                );
+                                // echo '<pre>';
+                                // print_r($aDataPdtWhere);
+                                // exit();
+                                $aDataPdtMaster = $this->mCommon->FCNaMCMMImportExcelFindPdtInfoByBarCode($aDataPdtWhere); // Data Master Pdt
+    
+                                if($aDataPdtMaster['rtCode']=='1'){
+    
+                                            $cTWOPrice    = $this->mTransferwarehouseout->FSaMTWOGetPriceBYPDT($tADJPdtCode);
+                                            if($cTWOPrice[0]->PDTCostSTD == null){
+                                                $nPrice = 0;
+                                            }else{
+                                                $nPrice = $cTWOPrice[0]->PDTCostSTD;
+                                            }
+
+                              
+                                            $aObjectFahsion = array();
+                                            $aObject = array(
+                                                'FTBchCode'         => $tImportFrmBchCode,
+                                                'FTXthDocNo'        => $tImportDocumentNo,
+                                                'FNXtdSeqNo'        => $i,
+                                                'FTXthDocKey'       => $tTableRefPK,
+                                                'FTPdtCode'         => $aDataPdtMaster['raItem']['FTPdtCode'],
+                                                'FTXtdPdtName'      => $aDataPdtMaster['raItem']['FTPdtName'],
+                                                'FCXtdFactor'       => $aDataPdtMaster['raItem']['FCPdtUnitFact'],
+                                                'FTPunCode'         => $aDataPdtMaster['raItem']['FTPunCode'],
+                                                'FTPunName'         => $aDataPdtMaster['raItem']['FTPunName'],
+                                                'FTXtdBarCode'      => $tADJBarCode,
+                                                'FTXtdVatType'      => $aDataPdtMaster['raItem']['FTPdtStaVatBuy'],
+                                                'FTVatCode'         => $aDataPdtMaster['raItem']['FTVatCode'],
+                                                'FCXtdVatRate'      => $aDataPdtMaster['raItem']['FCVatRate'],
+                                                'FTXtdStaAlwDis'    => $aDataPdtMaster['raItem']['FTPdtStaAlwDis'],
+                                                'FTXtdSaleType'     => $aDataPdtMaster['raItem']['FTPdtSaleType'],
+                                                'FCXtdSalePrice'    => $aDataPdtMaster['raItem']['FTPdtSalePrice'],
+                                                'FCXtdQty'          => $nADJQY,
+                                                'FCXtdQtyAll'       => $nADJQY * $aDataPdtMaster['raItem']['FCPdtUnitFact'],
+                                                'FCXtdSetPrice'     => $nPrice * $nADJQY,
+                                
+                                                'FTSessionID'       => $this->session->userdata("tSesSessionID"),
+                                                'FDLastUpdOn'       => date('Y-m-d h:i:s'),
+                                                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                                                'FDCreateOn'        => date('Y-m-d h:i:s'),
+                                                'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                                                'FTTmpStatus'       => $aDataPdtMaster['raItem']['FTPdtForSystem'],
+                                            );
+
+                                            if ($aDataPdtMaster['raItem']['FTPdtForSystem'] == '5') { //กรณีเป็นสินค้าแฟชั่น ให้เก็บ DTFhn ด้วย
+                                                $tFhnRefCode = $aDataPdtMaster['raItem']['FTFhnRefCode'];
+                                                $aObjectFahsion = array(
+                                                    'FTBchCode'         => $tImportFrmBchCode,
+                                                    'FTXshDocNo'        => $tImportDocumentNo,
+                                                    'FNXsdSeqNo'        => $i,
+                                                    'FTXthDocKey'       => $tTableRefPK,
+                                                    'FTPdtCode'         => $aDataPdtMaster['raItem']['FTPdtCode'],
+                                                    'FTXtdPdtName'      => $aDataPdtMaster['raItem']['FTPdtName'],
+                                                    'FCXtdQty'          => $nADJQY,
+                                                    'FTFhnRefCode'      => $tFhnRefCode,
+                                                    'FTSessionID'       => $this->session->userdata("tSesSessionID"),
+                                                    'FDCreateOn'        => date('Y-m-d h:i:s'),
+                                                    'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+                                                );
+                                            } else {
+                                                $aObjectFahsion = array();
+                                            }
+
+                                }else{
+                                        $aObject = array();
+                                        $aReturnData = array(
+                                            'rtCode' => '99',
+                                            'rtMassage' => language('document/adjuststocksub/adjuststocksub', 'tASTErrorPdtCodeNotMatch').$tADJPdtCode,
+                                        );
+                                        echo json_encode($aReturnData);
+                                        return;
+                                }
     
                             break;
                     }

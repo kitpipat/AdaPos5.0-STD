@@ -465,7 +465,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <input
@@ -542,8 +542,11 @@
                                         </div>    
                                     </div> -->
 
-                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
                                         <div class="right">
+                                   
+
+
                                             <div class="btn-group xCNDropDrownGroup">
                                                 <button <?php if(!empty($tASTStaApv) || $tASTStaDoc == 3){ echo "disabled"; }?> type="button" class="btn xCNBTNMngTable xWASTDisabledOnApv" data-toggle="dropdown">
                                                     <?php echo language('common/main/main', 'tCMNOption') ?>
@@ -555,11 +558,19 @@
                                                     </li>
                                                 </ul>
                                             </div>
+
+
                                             <div class="btn-group">
                                                 <button <?php if(!empty($tASTStaApv) || $tASTStaDoc == 3){ echo "disabled"; }?> id="obtAdjStkFilterDataCondition" type="button" class="btn btn-primary xWASTDisabledOnApv" style="font-size: 16px;">กรองข้อมูลตามเงื่อนไข</button>
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 text-right">
+											<!--ค้นหาจากบาร์โค๊ด-->
+											<div class="form-group">
+												<input type="text" class="form-control xCNPdtEditInLine" id="oetASTInsertBarcode"  autocomplete="off" name="oetASTInsertBarcode" maxlength="50" value="" onkeypress="Javascript:if(event.keyCode==13) JSxSearchFromBarcode(event,this);"  placeholder="เพิ่มสินค้าด้วยบาร์โค้ด หรือ รหัสสินค้า" >
+											</div>
+								    </div>
 
                                     <!-- <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
                                         <div class="form-group">
@@ -902,10 +913,270 @@
     </div>
 </div>
 
+<!-- ======================================================================== Modal ไม่พบรหัสสินค้า ======================================================================== -->
+<div id="odvTbxModalPDTNotFound" class="modal fade">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="xCNHeardModal modal-title" style="display:inline-block"><?=language('common/main/main', 'tMessageAlert')?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>ไม่พบข้อมูลสินค้า กรุณาลองใหม่อีกครั้ง</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn xCNBTNPrimery" data-dismiss="modal" onclick="JSxNotFoundClose();" >
+                        <?php echo language('common/main/main', 'tModalConfirm'); ?>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+<!-- ============================================================================================================================================================================= -->
+
+<div id="odvASTModalPDTMoreOne" class="modal fade">
+        <div class="modal-dialog" role="document" style="width: 85%; margin: 1.75rem auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <label class="xCNTextModalHeard" style="font-weight: bold; font-size: 20px;">กรุณาเลือกสินค้า</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
+                            <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn" onclick="JCNxConfirmPDTMoreOne(1)" data-dismiss="modal">เลือก</button>
+                            <button class="btn xCNBTNDefult xCNBTNDefult2Btn" onclick="JCNxConfirmPDTMoreOne(2)" data-dismiss="modal">ปิด</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped xCNTablePDTMoreOne">
+                        <thead>
+                            <tr>
+                                <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('common/main/main', 'tModalcodePDT')?></th>
+                                <th class="xCNTextBold" style="text-align:center; width:160px;"><?=language('common/main/main', 'tModalnamePDT')?></th>
+                                <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('common/main/main', 'tModalPriceUnit')?></th>
+                                <th class="xCNTextBold" style="text-align:center; width:160px;"><?=language('common/main/main', 'tModalbarcodePDT')?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- ============================================================================================================================================================================= -->
 
 <!-- ============================================================================================================================================================== -->
 
 <script src="<?php echo base_url('application/modules/common/assets/js/jquery.mask.js')?>"></script>
 <script src="<?php echo base_url('application/modules/common/assets/src/jFormValidate.js')?>"></script>
 <?php include('script/jAdjustStockAdd.php'); ?>
+<script>
+      function JSxNotFoundClose(){
+        $('#oetASTInsertBarcode').focus();
+    }
+
+	//กดเลือกบาร์โค๊ด
+	function  JSxSearchFromBarcode(e,elem){
+        var tValue = $(elem).val();
+        // if($('#oetPIFrmSplCode').val() != ""){
+            JSxCheckPinMenuClose();
+            if(tValue.length === 0){
+            }else{
+                $('#oetASTInsertBarcode').attr('readonly',true);
+                JCNSearchBarcodePdt(tValue);
+                $('#oetASTInsertBarcode').val('');
+            }
+        // }else{
+        //     $('#odvPIModalPleseselectCustomer').modal('show');
+        //     $('#oetASTInsertBarcode').val('');
+        // }
+        e.preventDefault();
+    }
+
+	//ค้นหาบาร์โค๊ด
+	function JCNSearchBarcodePdt(ptTextScan){
+
+        var tWhereCondition = "";
+
+        $.ajax({
+            type : "POST",
+            url : "BrowseDataPDTTableCallView",
+            data :{
+                Qualitysearch   : [],
+                ReturnType  : "M",
+                aPriceType  : ["Pricesell"],
+                // aPriceType  : ['Price4Cst',tPISplCode],
+                NextFunc    : "",
+                SelectTier  : ["Barcode"],
+                SPL: "",
+                BCH: $("#oetASTBchCode").val(),
+                MER: $('#oetASTMerCode').val(),
+                SHP: $('#oetASTShopCode').val(),
+                Where       : [tWhereCondition],
+                tTextScan   : ptTextScan,
+            },
+            catch : false,
+            timeout : 0,
+            success : function (tResult){
+				// localStorage.removeItem('TBX_LocalItemDataDelDtTemp');
+                JCNxCloseLoading();
+                $('#ohdTbxObjPdtFhnCallBack').val(tResult);
+                var oText = JSON.parse(tResult);
+                console.log('Event Scan',oText);
+                if(oText == '800'){
+                    $('#oetASTInsertBarcode').attr('readonly',false);
+                    $('#odvTbxModalPDTNotFound').modal('show');
+                    $('#oetASTInsertBarcode').val('');
+                }else{
+                    // พบสินค้ามีหลายบาร์โค้ด
+                    if(oText.length > 1){
+                        $('#odvASTModalPDTMoreOne').modal('show');
+                        $('#odvASTModalPDTMoreOne .xCNTablePDTMoreOne tbody').html('');
+
+                        for(i=0; i<oText.length; i++){
+                            var aNewReturn      = JSON.stringify(oText[i]);
+                            var tTest = "["+aNewReturn+"]";
+                            var oEncodePackData = window.btoa(unescape(encodeURIComponent(tTest)));
+                            var tHTML = "<tr class='xCNColumnPDTMoreOne"+i+" xCNColumnPDTMoreOne' data-information='"+oEncodePackData+"' style='cursor: pointer;'>";
+                                tHTML += "<td>"+oText[i].pnPdtCode+"</td>";
+                                tHTML += "<td>"+oText[i].packData.PDTName+"</td>";
+                                tHTML += "<td>"+oText[i].packData.PUNName+"</td>";
+                                tHTML += "<td>"+oText[i].ptBarCode+"</td>";
+                                tHTML += "</tr>";
+                            $('#odvASTModalPDTMoreOne .xCNTablePDTMoreOne tbody').append(tHTML);
+                        }
+
+                        //เลือกสินค้า
+                        $('.xCNColumnPDTMoreOne').off();
+
+                        //ดับเบิ้ลคลิก
+                        $('.xCNColumnPDTMoreOne').on('dblclick',function(e){
+                            $('#odvASTModalPDTMoreOne').modal('hide');
+                            var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
+                            // FSvTBXAddPdtIntoDocDTTempScan(tJSON); //Client
+                            JSvASTInsertPdtToTemp(tJSON); //Server
+                            // var oPIObjPdtFhnCallBack =  $('#ohdTbxObjPdtFhnCallBack').val();
+                            // var oJSONPdt = JSON.parse(tJSON);
+                            // var oOptionForFashion = {
+                            //         'bListItemAll'  : false,
+                            //         'tSpcControl'  : 0,
+                            //         'tNextFunc' : 'JSvASTInsertPdtToTemp'
+                            //     }
+                            //     JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
+
+                        });
+
+                        //คลิกได้เลย
+                        $('.xCNColumnPDTMoreOne').on('click',function(e){
+                            //เลือกสินค้าแบบตัวเดียว
+                            $('.xCNColumnPDTMoreOne').removeClass('xCNActivePDT');
+                            $('.xCNColumnPDTMoreOne').children().attr('style', 'background-color:transparent !important; color:#232C3D !important;');
+                            // $('.xCNColumnPDTMoreOne').children(':last-child').css('text-align','right');
+                            $(this).addClass('xCNActivePDT');
+                            $(this).children().attr('style', 'background-color:#179bfd !important; color:#FFF !important;');
+                            // $(this).children().last().css('text-align','right');
+                        });
+
+                    }else{
+                        //มีตัวเดียว
+                        var aNewReturn  = JSON.stringify(oText);
+                        console.log('aNewReturn: '+aNewReturn);
+                        // FSvTBXAddPdtIntoDocDTTempScan(aNewReturn); //Client
+                        JSvASTInsertPdtToTemp(aNewReturn); //Server
+               
+                    //     var oOptionForFashion = {
+                    //             'bListItemAll'  : false,
+                    //             'tSpcControl'  : 0,
+                    //             'tNextFunc' : 'JSvASTInsertPdtToTemp'
+                    //         }
+                    // JSxCheckProductSerialandFashion(oText,oOptionForFashion,'insert');
+                    }
+                }
+            },
+            error: function (jqXHR,textStatus,errorThrown){
+                JCNSearchBarcodePdt(ptTextScan);
+            }
+        });
+    }
+
+
+
+    //เลือกสินค้า กรณีพบมากกว่าหนึ่งตัว
+    function JCNxConfirmPDTMoreOne($ptType){
+        if($ptType == 1){
+            $("#odvASTModalPDTMoreOne .xCNTablePDTMoreOne tbody .xCNActivePDT").each(function( index ) {
+                var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
+                // FSvTBXAddPdtIntoDocDTTempScan(tJSON);
+                JSvASTInsertPdtToTemp(tJSON);
+   
+            //     var oJSONPdt = JSON.parse(tJSON);
+            //     var oOptionForFashion = {
+            //                         'bListItemAll'  : false,
+            //                         'tSpcControl'  : 0,
+            //                         'tNextFunc' : 'JSvASTInsertPdtToTemp'
+            //                     }
+            //  JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
+            });
+        }else{
+            $('#oetASTInsertBarcode').attr('readonly',false);
+            $('#oetASTInsertBarcode').val('');
+        }
+    }
+
+
+	
+	//Function : เพิ่มสินค้าจาก ลง Table ฝั่ง Client
+	//Create : 2018-08-28 Krit(Copter)
+	function JSvASTInsertPdtToTemp(pjPdtData) {
+			var nStaSession = JCNxFuncChkSessionExpired();
+			if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+				pnXthVATInOrEx = 2;
+
+				console.log(pjPdtData);
+
+				JCNxOpenLoading();
+				var ptXthDocNoSend = "";
+				if ($("#ohdASTRoute").val() == "dcmASTEventEdit") {
+				ptXthDocNoSend = $("#oetASTDocNo").val();
+				}
+
+				$('#oetASTInsertBarcode').attr('readonly',false);
+            	$('#oetASTInsertBarcode').val('');
+
+				$.ajax({
+				type: "POST",
+				url: "docASTInsertPdtToTmp",
+				data: {
+					ptBchCode        : $("#oetASTBchCode").val(),
+					ptXthDocNo          : ptXthDocNoSend,
+					pnXthVATInOrEx      : pnXthVATInOrEx,
+					tPdtData            : pjPdtData,
+					pnOptionAddPdt      : 1
+				},
+				cache: false,
+				timeout: 0,
+				success: function (oResult) {
+					console.log(oResult);
+
+					// var aResult = JSON.parse(oResult);
+                    if(oResult['nStaEvent']==1){
+                        JSvASTLoadPdtDataTableHtml();
+                        JCNxCloseLoading();
+                    }
+
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					JCNxResponseError(jqXHR, textStatus, errorThrown);
+				}
+				});
+			} else {
+				JCNxShowMsgSessionExpired();
+			}
+	}
+</script>

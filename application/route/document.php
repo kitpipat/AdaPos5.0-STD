@@ -562,6 +562,7 @@ $route['dcmASTCancel']                  = 'document/adjuststock/cAdjustStock/FSv
 $route['dcmASTApprove']                 = 'document/adjuststock/cAdjustStock/FSvCASTApprove';
 $route['dcmASTGetPdtBarCode']           = 'document/adjuststock/cAdjustStock/FSvCASTGetPdtBarCode';
 $route['docAdjStkEventAddProducts']     = 'document/adjuststock/cAdjustStock/FSvCAdjStkEventAddProducts';
+$route['docASTInsertPdtToTmp']          = 'document/adjuststock/cAdjustStock/FSaCASTInsertPdtToTmp';
 
 //ใบรับของ-ใบซื้อสินค้า/บริการ
 $route['dcmPI/(:any)/(:any)']           = 'document/purchaseinvoice/cPurchaseInvoice/index/$1/$2';
@@ -851,9 +852,9 @@ $route['TWOTransferwarehouseoutEventDelete']                = 'document/transfer
 $route['TWOTransferwarehouseoutEventCencel']                = 'document/transferwarehouseout/cTransferwarehouseout/FSoCTWOEventCancel';
 $route['TWOTransferwarehouseoutEventEditInline']            = 'document/transferwarehouseout/cTransferwarehouseout/FSoCTWOEditPdtIntoDocDTTemp';
 $route['TWOTransferwarehouseoutEventApproved']              = 'document/transferwarehouseout/cTransferwarehouseout/FSoCTWOApproved';
-$route['TWOTransferwarehouseoutEventAddPdtIntoDTFhnTemp']   = 'document/transferwarehouseout/cTransferwarehouseout/FSoCTWOEventAddPdtIntoDTFhnTemp';
-// $route['docTFWEventAddPdtIntoDTFhnTemp']                    = 'document/producttransferwahouse/cProducttransferwahouse/FSoCTFWEventAddPdtIntoDTFhnTemp';
-
+// $route['TWOTransferwarehouseoutEventAddPdtIntoDTFhnTemp']   = 'document/transferwarehouseout/cTransferwarehouseout/FSoCTWOEventAddPdtIntoDTFhnTemp';
+$route['docTWOEventAddPdtIntoDTFhnTemp']                    = 'document/transferwarehouseout/cTransferwarehouseout/FSoCTWOEventAddPdtIntoDTFhnTemp';
+$route['docTWOClearPdtInTmp']                               = 'document/transferwarehouseout/cTransferwarehouseout/FSoCTWOClearPdtInTemp';
 
 //ใบจ่ายโอน - สาขา
 $route['docTransferBchOut/(:any)/(:any)']                   = 'document/transfer_branch_out/cTransferBchOut/index/$1/$2';

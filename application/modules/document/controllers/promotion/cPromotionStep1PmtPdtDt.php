@@ -9,12 +9,6 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
         $this->load->model('document/promotion/mPromotionStep1PmtPdtDt');
         $this->load->model('document/promotion/mPromotionStep1PmtDt');
         $this->load->model('document/promotion/mPromotion');
-
-        // Clean XSS Filtering Security
-		$this->load->helper("security");
-		if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
-            echo "ERROR XSS Filter";
-        }
     }
 
     /**
@@ -26,79 +20,6 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
      * Return Type : Array
      */
     public function FSxCPromotionGetPmtPdtDtInTmp()
-    {
-        $tPmtGroupTypeTmp       = $this->input->post('tPmtGroupTypeTmp');
-        $tPmtGroupListTypeTmp   = $this->input->post('tPmtGroupListTypeTmp');
-        $tPmtGroupNameTmp       = $this->input->post('tPmtGroupNameTmp');
-        $tPmtGroupNameTmpOld    = $this->input->post('tPmtGroupNameTmpOld');
-        $tSearchAll             = $this->input->post('tSearchAll');
-        $nPage                  = $this->input->post('nPageCurrent');
-        $aAlwEvent              = FCNaHCheckAlwFunc('promotion/0/0');
-        $nOptDecimalShow        = FCNxHGetOptionDecimalShow();
-        $tUserSessionID         = $this->session->userdata("tSesSessionID");
-        $tUserLevel             = $this->session->userdata('tSesUsrLevel');
-        $tBchCodeLogin          = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
-
-        if ($nPage == '' || $nPage == null) {
-            $nPage  = 1;
-        } else {
-            $nPage  = $this->input->post('nPageCurrent');
-        }
-        $nLangEdit  = $this->session->userdata("tLangEdit");
-
-        $aGetPmtPdtDtInTmpParams  = array(
-            'tPmtGroupNameTmp'      => $tPmtGroupNameTmp,
-            'tPmtGroupTypeTmp'      => $tPmtGroupTypeTmp,
-            'tPmtGroupListTypeTmp'  => $tPmtGroupListTypeTmp,
-            'FNLngID'               => $nLangEdit,
-            'nPage'                 => $nPage,
-            'nRow'                  => 500,
-            'tSearchAll'            => $tSearchAll,
-            'tUserSessionID'        => $tUserSessionID
-        );
-        $aResList   = $this->mPromotionStep1PmtPdtDt->FSaMGetPmtPdtDtInTmp($aGetPmtPdtDtInTmpParams);
-
-        $aGetPmtPdtDtInAllTmpParams  = array(
-            'FNLngID'               => $nLangEdit,
-            'tBchCodeLogin'         => $tBchCodeLogin,
-            'tUserSessionID'        => $tUserSessionID,
-            'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld
-        );
-        $aGetPmtPdtDtInAllTmp   = $this->mPromotionStep1PmtPdtDt->FSaMGetPmtPdtDtInAllTmp($aGetPmtPdtDtInAllTmpParams);
-        
-        $aNotIn = [];
-        foreach($aGetPmtPdtDtInAllTmp as $nIndex => $aGetPmtPdtDtInAllTmpItem){
-            $aNotIn[$nIndex][]  = $aGetPmtPdtDtInAllTmpItem['FTPmdRefCode'];
-            $aNotIn[$nIndex][]  = $aGetPmtPdtDtInAllTmpItem['FTPmdBarCode'];
-        }
-
-        // Function Check Product Compare 
-        $nChkTmpCmpPdtSpcCtl    = $this->mPromotionStep1PmtPdtDt->FSnMChkTmpCmpPdtSpcCtl($aGetPmtPdtDtInTmpParams);
-
-        $aGenTable  = array(
-            'aAlwEvent'         => $aAlwEvent,
-            'aDataList'         => $aResList,
-            'nPage'             => $nPage,
-            'nOptDecimalShow'   => $nOptDecimalShow
-        );
-        $tHtml = $this->load->view('document/promotion/advance_table/wStep1PmtPdtDtTableTmp', $aGenTable, true);
-        $aResponse = [
-            'html'  => $tHtml,
-            'notIn' => $aNotIn,
-            'nChkTmpCmpPdtSpcCtl' => $nChkTmpCmpPdtSpcCtl
-        ];
-        $this->output->set_status_header(200)->set_content_type('application/json')->set_output(json_encode($aResponse));
-    }
-
-    /**
-     * Functionality : Get PmtPdtDt in Temp
-     * Parameters : -
-     * Creator : 04/02/2020 piya
-     * Last Modified : -
-     * Return : Status
-     * Return Type : Array
-     */
-    public function FSxCPromotionGetPmtPriDtInTmp()
     {
         $tPmtGroupTypeTmp = $this->input->post('tPmtGroupTypeTmp');
         $tPmtGroupListTypeTmp = $this->input->post('tPmtGroupListTypeTmp');
@@ -129,8 +50,8 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
             'tSearchAll' => $tSearchAll,
             'tUserSessionID' => $tUserSessionID
         );
-        $aResList = $this->mPromotionStep1PmtPdtDt->FSaMGetPmtPriDtInTmp($aGetPmtPdtDtInTmpParams);
-        // print_r($aResList);
+        $aResList = $this->mPromotionStep1PmtPdtDt->FSaMGetPmtPdtDtInTmp($aGetPmtPdtDtInTmpParams);
+
         $aGetPmtPdtDtInAllTmpParams  = array(
             'FNLngID' => $nLangEdit,
             'tBchCodeLogin' => $tBchCodeLogin,
@@ -151,8 +72,7 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
             'nPage' => $nPage,
             'nOptDecimalShow' => $nOptDecimalShow
         );
-        // print_r($aGenTable);
-        $tHtml = $this->load->view('document/promotion/advance_table/wStep1PmtAdjPriDtTableTmp', $aGenTable, true);
+        $tHtml = $this->load->view('document/promotion/advance_table/wStep1PmtPdtDtTableTmp', $aGenTable, true);
         
         $aResponse = [
             'html' => $tHtml,
@@ -183,7 +103,6 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
         $tUserLoginCode = $this->session->userdata("tSesUsername");
         $tUserLevel = $this->session->userdata('tSesUsrLevel');
         $tBchCodeLogin = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
-        $aCheckStalotPdt = array();
 
         $this->db->trans_begin();
 
@@ -196,7 +115,7 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
         $aPdtList = json_decode($tPdtList, JSON_OBJECT_AS_ARRAY);
         
         if (isset($aPdtList) && is_array($aPdtList) && !empty($aPdtList)) {
-            foreach ($aPdtList as $nKey => $aItem) {
+            foreach ($aPdtList as $aItem) {
                 $aPackData = $aItem['packData'];
                 $aPmtPdtDtToTempParams = [
                     'tDocNo' => 'PMTDOCTEMP',
@@ -215,10 +134,7 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
                     'tBarCode' => $aPackData['Barcode'],
                     'nLngID' => $nLangEdit
                 ];
-                $aResultToTmp = $this->mPromotionStep1PmtPdtDt->FSaMPmtPdtDtToTemp($aPmtPdtDtToTempParams);
-                $aCheckStalotPdt[$nKey]['tPdtCode'] = $aPackData['PDTCode'];
-                $aCheckStalotPdt[$nKey]['nStaLot'] = @$aPackData['nStaLot'];
-                $aCheckStalotPdt[$nKey]['nSeqno'] = $aResultToTmp['nSeqno'];
+                $this->mPromotionStep1PmtPdtDt->FSaMPmtPdtDtToTemp($aPmtPdtDtToTempParams);
             }
         }
 
@@ -226,15 +142,13 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
             $this->db->trans_rollback();
             $aReturn = array(
                 'nStaEvent'    => '900',
-                'tStaMessg'    => "Unsucess InsertPmtPdtDtToTmp",
-                'aStalot'    => $aCheckStalotPdt
+                'tStaMessg'    => "Unsucess InsertPmtPdtDtToTmp"
             );
         } else {
             $this->db->trans_commit();
             $aReturn = array(
                 'nStaEvent'    => '1',
-                'tStaMessg' => 'Success InsertPmtPdtDtToTmp',
-                'aStalot' => $aCheckStalotPdt
+                'tStaMessg' => 'Success InsertPmtPdtDtToTmp'
             );
         }
 
@@ -284,84 +198,5 @@ class cPromotionStep1PmtPdtDt extends MX_Controller
         }
 
         $this->output->set_content_type('application/json')->set_output(json_encode($aReturn));
-    }
-
-    /**
-     * Functionality : Show Modal Lot
-     * Parameters : -
-     * Creator : 03/11/2021 Off
-     * Last Modified : -
-     * Return : -
-     * Return Type : -
-     */
-    public function FSxCPromotionGetLotDetail(){
-        $tPdtCode           = $this->input->post('tPdtCode');
-        $nSeqno             = $this->input->post('nSeqno');
-        $nRound             = $this->input->post('nRound');
-        $nMaxRound          = $this->input->post('nMaxRound');
-        
-        $aWhereData     = [
-            'FTXthDocKey'   => 'TCNMPdtLot',
-            'FTSessionID'   => $this->session->userdata('tSesSessionID'),
-            'tPdtCode'      => $tPdtCode[$nRound],
-            'nSeqno'        => $nSeqno[$nRound]
-        ];
-        // Loop Insert DT Set temp
-        // $this->Jobrequeststep1_model->FSaMJR1DeleteDTSetToTemp($aWhereData);
-        // $this->Jobrequeststep1_model->FSaMJR1InsertDTSetToTemp($aWhereData);
-
-        $aDataView  = [
-            'aDataDTTmp'    => $this->mPromotionStep1PmtPdtDt->FSaMPmtPdtDtGetLotDetail($aWhereData),
-            'aWhereData'    => $aWhereData,
-            'nCountPDTLot'  => $nMaxRound,
-            'nRound'        => $nRound,
-            'tTable'        => 'pdt',
-            'tPdtCode'      => $tPdtCode,
-            'nSeqno'        => $nSeqno,
-        ];
-        $this->load->view('document/promotion/advance_table/wStep1PmtPdtDtTableLotTmp',$aDataView);
-        
-    }
-
-     /**
-     * Functionality : Insert Lot Tmp
-     * Parameters : -
-     * Creator : 03/11/2021 Off
-     * Last Modified : -
-     * Return : -
-     * Return Type : -
-     */
-    public function FSxCPromotionInsertLotTmp(){
-        $tLotno             = $this->input->post('tLotno');
-        $tPdtCode           = $this->input->post('tPdtCode');
-        $tTable             = $this->input->post('tTable'); 
-        $nSeqno             = $this->input->post('nSeqno');
-        $nRound             = $this->input->post('nRound');
-        // print_r($this->input->post('nRound'));
-        
-        $aWhereDataDelte     = [
-            'FTBchCode'         => $this->input->post('tBchCode'),
-            'FTPmhDocNo'        => $this->input->post('tDocNo'),
-            'FTPmdRefCode'      => $this->input->post('tPdtCode'),
-            'FTPmdLotNo'        => $this->input->post('tLotno'),
-            'FNPmdSeq'          => $this->input->post('pnSeqno'),
-            'FTSessionID'       => $this->session->userdata('tSesSessionID'),
-            'tUserSessionDate'  => $this->session->userdata("tSesSessionDate")
-        ];
-        // Loop Insert DT Set temp
-        $this->mPromotionStep1PmtPdtDt->FSaMJR1DeleteDTLOTToTemp($aWhereDataDelte);
-        foreach($tLotno as $nKey => $aValue){
-            $aWhereData     = [
-                'tTable'            => $this->input->post('tTable'),
-                'FTBchCode'         => $this->input->post('tBchCode'),
-                'FTPmhDocNo'        => $this->input->post('tDocNo'),
-                'FTPmdRefCode'      => $tPdtCode,
-                'FTPmdLotNo'        => $aValue,
-                'FNPmdSeq'          => $this->input->post('pnSeqno'),
-                'FTSessionID'       => $this->session->userdata('tSesSessionID'),
-                'tUserSessionDate'  => $this->session->userdata("tSesSessionDate")
-            ];
-        $this->mPromotionStep1PmtPdtDt->FSaMPmtPdtDtLotToTemp($aWhereData);
-        }
     }
 }

@@ -1393,7 +1393,9 @@
                     'tBchCode': $('#oetSOFrmBchCode').val(),
                     'tTWODocNo': ptXthDocNoSend,
                     'tTWOPdtData': ptPdtData,
-                    'tType': 'PDT'
+                    'tType': 'PDT',
+                    'nTWOOptionAddPdt' : $('#ocmTWOOptionAddPdt').val(),
+                    'nTWOFrmSplInfoVatInOrEx' : $('#ohdTWOFrmSplInfoVatInOrEx').val()
                 },
                 cache: false,
                 timeout: 0,
@@ -1431,14 +1433,15 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "TWOTransferwarehouseoutEventAddPdtIntoDTFhnTemp",
+                    url: "docTWOEventAddPdtIntoDTFhnTemp",
                     data: {
                         'tTWODocNo'         : ptXthDocNoSend,
                         'tTWOPdtDataFhn'    : ptPdtDataFhn,
                         'tTWOBCH'           : $('#oetSOFrmBchCode').val(),
                         'tTWOType'          : 'PDT',
                         'nEvent'           : 1,
-                        'tOptionAddPdt'    : 1
+                        'tOptionAddPdt'    :  $('#ocmTWOOptionAddPdt').val(),
+                        'ohdTWOFrmSplInfoVatInOrEx' : $('#ohdTWOFrmSplInfoVatInOrEx').val()
                     },
                     cache: false,
                     timeout: 0,
@@ -1467,14 +1470,15 @@
 
             $.ajax({
                 type: "POST",
-                url: "TWOTransferwarehouseoutEventAddPdtIntoDTFhnTemp",
+                url: "docTWOEventAddPdtIntoDTFhnTemp",
                 data: {
                     'tTWODocNo'         : ptXthDocNoSend,
                     'tTWOPdtDataFhn'    : ptPdtDataFhn,
                     'tTWOBCH'           : $('#oetSOFrmBchCode').val(),
                     'tTWOType'          : 'PDT',
                     'nEvent'           : 2,
-                    'tOptionAddPdt'    : 1
+                    'tOptionAddPdt'    :  $('#ocmTWOOptionAddPdt').val(),
+                    'ohdTWOFrmSplInfoVatInOrEx' : $('#ohdTWOFrmSplInfoVatInOrEx').val()
                 },
                 cache: false,
                 timeout: 0,
@@ -1507,7 +1511,7 @@
     function JSnTWORemovePdtDTTempSingle(ptSeqNo, ptPdtCode) {
         var tTWODocNo = $("#oetTWODocNo").val();
         var tTWOBchCode = $('#oetSOFrmBchCode').val();
-        var tTWOVatInOrEx = 1;
+        var tTWOVatInOrEx = $('#ohdTWOFrmSplInfoVatInOrEx').val();
         JCNxOpenLoading();
         $.ajax({
             type: "POST",
@@ -1607,7 +1611,7 @@
         JCNxOpenLoading();
         var tTWODocNo = $("#oetTWODocNo").val();
         var tTWOBchCode = $('#oetSOFrmBchCode').val();
-        var tTWOVatInOrEx = 1;
+        var tTWOVatInOrEx = $('#ohdTWOFrmSplInfoVatInOrEx').val();
         var aDataPdtCode = JSoTWORemoveCommaData($('#odvTWOModalDelPdtInDTTempMultiple #ohdConfirmTWOPdtCodeDelete').val());
         var aDataPunCode = JSoTWORemoveCommaData($('#odvTWOModalDelPdtInDTTempMultiple #ohdConfirmTWOPunCodeDelete').val());
         var aDataSeqNo = JSoTWORemoveCommaData($('#odvTWOModalDelPdtInDTTempMultiple #ohdConfirmTWOSeqNoDelete').val());
@@ -1899,6 +1903,37 @@
         }
     }
 
+
+    
+    /**
+     * Functionality : Delete Pdt in Temp by SeqNo
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSxTWODataTableDeleteBySeq(poElm) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+
+            JCNxOpenLoading();
+            var nSeqNo = $(poElm)
+                            .parent()
+                            .parent()
+                            .parent()
+                            .attr("data-seqno");
+            var tPdtCode = $(poElm)
+                            .parent()
+                            .parent()
+                            .parent()
+                            .attr("data-pdtcode");
+            JSnTWORemovePdtDTTempSingle(nSeqNo,tPdtCode);
+
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
     //RABBIT MQ
     $(document).ready(function() {
 
@@ -2085,4 +2120,94 @@
         JCNxRftDataTable(aRftData);
         }
     }  
+
+
+    $('#ocmTWOOptionAddPdt').on('change',function(){
+		let nCountDataInTable = $('#otbTWODocPdtAdvTableList tbody .xWPdtItem').length;
+		// var tCheckIteminTable = $('#otbTwoDocPdtAdvTableList tbody tr').length;
+		if(nCountDataInTable > 0){
+		
+			var tTextMssage    = '<?php echo language('document/purchaseinvoice/purchaseinvoice','tPIMsgNotiChangeOptionClearDocTemp');?>';
+			// FSvCMNSetMsgWarningDialog("<p>"+tTextMssage+"</p>");
+
+			// Event CLick Close Massage And Delete Temp
+			if(confirm(tTextMssage)==true){
+                JSvTWOClearPdtInTemp();
+			}else{
+                if(this.value=='1'){
+					  $(this).val(2).selectpicker('refresh');;
+				  }else{
+					$(this).val(1).selectpicker('refresh');;
+				  }
+            }
+		}
+	});
+
+
+        /**
+     * Functionality : Clear Pdt in Temp
+     * Parameters : -
+     * Creator : 04/02/2020 Piya
+     * Return : -
+     * Return Type : -
+     */
+    function JSvTWOClearPdtInTemp() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+
+            JCNxOpenLoading();
+
+            $.ajax({
+                type: "POST",
+                url: "docTWOClearPdtInTmp",
+                cache: false,
+                timeout: 5000,
+                success: function(tResult) {
+                    JSvTRNLoadPdtDataTableHtml();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxCloseLoading();
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    }
+
+
+
+        /*===== Begin Import Excel =========================================================*/
+        function JSxOpenImportForm(){
+    
+            var tNameModule     = 'transferwahouseout';
+            var tTypeModule     = 'document';
+            var tAfterRoute     = 'JSxImportExcelCallback'; // call func
+            var tFlagClearTmp   = '1' // null = ไม่สนใจ 1 = ลบหมดเเล้วเพิ่มใหม่ 2 = เพิ่มต่อเนื่อง
+            var tDocumentNo =  $("#oetTWODocNo").val();
+            var tFrmBchCode = $("#oetSOFrmBchCode").val();
+            var nVatRate = $('#ohdTWOVatRate').val();
+            var tVatCode = $('#ohdTWOVatCode').val();
+            var aPackdata = {
+                'tNameModule'   : tNameModule,
+                'tTypeModule'   : tTypeModule,
+                'tAfterRoute'   : tAfterRoute,
+                'tFlagClearTmp' : tFlagClearTmp,
+                'tDocumentNo' : tDocumentNo,
+                'tFrmBchCode' : tFrmBchCode,
+                'nSplVatRate' : nVatRate,
+                'tSplVatCode' : tVatCode,
+            };
+
+                JSxImportPopUp(aPackdata);
+      
+    }
+
+
+    function JSxImportExcelCallback(){
+
+        JSvTRNLoadPdtDataTableHtml();
+
+    }
 </script>

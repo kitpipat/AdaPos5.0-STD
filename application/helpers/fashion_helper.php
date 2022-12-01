@@ -427,3 +427,149 @@
                     ORDER BY DT.FNXtdSeqNo ASC ";
         $ci->db->query($tSQL);
     }
+
+
+              
+    /**
+     * Functionality: ตรวจสอบจำนวน QtyAll ใน DT ที่ไม่ตรงกันกับ DTFhn
+     * Parameters: -
+     * Creator: 15/08/2022 Nale
+     * Last Modified: -
+     * Return: Statuss
+     * Return Type: Number
+    */
+     function FCNaCheckDT2DTFhnFrmDoc($paPackData){
+        try{    
+            $ci = &get_instance();
+            $ci->load->database();
+            $tSessionID   = $paPackData['tSessionID'];
+            $tBchCode     = $paPackData['tBchCode'];
+            $tDocNo       = $paPackData['tDocNo'];
+            $tDocKey      = $paPackData['tDocKey'];
+            
+                    $tSQL ="SELECT
+                        DT.FTBchCode,
+                        DT.FTXthDocNo,
+                        DT.FNXtdSeqNo,
+                        DT.FTPdtCode,
+                        DT.FCXtdQty AS QTYDT,
+                        DTFhn.FCXtdQty
+                    FROM
+                        TCNTDocDTTmp DT WITH (NOLOCK)
+                        LEFT OUTER JOIN (
+                                SELECT
+                                    COUNT(*) AS RowID,
+                                    DTF.FTBchCode,
+                                    DTF.FTXshDocNo,
+                                    DTF.FNXsdSeqNo,
+                                    DTF.FTPdtCode,	
+                                    SUM(DTF.FCXtdQty) AS FCXtdQty
+                                FROM
+                                    TCNTDocDTFhnTmp DTF
+                                WHERE DTF.FTSessionID =	 '$tSessionID'
+                                AND DTF.FTBchCode = '$tBchCode'
+                                AND DTF.FTXshDocNo = '$tDocNo'
+                                AND DTF.FTXthDocKey = '$tDocKey'
+                                GROUP BY DTF.FTBchCode,DTF.FTXshDocNo,DTF.FNXsdSeqNo,DTF.FTPdtCode
+                        ) DTFhn ON DT.FTBchCode = DTFhn.FTBchCode AND DT.FTXthDocNo = DTFhn.FTXshDocNo AND DT.FNXtdSeqNo = DTFhn.FNXsdSeqNo AND DT.FTPdtCode = DTFhn.FTPdtCode
+                    WHERE
+                        FTSessionID = '$tSessionID'
+                        AND DT.FTBchCode = '$tBchCode'
+                        AND DT.FTXthDocNo = '$tDocNo'
+                        AND DT.FTXthDocKey = '$tDocKey'
+                        AND DT.FTTmpStatus = 5
+                    AND DT.FCXtdQty <> ISNULL(DTFhn.FCXtdQty,0)
+                ";
+
+            $oQuery =$ci->db->query($tSQL);
+
+            if ($oQuery->num_rows() > 0) {
+                $oDetail = $oQuery->result_array();
+                $tHtmlStrPdtLst = '';
+                foreach($oDetail as $nK => $aData){
+                    
+                $tPdtCode = language('report/report/report', 'tRptPdtCode');
+                $tQty = language('report/report/report', 'tRptQty');
+                    $tHtmlStrPdtLst .= '<p>'.($nK+1).'. '.$tPdtCode.' '.$aData['FTPdtCode'].' '.$tQty.' '.number_format($aData['QTYDT'],$ci->session->userdata("nSesOptDecimalShow")).'/'.number_format($aData['FCXtdQty'],$ci->session->userdata("nSesOptDecimalShow")).'</p>';
+                }
+                $aResult = array(
+                    'rtItem'   => $tHtmlStrPdtLst,
+                    'rtCode'    => '1',
+                    'rtDesc'    => 'Found Data',
+                );
+            } else {
+                $aResult = array(
+                    'rtCode' => '800',
+                    'rtDesc' => 'data not found.',
+                );
+            }
+            return $aResult;
+        }catch(Exception $Error){
+            $aResult = array(
+                'rtCode' => '800',
+                'rtDesc' => 'data not found.',
+            );
+        }
+    }
+
+
+
+
+       /**
+     * Functionality: ตรวจสอบจำนวน QtyAll ใน DT ที่ไม่ตรงกันกับ DTFhn
+     * Parameters: -
+     * Creator: 15/08/2022 Nale
+     * Last Modified: -
+     * Return: Statuss
+     * Return Type: Number
+    */
+    function FCNaFhnGetOptionPdt($paPackData){
+        try{    
+            $ci = &get_instance();
+            $ci->load->database();
+            $tSessionID   = $paPackData['tSessionID'];
+            $tBchCode     = $paPackData['tBchCode'];
+            $tDocNo       = $paPackData['tDocNo'];
+            $tDocKey      = $paPackData['tDocKey'];
+            
+                    $tSQL ="SELECT
+                            DT.FTBchCode,
+                            DT.FTXthDocNo,
+                            DT.FTPdtCode,
+                            DT.FTXtdBarCode,
+                            COUNT(DT.FTPdtCode) AS rtCounData
+                        FROM
+                            TCNTDocDTTmp DT WITH (NOLOCK)
+                        WHERE
+                            FTSessionID = '$tSessionID'
+                        AND DT.FTBchCode = '$tBchCode'
+                        AND DT.FTXthDocNo = '$tDocNo'
+                        AND DT.FTXthDocKey = '$tDocKey'
+                        GROUP BY DT.FTBchCode,DT.FTXthDocNo,DT.FTPdtCode,DT.FTXtdBarCode
+                        HAVING COUNT(DT.FTPdtCode) > 1
+                ";
+
+            $oQuery =$ci->db->query($tSQL);
+
+            if ($oQuery->num_rows() > 0) {
+                $aResult = array(
+                    'rnOptionPdt' => 2,
+                    'rtCode'    => '1',
+                    'rtDesc'    => 'Found Data',
+                );
+            } else {
+                $aResult = array(
+                    'rnOptionPdt' => 1,
+                    'rtCode' => '800',
+                    'rtDesc' => 'data not found.',
+                );
+            }
+            return $aResult;
+        }catch(Exception $Error){
+            $aResult = array(
+                'rnOptionPdt' => 1,
+                'rtCode' => '800',
+                'rtDesc' => 'data not found.',
+            );
+        }
+    }

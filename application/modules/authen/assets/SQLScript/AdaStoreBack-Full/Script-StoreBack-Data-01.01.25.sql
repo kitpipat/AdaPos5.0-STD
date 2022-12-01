@@ -828,10 +828,6 @@ GO
 IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.22') BEGIN
 
 
-INSERT INTO [TSysMenuList_L] ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) VALUES ('SYS007', '1', 'รูปแบบฟอร์มพิเศษ', NULL);
-INSERT INTO [TSysMenuList_L] ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) VALUES ('SYS007', '2', 'Forms', '');
-INSERT INTO [TSysMenuList] ([FTGmnCode], [FTMnuParent], [FTMnuCode], [FTLicPdtCode], [FNMnuSeq], [FTMnuCtlName], [FNMnuLevel], [FTMnuStaPosHpm], [FTMnuStaPosFhn], [FTMnuStaSmartHpm], [FTMnuStaSmartFhn], [FTMnuStaMoreHpm], [FTMnuStaMoreFhn], [FTMnuType], [FTMnuStaAPIPos], [FTMnuStaAPISmart], [FTMnuStaUse], [FTMnuPath], [FTGmnModCode], [FTMnuImgPath]) VALUES ('SYS', 'SYS', 'SYS007', 'SB-MASSYS008', '7', 'forms/0/0', '1', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '1', 'Y', 'Y', '1', '', 'MAS', '');
-
 INSERT INTO [TCNTAuto] ([FTSatTblName], [FTSatFedCode], [FTSatStaDocType], [FTSatGroup], [FTGmnCode], [FTSatDocTypeName], [FTSatStaAlwChr], [FTSatStaAlwBch], [FTSatStaAlwPosShp], [FTSatStaAlwYear], [FTSatStaAlwMonth], [FTSatStaAlwDay], [FTSatStaAlwSep], [FTSatStaDefUsage], [FTSatDefChar], [FTSatDefBch], [FTSatDefPosShp], [FTSatDefYear], [FTSatDefMonth], [FTSatDefDay], [FTSatDefSep], [FTSatDefNum], [FTSatDefFmtAll], [FNSatMaxFedSize], [FNSatMinRunning], [FTSatUsrChar], [FTSatUsrBch], [FTSatUsrPosShp], [FTSatUsrYear], [FTSatUsrMonth], [FTSatUsrDay], [FTSatUsrSep], [FTSatUsrNum], [FTSatUsrFmtAll], [FTSatStaReset], [FTSatStaRunBch], [FDLastUpdOn], [FTLastUpdBy], [FDCreateOn], [FTCreateBy]) VALUES ('TRPTRptFmtUsr', 'FTRfuCode', '0', '1', 'MSAL', '', '0', '0', '0', '0', '0', '0', '0', '0', '', '0', '0', '0', '0', '0', '0', '00001', '#####', '5', '5', '', '0', '0', '0', '0', '0', '0', '00001', '#####', '', '0', '2020-12-23 00:00:00.000', '', '2020-12-23 00:00:00.000', '');
 
 
@@ -917,5 +913,65 @@ INSERT INTO   [TRPSRptFormat_L] ([FTRfsCode], [FNLngID], [FTRfsName], [FTRfsRema
 INSERT INTO   [TRPSRptFormat_L] ([FTRfsCode], [FNLngID], [FTRfsName], [FTRfsRemark]) VALUES ('00037', '1', 'โอนสินค้าระหว่างคลังตู้', 'โอนสินค้าระหว่างคลังตู้');
 --ทุกครั้งที่รันสคริปใหม่
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.22', getdate() , 'ข้อมูลตั้งต้นสำหรับการกำหนดฟอม', 'Nale')
+END
+GO
+
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.23') BEGIN
+INSERT INTO [TSysMenuList] ([FTGmnCode], [FTMnuParent], [FTMnuCode], [FTLicPdtCode], [FNMnuSeq], [FTMnuCtlName], [FNMnuLevel], [FTMnuStaPosHpm], [FTMnuStaPosFhn], [FTMnuStaSmartHpm], [FTMnuStaSmartFhn], [FTMnuStaMoreHpm], [FTMnuStaMoreFhn], [FTMnuType], [FTMnuStaAPIPos], [FTMnuStaAPISmart], [FTMnuStaUse], [FTMnuPath], [FTGmnModCode], [FTMnuImgPath]) VALUES ('SYS', 'SYS', 'SYS008', 'SB-MASSYS008', '7', 'forms/0/0', '1', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', '1', 'Y', 'Y', '1', '', 'MAS', '');
+INSERT INTO [TSysMenuList_L] ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) VALUES ('SYS008', '1', 'รูปแบบฟอร์มพิเศษ', NULL);
+INSERT INTO [TSysMenuList_L] ([FTMnuCode], [FNLngID], [FTMnuName], [FTMnuRmk]) VALUES ('SYS008', '2', 'Forms', '');
+INSERT INTO [TSysMenuAlbAct] ([FTMnuCode], [FTAutStaRead], [FTAutStaAdd], [FTAutStaEdit], [FTAutStaDelete], [FTAutStaCancel], [FTAutStaAppv], [FTAutStaPrint], [FTAutStaPrintMore]) VALUES ('SYS008', '1', '1', '1', '1', '0', '0', '0', '0');
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.23', getdate() , 'เมนูฟอมพิเศษ', 'Nale')
+END
+GO
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.24') BEGIN
+
+UPDATE [TSysConfig]
+SET [FTSysCode] = 'tCN_CstLevDef',
+ [FTSysApp] = 'MB',
+ [FTSysKey] = 'Member',
+ [FTSysSeq] = '1',
+ [FTGmnCode] = 'MCst',
+ [FTSysStaAlwEdit] = '1',
+ [FTSysStaDataType] = '0',
+ [FNSysMaxLength] = '0',
+ [FTSysStaDefValue] = '',
+ [FTSysStaDefRef] = '',
+ [FTSysStaUsrValue] = '00002',
+ [FTSysStaUsrRef] = '',
+ [FDLastUpdOn] = '2021-08-31 13:07:27.000',
+ [FTLastUpdBy] = '00001',
+ [FDCreateOn] = '2021-08-27 00:00:00.000',
+ [FTCreateBy] = 'Junthon M.'
+WHERE
+ (
+  [FTSysCode] = 'tCN_CstLevDef'
+ )
+AND ([FTSysApp] = 'MB')
+AND ([FTSysKey] = 'Member')
+AND ([FTSysSeq] = '1');
+
+INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FNLngID], [FTSysName], [FTSysDesc], [FTSysRmk]) VALUES ('tCN_CstLevDef', 'ALL', 'Member', '1', '1', 'กำหนดค่าเริ่มต้นระดับลูกค้า', 'รหัสระดับลูกค้า', '');
+INSERT INTO [TSysConfig_L] ([FTSysCode], [FTSysApp], [FTSysKey], [FTSysSeq], [FNLngID], [FTSysName], [FTSysDesc], [FTSysRmk]) VALUES ('tCN_CstLevDef', 'ALL', 'Member', '1', '2', 'Define the default customer level.', 'Customer level code', '');
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.24', getdate() , 'เพิ่ม Config Default ระดับลูกค้า', 'Nale')
+END
+GO
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.25') BEGIN
+INSERT INTO [TSysRsnGrp_L] ([FTRsgCode], [FNLngID], [FTRsgName], [FTRsgRmk]) VALUES ('017', '1', 'ภาษี', '');
+INSERT INTO [TSysRsnGrp_L] ([FTRsgCode], [FNLngID], [FTRsgName], [FTRsgRmk]) VALUES ('018', '1', 'ลดหนี้', '');
+
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.25', getdate() , 'เพิ่มกลุ่มเหตุผลใหม่สำหรับยกเลิกใบกำกับภาษี', 'Nale')
 END
 GO

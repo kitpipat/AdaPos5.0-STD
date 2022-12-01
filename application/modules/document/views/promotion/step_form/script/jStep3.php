@@ -1,206 +1,143 @@
 <script>
-    $(document).ready(function() {
-        JSvPromotionStep3GetCouponInTemp();
+    $(document).ready(function(){ 
+        JSvPromotionStep3GetCouponInTemp(); 
         JSvPromotionStep3GetPointInTemp();
 
-        if (JCNbPromotionStep3PmtCGTableIsEmpty()) {
-            $('#ocbPromotionStep3GroupGetControl').prop('checked', false);
-            $('#ocbPromotionStep3GroupGetControl').attr('disabled', true);
-            $('#ocbPromotionStep3GroupGetControl').parent().find("span").addClass('xCNDocDisabled');
-        } else {
-            $('#ocbPromotionStep3GroupGetControl').prop('checked', true);
+        if(JCNbPromotionStep3PmtCGTableIsEmpty()){
+            $('#ocbPromotionStep3GroupGetControl').prop('checked', false);   
+        }else{
+            $('#ocbPromotionStep3GroupGetControl').prop('checked', true); 
         }
-        $('.xCNPromotionStep3PgtCpnTextContainer').hide();
     });
 
-    $('#obtPmtDateStart').click(function() {
-        $('#oetPromotionStep3DateStart').datepicker('show');
-    });
-
-    $('#obtPmtDateEnd').click(function() {
-        $('#oetPromotionStep3DateEnd').datepicker('show');
-    });
-
-    var dStart = new Date($('#oetPromotionPmhDStart').val());
-    var dEnd = new Date(new Date($('#oetPromotionPmhDStart').val()).setYear(dStart.getFullYear() + 1));
-
-    $('#oetPromotionStep3DateStart').datepicker({
-        startDate: dStart,
-        endDate: dEnd,
-        format: 'yyyy-mm-dd',
-        autoclose: true,
-        todayHighlight: true,
-
-    }).on('changeDate', function() {
-        $('#oetPromotionStep3DateEnd').datepicker('setStartDate', new Date($('#oetPromotionStep3DateStart').val()));
-    });
-
-    $('#oetPromotionStep3DateEnd').datepicker({
-        startDate: dStart,
-        endDate: dEnd,
-        format: 'yyyy-mm-dd',
-        autoclose: true,
-        todayHighlight: true,
-
-    }).on('changeDate', function() {
-        $('#oetPromotionStep3DateStart').datepicker('setStartDate', new Date($('#oetPromotionPmhDStart').val()));
-    });
-
-
-    /*===== Begin Check Control All ====================================================*/
+    /*===== Begin Check Control All ====================================================*/ 
     /* $('#ocbPromotionStep3CouponControl, #ocbPromotionStep3PointControl, #ocbPromotionStep3GroupGetControl').bind('change', function(){
         // console.log('checked');
         if( JSbPromotionStep3GetCouponPointEmptyChecked() ){
             // console.log('this: ', this);
             $(this).prop('checked', true);
             $(this).trigger("change");
-            var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
+            var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
             FSvCMNSetMsgWarningDialog(tWarningMessage);
         } 
     }); */
     /*===== End Check Control All ======================================================*/
-
-    if (!bIsApvOrCancel) {
+    
+    if(!bIsApvOrCancel) {
         /*===== Begin ocbPromotionStep3GroupGetControl เงื่อนไขกลุ่มรับ =========================*/
-        $('#ocbPromotionStep3GroupGetControl').unbind().bind('change', function() {
+        $('#ocbPromotionStep3GroupGetControl').unbind().bind('change', function(){
 
-            // if (JSbPromotionStep3GetCouponPointEmptyChecked()) {
-            //     $(this).prop('checked', true);
-            //     $(this).trigger("change");
-            //     var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
-            //     FSvCMNSetMsgWarningDialog(tWarningMessage);
-            //     $('#ocbPromotionStep3GroupGetControl').prop('checked', true);
-            // } else {
+            if( JSbPromotionStep3GetCouponPointEmptyChecked() ){
+                $(this).prop('checked', true);
+                $(this).trigger("change");
+                var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
+                FSvCMNSetMsgWarningDialog(tWarningMessage);
+                $('#ocbPromotionStep3GroupGetControl').prop('checked', true);
+            }else{
                 var bIsChecked = $(this).is(':checked');
-                if (bIsChecked) {
+                if(bIsChecked){
                     // ให้ไปเพิ่มรายใหม่ Prev Step
-                    // var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg9'); ?>'; // กรุณาเลือกรายการ กำหนดกลุ่ม ซื้อ-รับ
-                    // FSvCMNSetMsgWarningDialog(tWarningMessage);
-                    // $('#ocbPromotionStep3GroupGetControl').attr('checked', false);
-                } else {
-                    // $('.xCNPromotionStep2GroupGet').empty();
-                    // // Remove CG Table Tmp
-                    // JSvPromotionStep3ClearPmtCGInTemp();
-                    // $('#ocbPromotionStep3GroupGetControl').attr('disabled', true);
-                    // $('#ocbPromotionStep3GroupGetControl').parent().find("span").addClass('xCNDocDisabled');
-                }
-            // }
+                    var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg9'); ?>'; // กรุณาเลือกรายการ กำหนดกลุ่ม ซื้อ-รับ
+                    FSvCMNSetMsgWarningDialog(tWarningMessage);
+                    $('#ocbPromotionStep3GroupGetControl').attr('checked', false);
+                }else{
+                    $('.xCNPromotionStep2GroupGet').empty();
+                    // Remove CG Table Tmp
+                    JSvPromotionStep3ClearPmtCGInTemp();
+                } 
+            }
         });
         /*===== End ocbPromotionStep3GroupGetControl เงื่อนไขกลุ่มรับ ===========================*/
 
-        /*===== Begin ocbPromotionStep3CouponControl เงื่อนไข - สิทธิประโยชน์คูปอง ===========*/
-        $('#ocbPromotionStep3CouponControl').unbind().bind('change', function() {
-            // if (JSbPromotionStep3GetCouponPointEmptyChecked()) {
-            //     $(this).prop('checked', true);
-            //     $(this).trigger("change");
-            //     var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
-            //     FSvCMNSetMsgWarningDialog(tWarningMessage);
-            // } else {
+        /*===== Begin ocbPromotionStep3CouponControl เงื่อนไข - สิทธิประโยชน์คูปอง ===========*/ 
+        $('#ocbPromotionStep3CouponControl').unbind().bind('change', function(){
+            if( JSbPromotionStep3GetCouponPointEmptyChecked() ){
+                $(this).prop('checked', true);
+                $(this).trigger("change");
+                var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
+                FSvCMNSetMsgWarningDialog(tWarningMessage);
+            }else{
                 var bIsChecked = $(this).is(':checked');
-                if (bIsChecked) {
+                if(bIsChecked){
                     $('#ocmPromotionStep3PgtStaCoupon').prop('disabled', false);
                     $('#ocmPromotionStep3PgtStaCoupon').selectpicker("refresh");
                     $('#obtPromotionBrowseCoupon').prop('disabled', false);
                     $('#oetPromotionStep3PgtCpnText').prop('disabled', false);
-                    $('#obtPromotionBrowseCouponMes').prop('disabled', false);
                     // ให้ไปเพิ่มรายใหม่
                     JSvPromotionStep3InsertOrUpdateCouponToTemp();
-                } else {
-                    $('.xCNPromotionStep3BrowseCouponContainer').show();
+                }else{
+                    $('.xCNPromotionStep3BrowseCouponContainer').show();  
                     $('.xCNPromotionStep3PgtCpnTextContainer').hide();
 
                     $('#ocmPromotionStep3PgtStaCoupon').prop('disabled', true);
                     $('#ocmPromotionStep3PgtStaCoupon').val('2').selectpicker("refresh");
                     $('#obtPromotionBrowseCoupon').prop('disabled', true);
                     $('#oetPromotionStep3PgtCpnText').prop('disabled', true);
-                    $('#obtPromotionBrowseCouponMes').prop('disabled', true);
 
                     $('#oetPromotionStep3CouponName').val("");
                     $('#oetPromotionStep3CouponCode').val("");
-                    $('#oetPromotionStep3PgtCpnName').val("");
-                    $('#oetPromotionStep3PgtCpn').val("")
+                    $('#oetPromotionStep3PgtCpnText').val("");
                     // Remove CG Table Tmp
                     JSvPromotionStep3DeleteCouponInTemp();
-                }
-            // }
+                } 
+            }
         });
 
-        $('#ocmPromotionStep3PgtStaCoupon').on('change', function() {
+        $('#ocmPromotionStep3PgtStaCoupon').on('change', function(){
             var bIsPgtCpnTextType = $(this).val() == "3"; // การให้สิทธิ์ 1:ไม่กำหนด 2:.ให้สิทธิ์คูปอง 3:ข้อความ
-            if (bIsPgtCpnTextType) {
-                $('.xCNPromotionStep3BrowseCouponContainer').hide();
-                $('.xCNPromotionStep3PgtCpnTextContainer').show();
-                $('#oetPromotionStep3CouponCode').val("");
+            if(bIsPgtCpnTextType){
+                $('.xCNPromotionStep3BrowseCouponContainer').hide();  
+                $('.xCNPromotionStep3PgtCpnTextContainer').show(); 
+                $('#oetPromotionStep3CouponCode').val(""); 
                 $('#oetPromotionStep3CouponName').val("");
-            } else {
-                $('.xCNPromotionStep3BrowseCouponContainer').show();
+            }else{
+                $('.xCNPromotionStep3BrowseCouponContainer').show();  
                 $('.xCNPromotionStep3PgtCpnTextContainer').hide();
                 $('#oetPromotionStep3PgtCpnText').val("");
-                $('#oetPromotionStep3PgtCpnName').val("");
-            }
+            }   
         });
         /*===== End ocbPromotionStep3CouponControl เงื่อนไข - สิทธิประโยชน์คูปอง =============*/
 
-        /*===== Begin ocbPromotionStep3PointControl เงื่อนไข - สิทธิประโยชน์แต้ม =============*/
-        /* $('#ocbPromotionStep3PointControl').parents(".fancy-checkbox").find("span").unbind().bind('click', function() {
-            if (JSbPromotionPmhStaLimitCstIsAll()) {
-                var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg7'); ?>'; // ใช้งานได้เฉพาะ คิดทั้งหมด/คิดต่อสมาชิก เป็นต่อสมาชิกเท่านั้น
+        /*===== Begin ocbPromotionStep3PointControl เงื่อนไข - สิทธิประโยชน์แต้ม =============*/ 
+        $('#ocbPromotionStep3PointControl').parents(".fancy-checkbox").find("span").unbind().bind('click', function(){
+            if(JSbPromotionPmhStaLimitCstIsAll()){
+                var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg7'); ?>'; // ใช้งานได้เฉพาะ คิดทั้งหมด/คิดต่อสมาชิก เป็นต่อสมาชิกเท่านั้น
                 FSvCMNSetMsgWarningDialog(tWarningMessage);
             }
-        }); */
+        });
 
-        $('#ocbPromotionStep3PointControl').unbind().bind('change', function() {
-            if (JSbPromotionStep3GetCouponPointEmptyChecked()) {
+        $('#ocbPromotionStep3PointControl').unbind().bind('change', function(){
+            if( JSbPromotionStep3GetCouponPointEmptyChecked() ){
                 $(this).prop('checked', true);
                 $(this).trigger("change");
-                var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
+                var tWarningMessage = '<?php echo language('document/promotion/promotion','tWarMsg8'); ?>'; // กรุณาเลือกรายการ เงื่อนไขกลุ่มรับ, เงื่อนไข-สิทธิประโยชน์คูปอง, เงื่อนไข-สิทธิประโยชน์แต้ม อย่างน้อย 1 เงื่อนไข
                 FSvCMNSetMsgWarningDialog(tWarningMessage);
-            } else if (JSbPromotionPmhStaLimitCstIsAll()) {
-                $(this).prop('checked', false);
-                // setTimeout(function() { $(this).trigger("change"); }, 500);
-                var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg7'); ?>'; // ใช้งานได้เฉพาะ คิดทั้งหมด/คิดต่อสมาชิก เป็นต่อสมาชิกเท่านั้น
-                FSvCMNSetMsgWarningDialog(tWarningMessage);
-            } else {
+            }else{
                 var bIsChecked = $(this).is(':checked');
-                if (bIsChecked) {
+                if(bIsChecked){
                     $('#ocmPromotionStep3PgtStaPoint').prop('disabled', false);
                     $('#ocmPromotionStep3PgtStaPoint').selectpicker("refresh");
                     $('#ocmPromotionStep3PgtStaPntCalType').prop('disabled', false);
                     $('#ocmPromotionStep3PgtStaPntCalType').selectpicker("refresh");
                     $('#oetPromotionStep3PgtPntBuy').prop('disabled', false);
                     $('#oetPromotionStep3PgtPntGet').prop('disabled', false);
-
-                    $('#obtPromotionBrowseSpl').prop('disabled', false);
-                    $('#oetPromotionStep3DateStart').prop('disabled', false);
-                    $('#obtPmtDateStart').prop('disabled', false);
-                    $('#oetPromotionStep3DateEnd').prop('disabled', false);
-                    $('#obtPmtDateEnd').prop('disabled', false);
                     // ให้ไปเพิ่มรายใหม่
                     JSvPromotionStep3InsertOrUpdatePointToTemp();
-                } else {
+                }else{
                     $('#ocmPromotionStep3PgtStaPoint').prop('disabled', true);
                     $('#ocmPromotionStep3PgtStaPoint').val('2').selectpicker("refresh");
                     $('#ocmPromotionStep3PgtStaPntCalType').prop('disabled', true);
                     $('#ocmPromotionStep3PgtStaPntCalType').val('1').selectpicker("refresh");
                     $('#oetPromotionStep3PgtPntBuy').val("").prop('disabled', true);
                     $('#oetPromotionStep3PgtPntGet').val("").prop('disabled', true);
-                    
-                    //ยกมาจาก KPC 19/09/2022
-                    $('#oetPromotionSplCode').val("")
-                    $('#oetPromotionSplName').val("")
-                    $('#obtPromotionBrowseSpl').prop('disabled', true);
-                    $('#oetPromotionStep3DateStart').val("").prop('disabled', true);
-                    $('#obtPmtDateStart').prop('disabled', true);
-                    $('#oetPromotionStep3DateEnd').val("").prop('disabled', true);
-                    $('#obtPmtDateEnd').prop('disabled', true);
                     // Remove CG Table Tmp
                     JSvPromotionStep3DeletePointInTemp();
-                }
+                }    
             }
 
-
+            
         });
-        /*===== End ocbPromotionStep3PointControl เงื่อนไข - สิทธิประโยชน์แต้ม ===============*/
+        /*===== End ocbPromotionStep3PointControl เงื่อนไข - สิทธิประโยชน์แต้ม ===============*/   
     }
 
     /**
@@ -217,11 +154,11 @@
 
         var bStatus = false;
 
-        if ((bIsCheckedCoupon == false) && (bIsCheckedPoint == false) && (bIsCheckedGroupGet == false)) {
+        if( (bIsCheckedCoupon == false) && (bIsCheckedPoint == false) && (bIsCheckedGroupGet == false) ){
             bStatus = true;
         }
 
-        return bStatus;
+        return bStatus; 
     }
 
     /*===== Begin PMT CB Table Process =================================================*/
@@ -280,7 +217,7 @@
      * Return : -
      * Return Type : -
      */
-    function JSvPromotionStep3InsertPmtCBToTemp(ptGroupName,ptListType) {
+    function JSvPromotionStep3InsertPmtCBToTemp(ptGroupName) {
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
@@ -288,7 +225,6 @@
             var tPbyStaBuyCond = $('#ocmPromotionPbyStaBuyCond').val();
             // var bStaSpcGrpDisIsDisSomeGroup = JSbPromotionPmhStaSpcGrpDisIsDisSomeGroup();
             var tGroupName = ptGroupName;
-            var tListType  = ptListType;
 
             // JCNxOpenLoading();
 
@@ -305,15 +241,11 @@
                 cache: false,
                 timeout: 5000,
                 success: function(oResult) {
-                    if (JSbPromotionConditionBuyIsRange()) { // เงื่อนไขการซื้อแบบช่วง
+                    if(JSbPromotionConditionBuyIsRange()){ // เงื่อนไขการซื้อแบบช่วง
                         JSxPromotionStep3GetPmtCBWithPmtCGInTmp(1, false);
                     }
-                    if(tListType == '8'){
-                        JSvPromotionStep3InsertPmtCGToTemp(tGroupName,tListType);
-                    }
-                    if (JSbPromotionConditionBuyIsNormal()) { // เงื่อนไขการซื้อแบบปกติ
-                        JSxPromotionStep3GetPmtCBInTmp(1, false);
-                        JSxPromotionStep3GetPmtCGInTmp(1, false);
+                    if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
+                        JSxPromotionStep3GetPmtCBInTmp(1, false);    
                     }
                     JSvPromotionStep5UpdatePmtCBStaCalSumInTemp(false, false);
                 },
@@ -356,11 +288,11 @@
                 cache: false,
                 timeout: 5000,
                 success: function(oResult) {
-                    if (JSbPromotionConditionBuyIsRange()) { // เงื่อนไขการซื้อแบบช่วง
+                    if(JSbPromotionConditionBuyIsRange()){ // เงื่อนไขการซื้อแบบช่วง
                         JSxPromotionStep3GetPmtCBWithPmtCGInTmp(1, false);
                     }
-                    if (JSbPromotionConditionBuyIsNormal()) { // เงื่อนไขการซื้อแบบปกติ
-                        JSxPromotionStep3GetPmtCBInTmp(1, false);
+                    if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
+                        JSxPromotionStep3GetPmtCBInTmp(1, false);    
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -409,10 +341,10 @@
                 timeout: 0,
                 success: function(oResult) {
                     $('.xCNPromotionStep3TableGroupGet').html(oResult.html);
-                    if (JCNbPromotionStep3PmtCGTableIsEmpty()) {
-                        $('#ocbPromotionStep3GroupGetControl').prop('checked', false);
-                    } else {
-                        $('#ocbPromotionStep3GroupGetControl').prop('checked', true);
+                    if(JCNbPromotionStep3PmtCGTableIsEmpty()){
+                        $('#ocbPromotionStep3GroupGetControl').prop('checked', false);   
+                    }else{
+                        $('#ocbPromotionStep3GroupGetControl').prop('checked', true); 
                     }
                     JCNxCloseLoading();
                 },
@@ -434,7 +366,7 @@
      * Return : -
      * Return Type : -
      */
-    function JSvPromotionStep3InsertPmtCGToTemp(ptGroupName,ptListType) {
+    function JSvPromotionStep3InsertPmtCGToTemp(ptGroupName) {
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
@@ -447,7 +379,6 @@
             var tBchCode = $('#oetPromotionBchCode').val();
             var tPbyStaBuyCond = $('#ocmPromotionPbyStaBuyCond').val();
             var tGroupName = ptGroupName;
-            var tListType  = ptListType;
 
             // JCNxOpenLoading();
 
@@ -456,8 +387,8 @@
                 url: "promotionStep3InsertPmtCGToTmp",
                 data: {
                     tBchCode: tBchCode,
-                    tConditionBuyIsRange: (bConditionBuyIsRange) ? 'true' : 'false',
-                    tStaGrpPriorityIsPriceGroup: (bStaGrpPriorityIsPriceGroup) ? 'true' : 'false',
+                    tConditionBuyIsRange: (bConditionBuyIsRange)?'true':'false',
+                    tStaGrpPriorityIsPriceGroup: (bStaGrpPriorityIsPriceGroup)?'true':'false',
                     // tStaSpcGrpDisIsDisSomeGroup: (bStaSpcGrpDisIsDisSomeGroup)?'true':'false',
                     tGroupNameInGet: tGroupName, // Group Name for Add
                     tPbyStaBuyCond: tPbyStaBuyCond, // เงื่อนไขการซื้อ
@@ -466,11 +397,10 @@
                 cache: false,
                 timeout: 5000,
                 success: function(oResult) {
-                    if (JSbPromotionConditionBuyIsRange()) { // เงื่อนไขการซื้อแบบช่วง
+                    if(JSbPromotionConditionBuyIsRange()){ // เงื่อนไขการซื้อแบบช่วง
                     }
-                    if (JSbPromotionConditionBuyIsNormal()) { // เงื่อนไขการซื้อแบบปกติ
-                        JSxPromotionStep3GetPmtCGInTmp(1, false);
-                        JSxPromotionStep3GetPmtCBInTmp(1, false);
+                    if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
+                        JSxPromotionStep3GetPmtCGInTmp(1, false);    
                     }
                     JSvPromotionStep5UpdatePmtCGPgtStaGetEffectInTemp(false, false);
                 },
@@ -513,11 +443,11 @@
                 cache: false,
                 timeout: 5000,
                 success: function(oResult) {
-                    if (JSbPromotionConditionBuyIsRange()) { // เงื่อนไขการซื้อแบบช่วง
+                    if(JSbPromotionConditionBuyIsRange()){ // เงื่อนไขการซื้อแบบช่วง
                         // JSxPromotionStep3GetPmtCGWithPmtCGInTmp(1, false);
                     }
-                    if (JSbPromotionConditionBuyIsNormal()) { // เงื่อนไขการซื้อแบบปกติ
-                        JSxPromotionStep3GetPmtCGInTmp(1, false);
+                    if(JSbPromotionConditionBuyIsNormal()){ // เงื่อนไขการซื้อแบบปกติ
+                        JSxPromotionStep3GetPmtCGInTmp(1, false);    
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -579,9 +509,7 @@
         var bStatus = true;
         nRowLength = $('.xCNPromotionStep3TableGroupGetContainer #otbPromotionStep3PmtCGTable .xCNPromotionStep3PmtCGRow').length;
         // console.log('nRowLength: ', nRowLength);
-        if (nRowLength > 0) {
-            $('#ocbPromotionStep3GroupGetControl').attr('disabled', false);
-            $('#ocbPromotionStep3GroupGetControl').parent().find("span").removeClass('xCNDocDisabled');
+        if(nRowLength > 0){
             bStatus = false;
         }
         return bStatus;
@@ -594,7 +522,7 @@
      * Return : -
      * Return Type : -
      */
-    function JSxPromotionStep3PmtCGUpdatePmtCGPgtStaGetTypeInTmp(ptPgtStaGetType) {
+    function JSxPromotionStep3PmtCGUpdatePmtCGPgtStaGetTypeInTmp(ptPgtStaGetType){
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
             // console.log('tPgtStaGetType: ', tPgtStaGetType);
@@ -690,20 +618,17 @@
     function JSvPromotionStep3InsertPmtCBAndPmtCGToTemp(ptGroupName, pbUseLoading) {
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
-            var ptGroupName = ptGroupName.toString();
-            var ptGroupName2 = ptGroupName.toString().replaceAll('%','');
-
 
             // console.log(JSvPromotionStep3GetPmtGroupNameBuyInStep2());
             // console.log(JSvPromotionStep3GetPmtGroupNameGetInStep2());
-            var tPbyMaxValueLastRow = $(".xCNPromotionStep3RangeTbody .xCNPromotionStep3PmtCBWithPmtCGRow." + ptGroupName2.replace(" ", "")).last().find(".xCNPromotionCBPbyMaxValue").val();
+            var tPbyMaxValueLastRow = $(".xCNPromotionStep3RangeTbody .xCNPromotionStep3PmtCBWithPmtCGRow." + ptGroupName.replace(" ","")).last().find(".xCNPromotionCBPbyMaxValue").val();
             var tBchCode = $('#oetPromotionBchCode').val();
             var tPbyStaBuyCond = $('#ocmPromotionPbyStaBuyCond').val();
             var bStaGrpPriorityIsPriceGroup = JSbPromotionStaGrpPriorityIsPriceGroup();
 
             // JCNxOpenLoading();
             console.log("tPbyMaxValueLastRow: ", tPbyMaxValueLastRow);
-
+            
             $.ajax({
                 type: "POST",
                 url: "promotionStep3InsertPmtCBAndPmtCGToTmp",
@@ -711,14 +636,14 @@
                     tBchCode: tBchCode,
                     tGroupName: ptGroupName,
                     tPbyStaBuyCond: tPbyStaBuyCond, // เงื่อนไขการซื้อ
-                    tStaGrpPriorityIsPriceGroup: (bStaGrpPriorityIsPriceGroup) ? 'true' : 'false',
-                    tPbyMaxValueLastRow: (typeof tPbyMaxValueLastRow == undefined) ? 0 : tPbyMaxValueLastRow,
+                    tStaGrpPriorityIsPriceGroup: (bStaGrpPriorityIsPriceGroup)?'true':'false',
+                    tPbyMaxValueLastRow: (typeof tPbyMaxValueLastRow == undefined)?0:tPbyMaxValueLastRow,
                     bIsAlwPmtDisAvg: bIsAlwPmtDisAvg
                 },
                 cache: false,
                 timeout: 5000,
                 success: function(oResult) {
-                    if (JSbPromotionConditionBuyIsRange()) { // เงื่อนไขการซื้อแบบช่วง
+                    if(JSbPromotionConditionBuyIsRange()){ // เงื่อนไขการซื้อแบบช่วง
                         JSxPromotionStep3GetPmtCBWithPmtCGInTmp(1, pbUseLoading);
                         JSvPromotionStep5UpdatePmtCBStaCalSumInTemp(false, false);
                         JSvPromotionStep5UpdatePmtCGPgtStaGetEffectInTemp(false, false);
@@ -742,7 +667,7 @@
      * Return : -
      * Return Type : -
      */
-    function JSxPromotionStep3UpdatePmtCGAndPmtCBPerAvgDisInTmp(ptCBPerAvgDis, ptCGPerAvgDis) {
+    function JSxPromotionStep3UpdatePmtCGAndPmtCBPerAvgDisInTmp(ptCBPerAvgDis, ptCGPerAvgDis){
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
@@ -775,7 +700,7 @@
         }
     }
     /*===== End PMT CB and CG Table Process ============================================*/
-
+    
     /*===== Begin PMT Coupon Table Process =============================================*/
     /**
      * Functionality : Browse Coupon
@@ -784,17 +709,19 @@
      * Return : -
      * Return Type : -
      */
-    function JSxPromotionStep3BrowseCoupon() {
-        var tSesUsrLevel = '<?= $this->session->userdata('tSesUsrLevel') ?>';
+    function JSxPromotionStep3BrowseCoupon(){
+        var tSesUsrLevel =  '<?= $this->session->userdata('tSesUsrLevel') ?>';
         var tWhere = '';
-        if (tSesUsrLevel != 'HQ') {
-            var tUserLoginBchCode = "<?= $this->session->userdata('tSesUsrBchCodeMulti') ?>";
-            var tSesUsrAgnCode = '<?= $this->session->userdata('tSesUsrAgnCode') ?>';
+        if(tSesUsrLevel !='HQ'){
+                var tUserLoginBchCode  = "<?= $this->session->userdata('tSesUsrBchCodeMulti')?>";
+                var tSesUsrAgnCode  = '<?= $this->session->userdata('tSesUsrAgnCode')?>';
 
-            // ของเดิม วัดคอมเม้นไว้ มันมีเรื่องของ ตัวแทนขาย ไม่ได้ใช้ใน Fitauto
-            // tWhere = "AND (TFNTCouponHD.FTCphStaApv = 1 AND ((ISNULL(TFNTCouponHDBch.FTCphAgnTo, '') = '') OR (TFNTCouponHDBch.FTCphAgnTo IN(" + tSesUsrAgnCode + ") AND TFNTCouponHDBch.FTCphStaType = 1) OR (TFNTCouponHDBch.FTCphAgnTo NOT IN(" + tSesUsrAgnCode + ") AND TFNTCouponHDBch.FTCphStaType = 2))) AND (TFNTCouponHD.FTCphStaApv = 1 AND ((ISNULL(TFNTCouponHDBch.FTCphBchTo, '') = '') OR (TFNTCouponHDBch.FTCphBchTo IN(" + tUserLoginBchCode + ") AND TFNTCouponHDBch.FTCphStaType = 1) OR (TFNTCouponHDBch.FTCphBchTo NOT IN(" + tUserLoginBchCode + ") AND TFNTCouponHDBch.FTCphStaType = 2)))";
-            tWhere = "AND (TFNTCouponHD.FTCphStaApv = 1 AND TFNTCouponHDBch.FTCphStaType = 1 OR TFNTCouponHDBch.FTCphStaType = 2 ) AND (TFNTCouponHD.FTCphStaApv = 1 AND ((ISNULL(TFNTCouponHDBch.FTCphBchTo, '') = '') OR (TFNTCouponHDBch.FTCphBchTo IN(" + tUserLoginBchCode + ") AND TFNTCouponHDBch.FTCphStaType = 1) OR (TFNTCouponHDBch.FTCphBchTo NOT IN(" + tUserLoginBchCode + ") AND TFNTCouponHDBch.FTCphStaType = 2)))";
-
+                    tWhere = "AND (TFNTCouponHD.FTCphStaApv = 1 AND ((ISNULL(TFNTCouponHDBch.FTCphAgnTo, '') = '')";
+                        if(tSesUsrAgnCode!=''){
+                            tWhere +=" OR (TFNTCouponHDBch.FTCphAgnTo IN("+tSesUsrAgnCode+") AND TFNTCouponHDBch.FTCphStaType = 1) ";
+                            tWhere +=" OR (TFNTCouponHDBch.FTCphAgnTo NOT IN("+tSesUsrAgnCode+") AND TFNTCouponHDBch.FTCphStaType = 2) ";
+                        }
+                    tWhere +=")) AND (TFNTCouponHD.FTCphStaApv = 1 AND ((ISNULL(TFNTCouponHDBch.FTCphBchTo, '') = '') OR (TFNTCouponHDBch.FTCphBchTo IN("+tUserLoginBchCode+") AND TFNTCouponHDBch.FTCphStaType = 1) OR (TFNTCouponHDBch.FTCphBchTo NOT IN("+tUserLoginBchCode+") AND TFNTCouponHDBch.FTCphStaType = 2)))";
         }
         // option Brand
         window.oPromotionBrowseBrand = {
@@ -802,7 +729,7 @@
             Table: {
                 Master: 'TFNTCouponHD',
                 PK: 'FTCphDocNo',
-                PKName: 'FTCpnName'
+                PKName:'FTCpnName'
             },
             Join: {
                 Table: ['TFNTCouponHD_L'],
@@ -825,7 +752,7 @@
                 ColumnsSize: ['15%', '75%'],
                 WidthModal: 50,
                 DataColumns: ['TFNTCouponHD.FTCphDocNo', 'TFNTCouponHD_L.FTCpnName'],
-                DistinctField: [0],
+                DistinctField       : [0],
                 DataColumnsFormat: ['', ''],
                 Perpage: 5,
                 OrderBy: ['TFNTCouponHD.FTCphDocNo'],
@@ -840,80 +767,10 @@
                 FuncName: '',
                 ArgReturn: ['FTCphDocNo', 'FTCpnName']
             }, */
-            BrowseLev: 1
-        }
-        JCNxBrowseData('oPromotionBrowseBrand');
-    }
-
-
-
-
-    /**
-     * Functionality : Browse Coupon Mes
-     * Parameters : -
-     * Creator : 01/10/2021 Worakorn
-     * Return : -
-     * Return Type : -
-     */
-
-    function JSxPromotionStep3BrowseCouponMes() {
-        var tSesUsrLevel = '<?= $this->session->userdata('tSesUsrLevel') ?>';
-        // var tWhere = '';
-        // if (tSesUsrLevel != 'HQ') {
-        //     var tUserLoginBchCode = "<?= $this->session->userdata('tSesUsrBchCodeMulti') ?>";
-        //     var tSesUsrAgnCode = '<?= $this->session->userdata('tSesUsrAgnCode') ?>';
-
-        //     tWhere = "AND (TCNMMsgHD.FTCphStaApv = 1 AND ((ISNULL(TCNMMsgHDBch.FTCphAgnTo, '') = '') OR (TCNMMsgHDBch.FTCphAgnTo IN(" + tSesUsrAgnCode + ") AND TCNMMsgHDBch.FTCphStaType = 1) OR (TCNMMsgHDBch.FTCphAgnTo NOT IN(" + tSesUsrAgnCode + ") AND TCNMMsgHDBch.FTCphStaType = 2))) AND (TCNMMsgHD.FTCphStaApv = 1 AND ((ISNULL(TCNMMsgHDBch.FTCphBchTo, '') = '') OR (TCNMMsgHDBch.FTCphBchTo IN(" + tUserLoginBchCode + ") AND TCNMMsgHDBch.FTCphStaType = 1) OR (TCNMMsgHDBch.FTCphBchTo NOT IN(" + tUserLoginBchCode + ") AND TCNMMsgHDBch.FTCphStaType = 2)))";
-        // }
-
-        // option Brand
-        window.oPromotionBrowseBrandMes = {
-            Title: ['coupon/coupon/coupon', 'tMSNTitle'],
-            Table: {
-                Master: 'TCNMMsgHD',
-                PK: 'FTMshCode',
-                PKName: 'FTMshName'
-            },
-            Join: {
-                Table: ['TCNMMsgHD_L'],
-                On: ['TCNMMsgHD.FTMshCode = TCNMMsgHD_L.FTMshCode AND TCNMMsgHD_L.FNLngID = ' + nLangEdits]
-            },
-            // Where: {
-            //     Condition: [
-            //         function() {
-            //             tSQL = tWhere;
-            //             tSQL += " AND (TCNMMsgHD.FTCphStaApv = '1') AND (/*CONVERT(VARCHAR(10),TCNMMsgHD.FDCphDateStart, 121) <= CONVERT(VARCHAR(10),GETDATE(), 121) AND*/ CONVERT(VARCHAR(10),TCNMMsgHD.FDCphDateStop, 121) >= CONVERT(VARCHAR(10),GETDATE(), 121)) AND (TCNMMsgHD.FTCphStaClosed = '1')";
-            //             tSQL += " AND ((SELECT COUNT(FTCphDocNo) FROM TFNTCouponDT WITH(NOLOCK) WHERE FTCphDocNo = TCNMMsgHD.FTCphDocNo AND FNCpdAlwMaxUse = 0) > 0)"
-
-            //             return tSQL;
-            //         }
-            //     ]
-            // },
-            GrideView: {
-                ColumnPathLang: 'coupon/coupon/coupon',
-                ColumnKeyLang: ['tMSNCode', 'tMSNName'],
-                ColumnsSize: ['15%', '75%'],
-                WidthModal: 50,
-                DataColumns: ['TCNMMsgHD.FTMshCode', 'TCNMMsgHD_L.FTMshName'],
-                DistinctField: [0],
-                DataColumnsFormat: ['', ''],
-                Perpage: 5,
-                OrderBy: ['TCNMMsgHD.FTMshCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetPromotionStep3PgtCpnText", "TCNMMsgHD.FTMshCode"],
-                Text: ["oetPromotionStep3PgtCpnTextName", "TCNMMsgHD_L.FTMshName"],
-            },
-            /* NextFunc: {
-                FuncName: '',
-                ArgReturn: ['FTCphDocNo', 'FTCpnName']
-            }, */
             BrowseLev: 1,
             // DebugSQL : true
         }
-        JCNxBrowseData('oPromotionBrowseBrandMes');
+        JCNxBrowseData('oPromotionBrowseBrand');
     }
 
     /**
@@ -938,40 +795,35 @@
                 cache: false,
                 timeout: 0,
                 success: function(oResult) {
-                    if (oResult != null) {
+                    if(oResult != null){
                         $('#ocbPromotionStep3CouponControl').prop('checked', true);
                         $('#ocmPromotionStep3PgtStaCoupon').prop('disabled', false);
                         $('#ocmPromotionStep3PgtStaCoupon').val(oResult.FTPgtStaCoupon).selectpicker("refresh");
                         $('#obtPromotionBrowseCoupon').prop('disabled', false);
-                        $('#obtPromotionBrowseCouponMes').prop('disabled', false);
-                        
 
                         if (oResult.FTPgtStaCoupon == "3") { // การให้สิทธิ์ 1:ไม่กำหนด 2:.ให้สิทธิ์คูปอง 3:ข้อความ
-                            $('#oetPromotionStep3PgtCpnText').val(oResult.FTPgtCpnText);
-                            $('#oetPromotionStep3PgtCpnTextName').val(oResult.FTMshName);
+                            $('#oetPromotionStep3PgtCpnText').val(oResult.FTPgtCpnText); 
                             $('.xCNPromotionStep3BrowseCouponContainer').hide();
                             $('.xCNPromotionStep3PgtCpnTextContainer').show();
-                        } else {
+                        }else{
                             $('#oetPromotionStep3CouponName').val(oResult.FTCphDocName);
                             $('#oetPromotionStep3CouponCode').val(oResult.FTCphDocNo);
                             $('.xCNPromotionStep3BrowseCouponContainer').show();
                             $('.xCNPromotionStep3PgtCpnTextContainer').hide();
                         }
-                    } else {
+                    }else{
                         $('#ocbPromotionStep3CouponControl').prop('checked', false);
                         $('#ocmPromotionStep3PgtStaCoupon').prop('disabled', true);
                         $('#ocmPromotionStep3PgtStaCoupon').val('2').selectpicker("refresh");
                         $('#obtPromotionBrowseCoupon').prop('disabled', true);
-                        $('#obtPromotionBrowseCouponMes').prop('disabled', true);
                         $('#oetPromotionStep3CouponName').val("");
                         $('#oetPromotionStep3CouponCode').val("");
                     }
 
-                    if (bIsApvOrCancel) {
-                        $('#ocmPromotionStep3PgtStaCoupon').prop('disabled', true);
+                    if(bIsApvOrCancel) {
+                        $('#ocmPromotionStep3PgtStaCoupon').prop('disabled', true); 
                         $('#ocmPromotionStep3PgtStaCoupon').selectpicker("refresh");
-                        $('#obtPromotionBrowseCoupon').prop('disabled', true);
-                        $('#obtPromotionBrowseCouponMes').prop('disabled', true);
+                        $('#obtPromotionBrowseCoupon').prop('disabled', true);  
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -1016,7 +868,8 @@
                 },
                 cache: false,
                 timeout: 5000,
-                success: function(oResult) {},
+                success: function(oResult) {
+                },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxCloseLoading();
                     JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -1027,7 +880,7 @@
             JCNxShowMsgSessionExpired();
         }
     }
-
+    
     /**
      * Functionality : Delete Coupon to Temp
      * Parameters : -
@@ -1051,7 +904,8 @@
                 },
                 cache: false,
                 timeout: 5000,
-                success: function(oResult) {},
+                success: function(oResult) {
+                },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxCloseLoading();
                     JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -1077,7 +931,7 @@
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
 
             var tBchCode = $('#oetPromotionBchCode').val();
-
+            
             $.ajax({
                 type: "POST",
                 url: "promotionStep3GetPointInTmp",
@@ -1087,30 +941,19 @@
                 cache: false,
                 timeout: 0,
                 success: function(oResult) {
-                    if (oResult != null) {
+                    if(oResult != null){
                         $('#ocbPromotionStep3PointControl').prop('checked', true);
                         $('#ocmPromotionStep3PgtStaPoint').prop('disabled', false);
                         $('#ocmPromotionStep3PgtStaPoint').val(oResult.FTPgtStaPoint).selectpicker("refresh");
 
                         $('#ocmPromotionStep3PgtStaPntCalType').prop('disabled', false);
                         $('#ocmPromotionStep3PgtStaPntCalType').val(oResult.FTPgtStaPntCalType).selectpicker("refresh");
-
+                        
                         $('#oetPromotionStep3PgtPntBuy').prop('disabled', false);
                         $('#oetPromotionStep3PgtPntGet').prop('disabled', false);
                         $('#oetPromotionStep3PgtPntBuy').val(oResult.FNPgtPntBuy);
                         $('#oetPromotionStep3PgtPntGet').val(oResult.FNPgtPntGet);
-
-                        //ยกมาจาก KPC 19/09/2022
-                        $('#oetPromotionSplCode').val(oResult.FTSplCode)
-                        $('#oetPromotionSplName').val(oResult.FTSplName)
-                        $('#obtPromotionBrowseSpl').prop('disabled', false);
-                        $('#oetPromotionStep3DateStart').val(oResult.FDPgtPntStart).prop('disabled', false);
-                        $('#obtPmtDateStart').prop('disabled', false);
-                        $('#oetPromotionStep3DateEnd').val(oResult.FDPgtPntExpired).prop('disabled', false);
-                        $('#obtPmtDateEnd').prop('disabled', false);
-
-                        JSvPromotionStep3InsertOrUpdatePointToTemp();
-                    } else {
+                    }else{
                         $('#ocbPromotionStep3PointControl').prop('checked', false);
                         $('#ocmPromotionStep3PgtStaPoint').prop('disabled', true);
                         $('#ocmPromotionStep3PgtStaPoint').val('2').selectpicker("refresh");
@@ -1122,35 +965,15 @@
                         $('#oetPromotionStep3PgtPntGet').prop('disabled', true);
                         $('#oetPromotionStep3PgtPntBuy').val("");
                         $('#oetPromotionStep3PgtPntGet').val("");
-
-                        //ยกมาจาก KPC 19/09/2022                        
-                        $('#oetPromotionSplCode').val("")
-                        $('#oetPromotionSplName').val("")
-                        $('#obtPromotionBrowseSpl').prop('disabled', true);
-                        $('#oetPromotionStep3DateStart').val("").prop('disabled', true);
-                        $('#obtPmtDateStart').prop('disabled', true);
-                        $('#oetPromotionStep3DateEnd').val("").prop('disabled', true);
-                        $('#obtPmtDateEnd').prop('disabled', true);
-                        
-                        JSvPromotionStep3DeletePointInTemp();
                     }
-                    
-                    if (bIsApvOrCancel) {
+
+                    if(bIsApvOrCancel) {
                         $('#ocmPromotionStep3PgtStaPoint').prop('disabled', true);
                         $('#ocmPromotionStep3PgtStaPoint').selectpicker("refresh");
                         $('#ocmPromotionStep3PgtStaPntCalType').prop('disabled', true);
                         $('#ocmPromotionStep3PgtStaPntCalType').selectpicker("refresh");
-                        $('#oetPromotionStep3PgtPntGet').prop('disabled', true);
-                        $('#oetPromotionStep3PgtPntBuy').prop('disabled', true);
-                        
-                        //ยกมาจาก KPC 19/09/2022 
-                        $('#oetPromotionSplCode').val("")
-                        $('#oetPromotionSplName').val("")
-                        $('#obtPromotionBrowseSpl').prop('disabled', true);
-                        $('#oetPromotionStep3DateStart').val("").prop('disabled', true);
-                        $('#obtPmtDateStart').prop('disabled', true);
-                        $('#oetPromotionStep3DateEnd').val("").prop('disabled', true);
-                        $('#obtPmtDateEnd').prop('disabled', true);
+                        $('#oetPromotionStep3PgtPntGet').prop('disabled', true); 
+                        $('#oetPromotionStep3PgtPntBuy').prop('disabled', true); 
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -1158,7 +981,7 @@
                     JCNxResponseError(jqXHR, textStatus, errorThrown);
                 }
             });
-
+        
 
         } else {
             JCNxShowMsgSessionExpired();
@@ -1181,10 +1004,6 @@
             var tPgtStaPntCalType = $('#ocmPromotionStep3PgtStaPntCalType').val();
             var tPgtPntBuy = $('#oetPromotionStep3PgtPntBuy').val();
             var tPgtPntGet = $('#oetPromotionStep3PgtPntGet').val();
-            
-            var tPgtSplCode = $('#oetPromotionSplCode').val();
-            var tPgtDateStart = $('#oetPromotionStep3DateStart').val();
-            var tPgtDateEnd = $('#oetPromotionStep3DateEnd').val();
 
             // JCNxOpenLoading();
 
@@ -1200,7 +1019,8 @@
                 },
                 cache: false,
                 timeout: 5000,
-                success: function(oResult) {},
+                success: function(oResult) {
+                },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxCloseLoading();
                     JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -1211,7 +1031,7 @@
             JCNxShowMsgSessionExpired();
         }
     }
-
+    
     /**
      * Functionality : Delete Point to Temp
      * Parameters : -
@@ -1235,7 +1055,8 @@
                 },
                 cache: false,
                 timeout: 5000,
-                success: function(oResult) {},
+                success: function(oResult) {
+                },
                 error: function(jqXHR, textStatus, errorThrown) {
                     JCNxCloseLoading();
                     JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -1258,10 +1079,10 @@
     function JSvPromotionStep3GetPmtGroupNameBuyInStep2() {
         var oGroupNameInBuy = $('.xCNPromotionStep2GroupBuy .xCNPromotionStep2GroupNameType1Item, .xCNPromotionStep2GroupBuy .xCNPromotionStep2GroupNameType2Item');
         var aGroupNameInBuy = [];
-        $.each(oGroupNameInBuy, function(nIndex, oItem) {
+        $.each(oGroupNameInBuy, function(nIndex, oItem){
             var tGroupName = $(oItem).data('grpname');
             aGroupNameInBuy.push(tGroupName);
-        });
+        });    
 
         return aGroupNameInBuy;
     }
@@ -1276,10 +1097,10 @@
     function JSvPromotionStep3GetPmtGroupNameGetInStep2() {
         var oGroupNameInGet = $('.xCNPromotionStep2GroupGet .xCNPromotionStep2GroupNameType1Item, .xCNPromotionStep2GroupGet .xCNPromotionStep2GroupNameType2Item');
         var aGroupNameInGet = [];
-        $.each(oGroupNameInGet, function(nIndex, oItem) {
+        $.each(oGroupNameInGet, function(nIndex, oItem){
             var tGroupName = $(oItem).data('grpname');
             aGroupNameInGet.push(tGroupName);
-        });
+        });    
 
         return aGroupNameInGet;
     }
@@ -1300,38 +1121,7 @@
         var bIsPgtCpnTextType = $('#ocmPromotionStep3PgtStaCoupon').val() == "3";
 
 
-        if (!bCouponControlIsChecked || (!bCouponCodeIsEmpty || !bPgtCpnTextIsEmpty)) {
-            bStatus = true;
-        }
-        // console.log(('JCNbPromotionStep3CouponIsValid: ', bStatus);
-        return bStatus;
-    }
-
-        /*
-    function : ตรวจสอบข้อมูล ก่อน Next Step
-    Parameters : -
-    Creator : 04/02/2020 Piya
-    Return : Status
-    Return Type : boolean
-    */
-    function JCNbPromotionStep3CheckboxIsValid() {
-        var bStatus = false;
-
-        var bCouponControlIsChecked = $('#ocbPromotionStep3CouponControl').is(':checked');
-        var bGetControlIsChecked = $('#ocbPromotionStep3GroupGetControl').is(':checked');
-        var bGetControlType = $('#ocmPromotionPbyStaBuyCond').val();
-
-        
-
-
-        if (bCouponControlIsChecked || bGetControlIsChecked || bGetControlType > 2) {
-            if(!bGetControlIsChecked){
-                $('.xCNPromotionStep2GroupGet').empty();
-                // Remove CG Table Tmp
-                JSvPromotionStep3ClearPmtCGInTemp();
-                $('#ocbPromotionStep3GroupGetControl').attr('disabled', true);
-                $('#ocbPromotionStep3GroupGetControl').parent().find("span").addClass('xCNDocDisabled');
-            }
+        if(!bCouponControlIsChecked || (!bCouponCodeIsEmpty || !bPgtCpnTextIsEmpty)){
             bStatus = true;
         }
         // console.log(('JCNbPromotionStep3CouponIsValid: ', bStatus);
@@ -1348,10 +1138,10 @@
     function JCNbPromotionStep3PointIsValid() {
         var bStatus = false;
 
-        var bPointControlIsChecked = $('#ocbPromotionStep3PointControl').is(':checked');
+        var bPointControlIsChecked = $('#ocbPromotionStep3PointControl').is(':checked');      
         var bPgtPntBuyIsEmpty = $('#oetPromotionStep3PgtPntBuy').val() == "";
         var bPgtGetQtyIsEmpty = $('#oetPromotionStep3PgtPntGet').val() == "";
-        if (!bPointControlIsChecked || (!bPgtPntBuyIsEmpty && !bPgtGetQtyIsEmpty)) {
+        if(!bPointControlIsChecked || (!bPgtPntBuyIsEmpty && !bPgtGetQtyIsEmpty)){
             bStatus = true;
         }
         // console.log(('JCNbPromotionStep3PointIsValid: ', bStatus);
@@ -1366,9 +1156,7 @@
     Return Type : boolean
     */
     function JCNbPromotionStep3AvgDisPercentIsValid() {
-        if (JSbPromotionConditionBuyIsRange() || !bIsAlwPmtDisAvg /*|| JSbPromotionPmhStaSpcGrpDisIsDisSomeGroup()*/ ) {
-            return true;
-        } // ไม่มีการตรวจสอบข้อมูล % เฉลี่ยส่วนลด ในเงื่อนไขแบบการซื้อแบบช่วง
+        if(JSbPromotionConditionBuyIsRange() || !bIsAlwPmtDisAvg /*|| JSbPromotionPmhStaSpcGrpDisIsDisSomeGroup()*/){return true;} // ไม่มีการตรวจสอบข้อมูล % เฉลี่ยส่วนลด ในเงื่อนไขแบบการซื้อแบบช่วง
 
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
@@ -1384,7 +1172,7 @@
                 async: false,
                 success: function(oResult) {
                     console.log('oResult.cPgtPerAvgDis: ', oResult.cPgtPerAvgDis == 100);
-                    if (oResult.cPgtPerAvgDis == 100) {
+                    if(oResult.cPgtPerAvgDis == 100){
                         bStatus = true;
                     }
                 },
@@ -1399,39 +1187,4 @@
         }
         return bStatus;
     }
-
-    $("#obtPromotionBrowseSpl").click(function() {
-        // option
-        window.oPromotionBrowseBch = {
-            Title: ['supplier/supplier/supplier', 'tSPLTitle'],
-            Table: {
-                Master: 'TCNMSpl',
-                PK: 'FTSplCode'
-            },
-            Join: {
-                Table: ['TCNMSpl_L'],
-                On: ['TCNMSpl_L.FTSplCode = TCNMSpl.FTSplCode AND TCNMSpl_L.FNLngID = ' + nLangEdits]
-            },
-            Where: {
-                Condition: []
-            },
-            GrideView: {
-                ColumnPathLang: 'supplier/supplier/supplier',
-                ColumnKeyLang: ['tCode', 'tName'],
-                ColumnsSize: ['10%', '75%'],
-                DataColumns: ['TCNMSpl.FTSplCode', 'TCNMSpl_L.FTSplName'],
-                DataColumnsFormat: ['', ''],
-                WidthModal: 50,
-                Perpage: 10,
-                OrderBy: ['TCNMSpl.FTSplCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetPromotionSplCode", "TCNMSpl.FTSplCode"],
-                Text: ["oetPromotionSplName", "TCNMSpl_L.FTSplName"]
-            },
-        };
-        JCNxBrowseData('oPromotionBrowseBch');
-    });
 </script>

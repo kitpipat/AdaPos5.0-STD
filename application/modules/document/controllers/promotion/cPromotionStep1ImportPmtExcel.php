@@ -15,12 +15,6 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
         $this->load->model('document/promotion/mPromotionStep1PmtDt');
         $this->load->model('document/promotion/mPromotionStep1PmtBrandDt');
         $this->load->model('document/promotion/mPromotion');
-
-        // Clean XSS Filtering Security
-		$this->load->helper("security");
-		if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
-            echo "ERROR XSS Filter";
-        }
     }
 
     /**
@@ -33,21 +27,18 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
      */
     public function FStPromotionImportFromExcel()
     {
-        $tUserSessionID         = $this->session->userdata('tSesSessionID');
-        $tUserSessionDate       = $this->session->userdata('tSesSessionDate');
-        $tUserLoginCode         = $this->session->userdata('tSesUsername');
-        $nLangEdit              = $this->session->userdata("tLangEdit");
-        $tUserLevel             = $this->session->userdata('tSesUsrLevel');
-        $tBchCodeLogin          = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
+        $tUserSessionID = $this->session->userdata('tSesSessionID');
+        $tUserSessionDate = $this->session->userdata('tSesSessionDate');
+        $tUserLoginCode = $this->session->userdata('tSesUsername');
+        $nLangEdit = $this->session->userdata("tLangEdit");
+        $tUserLevel = $this->session->userdata('tSesUsrLevel');
+        $tBchCodeLogin = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
 
-        $tPmtGroupTypeTmp       = $this->input->post('tPmtGroupTypeTmp');
-        $tPmtGroupListTypeTmp   = $this->input->post('tPmtGroupListTypeTmp');
-        $tPmtGroupNameTmp       = $this->input->post('tPmtGroupNameTmp');
-        $tPmtGroupNameTmpOld    = $this->input->post('tPmtGroupNameTmpOld');
-        $tDocno                 = $this->input->post('tDocno');
-        $tBchCode               = $this->input->post('tBchCode');
+        $tPmtGroupTypeTmp = $this->input->post('tPmtGroupTypeTmp');
+        $tPmtGroupListTypeTmp = $this->input->post('tPmtGroupListTypeTmp');
+        $tPmtGroupNameTmp = $this->input->post('tPmtGroupNameTmp');
+        $tPmtGroupNameTmpOld = $this->input->post('tPmtGroupNameTmpOld');
 
-        
         $aDataFiles = (isset($_FILES['oefPromotionStep1PmtFileExcel']) && !empty($_FILES['oefPromotionStep1PmtFileExcel']))? $_FILES['oefPromotionStep1PmtFileExcel'] : null;
         
         $aReturn = array(
@@ -67,77 +58,48 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
             $oLoadExcel = PHPExcel_IOFactory::load($aDataFiles['tmp_name']);
 
             $oExcelSheet = null;
+
             /*===== Begin Product Process ==============================================*/
             if($tPmtGroupListTypeTmp == "1"){ // Product
-                $oExcelSheet        = $oLoadExcel->getSheetByName('Product');
-                $aProductDataSheet  = $oExcelSheet->toArray();
+                $oExcelSheet = $oLoadExcel->getSheetByName('Product');
+                $aProductDataSheet = $oExcelSheet->toArray();
 
                 $aClearPmtPdtDtInTmpParams = [
-                    'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld,
-                    'tUserSessionID'        => $tUserSessionID
+                    'tPmtGroupNameTmpOld' => $tPmtGroupNameTmpOld,
+                    'tUserSessionID' => $tUserSessionID
                 ];
                 $this->mPromotionStep1PmtDt->FSbClearPmtDtInTmp($aClearPmtPdtDtInTmpParams);
 
                 foreach($aProductDataSheet as $nIndex => $aProduct){
                     if($nIndex == 0){continue;} // ข้ามแถวที่ 1 หัวตารางไป
-                    if($aProduct[0] == '' && $aProduct[1] == '' && $aProduct[2] == '' && $aProduct[3] == '' && $aProduct[4] == ''){
-                        continue;
-                    }
+
                     $aGetDataPdtParams = [
-                        'tPdtCode'  => $aProduct[0],
-                        'tPunCode'  => $aProduct[1],
-                        'tBarCode'  => $aProduct[2],
-                        'tYear'     => $aProduct[3],
-                        'tLotNo'    => $aProduct[4],
-                        'nLngID'    => $nLangEdit,
-                        'tUserSessionID'        => $tUserSessionID,
-                        'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld
+                        'tPdtCode' => $aProduct[0],
+                        'tPunCode' => $aProduct[1],
+                        'tBarCode' => $aProduct[2],
+                        'nLngID' => $nLangEdit,
+                        'tUserSessionID' => $tUserSessionID,
+                        'tPmtGroupNameTmpOld' => $tPmtGroupNameTmpOld
 
                     ];
-                    
                     $aDataProduct = $this->mPromotionStep1ImportPmtExcel->FSaMGetDataPdt($aGetDataPdtParams);
+                    
                     if(!empty($aDataProduct)){
                         $aPmtPdtDtToTempParams = [
-                            'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld,
-                            'tBchCodeLogin'         => $tBchCodeLogin,
-                            'tUserSessionID'        => $tUserSessionID,
-                            'tUserSessionDate'      => $tUserSessionDate,
-                            'tDocNo'                => 'PMTDOCTEMP',
-                            'tDocNoLot'             => $tDocno,
-                            'tBchCode'              => $tBchCode,
-                            'tPmtGroupTypeTmp'      => $tPmtGroupTypeTmp,
-                            'tPmtGroupListTypeTmp'  => $tPmtGroupListTypeTmp,
-                            'tPdtCode'              => $aDataProduct['FTPdtCode'],
-                            'tPdtName'              => $aDataProduct['FTPdtName'],
-                            'tPunCode'              => $aDataProduct['FTPunCode'],
-                            'tPunName'              => $aDataProduct['FTPunName'],
-                            'tLotNo'                => $aProduct[4],
-                            'tYear'                 => $aProduct[3],
-                            'tBarCode'              => $aDataProduct['FTBarCode']
+                            'tPmtGroupNameTmpOld' => $tPmtGroupNameTmpOld,
+                            'tBchCodeLogin' => $tBchCodeLogin,
+                            'tUserSessionID' => $tUserSessionID,
+                            'tUserSessionDate' => $tUserSessionDate,
+                            'tDocNo' => 'PMTDOCTEMP',
+                            'tPmtGroupTypeTmp' => $tPmtGroupTypeTmp,
+                            'tPmtGroupListTypeTmp' => $tPmtGroupListTypeTmp,
+                            'tPdtCode' => $aDataProduct['FTPdtCode'],
+                            'tPdtName' => $aDataProduct['FTPdtName'],
+                            'tPunCode' => $aDataProduct['FTPunCode'],
+                            'tPunName' => $aDataProduct['FTPunName'],
+                            'tBarCode' => $aDataProduct['FTBarCode']
                         ];
                         $this->mPromotionStep1PmtPdtDt->FSaMPmtPdtDtToTemp($aPmtPdtDtToTempParams);    
-
-                        if($aDataProduct['FTLotNo'] != ''){
-                            $this->mPromotionStep1PmtPdtDt->FSaMPmtInsertLotExcel($aPmtPdtDtToTempParams);    
-                        }
-                    }else{
-                        $aPmtPdtDtToTempParams = [
-                            'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld,
-                            'tBchCodeLogin'         => $tBchCodeLogin,
-                            'tUserSessionID'        => $tUserSessionID,
-                            'tUserSessionDate'      => $tUserSessionDate,
-                            'tDocNo'                => 'PMTDOCTEMP',
-                            'tDocNoLot'             => $tDocno,
-                            'tBchCode'              => $tBchCode,
-                            'tPmtGroupTypeTmp'      => $tPmtGroupTypeTmp,
-                            'tPmtGroupListTypeTmp'  => $tPmtGroupListTypeTmp,
-                            'tPdtCode'              => $aProduct[0],
-                            'tPunCode'              => $aProduct[1],
-                            'tLotNo'                => $aProduct[4],
-                            'tYear'                 => $aProduct[3],
-                            'tBarCode'              => $aProduct[2]
-                        ];
-                        $this->mPromotionStep1PmtPdtDt->FSaMPmtPdtDtToTempErrorCase($aPmtPdtDtToTempParams);   
                     }
                 }
             }
@@ -145,163 +107,48 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
 
             /*===== Begin Brand Process ================================================*/
             if($tPmtGroupListTypeTmp == "2"){ // Brand
-                $oExcelSheet        = $oLoadExcel->getSheetByName('Brand');
-                $aBrandDataSheet    = $oExcelSheet->toArray();
-
-                $aClearPmtPdtDtInTmpParams = [
-                    'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld,
-                    'tUserSessionID'        => $tUserSessionID
-                ];
-                $this->mPromotionStep1PmtDt->FSbClearPmtDtInTmp($aClearPmtPdtDtInTmpParams);
-
-                foreach($aBrandDataSheet as $nIndex => $aBrand){
-                    if($nIndex == 0){continue;} // ข้ามแถวที่ 1 หัวตารางไป
-                    if($aBrand[0] == '' && $aBrand[1] == '' && $aBrand[2] == '' && $aBrand[3] == ''){
-                        continue;
-                    }
-
-                    $aGetDataBrandParams = [
-                        'tBrandCode'    => $aBrand[0],
-                        'tModelCode'    => $aBrand[1],
-                        'tYear'         => $aBrand[2],
-                        'tLotNo'        => $aBrand[3],
-                        'nLngID'        => $nLangEdit,
-                        'tUserSessionID'        => $tUserSessionID,
-                        'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld
-                    ];
-                    $aDataBrand = $this->mPromotionStep1ImportPmtExcel->FSaMGetDataBrand($aGetDataBrandParams);
-
-                    // var_dump($aDataBrand); die();
-                    
-                    // if(isset($aDataBrand['FTPbnCode']) && isset($aDataBrand['FTPbnName']) && isset($aDataBrand['FTPmoCode']) && isset($aDataBrand['FTPmoName'])){
-                    if(isset($aDataBrand['FTPbnCode']) && isset($aDataBrand['FTPbnName'])){
-                        $aPmtBrandDtToTempParams = [
-                            'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld,
-                            'tBchCodeLogin'         => $tBchCodeLogin,
-                            'tUserSessionID'        => $tUserSessionID,
-                            'tUserSessionDate'      => $tUserSessionDate,
-                            'tDocNo'                => 'PMTDOCTEMP',
-                            'tDocNoLot'             => $tDocno,
-                            'tPmtGroupTypeTmp'      => $tPmtGroupTypeTmp,
-                            'tPmtGroupListTypeTmp'  => $tPmtGroupListTypeTmp,
-                            'tYear'                 => $aBrand[2],
-                            'tLotNo'                => $aBrand[3],
-                            'tModelCode'            => $aBrand[1],
-                            'tBchCode'              => $tBchCode,
-                            'tBrandCode'            => $aDataBrand['FTPbnCode'],
-                            'tBrandName'            => $aDataBrand['FTPbnName'],
-                            'tCheckBranCode'        => '',
-                            'tTable'                => 'TCNMPdtBrand'
-                        ];
-                        if(isset($aDataBrand['FTPmoCode'])){
-                            $aPmtBrandDtToTempParams['tModelCode'] = $aDataBrand['FTPmoCode'];
-                            $aPmtBrandDtToTempParams['tModelName'] = $aDataBrand['FTPmoName'];
-                        }else{
-                            $aPmtBrandDtToTempParams['tModelCode'] = '';
-                            $aPmtBrandDtToTempParams['tModelName'] = '';
-                        }
-                        $this->mPromotionStep1PmtBrandDt->FSaMPmtBrandDtToTemp($aPmtBrandDtToTempParams);    
-
-                        if($aDataBrand['FTLotNo'] != ''){
-                            $this->mPromotionStep1PmtBrandDt->FSaMPmtInsertLotExcel($aPmtBrandDtToTempParams);    
-                        }
-                    }else{
-                        $aPmtBrandDtToTempParams = [
-                            'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld,
-                            'tBchCodeLogin'         => $tBchCodeLogin,
-                            'tUserSessionID'        => $tUserSessionID,
-                            'tUserSessionDate'      => $tUserSessionDate,
-                            'tDocNo'                => 'PMTDOCTEMP',
-                            'tDocNoLot'             => $tDocno,
-                            'tPmtGroupTypeTmp'      => $tPmtGroupTypeTmp,
-                            'tPmtGroupListTypeTmp'  => $tPmtGroupListTypeTmp,
-                            'tYear'                 => $aBrand[2],
-                            'tLotNo'                => $aBrand[3],
-                            'tBchCode'              => $tBchCode,
-                            'tBrandCode'            => $aBrand[0],
-                            'tCheckBranCode'        => '',
-                            'tTable'                => 'TCNMPdtBrand'
-                        ];
-                        $this->mPromotionStep1PmtBrandDt->FSaMPmtBrandDtToTempErrorCase($aPmtBrandDtToTempParams);   
-                    }
-                }
-            }
-            /*===== End Brand Process ==================================================*/
-            /*===== Begin Model Process ================================================*/
-            if($tPmtGroupListTypeTmp == "4"){ // Model
                 $oExcelSheet = $oLoadExcel->getSheetByName('Brand');
-                $aModelDataSheet = $oExcelSheet->toArray();
+                $aBrandDataSheet = $oExcelSheet->toArray();
 
                 $aClearPmtPdtDtInTmpParams = [
                     'tPmtGroupNameTmpOld' => $tPmtGroupNameTmpOld,
                     'tUserSessionID' => $tUserSessionID
                 ];
                 $this->mPromotionStep1PmtDt->FSbClearPmtDtInTmp($aClearPmtPdtDtInTmpParams);
-                foreach($aModelDataSheet as $nIndex => $aModel){
-                    if($nIndex == 0){continue;} // ข้ามแถวที่ 1 หัวตารางไป
-                    if($aModel[0] == '' && $aModel[1] == '' && $aModel[2] == '' && $aModel[3] == ''){
-                        continue;
-                    }
-                    $aGetDataModelParams = [
-                        'tBrandCode'    => $aModel[0],
-                        'tModelCode'    => $aModel[1],
-                        'tYear'         => $aModel[2],
-                        'tLotNo'        => $aModel[3],
-                        'nLngID'        => $nLangEdit,
-                        'tUserSessionID'        => $tUserSessionID,
-                        'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld
-                    ];
-                    // print_r($aGetDataModelParams);
-                    $aDataModel = $this->mPromotionStep1ImportPmtExcel->FSaMGetDataModel($aGetDataModelParams);
-                    
-                    if(isset($aDataModel['FTPmoCode']) && isset($aDataModel['FTPmoName']) && $aModel[0] != ''){
-                        $aPmtModelDtToTempParams = [
-                            'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld,
-                            'tBchCodeLogin'         => $tBchCodeLogin,
-                            'tUserSessionID'        => $tUserSessionID,
-                            'tUserSessionDate'      => $tUserSessionDate,
-                            'tDocNo'                => 'PMTDOCTEMP',
-                            'tDocNoLot'             => $tDocno,
-                            'tPmtGroupTypeTmp'      => $tPmtGroupTypeTmp,
-                            'tPmtGroupListTypeTmp'  => $tPmtGroupListTypeTmp,
-                            'tYear'                 => $aModel[2],
-                            'tLotNo'                => $aModel[3],
-                            'tBchCode'              => $tBchCode,
-                            'tBrandCode'            => $aDataModel['FTPmoCode'],
-                            'tBrandName'            => $aDataModel['FTPmoName'],
-                            'tModelCode'            => $aModel[1],
-                            'tCheckBranCode'        => $aModel[0],
-                            'tTable'                => 'TCNMPdtModel'
-                        ];
-                        $this->mPromotionStep1PmtBrandDt->FSaMPmtBrandDtToTemp($aPmtModelDtToTempParams);    
 
-                        if($aDataModel['FTLotNo'] != ''){
-                            $this->mPromotionStep1PmtBrandDt->FSaMPmtInsertLotExcel($aPmtModelDtToTempParams);    
-                        }
-                    }else{
-                        $aPmtModelDtToTempParams = [
-                            'tPmtGroupNameTmpOld'   => $tPmtGroupNameTmpOld,
-                            'tBchCodeLogin'         => $tBchCodeLogin,
-                            'tUserSessionID'        => $tUserSessionID,
-                            'tUserSessionDate'      => $tUserSessionDate,
-                            'tDocNo'                => 'PMTDOCTEMP',
-                            'tDocNoLot'             => $tDocno,
-                            'tPmtGroupTypeTmp'      => $tPmtGroupTypeTmp,
-                            'tPmtGroupListTypeTmp'  => $tPmtGroupListTypeTmp,
-                            'tYear'                 => $aModel[2],
-                            'tLotNo'                => $aModel[3],
-                            'tBchCode'              => $tBchCode,
-                            'tBrandCode'            => $aDataModel['FTPmoCode'],
-                            'tBrandName'            => $aDataModel['FTPmoName'],
-                            'tModelCode'            => $aModel[1],
-                            'tCheckBranCode'        => $aModel[0],
-                            'tTable'                => 'TCNMPdtModel'
+                foreach($aBrandDataSheet as $nIndex => $aBrand){
+                    if($nIndex == 0){continue;} // ข้ามแถวที่ 1 หัวตารางไป
+
+                    $aGetDataBrandParams = [
+                        'tBrandCode' => $aBrand[0],
+                        'tModelCode' => $aBrand[1],
+                        'nLngID' => $nLangEdit,
+                        'tUserSessionID' => $tUserSessionID,
+                        'tPmtGroupNameTmpOld' => $tPmtGroupNameTmpOld
+                    ];
+                    $aDataBrand = $this->mPromotionStep1ImportPmtExcel->FSaMGetDataBrand($aGetDataBrandParams);
+
+                    // var_dump($aDataBrand); die();
+                    
+                    if(isset($aDataBrand['FTPbnCode']) && isset($aDataBrand['FTPbnName']) && isset($aDataBrand['FTPmoCode']) && isset($aDataBrand['FTPmoName'])){
+                        $aPmtBrandDtToTempParams = [
+                            'tPmtGroupNameTmpOld' => $tPmtGroupNameTmpOld,
+                            'tBchCodeLogin' => $tBchCodeLogin,
+                            'tUserSessionID' => $tUserSessionID,
+                            'tUserSessionDate' => $tUserSessionDate,
+                            'tDocNo' => 'PMTDOCTEMP',
+                            'tPmtGroupTypeTmp' => $tPmtGroupTypeTmp,
+                            'tPmtGroupListTypeTmp' => $tPmtGroupListTypeTmp,
+                            'tBrandCode' => $aDataBrand['FTPbnCode'],
+                            'tBrandName' => $aDataBrand['FTPbnName'],
+                            'tModelCode' => $aDataBrand['FTPmoCode'],
+                            'tModelName' => $aDataBrand['FTPmoName']
                         ];
-                        $this->mPromotionStep1PmtBrandDt->FSaMPmtModelDtToTempErrorCase($aPmtModelDtToTempParams);   
+                        $this->mPromotionStep1PmtBrandDt->FSaMPmtBrandDtToTemp($aPmtBrandDtToTempParams);    
                     }
                 }
             }
-            /*===== End Model Process ==================================================*/
+            /*===== End Brand Process ==================================================*/
 
             
             if ($this->db->trans_status() === FALSE) {
@@ -352,11 +199,11 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
         $this->mPromotionStep1ImportPmtExcel->FSxMImportExcelDeleteAllInTmp($aImportExcelDeleteAllInTmpParams);
 
         $aImportExcelToTmpParams = [
-            'tUserBchCodeDef'   => $tUserBchCodeDef,
-            'tUserSessionID'    => $tUserSessionID,
-            'nLangID'           => $nLangEdit,
-            'tUserSessionDate'  => $tUserSessionDate,
-            'aPackData'         => $aPackData
+            'tUserBchCodeDef' => $tUserBchCodeDef,
+            'tUserSessionID' => $tUserSessionID,
+            'nLangID' => $nLangEdit,
+            'tUserSessionDate' => $tUserSessionDate,
+            'aPackData' => $aPackData
         ];
         $this->mPromotionStep1ImportPmtExcel->FSxMImportExcelToTmp($aImportExcelToTmpParams);
 
@@ -365,55 +212,55 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
         $aPmdStaTypeCon = [1,2];
         foreach($aPmdStaTypeCon as $tPmdStaType) {
             $aPmtChkCodeDupOnTypeInTempParams = [
-                'tTableKey'         => 'PMT_DT',
-                'tUserSessionID'    => $tUserSessionID,
-                'tFieldName'        => 'FTBarCode',
-                'tPmdStaType'       => $tPmdStaType
+                'tTableKey' => 'PMT_DT',
+                'tUserSessionID' => $tUserSessionID,
+                'tFieldName' => 'FTBarCode',
+                'tPmdStaType' => $tPmdStaType
             ];
-            // FCNnMasTmpPmtChkCodeDupOnTypeInTemp($aPmtChkCodeDupOnTypeInTempParams);
+            FCNnMasTmpPmtChkCodeDupOnTypeInTemp($aPmtChkCodeDupOnTypeInTempParams);
         }
 
         $aPmtChkCodeInDBParams = [
-            'tTableKey'         => 'PMT_DT',
-            'tTableName'        => 'TCNMPdtBar',
-            'tUserSessionID'    => $tUserSessionID,
-            'tFieldName'        => 'FTBarCode',
-            'tErrMsg'           => 'ไม่พบสินค้า'
+            'tTableKey' => 'PMT_DT',
+            'tTableName' => 'TCNMPdtBar',
+            'tUserSessionID' => $tUserSessionID,
+            'tFieldName' => 'FTBarCode',
+            'tErrMsg' => 'ไม่พบสินค้า'
         ];
         FCNnMasTmpPmtChkCodeInDB($aPmtChkCodeInDBParams);
         
         $aChkCodeInDBDTParams = [
-            'tTableKey'         => 'PMT_DT',
-            'tTableName'        => 'TCNMPdtBar',
-            'tUserSessionID'    => $tUserSessionID,
-            'tFieldName'        => 'FTPunCode',
-            'tErrMsg'           => 'ไม่พบหน่วยสินค้า'
+            'tTableKey' => 'PMT_DT',
+            'tTableName' => 'TCNMPdtBar',
+            'tUserSessionID' => $tUserSessionID,
+            'tFieldName' => 'FTPunCode',
+            'tErrMsg' => 'ไม่พบหน่วยสินค้า'
         ];
         FCNnMasTmpChkCodeInDB($aChkCodeInDBDTParams);
         /*===== End Validate in DB(DT) =================================================*/
 
         /*===== Begin Validate in DB(CB) ===============================================*/
         $aPmtChkCodeInTempCBParams = [
-            'tTableKey'         => 'PMT_CB',
-            'tTableKeyIn'       => 'PMT_DT',
-            'tTableName'        => 'TCNTImpMasTmp',
-            'tUserSessionID'    => $tUserSessionID,
-            'tFieldName'        => 'FTPmdGrpName',
-            'tErrMsg'           => 'กลุ่มรายการไม่ถูกต้อง'
+            'tTableKey' => 'PMT_CB',
+            'tTableKeyIn' => 'PMT_DT',
+            'tTableName' => 'TCNTImpMasTmp',
+            'tUserSessionID' => $tUserSessionID,
+            'tFieldName' => 'FTPmdGrpName',
+            'tErrMsg' => 'กลุ่มรายการไม่ถูกต้อง'
         ];
-        // FCNnMasTmpPmtChkCodeInTemp($aPmtChkCodeInTempCBParams);
+        FCNnMasTmpPmtChkCodeInTemp($aPmtChkCodeInTempCBParams);
         /*===== End Validate in DB(CB) =================================================*/
 
         /*===== Begin Validate in DB(CG) ===============================================*/
         $aPmtChkCodeInTempCGParams = [
-            'tTableKey'         => 'PMT_CG',
-            'tTableKeyIn'       => 'PMT_DT',
-            'tTableName'        => 'TCNTImpMasTmp',
-            'tUserSessionID'    => $tUserSessionID,
-            'tFieldName'        => 'FTPmdGrpName',
-            'tErrMsg'           => 'กลุ่มรายการไม่ถูกต้อง'
+            'tTableKey' => 'PMT_CG',
+            'tTableKeyIn' => 'PMT_DT',
+            'tTableName' => 'TCNTImpMasTmp',
+            'tUserSessionID' => $tUserSessionID,
+            'tFieldName' => 'FTPmdGrpName',
+            'tErrMsg' => 'กลุ่มรายการไม่ถูกต้อง'
         ];
-        // FCNnMasTmpPmtChkCodeInTemp($aPmtChkCodeInTempCGParams);
+        FCNnMasTmpPmtChkCodeInTemp($aPmtChkCodeInTempCGParams);
         /*===== End Validate in DB(CG) =================================================*/
 
         if ($this->db->trans_status() === FALSE) {
@@ -463,9 +310,9 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
 
         $aParams = [
             'aDataListHD' => $aImportGetHDDataInTmp,
-            'aDataListCoupon'   => $aImportGetCouponDataInTmp,
-            'aDataListPoint'    => $aImportGetPointDataInTmp,
-            'nOptDecimalShow'   => $nOptDecimalShow
+            'aDataListCoupon' => $aImportGetCouponDataInTmp,
+            'aDataListPoint' => $aImportGetPointDataInTmp,
+            'nOptDecimalShow' => $nOptDecimalShow
         ];
         $tHtml = $this->load->view('document/promotion/add_pmt_by_import/wPromotionMain', $aParams, true);
         
@@ -503,12 +350,12 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
         $tDocNo = $aAutogen[0]["FTXxhDocNo"];
 
         $aDataMaster = array(
-            'nLangEdit'	        => $this->session->userdata("tLangEdit"),
-            'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
-            'tCreatedOn'        => date('Y-m-d H:i:s'),
-            'tCreatedBy'        => $this->session->userdata("tSesUsername"),
+            'nLangEdit'	=> $this->session->userdata("tLangEdit"),
+            'tUserSessionID' => $this->session->userdata("tSesSessionID"),
+            'tCreatedOn' => date('Y-m-d H:i:s'),
+            'tCreatedBy' => $this->session->userdata("tSesUsername"),
             'tTypeCaseDuplicate' => $this->input->post('tTypeCaseDuplicate'),
-            'tDocNo'            => $tDocNo
+            'tDocNo' => $tDocNo
         );
 
         $this->mPromotionStep1ImportPmtExcel->FSxMImportTempToMaster($aDataMaster);
@@ -647,7 +494,7 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
                     'tFieldName' => 'FTBarCode',
                     'tFieldValue' => $aItem['tPmdBarCode']
                 ];
-                // FCNnMasTmpPmtChkInlineCodeDupInTemp($aParams);
+                FCNnMasTmpPmtChkInlineCodeDupInTemp($aParams);
             }
         }
 
@@ -659,7 +506,7 @@ class cPromotionStep1ImportPmtExcel extends MX_Controller
                 'tFieldName' => 'FTBarCode',
                 'tPmdStaType' => $tPmdStaType
             ];
-            // FCNnMasTmpPmtChkCodeDupOnTypeInTemp($aPmtChkCodeDupOnTypeInTempParams);
+            FCNnMasTmpPmtChkCodeDupOnTypeInTemp($aPmtChkCodeDupOnTypeInTempParams);
         }
 
         if($this->db->trans_status() === false){

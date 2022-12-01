@@ -177,6 +177,8 @@ class mCommon extends CI_Model {
                     BAR.FTPunCode,
                     UNT_L.FTPunName,
                     PSZ.FCPdtUnitFact,
+                    BAR.FTFhnRefCode,
+                    BAR.FNBarRefSeq,
                     BAR.FTPlcCode
                 FROM
                     TCNMPdtBar BAR WITH(NOLOCK)

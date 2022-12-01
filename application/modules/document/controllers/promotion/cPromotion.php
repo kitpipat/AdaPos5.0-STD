@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class cPromotion extends MX_Controller
 {
-    /** ยกมาจาก Fit Auto 16/09/2022 */
+
     public function __construct()
     {
         parent::__construct();
@@ -17,12 +17,6 @@ class cPromotion extends MX_Controller
         $this->load->model('company/branch/mBranch');
         $this->load->model('company/shop/mShop');
         $this->load->model('authen/login/mLogin');
-        
-        // Test XSS Load Helper Security
-        $this->load->helper("security");
-        if ($this->security->xss_clean($this->input->post(), TRUE) === FALSE){
-            echo "ERROR XSS Filter";
-        }
     }
 
     public function index($nBrowseType, $tBrowseOption)
@@ -144,37 +138,37 @@ class cPromotion extends MX_Controller
             $tBchNameLogin = $this->session->userdata("tSesUsrBchNameDefault");
 
             if ($bIsNoRecord) {
-                if (!FCNbUsrIsAgnLevel()) {
-                    $aPdtPmtHDBchToTempParams = [
-                        'tBchCodeLogin' => $tBchCodeLogin,
-                        'tUserSessionID' => $tUserSessionID,
-                        'tUserSessionDate' => $tUserSessionDate,
-                        'tDocNo' => 'PMTDOCTEMP',
-                        'tAgnCode' => $tSesUsrAgnCode,
-                        'tBchCode' => $tBchCodeLogin,
-                        'tMerCode' => '',
-                        'tShpCode' => '',
-                        'tAgnName' => $tSesUsrAgnName,
-                        'tBchName' => $tBchNameLogin,
-                        'tMerName' => '',
-                        'tShpName' => ''
-                    ];
-                } else {
-                    $aPdtPmtHDBchToTempParams = [
-                        'tBchCodeLogin' => $tBchCodeLogin,
-                        'tUserSessionID' => $tUserSessionID,
-                        'tUserSessionDate' => $tUserSessionDate,
-                        'tDocNo' => 'PMTDOCTEMP',
-                        'tAgnCode' => $tSesUsrAgnCode,
-                        'tBchCode' => '',
-                        'tMerCode' => '',
-                        'tShpCode' => '',
-                        'tAgnName' => $tSesUsrAgnName,
-                        'tBchName' => '',
-                        'tMerName' => '',
-                        'tShpName' => ''
-                    ];
-                }
+                if(!FCNbUsrIsAgnLevel()){
+                $aPdtPmtHDBchToTempParams = [
+                    'tBchCodeLogin' => $tBchCodeLogin,
+                    'tUserSessionID' => $tUserSessionID,
+                    'tUserSessionDate' => $tUserSessionDate,
+                    'tDocNo' => 'PMTDOCTEMP',
+                    'tAgnCode' => $tSesUsrAgnCode,
+                    'tBchCode' => $tBchCodeLogin,
+                    'tMerCode' => '',
+                    'tShpCode' => '',
+                    'tAgnName' => $tSesUsrAgnName,
+                    'tBchName' => $tBchNameLogin,
+                    'tMerName' => '',
+                    'tShpName' => ''
+                ];
+            }else{
+                $aPdtPmtHDBchToTempParams = [
+                    'tBchCodeLogin' => $tBchCodeLogin,
+                    'tUserSessionID' => $tUserSessionID,
+                    'tUserSessionDate' => $tUserSessionDate,
+                    'tDocNo' => 'PMTDOCTEMP',
+                    'tAgnCode' => $tSesUsrAgnCode,
+                    'tBchCode' => '',
+                    'tMerCode' => '',
+                    'tShpCode' => '',
+                    'tAgnName' => $tSesUsrAgnName,
+                    'tBchName' => '',
+                    'tMerName' => '',
+                    'tShpName' => ''
+                ];
+            }
                 $this->mPromotionStep4BchCondition->FSaMPdtPmtHDBchToTemp($aPdtPmtHDBchToTempParams);
             }
         }
@@ -218,8 +212,8 @@ class cPromotion extends MX_Controller
                 'FTPmhDocNo' => $this->input->post('oetPromotionDocNo'),
                 'FDPmhDStart' => $this->input->post('oetPromotionPmhDStart'), // วันที่เริ่ม
                 'FDPmhDStop' => $this->input->post('oetPromotionPmhDStop'), // วันที่สิ้นสุด
-                'FDPmhTStart' => empty($this->input->post('oetPromotionPmhTStart')) ? '00:00' : $this->input->post('oetPromotionPmhTStart'), // เวลาเริ่ม
-                'FDPmhTStop' => empty($this->input->post('oetPromotionPmhTStop')) ? '23:59' : $this->input->post('oetPromotionPmhTStop'), // เวลาสิ้นสุด
+                'FDPmhTStart' => empty($this->input->post('oetPromotionPmhTStart')) ? '00:00:00' : $this->input->post('oetPromotionPmhTStart'), // เวลาเริ่ม
+                'FDPmhTStop' => empty($this->input->post('oetPromotionPmhTStop')) ? '23:59:59' : $this->input->post('oetPromotionPmhTStop'), // เวลาสิ้นสุด
                 'FTPmhStaLimitCst' => empty($this->input->post('ocmPromotionPmhStaLimitCst')) ? "1" : $this->input->post('ocmPromotionPmhStaLimitCst'), // คิดต่อสมาชิก/ทั้งหมด 1:ทั้งหมด 2: สมาชิก
                 'FTPmhStaClosed' => ($this->input->post('ocbPromotionPmhStaClosed') == "1") ? '1' : '0', // หยุดรายการ 0: เปิดใช้  1: หยุด
                 'FTPmhStaDoc' => '1', // สถานะเอกสาร ว่าง:ยังไม่สมบูรณ์, 1:สมบูรณ์
@@ -291,8 +285,6 @@ class cPromotion extends MX_Controller
             $this->mPromotion->FSaMAddUpdateHDL($aDataMaster);
             $this->mPromotion->FSaMAddUpdatePdtPmtHDCst($aDataMaster);
 
-
-
             $aUpdatePgtStaGetPdtInTmpFromHDParams = [
                 'tStaGetPdt' => $aDataMaster['FTPmhStaGetPdt'],
                 'tUserSessionID' => $tUserSessionID
@@ -311,7 +303,6 @@ class cPromotion extends MX_Controller
                 'tBchCode' => $aDataMaster['FTBchCode']
             ];
             $this->mPromotion->FSaMTempToPdtPmtDT($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtDT
-            $this->mPromotion->FSaMTempToPdtPmtDTLOT($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtDTLOT
             $this->mPromotion->FSaMTempToPdtPmtCB($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtCB
             $this->mPromotion->FSaMTempToPdtPmtCG($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtCG
             $this->mPromotion->FSaMTempToPdtPmtHDBch($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtHDBch
@@ -319,7 +310,6 @@ class cPromotion extends MX_Controller
             $this->mPromotion->FSaMTempToPdtPmtHDChn($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtHDChn
             $this->mPromotion->FSaMTempToPdtPmtHDRcv($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtHDPay
             $this->mPromotion->FSaMTempToPdtPmtHDCst($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtHDCstLev
-            $this->mPromotion->FSaMTempToPdtPmtHDPnp($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to TCNTPdtPmtHDSeq
 
             /*===== Begin Update FTPmhStaPdtExc in HD ==================================*/
             $aGetPmtDtStaListTypeOnExcudeTypeInTmpParams = [
@@ -452,14 +442,12 @@ class cPromotion extends MX_Controller
         }
 
         $this->mPromotion->FSaMPdtPmtDTToTemp($aDataToTempParams);
-        $this->mPromotion->FSaMPdtPmtDTLotToTemp($aDataToTempParams);
         $this->mPromotion->FSaMPdtPmtCBToTemp($aDataToTempParams);
         $this->mPromotion->FSaMPdtPmtCGToTemp($aDataToTempParams);
         $this->mPromotion->FSaMPdtPmtHDCstPriToTemp($aDataToTempParams);
         $this->mPromotion->FSaMPdtPmtHDChnToTemp($aDataToTempParams);
         $this->mPromotion->FSaMPdtPmtHDRcvToTemp($aDataToTempParams);
         $this->mPromotion->FSaMPdtPmtHDCstToTemp($aDataToTempParams);
-        $this->mPromotion->FSaMPdtPmtHDPnpToTemp($aDataToTempParams);
 
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
@@ -605,7 +593,6 @@ class cPromotion extends MX_Controller
                     'tBchCode' => $aDataMaster['FTBchCode']
                 ];
                 $this->mPromotion->FSaMTempToPdtPmtDT($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtDT
-                $this->mPromotion->FSaMTempToPdtPmtDTLOT($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtDTLOT
                 $this->mPromotion->FSaMTempToPdtPmtCB($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtCB
                 $this->mPromotion->FSaMTempToPdtPmtCG($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtCG
                 $this->mPromotion->FSaMTempToPdtPmtHDBch($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtHDBch
@@ -613,7 +600,6 @@ class cPromotion extends MX_Controller
                 $this->mPromotion->FSaMTempToPdtPmtHDChn($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtHDChn
                 $this->mPromotion->FSaMTempToPdtPmtHDRcv($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtHDPay
                 $this->mPromotion->FSaMTempToPdtPmtHDCst($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to PdtPmtHDCstLev
-                $this->mPromotion->FSaMTempToPdtPmtHDPnp($aTempToTBParams); // คัดลอกข้อมูลจาก Temp to TCNTPdtPmtHDSeq
 
                 /*===== Begin Update FTPmhStaPdtExc in HD ==================================*/
                 $aGetPmtDtStaListTypeOnExcudeTypeInTmpParams = [
@@ -854,41 +840,5 @@ class cPromotion extends MX_Controller
             );
         }
         $this->output->set_status_header(200)->set_content_type('application/json')->set_output(json_encode($aStatus));
-    }
-
-    //Functionality : คัดลอกเอกสาร
-    //Parameters : nStaClosed tCPHDocNo
-    //Creator : 10/07/2020 Nale
-    //Return : status
-    //Return Type : json
-    public function FStPromotionCopyDoc(){
-        try {
-            $tBchCode = $this->input->post('tBchCode');
-            $tDocumentNumber = $this->input->post('tDocumentNumber');
-            
-            $aStoreParam = array(
-                "tTblName" => 'TCNTPdtPmtHD',
-                "tDocType" => 8,
-                "tBchCode" => $tBchCode,
-                "tShpCode" => "",
-                "tPosCode" => "",
-                "dDocDate" => date("Y-m-d")     
-            );
-            $aAutogen   = FCNaHAUTGenDocNo($aStoreParam);
-            $tPromotionDocNo   = $aAutogen[0]["FTXxhDocNo"];
-            $this->mPromotion->FSaMPromotionCopyHD($tDocumentNumber,$tPromotionDocNo);
-
-            $aReturnData = array(
-                'nStaEvent' => '1',
-                'tStaMessg' => "Fucntion Success"
-            );
-
-        } catch (Exception $Error) {
-            $aReturnData = array(
-                'nStaEvent' => '500',
-                'tStaMessg' => $Error->getMessage()
-            );
-        }
-        echo json_encode($aReturnData);
     }
 }

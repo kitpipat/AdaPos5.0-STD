@@ -20,13 +20,13 @@ class cPromotionStep4BchCondition extends MX_Controller
      */
     public function FSxCPromotionGetBchConditionInTmp()
     {
-        $tSearchAll         = $this->input->post('tSearchAll');
-        $nPage              = $this->input->post('nPageCurrent');
-        $aAlwEvent          = FCNaHCheckAlwFunc('promotion/0/0');
-        $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
-        $tUserSessionID     = $this->session->userdata("tSesSessionID");
-        $tUserLevel         = $this->session->userdata('tSesUsrLevel');
-        $tBchCodeLogin      = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
+        $tSearchAll = $this->input->post('tSearchAll');
+        $nPage = $this->input->post('nPageCurrent');
+        $aAlwEvent = FCNaHCheckAlwFunc('promotion/0/0');
+        $nOptDecimalShow = FCNxHGetOptionDecimalShow();
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
+        $tUserLevel = $this->session->userdata('tSesUsrLevel');
+        $tBchCodeLogin = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
 
         if ($nPage == '' || $nPage == null) {
             $nPage = 1;
@@ -36,21 +36,21 @@ class cPromotionStep4BchCondition extends MX_Controller
         $nLangEdit = $this->session->userdata("tLangEdit");
 
         $aGetPdtPmtHDBchInTmpParams  = array(
-            'FNLngID'           => $nLangEdit,
-            'nPage'             => $nPage,
-            'nRow'              => 50,
-            'tSearchAll'        => $tSearchAll,
-            'tUserSessionID'    => $tUserSessionID
+            'FNLngID' => $nLangEdit,
+            'nPage' => $nPage,
+            'nRow' => 50,
+            'tSearchAll' => $tSearchAll,
+            'tUserSessionID' => $tUserSessionID
         );
         $aResList = $this->mPromotionStep4BchCondition->FSaMGetPdtPmtHDBchInTmp($aGetPdtPmtHDBchInTmpParams);
 
         $aGenTable = array(
-            'aAlwEvent'         => $aAlwEvent,
-            'aDataList'         => $aResList,
-            'nPage'             => $nPage,
-            'nOptDecimalShow'   => $nOptDecimalShow,
-            'tUserLevel'        => $tUserLevel,
-            'bIsShpEnabled'     => FCNbGetIsShpEnabled()
+            'aAlwEvent' => $aAlwEvent,
+            'aDataList' => $aResList,
+            'nPage' => $nPage,
+            'nOptDecimalShow' => $nOptDecimalShow,
+            'tUserLevel' => $tUserLevel,
+            'bIsShpEnabled' => FCNbGetIsShpEnabled()
         );
         $tHtml = $this->load->view('document/promotion/advance_table/wStep4BchConditionTableTmp', $aGenTable, true);
         
@@ -71,20 +71,20 @@ class cPromotionStep4BchCondition extends MX_Controller
      */
     public function FSaCPromotionInsertBchConditionToTmp()
     {
-        $tAgnCode           = $this->input->post('tAgnCode');
-        $tAgnName           = $this->input->post('tAgnName');
-        $tBchCode           = $this->input->post('tBchCode');
-        $tBchName           = $this->input->post('tBchName');
-        $tMerCode           = empty($this->input->post('tMerCode'))?"N/A":$this->input->post('tMerCode');
-        $tMerName           = $this->input->post('tMerName');
-        $tShpCode           = empty($this->input->post('tShpCode'))?"N/A":$this->input->post('tShpCode');
-        $tShpName           = $this->input->post('tShpName');
-        $nLangEdit          = $this->session->userdata("tLangEdit");
-        $tUserSessionID     = $this->session->userdata("tSesSessionID");
-        $tUserSessionDate   = $this->session->userdata("tSesSessionDate");
-        $tUserLoginCode     = $this->session->userdata("tSesUsername");
-        $tUserLevel         = $this->session->userdata('tSesUsrLevel');
-        $tBchCodeLogin      = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
+        $tAgnCode = $this->input->post('tAgnCode');
+        $tAgnName = $this->input->post('tAgnName');
+        $tBchCode = $this->input->post('tBchCode');
+        $tBchName = $this->input->post('tBchName');
+        $tMerCode = empty($this->input->post('tMerCode'))?"N/A":$this->input->post('tMerCode');
+        $tMerName = $this->input->post('tMerName');
+        $tShpCode = empty($this->input->post('tShpCode'))?"N/A":$this->input->post('tShpCode');
+        $tShpName = $this->input->post('tShpName');
+        $nLangEdit = $this->session->userdata("tLangEdit");
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
+        $tUserSessionDate = $this->session->userdata("tSesSessionDate");
+        $tUserLoginCode = $this->session->userdata("tSesUsername");
+        $tUserLevel = $this->session->userdata('tSesUsrLevel');
+        $tBchCodeLogin = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
 
         // if(!FCNbUsrIsAgnLevel()){
         //     $tValibleChkValidate = $tBchCode;
@@ -124,20 +124,20 @@ class cPromotionStep4BchCondition extends MX_Controller
             /*===== End Data Validate ==================================================*/
 
             $aPdtPmtHDBchToTempParams = [
-                'tDocNo'            => 'PMTDOCTEMP',
-                'tAgnCode'          => $tAgnCode,
-                'tAgnName'          => $tAgnName,
-                'tBchCode'          => $tBchCode,
-                'tBchName'          => $tBchName,
-                'tMerCode'          => $tMerCode,
-                'tMerName'          => $tMerName,
-                'tShpCode'          => $tShpCode,
-                'tShpName'          => $tShpName,
-                'tBchCodeLogin'     => $tBchCodeLogin,
-                'tUserSessionID'    => $tUserSessionID,
-                'tUserSessionDate'  => $tUserSessionDate,
-                'tUserLoginCode'    => $tUserLoginCode,
-                'nLngID'            => $nLangEdit
+                'tDocNo' => 'PMTDOCTEMP',
+                'tAgnCode' => $tAgnCode,
+                'tAgnName' => $tAgnName,
+                'tBchCode' => $tBchCode,
+                'tBchName' => $tBchName,
+                'tMerCode' => $tMerCode,
+                'tMerName' => $tMerName,
+                'tShpCode' => $tShpCode,
+                'tShpName' => $tShpName,
+                'tBchCodeLogin' => $tBchCodeLogin,
+                'tUserSessionID' => $tUserSessionID,
+                'tUserSessionDate' => $tUserSessionDate,
+                'tUserLoginCode' => $tUserLoginCode,
+                'nLngID' => $nLangEdit
             ];
             $this->mPromotionStep4BchCondition->FSaMPdtPmtHDBchToTemp($aPdtPmtHDBchToTempParams);
 
@@ -175,26 +175,26 @@ class cPromotionStep4BchCondition extends MX_Controller
      */
     public function FSxCPromotionUpdateBchConditionInTmp()
     {
-        $tDocNo             = $this->input->post('tDocNo');
-        $tBchCodeTo         = $this->input->post('tBchCodeTo');
-        $tMerCodeTo         = $this->input->post('tMerCodeTo');
-        $tShpCodeTo         = $this->input->post('tShpCodeTo');
-        $tBchCode           = $this->input->post('tBchCode');
-        $tPmhStaType        = $this->input->post('tPmhStaType');
-        $tUserSessionID     = $this->session->userdata("tSesSessionID");
-        $tUserLoginCode     = $this->session->userdata("tSesUsername");
+        $tDocNo = $this->input->post('tDocNo');
+        $tBchCodeTo = $this->input->post('tBchCodeTo');
+        $tMerCodeTo = $this->input->post('tMerCodeTo');
+        $tShpCodeTo = $this->input->post('tShpCodeTo');
+        $tBchCode = $this->input->post('tBchCode');
+        $tPmhStaType = $this->input->post('tPmhStaType');
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
+        $tUserLoginCode = $this->session->userdata("tSesUsername");
         
         $this->db->trans_begin();
 
         $aUpdatePdtPmtHDBchInTmpParams = [
-            'tDocNo'            => $tDocNo,
-            'tBchCodeTo'        => $tBchCodeTo,
-            'tMerCodeTo'        => $tMerCodeTo,
-            'tShpCodeTo'        => $tShpCodeTo,
-            'tBchCode'          => $tBchCode,
-            'tPmhStaType'       => $tPmhStaType,
-            'tUserLoginCode'    => $tUserLoginCode,
-            'tUserSessionID'    => $tUserSessionID
+            'tDocNo' => $tDocNo,
+            'tBchCodeTo' => $tBchCodeTo,
+            'tMerCodeTo' => $tMerCodeTo,
+            'tShpCodeTo' => $tShpCodeTo,
+            'tBchCode' => $tBchCode,
+            'tPmhStaType' => $tPmhStaType,
+            'tUserLoginCode' => $tUserLoginCode,
+            'tUserSessionID' => $tUserSessionID
         ];
         $this->mPromotionStep4BchCondition->FSbUpdatePdtPmtHDBchInTmpByKey($aUpdatePdtPmtHDBchInTmpParams);
 
@@ -225,22 +225,22 @@ class cPromotionStep4BchCondition extends MX_Controller
      */
     public function FSxCPromotionDeleteBchConditionInTmp()
     {
-        $tBchCode           = $this->input->post('tBchCode');
-        $tDocNo             = $this->input->post('tDocNo');
-        $tBchCodeTo         = $this->input->post('tBchCodeTo');
-        $tMerCodeTo         = $this->input->post('tMerCodeTo');
-        $tShpCodeTo         = $this->input->post('tShpCodeTo');
-        $tUserSessionID     = $this->session->userdata("tSesSessionID");
+        $tBchCode = $this->input->post('tBchCode');
+        $tDocNo = $this->input->post('tDocNo');
+        $tBchCodeTo = $this->input->post('tBchCodeTo');
+        $tMerCodeTo = $this->input->post('tMerCodeTo');
+        $tShpCodeTo = $this->input->post('tShpCodeTo');
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
 
         $this->db->trans_begin();
 
         $aDeleteInTmpByKeyParams = [
-            'tUserSessionID'    => $tUserSessionID,
-            'tBchCode'          => $tBchCode,
-            'tDocNo'            => $tDocNo,
-            'tBchCodeTo'        => $tBchCodeTo,
-            'tMerCodeTo'        => $tMerCodeTo,
-            'tShpCodeTo'        => $tShpCodeTo
+            'tUserSessionID' => $tUserSessionID,
+            'tBchCode' => $tBchCode,
+            'tDocNo' => $tDocNo,
+            'tBchCodeTo' => $tBchCodeTo,
+            'tMerCodeTo' => $tMerCodeTo,
+            'tShpCodeTo' => $tShpCodeTo
         ];
         $this->mPromotionStep4BchCondition->FSbDeletePdtPmtHDBchInTmpByKey($aDeleteInTmpByKeyParams);
 

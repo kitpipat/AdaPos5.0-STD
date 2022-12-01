@@ -2117,6 +2117,7 @@
                         var tABBBtnText     = '<?=language('document/taxinvoice/taxinvoice', 'tTAXPrintABB'); ?>';
                         var tStaRcv         = '2';
                         $('#olbStatusDocument').text('อนุมัติแล้ว');
+                        $('#obtTAXCancleETax').removeClass('xCNHide');
                 }
 
                 $('#ohdTAXStaDoc').val(aHD.FTXshStaDoc);

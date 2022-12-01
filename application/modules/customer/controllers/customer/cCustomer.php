@@ -971,6 +971,7 @@ class cCustomer extends MX_Controller {
                'FTMemSex' => $aCstMaster['FTCstSex'],
                'FDMemDob' => $aCstMaster['FDCstDob'],
                'FTOcpCode' => $aCstMaster['FTOcpCode'],
+               'FTLevCode' => $aCstMaster['FTClvCode'],
                'FTMemBusiness' => $aCstMaster['FTCstBusiness'],
                'FTMemBchHQ' => $aCstMaster['FTCstBchHQ'],
                'FTMemBchCode' => $aCstMaster['FTCstBchCode'],

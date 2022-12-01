@@ -106,7 +106,7 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
     $tTWOUsrNameApv         = "";
     $tTWODocType            = "";
     $tTWORsnType            = "";
-    $tTWOVATInOrEx          = 1;
+    $tTWOVATInOrEx          = $tCmpRetInOrEx;
     $tTWOMerCode            = "";
     $tTWOShopFrm            = "";
     $tTWOShopTo             = "";
@@ -170,6 +170,10 @@ if (isset($aDataDocHD) && $aDataDocHD['rtCode'] == "1") {
 $tTWOBchCompCode         = $tBchCompCode;
 $tTWOBchCompName         = $tBchCompName;
 
+$bIsApv = empty($tTWOStaApv) ? false : true;
+$bIsCancel = ($tTWOStaDoc == "3") ? true : false;
+$bIsApvOrCancel = ($bIsApv || $bIsCancel);
+
 ?>
 <form id="ofmTransferwarehouseoutFormAdd" class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data">
     <button style="display:none" type="submit" id="obtSubmitTransferwarehouseout" onclick="JSxTransferwarehouseoutEventAddEdit('<?= $tTWORoute ?>')"></button>
@@ -190,6 +194,9 @@ $tTWOBchCompName         = $tBchCompName;
     <input type="hidden" id="ohdTWOApvCodeUsrLogin" name="ohdTWOApvCodeUsrLogin" value="<?= $tTWOUsrCode; ?>">
     <input type="hidden" id="ohdTWOLangEdit" name="ohdTWOLangEdit" value="<?= $this->session->userdata("tLangEdit"); ?>">
     <input type="hidden" id="ohdTWOFrmSplInfoVatInOrEx" name="ohdTWOFrmSplInfoVatInOrEx" value="<?= $tTWOVATInOrEx ?>">
+    <input type="hidden" id="ohdTWOVatCode" name="ohdTWOVatCode" value="<?= $tVatCode; ?>">
+    <input type="hidden" id="ohdTWOVatRate" name="ohdTWOVatRate" value="<?= $cVatRate; ?>">
+
 
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
@@ -750,6 +757,17 @@ $tTWOBchCompName         = $tBchCompName;
                             <textarea class="form-control xCNApvOrCanCelDisabled" id="otaTWOFrmInfoOthRmk" name="otaTWOFrmInfoOthRmk" rows="10" maxlength="200" style="resize: none;height:86px;"><?= $tTWORmk; ?></textarea>
                         </div>
 
+                    <!-- ตัวเลือกในการเพิ่มรายการสินค้าจากเมนูสแกนสินค้าในหน้าเอกสาร * กรณีเพิ่มสินค้าเดิม -->
+						<div class="form-group">
+							<label class="xCNLabelFrm"><?php echo language('document/transfer_branch_out/transfer_branch_out', 'ตัวเลือกในการเพิ่มรายการสินค้าจากเมนูสแกนสินค้าในหน้าเอกสาร * กรณีเพิ่มสินค้าเดิม'); ?></label>
+							<select class="selectpicker form-control xCNApvOrCanCelDisabled" id="ocmTWOOptionAddPdt" name="ocmTWOOptionAddPdt">
+								<option value="1" selected><?php echo language('document/transfer_branch_out/transfer_branch_out', 'บวกจำนวนในรายการเดิม'); ?></option>
+								<option value="2" ><?php echo language('document/transfer_branch_out/transfer_branch_out', 'เพิ่มแถวใหม่'); ?></option>
+							</select>
+						</div>
+						<!-- ตัวเลือกในการเพิ่มรายการสินค้าจากเมนูสแกนสินค้าในหน้าเอกสาร * กรณีเพิ่มสินค้าเดิม -->
+
+
                         <!-- จำนวนครั้งที่พิมพ์ -->
                         <div class="form-group">
                             <label class="xCNLabelFrm"><?= language('document/transferwarehouseout/transferwarehouseout', 'tTWOLabelFrmInfoOthDocPrint'); ?></label>
@@ -773,7 +791,7 @@ $tTWOBchCompName         = $tBchCompName;
                 </div>
             </div>
             <!-- Panel ไฟลแนบ -->
-            <div class="panel panel-default" style="margin-bottom: 25px;">
+            <!-- <div class="panel panel-default" style="margin-bottom: 25px;">
                 <div id="odvSOReferenceDoc" class="panel-heading xCNPanelHeadColor" role="tab" style="padding-top:10px;padding-bottom:10px;">
                     <label class="xCNTextDetail1"><?php echo language('document/saleorder/saleorder', 'ไฟล์แนบ'); ?></label>
                     <a class="xCNMenuplus collapsed" role="button" data-toggle="collapse" href="#odvSODataFile" aria-expanded="true">
@@ -790,23 +808,23 @@ $tTWOBchCompName         = $tBchCompName;
                         </div>
                     </div>
                 </div>
-                <script>
-                    //console.log($('#ohdTWOStaApv').val());
+               <script> -->
+                    <!-- //console.log($('#ohdTWOStaApv').val());
                     //console.log('ohdTWOStaApv');
-                    var oSOCallDataTableFile = {
-                        ptElementID     : 'odvDOShowDataTable',
-                        ptBchCode       : $('#oetSOFrmBchCode').val(),
-                        ptDocNo         : $('#oetTWODocNo').val(),
-                        ptDocKey        : 'TCNTPdtTwoHD',
-                        ptSessionID     : '<?= $this->session->userdata("tSesSessionID") ?>',
-                        pnEvent         : <?= $nStaUploadFile ?>,
-                        ptCallBackFunct : 'JSxSoCallBackUploadFile',
-                        ptStaApv        : $('#ohdTWOStaApv').val(),
-                        ptStaDoc        : $('#ohdTWOStaDoc').val()
-                    }
-                    JCNxUPFCallDataTable(oSOCallDataTableFile);
-                </script>
-            </div>
+                    // var oSOCallDataTableFile = {
+                    //     ptElementID     : 'odvDOShowDataTable',
+                    //     ptBchCode       : $('#oetSOFrmBchCode').val(),
+                    //     ptDocNo         : $('#oetTWODocNo').val(),
+                    //     ptDocKey        : 'TCNTPdtTwoHD',
+                    //     ptSessionID     : '<?= $this->session->userdata("tSesSessionID") ?>',
+                    //     pnEvent         : <?= $nStaUploadFile ?>,
+                    //     ptCallBackFunct : 'JSxSoCallBackUploadFile',
+                    //     ptStaApv        : $('#ohdTWOStaApv').val(),
+                    //     ptStaDoc        : $('#ohdTWOStaDoc').val()
+                    // }
+                    // JCNxUPFCallDataTable(oSOCallDataTableFile); -->
+                <!-- // </script> -->
+            <!-- </div> --> 
 
 
         </div>
@@ -821,7 +839,7 @@ $tTWOBchCompName         = $tBchCompName;
                                 <div style="margin-top: 10px;">
                                     <!--ค้นหา-->
                                     <div class="row p-t-10">
-                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                                             <div class="">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" maxlength="100" id="oetTWOFrmFilterPdtHTML" name="oetTWOFrmFilterPdtHTML" placeholder="<?php echo language('document/transferwarehouseout/transferwarehouseout', 'tTWOFrmFilterTablePdt'); ?>" onkeyup="javascript:if(event.keyCode==13) JSvTWODOCFilterPdtInTableTemp()">
@@ -848,10 +866,12 @@ $tTWOBchCompName         = $tBchCompName;
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5 text-right">
-                                            <div id="odvTWOMngAdvTableList" class="btn-group xCNDropDrownGroup">
-                                                <button id="obtTWOAdvTablePdtDTTemp" type="button" class="btn xCNBTNMngTable m-r-20"><?= language('common/main/main', 'tModalAdvTable') ?></button>
-                                            </div>
+                                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 text-right">
+                                        <div id="odvTWOMngAdvTableList" class="btn-group xCNDropDrownGroup" >
+                                            <button type="button" class="btn xCNBTNMngTable xCNImportBtn" style="margin-right:10px;" onclick="JSxOpenImportForm()">
+                                                <?= language('common/main/main', 'tImport') ?>
+                                            </button>
+                                        </div>
                                             <div id="odvTWOMngDelPdtInTableDT" class="btn-group xCNDropDrownGroup">
                                                 <button type="button" class="btn xCNBTNMngTable xWDropdown" data-toggle="dropdown">
                                                     <?= language('common/main/main', 'tCMNOption') ?>
@@ -864,6 +884,12 @@ $tTWOBchCompName         = $tBchCompName;
                                                 </ul>
                                             </div>
                                         </div>
+                                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 text-right">
+											<!--ค้นหาจากบาร์โค๊ด-->
+											<div class="form-group">
+												<input type="text" class="form-control xCNPdtEditInLine" id="oetTwoInsertBarcode"  autocomplete="off" name="oetTwoInsertBarcode" maxlength="50" value="" onkeypress="Javascript:if(event.keyCode==13) JSxSearchFromBarcode(event,this);"  placeholder="เพิ่มสินค้าด้วยบาร์โค้ด หรือ รหัสสินค้า" >
+											</div>
+								        </div>
                                         <div class="col-xs-12 col-sm-1 col-md-1 col-lg-1">
                                             <div class="form-group">
                                                 <div style="position: absolute;right: 15px;top:-5px;">
@@ -1214,7 +1240,277 @@ $tTWOBchCompName         = $tBchCompName;
 <!-- ============================================================================================================================================================================= -->
 
 
+<!-- ======================================================================== Modal ไม่พบรหัสสินค้า ======================================================================== -->
+<div id="odvTwoModalPDTNotFound" class="modal fade">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="xCNHeardModal modal-title" style="display:inline-block"><?=language('common/main/main', 'tMessageAlert')?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>ไม่พบข้อมูลสินค้า กรุณาลองใหม่อีกครั้ง</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn xCNBTNPrimery" data-dismiss="modal" onclick="JSxNotFoundClose();" >
+                        <?php echo language('common/main/main', 'tModalConfirm'); ?>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+	
+<!-- ============================================================================================================================================================================= -->
+
+<div id="odvTwoModalPDTMoreOne" class="modal fade">
+        <div class="modal-dialog" role="document" style="width: 85%; margin: 1.75rem auto;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                            <label class="xCNTextModalHeard" style="font-weight: bold; font-size: 20px;">กรุณาเลือกสินค้า</label>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
+                            <button class="btn xCNBTNPrimery xCNBTNPrimery2Btn" onclick="JCNxConfirmPDTMoreOne(1)" data-dismiss="modal">เลือก</button>
+                            <button class="btn xCNBTNDefult xCNBTNDefult2Btn" onclick="JCNxConfirmPDTMoreOne(2)" data-dismiss="modal">ปิด</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped xCNTablePDTMoreOne">
+                        <thead>
+                            <tr>
+                                <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('common/main/main', 'tModalcodePDT')?></th>
+                                <th class="xCNTextBold" style="text-align:center; width:160px;"><?=language('common/main/main', 'tModalnamePDT')?></th>
+                                <th class="xCNTextBold" style="text-align:center; width:120px;"><?=language('common/main/main', 'tModalPriceUnit')?></th>
+                                <th class="xCNTextBold" style="text-align:center; width:160px;"><?=language('common/main/main', 'tModalbarcodePDT')?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- ============================================================================================================================================================================= -->
+
 
 <?php include('script/jTransferwarehouseoutAdd.php'); ?>
 <script src="<?php echo base_url('application\modules\common\assets\js\jquery.mask.js')?>"></script>
 <script src="<?php echo base_url('application/modules/common/assets/src/jFormValidate.js'); ?>"></script>
+<script>
+    function JSxNotFoundClose(){
+        $('#oetTwoInsertBarcode').focus();
+    }
+
+	//กดเลือกบาร์โค๊ด
+	function  JSxSearchFromBarcode(e,elem){
+        var tValue = $(elem).val();
+        // if($('#oetPIFrmSplCode').val() != ""){
+            JSxCheckPinMenuClose();
+            if(tValue.length === 0){
+            }else{
+                $('#oetTwoInsertBarcode').attr('readonly',true);
+                JCNSearchBarcodePdt(tValue);
+                $('#oetTwoInsertBarcode').val('');
+            }
+        // }else{
+        //     $('#odvPIModalPleseselectCustomer').modal('show');
+        //     $('#oetTwoInsertBarcode').val('');
+        // }
+        e.preventDefault();
+    }
+
+	//ค้นหาบาร์โค๊ด
+	function JCNSearchBarcodePdt(ptTextScan){
+
+        var tWhereCondition = "";
+
+        $.ajax({
+            type : "POST",
+            url : "BrowseDataPDTTableCallView",
+            data :{
+                Qualitysearch   : [],
+                ReturnType  : "M",
+                aPriceType  : ["Cost","tCN_Cost","Company","1"],
+                // aPriceType  : ['Price4Cst',tPISplCode],
+                NextFunc    : "",
+                SelectTier  : ["Barcode"],
+                SPL: "",
+                BCH: $("#oetSOFrmBchCode").val(),
+                MER: '',
+                SHP: $('#oetTROutShpFromCode').val(),
+                Where       : [tWhereCondition],
+                tTextScan   : ptTextScan,
+            },
+            catch : false,
+            timeout : 0,
+            success : function (tResult){
+				// localStorage.removeItem('TBX_LocalItemDataDelDtTemp');
+                JCNxCloseLoading();
+                $('#ohdTbxObjPdtFhnCallBack').val(tResult);
+                var oText = JSON.parse(tResult);
+                console.log('Event Scan',oText);
+                if(oText == '800'){
+                    $('#oetTwoInsertBarcode').attr('readonly',false);
+                    $('#odvTwoModalPDTNotFound').modal('show');
+                    $('#oetTwoInsertBarcode').val('');
+                }else{
+                    // พบสินค้ามีหลายบาร์โค้ด
+                    if(oText.length > 1){
+                        $('#odvTwoModalPDTMoreOne').modal('show');
+                        $('#odvTwoModalPDTMoreOne .xCNTablePDTMoreOne tbody').html('');
+
+                        for(i=0; i<oText.length; i++){
+                            var aNewReturn      = JSON.stringify(oText[i]);
+                            var tTest = "["+aNewReturn+"]";
+                            var oEncodePackData = window.btoa(unescape(encodeURIComponent(tTest)));
+                            var tHTML = "<tr class='xCNColumnPDTMoreOne"+i+" xCNColumnPDTMoreOne' data-information='"+oEncodePackData+"' style='cursor: pointer;'>";
+                                tHTML += "<td>"+oText[i].pnPdtCode+"</td>";
+                                tHTML += "<td>"+oText[i].packData.PDTName+"</td>";
+                                tHTML += "<td>"+oText[i].packData.PUNName+"</td>";
+                                tHTML += "<td>"+oText[i].ptBarCode+"</td>";
+                                tHTML += "</tr>";
+                            $('#odvTwoModalPDTMoreOne .xCNTablePDTMoreOne tbody').append(tHTML);
+                        }
+
+                        //เลือกสินค้า
+                        $('.xCNColumnPDTMoreOne').off();
+
+                        //ดับเบิ้ลคลิก
+                        $('.xCNColumnPDTMoreOne').on('dblclick',function(e){
+                            $('#odvTwoModalPDTMoreOne').modal('hide');
+                            var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
+                            FSvTWOAddPdtIntoDocDTTempScan(tJSON); //Client
+                            JSvTWOInsertPdtToTemp(tJSON); //Server
+                            // var oPIObjPdtFhnCallBack =  $('#ohdTbxObjPdtFhnCallBack').val();
+                            var oJSONPdt = JSON.parse(tJSON);
+                            var oOptionForFashion = {
+                                    'bListItemAll'  : false,
+                                    'tSpcControl'  : 0,
+                                    'tNextFunc' : 'JSvTWOInsertPdtToTemp'
+                                }
+                                JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
+
+                        });
+
+                        //คลิกได้เลย
+                        $('.xCNColumnPDTMoreOne').on('click',function(e){
+                            //เลือกสินค้าแบบตัวเดียว
+                            $('.xCNColumnPDTMoreOne').removeClass('xCNActivePDT');
+                            $('.xCNColumnPDTMoreOne').children().attr('style', 'background-color:transparent !important; color:#232C3D !important;');
+                            // $('.xCNColumnPDTMoreOne').children(':last-child').css('text-align','right');
+                            $(this).addClass('xCNActivePDT');
+                            $(this).children().attr('style', 'background-color:#179bfd !important; color:#FFF !important;');
+                            // $(this).children().last().css('text-align','right');
+                        });
+
+                    }else{
+                        //มีตัวเดียว
+                        var aNewReturn  = JSON.stringify(oText);
+                        console.log('aNewReturn: '+aNewReturn);
+                        FSvTWOAddPdtIntoDocDTTempScan(aNewReturn); //Client
+                        JSvTWOInsertPdtToTemp(aNewReturn); //Server
+               
+                        var oOptionForFashion = {
+                                'bListItemAll'  : false,
+                                'tSpcControl'  : 0,
+                                'tNextFunc' : 'JSvTWOInsertPdtToTemp'
+                            }
+                    JSxCheckProductSerialandFashion(oText,oOptionForFashion,'insert');
+                    }
+                }
+            },
+            error: function (jqXHR,textStatus,errorThrown){
+                JCNSearchBarcodePdt(ptTextScan);
+            }
+        });
+    }
+
+
+
+    //เลือกสินค้า กรณีพบมากกว่าหนึ่งตัว
+    function JCNxConfirmPDTMoreOne($ptType){
+        if($ptType == 1){
+            $("#odvTwoModalPDTMoreOne .xCNTablePDTMoreOne tbody .xCNActivePDT").each(function( index ) {
+                var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
+                FSvTWOAddPdtIntoDocDTTempScan(tJSON);
+                JSvTWOInsertPdtToTemp(tJSON);
+   
+                var oJSONPdt = JSON.parse(tJSON);
+                var oOptionForFashion = {
+                                    'bListItemAll'  : false,
+                                    'tSpcControl'  : 0,
+                                    'tNextFunc' : 'JSvTWOInsertPdtToTemp'
+                                }
+             JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
+            });
+        }else{
+            $('#oetTwoInsertBarcode').attr('readonly',false);
+            $('#oetTwoInsertBarcode').val('');
+        }
+    }
+
+
+	
+	//Function : เพิ่มสินค้าจาก ลง Table ฝั่ง Client
+	//Create : 2018-08-28 Krit(Copter)
+	function JSvTWOInsertPdtToTemp(pjPdtData) {
+			var nStaSession = JCNxFuncChkSessionExpired();
+			if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+				pnXthVATInOrEx = 2;
+
+				console.log(pjPdtData);
+
+				// JCNxOpenLoading();
+				var ptXthDocNoSend = "";
+				if ($("#ohdTWORoute").val() == "dcmTWOEventEdit") {
+				ptXthDocNoSend = $("#oetTWODocNo").val();
+				}
+
+				$('#oetTwoInsertBarcode').attr('readonly',false);
+            	$('#oetTwoInsertBarcode').val('');
+
+				$.ajax({
+				type: "POST",
+				url: "TWOTransferwarehouseoutAddPdtIntoDTDocTemp",
+				data: {
+                    'tBchCode': $('#oetSOFrmBchCode').val(),
+                    'tTWODocNo': ptXthDocNoSend,
+                    'tTWOPdtData': pjPdtData,
+                    'tType': 'PDT',
+                    'nTWOOptionAddPdt' : $('#ocmTWOOptionAddPdt').val(),
+                    'nTWOFrmSplInfoVatInOrEx' : $('#ohdTWOFrmSplInfoVatInOrEx').val()
+				},
+				cache: false,
+				timeout: 0,
+				success: function (oResult) {
+                  
+					// console.log(oResult);
+					// JSvTRNLoadPdtDataTableHtml();
+					// var aResult = JSON.parse(oResult);
+                    // if(aResult['nStaEvent']==1){
+                    //     JCNxCloseLoading();
+                    // }
+
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					JCNxResponseError(jqXHR, textStatus, errorThrown);
+				}
+				});
+			} else {
+				JCNxShowMsgSessionExpired();
+			}
+	}
+
+
+
+
+
+</script>
