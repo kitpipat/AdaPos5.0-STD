@@ -390,9 +390,8 @@ function JSoAddEditSpa(ptRoute) {
         
             var tChkPdt = $(this).find('td:eq(2)').find('label').text();
             tChkPdtName = $(this).find('td:eq(3)').find('label').text();
-            var tChkPun = $(this).find('td:eq(4)').find('select').val();
+            var tChkPun = $(this).find('td:eq(4)').find('label').text();
             var tFullText = tChkPdt+','+tChkPun;
-
             const found = aArrayPdt.find(element => element == tFullText);
             if(found == undefined){
                 aArrayPdt.push(tFullText);

@@ -1396,9 +1396,9 @@ function JCNxDPSControlObjAndBtn(){
         // Show And Disabled
         $("#oliDPSTitleDetail").show();
         
-        if(nDPSStaPaid != 4){
-            $("#obtDPSApproveDPS").show();
-        }
+        // if(nDPSStaPaid != 4){
+        //     $("#obtDPSApproveDPS").show();
+        // }
     }
 }
 
