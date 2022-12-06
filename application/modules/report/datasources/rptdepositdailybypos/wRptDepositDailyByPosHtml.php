@@ -114,12 +114,14 @@ $nTotalPage         = $aDataReport["aPagination"]["nTotalPage"];
                 <table class="table">
                     <thead>
                         <tr style="border-bottom: 1px solid black !important;">
-                            <th nowrap class="text-left xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptBCH']; ?></th>
-                            <th nowrap class="text-left xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptSalePos']; ?></th>
+                            <th nowrap class="text-left xCNRptColumnHeader" style="width:15%;"><?php echo $aDataTextRef['tRptBCH']; ?></th>
+                            <th nowrap class="text-left xCNRptColumnHeader" style="width:15%;"><?php echo $aDataTextRef['tRptSalePos']; ?></th>
                             <th nowrap class="text-center xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptSRCDate']; ?></th>
                             <th nowrap class="text-left xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRPC15TBType']; ?></th>
                             <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptSales']; ?></th>
+                            <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptBillSales']; ?></th>
                             <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptXshReturn']; ?></th>
+                            <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptBillReturn']; ?></th>
                             <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptCrTotal']; ?></th>
 
                         </tr>
@@ -143,7 +145,9 @@ $nTotalPage         = $aDataReport["aPagination"]["nTotalPage"];
                                         <td class="text-center xCNRptDetail" ><?= date_format(date_create($aValue['FDXshDocDate']),'d/m/Y')?></td>
                                         <td class="text-left xCNRptDetail"><?php echo $aValue["FTXshDocType"]; ?></td>
                                         <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCXshGrand"],$nOptDecimalShow); ?></td>
+                                        <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FNXshBillSale"]); ?></td>
                                         <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCXshRetGrand"],$nOptDecimalShow); ?></td>
+                                        <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FNXshBillRet"]); ?></td>
                                         <td class="text-right xCNRptDetail"><?php echo number_format($aValue["FCXshTotal"],$nOptDecimalShow); ?></td>
                                     </tr>
 
@@ -152,17 +156,19 @@ $nTotalPage         = $aDataReport["aPagination"]["nTotalPage"];
                                     if($tPosCode == $tPosCodeNew && $tDateOld == $tDateNew){
                                         ?>
                                         <tr>
-                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
+                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="9" style='border-bottom: dashed 1px #333 !important;'></td>
                                         </tr>
                                         <tr>
                                             <td class="text-left xCNRptDetail xCNRptGrouPing"><?=language('report/report/report', 'tRptSaleTaxByMonthlyTotal');?></td>
                                             <td colspan="3"></td>
                                             <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPXsdQty_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FNTotalBillSale_Footer"]); ?></td>
                                             <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPRefGrand_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FNTotalBillRet_Footer"]); ?></td>
                                             <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPTotal_Footer"],$nOptDecimalShow); ?></td>
                                         </tr>
                                         <tr>
-                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
+                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="9" style='border-bottom: dashed 1px #333 !important;'></td>
                                         </tr>
                                 <?php } ?>
 
@@ -170,17 +176,19 @@ $nTotalPage         = $aDataReport["aPagination"]["nTotalPage"];
                                     if($aValue["rtDateCount"] == '1'){
                                         ?>
                                         <tr>
-                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
+                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="9" style='border-bottom: dashed 1px #333 !important;'></td>
                                         </tr>
                                         <tr>
                                             <td class="text-left xCNRptDetail xCNRptGrouPing"><?=language('report/report/report', 'tRptSaleTaxByMonthlyTotal');?></td>
                                             <td colspan="3"></td>
                                             <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPXsdQty_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FNTotalBillSale_Footer"]); ?></td>
                                             <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPRefGrand_Footer"],$nOptDecimalShow); ?></td>
+                                            <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FNTotalBillRet_Footer"]); ?></td>
                                             <td class="text-right xCNRptDetail xCNRptGrouPing"><?php echo number_format($aValue["FCPTotal_Footer"],$nOptDecimalShow); ?></td>
                                         </tr>
                                         <tr>
-                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="7" style='border-bottom: dashed 1px #333 !important;'></td>
+                                            <td class="text-left xCNRptDetail xCNRptGrouPing" colspan="9" style='border-bottom: dashed 1px #333 !important;'></td>
                                         </tr>
                                 <?php } ?>   
                                 <!--  -->

@@ -41,7 +41,7 @@ class Rptdepositdailybypos_model extends CI_Model {
         $oQuery = $this->db->query($tCallStore, $aDataStore);
         // echo $this->db->last_query();
         // exit;
-        $oQuery = '';
+        // $oQuery = '';
         if ($oQuery !== FALSE) {
             unset($oQuery);
             return 1;
@@ -90,7 +90,9 @@ class Rptdepositdailybypos_model extends CI_Model {
                         COUNT(FDXshDocDate) AS rtDateCount,
                         SUM ( SUB.FCPXsdGrand ) AS FCPXsdQty_Footer,
                         SUM ( SUB.FCPXshRefGrand ) AS FCPRefGrand_Footer,
-                        SUM ( SUB.FCPXshTotal ) AS FCPTotal_Footer
+                        SUM ( SUB.FCPXshTotal ) AS FCPTotal_Footer,
+                        SUM ( SUB.FNTotalBillSale ) AS FNTotalBillSale_Footer,
+		                SUM ( SUB.FNTotalBillRet ) AS FNTotalBillRet_Footer
                     FROM
                         (
                         SELECT DISTINCT
@@ -100,7 +102,9 @@ class Rptdepositdailybypos_model extends CI_Model {
                             FTUsrSession AS FTUsrSession_Footer,
                             CONVERT ( FLOAT, FCXshGrand ) AS FCPXsdGrand,
                             CONVERT ( FLOAT, CAST ( FCXshRetGrand AS FLOAT ) ) AS FCPXshRefGrand,
-                            CONVERT ( FLOAT, CAST ( FCXshTotal AS FLOAT ) ) AS FCPXshTotal
+                            CONVERT ( FLOAT, CAST ( FCXshTotal AS FLOAT ) ) AS FCPXshTotal,
+                            CONVERT ( INT, FNXshBillSale ) AS FNTotalBillSale,
+			                CONVERT ( INT, FNXshBillRet ) AS FNTotalBillRet
                         FROM
                             TRPTSalReconcileTmp WITH ( NOLOCK ) 
                         WHERE

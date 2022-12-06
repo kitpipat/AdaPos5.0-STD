@@ -2107,3 +2107,5 @@ $lang['tRptCouponTo']   = "To Coupon";
 
 //รายงาน - สรุปยอดมัดจำ/เงินเชื่อ ตามจุดขาย
 $lang['tRptTitleDepositDaily'] = "Report - Comparison of the settlement amount";
+$lang['tRptXshBillSale']       = "Sales Bills";
+$lang['tRptXshBillReturn']     = "Bills Returned";

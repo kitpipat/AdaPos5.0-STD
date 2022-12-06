@@ -192,6 +192,9 @@ class Rptdepositdailybypos_controller extends MX_Controller
             'tBchCodeFrom'          => language('report/report/report', 'tRptBchFrom'),
             'tRptDate'              => language('report/report/report', 'tRptSRCDate'),
 
+            'tRptBillSales'         => language('report/report/report', 'tRptXshBillSale'),
+            'tRptBillReturn'        => language('report/report/report', 'tRptXshBillReturn'),
+
 
         ];
 
@@ -495,6 +498,7 @@ class Rptdepositdailybypos_controller extends MX_Controller
             ->build();
 
         $oStyleColumsBottom = (new StyleBuilder())
+            ->setFontBold()
             ->setBorder($oBorderbottom)
             ->build();    
 
@@ -511,7 +515,11 @@ class Rptdepositdailybypos_controller extends MX_Controller
             WriterEntityFactory::createCell(null),
             WriterEntityFactory::createCell(language('report/report/report', 'tRptSales')),
             WriterEntityFactory::createCell(null, $oStyleColumsRight),
+            WriterEntityFactory::createCell(language('report/report/report', 'tRptXshBillSale')),
+            WriterEntityFactory::createCell(null, $oStyleColumsRight),
             WriterEntityFactory::createCell(language('report/report/report', 'tRptXshReturn')),
+            WriterEntityFactory::createCell(null, $oStyleColumsRight),
+            WriterEntityFactory::createCell(language('report/report/report', 'tRptXshBillReturn')),
             WriterEntityFactory::createCell(null, $oStyleColumsRight),
             WriterEntityFactory::createCell(language('report/report/report', 'tRptCrTotal')),
             WriterEntityFactory::createCell(null, $oStyleColumsRight),
@@ -559,7 +567,11 @@ class Rptdepositdailybypos_controller extends MX_Controller
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCXshGrand'])),
                     WriterEntityFactory::createCell(null),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FNXshBillSale'])),
+                    WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCXshRetGrand'])),
+                    WriterEntityFactory::createCell(null),
+                    WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FNXshBillRet'])),
                     WriterEntityFactory::createCell(null),
                     WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCXshTotal'])),
                     WriterEntityFactory::createCell(null),
@@ -581,7 +593,11 @@ class Rptdepositdailybypos_controller extends MX_Controller
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
                         WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPXsdQty_Footer']),$oStyleColumsBottom),
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FNTotalBillSale_Footer']),$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
                         WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPRefGrand_Footer']),$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FNTotalBillRet_Footer']),$oStyleColumsBottom),
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
                         WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPTotal_Footer']),$oStyleColumsBottom),
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
@@ -604,7 +620,11 @@ class Rptdepositdailybypos_controller extends MX_Controller
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
                         WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPXsdQty_Footer']),$oStyleColumsBottom),
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FNTotalBillSale_Footer']),$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
                         WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPRefGrand_Footer']),$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(null,$oStyleColumsBottom),
+                        WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FNTotalBillRet_Footer']),$oStyleColumsBottom),
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
                         WriterEntityFactory::createCell(FCNnGetNumeric($aValue['FCPTotal_Footer']),$oStyleColumsBottom),
                         WriterEntityFactory::createCell(null,$oStyleColumsBottom),
