@@ -227,7 +227,9 @@ class mReciveSpc extends CI_Model
                         RCVSPC.FTPdtRmk,
                         RCVSPC.FTPosCode,
                         POSL.FTPosName,
-                        SHP.FTShpType
+                        SHP.FTShpType,
+                        CHNL.FTChnCode,
+                        CHNL.FTChnName
                     FROM [TFNMRcvSpc] RCVSPC WITH(NOLOCK)
                     LEFT JOIN [TFNMRcv_L] RCVL WITH(NOLOCK) ON RCVSPC.FTRcvCode = RCVL.FTRcvCode AND RCVL.FNLngID = $nLngID
                     LEFT JOIN [TCNMBranch_L] BCHL WITH(NOLOCK) ON RCVSPC.FTBchCode = BCHL.FTBchCode AND BCHL.FNLngID = $nLngID
@@ -237,6 +239,7 @@ class mReciveSpc extends CI_Model
                     LEFT JOIN [TCNMAgency_L] AGGL WITH(NOLOCK) ON RCVSPC.FTAggCode = AGGL.FTAgnCode AND AGGL.FNLngID = $nLngID
                     LEFT JOIN [TSysApp_L] TSYSApp WITH(NOLOCK) ON RCVSPC.FTAppCode = TSYSApp.FTAppCode AND TSYSApp.FNLngID = $nLngID
                     LEFT JOIN [TCNMShop] SHP WITH(NOLOCK) ON RCVSPC.FTShpCode = SHP.FTShpCode AND RCVSPC.FTBchCode = SHPL.FTBchCode
+                    LEFT JOIN [TCNMChannel_L] CHNL WITH(NOLOCK) ON RCVSPC.FTChnCode = CHNL.FTChnCode AND CHNL.FNLngID = $nLngID
                     WHERE 1=1
                     AND ISNULL(RCVSPC.FTRcvCode,'') = '$tRcvCode'
                     AND ISNULL(RCVSPC.FTAppCode,'')= '$tAppCode'
@@ -472,7 +475,9 @@ class mReciveSpc extends CI_Model
             'FTAggCode'         => $paData['FTAggCode'],
             'FTPdtRmk'          => $paData['FTPdtRmk'],
             'FTPosCode'         => $paData['FTPosCode'],
-            'FNRcvSeq'         => $paData['FNRcvSeq'],
+            'FNRcvSeq'          => $paData['FNRcvSeq'],
+
+            'FTChnCode'         => $paData['FTChnCode'],
             // 'FTAppStaAlwRet'    => $paData['FTAppStaAlwRet'],
             // 'FTAppStaAlwCancel' => $paData['FTAppStaAlwCancel'],
             // 'FTAppStaPayLast'   => $paData['FTAppStaPayLast'],
@@ -532,6 +537,7 @@ class mReciveSpc extends CI_Model
         $FTPosCodeold =  $paData['FTPosCodeold'];
         $FNRcvSeqW =  $paData['FNRcvSeqW'];
 
+        $FTChnCode =  $paData['FTChnCode'];
 
         // if ($paData['FNRcvSeq'] > 0) {
         //     $FNRcvSeq =  $paData['FNRcvSeq'];
@@ -541,13 +547,14 @@ class mReciveSpc extends CI_Model
 
         $tSQL = "   UPDATE TFNMRcvSpc
                   SET
-                FTBchCode = '$FTBchCode',
-                 FTMerCode = '$FTMerCode',
-                FTShpCode = '$FTShpCode',
-                FTAggCode = '$FTAggCode',
+                    FTBchCode = '$FTBchCode',
+                    FTMerCode = '$FTMerCode',
+                    FTShpCode = '$FTShpCode',
+                    FTAggCode = '$FTAggCode',
                     FTPdtRmk = '$FTPdtRmk',
-                       FTAppCode = '$FTAppCode',
-                       FTPosCode = '$FTPosCode', ";
+                    FTAppCode = '$FTAppCode',
+                    FTPosCode = '$FTPosCode',
+                    FTChnCode = '$FTChnCode', ";
 
         if ($paData['FNRcvSeq'] != '') {
             $tSQL .= "FNRcvSeq =  $FNRcvSeq  ";
@@ -556,12 +563,12 @@ class mReciveSpc extends CI_Model
         }
 
         $tSQL .= " WHERE FTRcvCode = '$FTRcvCode'
-      AND ISNULL(FTAppCode,'') = '$FTAppCodeold'
-      AND ISNULL(FTBchCode,'') = '$FTBchCodeold'
-      AND ISNULL(FTMerCode,'') = '$FTMerCodeold'
-      AND ISNULL(FTShpCode,'') = '$FTShpCodeold'
-      AND ISNULL(FTAggCode,'') = '$FTAggCodeold'
-      AND ISNULL(FTPosCode,'') = '$FTPosCodeold' ";
+                    AND ISNULL(FTAppCode,'') = '$FTAppCodeold'
+                    AND ISNULL(FTBchCode,'') = '$FTBchCodeold'
+                    AND ISNULL(FTMerCode,'') = '$FTMerCodeold'
+                    AND ISNULL(FTShpCode,'') = '$FTShpCodeold'
+                    AND ISNULL(FTAggCode,'') = '$FTAggCodeold'
+                    AND ISNULL(FTPosCode,'') = '$FTPosCodeold' ";
 
 
         // AND ISNULL(FNRcvSeq,'') = $FNRcvSeqW "

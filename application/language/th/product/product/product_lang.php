@@ -35,6 +35,8 @@ $lang['tPDTTabPackSizeUnit']    = "หน่วยสินค้า";
 $lang['tPDTTabOther']           = "เพิ่มเติม";
 $lang['tPDTTabHisPI']           = "ประวัติการซื้อ/รับเข้า";
 $lang['tPDTTabFashion']         = "สินค้าแฟชั่น";
+$lang['tPDTTabChannel']         = "ช่องทางการขาย";
+$lang['tPDTTabSumPrice']        = "ราคาขาย";
 
 // Table History Document PI
 $lang['tPDTHisPIDocNo']     = "เลขที่เอกสาร";
@@ -479,6 +481,7 @@ $lang['tPdtSreachType4']          = "หน่วย";
 $lang['tPdtSreachType5']          = "กลุ่มสินค้า";
 $lang['tPdtSreachType6']          = "ประเภทสินค้า";
 $lang['tPdtSreachType7']          = "ยี่ห้อ";
+$lang['tPdtSreachType8']          = "ช่องทางการขาย";
 $lang['tPdtChangeUnit']          = "เปลี่ยน";
 $lang['tPdtUnitPrice']          = "ราคาต่อหน่วย";
 

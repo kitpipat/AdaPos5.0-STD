@@ -9,11 +9,13 @@ if (isset($nStaAddOrEdit) && $nStaAddOrEdit == 1) {
     $tMenuTabDisable    = "";
     $tMenuTabToggle     = "tab";
     $nUnitCount = '';
+    $tClassHiddenPrice = "";
 } else {
     $tRoute             = "productEventAdd";
     $tMenuTabDisable    = " disabled xCNCloseTabNav";
     $tMenuTabToggle     = "false";
     $nUnitCount = $aUnitCount[0]['FTPunCount'];
+    $tClassHiddenPrice = "xCNHide";
 }
 // print_r($this->session->userdata("tSesUsrLevel"));
 if (isset($aPdtRentalData) && $aPdtRentalData['rtCode'] == '1') {
@@ -236,6 +238,14 @@ if ($tPdtType != '5') {
 }
 $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png';
 ?>
+
+<style>
+    .display-flex-center {
+        display: flex;
+        align-items: center;
+    }
+</style>
+
 <!-- Lang for JS -->
 <input type="hidden" id="ohdErrMsgNotHasUnit" value="<?php echo language('product/product/product', 'tErrMsgNotHasUnit') ?>">
 <input type="hidden" id="ohdErrMsgNotHasBarCode" value="<?php echo language('product/product/product', 'tErrMsgNotHasBarCode') ?>">
@@ -540,9 +550,9 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                         <option value="2" <?php echo $tPdtForSystem == "2" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem2') ?></option>
                                         <option value="3" <?php echo $tPdtForSystem == "3" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem3') ?></option>
                                         <option value="4" <?php echo $tPdtForSystem == "4" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem4') ?></option>
-                                    <?php// if(FCNbGetPdtFasionEnabled()){ ?>
+                                    <?php // if(FCNbGetPdtFasionEnabled()){ ?>
                                         <option value="5" <?php echo $tPdtForSystem == "5" ? "selected" : ""; ?>><?php echo language('product/product/product', 'tPdtForSystem5') ?></option>
-                                    <?php// } ?>
+                                    <?php // } ?>
                                     </select>
                                 </div>
 
@@ -793,7 +803,7 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 <li id="oliPdtContentProductUnit" class="xWMenu active" data-menutype="MN">
                                     <a role="tab" data-toggle="tab" data-target="#odvPdtContentProductUnit" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabPackSizeUnit'); ?></a>
                                 </li>
-                                <li id="oliPdtPdtContentMore" class="xWMenu " data-menutype="MN">
+                            <li id="oliPdtPdtContentMore" class="xWMenu " data-menutype="MN">
                                     <a role="tab" data-toggle="tab" data-target="#odvPdtContentMore" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabOther'); ?></a>
                                 </li>
                                 <li id="oliPdtContentCost" class="xWMenu " data-menutype="MN">
@@ -804,6 +814,12 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 </li>
                                 <li id="oliPdtContentPurchaseAdmissionHistory" class="xWMenu <?php echo $tMenuTabDisable; ?>" data-menutype="MN">
                                     <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvPdtContentPurchaseAdmissionHistory" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabHisPI'); ?></a>
+                                </li>
+                                <li id="oliPdtContentChannel" class="xWMenu" data-menutype="MN">
+                                    <a role="tab" data-toggle="tab" data-target="#odvPdtContentChannel" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabChannel'); ?></a>
+                                </li>
+                                <li id="oliPdtContentSetUpStock" class="xWMenu xWMenuTapNormal  <?php echo $tClassHiddenPrice ?>" data-menutype="TSP">
+                                    <a role="tab" data-toggle="<?php echo $tMenuTabToggle; ?>" data-target="#odvPdtTabContentSumPrice" aria-expanded="true"><?php echo language('product/product/product', 'tPDTTabSumPrice'); ?></a>
                                 </li>
                             </ul>
                         </div>
@@ -1243,6 +1259,156 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
                                 </div>
                                 <!-- End ประวัติการซื้อ/รับเข้า -->
                             </div>
+                            <div id="odvPdtContentChannel" class="tab-pane fade">
+                                <!-- ช่องทางการขาย -->
+                                <div class="row display-flex-center">
+                                    <div class="col-xs-12 cols-sm-4 col-md-4 col-lg-4">
+                                        <div class="form-group">
+                                            <label class="xCNLabelFrm"><?php echo language('common/main/main','tSearch')?></label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control xCNInputWithoutSingleQuote" id="oetSearchChannel" name="oetSearchChannel" placeholder="<?php echo language('common/main/main','tPlaceholder');?>">
+                                                <span class="input-group-btn">
+                                                    <button id="obtSearchChannel" class="btn xCNBtnSearch" type="button">
+                                                        <img class="xCNIconBrowse" src="<?php echo base_url().'/application/modules/common/assets/images/icons/search-24.png'?>">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 cols-sm-8 col-md-8 col-lg-8 text-right">
+                                        <div id="odvPdtChannel">
+                                            <button id="obtAddChannel" class="xCNBTNPrimeryPlus" type="button">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- <div id="odvPdtChannel" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 p-b-10 text-right" style="margin-top:-10px;">
+                                        <button id="obtAddChannel" class="xCNBTNPrimeryPlus" type="button">+</button>
+                                    </div> -->
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                        <div id="odvPdtSetChannelTable" class="table-responsive"></div>
+                                    </div>
+                                </div>
+                                <!-- End ช่องทางการขาย -->
+                            </div>
+
+                            <div id="odvPdtTabContentSumPrice" class="tab-pane fade">
+                                <!-- ราคาขาย -->
+                                <div class="row">
+                                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                                                <div class="row">
+                                                    <!-- Browse สาขา -->
+                                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                                                        <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                            <label
+                                                                class="xCNLabelFrm"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tFromDocDate'); ?></label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <input class="form-control input100 xCNDatePicker2" type="text" id="oetPDTPCPSearchDocDateFrom"
+                                                                    name="oetPDTPCPSearchDocDateFrom"
+                                                                    placeholder="<?php echo language('product/pdtcheckprice/pdtcheckprice', 'tFromDocDate'); ?>">
+                                                                <span class="input-group-btn">
+                                                                    <button id="obtPDTPCPSearchDocDateFrom" type="button" class="btn xCNBtnDateTime">
+                                                                        <img
+                                                                            src="<?php echo base_url(); ?>application/modules/common/assets/images/icons/icons8-Calendar-100.png">
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Browse ร้านค้า -->
+                                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                                                        <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                            <label
+                                                                class="xCNLabelFrm"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tToDocDate'); ?></label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <input class="form-control input100 xCNDatePicker2" type="text" id="oetPDTPCPSearchDocDateTo"
+                                                                    name="oetPDTPCPSearchDocDateTo"
+                                                                    placeholder="<?php echo language('product/pdtcheckprice/pdtcheckprice', 'tToDocDate'); ?>">
+                                                                <span class="input-group-btn">
+                                                                    <button id="obtPDTPCPSearchDocDateTo" type="button" class="btn xCNBtnDateTime">
+                                                                        <img
+                                                                            src="<?php echo base_url(); ?>application/modules/common/assets/images/icons/icons8-Calendar-100.png">
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Browse คลังสินค้า -->
+                                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                                                        <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                            <label class="xCNLabelFrm"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplFrom'); ?></label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <input class="form-control xCNHide" id="oetPCPPplCodeFrom" name="oetPCPPplCodeFrom" maxlength="5">
+                                                                <input class="form-control xWPointerEventNone" type="text" id="oetPCPPplNameFrom"name="oetPCPPplNameFrom" readonly
+                                                                    placeholder="<?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplFrom'); ?>"
+                                                                >
+                                                                <span class="input-group-btn">
+                                                                    <button id="obtPCPBrowsePplFrom" type="button" class="btn xCNBtnBrowseAddOn">
+                                                                        <img src="<?php echo base_url() . 'application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Browse สินค้า -->
+                                                    <div class="col-xs-12 col-md-3 col-lg-3">
+                                                        <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                            <label class="xCNLabelFrm"><?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplTo'); ?></label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="input-group">
+                                                                <input class="form-control xCNHide" id="oetPCPPplCodeTo" name="oetPCPPplCodeTo" maxlength="5">
+                                                                <input class="form-control xWPointerEventNone" type="text" id="oetPCPPplNameTo" name="oetPCPPplNameTo" readonly
+                                                                    placeholder="<?php echo language('product/pdtcheckprice/pdtcheckprice', 'tPCPPplTo'); ?>"
+                                                                >
+                                                                <span class="input-group-btn">
+                                                                    <button id="obtPCPBrowsePplTo" type="button" class="btn xCNBtnBrowseAddOn">
+                                                                        <img src="<?php echo base_url() . 'application/modules/common/assets/images/icons/find-24.png' ?>">
+                                                                    </button>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
+                                                <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+                                                            <label></label>
+                                                        </div>
+                                                    <!-- ปุ่มกรองข้อมูล -->
+                                                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 text-right">
+                                                    <a id="oahPCPAdvanceSearchSubmit" class="btn xCNBTNPrimery pull-right"
+                                                            href="javascript:;"
+                                                            onclick="JSxPDTGetPrictPdtListTable($('#oetPdtCode').val())"><?php echo language('common/main/main', 'tSearch'); ?></a>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding: 0px;">
+                                        <div id="odvPdtNormalTable4" class="table-responsive"></div>
+                                    </div>
+                                </div>
+                                <!-- End ราคาขาย -->
+                            </div>
+
                         </div>
                         <!-- end content ล่าง -->
                     </div>
@@ -1938,7 +2104,14 @@ $ocheck = base_url() . 'application/modules/common/assets/images/icons/check.png
     //     $('#oetPdtColor').val('#000000');
     //     $('#oetPdtColor').attr("disabled", true);
     // });
-
+    $(document).ready(function() {
+        $('#obtPDTPCPSearchDocDateFrom').click(function() {
+            $('#oetPDTPCPSearchDocDateFrom').datepicker('show');
+        });
+        $('#obtPDTPCPSearchDocDateTo').click(function() {
+            $('#oetPDTPCPSearchDocDateTo').datepicker('show');
+        });
+    });
 
     // เวลา Click Tab ให้ Button Show
     $('.xCNStaHideShow').click(function() {

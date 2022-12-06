@@ -122,6 +122,9 @@ $lang['tPdtSaleType4']          = "Weight";
 $lang['tPDTTabPackSizeUnit']    = "Product unit";
 $lang['tPDTTabOther']           = "More";
 $lang['tPDTTabHisPI']           = "Purchase / Admission History";
+$lang['tPDTTabChannel']         = "Channel";
+$lang['tPDTTabSumPrice']        = "Sum Price";
+
 $lang['tPDTViewPackUnit']           = "Product unit";
 $lang['tPDTUnitFact']       = "Ratio / unit";
 $lang['tPDTViewPackBarcode']        = "Barcode";
@@ -266,6 +269,7 @@ $lang['tPdtSreachType4']          = "UNIT";
 $lang['tPdtSreachType5']          = "Group";
 $lang['tPdtSreachType6']          = "Type";
 $lang['tPdtSreachType7']          = "Brand";
+$lang['tPdtSreachType8']          = "Channel";
 $lang['tPdtChangeUnit']           = "Change";
 $lang['tPdtUnitPrice']          = "Unit Price";
 

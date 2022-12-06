@@ -155,6 +155,7 @@ function JSvCallPageProductAdd() {
                         $('.xWHideSave').show();
                         $('#odvContentPageProduct').html(aReturnData['vPdtPageAdd']);
                         JsxCallPackSizeDataTable();
+                        JsxCallChannaelDataTable();
                     }
                 } else {
                     var tMessageError = aReturnData['tStaMessg'];
@@ -221,6 +222,9 @@ function JSvCallPageProductEdit(ptPdtCode, tStatus) {
                     //     $("#oetStatus").val('edit');
                     // }
                      JsxCallPackSizeDataTable(ptPdtCode);
+                     JsxCallChannaelDataTable(ptPdtCode);
+                     JSxPDTGetPrictPdtListTable(ptPdtCode)
+
                 } else {
                     var tMessageError = aReturnData['tStaMessg'];
                     FSvCMNSetMsgErrorDialog(tMessageError);
@@ -313,6 +317,44 @@ function JsxCallPackSizeDataTable(ptPdtCode) {
                     $("#obtAddProductUnit").hide();
 
                 }
+                JCNxLayoutControll();
+                JCNxCloseLoading();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
+}
+
+// Function: Function Call Data Product Channel
+// Parameters:  Object In Next Funct Modal Browse
+// Creator:	23/11/2022 intouch
+// Last Update : --
+// Return: object View Product channel
+// Return Type: object
+function JsxCallChannaelDataTable(ptPdtCode) {
+    var tSearchAll  = $('#oetSearchChannel').val();
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+
+        if (ptPdtCode == "" || ptPdtCode === undefined) { ptPdtCode = ''; }
+        var nPdtForSystem = $('#ocmPdtForSystem').val();
+        $.ajax({
+            type: "POST",
+            url: "productGetChannel",
+            data: { 
+                tSearchAll      : tSearchAll,
+                FTPdtCode       : ptPdtCode,
+                nPdtForSystem   : nPdtForSystem
+            },
+            cache: false,
+            timeout: 0,
+            async: false,
+            success: function(tResult) {
+                $('#odvPdtSetChannelTable').html(tResult);
                 JCNxLayoutControll();
                 JCNxCloseLoading();
             },
@@ -1426,4 +1468,118 @@ function FSxPdtCallPageAdjust(){
     } else {
         JCNxShowMsgSessionExpired();
     }
+}
+
+// //Functionality : เก็บค่าจาก input AdvanceSearch
+// //Parameters : -
+// //Creator : 03/09/2020 Sooksanti(Non)
+// //Last Update: 24/11/2022 intoucch ยกมากจาก fitauto
+// //Return : ค่า input AdvanceSearch
+// //Return Type : obj
+function JSoPDTPCPAdvanceSearchDataDup() {
+    
+    var nStaSession = JCNxFuncChkSessionExpired();
+    var tSearchAll = '';
+    var tPdtCodeFrom = $('#oetPdtCode').val();
+    var tPdtCodeTo = $('#oetPdtCode').val();
+    var tSearchDocDateFrom = $('#oetPDTPCPSearchDocDateFrom').val();
+    var tSearchDocDateTo = $('#oetPDTPCPSearchDocDateTo').val();
+    var tPunCodeFrom = '';
+    var tPunCodeTo = '';
+    var tSearchDateStart = '';
+    if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+        try {
+            let oAdvanceSearchData = {
+                tSearchAll: tSearchAll,
+                tPdtCodeFrom: tPdtCodeFrom,
+                tPdtCodeTo: tPdtCodeTo,
+                tSearchDocDateFrom: tSearchDocDateFrom,
+                tSearchDocDateTo: tSearchDocDateTo,
+                tPunCodeFrom: tPunCodeFrom,
+                tPunCodeTo: tPunCodeTo,
+                tSearchDateStart: tSearchDateStart,
+                tPplCodeFrom: $('#oetPCPPplCodeFrom').val(),
+                tPplCodeTo: $('#oetPCPPplCodeTo').val()
+            };
+            return oAdvanceSearchData;
+        } catch (err) {
+            console.log("JSoPCPAdvanceSearchData Error: ", err);
+        }
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
+}
+
+
+// //Functionality : เรียกข้อมูลตรวจสอบราคาสินค้าลงตาราง
+// //Parameters : -
+// //Creator : 03/09/2020 Sooksanti(Non)
+// //Last Update: 24/11/2022 intoucch ยกมากจาก fitauto
+// //Return : 
+// //Return Type :
+function JSxPDTGetPrictPdtListTable(ptPdtCode,pnPage) {
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+        try {
+            // JCNxOpenLoading();
+            var nPageCurrent = (pnPage === undefined || pnPage == '') ? '1' : pnPage;
+            if (ptPdtCode == "" || ptPdtCode === undefined) { ptPdtCode = ''; }
+            var tDisplayType = '1';
+            localStorage.removeItem('LocalItemData');
+            var oAdvanceSearch = JSoPDTPCPAdvanceSearchDataDup();
+            $.ajax({
+                type: "POST",
+                url: "dasPCPPageDataTable",
+                data: {
+                    nPagePDTAll             : $('#ohdPCPProductAllRow').val(),
+                    FTPdtCode               : ptPdtCode,
+                    tDisplayType            : tDisplayType,
+                    nPageCurrent            : nPageCurrent,
+                    oAdvanceSearch          : oAdvanceSearch
+                },
+                cache: false,
+                timeout: 0,
+                success: function(tResult) {
+                    $("#odvPdtNormalTable4").html(tResult);
+                    // JSxPCPAutoRowSpan($("table"),tDisplayType);
+                    // JCNxCloseLoading();
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        } catch (err) {
+            console.log('JSxPCPGetListPageTable Error: ', err);
+        }
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
+}
+
+// Functionality : Function Check Data Search And Add In Tabel
+// Parameters : Event Click Buttom
+// Creator : 17/11/2021 Off
+// LastUpdate: -
+// Return : 
+// Return Type :
+function JSxPDTPCPClickPageList(ptPage) {
+    var nPageCurrent = '';
+    var tPdtCode = $("#oetPdtCode").val();
+    switch (ptPage) {
+        case 'next': //กดปุ่ม Next
+            $('.xWBtnNext').addClass('disabled');
+            nPageOld = $('.xWPIPageDataTable .active').text(); // Get เลขก่อนหน้า
+            nPageNew = parseInt(nPageOld, 10) + 1; // +1 จำนวน
+            nPageCurrent = nPageNew
+            break;
+        case 'previous': //กดปุ่ม Previous
+            nPageOld = $('.xWPIPageDataTable .active').text(); // Get เลขก่อนหน้า
+            nPageNew = parseInt(nPageOld, 10) - 1; // -1 จำนวน
+            nPageCurrent = nPageNew
+            break;
+        default:
+            nPageCurrent = ptPage
+    }
+    JCNxOpenLoading();
+    JSxPDTGetPrictPdtListTable(tPdtCode,nPageCurrent);
 }

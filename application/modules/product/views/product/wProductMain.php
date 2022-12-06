@@ -16,7 +16,7 @@
                     <option class="xWPdtForSystem2" value="2"><?=language('product/product/product','tPdtForSystem2')?></option>
                     <option class="xWPdtForSystem3" value="3"><?=language('product/product/product','tPdtForSystem3')?></option>
                     <option class="xWPdtForSystem4" value="4"><?=language('product/product/product','tPdtForSystem4')?></option>
-                    <?php// if(FCNbGetPdtFasionEnabled()){ ?>
+                    <?php // if(FCNbGetPdtFasionEnabled()){ ?>
                     <option class="xWPdtForSystem5" value="5"><?=language('product/product/product','tPdtForSystem5')?></option>
                     <?php //} ?>
                     <option class="xWPdtForSystem" value=""><?=language('product/product/product','tPdtForSystem0')?></option>
@@ -51,6 +51,7 @@
                     <option class="" value="5"    <?php if($nFilterPdtType=='5'){ echo 'selected'; } ?>><?=language('product/product/product','tPdtSreachType5')?></option>
                     <option class="" value="6"    <?php if($nFilterPdtType=='6'){ echo 'selected'; } ?>><?=language('product/product/product','tPdtSreachType6')?></option>
                     <option class="" value="7"    <?php if($nFilterPdtType=='7'){ echo 'selected'; } ?>><?=language('product/product/product','tPdtSreachType7')?></option>
+                    <option class="" value="8"    <?php if($nFilterPdtType=='8'){ echo 'selected'; } ?>><?=language('product/product/product','tPdtSreachType8')?></option>
                 </select>
             </div>
         </div>

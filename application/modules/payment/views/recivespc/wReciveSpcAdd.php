@@ -27,6 +27,9 @@ if ($aResult['rtCode'] == 1) {
     $tRcvSpcPosCode         = $aResult['raItems']['FTPosCode'];
     $tRcvSpcPosName         = $aResult['raItems']['FTPosName'];
     $tRemark                = $aResult['raItems']['FTPdtRmk'];
+
+    $tRcvSpcChnCode         = $aResult['raItems']['FTChnCode'];
+    $tRcvSpcChnName         = $aResult['raItems']['FTChnName'];
     // $tRcvSpcStaAlwRet       = $aResult['raItems']['FTAppStaAlwRet'];
     // $tRcvSpcStaAlwCancel    = $aResult['raItems']['FTAppStaAlwCancel'];
     // $tRcvSpcStaPayLast      = $aResult['raItems']['FTAppStaPayLast'];
@@ -58,7 +61,11 @@ if ($aResult['rtCode'] == 1) {
     // $tRcvSpcStaAlwCancel    = "1";
     // $tRcvSpcStaPayLast      = "1";
     $tRcvSpcRcvSeq          = "";
-    $tRcvFmtStaAlwCfg         = "";
+    $tRcvFmtStaAlwCfg       = "";
+
+    $tRcvSpcChnCode         = "";
+    $tRcvSpcChnName         = "";
+
     //route for add
     $tRoute             = "recivespcEventAdd";
 
@@ -209,8 +216,8 @@ if ($aResult['rtCode'] == 1) {
             <div class="form-group">
                 <label class="xCNLabelFrm"><?php echo language('payment/recivespc/recivespc', 'ช่องทางการขาย'); ?></label>
                 <div class="input-group">
-                    <input type="text" class="form-control xCNHide" id="oetRcvSpcChlCode" name="oetRcvSpcChlCode" value="<?php echo @$tRcvSpcAppCode; ?>">
-                    <input type="text" class="form-control xWPointerEventNone" id="oetRcvSpcChlName" name="oetRcvSpcChlName" placeholder="<?php echo language('payment/recivespc/recivespc', 'ช่องทางการขาย'); ?>" value="<?php echo @$tRcvSpcAppName; ?>" data-validate="<?php echo  language('payment/recivespc/recivespc', 'ช่องทางการขาย'); ?>" readonly>
+                    <input type="text" class="form-control xCNHide" id="oetRcvSpcChlCode" name="oetRcvSpcChlCode" value="<?php echo @$tRcvSpcChnCode; ?>">
+                    <input type="text" class="form-control xWPointerEventNone" id="oetRcvSpcChlName" name="oetRcvSpcChlName" placeholder="<?php echo language('payment/recivespc/recivespc', 'ช่องทางการขาย'); ?>" value="<?php echo @$tRcvSpcChnName; ?>" data-validate="<?php echo  language('payment/recivespc/recivespc', 'ช่องทางการขาย'); ?>" readonly>
                     <span class="input-group-btn">
                         <button id="oimRcvSpcBrowseChl" type="button" class="btn xCNBtnBrowseAddOn"><img class="xCNIconFind"></button>
                     </span>

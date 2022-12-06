@@ -51,7 +51,17 @@ class mProduct extends CI_Model
         $tWHEREPermission_BCH   = '';                                                  
         $tWHEREPermission_SHP   = '';                                                     
             
-         
+        $tSptCode = '';
+        $this->db->select('*');
+        $this->db->where('FTSptTblName','TCNMPdt');
+        $this->db->where('FNLngID',$nLngID);
+        $this->db->where('FTSptStaUse',1);
+        $oQuery = $this->db->get('TCNSPdtSpcType_L');
+        if ($oQuery->num_rows() > 0) {
+            $oList = $oQuery->row();
+            $tSptCode = $oList->FTSptCode;
+        }
+
         if ($tSesUsrLevel != 'HQ') {
             //---------------------- การมองเห็นเฉพาะสินค้าตามระดับผู้ใช้--------------------------//
             $tWHEREPermission_BCH .= " AND ( (";
@@ -148,6 +158,7 @@ class mProduct extends CI_Model
             5 => 'LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = PDT.FTPgpChain AND PGL.FNLngID =' . $nLngID, //หากลุ่มสินค้า
             6 => 'LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID =' . $nLngID, //หาประเภทสินค้า
             7 => 'LEFT JOIN TCNMPdtBrand_L PBNL WITH (NOLOCK)    ON PDT.FTPbnCode = PBNL.FTPbnCode   AND PBNL.FNLngID =' . $nLngID, //ยี่ห้อ
+            8 => 'LEFT JOIN TCNMPdtSpcSale SPS WITH (NOLOCK)   ON SPS.FTPdtSpsRefCode = PDT.FTPdtCode AND SPS.FTSptCode = '.$tSptCode.'LEFT JOIN TCNMChannel_L CHNL WITH (NOLOCK)   ON CHNL.FTChnCode = SPS.FTChnCode AND CHNL.FNLngID = '.$nLngID.'',
         );
 
 
@@ -159,6 +170,7 @@ class mProduct extends CI_Model
             5 => " AND ( PGL.FTPgpName   COLLATE THAI_BIN    LIKE '%$tSearch%' OR PGL.FTPgpChainName COLLATE THAI_BIN LIKE '%$tSearch%' ) ", //หากลุ่มสินค้า
             6 => " AND ( PTL.FTPtyName   COLLATE THAI_BIN    LIKE '%$tSearch%' ) ", //หาประเภทสินค้า
             7 => " AND ( PBNL.FTPbnCode  ='$tSearch' OR  PBNL.FTPbnName  COLLATE THAI_BIN  LIKE '%$tSearch%' ) ", //หาประเภทสินค้า
+            8 => " AND ( UPPER(CHNL.FTChnName)  COLLATE THAI_BIN    LIKE UPPER('%$tSearch%') ) ", //หาช่องทางการขาย
         );
 
         $tSQLPdtMaster = "  SELECT  ";
@@ -251,7 +263,7 @@ class mProduct extends CI_Model
     //     $tSQL .= " ORDER BY
     //                     FNRowID
     // ";  
-
+        
             $tSQL = "$tQueryCount 
                     SELECT DISTINCT
                     PDT.*, PDTL.FTPdtName,
@@ -263,7 +275,8 @@ class mProduct extends CI_Model
                     PIMG.FTImgObj,
                     $tQueryCountSelect
                     CASE WHEN PRI.FCPgdPriceRet IS NOT NULL THEN '1' ELSE '2' END AS rtPdtStaPriRef ,
-                ISNULL(PRI.FCPgdPriceRet, 0) AS FCPgdPriceRet
+                    ISNULL(PRI.FCPgdPriceRet, 0) AS FCPgdPriceRet,
+                    CHNL.FTChnName
                 FROM
                     (
                         SELECT
@@ -289,7 +302,9 @@ class mProduct extends CI_Model
                 LEFT JOIN TCNMPdtType_L PTL WITH (NOLOCK)    ON PDT.FTPtyCode = PTL.FTPtyCode   AND PTL.FNLngID = $nLngID
                 LEFT JOIN TCNMPdtUnit_L PUNL WITH (NOLOCK)   ON PPCZ.FTPunCode = PUNL.FTPunCode AND PUNL.FNLngID = $nLngID
                 LEFT JOIN TCNMPdtGrp_L PGL WITH (NOLOCK)     ON PGL.FTPgpChain = PDT.FTPgpChain AND PGL.FNLngID = $nLngID
-                LEFT JOIN TCNMPdtBrand_L PBNL WITH (NOLOCK)     ON PDT.FTPbnCode = PBNL.FTPbnCode AND PBNL.FNLngID = $nLngID
+                LEFT JOIN TCNMPdtBrand_L PBNL WITH (NOLOCK)  ON PDT.FTPbnCode = PBNL.FTPbnCode AND PBNL.FNLngID = $nLngID
+                LEFT JOIN TCNMPdtSpcSale SPS WITH (NOLOCK)   ON SPS.FTPdtSpsRefCode = PDT.FTPdtCode AND SPS.FTSptCode = '$tSptCode'
+                LEFT JOIN TCNMChannel_L CHNL WITH (NOLOCK)   ON CHNL.FTChnCode = SPS.FTChnCode AND CHNL.FNLngID = '$nLngID'
                 LEFT JOIN (
                     SELECT
                         FCPgdPriceRet,FTPdtCode,FTPunCode
@@ -496,8 +511,10 @@ class mProduct extends CI_Model
     }
 
     public function FSaMPDTGetDataMasTemp($paData)
-    {
-
+    {   
+        if(isset($paData['tSearchAll'])){
+            $tSearch    = $paData['tSearchAll'];
+        }
         //Show ทศนิยม 2 ตำแหน่ง
         // $nDecimalShow =  FCNxHGetOptionDecimalShow();
 
@@ -520,6 +537,8 @@ class mProduct extends CI_Model
                             MTT.FTPdtStaAlwBuy,
                             MTT.FTPdtStaAlwSale,
                             MTT.FTPdtStaAlwRet,
+                            MTT.FTChnCode,
+                            MTT.FTChnName,
                             (	SELECT TOP 1 P4PDT.FCPgdPriceRet
                                 FROM TCNTPdtPrice4PDT P4PDT WITH (NOLOCK)
                                 WHERE 1=1
@@ -547,6 +566,10 @@ class mProduct extends CI_Model
         if (isset($paData['FTMttSessionID'])) {
             $FTMttSessionID = $paData['FTMttSessionID'];
             $tSQL  .= " AND FTMttSessionID = '$FTMttSessionID'";
+        }
+
+        if(isset($tSearch) && $tSearch){
+            $tSQL  .= " AND (UPPER(FTChnCode) LIKE UPPER('%$tSearch%') OR UPPER(FTChnName) LIKE UPPER('%$tSearch%'))";
         }
 
         $tSQL .= " ORDER BY MTT.FCPdtUnitFact ASC ";
@@ -1801,6 +1824,69 @@ class mProduct extends CI_Model
             );
         }
         return $aResult;
+    }
+
+    // 23/11/2565 Intouch
+    public function FSaMPDTCheckMasTempChnDuplicate($paData)
+    {
+        $FTMttTableKey  = $paData['FTMttTableKey'];
+        $FTMttRefKey    = $paData['FTMttRefKey'];
+        $FTPdtCode      = $paData['FTPdtCode'];
+        $FTChnCode      = $paData['FTChnCode'];
+        $FTMttSessionID = $paData['FTMttSessionID'];
+
+        $tSQL           = " SELECT 
+                                FTPunCode 
+                            FROM TsysMasTmp WITH(NOLOCK) 
+                            WHERE FTMttTableKey='$FTMttTableKey' 
+                              AND FTMttRefKey='$FTMttRefKey' 
+                              AND FTPdtCode='$FTPdtCode' 
+                              AND FTChnCode='$FTChnCode' 
+                              AND FTMttSessionID='$FTMttSessionID'
+                          ";
+        $oQuery         = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $aResult = array(
+                'rtCode'    => '1',
+                'rtDesc'    => 'success'
+            );
+        } else {
+            $aResult = array(
+                'rtCode'    => '800',
+                'rtDesc'    => 'data not found'
+            );
+        }
+        return $aResult;
+    }
+
+    public function FSaMPDTAddChannelByIDMasTemp($paDataAdd)
+    {
+
+        $this->db->insert('TsysMasTmp', $paDataAdd);
+        if ($this->db->affected_rows() > 0) {
+            $aStatus    = array(
+                'rtCode' => '1',
+                'rtDesc' => 'Add Product Success',
+            );
+        } else {
+            $aStatus    = array(
+                'rtCode' => '801',
+                'rtDesc' => 'Error Cannot Add/Update Product.',
+            );
+        }
+        return $aStatus;
+    }
+
+    public function FSaMPDTDelChannelByIDMasTemp($paDataDel){
+
+        $this->db->where('FTMttRefKey', $paDataDel['tRefKey']);
+        $this->db->where('FTMttSessionID', $paDataDel['tSession']);
+        $this->db->where('FTPdtCode', $paDataDel['tPdtCode']);
+        if(isset($paDataDel['tChnCode']) && !empty($paDataDel['tChnCode'])){
+            $this->db->where('FTChnCode', $paDataDel['tChnCode']);
+        }
+        $this->db->delete('TsysMasTmp');
+
     }
 
     public function FSaMPDTAddPackSizeByIDMasTemp($paDataAdd)
@@ -3234,4 +3320,129 @@ class mProduct extends CI_Model
     }
 
 
+    // Functionality: Functio Add/Update PackSize
+    // Parameters: function parameters
+    // Creator:  18/02/2019 Wasin(Yoshi)
+    // Return: Status Add Update PackSize
+    // ReturnType: Array
+    public function FSxMPDTAddUpdateChannel($paPdtWhere, $paChannelWhere)
+    {
+        $FTPdtCode        = $paPdtWhere['FTPdtCode'];
+        $FTMttTableKey    = $paChannelWhere['FTMttTableKey'];
+        $FTMttRefKey      = $paChannelWhere['FTMttRefKey'];
+        $FTMttSessionID   = $paChannelWhere['FTMttSessionID'];
+        // Delete Pack Size
+        $this->db->select('*');
+        $this->db->where('FTSptTblName',$FTMttTableKey);
+        $this->db->where('FNLngID',$paChannelWhere['FNLngID']);
+        $this->db->where('FTSptStaUse',1);
+        $oQuery = $this->db->get('TCNSPdtSpcType_L');
+        if ($oQuery->num_rows() > 0) {
+            $oList = $oQuery->row();
+            $tSptCode = $oList->FTSptCode;
+            $this->db->where('FTPdtSpsRefCode', $FTPdtCode);
+            $this->db->delete('TCNMPdtSpcSale');
+    
+            $tSQL = "INSERT INTO TCNMPdtSpcSale (FTBchCode,
+                            FTShpCode,
+                            FTPosCode,
+                            FTChnCode,
+                            FTSptCode,
+                            FTPdtSpsRefCode,
+                            FTPdtSpsStause)
+                        SELECT
+                            FTBchCode,
+                            FTShpCode,
+                            FTPosCode,
+                            FTChnCode,
+                            (SELECT FTSptCode FROM TCNSPdtSpcType_L WHERE FTSptTblName = '$FTMttTableKey' AND FTSptStaUse = 1) AS FTSptCode,
+                            FTPdtCode,
+                            '1'
+                        FROM
+                            TsysMasTmp 
+                    WHERE FTPdtCode = '$FTPdtCode' AND FTMttTableKey = '$FTMttTableKey' AND FTMttRefKey = '$FTMttRefKey' AND FTMttSessionID = '$FTMttSessionID'";
+            $oQuery = $this->db->query($tSQL);
+            // print_r($tSQL);
+            // exit;
+            if ($oQuery > 0) {
+                $aResult    =  array(
+                    'tSQL'      => $tSQL,
+                    'rtCode'    => '1',
+                    'rtDesc'    => 'success'
+                );
+            } else {
+                $aResult =  array(
+                    'tSQL'      => $tSQL,
+                    'rtCode'    => '800',
+                    'rtDesc'    => 'data not found'
+                );
+            }
+        }else {
+            $aResult =  array(
+                'rtCode'    => '800',
+                'rtDesc'    => 'SptCode not found '
+            );
+        }
+        return $aResult;
+    }
+
+    public function FSaMPDTInsertChannelMasTemp($paData)
+    {
+
+        $FTMttTableKey  = $paData['FTMttTableKey'];
+        $FTMttRefKey    = $paData['FTMttRefKey'];
+        $FTPdtCode      = $paData['FTPdtCode'];
+        $nLngID         = $paData['FNLngID'];
+        $FTMttSessionID = $paData['FTMttSessionID'];
+
+        $this->db->select('*');
+        $this->db->where('FTSptTblName',$FTMttTableKey);
+        $this->db->where('FNLngID',$nLngID);
+        $this->db->where('FTSptStaUse',1);
+        $oQuery = $this->db->get('TCNSPdtSpcType_L');
+        if ($oQuery->num_rows() > 0) {
+            $oList = $oQuery->row();
+            $tSptCode = $oList->FTSptCode;
+            $dDate    = $paData['dDate'];
+            $tUser    = $paData['tUser'];
+            $tSQL = "INSERT INTO TsysMasTmp (FTMttTableKey,FTMttRefKey,FTMttSessionID,FTPdtCode,FTBchCode,FTShpCode,FTPosCode,FTChnCode,FTChnName,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy)
+                    SELECT
+                            '$FTMttTableKey'    AS FTMttTableKey,
+                            '$FTMttRefKey'      AS FTMttRefKey,
+                            '$FTMttSessionID'   AS FTMttSessionID,
+                            SPS.FTPdtSpsRefCode,
+                            SPS.FTBchCode,
+                            SPS.FTShpCode,
+                            SPS.FTPosCode,
+                            CHN.FTChnCode,
+                            CHN.FTChnName,
+                            '$dDate' AS FDLastUpdOn,
+                            '$dDate' AS FDCreateOn,
+                            '$tUser' AS FTLastUpdBy,
+                            '$tUser' AS FTCreateBy
+            FROM TCNMPdtSpcSale SPS WITH(NOLOCK)
+            LEFT JOIN TCNMChannel_L CHN WITH(NOLOCK) ON CHN.FTChnCode = SPS.FTChnCode AND CHN.FNLngID = 1
+
+            WHERE 1=1 AND SPS.FTPdtSpsRefCode = '$FTPdtCode' AND SPS.FTSptCode = '$tSptCode' AND SPS.FTPdtSpsStause = 1";
+
+            $oQuery = $this->db->query($tSQL);
+            if ($oQuery > 0) {
+                $aResult = array(
+                    'rtCode'    => '1',
+                    'rtDesc'    => 'success'
+                );
+            } else {
+                $aResult = array(
+                    'rtCode'    => '800',
+                    'rtDesc'    => 'data not found'
+                );
+            }
+        } else {
+            $aResult =  array(
+                'rtCode'    => '800',
+                'rtDesc'    => 'data not found'
+            );
+        }
+        return $aResult;
+    }
 }

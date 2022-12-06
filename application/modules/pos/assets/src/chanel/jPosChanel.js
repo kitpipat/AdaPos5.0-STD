@@ -251,7 +251,11 @@ function JSnAddEditChanel(ptRoute) {
                         }
                     }
                 },
-            }
+            },
+            oetRcvSpcMrkName: { "required": {} },
+            oetChnAppName: { "required": {} },
+            oetChnAppName: { "required": {} },
+
             // oetWahBchNameCreated: { "required": {} },
             // oetChnAgnName: { "required": {} },
         },
@@ -269,6 +273,9 @@ function JSnAddEditChanel(ptRoute) {
             },
             oetWahBchNameCreated: {
                 "required": $('#oetWahBchNameCreated').attr('data-validate-required'),
+            },
+            oetRcvSpcMrkName: {
+                "required": $('#oetRcvSpcMrkName').attr('data-validate-required'),
             },
             // oetChnAgnName: {
             //     "required": $('#oetChnAgnName').attr('data-validate-required'),
@@ -1346,5 +1353,55 @@ function JSxCSWClickPage(ptPage) {
         JSvCHNPageSpcWah(nPageCurrent);
     } catch (err) {
         console.log('JSxCSWClickPage Error: ', err);
+    }
+}
+
+//Event Save - บันทึก
+function JSxCSHNESave(){
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof nStaSession !== "undefined" && nStaSession == 1) {
+        try {
+            // console.log(aPackDataInput);
+            aPackDataInput = JSxConfigEachValueToArray();
+             console.log("aPackDataInput",aPackDataInput);
+            for(i=0; i<aPackDataInput.length; i++){
+                if(aPackDataInput[i].tType=='7'){
+                    if(aPackDataInput[i].nValue!=aPackDataInput[i].tOldpws){
+                        aPackDataInput[i].nValue = JCNtAES128EncryptData(aPackDataInput[i].nValue,tKey,tIV);
+                    
+                    }
+                }
+            }
+            var aMergeArray = aPackData.concat(aPackDataInput);
+            var tTypePage   = $('#ohdSETTypePage').val();
+            if( tTypePage == "Agency" ){
+                tAgnCode = $('#oetAgnCode').val();
+            }else{
+                tAgnCode = '';
+            }
+
+            localStorage.removeItem('LocalItemData');
+            $.ajax({
+                type    : "POST",
+                url     : "SettingConfigSave",
+                data    : {
+                    aMergeArray   : aMergeArray,
+                    ptTypePage    : tTypePage,
+                    ptAgnCode     : tAgnCode
+                },
+                cache   : false,
+                timeout : 0,
+                success : function (tResult) {
+                    JSvSettingConfigLoadTable();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        }catch (err) {
+            console.log('JSvSettingConfigCallPageList Error: ', err);
+        }
+    } else {
+        JCNxShowMsgSessionExpired();
     }
 }

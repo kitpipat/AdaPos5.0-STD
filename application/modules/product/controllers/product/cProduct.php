@@ -330,6 +330,17 @@ class cProduct extends MX_Controller
                 'tUser'             => $this->session->userdata('tSesUsername')
             );
 
+            // Insert into Channel Temp
+             $aDataWhereChannel    = array(
+                'FTMttTableKey'     => 'TCNMPdt',
+                'FTMttRefKey'       => 'TCNMPdtSpcSale',
+                'FTPdtCode'         => $tPdtCode,
+                'FNLngID'           => $nLangEdit,
+                'FTMttSessionID'    => $this->session->userdata("tSesSessionID"),
+                'dDate'             => date('Y-m-d H:i:s'),
+                'tUser'             => $this->session->userdata('tSesUsername')
+            );
+
             // บันทึกข้อมูลงตาราง  TsysMasTmp
             $this->mProduct->FSaMPDTStockConditionsGetDataList($aDataWhere);
             // Delete All Temp
@@ -338,6 +349,8 @@ class cProduct extends MX_Controller
             $this->mProduct->FSaMPDTInsertPackSizeMasTemp($aDataWhere);
             //Get Data BarCode MasTmp
             $this->mProduct->FSaMPDTInsertBarCodeMasTemp($aDataWhereBarCode);
+            //Get Data Channel MasTmp
+            $this->mProduct->FSaMPDTInsertChannelMasTemp($aDataWhereChannel);
             // Get Data Product Info
             $aPdtImgData        = $this->mProduct->FSaMPDTGetDataImgByID($aDataWhere);
             $aPdtInfoData       = $this->mProduct->FSaMPDTGetDataInfoByID($aDataWhere);
@@ -461,6 +474,51 @@ class cProduct extends MX_Controller
         // echo json_encode($aReturnData);
     }
 
+    // Functionality : CallPage DataTable Channel
+    // Parameters : Ajax Call Page DataTable Channel
+    // Creator : 23/11/2022 intouch
+    // Last Modified : -
+    // Return : object View
+    // Return Type : object
+    public function FSoCPDTChannelDataTable()
+    {
+        try {
+            $FTPdtCode      = $this->input->post('FTPdtCode');
+            $nPdtForSystem  = $this->input->post('nPdtForSystem');
+            $tSearchAll     = $this->input->post('tSearchAll');
+            // Get Lang ภาษา
+            $nLangResort    = $this->session->userdata("tLangID");
+            $nLangEdit      = $this->session->userdata("tLangEdit");
+
+            if (!$tSearchAll) {
+                $tSearchAll = '';
+            }
+
+            $aData = array(
+                'FTMttTableKey'         => 'TCNMPdt',
+                'FTMttRefKey'           => 'TCNMPdtSpcSale',
+                'FTPdtCode'             => $FTPdtCode,
+                'FNLngID'               => $nLangEdit,
+                'FTMttSessionID'        => $this->session->userdata("tSesSessionID"),
+                'tSearchAll'            => $tSearchAll,
+            );
+            $aDataPdtUnit       = $this->mProduct->FSaMPDTGetDataMasTemp($aData);
+            $aAlwEventPdt       = FCNaHCheckAlwFunc('product/0/0');
+            $aGenTable  = array(
+                'aAlwEventPdt'          => $aAlwEventPdt,
+                'aDataUnitPackSize'     => $aDataPdtUnit,
+                'nPdtForSystem'         => $nPdtForSystem,
+            );
+            $this->load->view('product/product/wProductChannelDataTable', $aGenTable);
+        } catch (Exception $Error) {
+            // $aReturnData = array(
+            //     'nStaEvent' => '500',
+            //     'tStaMessg' => $Error->getMessage()
+            // );
+        }
+        // echo json_encode($aReturnData);
+    }
+
     // Last Update : Napat(Jame) 09/06/2020
     public function FSoCPDTPackSizeDelete()
     {
@@ -536,7 +594,6 @@ class cProduct extends MX_Controller
             $nLangEdit          = $this->session->userdata("tLangEdit");
             $aPdtImg            = $this->input->post('aPdtImg');
             $aPdtDataInfo1      = $this->input->post('aPdtDataInfo1');
-
             // เช็คโค้ดสี
             if ($aPdtDataInfo1['tChecked'] == '0') {
                 $tCodeColor         = $aPdtDataInfo1['tPdtColor'];
@@ -582,6 +639,13 @@ class cProduct extends MX_Controller
                 'FTMttTableKey'     => 'TCNMPdt',
                 'FTMttRefKey'       => 'TCNMPdtBar',
                 'FTMttSessionID'    => $this->session->userdata("tSesSessionID")
+            );
+
+            $aDataWhereChannel = array(
+                'FTMttTableKey'     => 'TCNMPdt',
+                'FTMttRefKey'       => 'TCNMPdtSpcSale',
+                'FTMttSessionID'    => $this->session->userdata("tSesSessionID"),
+                'FNLngID'           => $nLangEdit,
             );
 
             $aDataAddUpdatePdt  = array(
@@ -638,6 +702,8 @@ class cProduct extends MX_Controller
                 'FTPdtNameABB'  => $aPdtDataInfo1['tPdtNameABB'],
                 'FTPdtRmk'      => $aPdtDataInfo2['tPdtRmk']
             );
+            
+
 
             // Check Product Dup In DataBase
             $aStaPdtDup =   $this->mProduct->FSaMPDTCheckDuplicate($aDataWherePdt['FTPdtCode']);
@@ -668,11 +734,13 @@ class cProduct extends MX_Controller
                     $this->Pdtfashion_model->FSaMPFHAddUpdateMaster($aDataPdtFhn);
 
                 }
-           
+
+                $this->mProduct->FSxMPDTUpdatePdtCodeMasTmp($aDataWhereChannel, $aDataWherePdt);
+                $this->mProduct->FSxMPDTAddUpdateChannel($aDataWherePdt, $aDataWhereChannel);
+                
                     if ($nTypeAdd == 1) {
                         $this->mProduct->FSxMPDTUpdatePdtCodeMasTmp($aDataWhereMasTmp, $aDataWherePdt);
                         $this->mProduct->FSxMPDTAddUpdatePackSize($aDataWherePdt, $aDataWherePackSize);
-
                         if($aDataAddUpdatePdt['FTPdtForSystem']!='5'){//ถ้าไม่เป็นสินค้าแฟชั่น อัพเดทบาร์โค้ดปกติ
                         $this->mProduct->FSxMPDTAddUpdateBarCode($aDataWherePdt, $aDataWhereBarCode);
                         $this->mProduct->FSxMPDTAddUpdateSupplier($aDataWherePdt, $aDataWhereBarCode);
@@ -688,9 +756,9 @@ class cProduct extends MX_Controller
 
                         $aDataWherePdt['FTFhnRefCode'] = $tPdtCode;
                         $aDataWherePdt['FTPdtForSystem'] = $aDataAddUpdatePdt['FTPdtForSystem'];
-                        $this->mProduct->FSxMPDTAutoAddBarCodeAndUnit($aDataWherePdt);
+                    $this->mProduct->FSxMPDTAutoAddBarCodeAndUnit($aDataWherePdt);
                     }
-            
+                
                 
 
                 if ($this->db->trans_status() === FALSE) {
@@ -817,6 +885,12 @@ class cProduct extends MX_Controller
                 'FTMttRefKey'       => 'TCNMPdtBar',
                 'FTMttSessionID'    => $this->session->userdata("tSesSessionID")
             );
+            $aDataWhereChannel = array(
+                'FTMttTableKey'     => 'TCNMPdt',
+                'FTMttRefKey'       => 'TCNMPdtSpcSale',
+                'FTMttSessionID'    => $this->session->userdata("tSesSessionID"),
+                'FNLngID'           => $nLangEdit,       
+            );
             $aDataAddUpdateRental = array(
                 'FTPdtCode'         => $aPdtDataInfo1['tPdtCode'],
                 'FTPdtRentType'     => $aPdtDataRental['tRetPdtType'],
@@ -891,6 +965,7 @@ class cProduct extends MX_Controller
             $this->mProduct->FSaMPDTAddUpdateMaster($aDataWherePdt, $aDataAddUpdatePdt);
             $this->mProduct->FSaMPDTAddUpdateLang($aDataWhereLangPdt, $aDataLangPdt); //--
             $this->mProduct->FSxMPDTAddUpdatePackSize($aDataWherePdt, $aDataWherePackSize);
+            $this->mProduct->FSxMPDTAddUpdateChannel($aDataWherePdt, $aDataWhereChannel);
             if($aDataAddUpdatePdt['FTPdtForSystem']!='5'){
             $this->mProduct->FSxMPDTAddUpdateBarCode($aDataWherePdt, $aDataWhereBarCode);
             $this->mProduct->FSxMPDTAddUpdateSupplier($aDataWherePdt, $aDataWhereBarCode);
@@ -1199,6 +1274,58 @@ class cProduct extends MX_Controller
                 $this->mProduct->FSaMPDTAddPackSizeByIDMasTemp($aDataWhere);
             }
         }
+    }
+
+    // 23/11/2565 Intouch
+    public function FSoCPDTChannelAdd()
+    {
+        $FTPdtCode          = $this->input->post('FTPdtCode');
+        $aChnCode           = $this->input->post('aChnCode');       // หน่วย ที่เลือกมา
+
+        $aDataDel = array(
+            'tRefKey'   => 'TCNMPdtSpcSale',
+            'tPdtCode'  => $FTPdtCode,
+            'tSession'  => $this->session->userdata("tSesSessionID")
+        );
+        $this->mProduct->FSaMPDTDelChannelByIDMasTemp($aDataDel);
+
+        for ($i = 0; $i < FCNnHSizeOf($aChnCode); $i++) {
+            $aChn = $aChnCode[$i];
+            $aDataWhere     = array(
+                'FTMttTableKey'     => 'TCNMPdt',
+                'FTMttRefKey'       => 'TCNMPdtSpcSale',
+                'FTPdtCode'         => $FTPdtCode,
+                'FTChnCode'         => $aChn[0],
+                'FTChnName'         => $aChn[1],
+                'FTPdtStaAlwBuy'    => '1',
+                'FTPdtStaAlwSale'   => '1',
+                'FTBchCode'         => '',
+                'FTPdtStaAlwRet'    => '1',
+                'FTMttSessionID'    => $this->session->userdata("tSesSessionID"),
+                'FDLastUpdOn'       => date('Y-m-d H:i:s'),
+                'FDCreateOn'        => date('Y-m-d H:i:s'),
+                'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+                'FTCreateBy'        => $this->session->userdata('tSesUsername')
+            );
+
+            $this->mProduct->FSaMPDTAddChannelByIDMasTemp($aDataWhere);
+
+        }
+    }
+
+    // 23/11/2565 Intouch
+    public function FSoCPDTChannelDelByID()
+    {
+        $FTPdtCode          = $this->input->post('FTPdtCode');
+        $FTChnCode          = $this->input->post('FTChnCode');       // หน่วย ที่เลือกมา
+
+        $aDataDel = array(
+            'tRefKey'   => 'TCNMPdtSpcSale',
+            'tPdtCode'  => $FTPdtCode,
+            'tChnCode'  => $FTChnCode,
+            'tSession'  => $this->session->userdata("tSesSessionID")
+        );
+        $this->mProduct->FSaMPDTDelChannelByIDMasTemp($aDataDel);
     }
 
     public function FSoCPDTPackSizeUpdate()

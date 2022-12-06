@@ -23,6 +23,16 @@ if ($aResult['rtCode'] == "1") {
     $tChnStaAlwSNPL = $aResult['raHDItems']['rtChnStaAlwSNPL'];
     $tChnSeq = $aResult['raHDItems']['rtChnSeq'];
     $tRoute = "chanelEventEdit";
+
+    $tChnMrkCode = $aResult['raHDItems']['rtChnMrkCode'];
+    $tChnMrkName = $aResult['raHDItems']['rtChnMrkName'];
+    $tChnMrkUrl = $aResult['raHDItems']['rtChnMrkUrl'];
+    $tChnMrkKey = $aResult['raHDItems']['rtChnMrkKey'];
+    $tChnMrkSign = $aResult['raHDItems']['rtChnMrkSign'];
+    $tChnMrkToken = $aResult['raHDItems']['rtChnMrkToken'];
+    $tChnMrkStaUse = $aResult['raHDItems']['rtChnMrkStaUse'];
+
+
 } else {
     $tMenuTabDisable    = " disabled xCNCloseTabNav";
     $tMenuTabToggle     = "false";
@@ -70,6 +80,14 @@ if ($aResult['rtCode'] == "1") {
         $tChnBchCode = $tSesUsrBchCode;
         $tChnBchName = $tSesUsrBchName;
     }
+
+    $tChnMrkCode = '';
+    $tChnMrkName = '';
+    $tChnMrkUrl = '';
+    $tChnMrkKey = '';
+    $tChnMrkSign = '';
+    $tChnMrkToken = '';
+    $tChnMrkStaUse = '';
 }
 
 
@@ -136,6 +154,7 @@ $tEndReceiptPlaceholder = "End of Receipt";
                 </div>
             </div>
         </div>
+        <form class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmAddChanel">
 
         <div id="odvPdtRowContentMenu" class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -143,7 +162,6 @@ $tEndReceiptPlaceholder = "End of Receipt";
 
                     <!-- Tab Content Info 1 -->
                     <div id="odvChnContentInfo1" class="tab-pane fade active in">
-                        <form class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmAddChanel">
                             <button style="display:none" type="submit" id="obtSubmitChanel" onclick="JSnAddEditChanel('<?= $tRoute ?>')"></button>
                             <div class="panel-body" style="padding-top:20px !important;">
                                 <div class="row">
@@ -314,7 +332,6 @@ $tEndReceiptPlaceholder = "End of Receipt";
                                 </div>
 
                             </div>
-                        </form>                
                     </div>
                     <!-- Tab Content Info 1 -->
 
@@ -343,8 +360,7 @@ $tEndReceiptPlaceholder = "End of Receipt";
 
                     <!-- Tab Content Info 3 -->
                     <div id="odvChnContentInfo3" class="tab-pane fade">
-                    <form class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data" autocorrect="off" autocapitalize="off" autocomplete="off" id="ofmAddChaneleMarket">
-
+                    
                         <div class="row" style="margin-bottom:10px;">
                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                 <label class="xCNLabelFrm" style="color: #1866ae !important; cursor:pointer;"><?php echo language('pos/poschannel/poschannel', 'tCHNTitle'); ?> : <?=$tChnName?></label>
@@ -352,8 +368,14 @@ $tEndReceiptPlaceholder = "End of Receipt";
                                 <label class="xCNLabelFrm xWCSWPageAdd" style="color: #aba9a9 !important;display: none;"> / <?php echo language('common/main/main', 'tAdd') ?> </label>
                             </div>
                             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right xWCSWBtnAdd">
-                                <button type="button" onclick="JSxCHNSpcEMarket();" style="background-color: rgb(23, 155, 253); color: white;" class="btn"> <?php echo  language('common/main/main', 'Syns Data') ?></button>
+                                <button type="button" onclick="JSxCHNSpcEMarket();" style="background-color: rgb(23, 155, 253); color: white;" class="btn"> <?php echo  language('common/main/main', '') ?></button>
+                                <!-- <div id="odvBtnAddEdit" style="display: block;">
+                                    <button onclick="JSxSETReDefault()"  class="btn xCNBTNDefult xCNBTNDefult2Btn" style="margin-left: 5px;" type="button"><?=language('settingconfig/settingconfig/settingconfig', 'Syns Data'); ?></button>
+                                    <button onclick="JSxSETCancel()" class="btn xCNBTNDefult xCNBTNDefult2Btn" style="margin-left: 5px;" type="button"><?=language('common/main/main', 'tCancel'); ?></button>
+                                    <button onclick="JSxSETSave()" type="button" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" style="margin-left: 5px;" style="display: block;"><?=language('common/main/main', 'tSave'); ?></button>
+                                </div> -->
                             </div>
+                            
                             <!-- <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 text-right xWCSWPageAddEdit" style="display: none;">
                                 <button type="button" onclick="JSvCHNPageSpcWah();" class="btn" style="background-color: #D4D4D4; color: #000000;"><?php echo language('common/main/main', 'tCancel') ?></button>
                                 <button type="button" id="obtCSWClickSave" style="background-color: rgb(23, 155, 253); color: white;" class="btn"> <?php echo  language('common/main/main', 'tSave') ?></button>
@@ -363,55 +385,59 @@ $tEndReceiptPlaceholder = "End of Receipt";
                         <div class="panel-body">
                             <div class="row">
                                     <div class="col-xs-12 col-md-5 col-lg-5">
-                                        <!-- สาขา -->
+                                        <!-- Market -->
                                         <div class="form-group">
                                             <label class="xCNLabelFrm"><?php echo language('payment/recivespc/recivespc', 'Market'); ?></label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control xCNHide" id="oetRcvSpcMrkCode" name="oetRcvSpcMrkCode" value="">
-                                                <input type="text" class="form-control xWPointerEventNone" id="oetRcvSpcMrkName" name="oetRcvSpcMrkName" placeholder="<?php echo language('payment/recivespc/recivespc', 'Market'); ?>" value="" data-validate="<?php echo  language('payment/recivespc/recivespc', 'Market'); ?>" readonly>
+                                                <input type="text" class="form-control xCNHide" id="oetRcvSpcMrkCode" name="oetRcvSpcMrkCode" value="<?= $tChnMrkCode?>">
+                                                <input type="text" class="form-control xWPointerEventNone" id="oetRcvSpcMrkName" name="oetRcvSpcMrkName" placeholder="<?php echo language('payment/recivespc/recivespc', 'Market'); ?>" value="<?= $tChnMrkName?>" data-validate="<?php echo  language('payment/recivespc/recivespc', 'Market'); ?>" readonly>
                                                 <span class="input-group-btn">
                                                     <button id="oimRcvSpcBrowseMrk" type="button" class="btn xCNBtnBrowseAddOn"><img class="xCNIconFind"></button>
                                                 </span>
                                             </div>
                                         </div>
 
+                                        <!-- API Url -->
                                         <div class="form-group">
                                             <div class="validate-input">
                                                 <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'API URL'); ?></label>
-                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPIURL" name="oetChnAPIURL" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'API URL'); ?>" value="">
+                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPIURL" name="oetChnAPIURL" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'API URL'); ?>" value="<?= $tChnMrkUrl?>">
                                             </div>
                                         </div>
 
+                                        <!-- API Token -->
                                         <div class="form-group">
                                             <div class="validate-input">
                                                 <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'API Token'); ?></label>
-                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPITOKEN" name="oetChnAPITOKEN" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'API Token'); ?>" value="">
+                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPITOKEN" name="oetChnAPITOKEN" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'API Token'); ?>" value="<?= $tChnMrkToken ?>">
                                             </div>
                                         </div>
 
+                                        <!-- APP Key -->
                                         <div class="form-group">
                                             <div class="validate-input">
                                                 <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'APP Key'); ?></label>
-                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPPKEY" name="oetChnAPPKEY" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'APP Key'); ?>" value="">
+                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPPKEY" name="oetChnAPPKEY" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'APP Key'); ?>" value="<?= $tChnMrkKey?>">
                                             </div>
                                         </div>
 
+                                        <!-- APP Sign -->
                                         <div class="form-group">
                                             <div class="validate-input">
                                                 <label class="xCNLabelFrm"><?php echo language('pos/poschannel/poschannel', 'APP Sign'); ?></label>
-                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPPSIGN" name="oetChnAPPSIGN" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'APP Sign'); ?>" value="">
+                                                <input type="text" class="form-control" maxlength="100" id="oetChnAPPSIGN" name="oetChnAPPSIGN" autocomplete="off" placeholder="<?php echo language('pos/poschannel/poschannel', 'APP Sign'); ?>" value="<?= $tChnMrkSign?>">
                                             </div>
                                         </div>
 
-                                        <!-- รับ S/N ในใบจัด -->
+                                        <!-- ใช้งาน -->
                                         <div class="form-group"> 
                                             <label class="fancy-checkbox"> 
-                                                <?php if (isset($tChnStaAlwSNPL) && $tChnStaAlwSNPL == 1) {
+                                                <?php if (isset($tChnMrkStaUse) && $tChnMrkStaUse == 1) {
                                                     $tChecked   = 'checked'; 
                                                 } else {
                                                     $tChecked   = ''; 
                                                 } ?> 
-                                                <input type="checkbox" id="ocbChnStaAlwSNPL" name="ocbChnStaAlwSNPL" <?php echo $tChecked; ?>> 
+                                                <input type="checkbox" id="ocbChnStaAlwEmk" name="ocbChnStaAlwEmk" <?php echo $tChecked; ?>> 
                                                     <span> <?php echo language('company/warehouse/warehouse', 'ใช้งาน'); ?></span> 
                                             </label> 
                                         </div>
@@ -419,7 +445,6 @@ $tEndReceiptPlaceholder = "End of Receipt";
                                     </div>
                             </div>
                         </div>
-                        </form>
 
                     </div>
                     <!-- Tab Content Info 3 -->
@@ -430,6 +455,7 @@ $tEndReceiptPlaceholder = "End of Receipt";
 
     </div>
 </div>
+</form>                
 
 <script src="<?= base_url('application/modules/common/assets/js/jquery.mask.js') ?>"></script>
 <script src="<?= base_url('application/modules/common/assets/src/jFormValidate.js') ?>"></script>

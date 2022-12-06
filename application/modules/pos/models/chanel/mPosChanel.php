@@ -40,7 +40,14 @@ class mPosChanel extends CI_Model
                         CHN.FTChnWahDO AS rtChnWahDO,
                         WAHLDO.FTWahName AS rtChnWahDOName,
                         CHN.FTChnStaUseDO AS rtChnStaUseDO,
-                        CHN.FTChnStaAlwSNPL AS rtChnStaAlwSNPL
+                        CHN.FTChnStaAlwSNPL AS rtChnStaAlwSNPL,
+                        CHMC.FTMrkCode AS rtChnMrkCode,
+                    	CHMC.FTCmkAPIURL AS rtChnMrkUrl,
+                        CHMC.FTCmkAPIAppKey AS rtChnMrkKey,
+                        CHMC.FTCmkAPISign AS rtChnMrkSign,
+                        CHMC.FTCmkAPIToken AS rtChnMrkToken,
+                        CHMC.FTCmkStaUse AS rtChnMrkStaUse,
+                        MRKL.FTMrkName AS rtChnMrkName
 
                             FROM [TCNMChannel] CHN WITH(NOLOCK)
                     LEFT JOIN   TCNMChannel_L CHNL WITH(NOLOCK) ON CHN.FTChnCode = CHNL.FTChnCode AND CHNL.FNLngID = $nLngID
@@ -51,6 +58,8 @@ class mPosChanel extends CI_Model
                     LEFT JOIN   TCNMPdtPriList_L PPLL WITH(NOLOCK) ON CHN.FTPplCode = PPLL.FTPplCode AND PPLL.FNLngID = $nLngID
                     LEFT JOIN   TCNMWaHouse_L WAHL WITH(NOLOCK) ON CHNS.FTBchCode =  WAHL.FTBchCode AND CHN.FTWahCode = WAHL.FTWahCode AND WAHL.FNLngID = $nLngID
                     LEFT JOIN   TCNMWaHouse_L WAHLDO WITH(NOLOCK) ON WAHLDO.FTWahCode =  CHN.FTChnWahDO AND WAHLDO.FNLngID = $nLngID
+                    LEFT JOIN   TCNMChannelMrk CHMC WITH(NOLOCK) ON CHMC.FTChnCode = CHN.FTChnCode
+                    LEFT JOIN   TCNSMarket_L MRKL   WITH(NOLOCK) ON MRKL.FTMrkCode = CHMC.FTMrkCode AND MRKL.FNLngID = $nLngID AND MRKL.FTMrkStaUse = 1
                     WHERE CHN.FTChnCode = '$tChnCode'";
         $oHDQuery = $this->db->query($tHDSQL);
         if ($oHDQuery->num_rows() > 0) { // Have slip
@@ -309,12 +318,46 @@ class mPosChanel extends CI_Model
                     $this->db->delete('TCNMChannelSpc');
                 }
 
-                if ($this->db->affected_rows() > 0) {
-                    $aStatus = array(
-                        'rtCode' => '1',
-                        'rtDesc' => 'Update Master Success',
-                    );
-                } else {
+                if(isset($paData['FTMrkCode']) AND !empty($paData['FTMrkCode'])){
+                    // TCNMChannelMrk ตั้งค่า 
+                    $this->db->set('FTMrkCode', $paData['FTMrkCode']);
+                    $this->db->set('FTCmkAPIURL', $paData['FTMcfAPIURL']);
+                    $this->db->set('FTCmkAPIAppKey', $paData['FTMcfAPIAppKey']);
+                    $this->db->set('FTCmkAPISign', $paData['FTMcfAPISign']);
+                    $this->db->set('FTCmkAPIToken', $paData['FTMcfAPIToken']);
+                    $this->db->set('FTCmkStaUse', $paData['FTMcfStaUse']);
+                    $this->db->where('FTChnCode', $paData['FTChnCode']);
+                    $this->db->update('TCNMChannelMrk');
+                    if ($this->db->affected_rows() > 0) {
+                        $aStatus = array(
+                            'rtCode' => '1',
+                            'rtDesc' => 'Update Master Success',
+                        );
+                    } else {
+                        // Insert
+                        $this->db->insert('TCNMChannelMrk', array(
+                            'FTChnCode'     => $paData['FTChnCode'],
+                            'FTMrkCode'    => $paData['FTMrkCode    '],
+                            'FTMcfAPIURL'   => $paData['FTMcfAPIURL'],
+                            'FTMcfAPIAppKey'   => $paData['FTMcfAPIAppKey'],
+                            'FTMcfAPISign'   => $paData['FTMcfAPISign'],
+                            'FTMcfAPIToken'     => $paData['FTMcfAPIToken'],
+                            'FTMcfStaUse'    => $paData['FTMcfStaUse'],
+                        ));
+
+                        if ($this->db->affected_rows() > 0) {
+                            $aStatus = array(
+                                'rtCode' => '1',
+                                'rtDesc' => 'Add Master Success',
+                            );
+                        } else {
+                            $aStatus = array(
+                                'rtCode' => '905',
+                                'rtDesc' => 'Error Cannot Add Master.',
+                            );
+                        }
+                    }
+                }else{
                     $aStatus = array(
                         'rtCode' => '905',
                         'rtDesc' => 'Error Cannot Update Master.',

@@ -3488,4 +3488,269 @@
         $('#odvModalWanningProductBarDup').modal('hide');
         $('#obtSubmitProduct').click();
     });
+
+    $('.xCNDatePicker2').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    //Click Browse Channel
+    $('#obtAddChannel').click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+
+            // $('#ohdPdtChannelCode').val('');
+            // $('#ohdPdtChannelName').val('');
+
+            window.oPdtBrowseChannelOption = oPdtBrowseChannel({
+                'tReturnInputCode'  : 'ohdPdtChannelCode',
+                'tReturnInputName'  : 'ohdPdtChannelName',
+                'tNextFuncName'     : 'JSxAddDataChannelToTable',
+                'tTypeReturn'       : 'M'
+            });
+            JCNxBrowseData('oPdtBrowseChannelOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+
+    // Option Add Browse Channel
+    var oPdtBrowseChannel = function(poReturnInput) {
+        var tInputReturnCode    = poReturnInput.tReturnInputCode;
+        var tInputReturnName    = poReturnInput.tReturnInputName;
+        var tNextFuncName       = poReturnInput.tNextFuncName;
+        var tTypeReturn         = poReturnInput.tTypeReturn;
+        var tWhereCondition     = '';
+        var tPdtAgnCode         = $('#oetPdtAgnCode').val();
+        var tPdtBchCode         = $('#oetPdtBchCode').val()
+
+        if( tPdtAgnCode != '' ){
+            // tWhereCondition += " AND ( TCNMChannelSpc.FTAgnCode = '"+tPdtAgnCode+"' OR ISNULL(TCNMChannelSpc.FTAgnCode,'') = '' ) ";
+            tWhereCondition += " AND ( TCNMChannelSpc.FTAgnCode = '"+tPdtAgnCode+"' OR ISNULL(TCNMChannelSpc.FTAgnCode,'') = '' )";
+        }
+        if( tPdtBchCode != ''){
+            tWhereCondition += " AND ( TCNMChannelSpc.FTBchCode = '"+tPdtBchCode+"' OR ISNULL(TCNMChannelSpc.FTBchCode,'') = '' )";
+        }
+        tWhereCondition += " AND TCNMChannel.FTChnStaUse = 1";
+
+        var oOptionReturn = {
+            Title: ['product/pdtunit/pdtunit', 'tPUNTitle'],
+            Table: {
+                Master: 'TCNMChannel',
+                PK: 'FTChnCode'
+            },
+            Join: {
+                Table: ['TCNMChannel_L','TCNMChannelSpc'],
+                On: [
+                    'TCNMChannel_L.FTChnCode = TCNMChannel.FTChnCode AND TCNMChannel_L.FNLngID = ' + nLangEdits,
+                    'TCNMChannelSpc.FTChnCode = TCNMChannel.FTChnCode'
+                    ]
+            },
+            Where: {
+                Condition: [tWhereCondition]
+            },
+            GrideView: {
+                ColumnPathLang: 'product/pdtunit/pdtunit',
+                ColumnKeyLang: ['tPUNCode', 'tPUNName'],
+                ColumnsSize: ['15%', '85%'],
+                WidthModal: 50,
+                DataColumns: ['TCNMChannel.FTChnCode', 'TCNMChannel_L.FTChnName'],
+                DataColumnsFormat: ['', ''],
+                Perpage: 10,
+                OrderBy: ['TCNMChannel.FDCreateOn DESC'],
+                // SourceOrder     : "ASC"
+            },
+            CallBack: {
+                ReturnType: tTypeReturn,
+                Value: [tInputReturnCode, "TCNMChannel.FTChnCode"],
+                Text: [tInputReturnName, "TCNMChannel_L.FTChnName"],
+            },
+            NextFunc: {
+                FuncName    : tNextFuncName,
+                ArgReturn   : ['FTChnCode', 'FTChnName']
+            },
+            // DebugSQL    : true
+        }
+        return oOptionReturn;
+    }
+
+    // Function: Function Get Data Product Channel
+    // Parameters:  Object In Next Funct Modal Browse
+    // Creator:	23/11/2022 intouch
+    // Last Update : --
+    // Return: object View Product channel
+    // Return Type: object
+    function JSxAddDataChannelToTable(poDataNextFunc) {
+        if( typeof(poDataNextFunc) != undefined && poDataNextFunc[0] != "NULL" && poDataNextFunc[0] !== null ){
+            var tPdtCode = $('#oetPdtCode').val();
+            $.ajax({
+                type    : "POST",
+                url     : "productAddChannel",
+                data    : {
+                    FTPdtCode       : tPdtCode,
+                    aChnCode        : poDataNextFunc,
+                },
+                cache   : false,
+                timeout : 0,
+                async   : false,
+                success : function(tResult) {
+                    JsxCallChannaelDataTable(tPdtCode);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    JCNxResponseError(jqXHR, textStatus, errorThrown);
+                }
+            });
+        }
+    }
+
+    // Function: Function Delete Data Product Channel
+    // Parameters:  Object In Next Funct Modal Browse
+    // Creator:	23/11/2022 intouch
+    // Last Update : --
+    // Return: object View Product channel
+    // Return Type: object
+    function JSxPdtDelChannelInTable(ptType, ptChnCode) {
+        var nStaSession = JCNxFuncChkSessionExpired();
+            if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+                var tChnCode = ptChnCode;
+                var tPdtCode = $('#oetPdtCode').val();
+                var nTypeAction = ptType;
+                $.ajax({
+                    type: "POST",
+                    url: "productDelChannel",
+                    data: {
+                        FTChnCode: tChnCode,
+                        FTPdtCode: tPdtCode,
+                        pnTypeAction: nTypeAction
+                    },
+                    cache: false,
+                    timeout: 0,
+                    async: false,
+                    success: function(tResult) {
+                        // $('#odvPdtSetPackSizeTable').html(tResult);
+                        JsxCallChannaelDataTable(tPdtCode);
+                        JCNxLayoutControll();
+                        JCNxCloseLoading();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        JCNxResponseError(jqXHR, textStatus, errorThrown);
+                    }
+                });
+            }else{
+                JCNxCloseLoading();
+                FSvCMNSetMsgWarningDialog('ไม่สามารถลบได้');
+            }
+    }
+
+    $('#obtPCPBrowsePplFrom').unbind().click(function() {
+    var nStaSession = JCNxFuncChkSessionExpired();
+    if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+        JSxCheckPinMenuClose();
+        window.oPCPBrowsePplOption = oPCPBrowsePpl({
+            'tReturnInputCode': 'oetPCPPplCodeFrom',
+            'tReturnInputName': 'oetPCPPplNameFrom'
+        });
+        JCNxBrowseData('oPCPBrowsePplOption');
+    } else {
+        JCNxShowMsgSessionExpired();
+    }
+    });
+
+    $('#obtPCPBrowsePplTo').unbind().click(function() {
+        var nStaSession = JCNxFuncChkSessionExpired();
+        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+            JSxCheckPinMenuClose();
+            window.oPCPBrowsePplOption = oPCPBrowsePpl({
+                'tReturnInputCode': 'oetPCPPplCodeTo',
+                'tReturnInputName': 'oetPCPPplNameTo'
+            });
+            JCNxBrowseData('oPCPBrowsePplOption');
+        } else {
+            JCNxShowMsgSessionExpired();
+        }
+    });
+
+    //Browse กลุ่มราคาสินค้า
+    var oPCPBrowsePpl = function(poReturnInput) {
+        var tInputReturnCode = poReturnInput.tReturnInputCode;
+        var tInputReturnName = poReturnInput.tReturnInputName;
+
+        let tAgnCode     = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+
+        let tCondition ='';
+        if(tAgnCode != ''){
+            tCondition += " AND TCNMPdtPriList.FTAgnCode = '"+tAgnCode+"' ";
+        }
+
+        var oOptionReturn = {
+            Title: ['product/pdtpricelist/pdtpricelist', 'tPPLTitle'],
+            Table: {
+                Master: 'TCNMPdtPriList',
+                PK: 'FTPplCode'
+            },
+            Join: {
+                Table: ['TCNMPdtPriList_L'],
+                On: ['TCNMPdtPriList_L.FTPplCode = TCNMPdtPriList.FTPplCode AND TCNMPdtPriList_L.FNLngID = ' +
+                    nLangEdits,
+                ]
+            },
+            Where: {
+                Condition: [tCondition + " UNION SELECT '1' ,'NA','ไม่กำหนดกลุ่มราคา' " ]
+            },
+            GrideView: {
+                ColumnPathLang: 'product/pdtpricelist/pdtpricelist',
+                ColumnKeyLang: ['tPPLTBCode', 'tPPLTBName'],
+                ColumnsSize: ['15%', '75%'],
+                WidthModal: 50,
+                DataColumns: ['TCNMPdtPriList.FTPplCode', 'TCNMPdtPriList_L.FTPplName'],
+                DataColumnsFormat: ['', ''],
+                Perpage: 10,
+                OrderBy: ['TCNMPdtPriList.FDCreateOn DESC'],
+                StartRow: 1
+            },
+            CallBack: {
+                ReturnType: 'S',
+                Value: [tInputReturnCode, "TCNMPdtPriList.FTPplCode"],
+                Text: [tInputReturnName, "TCNMPdtPriList_L.FTPplName"],
+            },
+            NextFunc: {
+                FuncName: 'FSxPCPCallBackBrowsePpl',
+                ArgReturn: ['FTPplCode', 'FTPplName']
+            },
+            // DebugSQL: true,
+        }
+        return oOptionReturn;
+    };
+
+    function FSxPCPCallBackBrowsePpl(oArgReturn) {
+        if( oArgReturn != "NULL" ){
+            var aArgReturn = JSON.parse(oArgReturn)
+            if ($('#oetPCPPplCodeTo').val() == '') {
+                $('#oetPCPPplCodeTo').val(aArgReturn[0]);
+                $('#oetPCPPplNameTo').val(aArgReturn[1]);
+            }
+            if ($('#oetPCPPplCodeFrom').val() == '') {
+                $('#oetPCPPplCodeFrom').val(aArgReturn[0]);
+                $('#oetPCPPplNameFrom').val(aArgReturn[1]);
+            }
+        }
+    }
+
+    $('#obtSearchChannel').click(function(){
+		JCNxOpenLoading();
+        var tPdtCode = $('#oetPdtCode').val();
+        JsxCallChannaelDataTable(tPdtCode);
+    });
+
+    $('#oetSearchChannel').keypress(function(event){
+		if(event.keyCode == 13){
+			JCNxOpenLoading();
+			var tPdtCode = $('#oetPdtCode').val();
+            JsxCallChannaelDataTable(tPdtCode);
+		}
+    });
+
 </script>

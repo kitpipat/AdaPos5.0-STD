@@ -221,7 +221,8 @@ class cReciveSpc extends MX_Controller
             'FTAggCode'         => $this->input->post('oetRcvSpcAggCode'),
             'FTPdtRmk'          => $this->input->post('oetRcvSpcRemark'),
             'FTPosCode'         => $this->input->post('oetRcvSpcPosCode'),
-            'FNRcvSeq'         => $this->input->post('oetRcvSpcConfig')
+            'FNRcvSeq'          => $this->input->post('oetRcvSpcConfig'),
+            'FTChnCode'         => $this->input->post('oetRcvSpcChlCode')
             // 'FTAppStaAlwRet'    => (!empty($this->input->post('ocbRcvSpcStaAlwRet')))? 1 : 2,
             // 'FTAppStaAlwCancel' => (!empty($this->input->post('ocbRcvSpcStaAlwCancel')))? 1 : 2,
             // 'FTAppStaPayLast'   => (!empty($this->input->post('ocbRcvSpcStaPayLast')))? 1 : 2,
@@ -301,8 +302,7 @@ class cReciveSpc extends MX_Controller
             'FTAggCodeold'         => $this->input->post('ohdRcvSpcAggCode'),
             'FTPosCodeold'         => $this->input->post('ohdRcvSpcPosCode'),
 
-
-
+            'FTChnCode'         => $this->input->post('oetRcvSpcChlCode')
         );
 
         if (

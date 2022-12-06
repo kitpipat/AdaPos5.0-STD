@@ -47,7 +47,6 @@
     }
 
 
-    <style style="text/css">
   	.hoverTable{
 		width:100%; 
 		border-collapse:collapse; 
@@ -92,10 +91,10 @@
                         <?php endforeach;?>
                         <!--===============================================================================================================-->
                         <?php if($aAlwEventPdt['tAutStaFull'] == 1 || $aAlwEventPdt['tAutStaDelete'] == 1) : ?>
-                        <th nowrap class="text-center xCNTextBold" style="width:5%;border-right-color: #fff !important;"><?php echo language('product/product/product','tPDTTBDelete')?></th>
+                        <th nowrap class="text-center xCNTextBold" style="width:3%;border-right-color: #fff !important;"><?php echo language('product/product/product','tPDTTBDelete')?></th>
                         <?php endif; ?>
                         <?php if($aAlwEventPdt['tAutStaFull'] == 1 || $aAlwEventPdt['tAutStaDelete'] == 1) : ?>
-                        <th nowrap class="text-center xCNTextBold" style="width:5%;"><?php echo language('product/product/product','tPDTTBEdits')?></th>
+                        <th nowrap class="text-center xCNTextBold" style="width:3%;"><?php echo language('product/product/product','tPDTTBEdits')?></th>
                         <?php endif;?>
                     </tr>
                 </thead>

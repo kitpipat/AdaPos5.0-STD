@@ -591,16 +591,30 @@
     // ช่องทางการขาย
     var oBrowseChannel = function(poDataFnc) {
         var tWhereAgn = '';
-        var nAggCode = $('#oetRcvSpcAggCode').val();
-        if (nAggCode != '') {
-            tWhereAgn = " AND TCNMChannelSpc.FTAgnCode = '" + nAggCode + "'"
-        }
+        // var nAggCode = $('#oetRcvSpcAggCode').val();
+        // if (nAggCode != '') {
+        //     tWhereAgn = " AND TCNMChannelSpc.FTAgnCode = '" + nAggCode + "'"
+        // }
 
-        var nBchCode = $('#oetRcvSpcBchCode').val();
-        var tWhereBchCode = '';
-        if (nBchCode != '') {
-            tWhereBchCode = ' AND TCNMChannelSpc.FTBchCode = ' + nBchCode + ' '
+        // var nBchCode = $('#oetRcvSpcBchCode').val();
+        // var tWhereBchCode = '';
+        // if (nBchCode != '') {
+        //     tWhereBchCode = ' AND TCNMChannelSpc.FTBchCode = ' + nBchCode + ' '
+        // }
+
+        var tWhereCondition     = '';
+        var tPdtAgnCode         = $('#oetRcvSpcAggCode').val();
+        var tPdtBchCode         = $('#oetRcvSpcBchCode').val()
+
+        if( tPdtAgnCode != '' ){
+            // tWhereCondition += " AND ( TCNMChannelSpc.FTAgnCode = '"+tPdtAgnCode+"' OR ISNULL(TCNMChannelSpc.FTAgnCode,'') = '' ) ";
+            tWhereCondition += " AND ( TCNMChannelSpc.FTAgnCode = '"+tPdtAgnCode+"' OR ISNULL(TCNMChannelSpc.FTAgnCode,'') = '' )";
         }
+        if( tPdtBchCode != ''){
+            tWhereCondition += " AND ( TCNMChannelSpc.FTBchCode = '"+tPdtBchCode+"' OR ISNULL(TCNMChannelSpc.FTBchCode,'') = '' )";
+        }
+        tWhereCondition += " AND TCNMChannel.FTChnStaUse = 1";
+
 
         var oOptionReturn = {
             Title: ['authen/user/user', 'tBrowseBCHTitle'],
@@ -610,10 +624,13 @@
             },
             Join: {
                 Table: ['TCNMChannel_L','TCNMChannelSpc'],
-                On: ['TCNMChannel.FTChnCode = TCNMChannel_L.FTChnCode AND TCNMChannel_L.FNLngID = ' + nLangEdits,'TCNMChannel.FTChnCode = TCNMChannelSpc.FTChnCode']
+                On: [
+                    'TCNMChannel.FTChnCode = TCNMChannel_L.FTChnCode AND TCNMChannel_L.FNLngID = ' + nLangEdits,
+                    'TCNMChannel.FTChnCode = TCNMChannelSpc.FTChnCode'
+                ]
             },
             Where: {
-                Condition: [tWhereAgn + tWhereBchCode]
+                Condition: [tWhereCondition]
             },
             GrideView: {
                 ColumnPathLang: 'authen/user/user',

@@ -23,6 +23,10 @@ $route['productGetDataBarCode']        = 'product/product/cProduct/FSoCPDTBarCod
 $route['productUpdateBarCode']         = 'product/product/cProduct/FSoCPDTUpdateBarCode';
 $route['productDeleteBarCode']         = 'product/product/cProduct/FSoCPDTDeleteBarCode';
 
+$route['productGetChannel']            = 'product/product/cProduct/FSoCPDTChannelDataTable';
+$route['productAddChannel']            = 'product/product/cProduct/FSoCPDTChannelAdd';
+$route['productDelChannel']            = 'product/product/cProduct/FSoCPDTChannelDelByID';
+
 //Product Set
 $route['productSetDataTable']          = 'product/product/cProduct/FSaCPDTSETCallDataTable';
 $route['productSetCallPageAdd']        = 'product/product/cProduct/FSaCPDTSETCallPageAdd';

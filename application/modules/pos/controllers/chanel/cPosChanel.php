@@ -319,13 +319,19 @@ class cPosChanel extends MX_Controller
                 'FDCreateOn'        => date('Y-m-d H:i:s'),
                 'FNLngID'           => $this->session->userdata("tLangEdit"),
                 'FTChnStaUseDO'     => (!empty($this->input->post('ocbChnStaUseDO'))) ? 1 : 2,
-                'FTChnStaAlwSNPL'     => (!empty($this->input->post('ocbChnStaAlwSNPL'))) ? 1 : 2,
+                'FTChnStaAlwSNPL'   => (!empty($this->input->post('ocbChnStaAlwSNPL'))) ? 1 : 2,
                 'FTChnWahDO'        => $this->input->post('oetDeliveryWahCode'),
 
+                'FTChnName'         => $this->input->post('oetChnName'),
+                'FTAgnCode'         => $this->input->post('oetChnAgnCode'),
+                'FTBchCode'         => $this->input->post('oetWahBchCodeCreated'),
 
-                'FTChnName'            => $this->input->post('oetChnName'),
-                'FTAgnCode' => $this->input->post('oetChnAgnCode'),
-                'FTBchCode'             => $this->input->post('oetWahBchCodeCreated'),
+                'FTMrkCode'         => $this->input->post('oetRcvSpcMrkCode'),
+                'FTMcfAPIURL'       => $this->input->post('oetChnAPIURL'),
+                'FTMcfAPIAppKey'    => $this->input->post('oetChnAPPKEY'),
+                'FTMcfAPISign'      => $this->input->post('oetChnAPPSIGN'),
+                'FTMcfAPIToken'     => $this->input->post('oetChnAPITOKEN'),
+                'FTMcfStaUse'       => (!empty($this->input->post('ocbChnStaAlwEmk'))) ? 1 : 2,
 
                 'tTypeInsertUpdate' => 'Update'
             );

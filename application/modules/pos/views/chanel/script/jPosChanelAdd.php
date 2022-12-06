@@ -143,6 +143,8 @@
         JCNxBrowseData('oBrowseMrk');
     });
 
+    //Set Lang Edit 
+    var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
     // ระบบ
     var oBrowseMrk = {
         Title: ['payment/recivespc/recivespc', 'tBrowseAppTitle'],
@@ -151,7 +153,7 @@
             PK: 'FTMrkCode'
         },
         Where:{
-            Condition: [' AND TCNSMarket_L.FTMrkStaUse = 1']
+            Condition: [' AND TCNSMarket_L.FTMrkStaUse = 1 AND TCNSMarket_L.FNLngID = ' + nLangEdits]
         },
         GrideView: {
             ColumnPathLang: 'payment/recivespc/recivespc',
@@ -178,61 +180,91 @@
 
 // Create By: Napat(Jame) 10/06/2022
 function JSxCHNSpcEMarket(){
-    console.log('awd');
-    $('#ofmAddChaneleMarket').each(function(key, form) { 
-        $('#ofmAddChaneleMarket').validate().destroy();
-        $('#ofmAddChaneleMarket').validate({
-            // focusInvalid: false,
-            // onclick: false,
-            // onfocusout: false,
-            // onkeyup: false,
-            rules: {
-                oetRcvSpcMrkName: { "required": {} },
-            },
-            messages: {
-                oetRcvSpcMrkName: { "required": $('#oetRcvSpcMrkName').attr('data-validate') },
-            },
-            errorElement: "em",
-            errorPlacement: function(error, element) {
-                error.addClass("help-block");
-                if (element.prop("type") === "checkbox") {
-                    error.appendTo(element.parent("label"));
-                } else {
-                    var tCheck = $(element.closest('.form-group')).find('.help-block').length;
-                    if (tCheck == 0) {
-                        error.appendTo(element.closest('.form-group')).trigger('change');
+    $('#ofmAddChanel').validate().destroy();
+    $('#ofmAddChanel').validate({
+        rules: {
+            oetChnCode: {
+                "required": {
+                    depends: function(oElement) {
+                        if (ptRoute == "chanelEventAdd") {
+                            if ($('#ocbSlipmessageAutoGenCode').is(':checked')) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        } else {
+                            return true;
+                        }
                     }
+                },
+                // "dublicateCode": {}
+            },
+            oetChnName: { "required": {} },
+            oetChnAppName: { "required": {} },
+            oetWahBchNameCreated: {
+                "required": {
+                    depends: function(oElement) {
+                        if ( $('#oetChnUsrLoginLevel') != "HQ" && $('#oetChnUsrLoginLevel') != "AGN" ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                },
+            },
+            oetRcvSpcMrkName: { "required": {} },
+            oetChnAppName: { "required": {} },
+            oetChnAppName: { "required": {} },
+
+            // oetWahBchNameCreated: { "required": {} },
+            // oetChnAgnName: { "required": {} },
+        },
+        messages: {
+            oetChnCode: {
+                "required": $('#oetChnCode').attr('data-validate-required'),
+                // "dublicateCode": $('#oetChnCode').attr('data-validate-dublicateCode')
+            },
+
+            oetChnName: {
+                "required": $('#oetChnName').attr('data-validate-required'),
+            },
+            oetChnAppName: {
+                "required": $('#oetChnAppName').attr('data-validate-required'),
+            },
+            oetWahBchNameCreated: {
+                "required": $('#oetWahBchNameCreated').attr('data-validate-required'),
+            },
+            oetRcvSpcMrkName: {
+                "required": $('#oetRcvSpcMrkName').attr('data-validate-required'),
+            },
+            // oetChnAgnName: {
+            //     "required": $('#oetChnAgnName').attr('data-validate-required'),
+            // }
+        },
+        errorElement: "em",
+        errorPlacement: function(error, element) {
+            error.addClass("help-block");
+            if (element.prop("type") === "checkbox") {
+                error.appendTo(element.parent("label"));
+            } else {
+                var tCheck = $(element.closest('.form-group')).find('.help-block').length;
+                if (tCheck == 0) {
+                    error.appendTo(element.closest('.form-group')).trigger('change');
                 }
-            },
-            highlight: function(element, errorClass, validClass) {
-                $(element).closest('.form-group').addClass("has-error").removeClass("has-success");
-            },
-            unhighlight: function(element, errorClass, validClass) {
-                $(element).closest('.form-group').addClass("has-success").removeClass("has-error");
-            },
-            submitHandler: function(form) {
-                // JCNxOpenLoading();
-                // $.ajax({
-                //     type: "POST",
-                //     url: ptRoute,
-                //     data: $('#ofmCSWAddEdit').serialize()+'&oetCSWChnCode='+$('#oetChnCode').val(),
-                //     catch: false,
-                //     timeout: 0,
-                //     success: function(oResult) {
-                //         var aResult = JSON.parse(oResult);
-                //         if (aResult["nStaEvent"] == 1) {
-                //             JSvCHNPageSpcWah();
-                //         } else {
-                //             FSvCMNSetMsgWarningDialog(aResult['tStaMessg']);
-                //             JCNxCloseLoading();
-                //         }
-                //     },
-                //     error: function(jqXHR, textStatus, errorThrown) {
-                //         JCNxResponseError(jqXHR, textStatus, errorThrown);
-                //     }
-                // });
-            },
-        });
+            }
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-error").removeClass("has-success");
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).closest('.form-group').addClass("has-success").removeClass("has-error");
+        },
+        submitHandler: function(form) {
+            console.log('awd');
+            
+        },
     });
+    $('#ofmAddChanel').submit();
+
 }
 </script>
