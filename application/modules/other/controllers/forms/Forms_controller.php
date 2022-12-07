@@ -514,7 +514,7 @@ class Forms_controller extends MX_Controller {
                                 HD.FTBchCode AS rtBchCode,
                                 HD.FTXshDocNo AS rtDocNo
                                 FROM TFNTCrdShiftHD HD WITH(NOLOCK)
-                                WHERE HD.FNXshDocType = '1'",
+                                WHERE HD.FNXshDocType = '2'",
                 '00015' => "SELECT TOP 1 
                                 HD.FTBchCode AS rtBchCode,
                                 HD.FTCvhDocNo AS rtDocNo
