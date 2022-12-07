@@ -8,6 +8,8 @@
 <input type="hidden" name="ohdTAXStaDoc" id="ohdTAXStaDoc" value="">
 <input type="hidden" name="ohdDocBchCode"  id="ohdDocBchCode">
 <input type="hidden" name="ohdDocType"  id="ohdDocType">
+<input type="hidden" name="ohdAddVersion"  id="ohdAddVersion" value="<?=$tTaxAddVersion?>">
+
 <form id="ofmTaxInvoice" class="validate-form" action="javascript:void(0)" method="post" enctype="multipart/form-data">
     <input type="text" class="xCNHide" id="oetTXIStaETax" name="oetTXIStaETax" value="">
     <div class="row">
@@ -464,6 +466,45 @@
                                                 </div>
                                                 
                                                 <div id="odvTAXAddress1" class="row">
+
+
+                        <!-- $('#oetFTAddV1No').val(aAddresss.FTAddV1No);
+                        $('#oetFTAddV1Soi').val(aAddresss.FTAddV1Soi);
+                        $('#oetFTAddV1Village').val(aAddresss.FTAddV1Village);
+                        $('#oetFTAddV1Road').val(aAddresss.FTAddV1Road); -->
+
+                                                    <div class="col-lg-6">
+                                                        <!--บ้านเลขที่-->
+                                                        <div class="form-group">
+                                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'บ้านเลขที่'); ?></label>
+                                                            <input type="text"  name="oetFTAddV1No" id="oetFTAddV1No" class="form-control xCNClearValue xWETaxDisabled xWETaxEnabledOniNetError"  maxlength="30" placeholder="<?= language('document/taxinvoice/taxinvoice', 'บ้านเลขที่') ?>"> </textarea>
+                                                        </div> 
+                                                    </div> 
+
+                                                    <div class="col-lg-6">
+                                                        <!--ซอย-->
+                                                        <div class="form-group">
+                                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'ซอย'); ?></label>
+                                                            <input type="text"  name="oetFTAddV1Soi" id="oetFTAddV1Soi" class="form-control xCNClearValue xWETaxDisabled xWETaxEnabledOniNetError"  maxlength="30" placeholder="<?= language('document/taxinvoice/taxinvoice', 'ซอย') ?>"> </textarea>
+                                                        </div> 
+                                                    </div> 
+
+                                                    <div class="col-lg-6">
+                                                        <!--หมู่บ้าน-->
+                                                        <div class="form-group">
+                                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'หมู่บ้าน'); ?></label>
+                                                            <input type="text"  name="oetFTAddV1Village" id="oetFTAddV1Village" class="form-control xCNClearValue xWETaxDisabled xWETaxEnabledOniNetError"  maxlength="70" placeholder="<?= language('document/taxinvoice/taxinvoice', 'หมู่บ้าน') ?>"> </textarea>
+                                                        </div> 
+                                                    </div> 
+
+                                                    <div class="col-lg-6">
+                                                        <!--ถนน-->
+                                                        <div class="form-group">
+                                                            <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'ถนน'); ?></label>
+                                                            <input type="text"  name="oetFTAddV1Road" id="oetFTAddV1Road" class="form-control xCNClearValue xWETaxDisabled xWETaxEnabledOniNetError"  maxlength="30" placeholder="<?= language('document/taxinvoice/taxinvoice', 'ถนน') ?>"> </textarea>
+                                                        </div> 
+                                                    </div> 
+
                                                     <div class="col-lg-6"><!--จังหวัด-->
                                                         <div class="form-group">
                                                             <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'จังหวัด'); ?></label>
@@ -901,7 +942,7 @@
 
                         <div class="col-lg-12">
 
-                            <div id="odvModalCancelddress2" class="row">
+                            <div id="odvModalCancelAddress2" class="row">
                                 <div class="col-lg-6">
                                     <!--ที่อยู่ 1 -->
                                     <div class="form-group">
@@ -919,6 +960,40 @@
                             </div>
 
                             <div id="odvModalCancelAddress1" class="row">
+
+                                <div class="col-lg-6">
+                                    <!--บ้านเลขที่-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'บ้านเลขที่'); ?></label>
+                                        <input type="text"  name="oetTAXModalCancelAddV1No" id="oetTAXModalCancelAddV1No" class="form-control xWDisabledForCN xCNClearValue"  maxlength="30" placeholder="<?= language('document/taxinvoice/taxinvoice', 'บ้านเลขที่') ?>"> </textarea>
+                                    </div> 
+                                </div> 
+
+                                <div class="col-lg-6">
+                                    <!--ซอย-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'ซอย'); ?></label>
+                                        <input type="text"  name="oetTAXModalCancelAddV1Soi" id="oetTAXModalCancelAddV1Soi" class="form-control xWDisabledForCN xCNClearValue"  maxlength="30" placeholder="<?= language('document/taxinvoice/taxinvoice', 'ซอย') ?>"> </textarea>
+                                    </div> 
+                                </div> 
+
+                                <div class="col-lg-6">
+                                    <!--หมู่บ้าน-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'หมู่บ้าน'); ?></label>
+                                        <input type="text"  name="oetTAXModalCancelAddV1Village" id="oetTAXModalCancelAddV1Village" class="form-control xWDisabledForCN xCNClearValue"  maxlength="70" placeholder="<?= language('document/taxinvoice/taxinvoice', 'หมู่บ้าน') ?>"> </textarea>
+                                    </div> 
+                                </div> 
+
+                                <div class="col-lg-6">
+                                    <!--ถนน-->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'ถนน'); ?></label>
+                                        <input type="text"  name="oetTAXModalCancelAddV1Road" id="oetTAXModalCancelAddV1Road" class="form-control xWDisabledForCN xCNClearValue"  maxlength="30" placeholder="<?= language('document/taxinvoice/taxinvoice', 'ถนน') ?>"> </textarea>
+                                    </div> 
+                                </div> 
+
+
                                 <div class="col-lg-6"><!--จังหวัด-->
                                     <div class="form-group">
                                         <label class="xCNLabelFrm"><span style = "color:red">*</span><?= language('document/taxinvoice/taxinvoice', 'จังหวัด'); ?></label>
@@ -1048,6 +1123,20 @@
         format: 'HH:mm'
     });
 
+    if($('#ohdAddVersion').val()=='1'){
+        $('#odvTAXAddress1').show();
+        $('#odvTAXAddress2').hide();
+
+        $('#odvModalCancelAddress1').show();
+        $('#odvModalCancelAddress2').hide();
+        
+    }else{
+        $('#odvTAXAddress1').hide();
+        $('#odvTAXAddress2').show();
+
+        $('#odvModalCancelAddress1').hide();
+        $('#odvModalCancelAddress2').show();
+    }
     /**********************************************************************************************/// ใ บ ก ำ กั บ ภ า ษี 
 
     //ค้นหาเลขที่ใบกำกับภาษีอย่างย่อ แบบคีย์
@@ -1195,6 +1284,21 @@
                     $('#obtTAXCancleETax').addClass('xCNHide');
                     $('.xWTaxRefAE').hide();
 
+                    if($('#ohdAddVersion').val()=='1'){
+                        $('#odvTAXAddress1').show();
+                        $('#odvTAXAddress2').hide();
+
+                        $('#odvModalCancelAddress1').show();
+                        $('#odvModalCancelAddress2').hide();
+                        
+                    }else{
+                        $('#odvTAXAddress1').hide();
+                        $('#odvTAXAddress2').show();
+
+                        $('#odvModalCancelAddress1').hide();
+                        $('#odvModalCancelAddress2').show();
+                    }
+
                 }else{
                     var tTypeVAT    = aHD.raItems[0].FTXshVATInOrEx //ประเภท
                     var tPrintCount = aHD.raItems[0].FNXshDocPrint //ปริ้น 
@@ -1316,6 +1420,7 @@
 
             // console.log(oText[0]['FTCstCode']);
             // return;
+   
             if( ptType == 'CstADD' ){
                 oTAXBrowseCstAddrOption = oTAXCstAddrOption({
                     'tCstCode'          : oText[0]['FTCstCode'],
@@ -1325,6 +1430,7 @@
                     'aArgReturn'        : [
                         'FTCstCode','FTCstName','FTAddTaxNo','FTAddName','FTSudCode','FTSudName','FTDstCode','FTDstName','FTPvnCode','FTPvnName',
                         'FTAddV2Desc1','FTAddV2Desc2','FTAddV1PostCode','FTAddTel','FTAddFax','FTAddStaBusiness','FTAddStaHQ','FTAddStaBchCode'
+                        ,'FTAddV1No','FTAddV1Road','FTAddV1Soi','FTAddV1Village','FTAddVersion'
                     ]
                 });
                 JCNxBrowseData('oTAXBrowseCstAddrOption');
@@ -1337,6 +1443,7 @@
                     'aArgReturn'        : [
                         'FTCstCode','FTCstName','FTAddTaxNo','FTAddName','FTSudCode','FTSudName','FTDstCode','FTDstName','FTPvnCode','FTPvnName',
                         'FTAddV2Desc1','FTAddV2Desc2','FTAddV1PostCode','FTAddTel','FTAddFax','FTAddStaBusiness','FTAddStaHQ','FTAddStaBchCode'
+                        ,'FTAddV1No','FTAddV1Road','FTAddV1Soi','FTAddV1Village','FTAddVersion'
                     ]
                 });
                 JCNxBrowseData('oTAXBrowseAddrOption');
@@ -1448,8 +1555,9 @@
                     'TCNMCstAddress_L.FTAddV1PostCode','TCNMCst.FTCstTaxNo AS FTAddTaxNo',
                     'NULL AS FTAddStaBusiness','NULL AS FTAddStaHQ','NULL AS FTAddStaBchCode',
                     'TCNMCstAddress_L.FNAddSeqNo'
+                    ,'TCNMCstAddress_L.FTAddV1No','TCNMCstAddress_L.FTAddV1Road','TCNMCstAddress_L.FTAddV1Soi','TCNMCstAddress_L.FTAddV1Village','TCNMCstAddress_L.FTAddVersion'
                 ],
-                DisabledColumns     : [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+                DisabledColumns     : [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],
                 // DataColumnsFormat   : ['','','','','',''],
                 Perpage             : 10,
                 OrderBy             : ['TCNMCstAddress_L.FDCreateOn DESC']
@@ -1513,8 +1621,9 @@
                     'TCNMTaxAddress_L.FTAddV1PvnCode AS FTPvnCode','TCNMProvince_L.FTPvnName',
                     'TCNMTaxAddress_L.FTAddV1PostCode','TCNMTaxAddress_L.FTAddTaxNo',
                     'TCNMTaxAddress_L.FTAddStaBusiness','TCNMTaxAddress_L.FTAddStaHQ','TCNMTaxAddress_L.FTAddStaBchCode'
+                    ,'TCNMTaxAddress_L.FTAddV1No','TCNMTaxAddress_L.FTAddV1Road','TCNMTaxAddress_L.FTAddV1Soi','TCNMTaxAddress_L.FTAddV1Village','TCNMTaxAddress_L.FTAddVersion'
                 ],
-                DisabledColumns     : [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+                DisabledColumns     : [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22],
                 // DataColumnsFormat   : ['','','','','',''],
                 Perpage             : 10,
                 OrderBy             : ['TCNMTaxAddress_L.FDCreateOn DESC']
@@ -1552,7 +1661,8 @@
 
             console.log(oAddress);
             console.log(oAddress.length);
-
+            
+  
             if( oAddress.length > 2 ){                          // กรณีพบที่อยู่มากกว่า 1 และเลือกมาจาก Browse
                 var FTCstCode = oAddress[0];
                 var FTCstName = oAddress[1];
@@ -1572,16 +1682,21 @@
                 var FTAddStaBusiness = oAddress[15];
                 var FTAddStaHQ = oAddress[16];
                 var FTAddStaBchCode = oAddress[17];
+                var FTAddV1No = oAddress[18];
+                var FTAddV1Road = oAddress[19];
+                var FTAddV1Soi = oAddress[20];
+                var FTAddV1Village = oAddress[21];
+                var FTAddVersion = oAddress[22];
             }else{                                              // กรณีรายการเดียว
                 var FTCstCode = oAddress[0]['FTCstCode'];
                 var FTCstName = oAddress[0]['FTCstName'];
                 var FTAddTaxNo = oAddress[0]['FTAddTaxNo'];
                 var FTAddName = oAddress[0]['FTAddName'];
-                var FTSudCode = oAddress[0]['FTSudCode'];
+                var FTSudCode = oAddress[0]['FTAddV1SubDist'];
                 var FTSudName = oAddress[0]['FTSudName'];
-                var FTDstCode = oAddress[0]['FTDstCode'];
+                var FTDstCode = oAddress[0]['FTAddV1DstCode'];
                 var FTDstName = oAddress[0]['FTDstName'];
-                var FTPvnCode = oAddress[0]['FTPvnCode'];
+                var FTPvnCode = oAddress[0]['FTAddV1PvnCode'];
                 var FTPvnName = oAddress[0]['FTPvnName'];
                 var FTAddV2Desc1 = oAddress[0]['FTAddV2Desc1'];
                 var FTAddV2Desc2 = oAddress[0]['FTAddV2Desc2'];
@@ -1591,18 +1706,27 @@
                 var FTAddStaBusiness = oAddress[0]['FTAddStaBusiness'];
                 var FTAddStaHQ = oAddress[0]['FTAddStaHQ'];
                 var FTAddStaBchCode = oAddress[0]['FTAddStaBchCode'];
+                var FTAddV1No = oAddress[0]['FTAddV1No'];
+                var FTAddV1Road = oAddress[0]['FTAddV1Road'];
+                var FTAddV1Soi = oAddress[0]['FTAddV1Soi'];
+                var FTAddV1Village = oAddress[0]['FTAddV1Village'];
+                var FTAddVersion = oAddress[0]['FTAddVersion'];
+        
             }
-
+            $('#ohdAddVersion').val(FTAddVersion);
             // console.log(oAddress);
             // return;
-
+             
             // var oAddress        = oAddress[0];
             // var tCustomerName   = oAddress.FTCstName;
             // var tAddressName    = oAddress.FTAddName;
             // var tAddressCode    = oAddress.FTCstCode;
 
             if( tTAXBrowseCusAddrType == '1' ){
-
+                $('#oetFTAddV1No').val(FTAddV1No);
+                $('#oetFTAddV1Soi').val(FTAddV1Soi);
+                $('#oetFTAddV1Village').val(FTAddV1Village);
+                $('#oetFTAddV1Road').val(FTAddV1Road);
                 $('#oetFTAddV1SubDistCode').val(FTSudCode);
                 $('#oetFTAddV1SubDistName').val(FTSudName);
                 $('#oetFTAddV1DstCode').val(FTDstCode);
@@ -1655,6 +1779,10 @@
 
                 // $('#ohdSeqAddress').val(oAddress.FNAddSeqNo);
             }else{
+                $('#oetTAXModalCancelAddV1No').val(FTAddV1No);
+                $('#oetTAXModalCancelAddV1Soi').val(FTAddV1Soi);
+                $('#oetTAXModalCancelAddV1Village').val(FTAddV1Village);
+                $('#oetTAXModalCancelAddV1Road').val(FTAddV1Road);
                 $('#oetTAXModalCancelSubDistCode').val(FTSudCode);
                 $('#oetTAXModalCancelSubDistName').val(FTSudName);
                 $('#oetTAXModalCancelDstCode').val(FTDstCode);
@@ -1672,6 +1800,20 @@
                 $('#odvTAXModalCancelETax').modal('show');
             }
 
+            if(FTAddVersion=='1'){
+                $('#odvTAXAddress1').show();
+                $('#odvTAXAddress2').hide();
+
+                $('#odvModalCancelAddress1').show();
+                $('#odvModalCancelAddress2').hide();
+                
+            }else{
+                $('#odvTAXAddress1').hide();
+                $('#odvTAXAddress2').show();
+
+                $('#odvModalCancelAddress1').hide();
+                $('#odvModalCancelAddress2').show();
+            }
             JCNxCloseLoading();
         }else{
             JCNxShowMsgSessionExpired();
@@ -1847,6 +1989,7 @@
             'aArgReturn'        : [
                 'FTCstCode','FTCstName','FTAddTaxNo','FTAddName','FTSudCode','FTSudName','FTDstCode','FTDstName','FTPvnCode','FTPvnName',
                 'FTAddV2Desc1','FTAddV2Desc2','FTAddV1PostCode','FTAddTel','FTAddFax','FTAddStaBusiness','FTAddStaHQ','FTAddStaBchCode'
+                ,'FTAddV1No','FTAddV1Road','FTAddV1Soi','FTAddV1Village','FTAddVersion'
             ]
         });
         JCNxBrowseData('oTAXBrowseCstAddrOption');
@@ -2046,7 +2189,7 @@
                 // console.log( aHD.FNXshDocType );
                 var tXshStaETax = ( aHD.FTXshStaETax == "" ? '2' : aHD.FTXshStaETax );
                 // console.log(tXshStaETax);
-
+                var tXshStaDoc = aHD.FTXshStaDoc;
                 $('.xWETaxDisabled').attr('disabled',true);
                 switch(tXshStaETax){
                     case '1':
@@ -2065,7 +2208,11 @@
                         var tStaRcv         = '1';
                         var tXshStaApv = aHD.FTXshStaApv;
                         if( tXshStaApv == '1' ){
-                            $('#olbStatusDocument').text('อนุมัติแล้ว');
+                            if(tXshStaDoc=='1' || tXshStaDoc=='4'){
+                                $('#olbStatusDocument').text('อนุมัติแล้ว');
+                            }else{
+                                $('#olbStatusDocument').text('ยกเลิก');
+                            }
                             $('#obtApproveDocument').addClass('xCNHide');
                         }else{
                             $('#olbStatusDocument').text('รออนุมัติ');
@@ -2090,7 +2237,7 @@
                             $('.xWETaxEnabledOniNetError').attr('disabled',false);           // Enabled Input Address
                         }
 
-                        var tXshStaDoc = aHD.FTXshStaDoc;
+                 
                         if( tXshETaxStatus == '1' ){
                             // เปิด/ปิด ปุ่มยกเลิกเอกสาร
                             if( tXshStaDoc == '1' || tXshStaDoc == '4' ){
@@ -2116,10 +2263,17 @@
                         var tFullTaxBtnText = '<?=language('document/taxinvoice/taxinvoice', 'tTAXPrint'); ?>';
                         var tABBBtnText     = '<?=language('document/taxinvoice/taxinvoice', 'tTAXPrintABB'); ?>';
                         var tStaRcv         = '2';
-                        $('#olbStatusDocument').text('อนุมัติแล้ว');
+
+                        if(tXshStaDoc=='1' || tXshStaDoc=='4'){
+                                $('#olbStatusDocument').text('อนุมัติแล้ว');
+                            }else{
+                                $('#olbStatusDocument').text('ยกเลิก');
+                        }
+
+                        // $('#olbStatusDocument').text('อนุมัติแล้ว');
                         $('#obtTAXCancleETax').removeClass('xCNHide');
                 }
-
+                
                 $('#ohdTAXStaDoc').val(aHD.FTXshStaDoc);
                 $('#oetTXIStaETax').val(aHD.FTXshStaETax);
                 // $('#oetTXIStaETax').selectpicker('refresh');
@@ -2202,16 +2356,16 @@
                     $('#oetTAXTel').val(aAddresss.FTXshCstTel);
                     $('#oetTAXFax').val(aAddresss.FTXshFax);
                     $('#oetTAXEmail').val(aAddresss.FTXshCstEmail);
-
-                    // if( aAddresss.FTAddVersion = '1' ){
+                    $('#ohdAddVersion').val(aAddresss.FTAddVersion);
+                    if( aAddresss.FTAddVersion = '1' ){
                         // $("#orbTAXAddVersion1").prop("checked", true);
-                        // $('#odvTAXAddress1').show();
-                        // $('#odvTAXAddress2').hide();
+                        $('#odvTAXAddress1').show();
+                        $('#odvTAXAddress2').hide();
 
-                        // $('#oetFTAddV1No').val(aAddresss.FTAddV1No);
-                        // $('#oetFTAddV1Soi').val(aAddresss.FTAddV1Soi);
-                        // $('#oetFTAddV1Village').val(aAddresss.FTAddV1Village);
-                        // $('#oetFTAddV1Road').val(aAddresss.FTAddV1Road);
+                        $('#oetFTAddV1No').val(aAddresss.FTAddV1No);
+                        $('#oetFTAddV1Soi').val(aAddresss.FTAddV1Soi);
+                        $('#oetFTAddV1Village').val(aAddresss.FTAddV1Village);
+                        $('#oetFTAddV1Road').val(aAddresss.FTAddV1Road);
                         $('#oetFTAddV1SubDistCode').val(aAddresss.FTSudCode);
                         $('#oetFTAddV1SubDistName').val(aAddresss.FTSudName);
                         $('#oetFTAddV1DstCode').val(aAddresss.FTDstCode);
@@ -2220,9 +2374,9 @@
                         $('#oetFTAddV1PvnName').val(aAddresss.FTPvnName);
                         $('#oetFTAddV1PostCode').val(aAddresss.FTXshPostCode);
 
-                        // JSxTAXClearInputAddr('2');
+                        JSxTAXClearInputAddr('2');
 
-                    // }else{
+                    }else{
                         // $("#orbTAXAddVersion2").prop("checked", true);
                         // $('#odvTAXAddress2').show();
                         // $('#odvTAXAddress1').hide();
@@ -2230,9 +2384,9 @@
                         $('#otxAddress1').text(aAddresss.FTXshDesc1);
                         $('#otxAddress2').text(aAddresss.FTXshDesc2);
 
-                        // JSxTAXClearInputAddr('1');
+                        JSxTAXClearInputAddr('1');
 
-                    // }
+                    }
 
                     // ถ้าเป็นประเภท E-Tax จะกรอกได้เฉพาะที่อยู่แยก
                     // var tStaETax = $('#oetTXIStaETax').val();
@@ -2244,6 +2398,10 @@
                     // }
 
                     // Modal Cancel Tax
+                    $('#oetFTAddV1No').val(aAddresss.FTAddV1No);
+                    $('#oetFTAddV1Soi').val(aAddresss.FTAddV1Soi);
+                    $('#oetFTAddV1Village').val(aAddresss.FTAddV1Village);
+                    $('#oetFTAddV1Road').val(aAddresss.FTAddV1Road);
                     $('#oetFTAddV1SubDistCode').val(aAddresss.FTSudCode);
                     $('#oetFTAddV1SubDistName').val(aAddresss.FTSudName);
                     $('#oetFTAddV1DstCode').val(aAddresss.FTDstCode);
@@ -2255,7 +2413,20 @@
                     $('#otxAddress2').text(aAddresss.FTXshDesc2);
 
                 }
+                if($('#ohdAddVersion').val()=='1'){
+                    $('#odvTAXAddress1').show();
+                    $('#odvTAXAddress2').hide();
 
+                    $('#odvModalCancelAddress1').show();
+                    $('#odvModalCancelAddress2').hide();
+                    
+                }else{
+                    $('#odvTAXAddress1').hide();
+                    $('#odvTAXAddress2').show();
+
+                    $('#odvModalCancelAddress1').hide();
+                    $('#odvModalCancelAddress2').show();
+                }
                 JSxRanderDTPreview(1);
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -2344,7 +2515,13 @@
                 'tSubDistCode'  : $('#oetFTAddV1SubDistCode').val(),
                 'tPostCode'     : $('#oetFTAddV1PostCode').val(),
                 'tEmail'        : $('#oetTAXEmail').val(),
-                'nStaDocAct'    : $('#oetTAxStaDocAct').val()
+                'nStaDocAct'    : $('#oetTAxStaDocAct').val(),
+
+                'tFTAddV1No'    : $('#oetFTAddV1No').val(),
+                'tFTAddV1Soi'    : $('#oetFTAddV1Soi').val(),
+                'tFTAddV1Village'    : $('#oetFTAddV1Village').val(),
+                'tFTAddV1Road'    : $('#oetFTAddV1Road').val(),
+     
             },
             cache   : false,
             Timeout : 0,
@@ -2359,7 +2536,7 @@
     });
 
     $('#obtPrintPreviewDocumentABB').off('click').on('click',function(){
-    
+    console.log(1223);
         var oPackData = JSON.stringify({
             ptType      : 'ABB',
             ptStaETax   : $(this).attr('data-staetax')
@@ -2498,11 +2675,20 @@
         nCountValidate = JSxTAXValidateInput('#oetTAXCusNameCusABB',nCountValidate);
         nCountValidate = JSxTAXValidateInput('#oetTAXNumber',nCountValidate);
 
-        nCountValidate = JSxTAXValidateInput('#otxAddress1',nCountValidate);
+        if($('#ohdAddVersion').val()=='1'){
         nCountValidate = JSxTAXValidateInput('#oetFTAddV1PvnName',nCountValidate);
         nCountValidate = JSxTAXValidateInput('#oetFTAddV1DstName',nCountValidate);
         nCountValidate = JSxTAXValidateInput('#oetFTAddV1SubDistName',nCountValidate);
         nCountValidate = JSxTAXValidateInput('#oetFTAddV1PostCode',nCountValidate);
+
+        nCountValidate = JSxTAXValidateInput('#oetFTAddV1No',nCountValidate);
+        nCountValidate = JSxTAXValidateInput('#oetFTAddV1Soi',nCountValidate);
+        nCountValidate = JSxTAXValidateInput('#oetFTAddV1Village',nCountValidate);
+        nCountValidate = JSxTAXValidateInput('#oetFTAddV1Road',nCountValidate);
+        }else{
+            nCountValidate = JSxTAXValidateInput('#otxAddress1',nCountValidate);
+        }
+    
 
         var tTaxABBType = $("#oetTAXABBTypeDocuement").val();
         if( tTaxABBType == '9' ){  // CN-ABB
@@ -2516,8 +2702,10 @@
             $('#odvModalAproveDocument').modal('show');
             $('#obtConfirmApprDoc').off('click').on('click',function(){
                 $('#odvModalAproveDocument').modal('hide');
-
+                
+                var FTAddVersion = $('#ohdAddVersion').val();
                 var aDataHDAddress = {
+                    FTAddVersion        : FTAddVersion,
                     FTAddTel            : $('#oetTAXTel').val(),
                     FTAddFax            : $('#oetTAXFax').val(),
                     FTAddV2Desc1        : $('#otxAddress1').val(),
@@ -2528,6 +2716,11 @@
                     FTAddV1DstCode      : $('#oetFTAddV1DstCode').val(),
                     FTAddV1SubDist      : $('#oetFTAddV1SubDistCode').val(),
                     FTAddV1PostCode     : $('#oetFTAddV1PostCode').val(),
+
+                    FTAddV1No           : $('#oetFTAddV1No').val(),
+                    FTAddV1Soi          : $('#oetFTAddV1Soi').val(),
+                    FTAddV1Village      : $('#oetFTAddV1Village').val(),
+                    FTAddV1Road         : $('#oetFTAddV1Road').val(),
                 };
 
                 var aDataHDCst = {
@@ -2823,7 +3016,7 @@
         $("#ofmTaxCancel").find('.has-error').removeClass("has-error");
         $("#ofmTaxCancel").find('.has-success').removeClass("has-success");
         $('#ofmTaxCancel').find('.form-control-feedback').remove();
-
+        var tAddVersion = $('#ohdAddVersion').val();
         // เตรียมข้อมูล
         var tTAXDocNo       = $('#oetTAXDocNo').val();
         var tTAXCstName     = $('#oetTAXCusNameCusABB').val();
@@ -2837,6 +3030,12 @@
         var tSubDistName    = $('#oetFTAddV1SubDistName').val();
         var tSubDistCode    = $('#oetFTAddV1SubDistCode').val();
         var tPostCode       = $('#oetFTAddV1PostCode').val();
+
+        var tAddV1No       = $('#oetFTAddV1No').val();
+        var tAddV1Soi       = $('#oetFTAddV1Soi').val();
+        var tAddV1Village       = $('#oetFTAddV1Village').val();
+        var tAddV1Road       = $('#oetFTAddV1Road').val();
+
 
 
         $('#oetTAXModalCancelDocNo').val(tTAXDocNo);
@@ -2852,6 +3051,11 @@
         $('#oetTAXModalCancelSubDistCode').val(tSubDistCode);
         $('#oetTAXModalCancelPostCode').val(tPostCode);
 
+        $('#oetTAXModalCancelAddV1No').val(tAddV1No);
+        $('#oetTAXModalCancelAddV1Soi').val(tAddV1Soi);
+        $('#oetTAXModalCancelAddV1Village').val(tAddV1Village);
+        $('#oetTAXModalCancelAddV1Road').val(tAddV1Road);
+
         var tTaxABBType = $("#oetTAXABBTypeDocuement").val();
         if( tTaxABBType == '5' ){  // CN-ABB
             $('.xWDisabledForCN').attr('disabled',true);
@@ -2862,6 +3066,21 @@
         }
 
         // $('#obtTAXModalCancelBrowseAddress').attr('disabled',true);
+        if(tAddVersion=='1'){
+                $('#odvTAXAddress1').show();
+                $('#odvTAXAddress2').hide();
+
+                $('#odvModalCancelAddress1').show();
+                $('#odvModalCancelAddress2').hide();
+                
+            }else{
+                $('#odvTAXAddress1').hide();
+                $('#odvTAXAddress2').show();
+
+                $('#odvModalCancelAddress1').hide();
+                $('#odvModalCancelAddress2').show();
+        }
+
 
         $('#odvTAXModalCancelETax').modal('show');
     });
@@ -2914,7 +3133,7 @@
             'tTitleModal'       : 'เหตุผล',
             'tReturnInputCode'  : 'oetTAXRsnCode',
             'tReturnInputName'  : 'oetTAXRsnName',
-            'tRsnGrp'           : '018'
+            'tRsnGrp'           : "'017','018'"
         });
         JCNxBrowseData('oTAXBrowseReasonOption');
     });
@@ -2932,11 +3151,11 @@
 
         
         if( tSesUsrLevel != "HQ" && tSesUsrAgnCode != "" ){
-            tWhereCondition += " AND TCNMRsn.FTAgnCode = '"+tSesUsrAgnCode+"' ";
+            tWhereCondition += " AND ( TCNMRsn.FTAgnCode = '"+tSesUsrAgnCode+"' OR ISNULL(TCNMRsn.FTAgnCode,'')='' ) ";
         }
 
         if( tRsnGrp != "" ){
-            tWhereCondition += " AND TCNMRsn.FTRsgCode = '"+tRsnGrp+"' ";
+            tWhereCondition += " AND TCNMRsn.FTRsgCode IN ("+tRsnGrp+") ";
         }
         
         var oOptionReturn       = {

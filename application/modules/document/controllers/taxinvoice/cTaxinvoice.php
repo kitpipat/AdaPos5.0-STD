@@ -61,11 +61,19 @@ class cTaxInvoice extends MX_Controller
             $tDocumentNumber = $tDocument;
             $tDocumentBchCode  = $tDocumentBchCode;
         }
+        $tSesUsrAgnCode = $this->session->userdata("tSesUsrAgnCode");
+        $aDataConfigAddr = FCNaGetConfigData('tCN_AddressType','CN','TCNMCst',6,$tSesUsrAgnCode);
 
+        if($aDataConfigAddr['rtCode']){
+            $tTaxAddVersion = $aDataConfigAddr['raItem']['FTCfgStaUsrValue'];
+        }else{
+            $tTaxAddVersion = 2;
+        } 
         $aReturnData = array(
             'tTypePage'         => $tTypePage,
             'tDocumentNumber'   => $tDocumentNumber,
-            'tDocumentBchCode'  => $tDocumentBchCode
+            'tDocumentBchCode'  => $tDocumentBchCode,
+            'tTaxAddVersion'  => $tTaxAddVersion
         );
 
         $tViewPageAdd       = $this->load->view('document/taxInvoice/wTaxInvoicePageAdd',$aReturnData);
@@ -583,7 +591,12 @@ class cTaxInvoice extends MX_Controller
             'tSubDistCode'  => $this->input->post('tSubDistCode'),
             'tPostCode'     => $this->input->post('tPostCode'),
             'tEmail'        => $this->input->post('tEmail'),
-            'nStaDocAct'    => $this->input->post('nStaDocAct')
+            'nStaDocAct'    => $this->input->post('nStaDocAct'),
+
+            'tFTAddV1No'     => $this->input->post('tFTAddV1No'),
+            'tFTAddV1Soi'    => $this->input->post('tFTAddV1Soi'),
+            'tFTAddV1Village'=> $this->input->post('tFTAddV1Village'),
+            'tFTAddV1Road'   => $this->input->post('tFTAddV1Road')
         );
 
         //อัพเดทที่อยู่แบบปกติ

@@ -115,7 +115,7 @@
 <script src="<?=base_url('application/modules/common/assets/src/jFormValidate.js')?>"></script>
 <script>
     //โหลดหน้าจอ Datatable
-    JSxLoadContentDatatable(1);
+ 
     function JSxLoadContentDatatable(pnPage){
 
         var aDataSearch = {
@@ -282,5 +282,5 @@
         };
         return oRoleOptionReturn;
     }
-
+    JSxLoadContentDatatable(1);
 </script>

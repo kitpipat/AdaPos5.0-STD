@@ -35,7 +35,7 @@ if (version_compare(PHP_VERSION, '5.1.2', '>=')) {
     spl_autoload_register('PHPMailerAutoload', true, true);
 } else {
     //Fall back to traditional autoload for old PHP versions
-    function banshee_autoload($classname)
+    function __autoload($classname)
     {
         PHPMailerAutoload($classname);
     }

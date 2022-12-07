@@ -300,6 +300,8 @@ class cAdjustStock extends MX_Controller {
             $nASTApvSeqChk      = $this->input->post('pnASTApvSeqChk');
             $nASTPageCurrent    = $this->input->post('pnASTPageCurrent');
 
+            // Page Current 
+            if($nASTPageCurrent == '' || $nASTPageCurrent == null){$nASTPageCurrent = 1;}else{$nASTPageCurrent = $this->input->post('pnASTPageCurrent');}
             // Get Option Show Decimal
             $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
 

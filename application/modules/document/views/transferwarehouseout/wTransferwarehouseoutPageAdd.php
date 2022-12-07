@@ -1266,7 +1266,7 @@ $bIsApvOrCancel = ($bIsApv || $bIsCancel);
 	
 <!-- ============================================================================================================================================================================= -->
 
-<div id="odvTwoModalPDTMoreOne" class="modal fade">
+<div id="odvTwoModalPDTMoreOne" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog" role="document" style="width: 85%; margin: 1.75rem auto;">
             <div class="modal-content">
                 <div class="modal-header">

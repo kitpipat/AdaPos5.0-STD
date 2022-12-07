@@ -519,9 +519,20 @@ class mTaxinvoice extends CI_Model{
 
     //หาที่อยู่ ที่ตาราง TCNMCstAddress_L
     public function FSaMTAXFindAddressCst($ptCutomerCode,$pnSeq){
-        $tSQL   = " SELECT ADDL.*  , CSTL.FTCstName , CST.FTCstTaxNo AS FTAddTaxNo FROM TCNMCstAddress_L ADDL WITH (NOLOCK)
-                    LEFT JOIN TCNMCst_L CSTL ON CSTL.FTCstCode = ADDL.FTCstCode
+        $nLngID = $this->session->userdata("tLangEdit");
+        $tSQL   = " SELECT ADDL.*  , CSTL.FTCstName , CST.FTCstTaxNo AS FTAddTaxNo,
+                        PVN_L.FTPvnCode,
+                        PVN_L.FTPvnName,
+                        DST_L.FTDstCode,
+                        DST_L.FTDstName,
+                        SUD_L.FTSudCode,
+                        SUD_L.FTSudName
+                         FROM TCNMCstAddress_L ADDL WITH (NOLOCK)
+                    LEFT JOIN TCNMCst_L CSTL ON CSTL.FTCstCode = ADDL.FTCstCode AND CSTL.FNLngID = $nLngID
                     LEFT JOIN TCNMCst CST  ON CST.FTCstCode = ADDL.FTCstCode
+                    LEFT JOIN TCNMProvince_L      PVN_L WITH(NOLOCK) ON ADDL.FTAddV1PvnCode = PVN_L.FTPvnCode AND PVN_L.FNLngID = $nLngID
+                    LEFT JOIN TCNMDistrict_L      DST_L WITH(NOLOCK) ON ADDL.FTAddV1DstCode = DST_L.FTDstCode AND DST_L.FNLngID = $nLngID
+                    LEFT JOIN TCNMSubDistrict_L   SUD_L WITH(NOLOCK) ON ADDL.FTAddV1SubDist = SUD_L.FTSudCode AND SUD_L.FNLngID = $nLngID
                     WHERE 1=1 AND ADDL.FTCstCode = '$ptCutomerCode' ";
 
         // if(isset($pnSeq)){
@@ -529,6 +540,7 @@ class mTaxinvoice extends CI_Model{
         // }
 
         $oQuery = $this->db->query($tSQL);
+        // echo $this->db->last_query();
         if ($oQuery->num_rows() > 0) {
             return $oQuery->result();
         }else{
@@ -824,7 +836,7 @@ class mTaxinvoice extends CI_Model{
                             '$dDocDateTime',
                             FTXshCshOrCrd,FTXshVATInOrEx,FTDptCode,FTWahCode,
                             FTPosCode,FTShfCode,FNSdtSeqNo,FTUsrCode,FTSpnCode,
-                            FTXshApvCode,FTCstCode,FTXshDocVatFull,
+                            '$tNameTask',FTCstCode,FTXshDocVatFull,
                             '$tABB' AS FTXshRefExt,
                             FDXshRefExtDate,FTXshRefInt,FDXshRefIntDate,FTXshRefAE,
                             FNXshDocPrint,FTRteCode,FCXshRteFac,FCXshTotal,FCXshTotalNV,FCXshTotalNoDis,
@@ -1095,15 +1107,16 @@ class mTaxinvoice extends CI_Model{
         $FDCreateOn         = date('Y-m-d H:i:s');
         $FTCreateBy         = $this->session->userdata('tSesUsername');
 
-        // $FTAddV1No          = $aPackData['tAddV1No'];
-        // $FTAddV1Soi         = $aPackData['tAddV1Soi'];
-        // $FTAddV1Village     = $aPackData['tAddV1Village'];
-        // $FTAddV1Road        = $aPackData['tAddV1Road'];
+        $FTAddV1No          = $aPackData['tAddV1No'];
+        $FTAddV1Soi         = $aPackData['tAddV1Soi'];
+        $FTAddV1Village     = $aPackData['tAddV1Village'];
+        $FTAddV1Road        = $aPackData['tAddV1Road'];
         $FTAddV1SubDist     = $aPackData['tAddV1SubDistCode'];
         $FTAddV1DstCode     = $aPackData['tAddV1DstCode'];
         $FTAddV1PvnCode     = $aPackData['tAddV1PvnCode'];
         $FTAddV1PostCode    = $aPackData['tAddV1PostCode'];
-
+        $FTAddVersion       = $aPackData['tAddVersion'];
+        
 
         //วิ่งเข้าไปเช็ค 3 Key ว่า ตรงไหม FTAddTaxNo / FNAddSeqNo / FTAddStaBchCode
         $tSQL   = "SELECT Tax.FTAddTaxNo FROM  TCNMTaxAddress_L Tax WITH (NOLOCK) WHERE 1=1
@@ -1119,7 +1132,7 @@ class mTaxinvoice extends CI_Model{
         $aPackData = array(
             'FTCstCode' => $FTCstCode,
             'FTAddName' => $FTAddName,
-            'FTAddVersion' => '2',
+            'FTAddVersion' => $FTAddVersion,
             'FTAddStaBusiness' => $FTAddStaBusiness,
             'FTAddTel' => $FTAddTel,
             'FTAddFax' => $FTAddFax,
@@ -1132,7 +1145,12 @@ class mTaxinvoice extends CI_Model{
             'FTAddV1PvnCode' => $FTAddV1PvnCode,
             'FTAddV1PostCode' => $FTAddV1PostCode,
             'FTAddV2Desc1' => $FTAddV2Desc1,
-            'FTAddV2Desc2' => $FTAddV2Desc2
+            'FTAddV2Desc2' => $FTAddV2Desc2,
+
+            'FTAddV1No' => $FTAddV1No,
+            'FTAddV1Soi' => $FTAddV1Soi,
+            'FTAddV1Village' => $FTAddV1Village,
+            'FTAddV1Road' => $FTAddV1Road
         );
 
         // $this->db->set('FTCstCode',$FTCstCode);
@@ -1324,7 +1342,9 @@ class mTaxinvoice extends CI_Model{
                         HDCST.FTXshCstEmail,
                         HDADR.FTAddStaBusiness,
                         HDADR.FTAddStaHQ,
-                        HDADR.FTAddStaBchCode
+                        HDADR.FTAddStaBchCode,
+                        HDADR.FTAddVersion,
+                        HDADR.FTAddV1No,HDADR.FTAddV1Soi,HDADR.FTAddV1Village,HDADR.FTAddV1Road
                     FROM TPSTTaxHDAddress         HDADR WITH(NOLOCK)
                     INNER JOIN TPSTTaxHD             HD WITH(NOLOCK) ON HDADR.FTBchCode = HD.FTBchCode AND HDADR.FTXshDocNo = HD.FTXshDocNo
                     LEFT JOIN TPSTTaxHDCst        HDCST WITH(NOLOCK) ON HDADR.FTBchCode = HDCST.FTBchCode AND HDADR.FTXshDocNo = HDCST.FTXshDocNo
