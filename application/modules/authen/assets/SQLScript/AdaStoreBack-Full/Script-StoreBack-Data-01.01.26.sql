@@ -975,3 +975,15 @@ INSERT INTO [TSysRsnGrp_L] ([FTRsgCode], [FNLngID], [FTRsgName], [FTRsgRmk]) VAL
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.25', getdate() , 'เพิ่มกลุ่มเหตุผลใหม่สำหรับยกเลิกใบกำกับภาษี', 'Nale')
 END
 GO
+
+
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.26') BEGIN
+
+
+UPDATE TSysRsnGrp_L SET FTRsgName = 'ใบกำกับภาษี' WHERE FTRsgCode = '017';
+UPDATE TSysRsnGrp_L SET FTRsgName = 'ใบลดหนี้' WHERE FTRsgCode = '018';
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.26', getdate() , 'แก้ไขชื่อหตุผลใหม่สำหรับยกเลิกใบกำกับภาษี', 'Nale')
+END
+GO

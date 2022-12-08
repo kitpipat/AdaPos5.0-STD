@@ -4,8 +4,29 @@
         <title><?php echo BASE_TITLE; ?></title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" id="omtMetaViewport">
+        <script>
+            function JCNtDetectDevice() {
+            var ua = navigator.userAgent;
+                if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+                    return "tablet";
+                }
+                else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+                    return "mobile";
+                }
+                return "desktop";
+            }
 
+           var tDevice = JCNtDetectDevice();
+           console.log(tDevice);
+           if(tDevice=='tablet'){
+            document.getElementById("omtMetaViewport").setAttribute("content", "width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=0");  
+           }else if(tDevice=='mobile'){
+            document.getElementById("omtMetaViewport").setAttribute("content", "width=device-width, initial-scale=0.3, maximum-scale=0.3, user-scalable=0");  
+           }else if(tDevice=='desktop'){
+            document.getElementById("omtMetaViewport").setAttribute("content", "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0");  
+           }
+        </script>
         <!-- ICONS -->
         <link rel="apple-touch-icon" sizes="76x76" href="<?php echo base_url(); ?>application/modules/common/assets/images/AdaLogo-ico.ico?v=1">
         <link rel="icon" type="image/png" sizes="96x96" href="<?php echo base_url(); ?>application/modules/common/assets/images/AdaLogo-ico.ico?v=1">
@@ -63,7 +84,6 @@
 
         <!-- jQuery UI -->
         <link rel="stylesheet" href="<?php echo base_url('application/modules/common/assets/vendor/jquery-ui/jquery-ui.css'); ?>">
-        
 
         <!-- Javascript -->
         <input type="hidden" id="ohdBaseURL" name="ohdBaseURL" value="<?php echo base_url(); ?>">
