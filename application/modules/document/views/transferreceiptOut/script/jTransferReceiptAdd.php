@@ -1,118 +1,48 @@
 <script type="text/javascript">
-    var nLangEdits          = '<?= $this->session->userdata("tLangEdit"); ?>';
-    var tUsrApv             = '<?= $this->session->userdata("tSesUsername"); ?>';
-    var tUsrBchCode         = '<?= $this->session->userdata("tSesUsrBchCode"); ?>';
-    var tTWIDocType         = '<?= $tTWIDocType; ?>';
-    var tTWIRsnType         = '<?= $tTWIRsnType; ?>';
-    var tTWIStaDoc          = '<?= $tTWIStaDoc; ?>';
-    var tTWIStaApvDoc       = '<?= $tTWIStaApv; ?>';
-    var tTWIStaPrcStkDoc    = '<?= $tTWIStaPrcStk; ?>';
-    var tTWIRoute           = '<?= $tTWIRoute; ?>';
-    var tStatusRef          = $('#oetTWIRefIntDoc').val() == '' ? '1' : '2' ;
-
-    // Get Data Check Permision Compare Month
-    var tAutStaCancel       = $('#ohdTWIAutStaCancel').val();
-    var tDocDateCreate      = $('#ohdTWIDocDateCreate').val();
-    var tDocDateNowToday    = $('#ohdTWIDateNowToday').val();
-    $(document).keypress(
-		function(event) {
-			if (event.which == '13') {
-				event.preventDefault();
-			}
-		}
-	);
-
+    var nLangEdits = '<?php echo $this->session->userdata("tLangEdit"); ?>';
+    var tUsrApv = '<?php echo $this->session->userdata("tSesUsername"); ?>';
+    var tUsrBchCode = '<?php echo $this->session->userdata("tSesUsrBchCode"); ?>';
+    var tTWIDocType = '<?= $tTWIDocType; ?>';
+    var tTWIRsnType = '<?= $tTWIRsnType; ?>';
+    var tTWIStaDoc = '<?= $tTWIStaDoc; ?>';
+    var tTWIStaApvDoc = '<?= $tTWIStaApv; ?>';
+    var tTWIStaPrcStkDoc = '<?= $tTWIStaPrcStk; ?>';
+    var tTWIRoute = '<?= $tTWIRoute; ?>';
     $(document).ready(function() {
 
         $('#odvTRNOut').css('display', 'none');
         $('#odvTRNIn').css('display', 'block');
+
         $('#obtTWIConfirmApprDoc').click(function() {
             JSxTRNTransferReceiptStaApvDoc(true);
         });
+
+        //เอกสารถูกยกเลิก
         if (tTWIStaDoc == 3 || tTWIStaApvDoc == 1) {
-            $('#odvTWIMngAdvTableList').hide();
-            $('#odvTWIMngDelPdtInTableDT').hide();
-            $('#obtTWIDocBrowsePdt').hide();
-        }
-        $("#obtTWISubmitFromDoc").removeAttr("disabled");
-
-
-        // เอกสารถูกยกเลิก
-        if(tTWIStaDoc == 3) {
             $('#obtTrnOutPrintDoc').show();
             $('#obtTWICancelDoc').hide();
             $('#obtTWIApproveDoc').hide();
-            $('#odvTWIBtnGrpSave').show();
-            // วันที่ + เวลา
+            $('#odvTWIBtnGrpSave').hide();
+
+            //วันที่ + เวลา
             $('#oetTWIDocDate').attr('disabled', true);
             $('#oetTWIDocTime').attr('disabled', true);
-            $('.xCNControllDateTime').attr('disabled', true);
+            $('.xCNBtnDateTime').attr('disabled', true);
             $('.xWDropdown').attr('disabled',true);
-            $('#otaTWIFrmInfoOthRmk').removeAttr('disabled', true);
-            // ประเภท
-            $('#ocmSelectTransferDocument').attr('disabled', true);
-            $('#ocmSelectTransTypeIN').attr('disabled', true);
-            $('#oetTWIINEtc').attr('disabled', true);
-            $('.xCNApvOrCanCelDisabled').attr('disabled', true);
-            $(".xCNDocBrowsePdt").attr("disabled", true).addClass("xCNBrowsePdtdisabled");
-        } else if (tTWIStaDoc == 1 && tTWIStaApvDoc == 1 && tStatusRef != 2) {
-            // เอกสารอนุมัติแล้วแต่ไม่ได้ถูกอ้างอิง
-            $('#obtTWICancelDoc').show();
-            $('#obtTWIApproveDoc').hide();
-            $('#odvTWIBtnGrpSave').show();
-            $('#otaTWIFrmInfoOthRmk').removeAttr('disabled', true);
-            // วันที่ + เวลา
-            $('#oetTWIDocDate').attr('disabled', true);
-            $('#oetTWIDocTime').attr('disabled', true);
-            $('.xCNControllDateTime').attr('disabled', true);
-            $('.xWDropdown').attr('disabled',true);
-            // ประเภท
-            $('#ocmSelectTransferDocument').attr('disabled', true);
-            $('#ocmSelectTransTypeIN').attr('disabled', true);
-            $('#oetTWIINEtc').attr('disabled', true);
-            $('.xCNApvOrCanCelDisabled').attr('disabled', true);
-            $(".xCNDocBrowsePdt").attr("disabled", true).addClass("xCNBrowsePdtdisabled");
-            // เช็คเดือนที่สร้างไม่ เท่ากับ เดือนปัจจุบัน วิ่งไปเช็คสิทธิ์ต่อ
-            if(tDocDateCreate != tDocDateNowToday){
-                if(tAutStaCancel == '1'){
-                    // มีสิทธิ์ Cancel เอกสารได้
-                    $('#obtTWICancelDoc').show();
-                }else{
-                    $('#obtTWICancelDoc').hide();
-                }
-            }else{
-                $('#obtTWICancelDoc').hide();
-            }
-        } else if (tTWIStaDoc == 1 && tTWIStaApvDoc == 1 && tStatusRef == 2) {
-            // เอกสารอนุมัติแล้วและถูกอ้างอิงแล้ว
-            $('#obtTrnOutPrintDoc').show();
-            if(tTWIStaPrcStkDoc == '') {
-                $('#obtTWICancelDoc').show();
-            }else{
-                $('#obtTWICancelDoc').hide();
-            }
-            $('#obtTWICancelDoc').show();
-            $('#obtTWIApproveDoc').hide();
-            $('#odvTWIBtnGrpSave').show();
-            $('#otaTWIFrmInfoOthRmk').removeAttr('disabled', true);
-            // วันที่ + เวลา
-            $('#oetTWIDocDate').attr('disabled', true);
-            $('#oetTWIDocTime').attr('disabled', true);
-            $('.xCNControllDateTime').attr('disabled', true);
-            $('.xWDropdown').attr('disabled',true);
-            // ประเภท
+
+            //ประเภท
             $('#ocmSelectTransferDocument').attr('disabled', true);
             $('#ocmSelectTransTypeIN').attr('disabled', true);
             $('#oetTWIINEtc').attr('disabled', true);
             $('.xCNApvOrCanCelDisabled').attr('disabled', true);
             $(".xCNDocBrowsePdt").attr("disabled", true).addClass("xCNBrowsePdtdisabled");
         } else {
+
             if (tTWIStaDoc == 1 && tTWIRoute == 'dcmTXOOutEventEdit') {
                 $('#obtTrnOutPrintDoc').show();
                 $('#obtTWICancelDoc').show();
                 $('#obtTWIApproveDoc').show();
                 $('#odvTWIBtnGrpSave').show();
-
             } else {
                 $('#odvTWIBtnGrpSave').show();
                 $('#obtTrnOutPrintDoc').hide();
@@ -120,7 +50,6 @@
                 $('#obtTWIApproveDoc').hide();
             }
         }
-
 
         $('.selectpicker').selectpicker('refresh');
 
@@ -215,18 +144,11 @@
                 if (tTWIRsnType == 3) { //ผู้จำหน่าย
                     $("#ocmSelectTransTypeIN option[value=SPL]").attr('selected', 'selected');
                     $('#odvINWhereSPL').css('display', 'block');
-                    $('#odvINWhereCUS').css('display', 'none');
                     $('#odvINWhereETC').css('display', 'none');
-                } else if (tTWIRsnType == 4)  { // แหล่งอื่น
+                } else { // แหล่งอื่น
                     $("#ocmSelectTransTypeIN option[value=ETC]").attr('selected', 'selected');
                     $('#odvINWhereSPL').css('display', 'none');
-                    $('#odvINWhereCUS').css('display', 'none');
                     $('#odvINWhereETC').css('display', 'block');
-                } else{
-                    $("#ocmSelectTransTypeIN option[value=CUS]").attr('selected', 'selected');
-                    $('#odvINWhereSPL').css('display', 'none');
-                    $('#odvINWhereCUS').css('display', 'block');
-                    $('#odvINWhereETC').css('display', 'none');
                 }
             }
             $('.selectpicker').selectpicker('refresh');
@@ -253,6 +175,14 @@
                 $('.xCNClearValue').val('');
             }
         });
+
+
+        $('#ocmTWIFrmSplInfoVatInOrEx').change(function(){
+            JCNxOpenLoading();
+            JSvTRNLoadPdtDataTableHtml();
+
+        });
+
 
         // ===================================== เลือกสินค้า =====================================
         $('#obtTWIDocBrowsePdt').unbind().click(function() {
@@ -770,15 +700,20 @@
     ///////[เอกสารรับเข้า]
 
     //เลือกประเภทผู้จำหน่าย - จากแบบ => ประเภทผู้จำหน่าย
+    var tSessionAgnCode = '<?php echo $tAgnCode; ?>';
+    var tWherecondition = "";
+    if(tSessionAgnCode!=''){
+        tWherecondition  += "AND TCNMSpl.FTAgnCode = '"+tSessionAgnCode+"' OR  ISNULL(TCNMSpl.FTAgnCode,'') = '' ";
+    }
     var oBrowseTRINFromSpl = {
         Title: ['supplier/supplier/supplier', 'tSPLTitle'],
         Table: {
             Master: 'TCNMSpl',
             PK: 'FTSplCode'
         },
-        // Where :{
-        //     // Condition : ["AND TCNMSpl.FTAgnCode = '<?php echo $tAgnCode; ?>' "],
-        // },
+        Where :{
+            Condition : [tWherecondition + " AND TCNMSpl.FTSplStaActive = '1' "],
+        },
         Join: {
             Table: ['TCNMSpl_L'],
             On: ['TCNMSpl_L.FTSplCode = TCNMSpl.FTSplCode AND TCNMSpl_L.FNLngID = ' + nLangEdits]
@@ -787,8 +722,9 @@
             ColumnPathLang: 'supplier/supplier/supplier',
             ColumnKeyLang: ['tSPLTBCode', 'tSPLTBName'],
             ColumnsSize: ['10%', '75%'],
-            DataColumns: ['TCNMSpl.FTSplCode', 'TCNMSpl_L.FTSplName'],
+            DataColumns: ['TCNMSpl.FTSplCode', 'TCNMSpl_L.FTSplName', 'TCNMSpl.FTSplStaVATInOrEx'],
             DataColumnsFormat: ['', ''],
+            DisabledColumns  : [2],
             WidthModal: 50,
             Perpage: 10,
             OrderBy: ['TCNMSpl.FDCreateOn DESC'],
@@ -799,11 +735,28 @@
             Value: ["oetTRINSplCode", "TCNMSpl.FTSplCode"],
             Text: ["oetTRINSplName", "TCNMSpl_L.FTSplName"],
         },
+        NextFunc:{
+                    FuncName    : 'JSxTWISetVatType',
+                    ArgReturn   : ['FTSplCode','FTSplName','FTSplStaVATInOrEx']
+                },
     }
+
     $('#obtBrowseTRINFromSpl').click(function() {
         JCNxBrowseData('oBrowseTRINFromSpl');
     });
 
+    function JSxTWISetVatType(poDataNextFunc){
+        if(typeof(poDataNextFunc) != undefined && poDataNextFunc != "NULL"){
+                JCNxOpenLoading();
+                aDataNextFunc   = JSON.parse(poDataNextFunc);
+                tTWISplCode      = aDataNextFunc[0];
+                tTWISplName      = aDataNextFunc[1];
+                tTWISplStaVATInOrEx  = aDataNextFunc[2];
+                $('#ocmTWIFrmSplInfoVatInOrEx.selectpicker').val(tTWISplStaVATInOrEx).selectpicker("refresh");
+                JSvTRNLoadPdtDataTableHtml();
+            }
+
+    }
     //เลือกร้านค้า - จากแบบ => ประเภทผู้จำหน่าย
     var oBrowseTRINFromShp = {
         Title: ['company/shop/shop', 'tSHPTitle'],
@@ -841,36 +794,6 @@
             ArgReturn: ['FTShpCode']
         }
     }
-
-    // เบาวน์  Customer
-    $('#obtBrowseTRINFromCus').click(function(){JCNxBrowseData('oBrowseTRINFromCus')});
-    var oBrowseTRINFromCus = {
-        Title   : ['document/transferreceiptOut/transferreceiptOut','tINCUS'],
-        Table   : {Master:'TCNMCst',PK:'FTCstCode'},
-        Join    : {
-            Table:	['TCNMCst_L'],
-            On:[' TCNMCst.FTCstCode = TCNMCst_L.FTCstCode AND TCNMCst_L.FNLngID = '+nLangEdits,] //+ tJoinBranch + tJoinShop
-        },
-        Where:{
-            Condition : ["AND TCNMCst.FTCstStaActive = '1' "]
-        },
-        GrideView:{
-            ColumnPathLang	: 'document/transferreceiptOut/transferreceiptOut',
-            ColumnKeyLang	: ['tINCUSId','tINCUSName'],
-            ColumnsSize     : ['10%','80%'],
-            WidthModal      : 50,
-            DataColumns		: ['TCNMCst.FTCstCode','TCNMCst_L.FTCstName'],
-            DataColumnsFormat : ['',''],
-            Perpage			: 10,
-            OrderBy			: ['TCNMCst.FTCstCode DESC'],
-        },
-        CallBack:{
-            ReturnType	: 'S',
-            Value		: ["oetTRINCusCode","TCNMCst.FTCstCode"],
-            Text		: ["oetTRINCusName","TCNMCst_L.FTCstName"],
-        }
-    }
-
     $('#obtBrowseTRINFromShp').click(function() {
         //กรณีเข้ามาแบบสาขา ต้องโชว์ร้านค้าเฉพาะของสาขา
         if ('<?= $this->session->userdata("tSesUsrLevel") ?>' == 'BCH') {
@@ -969,15 +892,7 @@
         if ($('#oetSOFrmBchCode').val() != '') {
             //เลือกคลังที่สาขา
             var tBCH = $('#oetSOFrmBchCode').val();
-
-            //User สาขาจะมองไม่เห็นคลังของเสีย
-            if($('#ohdTWOnStaWasteWAH').val() == ""){
-                var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2','3','4','5','6','7','8','9') ";
-            }else{
-                var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2','3','4','5','6','7','8','9','10') ";
-            }
-            
-            oBrowseTRINToWah_BCH.Where.Condition = ["AND TCNMWaHouse.FTBchCode = '" + tBCH + "' " + tFindWahouse + " "];
+            oBrowseTRINToWah_BCH.Where.Condition = ["AND TCNMWaHouse.FTBchCode = '" + tBCH + "' AND TCNMWaHouse.FTWahStaType IN('2','1') "];
             JCNxBrowseData('oBrowseTRINToWah_BCH');
         }
     });
@@ -1035,7 +950,8 @@
             DataColumns: ['TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'],
             DataColumnsFormat: ['', ''],
             Perpage: 10,
-            OrderBy: ['TCNMWaHouse.FDCreateOn DESC']
+            OrderBy: ['TCNMWaHouse_L.FTWahCode'],
+            SourceOrder: "ASC"
         },
         CallBack: {
             ReturnType: 'S',
@@ -1043,37 +959,6 @@
             Text: ["oetTRINWahEtcName", "TCNMWaHouse_L.FTWahName"],
         }
     }
-
-    var oBrowseTRINEtcWah2 = {
-        Title: ['company/shop/shop', 'tSHPWah'],
-        Table: {
-            Master: 'TCNMWaHouse',
-            PK: 'FTWahCode'
-        },
-        Join: {
-            Table: ['TCNMWaHouse_L'],
-            On: ['TCNMWaHouse_L.FTWahCode = TCNMWaHouse.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits, ]
-        },
-        Where: {
-            Condition: []
-        },
-        GrideView: {
-            ColumnPathLang: 'company/shop/shop',
-            ColumnKeyLang: ['tWahCode', 'tWahName'],
-            ColumnsSize: ['15%', '75%'],
-            WidthModal: 50,
-            DataColumns: ['TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'],
-            DataColumnsFormat: ['', ''],
-            Perpage: 10,
-            OrderBy: ['TCNMWaHouse.FDCreateOn DESC']
-        },
-        CallBack: {
-            ReturnType: 'S',
-            Value: ["oetTRINWahEtcCodeETC", "TCNMWaHouse.FTWahCode"],
-            Text: ["oetTRINWahEtcNameETC", "TCNMWaHouse_L.FTWahName"],
-        }
-    }
-
     $('#obtBrowseTRINEtcWah').click(function() {
 
         if ('<?= $this->session->userdata("tSesUsrLevel") ?>' == 'SHP') {
@@ -1083,34 +968,8 @@
             JCNxBrowseData('oBrowseTRINToWah_SHP');
         } else {
             var tBCH = $('#oetSOFrmBchCode').val();
-            //User สาขาจะมองไม่เห็นคลังของเสีย
-            if($('#ohdTWOnStaWasteWAH').val() == ""){
-                var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2','3','4','5','6','7','8','9') ";
-            }else{
-                var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2','3','4','5','6','7','8','9','10') ";
-            }
-            oBrowseTRINEtcWah.Where.Condition = ["AND TCNMWaHouse.FTBchCode = '" + tBCH + "' " + tFindWahouse + " "];
+            oBrowseTRINEtcWah.Where.Condition = ["AND TCNMWaHouse.FTBchCode = '" + tBCH + "' AND TCNMWaHouse.FTWahStaType IN('2','1') "];
             JCNxBrowseData('oBrowseTRINEtcWah');
-        }
-    });
-
-    $('#obtBrowseTRINEtcWah2').click(function() {
-
-        if ('<?= $this->session->userdata("tSesUsrLevel") ?>' == 'SHP') {
-            var tBCH = '<?= $this->session->userdata("tSesUsrBchCom") ?>';
-            var tSHP = '<?= $this->session->userdata("tSesUsrShpCode") ?>';
-            oBrowseTRINToWah_SHP.Where.Condition = ["AND TCNMShpWah.FTShpCode = '" + tSHP + "' AND TCNMShpWah.FTBchCode = '" + tBCH + "' "];
-            JCNxBrowseData('oBrowseTRINToWah_SHP');
-        } else {
-            var tBCH = $('#oetSOFrmBchCode').val();
-            //User สาขาจะมองไม่เห็นคลังของเสีย
-            if($('#ohdTWOnStaWasteWAH').val() == ""){
-                var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2','3','4','5','6','7','8','9') ";
-            }else{
-                var tFindWahouse = " AND TCNMWaHouse.FTWahStaType IN('1','2','3','4','5','6','7','8','9','10') ";
-            }
-            oBrowseTRINEtcWah2.Where.Condition = ["AND TCNMWaHouse.FTBchCode = '" + tBCH + "' " + tFindWahouse + " "];
-            JCNxBrowseData('oBrowseTRINEtcWah2');
         }
     });
 
@@ -1126,9 +985,6 @@
             On: [
                 'TCNMRsn.FTRsnCode = TCNMRsn_L.FTRsnCode AND TCNMRsn_L.FNLngID = ' + nLangEdits
             ]
-        },
-        Where: {
-            Condition : ["  AND TCNMRsn.FTRsgCode = '004' "]
         },
         GrideView: {
             ColumnPathLang: 'other/reason/reason',
@@ -1239,7 +1095,6 @@
         var tWahCode_Input_To = $('#oetTROutWahToCode').val();
         var tWahCode_Output_Spl = $('#oetTRINWahCodeTo').val();
         var tWahCode_Output_Etc = $('#oetTRINWahEtcName').val();
-        var tWahCode_Output_Cus = $('#oetTRINWahEtcName').val();
         var tTypeDocument = 'OUT';
         let tBchCode = "";
         if (tUsrBchCode != '') {
@@ -1273,12 +1128,6 @@
                             return;
                         }
                     } else if (tTypeDocumentIN == 'ETC') {
-                        if ($('#oetTRINWahEtcCodeETC').val() == '') {
-                            $('#odvWTIModalWahIsEmpty').modal('show');
-                            $('#ospWahIsEmpty').html('<?= language('document/transferreceiptNew/transferreceiptNew', 'tWahINDocumentISEmptyDetail') ?>');
-                            return;
-                        }
-                    } else if (tTypeDocumentIN == 'CUS') {
                         if ($('#oetTRINWahEtcCode').val() == '') {
                             $('#odvWTIModalWahIsEmpty').modal('show');
                             $('#ospWahIsEmpty').html('<?= language('document/transferreceiptNew/transferreceiptNew', 'tWahINDocumentISEmptyDetail') ?>');
@@ -1308,8 +1157,7 @@
                 SPL: [$('#oetTRINSplCode').val(), $('#oetTRINSplCode').val()],
                 BCH: [$('#oetSOFrmBchCode').val(), ''],
                 MCH: ['', ''],
-                SHP: [$('#oetTROutShpFromCode').val(), $('#oetTROutShpFromName').val()],
-                'Where' : [" AND Products.FTPdtStkControl = 1"]
+                SHP: [$('#oetTROutShpFromCode').val(), $('#oetTROutShpFromName').val()]
             },
             cache: false,
             timeout: 0,
@@ -1342,7 +1190,9 @@
             if ($("#ohdTWIRoute").val() == "dcmTXOOutEventEdit") {
                 ptXthDocNoSend = $("#oetTWIDocNo").val();
             }
-            // console.log(ptPdtData);
+
+            var nTWIFrmSplInfoVatInOrEx = $('#ocmTWIFrmSplInfoVatInOrEx').val();
+            console.log(ptPdtData);
             $.ajax({
                 type: "POST",
                 url: "TXOOutTransferReceiptAddPdtIntoDTDocTemp",
@@ -1350,7 +1200,8 @@
                     'tTWIDocNo': ptXthDocNoSend,
                     'tTWIPdtData': ptPdtData,
                     'tBCH': $('#oetSOFrmBchCode').val(),
-                    'tType': 'PDT'
+                    'tType': 'PDT',
+                    'nTWIFrmSplInfoVatInOrEx':nTWIFrmSplInfoVatInOrEx
                 },
                 cache: false,
                 timeout: 0,
@@ -1360,7 +1211,8 @@
                     // console.log(aData);
                     var oOptionForFashion = {
                         'bListItemAll'  : false,
-                        'tSpcControl'  : 0
+                        'tSpcControl'  : 0,
+                        'tNextFunc' : 'FSvTWIAddPdtIntoDocDTTemp'
                     }
                     JSxCheckProductSerialandFashion(aData,oOptionForFashion,'insert');
                 },
@@ -1381,7 +1233,7 @@
             if ($("#ohdTWIRoute").val() == "dcmTXOOutEventEdit") {
                 ptXthDocNoSend = $("#oetTWIDocNo").val();
             }
-
+        var nTWIFrmSplInfoVatInOrEx = $('#ocmTWIFrmSplInfoVatInOrEx').val();
         $.ajax({
                 type: "POST",
                 url: "TXOOutTransferReceiptAddPdtIntoDTFhnTemp",
@@ -1389,7 +1241,8 @@
                     'tTWIDocNo': ptXthDocNoSend,
                     'tTWIPdtDataFhn': ptPdtDataFhn,
                     'tBCH': $('#oetSOFrmBchCode').val(),
-                    'tType': 'PDT'
+                    'tType': 'PDT',
+                    'nTWIFrmSplInfoVatInOrEx':nTWIFrmSplInfoVatInOrEx
                 },
                 cache: false,
                 timeout: 0,
@@ -1425,7 +1278,7 @@
     function JSnTWIRemovePdtDTTempSingle(ptSeqNo, ptPdtCode) {
         var tTWIDocNo = $("#oetTWIDocNo").val();
         var tTWIBchCode = $('#oetSOFrmBchCode').val();
-        var tTWIVatInOrEx = 1;
+        var tTWIVatInOrEx = $('#ocmTWIFrmSplInfoVatInOrEx').val();
         JCNxOpenLoading();
         $.ajax({
             type: "POST",
@@ -1524,7 +1377,7 @@
         JCNxOpenLoading();
         var tTWIDocNo = $("#oetTWIDocNo").val();
         var tTWIBchCode = $('#oetSOFrmBchCode').val();
-        var tTWIVatInOrEx = 1;
+        var tTWIVatInOrEx = $('#ocmTWIFrmSplInfoVatInOrEx').val();
         var aDataPdtCode = JSoTWIRemoveCommaData($('#odvTWIModalDelPdtInDTTempMultiple #ohdConfirmTWIPdtCodeDelete').val());
         var aDataPunCode = JSoTWIRemoveCommaData($('#odvTWIModalDelPdtInDTTempMultiple #ohdConfirmTWIPunCodeDelete').val());
         var aDataSeqNo = JSoTWIRemoveCommaData($('#odvTWIModalDelPdtInDTTempMultiple #ohdConfirmTWISeqNoDelete').val());
@@ -1587,28 +1440,11 @@
         var nStaSession = JCNxFuncChkSessionExpired();
         if (typeof(nStaSession) !== "undefined" && nStaSession == 1) {
 
-            var bCheckQTYZero = false;
-            $("#otbTWIDocPdtAdvTableList tbody tr ").each(function( index ) {
-                var nIndex = $(this).attr('data-index');
-                var nValue = $(this).find('td').find('#ohdQty'+nIndex).val();
-
-                if(nValue == '0.00' || nValue == 0.00 || nValue == 0){
-                    bCheckQTYZero = true;
-                    return false;
-                }
-            });
-
-            if(bCheckQTYZero == true){
-                FSvCMNSetMsgWarningDialog('พบรายการสินค้าที่เป็นจำนวน 0 ชิ้น');
-                return;
-            }
-
-            //ถ้าค่าไม่สมบูรณ์ไม่อนุญาตให้บันทึก
+            //ถ้าค่าไม่สมบูรณ์ไม่อนุญาติให้บันทึก
             var tWahCode_Input_Origin = $('#oetTROutWahFromCode').val();
             var tWahCode_Input_To = $('#oetTROutWahToCode').val();
             var tWahCode_Output_Spl = $('#oetTRINWahCodeTo').val();
             var tWahCode_Output_Etc = $('#oetTRINWahEtcName').val();
-            var tWahCode_Output_Cus = $('#oetTRINWahEtcName').val();
             var tTypeDocument = 'OUT';
 
             if (tTypeDocument == 0) {
@@ -1636,19 +1472,25 @@
                                 $('#ospWahIsEmpty').html('<?= language('document/transferreceiptNew/transferreceiptNew', 'tWahINDocumentISEmptyDetail') ?>');
                                 return;
                             }
+                            if ($('#oetTRINSplCode').val() == '') {
+                                $('#odvWTIModalWahIsEmpty').modal('show');
+                                $('#ospWahIsEmpty').html('<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIValidateSpl') ?>');
+                                return;
+                            }
                         } else if (tTypeDocumentIN == 'ETC') {
                             if ($('#oetTRINWahEtcCode').val() == '') {
                                 $('#odvWTIModalWahIsEmpty').modal('show');
                                 $('#ospWahIsEmpty').html('<?= language('document/transferreceiptNew/transferreceiptNew', 'tWahINDocumentISEmptyDetail') ?>');
                                 return;
                             }
-                        } else if (tTypeDocumentIN == 'CUS') {
-                        if ($('#oetTRINWahEtcCode').val() == '') {
-                            $('#odvWTIModalWahIsEmpty').modal('show');
-                            $('#ospWahIsEmpty').html('<?= language('document/transferreceiptNew/transferreceiptNew', 'tWahINDocumentISEmptyDetail') ?>');
-                            return;
+
+                            if ($('#oetTWIINEtc').val() == '') {
+                                $('#odvWTIModalWahIsEmpty').modal('show');
+                                $('#ospWahIsEmpty').html('<?= language('document/transferreceiptOut/transferreceiptOut', 'tTWIValidateOther') ?>');
+                                return;
+                            }
+                            
                         }
-                      }
                     }
                 }
             }
@@ -1660,7 +1502,7 @@
     });
 
     //อีเวนท์บันทึก - แก้ไข
-    function JSxTransferreceiptEventAddEdit(ptRoute,ptType = '') {
+    function JSxTransferreceiptEventAddEdit(ptRoute) {
             $('#ofmTransferreceiptFormAdd').validate({
                 rules: {
                     oetTWIDocNo:  {
@@ -1716,23 +1558,7 @@
                 },
                 submitHandler: function(form) {
                     var tItem = $('#odvTWIDataPdtTableDTTemp #otbTWIDocPdtAdvTableList .xWPdtItem').length;
-                   
                     if (tItem > 0) {
-
-                        //วันที่ + เวลา
-                        $('#oetTWIDocDate').removeAttr('disabled', true);
-                        $('#oetTWIDocTime').removeAttr('disabled', true);
-                        $('.xCNControllDateTime').removeAttr('disabled', true);
-                        $('.xWDropdown').removeAttr('disabled',true);
-
-                        //ประเภท
-                        $('#ocmSelectTransferDocument').removeAttr('disabled', true);
-                        $('#ocmSelectTransTypeIN').removeAttr('disabled', true);
-                        $('#oetTWIINEtc').removeAttr('disabled', true);
-                        $('.xCNApvOrCanCelDisabled').removeAttr('disabled', true);
-                        $(".xCNDocBrowsePdt").removeAttr("disabled", true).addClass("xCNBrowsePdtdisabled");
-                        $("#obtTWISubmitFromDoc").attr('disabled','true');
-
                         $.ajax({
                             type: "POST",
                             url: ptRoute,
@@ -1740,39 +1566,23 @@
                             cache: false,
                             timeout: 0,
                             success: function(tResult) {
+                                // console.log(tResult);
                                 var aReturn = JSON.parse(tResult);
-                                if(ptType == 'approve'){
-
-                                }else{
-                                    if (aReturn['nStaReturn'] == 1) {
-                                        if (aReturn['nStaCallBack'] == '1' || aReturn['nStaCallBack'] == null) {
-                                            JSvTWICallPageEdit(aReturn['tCodeReturn']);
-                                        } else if (aReturn['nStaCallBack'] == '2') {
-                                            JSvTRNTransferReceiptAdd();
-                                        } else if (aReturn['nStaCallBack'] == '3') {
-                                            JSvTRNCallPageTransferReceipt(1);
-                                        }
-                                    } else {
-                                        alert(aReturn['tStaMessg']);
+                                if (aReturn['nStaReturn'] == 1) {
+                                    if (aReturn['nStaCallBack'] == '1' || aReturn['nStaCallBack'] == null) {
+                                        JSvTWICallPageEdit(aReturn['tCodeReturn']);
+                                    } else if (aReturn['nStaCallBack'] == '2') {
+                                        JSvTRNTransferReceiptAdd();
+                                    } else if (aReturn['nStaCallBack'] == '3') {
+                                        JSvTRNCallPageTransferReceipt(1);
                                     }
+                                } else {
+                                    alert(aReturn['tStaMessg']);
                                 }
-                                $("#obtTWISubmitFromDoc").removeAttr("disabled");
-                                var nDODocNoCallBack    = aReturn['tCodeReturn'];
-                                var oDOCallDataTableFile = {
-                                    ptElementID : 'odvDOShowDataTable',
-                                    ptBchCode   : $('#oetSOFrmBchCode').val(),
-                                    ptDocNo     : nDODocNoCallBack,
-                                    ptDocKey    :'TCNTPdtTwiHD',
-                                }
-                                JCNxUPFInsertDataFile(oDOCallDataTableFile);
-
                                 JCNxCloseLoading();
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
-                                 console.log(jqXHR);
-                                console.log(textStatus);
                                 JCNxResponseError(jqXHR, textStatus, errorThrown);
-                                $("#obtTWISubmitFromDoc").removeAttr("disabled");
                             }
                         });
                     } else {
@@ -1797,7 +1607,7 @@
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
             var tTWIDocNo = $("#oetTWIDocNo").val();
             var tTWIBchCode = $("#ohdTWIBchCode").val();
-            var tTWIVATInOrEx = $('#ohdTWIFrmSplInfoVatInOrEx').val();
+            var tTWIVATInOrEx = $('#ocmTWIFrmSplInfoVatInOrEx').val();
             $.ajax({
                 type: "POST",
                 url: "TXOOutTransferReceiptEventEditInline",
@@ -1827,19 +1637,6 @@
     function JSvTWIDOCFilterPdtInTableTemp() {
         JCNxOpenLoading();
         JSvTRNLoadPdtDataTableHtml();
-    }
-
-    //ค้นหาสินค้าใน TEMP
-    function JSvDOCSearchPdtHTML() {
-        var value = $("#oetSearchPdtHTML").val().toLowerCase();
-        $("#otbTWIDocPdtAdvTableList tbody tr ").filter(function () {
-            tText = $(this).toggle(
-            $(this)
-                .text()
-                .toLowerCase()
-                .indexOf(value) > -1
-            );
-        });
     }
 
     //Next page ในตารางสินค้า Tmp

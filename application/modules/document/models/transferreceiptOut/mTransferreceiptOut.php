@@ -5,13 +5,18 @@ class mTransferreceiptOut extends CI_Model
 {
 
     //Data List
-    public function FSaMTRNList($paData){
+    public function FSaMTRNList($paData)
+    {
         $aRowLen = FCNaHCallLenData($paData['nRow'], $paData['nPage']);
         $nLngID = $paData['FNLngID'];
         $tSQL = "
-            SELECT  c.* FROM(
-                SELECT * FROM(
-                    SELECT TOP ".get_cookie('nShowRecordInPageList')."
+            SELECT 
+                c.* 
+            FROM(
+                SELECT 
+                    ROW_NUMBER() OVER(ORDER BY FDCreateOn DESC, FTXthDocNo DESC) AS FNRowID,* 
+                FROM
+                    (SELECT DISTINCT
                         TWI.FTBchCode,
                         BCHL.FTBchName,
                         TWI.FTXthDocNo,
@@ -25,40 +30,29 @@ class mTransferreceiptOut extends CI_Model
                         TWI.FTXthApvCode,
                         USRLAPV.FTUsrName AS FTXthApvName
                     FROM [TCNTPdtTwiHD] TWI WITH (NOLOCK)
-                    LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON TWI.FTBchCode = BCHL.FTBchCode AND BCHL.FNLngID = ".$this->db->escape($nLngID)." 
-                    LEFT JOIN TCNMUser_L USRL WITH (NOLOCK) ON TWI.FTUsrCode = USRL.FTUsrCode AND USRL.FNLngID = ".$this->db->escape($nLngID)."
-                    LEFT JOIN TCNMUser_L USRLAPV WITH (NOLOCK) ON TWI.FTXthApvCode = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = ".$this->db->escape($nLngID)."
-                    WHERE TWI.FDCreateOn <> ''
+                    LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON TWI.FTBchCode = BCHL.FTBchCode AND BCHL.FNLngID = $nLngID 
+                    LEFT JOIN TCNMUser_L USRL WITH (NOLOCK) ON TWI.FTCreateBy = USRL.FTUsrCode AND USRL.FNLngID = $nLngID 
+                    LEFT JOIN TCNMUser_L USRLAPV WITH (NOLOCK) ON TWI.FTXthApvCode = USRLAPV.FTUsrCode AND USRLAPV.FNLngID = $nLngID 
+                    WHERE 1=1 
                     AND FNXthDocType = 1 
         ";
 
         if ($this->session->userdata("tSesUsrLevel") == 'BCH' || $this->session->userdata("tSesUsrLevel") == 'SHP') {
-            $tBCH    = $this->session->userdata("tSesUsrBchCodeMulti");
-            $tSQL   .= " AND  TWI.FTBchCode IN ($tBCH) ";
+            $tBCH = $this->session->userdata("tSesUsrBchCodeMulti");
+            $tSQL .= " AND  TWI.FTBchCode IN ($tBCH) ";
         }
 
         $aAdvanceSearch = $paData['aAdvanceSearch'];
         @$tSearchList   = $aAdvanceSearch['tSearchAll'];
         if (@$tSearchList != '') {
-            $tSQL   .= " 
-                AND (
-                    (TWI.FTXthDocNo LIKE '%".$this->db->escape_like_str($tSearchList)."%')
-                    OR (BCHL.FTBchName LIKE '%".$this->db->escape_like_str($tSearchList)."%')
-                    OR (CONVERT(CHAR(10),TWI.FDXthDocDate,103) LIKE '%".$this->db->escape_like_str($tSearchList)."%')
-                )
-            ";
+            $tSQL .= " AND ((TWI.FTXthDocNo LIKE '%$tSearchList%') OR (BCHL.FTBchName LIKE '%$tSearchList%') OR (CONVERT(CHAR(10),TWI.FDXthDocDate,103) LIKE '%$tSearchList%'))";
         }
 
         /*จากสาขา - ถึงสาขา*/
         $tSearchBchCodeFrom = $aAdvanceSearch['tSearchBchCodeFrom'];
         $tSearchBchCodeTo   = $aAdvanceSearch['tSearchBchCodeTo'];
         if (!empty($tSearchBchCodeFrom) && !empty($tSearchBchCodeFrom)) {
-            $tSQL   .= " 
-                AND (
-                    (TWI.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeFrom)."   AND ".$this->db->escape($tSearchBchCodeTo).")
-                    OR (TWI.FTBchCode BETWEEN ".$this->db->escape($tSearchBchCodeTo)."  AND ".$this->db->escape($tSearchBchCodeFrom).")
-                )
-            ";
+            $tSQL .= " AND ((TWI.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (TWI.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
         }
 
         /*จากวันที่ - ถึงวันที่*/
@@ -66,31 +60,50 @@ class mTransferreceiptOut extends CI_Model
         $tSearchDocDateTo   = $aAdvanceSearch['tSearchDocDateTo'];
 
         if (!empty($tSearchDocDateFrom) && !empty($tSearchDocDateTo)) {
-            $tSQL   .= " 
-                AND ((TWI.FDXthDocDate BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 00:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 23:59:59").")) 
-                OR (TWI.FDXthDocDate BETWEEN CONVERT(datetime,".$this->db->escape($tSearchDocDateTo." 23:00:00").") AND CONVERT(datetime,".$this->db->escape($tSearchDocDateFrom." 00:00:00")."))
-            )";
+            $tSQL .= " AND ((TWI.FDXthDocDate BETWEEN CONVERT(datetime,'$tSearchDocDateFrom 00:00:00') AND CONVERT(datetime,'$tSearchDocDateTo 23:59:59')) OR (TWI.FDXthDocDate BETWEEN CONVERT(datetime,'$tSearchDocDateTo 23:00:00') AND CONVERT(datetime,'$tSearchDocDateFrom 00:00:00')))";
         }
+
+        /*สถานะเอกสาร*/
+        // $tSearchStaDoc = $aAdvanceSearch['tSearchStaDoc'];
+        // if (!empty($tSearchStaDoc) && ($tSearchStaDoc != "0")) {
+        //     if ($tSearchStaDoc == 2) {
+        //         $tSQL .= " AND TWI.FTXthStaDoc = '$tSearchStaDoc' OR TWI.FTXthStaDoc = ''";
+        //     } else {
+        //         $tSQL .= " AND TWI.FTXthStaDoc = '$tSearchStaDoc'";
+        //     }
+        // }
+
+        /*สถานะอนุมัติ*/
+        // $tSearchStaApprove = $aAdvanceSearch['tSearchStaApprove'];
+        // if(!empty($tSearchStaApprove) && ($tSearchStaApprove != "0")){
+        //     if($tSearchStaApprove == 2){
+        //         $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaApprove' OR TWI.FTXthStaApv = '' ";
+        //     }else{
+        //         $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaApprove'";
+        //     }
+        // }
 
         /*สถานะเอกสาร*/
         $tSearchStaDoc = $aAdvanceSearch['tSearchStaDoc'];
         if (!empty($tSearchStaDoc) && ($tSearchStaDoc != "0")) {
             if ($tSearchStaDoc == 3) {
-                $tSQL   .= " AND TWI.FTXthStaDoc = ".$this->db->escape($tSearchStaDoc)." ";
+                $tSQL .= " AND TWI.FTXthStaDoc = '$tSearchStaDoc'";
             } else if ($tSearchStaDoc == 2) {
-                $tSQL   .= " AND ISNULL(TWI.FTXthStaApv,'') = '' AND TWI.FTXthStaDoc != '3'";
+                $tSQL .= " AND ISNULL(TWI.FTXthStaApv,'') = '' AND TWI.FTXthStaDoc != '3'";
             } else if ($tSearchStaDoc == 1) {
-                $tSQL   .= " AND TWI.FTXthStaApv = ".$this->db->escape($tSearchStaDoc)." ";
+                $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaDoc'";
             }
         }
+
 
         /*สถานะประมวลผล*/
         $tSearchStaPrcStk = $aAdvanceSearch['tSearchStaPrcStk'];
         if (!empty($tSearchStaPrcStk) && ($tSearchStaPrcStk != "0")) {
+
             if ($tSearchStaPrcStk == 3) {
-                $tSQL   .= " AND (TWI.FTXthStaPrcStk = ".$this->db->escape($tSearchStaPrcStk)." OR ISNULL(TWI.FTXthStaPrcStk,'') = '')   ";
+                $tSQL .= " AND (TWI.FTXthStaPrcStk = '$tSearchStaPrcStk' OR ISNULL(TWI.FTXthStaPrcStk,'') = '')   ";
             } else {
-                $tSQL   .= " AND TWI.FTXthStaPrcStk = ".$this->db->escape($tSearchStaPrcStk)." ";
+                $tSQL .= " AND TWI.FTXthStaPrcStk = '$tSearchStaPrcStk'";
             }
         }
 
@@ -98,160 +111,135 @@ class mTransferreceiptOut extends CI_Model
         $tSearchStaDocAct = $aAdvanceSearch['tSearchStaDocAct'];
         if (!empty($tSearchStaDocAct) && ($tSearchStaDocAct != "0")) {
             if ($tSearchStaDocAct == 2) {
-                $tSQL   .= " AND TWI.FNXthStaDocAct <> '1' OR ISNULL(TWI.FNXthStaDocAct,'') = '' ";
+                $tSQL .= " AND TWI.FNXthStaDocAct <> '1' OR ISNULL(TWI.FNXthStaDocAct,'') = '' ";
             } else if ($tSearchStaDocAct == 1) {
-                $tSQL   .= " AND TWI.FNXthStaDocAct = ".$this->db->escape($tSearchStaDocAct)." ";
+                $tSQL .= " AND TWI.FNXthStaDocAct = '$tSearchStaDocAct'";
             }
         }
-        $tSQL .= "ORDER BY TWI.FDCreateOn DESC  ) Base) AS c ORDER BY c.FDCreateOn DESC ";
+        $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
 
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
-            $oList      = $oQuery->result();
-            $nFoundRow  = 0;
-            $nPageAll   = ceil($nFoundRow / $paData['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
-            $aResult    = array(
-                'raItems'       => $oList,
-                'rnAllRow'      => $nFoundRow,
+            $oList = $oQuery->result();
+            $aFoundRow = $this->FSnMTWOGetPageAll($paData);
+            $nFoundRow = $aFoundRow[0]->counts;
+            $nPageAll = ceil($nFoundRow / $paData['nRow']); //หา Page All จำนวน Rec หาร จำนวนต่อหน้า
+            $aResult = array(
+                'raItems' => $oList,
+                'rnAllRow' => $nFoundRow,
                 'rnCurrentPage' => $paData['nPage'],
-                'rnAllPage'     => $nPageAll,
-                'rtCode'        => '1',
-                'rtDesc'        => 'success'
+                'rnAllPage' => $nPageAll,
+                'rtCode' => '1',
+                'rtDesc' => 'success'
             );
         } else {
-            $aResult    = array(
-                'rnAllRow'      => 0,
+            $aResult = array(
+                'rnAllRow' => 0,
                 'rnCurrentPage' => $paData['nPage'],
-                "rnAllPage"     => 0,
-                'rtCode'        => '800',
-                'rtDesc'        => 'data not found'
+                "rnAllPage" => 0,
+                'rtCode' => '800',
+                'rtDesc' => 'data not found'
             );
         }
-        $jResult    = json_encode($aResult);
-        $aResult    = json_decode($jResult, true);
+        $jResult = json_encode($aResult);
+        $aResult = json_decode($jResult, true);
         return $aResult;
     }
 
-       //อัพเดทหมายเหตุถ้าเอกสารอนุมัติแล้ว
-    public function FSaMTwiUpdateRmk($paDataUpdate){
-        $dLastUpdOn = date('Y-m-d H:i:s');
-        $tLastUpdBy = $this->session->userdata('tSesUsername');
-
-        $this->db->set('FDLastUpdOn',$dLastUpdOn);
-        $this->db->set('FTLastUpdBy',$tLastUpdBy);
-        $this->db->set('FTXthRmk',$paDataUpdate['FTXthRmk']);
-        $this->db->where('FTBchCode',$paDataUpdate['FTBchCode']);
-        $this->db->where('FTXthDocNo',$paDataUpdate['FTXthDocNo']);
-        $this->db->update('TCNTPdtTwiHD');
-
-        if ($this->db->affected_rows() > 0) {
-            $aStatus = array(
-                'rtCode' => '1',
-                'rtDesc' => 'Updated Status Document Cancel Success.',
-            );
-        } else {
-            $aStatus = array(
-                'rtCode' => '903',
-                'rtDesc' => 'Not Update Status Document.',
-            );
-        }
-        return $aStatus;
-    }
-
     //Count Page
-    // public function FSnMTWOGetPageAll($paData)
-    // {
-    //     $nLngID = $paData['FNLngID'];
+    public function FSnMTWOGetPageAll($paData)
+    {
+        $nLngID = $paData['FNLngID'];
 
-    //     $tSQL = "
-    //         SELECT 
-    //             COUNT (TWI.FTXthDocNo) AS counts
-    //         FROM [TCNTPdtTwiHD] TWI WITH (NOLOCK) 
-    //         LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON TWI.FTBchCode = BCHL.FTBchCode AND BCHL.FNLngID = $nLngID 
-    //         WHERE 1=1 AND FNXthDocType = 1 
-    //     ";
+        $tSQL = "
+            SELECT 
+                COUNT (TWI.FTXthDocNo) AS counts
+            FROM [TCNTPdtTwiHD] TWI WITH (NOLOCK) 
+            LEFT JOIN TCNMBranch_L BCHL WITH (NOLOCK) ON TWI.FTBchCode = BCHL.FTBchCode AND BCHL.FNLngID = $nLngID 
+            WHERE 1=1 AND FNXthDocType = 1 
+        ";
 
-    //     if ($this->session->userdata("tSesUsrLevel") == 'BCH' || $this->session->userdata("tSesUsrLevel") == 'SHP') {
-    //         $tBCH = $this->session->userdata("tSesUsrBchCodeMulti");
-    //         $tSQL .= " AND  TWI.FTBchCode IN ($tBCH) ";
-    //     }
+        if ($this->session->userdata("tSesUsrLevel") == 'BCH' || $this->session->userdata("tSesUsrLevel") == 'SHP') {
+            $tBCH = $this->session->userdata("tSesUsrBchCodeMulti");
+            $tSQL .= " AND  TWI.FTBchCode IN ($tBCH) ";
+        }
 
-    //     $aAdvanceSearch = $paData['aAdvanceSearch'];
-    //     @$tSearchList = $aAdvanceSearch['tSearchAll'];
-    //     if (@$tSearchList != '') {
-    //         $tSQL .= " AND ((TWI.FTXthDocNo LIKE '%$tSearchList%') OR (BCHL.FTBchName LIKE '%$tSearchList%') OR (TWI.FDXthDocDate LIKE '%$tSearchList%'))";
-    //     }
+        $aAdvanceSearch = $paData['aAdvanceSearch'];
+        @$tSearchList = $aAdvanceSearch['tSearchAll'];
+        if (@$tSearchList != '') {
+            $tSQL .= " AND ((TWI.FTXthDocNo LIKE '%$tSearchList%') OR (BCHL.FTBchName LIKE '%$tSearchList%') OR (TWI.FDXthDocDate LIKE '%$tSearchList%'))";
+        }
 
-    //     /*จากสาขา - ถึงสาขา*/
-    //     $tSearchBchCodeFrom = $aAdvanceSearch['tSearchBchCodeFrom'];
-    //     $tSearchBchCodeTo   = $aAdvanceSearch['tSearchBchCodeTo'];
-    //     if (!empty($tSearchBchCodeFrom) && !empty($tSearchBchCodeFrom)) {
-    //         $tSQL .= " AND ((TWI.FTBchCode BETWEEN '$tSearchBchCodeFrom' AND '$tSearchBchCodeTo') OR (TWI.FTBchCode BETWEEN '$tSearchBchCodeTo' AND '$tSearchBchCodeFrom'))";
-    //     }
+        /*จากสาขา - ถึงสาขา*/
+        $tSearchBchCodeFrom = $aAdvanceSearch['tSearchBchCodeFrom'];
+        $tSearchBchCodeTo   = $aAdvanceSearch['tSearchBchCodeTo'];
+        if (!empty($tSearchBchCodeFrom) && !empty($tSearchBchCodeFrom)) {
+            $tSQL .= " AND ((TWI.FTBchCode BETWEEN $tSearchBchCodeFrom AND $tSearchBchCodeTo) OR (TWI.FTBchCode BETWEEN $tSearchBchCodeTo AND $tSearchBchCodeFrom))";
+        }
 
-    //     /*จากวันที่ - ถึงวันที่*/
-    //     $tSearchDocDateFrom = $aAdvanceSearch['tSearchDocDateFrom'];
-    //     $tSearchDocDateTo   = $aAdvanceSearch['tSearchDocDateTo'];
-    //     if (!empty($tSearchDocDateFrom) && !empty($tSearchDocDateTo)) {
-    //         $tSQL .= " AND ((TWI.FDXthDocDate BETWEEN CONVERT(datetime,'$tSearchDocDateFrom 00:00:00') AND CONVERT(datetime,'$tSearchDocDateTo 23:59:59')) OR (TWI.FDXthDocDate BETWEEN CONVERT(datetime,'$tSearchDocDateTo 23:00:00') AND CONVERT(datetime,'$tSearchDocDateFrom 00:00:00')))";
-    //     }
+        /*จากวันที่ - ถึงวันที่*/
+        $tSearchDocDateFrom = $aAdvanceSearch['tSearchDocDateFrom'];
+        $tSearchDocDateTo   = $aAdvanceSearch['tSearchDocDateTo'];
+        if (!empty($tSearchDocDateFrom) && !empty($tSearchDocDateTo)) {
+            $tSQL .= " AND ((TWI.FDXthDocDate BETWEEN CONVERT(datetime,'$tSearchDocDateFrom 00:00:00') AND CONVERT(datetime,'$tSearchDocDateTo 23:59:59')) OR (TWI.FDXthDocDate BETWEEN CONVERT(datetime,'$tSearchDocDateTo 23:00:00') AND CONVERT(datetime,'$tSearchDocDateFrom 00:00:00')))";
+        }
 
-    //     /*สถานะเอกสาร*/
-    //     // $tSearchStaDoc = $aAdvanceSearch['tSearchStaDoc'];
-    //     // if (!empty($tSearchStaDoc) && ($tSearchStaDoc != "0")) {
-    //     //     $tSQL .= " AND TWI.FTXthStaDoc = '$tSearchStaDoc'";
-    //     // }
+        /*สถานะเอกสาร*/
+        // $tSearchStaDoc = $aAdvanceSearch['tSearchStaDoc'];
+        // if (!empty($tSearchStaDoc) && ($tSearchStaDoc != "0")) {
+        //     $tSQL .= " AND TWI.FTXthStaDoc = '$tSearchStaDoc'";
+        // }
 
-    //     // /*สถานะอนุมัติ*/
-    //     // $tSearchStaApprove = $aAdvanceSearch['tSearchStaApprove'];
-    //     // if (!empty($tSearchStaApprove) && ($tSearchStaApprove != "0")) {
-    //     //     if ($tSearchStaApprove == 2) {
-    //     //         $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaApprove' OR TWI.FTXthStaApv = '' ";
-    //     //     } else {
-    //     //         $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaApprove'";
-    //     //     }
-    //     // }
+        // /*สถานะอนุมัติ*/
+        // $tSearchStaApprove = $aAdvanceSearch['tSearchStaApprove'];
+        // if (!empty($tSearchStaApprove) && ($tSearchStaApprove != "0")) {
+        //     if ($tSearchStaApprove == 2) {
+        //         $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaApprove' OR TWI.FTXthStaApv = '' ";
+        //     } else {
+        //         $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaApprove'";
+        //     }
+        // }
 
-    //     /*สถานะเอกสาร*/
-    //     // print_r($aAdvanceSearch); die();
-    //     $tSearchStaDoc = $aAdvanceSearch['tSearchStaDoc'];
-    //     if (!empty($tSearchStaDoc) && ($tSearchStaDoc != "0")) {
-    //         if ($tSearchStaDoc == 3) {
-    //             $tSQL .= " AND TWI.FTXthStaDoc = '$tSearchStaDoc'";
-    //         } else if ($tSearchStaDoc == 2) {
-    //             $tSQL .= " AND ISNULL(TWI.FTXthStaApv,'') = '' AND TWI.FTXthStaDoc != '3'";
-    //         } else if ($tSearchStaDoc == 1) {
-    //             $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaDoc'";
-    //         }
-    //     }
+        /*สถานะเอกสาร*/
+        // print_r($aAdvanceSearch); die();
+        $tSearchStaDoc = $aAdvanceSearch['tSearchStaDoc'];
+        if (!empty($tSearchStaDoc) && ($tSearchStaDoc != "0")) {
+            if ($tSearchStaDoc == 3) {
+                $tSQL .= " AND TWI.FTXthStaDoc = '$tSearchStaDoc'";
+            } else if ($tSearchStaDoc == 2) {
+                $tSQL .= " AND ISNULL(TWI.FTXthStaApv,'') = '' AND TWI.FTXthStaDoc != '3'";
+            } else if ($tSearchStaDoc == 1) {
+                $tSQL .= " AND TWI.FTXthStaApv = '$tSearchStaDoc'";
+            }
+        }
 
-    //     /*สถานะประมวลผล*/
-    //     $tSearchStaPrcStk = $aAdvanceSearch['tSearchStaPrcStk'];
-    //     if (!empty($tSearchStaPrcStk) && ($tSearchStaPrcStk != "0")) {
-    //         if ($tSearchStaPrcStk == 3) {
-    //             $tSQL .= " AND (TWI.FTXthStaPrcStk = '$tSearchStaPrcStk' OR ISNULL(TWI.FTXthStaPrcStk,'') = '')  ";
-    //         } else {
-    //             $tSQL .= " AND TWI.FTXthStaPrcStk = '$tSearchStaPrcStk'";
-    //         }
-    //     }
+        /*สถานะประมวลผล*/
+        $tSearchStaPrcStk = $aAdvanceSearch['tSearchStaPrcStk'];
+        if (!empty($tSearchStaPrcStk) && ($tSearchStaPrcStk != "0")) {
+            if ($tSearchStaPrcStk == 3) {
+                $tSQL .= " AND (TWI.FTXthStaPrcStk = '$tSearchStaPrcStk' OR ISNULL(TWI.FTXthStaPrcStk,'') = '')  ";
+            } else {
+                $tSQL .= " AND TWI.FTXthStaPrcStk = '$tSearchStaPrcStk'";
+            }
+        }
 
-    //     /*สถานะความคลื่อนไหว*/
-    //     $tSearchStaDocAct = $aAdvanceSearch['tSearchStaDocAct'];
-    //     if (!empty($tSearchStaDocAct) && ($tSearchStaDocAct != "0")) {
-    //         if ($tSearchStaDocAct == 2) {
-    //             $tSQL .= " AND TWI.FNXthStaDocAct <> '1' OR TWI.FNXthStaDocAct = NULL";
-    //         } else if ($tSearchStaDocAct == 1) {
-    //             $tSQL .= " AND TWI.FNXthStaDocAct = '$tSearchStaDocAct'";
-    //         }
-    //     }
+        /*สถานะความคลื่อนไหว*/
+        $tSearchStaDocAct = $aAdvanceSearch['tSearchStaDocAct'];
+        if (!empty($tSearchStaDocAct) && ($tSearchStaDocAct != "0")) {
+            if ($tSearchStaDocAct == 2) {
+                $tSQL .= " AND TWI.FNXthStaDocAct <> '1' OR TWI.FNXthStaDocAct = NULL";
+            } else if ($tSearchStaDocAct == 1) {
+                $tSQL .= " AND TWI.FNXthStaDocAct = '$tSearchStaDocAct'";
+            }
+        }
 
-    //     $oQuery = $this->db->query($tSQL);
-    //     if ($oQuery->num_rows() > 0) {
-    //         return $oQuery->result();
-    //     } else { // No Data
-    //         return false;
-    //     }
-    // }
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            return $oQuery->result();
+        } else { // No Data
+            return false;
+        }
+    }
 
     // Clear Tmp
     public function FSxMTWIClearPdtInTmp($ptTblSelectData)
@@ -314,7 +302,7 @@ class mTransferreceiptOut extends CI_Model
         $tSearchPdtAdvTable = $paDataWhere['tSearchPdtAdvTable'];
         $tTWISesSessionID = $this->session->userdata('tSesSessionID');
 
-        //$aRowLen = FCNaHCallLenData($paDataWhere['nRow'], $paDataWhere['nPage']);
+        $aRowLen = FCNaHCallLenData($paDataWhere['nRow'], $paDataWhere['nPage']);
         $tSQL = " 
             SELECT 
                 c.* 
@@ -364,16 +352,15 @@ class mTransferreceiptOut extends CI_Model
                 )
             ";
         }
-        $tSQL .= ") Base) AS c ";
-        /*WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1]";*/
+        $tSQL .= ") Base) AS c WHERE c.rtRowID > $aRowLen[0] AND c.rtRowID <= $aRowLen[1]";
 
         $oQuery = $this->db->query($tSQL);
 
         if ($oQuery->num_rows() > 0) {
             $aDataList = $oQuery->result_array();
-            $aFoundRow = 0; //$this->FSaMTWIGetDocDTTempListPageAll($paDataWhere);
-            $nFoundRow = 0; //($aFoundRow['rtCode'] == '1') ? $aFoundRow['rtCountData'] : 0;
-            $nPageAll = 0; //ceil($nFoundRow / $paDataWhere['nRow']);
+            $aFoundRow = $this->FSaMTWIGetDocDTTempListPageAll($paDataWhere);
+            $nFoundRow = ($aFoundRow['rtCode'] == '1') ? $aFoundRow['rtCountData'] : 0;
+            $nPageAll = ceil($nFoundRow / $paDataWhere['nRow']);
             $aDataReturn = array(
                 'raItems' => $aDataList,
                 'rnAllRow' => $nFoundRow,
@@ -423,7 +410,7 @@ class mTransferreceiptOut extends CI_Model
             $tSQL .= " AND ( DOCTMP.FTPdtCode LIKE '%$tSearchPdtAdvTable%' ";
             $tSQL .= " OR DOCTMP.FTXtdPdtName LIKE '%$tSearchPdtAdvTable%' ";
             $tSQL .= " OR DOCTMP.FTPunName LIKE '%$tSearchPdtAdvTable%' ";
-            $tSQL .= " OR DOCTMP.FTXtdBarCode LIKE '%$tSearchPdtAdvTable%' )";
+            $tSQL .= " OR DOCTMP.FTXtdBarCode LIKE '%$tSearchPdtAdvTable%' ";
         }
 
         $oQuery = $this->db->query($tSQL);
@@ -571,14 +558,20 @@ class mTransferreceiptOut extends CI_Model
         $tSOBchCode         = $paDataWhere['FTBchCode'];
         $tSODocNo           = $paDataWhere['FTXthDocNo'];
         $tSODocKey          = $paDataWhere['FTXthDocKey'];
+        $tPdtCode           = $paDataWhere['tPdtCode'];
+        $tBarCode           = $paDataWhere['tBarCode'];
+        $tPunCode           = $paDataWhere['tPunCode'];
         $tSOSesSessionID    = $this->session->userdata('tSesSessionID');
         $tSQL   =   "   SELECT 
-                            MAX(DOCTMP.FNXsdSeqNo) AS rnMaxSeqNo
-                        FROM TCNTDocDTFhnTmp DOCTMP WITH (NOLOCK)
+                            MAX(DOCTMP.FNXtdSeqNo) AS rnMaxSeqNo
+                        FROM TCNTDocDTTmp DOCTMP WITH (NOLOCK)
                         WHERE 1 = 1 ";
         $tSQL   .= " AND DOCTMP.FTBchCode   = '$tSOBchCode'";
-        $tSQL   .= " AND DOCTMP.FTXshDocNo  = '$tSODocNo'";
+        $tSQL   .= " AND DOCTMP.FTXthDocNo  = '$tSODocNo'";
         $tSQL   .= " AND DOCTMP.FTXthDocKey = '$tSODocKey'";
+        $tSQL   .= " AND DOCTMP.FTPdtCode       = '$tPdtCode'";
+        $tSQL   .= " AND ISNULL(DOCTMP.FTXtdBarCode,'')  = '$tBarCode'";
+        $tSQL   .= " AND DOCTMP.FTPunCode  = '$tPunCode'";
         $tSQL   .= " AND DOCTMP.FTSessionID = '$tSOSesSessionID'";
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
@@ -812,6 +805,7 @@ class mTransferreceiptOut extends CI_Model
                            AND FTSessionID     = '" . $paDataPdtParams['tSessionID'] . "'
                            AND FTPdtCode       = '" . $paDataPdtParams["tPdtCode"] . "'
                            AND FTFhnRefCode    = '" . $paDataPdtParams["tRefCode"] . "'
+                           AND FNXsdSeqNo      = '" . $paDataPdtParams["nMaxSeqNo"] . "'
                            ORDER BY FNXsdSeqNo";
            $oQuery = $this->db->query($tSQL);
            if ($oQuery->num_rows() > 0) {
@@ -825,7 +819,9 @@ class mTransferreceiptOut extends CI_Model
                                    AND FTXthDocKey     = '" . $paDataPdtParams['tDocKey'] . "'
                                    AND FTSessionID     = '" . $paDataPdtParams['tSessionID'] . "'
                                    AND FTPdtCode       = '" . $paDataPdtParams["tPdtCode"] . "'
-                                   AND FTFhnRefCode    = '" . $paDataPdtParams["tRefCode"] . "' ";
+                                   AND FTFhnRefCode    = '" . $paDataPdtParams["tRefCode"] . "' 
+                                   AND FNXsdSeqNo      = '" . $paDataPdtParams["nMaxSeqNo"] . "'
+                                   ";
                $this->db->query($tSQL);
                $aStatus = array(
                    'rtCode'    => '1',
@@ -906,15 +902,8 @@ class mTransferreceiptOut extends CI_Model
         $this->db->trans_begin();
 
         //กลับไปอัพเดทสินค้าใน CN
-        if (FCNnHSizeOf($tTWIDocNo) > 1) {
-            foreach ($tTWIDocNo as $tData) {
-                $aPackData = array('FTXthDocNo' => $tData);
-                $this->FSvMCheckDocumentInCN('CANCEL', $aPackData);
-            }
-        } else {
-            $aPackData = array('FTXthDocNo' => $tTWIDocNo);
-            $this->FSvMCheckDocumentInCN('CANCEL', $aPackData);
-        }
+        $aPackData = array('FTXthDocNo' => $tTWIDocNo);
+        $this->FSvMCheckDocumentInCN('CANCEL', $aPackData);
 
         // Document HD 
         $this->db->where_in('FTXthDocNo', $tTWIDocNo);
@@ -923,6 +912,10 @@ class mTransferreceiptOut extends CI_Model
         // Document DT
         $this->db->where_in('FTXthDocNo', $tTWIDocNo);
         $this->db->delete('TCNTPdtTwiDT');
+
+        // Document DTFhn
+        $this->db->where_in('FTXthDocNo', $tTWIDocNo);
+        $this->db->delete('TCNTPdtTwiDTFhn');
 
         // Document Temp
         $this->db->where_in('FTXthDocNo', $tTWIDocNo);
@@ -956,6 +949,13 @@ class mTransferreceiptOut extends CI_Model
         $this->db->where_in('FTBchCode', $paDataWhere['tBchCode']);
         $this->db->delete('TCNTDocDTTmp');
 
+        $this->db->where_in('FTSessionID', $paDataWhere['tSessionID']);
+        $this->db->where_in('FTPdtCode', $paDataWhere['tPdtCode']);
+        $this->db->where_in('FNXsdSeqNo', $paDataWhere['nSeqNo']);
+        $this->db->where_in('FTXshDocNo', $paDataWhere['tDocNo']);
+        $this->db->where_in('FTBchCode', $paDataWhere['tBchCode']);
+        $this->db->delete('TCNTDocDTFhnTmp');
+
         // $this->db->set('FTCabNameForTWXVD', 'DELETE_TEMP');
         // $this->db->where_in('FTSessionID',$paDataWhere['tSessionID']);
         // $this->db->where_in('FTPdtCode',$paDataWhere['tPdtCode']);
@@ -974,11 +974,18 @@ class mTransferreceiptOut extends CI_Model
         // Delete Doc DT Temp
         $this->db->where_in('FTSessionID', $tSessionID);
         $this->db->where_in('FNXtdSeqNo', $paDataWhere['aDataSeqNo']);
-     //   $this->db->where_in('FTPunCode', $paDataWhere['aDataPunCode']);
+        $this->db->where_in('FTPunCode', $paDataWhere['aDataPunCode']);
         $this->db->where_in('FTPdtCode', $paDataWhere['aDataPdtCode']);
         $this->db->where_in('FTXthDocNo', $paDataWhere['tDocNo']);
         $this->db->where_in('FTBchCode', $paDataWhere['tBchCode']);
         $this->db->delete('TCNTDocDTTmp');
+
+        $this->db->where_in('FTSessionID', $tSessionID);
+        $this->db->where_in('FNXsdSeqNo', $paDataWhere['aDataSeqNo']);
+        $this->db->where_in('FTPunCode', $paDataWhere['aDataPunCode']);
+        $this->db->where_in('FTXshDocNo', $paDataWhere['tDocNo']);
+        $this->db->where_in('FTBchCode', $paDataWhere['tBchCode']);
+        $this->db->delete('TCNTDocDTFhnTmp');
 
         // $this->db->set('FTCabNameForTWXVD', 'DELETE_TEMP');
         // $this->db->where_in('FTSessionID',$tSessionID);
@@ -1277,33 +1284,6 @@ class mTransferreceiptOut extends CI_Model
         $this->db->insert($paTableAddUpdate['tTableHD'], $aDataAddUpdateHD);
     }
 
-    public function FSxMTWIAddUpdateHDRef($paTableAddUpdate, $paDataWhere)
-    {
-
-        $tTWIDocNo       = $paDataWhere['FTXthDocNo'];
-        $tBchCode       = $paDataWhere['FTBchCode'];
-
-        // Delect Document DTTemp By Doc No
-        $this->db->where('FTXthDocNo', $tTWIDocNo);
-        $this->db->where('FTBchCode', $tBchCode);
-        $this->db->delete('TCNTPdtTwiHDRef');
-
-        $aDataInsert = array(
-            'FTBchCode'            => $tBchCode,
-            'FTXthDocNo'           => $tTWIDocNo,
-            'FTXthCtrName'         => $paTableAddUpdate['FTXthCtrName'],
-            'FDXthTnfDate'         => $paTableAddUpdate['FDXthTnfDate'],
-            'FTXthRefTnfID'        => $paTableAddUpdate['FTXthRefTnfID'],
-            'FTXthRefVehID'        => $paTableAddUpdate['FTXthRefVehID'],
-            'FTXthQtyAndTypeUnit'  => $paTableAddUpdate['FTXthQtyAndTypeUnit'],
-            // 'FNXthShipAdd'         => $paTableAddUpdate['FNXthShipAdd'],
-            'FTViaCode'            => $paTableAddUpdate['FTViaCode'],
-        );
-        $this->db->insert('TCNTPdtTwiHDRef', $aDataInsert);
-        
-        return;
-    }
-
     //เอาข้อมูล HD
     public function FSaMTWIGetDataDocHD($paDataWhere)
     {
@@ -1326,11 +1306,9 @@ class mTransferreceiptOut extends CI_Model
                         USRL.FTUsrName,
                         USRL.FTUsrName AS FTXphApvName,
                         SPLL.FTSplName,
-                        Cus_L.FTCstName,
                         DOCHD.FTBchCode,
                         DOCHD.FTXthDocNo,
                         DOCHD.FNXthDocType,
-                        DOCHD.FTXthRsnType,
                         DOCHD.FTXthTypRefFrm,
                         DOCHD.FDXthDocDate,
                         DOCHD.FTXthVATInOrEx,
@@ -1343,7 +1321,6 @@ class mTransferreceiptOut extends CI_Model
                         DOCHD.FTXthPosFrm,
                         DOCHD.FTXthPosTo,
                         DOCHD.FTSplCode,
-                        DOCHD.FTCstCode,
                         DOCHD.FTXthOther,
                         DOCHD.FTUsrCode,
                         DOCHD.FTSpnCode,
@@ -1384,11 +1361,6 @@ class mTransferreceiptOut extends CI_Model
                     LEFT JOIN TCNMUser_L        USRL    WITH (NOLOCK)   ON DOCHD.FTUsrCode      = USRL.FTUsrCode	AND USRL.FNLngID	= $nLngID
                     LEFT JOIN TCNMUser_L        USRAPV	WITH (NOLOCK)   ON DOCHD.FTXthApvCode	= USRL.FTUsrCode	AND USRL.FNLngID	= $nLngID
                     LEFT JOIN TCNMSpl_L         SPLL    WITH (NOLOCK)   ON DOCHD.FTSplCode		= SPLL.FTSplCode	AND SPLL.FNLngID	= $nLngID
-
-                    LEFT JOIN TCNMCst           Cus     WITH (NOLOCK)   ON DOCHD.FTCstCode		= Cus.FTCstCode	
-                    LEFT JOIN TCNMCst_L         Cus_L   WITH (NOLOCK)   ON Cus_L.FTCstCode		= Cus.FTCstCode	    AND Cus_L.FNLngID = $nLngID
-
-                    
                     WHERE 1=1 AND DOCHD.FTXthDocNo = '$tTWIDocNo' ";
 
         $oQuery = $this->db->query($tSQL);
@@ -1463,7 +1435,8 @@ class mTransferreceiptOut extends CI_Model
         $tSQL   .=  "   SELECT
                             DOCTMP.FTBchCode,
                             DOCTMP.FTXthDocNo,
-                            ROW_NUMBER() OVER(ORDER BY DOCTMP.FNXtdSeqNo ASC) AS FNXtdSeqNo,
+                            -- ROW_NUMBER() OVER(ORDER BY DOCTMP.FNXtdSeqNo ASC) AS FNXtdSeqNo,
+                            DOCTMP.FNXtdSeqNo,
                             DOCTMP.FTPdtCode,
                             DOCTMP.FTXtdPdtName,
                             DOCTMP.FTPunCode,
@@ -1571,7 +1544,7 @@ class mTransferreceiptOut extends CI_Model
             $tSQL   .=  "   SELECT
                                 DOCTMP.FTBchCode,
                                 DOCTMP.FTXshDocNo,
-                                (SELECT FNXtdSeqNo FROM " . $paTableAddUpdate['tTableDT'] . " AS DT WHERE DT.FTXthDocNo = DOCTMP.FTXshDocNo AND DT.FTPdtCode = DOCTMP.FTPdtCode ) AS FNXtdSeqNo,
+                                DOCTMP.FNXsdSeqNo,
                                 DOCTMP.FTPdtCode,
                                 DOCTMP.FTFhnRefCode,
                                 DOCTMP.FCXtdQty
@@ -1739,11 +1712,11 @@ class mTransferreceiptOut extends CI_Model
     {
         
         $this->db->set('FCXtdQty', $paDataUpdateDT['tTWIValue']);
-        $this->db->set('FCXtdQtyAll', 1 * $paDataUpdateDT['tTWIValue']);
-        $this->db->set('FTXtdBarCode', $paDataUpdateDT['tPdtBarCode']);
+        // $this->db->set('FTXtdBarCode', $paDataUpdateDT['tPdtBarCode']);
         $this->db->where('FTSessionID', $paDataUpdateDT['tTWISessionID']);
         $this->db->where('FTXthDocKey', $paDataUpdateDT['tDocKey']);
-        $this->db->where('FTPdtCode', $paDataUpdateDT['tPdtCode']);
+        // $this->db->where('FTPdtCode', $paDataUpdateDT['tPdtCode']);
+        $this->db->where('FNXtdSeqNo', $paDataUpdateDT['nXtdSeq']);
         $this->db->where('FTXthDocNo', $paDataUpdateDT['tTWIDocNo']);
         //$this->db->where('FTBchCode',$paDataUpdateDT['tTWIBchCode']);
         $this->db->update('TCNTDocDTTmp');
@@ -1891,13 +1864,14 @@ class mTransferreceiptOut extends CI_Model
         }
     }
 
-    //เช็คว่าเป็นสินค้า CN ไหมถ้า CN ต้องกลับไปอนุญาตให้ใช้งานได้
+    //เช็คว่าเป็นสินค้า CN ไหมถ้า CN ต้องกลับไปอนุญาติให้ใช้งานได้
     public function FSvMCheckDocumentInCN($ptType, $paData)
     {
+
         if ($ptType == 'CANCEL') {
             $tDocument = $paData['FTXthDocNo'];
             $tPDTCode  = '';
-            
+
             $tSQL = " SELECT 
                     DT.FTXtdDocNoRef , 
                     DT.FTXthDocNo , 
@@ -1928,6 +1902,7 @@ class mTransferreceiptOut extends CI_Model
         if ($tPDTCode != '') {
             $tSQL .= " AND DT.FTPdtCode = '$tPDTCode' ";
         }
+
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
             $aDetail    = $oQuery->result_array();
@@ -1988,71 +1963,5 @@ class mTransferreceiptOut extends CI_Model
             $tBarCode = '';
         }
         return $tBarCode;
-    }
-
-    //เอาข้อมูล HD
-    public function FSaMTWIGetDataDocHDRef($paDataWhere)
-    {
-
-        $tTWIDocNo    = $paDataWhere['FTXthDocNo'];
-        $nLngID       = $paDataWhere['FNLngID'];
-
-        $tSQL = "SELECT
-                        DOCHDR.FNXthShipAdd,
-                        ADSL.FTAddName,
-                        ADSL.FTAddTaxNo,
-                        ADSL.FTAddRmk,
-                        ADSL.FTAddCountry,
-                        ADSL.FTAddVersion,
-                        ADSL.FTAddV1No,
-                        ADSL.FTAddV1Soi,
-                        ADSL.FTAddV1Village,
-                        ADSL.FTAddV1Road,
-                        ADSL.FTAddV1SubDist,
-                        ADSL.FTAddV1DstCode,
-                        ADSL.FTAddV1PvnCode,
-                        ADSL.FTAddV1PostCode,
-                        ADSL.FTAddV2Desc1,
-                        ADSL.FTAddV2Desc2,
-                        ADSL.FTAddWebsite,
-                        ADSL.FTAddLongitude,
-                        ADSL.FTAddLatitude,
-                        DOCHDR.FTXthCtrName,
-                        DOCHDR.FTXthRefTnfID,
-                        DOCHDR.FDXthTnfDate,
-                        DOCHDR.FTXthRefVehID,
-                        DOCHDR.FTXthQtyAndTypeUnit,
-                        DOCHDR.FTViaCode,
-                        PRVL.FTPvnName,
-                        DSTL.FTDstName,
-                        SDSTL.FTSudName
-                        FROM
-                        TCNTPdtTwiHDRef AS DOCHDR WITH (NOLOCK)
-                        LEFT OUTER JOIN TCNMAddress_L ADSL WITH (NOLOCK) ON DOCHDR.FNXthShipAdd = ADSL.FNAddSeqNo AND ADSL.FNLngID = '$nLngID'
-                        LEFT OUTER JOIN TCNMProvince_L PRVL WITH (NOLOCK) ON ADSL.FTAddV1PvnCode = PRVL.FTPvnCode AND PRVL.FNLngID = '$nLngID'
-                        LEFT OUTER JOIN TCNMDistrict_L DSTL WITH (NOLOCK) ON ADSL.FTAddV1DstCode = DSTL.FTDstCode AND DSTL.FNLngID = '$nLngID'
-                        LEFT OUTER JOIN TCNMSubDistrict_L SDSTL WITH (NOLOCK) ON ADSL.FTAddV1SubDist = SDSTL.FTSudCode AND SDSTL.FNLngID = '$nLngID'
-                        WHERE  DOCHDR.FTXthDocNo='$tTWIDocNo'
-                ";
-
-        $oQuery = $this->db->query($tSQL);
-
-        // echo $this->db->last_query();
-        // die();
-        if ($oQuery->num_rows() > 0) {
-            $aDetail = $oQuery->row_array();
-            $aResult    = array(
-                'raItems'   => $aDetail,
-                'rtCode'    => '1',
-                'rtDesc'    => 'success',
-            );
-        } else {
-            $aResult    = array(
-                'raItems'   => array(),
-                'rtCode'    => '800',
-                'rtDesc'    => 'data not found.',
-            );
-        }
-        return $aResult;
     }
 }

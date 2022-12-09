@@ -226,7 +226,7 @@
                         ]
             },
             Where   : {
-                Condition   : ['AND TCNMWaHouse.FTBchCode = ' + tWhereBch + ' AND TCNMWaHouse.FTWahStaType != 6']
+                Condition   : ["AND TCNMWaHouse.FTBchCode = '" + tWhereBch + "' AND TCNMWaHouse.FTWahStaType != 6"]
             },
             GrideView   : {
                 ColumnPathLang      : 'company/shop/shop',

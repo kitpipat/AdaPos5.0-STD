@@ -13,12 +13,7 @@ if ($aDataList['rtCode'] == '1') {
                 <thead>
                     <tr class="xCNCenter">
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
-                            <th nowrap class="xCNTextBold text-center" style="width:5%;">
-                                <label class="fancy-checkbox">
-                                    <input type="checkbox" class="ocmCENCheckDeleteAll" id="ocmCENCheckDeleteAll" >
-                                    <span class="ospListItem">&nbsp;</span>
-                                </label>
-                            </th>
+                            <th class="xCNTextBold" style="width:5%;"><?= language('document/adjuststock/adjuststock', 'tASTTBChoose') ?></th>
                         <?php endif; ?>
                         <th class="xCNTextBold"><?= language('document/adjuststock/adjuststock', 'tASTTBBchCreate') ?></th>
                         <th class="xCNTextBold"><?= language('document/adjuststock/adjuststock', 'tASTTBDocNo') ?></th>
@@ -27,6 +22,7 @@ if ($aDataList['rtCode'] == '1') {
                         <!-- <th class="xCNTextBold"><?= language('document/adjuststock/adjuststock', 'tASTTBStaApv') ?></th> -->
                         <th class="xCNTextBold"><?= language('document/adjuststock/adjuststock', 'tASTTBStaPrc') ?></th>
                         <th class="xCNTextBold"><?= language('document/adjuststock/adjuststock', 'tASTTBCreateBy') ?></th>
+                        <th class="xCNTextBold"><?= language('document/adjuststock/adjuststock', 'tASTTBApvBy') ?></th>
 
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
                             <th class="xCNTextBold" style="width:5%;"><?= language('common/main/main', 'tCMNActionDelete') ?></th>
@@ -97,15 +93,13 @@ if ($aDataList['rtCode'] == '1') {
                                     <td class="text-center"><?php echo (!empty($tFDXthDocDate[0])) ? $tFDXthDocDate[0] : '-' ?></td>
                                     <td class="text-left"><label class="xCNTDTextStatus <?= $tClassStaDoc ?>"><?php echo $tNewProcess; ?></label></td>
                                     <td class="text-left">
-                                        <?php if ($aValue['FTXthStaDoc'] == 3) { ?>
-                                            <label class="text-danger xCNTDTextStatus"><?php echo language('document/adjuststock/adjuststock', 'tASTStaDoc3'); ?></label>
-                                        <?php }else{ ?>
-                                            <label class="xCNTDTextStatus <?php echo $tClassPrcStk; ?>"><?php echo language('document/producttransferwahouse/producttransferwahouse', 'tTFWStaPrcStk' . $aValue['FTXthStaPrcStk']) ?></label>
-                                        <?php } ?>
-                                        
+                                        <label class="xCNTDTextStatus <?php echo $tClassPrcStk; ?>"><?php echo language('document/adjuststock/adjuststock', 'tASTStaPrcStk' . $aValue['FTXthStaPrcStk']) ?></label>
                                     </td>
                                     <td class="text-left">
                                         <?php echo (!empty($aValue['FTCreateByName'])) ? $aValue['FTCreateByName'] : "-"; ?>
+                                    </td>
+                                    <td class="text-left">
+                                        <?php echo (!empty($aValue['FTXthStaApv'])) ? $aValue['FTXthApvName'] : "-"; ?>
                                     </td>
                                     <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
                                         <td>
@@ -140,43 +134,42 @@ if ($aDataList['rtCode'] == '1') {
 </div>
 <div class="row">
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-        <?php $nShowRecord = get_cookie('nShowRecordInPageList'); ?>
-        <p>แสดงข้อมูลรายการล่าสุด <?=$nShowRecord?> รายการ</p>    </div>
+        <p><?php echo language('common/main/main', 'tResultTotalRecord') ?> <?php echo $aDataList['rnAllRow'] ?> <?php echo language('common/main/main', 'tRecord') ?> <?php echo language('common/main/main', 'tCurrentPage') ?> <?php echo $aDataList['rnCurrentPage'] ?> / <?php echo $aDataList['rnAllPage'] ?></p>
     </div>
-    <!-- <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
         <div class="xWPageTWIPdt btn-toolbar pull-right">
-            <?php //if ($nPage == 1) {
-               // $tDisabledLeft = 'disabled';
-            //} else {
-            //    $tDisabledLeft = '-';
-           // } ?>
+            <?php if ($nPage == 1) {
+                $tDisabledLeft = 'disabled';
+            } else {
+                $tDisabledLeft = '-';
+            } ?>
             <button onclick="JSvTWIClickPage('previous')" class="btn btn-white btn-sm" <?php echo $tDisabledLeft ?>>
                 <i class="fa fa-chevron-left f-s-14 t-plus-1"></i>
             </button>
 
-            <?php //for ($i = max($nPage - 2, 1); $i <= max(0, min($aDataList['rnAllPage'], $nPage + 2)); $i++) { ?>
+            <?php for ($i = max($nPage - 2, 1); $i <= max(0, min($aDataList['rnAllPage'], $nPage + 2)); $i++) { ?>
                 <?php
-                //if ($nPage == $i) {
-                    //$tActive = 'active';
-                   // $tDisPageNumber = 'disabled';
-                //} else {
-                //    $tActive = '';
-                //    $tDisPageNumber = '';
-                //}
+                if ($nPage == $i) {
+                    $tActive = 'active';
+                    $tDisPageNumber = 'disabled';
+                } else {
+                    $tActive = '';
+                    $tDisPageNumber = '';
+                }
                 ?>
-                <button onclick="JSvTWIClickPage('<?php //echo $i ?>')" type="button" class="btn xCNBTNNumPagenation <?php //echo $tActive ?>" <?php //echo $tDisPageNumber ?>><?php //echo $i ?></button>
-            <?php //} ?>
+                <button onclick="JSvTWIClickPage('<?php echo $i ?>')" type="button" class="btn xCNBTNNumPagenation <?php echo $tActive ?>" <?php echo $tDisPageNumber ?>><?php echo $i ?></button>
+            <?php } ?>
 
-            <?php //if ($nPage >= $aDataList['rnAllPage']) {
-                //$tDisabledRight = 'disabled';
-            //} else {
-               // $tDisabledRight = '-';
-            //} ?>
-            <button onclick="JSvTWIClickPage('next')" class="btn btn-white btn-sm" <?php //echo $tDisabledRight ?>>
+            <?php if ($nPage >= $aDataList['rnAllPage']) {
+                $tDisabledRight = 'disabled';
+            } else {
+                $tDisabledRight = '-';
+            } ?>
+            <button onclick="JSvTWIClickPage('next')" class="btn btn-white btn-sm" <?php echo $tDisabledRight ?>>
                 <i class="fa fa-chevron-right f-s-14 t-plus-1"></i>
             </button>
         </div>
-    </div> -->
+    </div>
 </div>
 
 <!-- ===================================================== Modal Delete Document Single ===================================================== -->

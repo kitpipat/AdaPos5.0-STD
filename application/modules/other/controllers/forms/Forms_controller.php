@@ -529,7 +529,7 @@ class Forms_controller extends MX_Controller {
                                 HD.FTBchCode AS rtBchCode,
                                 HD.FTRdhDocNo AS rtDocNo
                                 FROM TARTRedeemHD HD WITH(NOLOCK)
-                                WHERE HD.FTRdhDocType = '1'",
+                               ",
                 '00018' => "SELECT TOP 1 
                                 HD.FTBchCode AS rtBchCode,
                                 HD.FTCphDocNo AS rtDocNo
@@ -600,8 +600,7 @@ class Forms_controller extends MX_Controller {
                                 HD.FTPmhDocNo AS rtDocNo
                             FROM
                                 TFNTCrdPmtHD HD WITH (NOLOCK)
-                            WHERE
-                                HD.FTPmhDocType = '2'",
+                            ",
                 '00033' => "SELECT TOP 1 
                                HD.FTBchCode AS rtBchCode,
                                HD.FTAjhDocNo AS rtDocNo

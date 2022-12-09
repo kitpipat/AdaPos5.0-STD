@@ -104,7 +104,7 @@
                     DataColumns : ['TCNMBranch.FTBchCode','TCNMBranch_L.FTBchName'],
                     DataColumnsFormat : ['',''],
                     Perpage : 10,
-                    OrderBy : ['TCNMBranch.FTBchCode DESC'],
+                    OrderBy : ['TCNMBranch.FDCreateOn DESC'],
                     // SourceOrder : "ASC"
                 },
                 CallBack:{

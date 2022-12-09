@@ -1401,11 +1401,11 @@ class cCreditNote extends MX_Controller
         );
 
         $aBchData = $this->mBranch->FSnMBCHList($aData);
-        $aShpData = $this->mShop->FSaMSHPList($aData);
+        // $aShpData = $this->mShop->FSaMSHPList($aData);
 
         $aDataMaster = array(
             'aBchData' => $aBchData,
-            'aShpData' => $aShpData
+            // 'aShpData' => $aShpData
         );
 
         $this->load->view('document/creditnote/wCreditNoteFormSearchList', $aDataMaster);

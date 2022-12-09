@@ -17,12 +17,12 @@
                 return "desktop";
             }
 
-           var tDevice = JCNtDetectDevice();
+         var tDevice = JCNtDetectDevice();
            console.log(tDevice);
            if(tDevice=='tablet'){
-            document.getElementById("omtMetaViewport").setAttribute("content", "width=device-width, initial-scale=0.7, maximum-scale=0.7, user-scalable=0");  
+            document.getElementById("omtMetaViewport").setAttribute("content", "width=device-width, initial-scale=0.9");  
            }else if(tDevice=='mobile'){
-            document.getElementById("omtMetaViewport").setAttribute("content", "width=device-width, initial-scale=0.3, maximum-scale=0.3, user-scalable=0");  
+            document.getElementById("omtMetaViewport").setAttribute("content", "width=device-width, initial-scale=0.4");  
            }else if(tDevice=='desktop'){
             document.getElementById("omtMetaViewport").setAttribute("content", "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0");  
            }
