@@ -15,6 +15,7 @@
 					<thead>
 						<tr>
 							<th nowrap class="xCNTextBold" style="width:2%;text-align:center;"><?= language('movement/movement/movement','tMMTBOrder')?></th>
+                            <th nowrap class="xCNTextBold" style="width:2%;text-align:center;"><?= language('movement/movement/movement','สาขา')?></th>
 							<th nowrap class="xCNTextBold" style="width:5%;text-align:center;"><?= language('movement/movement/movement','tMMTBPdtCode')?></th>
                             <th nowrap class="xCNTextBold" style="width:15%;text-align:center;"><?= language('movement/movement/movement','tMMTBPdtName')?></th>
                             <?php if($this->session->userdata("tSesUsrLevel") == 'HQ'): ?>
@@ -31,6 +32,7 @@
                             <?php foreach($aDataList['raItems'] AS $key=>$aValue){  ?>
                                 <tr class="xCNTextDetail2 otrReason" id="otrReason<?=$key?>" data-code="<?=$aValue['FTPdtCode']?>" data-name="<?=$aValue['FTPdtName']?>"  data-bchcode="<?=$aValue['FTBchCode']?>" data-bchname="<?=$aValue['FTBchName']?>" data-wahcode="<?=$aValue['FTWahCode']?>" data-wahname="<?=$aValue['FTWahName']?>"  >
                                     <td nowrap class="text-center" style="text-align: center;"><?=$key + 1 + ( ($nCurrentPage - 1) * $nRow ) ?></td>
+                                    <td nowrap class="text-left"><?=$aValue['FTBchName']?></td>
                                     <td nowrap class="text-left"><?=$aValue['FTPdtCode']?></td>
                                     <td nowrap class="text-left">
                                     <?=$aValue['FTPdtName']?>

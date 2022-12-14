@@ -71,7 +71,7 @@
                     ArgReturn: ['FTBchCode','FTBchName']
                 }
             };
-            JCNxBrowseData('oBranchBrowseMultiOption');
+            JCNxBrowseMultiSelect('oBranchBrowseMultiOption');
         }else{
             JCNxShowMsgSessionExpired();
         }
