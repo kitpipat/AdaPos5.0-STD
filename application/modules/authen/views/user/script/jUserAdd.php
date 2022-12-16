@@ -28,7 +28,7 @@
             // $('#obtUsrBrowseMerchant').attr('disabled',false);
         }
 
-        if(tMerCode != ''){
+        if(tMerCode != '' && tBchCode != ''){
             $('#oimBrowseShop').attr('disabled',false);
         }
 

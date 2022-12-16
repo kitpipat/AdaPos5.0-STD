@@ -149,7 +149,7 @@ class cInterfaceExport extends MX_Controller {
                                 'tQueueName'            => $aConnect['tQueuName'][$nKey],
                                 'tPasswordMQ'           => $tPassword,
                                 'nAlwDupFlag'           => $nAlwDupFlag,
-                                'aConnStr'              => $aConnStr
+                                'aConnStr'              => ''
                             );
                             // echo '<pre>';
                             //     print_r($aPackData);
@@ -228,8 +228,6 @@ class cInterfaceExport extends MX_Controller {
 
         //ถ้าไม่เลือกเลขที่เอกสารมา จะต้องส่งไปหาแบบช่วง วันที่ ทั้งหมด
         if(($paPackData['tDocNoFrom'] == '' || $paPackData['tDocNoFrom'] == null) && ($paPackData['tDocNoTo'] == '' || $paPackData['tDocNoTo'] == null)){
-            echo '1';
-
             $aMQParams = [
                 "queueName"     => $paPackData['tQueueName'],
                 "exchangname"   => "",
@@ -246,7 +244,8 @@ class cInterfaceExport extends MX_Controller {
                         "ptWaHouse"     => '',
                         "ptPosCode"     => '',
                         "ptRound"       => '1',
-                        "ptManaul"      => $paPackData['nAlwDupFlag']
+                        "ptManaul"      => $paPackData['nAlwDupFlag'],
+                        "pnDocType"     => '1'
                     ]),
                     "ptConnStr"     => $paPackData['aConnStr'],
                 ]
@@ -270,7 +269,8 @@ class cInterfaceExport extends MX_Controller {
                             "ptWaHouse"     => '',
                             "ptPosCode"     => '',
                             "ptRound"       => '1',
-                            "ptManaul"      => $paPackData['nAlwDupFlag']
+                            "ptManaul"      => $paPackData['nAlwDupFlag'],
+                            "pnDocType"     => '1'
                         ]),
                         "ptConnStr"     => $paPackData['aConnStr'],
                     ]
@@ -298,7 +298,8 @@ class cInterfaceExport extends MX_Controller {
                             "ptWaHouse"     => '',
                             "ptPosCode"     => '',
                             "ptRound"       => '1',
-                            "ptManaul"      => $paPackData['nAlwDupFlag']
+                            "ptManaul"      => $paPackData['nAlwDupFlag'],
+                            "pnDocType"     => '1'
                         ]),
                         "ptConnStr"     => $paPackData['aConnStr'],
                     ]
