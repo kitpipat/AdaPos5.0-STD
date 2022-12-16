@@ -70,3 +70,12 @@ $route ['supplierEventAddBranch']      = 'supplier/supplier/cSupplier/FSoCSPLBra
 $route ['supplierBranchPageEdit']      = 'supplier/supplier/cSupplier/FSvCSPLEBranchEditPage';
 $route ['supplierEventEditBranch']     = 'supplier/supplier/cSupplier/FSoCSPLBranchEditEvent';
 $route ['supplierBranchEventDelete']   = 'supplier/supplier/cSupplier/FSoCSPLBranchDeleteEvent';
+
+
+
+//  Branch Import
+$route ['supplierPageImportDataTable']    = 'supplier/supplier/cSupplier/FSaCSPLImportDataTable';
+$route ['supplierEventImportDelete']      = 'supplier/supplier/cSupplier/FSaCSPLImportDelete';
+$route ['supplierEventImportMove2Master'] = 'supplier/supplier/cSupplier/FSaCSPLImportMove2Master';
+$route ['supplierGetDataImport']          = 'supplier/supplier/cSupplier/FSaCSPLGetDataImport';
+$route ['supplierGetItemAllImport']       = 'supplier/supplier/cSupplier/FSaCSPLImportGetItemAll';

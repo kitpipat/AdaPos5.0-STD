@@ -14,6 +14,11 @@
 			</div>
 		</div>
 		<div class="col-xs-4 col-md-8 col-lg-8 text-right" style="margin-top:34px;">
+
+		
+		<button type="button" id="odvEventImportFileSPL" class="btn xCNBTNImportFile"><?= language('common/main/main','tImport')?></button>
+	
+
 			<div id="odvMngTableList" class="btn-group xCNDropDrownGroup">
 				<button type="button" class="btn xCNBTNMngTable" data-toggle="dropdown">
 					<?php echo language('common/main/main', 'tCMNOption') ?>
@@ -46,5 +51,22 @@
 			JCNxOpenLoading();
 			JSvSupplierDataTable();
 		}
+	});
+</script>
+
+<script>
+	//nattakit 15/12/2022
+	//กดนำเข้า จะวิ่งไป Modal popup ที่ center
+	$('#odvEventImportFileSPL').click(function() {
+		var tNameModule = 'supplier';
+		var tTypeModule = 'master';
+		var tAfterRoute = 'supplierPageImportDataTable';
+
+		var aPackdata = {
+			'tNameModule' : tNameModule,
+			'tTypeModule' : tTypeModule,
+			'tAfterRoute' : tAfterRoute
+		};
+		JSxImportPopUp(aPackdata);
 	});
 </script>

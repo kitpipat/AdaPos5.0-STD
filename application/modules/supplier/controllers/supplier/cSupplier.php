@@ -958,4 +958,127 @@ class cSupplier extends MX_Controller {
         }
     }
 
+    //Functionality : Delete Import Supplier
+    //Parameters : function parameters
+    //Create By : 15/12/2022 Nale
+    //Return : response
+    //Return Type : array
+    public function FSaCSPLImportDataTable(){
+        $this->load->view('supplier/supplier/wSupplierImportDataTable');
+	}
+    //Functionality : Delete Import Supplier
+    //Parameters : function parameters
+    //Create By : 15/12/2022 Nale
+    //Return : response
+    //Return Type : array
+	public function FSaCSPLGetDataImport(){
+		$aDataSearch = array(
+			'nPageNumber'	=> ($this->input->post('nPageNumber') == 0) ? 1 : $this->input->post('nPageNumber'),
+			'nLangEdit'		=> $this->session->userdata("tLangEdit"),
+			'tTableKey'		=> 'TCNMSpl',
+			'tSessionID'	=> $this->session->userdata("tSesSessionID"),
+			'tTextSearch'	=> $this->input->post('tSearch') 
+		);
+		$aGetData 					= $this->mSupplier->FSaMSPLGetTempData($aDataSearch);
+		$data['draw'] 				= ($this->input->post('nPageNumber') == 0) ? 1 : $this->input->post('nPageNumber');
+        $data['recordsTotal'] 		= $aGetData['numrow'];
+        $data['recordsFiltered'] 	= $aGetData['numrow'];
+        $data['data'] 				= $aGetData;
+		$data['error'] 				= array();
+		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+	//Functionality : Delete Import Supplier
+    //Parameters : function parameters
+    //Create By : 15/12/2022 Nale
+    //Return : response
+    //Return Type : array
+	public function FSaCSPLImportDelete(){
+		$aDataMaster = array(
+			'FNTmpSeq' 		=> $this->input->post('FNTmpSeq'),
+			'tTableKey'		=> 'TCNMSpl',
+			'tSessionID'	=> $this->session->userdata("tSesSessionID")
+		);
+		$aResDel   = $this->mSupplier->FSaMSPLImportDelete($aDataMaster);
+
+		//validate ข้อมูลซ้ำในตาราง Tmp
+		$tBchCode = $this->input->post('FTSplCode');
+		if(is_array($tBchCode)){
+			foreach($tBchCode as $tValue){
+				$aValidateData = array(
+					'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+					'tFieldName'        => 'FTSplCode',
+					'tFieldValue'		=> $tValue
+				);
+				FCNnMasTmpChkInlineCodeDupInTemp($aValidateData);
+			}
+		}else{
+			$aValidateData = array(
+				'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+				'tFieldName'        => 'FTSplCode',
+				'tFieldValue'		=> $tBchCode
+			);
+			FCNnMasTmpChkInlineCodeDupInTemp($aValidateData);
+		}
+
+		//ให้มันวิ่งเข้าไปหาในตารางจริงอีกรอบ
+        $aValidateData = array(
+            'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+            'tFieldName'        => 'FTSplCode',
+            'tTableName'        => 'TCNMSpl'
+        );
+		FCNnMasTmpChkCodeDupInDB($aValidateData);
+		
+		echo json_encode($aResDel);
+	}
+
+	// ย้ายรายการจาก Temp ไปยัง Master
+    //Functionality : Delete Import Supplier
+    //Parameters : function parameters
+    //Create By : 15/12/2022 Nale
+    //Return : response
+    //Return Type : array
+	public function FSaCSPLImportMove2Master(){
+
+		$tTypeCaseDuplicate = $this->input->post('tTypeCaseDuplicate');
+
+		$aDataMaster = array(
+			'nLangEdit'				=> $this->session->userdata("tLangEdit"),
+			'tTableKey'				=> 'TCNMSpl',
+			'tSessionID'			=> $this->session->userdata("tSesSessionID"),
+			'dDateOn'				=> date('Y-m-d H:i:s'),
+			'dBchDateStart'			=> date('Y-m-d'),
+			'dBchDateStop'			=> date('Y-m-d', strtotime('+1 year')),
+			'tUserBy'				=> $this->session->userdata("tSesUsername"),
+			'tTypeCaseDuplicate' 	=> $this->input->post('tTypeCaseDuplicate')
+		);
+
+		$this->db->trans_begin();
+
+		$aResult = 	$this->mSupplier->FSaMSPLImportMove2Master($aDataMaster);
+					$this->mSupplier->FSaMSPLImportMove2MasterAndReplaceOrInsert($aDataMaster);
+					$this->mSupplier->FSaMSPLImportMove2MasterDeleteTemp($aDataMaster);
+
+
+
+		if($this->db->trans_status() === FALSE){
+			$this->db->trans_rollback();
+			$aReturnToHTML = array(
+				'tCode'     => '99',
+				'tDesc'     => 'Error'
+			);
+		}else{
+			$this->db->trans_commit();
+			$aReturnToHTML = $aResult;
+		}
+
+		echo json_encode($aReturnToHTML);
+	}
+
+	//หาจำนวนทั้งหมดออกมาโชว์
+	public function FSaCSPLImportGetItemAll(){
+		$aResult  = $this->mSupplier->FSaMSPLGetTempDataAtAll();
+		echo json_encode($aResult);
+	}
+
+
 }

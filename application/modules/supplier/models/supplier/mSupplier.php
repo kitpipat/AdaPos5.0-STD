@@ -1064,4 +1064,371 @@ class mSupplier extends CI_Model {
         }
     }
 
+
+
+    
+    public function FSaMSPLGetTempData($paDataSearch){
+        $nLngID             = $paDataSearch['nLangEdit'];
+        $tTableKey          = $paDataSearch['tTableKey'];
+        $tSessionID         = $paDataSearch['tSessionID'];
+        $tTextSearch        = $paDataSearch['tTextSearch'];
+
+        $tSQL   = " SELECT
+                        IMP.FNTmpSeq,
+                        IMP.FTSplCode,
+                        IMP.FTSplName,
+                        IMP.FTAgnCode,
+                        AGN_L.FTAgnName,
+                        IMP.FTVatCode,
+                        VAT.FCVatRate,
+                        IMP.FTSplStaVATInOrEx,
+                        IMP.FNSplCrTerm,
+                        IMP.FCSplCrLimit,
+                        IMP.FTTmpStatus,
+                        IMP.FTTmpRemark
+                    FROM TCNTImpMasTmp IMP WITH(NOLOCK)
+                    LEFT JOIN TCNMAgency_L		AGN_L WITH(NOLOCK) ON IMP.FTAgnCode = AGN_L.FTAgnCode AND AGN_L.FNLngID = $nLngID
+                    LEFT JOIN VCN_VatActive	VAT WITH(NOLOCK) ON IMP.FTVatCode = VAT.FTVatCode 
+                    WHERE 1=1
+                        AND IMP.FTSessionID     = '$tSessionID'
+                        AND FTTmpTableKey       = '$tTableKey'
+        ";
+
+        if($tTextSearch != '' || $tTextSearch != null){
+            $tSQL .= " AND (IMP.FTSplCode LIKE '%$tTextSearch%' ";
+            $tSQL .= " OR IMP.FTSplName LIKE '%$tTextSearch%' ";
+            $tSQL .= " OR IMP.FTAgnCode LIKE '%$tTextSearch%' ";
+            $tSQL .= " OR AGN_L.FTAgnName LIKE '%$tTextSearch%' ";
+            $tSQL .= " OR IMP.FTVatCode LIKE '%$tTextSearch%' ";
+            $tSQL .= " )";
+        }
+
+        $tSQL .= " ORDER BY IMP.FTSplCode";
+
+        $oQuery = $this->db->query($tSQL);
+        if($oQuery->num_rows() > 0){
+            $aStatus = array(
+                'tCode'     => '1',
+                'tDesc'     => 'success',
+                'aResult'   => $oQuery->result_array(),
+                'numrow'    => $oQuery->num_rows()
+            );
+        }else{
+            $aStatus = array(
+                'tCode'     => '99',
+                'tDesc'     => 'Error',
+                'aResult'   => array(),
+                'numrow'    => 0
+            );
+        }
+        return $aStatus;
+    }
+
+    //Functionality : Delete Import Supplier
+    //Parameters : function parameters
+    //Create By : 15/12/2022 Nale
+    //Return : response
+    //Return Type : array
+    public function FSaMSPLImportDelete($paParamMaster) {
+        try{
+            $this->db->where_in('FNTmpSeq', $paParamMaster['FNTmpSeq']);
+            $this->db->delete('TCNTImpMasTmp');
+
+            if($this->db->trans_status() === FALSE){
+                $aStatus = array(
+                    'tCode' => '905',
+                    'tDesc' => 'Cannot Delete Item.',
+                );
+            }else{
+                $aStatus = array(
+                    'tCode' => '1',
+                    'tDesc' => 'Delete Complete.',
+                );
+            }
+            return $aStatus;
+        } catch (Exception $Error) {
+            return $Error;
+        }
+    }
+
+    //Functionality : Delete Import Supplier
+    //Parameters : function parameters
+    //Create By : 15/12/2022 Nale
+    //Return : response
+    //Return Type : array
+    public function FSaMSPLImportMove2Master($paDataSearch){
+        try{
+            $nLngID         = $paDataSearch['nLangEdit'];
+            $tTableKey      = $paDataSearch['tTableKey'];
+            $tSessionID     = $paDataSearch['tSessionID'];
+            $dDateOn        = $paDataSearch['dDateOn'];
+            $tUserBy        = $paDataSearch['tUserBy'];
+
+            $dBchDateStart  = $paDataSearch['dBchDateStart'];
+            $dBchDateStop  = $paDataSearch['dBchDateStop'];
+
+            $tSQL   = " INSERT INTO TCNMSpl (
+                            FTSplCode,FTAgnCode,FDSplDob,FTVatCode,FTSplBusiness,FTSplStaBchOrHQ,FTSplStaActive,FTSplStaVATInOrEx,
+                            FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+                        )
+                        SELECT
+                            IMP.FTSplCode,
+                            IMP.FTAgnCode,
+                            '$dDateOn',
+                            IMP.FTVatCode,
+                            '1',
+                            '2',
+                            '1',
+                            IMP.FTSplStaVATInOrEx,
+                            '$dDateOn',
+                            '$tUserBy',
+                            '$dDateOn',
+                            '$tUserBy'
+                        FROM TCNTImpMasTmp IMP WITH(NOLOCK)
+                        WHERE IMP.FTSessionID       = '$tSessionID'
+                          AND IMP.FTTmpTableKey     = '$tTableKey'
+                          AND IMP.FTTmpStatus       = '1'
+            ";
+            $this->db->query($tSQL);
+
+            $tSQL   = " INSERT INTO TCNMSpl_L (FTSplCode,FNLngID,FTSplName)
+                        SELECT
+                            IMP.FTSplCode,
+                            $nLngID,
+                            IMP.FTSplName
+                        FROM TCNTImpMasTmp IMP WITH(NOLOCK)
+                        WHERE IMP.FTSessionID       = '$tSessionID'
+                          AND IMP.FTTmpTableKey     = '$tTableKey'
+                          AND IMP.FTTmpStatus       = '1'
+            ";
+            $this->db->query($tSQL);
+
+
+            $tSQL   = " INSERT INTO TCNMSplCredit (
+                FTSplCode,FNSplCrTerm,FCSplCrLimit,
+                FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+            )
+            SELECT
+                IMP.FTSplCode,
+                IMP.FNSplCrTerm,
+                IMP.FCSplCrLimit,
+                '$dDateOn',
+                '$tUserBy',
+                '$dDateOn',
+                '$tUserBy'
+            FROM TCNTImpMasTmp IMP WITH(NOLOCK)
+            WHERE IMP.FTSessionID       = '$tSessionID'
+              AND IMP.FTTmpTableKey     = '$tTableKey'
+              AND IMP.FTTmpStatus       = '1'
+            ";
+            $this->db->query($tSQL);
+
+            if($this->db->trans_status() === FALSE){
+                $aStatus = array(
+                    'tCode'     => '99',
+                    'tDesc'     => 'Error'
+                );
+            }else{
+                $aStatus = array(
+                    'tCode'     => '1',
+                    'tDesc'     => 'success'
+                );
+            }
+            return $aStatus;
+        }catch(Exception $Error) {
+            return $Error;
+        }
+    }
+
+
+    //เช็คกรณีข้อมูลซ้ำ
+    public function FSaMSPLImportMove2MasterAndReplaceOrInsert($paDataSearch){
+        try{
+            $tSessionID         = $paDataSearch['tSessionID'];
+            $dDateOn            = $paDataSearch['dDateOn'];
+            $tUserBy            = $paDataSearch['tUserBy'];
+            $tTableKey          = $paDataSearch['tTableKey'];
+            $tTypeCaseDuplicate = $paDataSearch['tTypeCaseDuplicate'];
+            $nLngID             = $paDataSearch['nLangEdit'];
+            $dBchDateStart      = $paDataSearch['dBchDateStart'];
+            $dBchDateStop       = $paDataSearch['dBchDateStop'];
+
+            if($tTypeCaseDuplicate == 2){
+                //อัพเดทรายการเดิม
+
+                //อัพเดทชื่อที่ตาราง L
+                $tSQLUpdate_L = "UPDATE
+                                    TCNMSpl_L
+                                SET
+                                    TCNMSpl_L.FTSplName = TCNTImpMasTmp.FTSplName
+                                FROM
+                                    TCNMSpl_L
+                                INNER JOIN
+                                    TCNTImpMasTmp
+                                ON
+                                    TCNMSpl_L.FTSplCode = TCNTImpMasTmp.FTSplCode
+                                WHERE
+                                    TCNTImpMasTmp.FTSessionID = '$tSessionID'
+                                AND TCNTImpMasTmp.FTTmpTableKey = 'TCNMSpl'
+                                AND TCNTImpMasTmp.FTTmpStatus = '6' ";
+                $this->db->query($tSQLUpdate_L);
+
+     
+                //อัพเดทชื่อที่ตาราง L
+                $tSQLUpdate_L = "UPDATE
+                                TCNMSplCredit
+                            SET
+                                TCNMSplCredit.FNSplCrTerm = TCNTImpMasTmp.FNSplCrTerm,
+                                TCNMSplCredit.FCSplCrLimit = TCNTImpMasTmp.FCSplCrLimit
+                            FROM
+                                TCNMSplCredit
+                            INNER JOIN
+                                TCNTImpMasTmp
+                            ON
+                                TCNMSplCredit.FTSplCode = TCNTImpMasTmp.FTSplCode
+                            WHERE
+                                TCNTImpMasTmp.FTSessionID = '$tSessionID'
+                            AND TCNTImpMasTmp.FTTmpTableKey = 'TCNMSpl'
+                            AND TCNTImpMasTmp.FTTmpStatus = '6' ";
+            $this->db->query($tSQLUpdate_L);
+
+            }else if($tTypeCaseDuplicate == 1){
+                //ใช้รายการใหม่
+
+                //ลบข้อมูลในตาราง L
+                $tSQLDeleteSpl_L = "DELETE FROM TCNMSpl_L WHERE FTSplCode IN (
+                                    SELECT FTSplCode
+                                    FROM TCNTImpMasTmp
+                                    WHERE FTSessionID = '$tSessionID' AND FTTmpStatus = 6 AND FTTmpTableKey = 'TCNMSpl'
+                                )";
+                $this->db->query($tSQLDeleteSpl_L);
+
+                //ลบข้อมูลในตารางจริง
+                $tSQLDeleteSpl = "DELETE FROM TCNMSpl WHERE FTSplCode IN (
+                                        SELECT FTSplCode
+                                        FROM TCNTImpMasTmp
+                                        WHERE FTSessionID = '$tSessionID' AND FTTmpStatus = 6 AND FTTmpTableKey = 'TCNMSpl'
+                                    )";
+                $this->db->query($tSQLDeleteSpl);
+
+                //ลบข้อมูลในตารางจริง
+                $tSQLDeleteSplCr = "DELETE FROM TCNMSplCredit WHERE FTSplCode IN (
+                    SELECT FTSplCode
+                    FROM TCNTImpMasTmp
+                    WHERE FTSessionID = '$tSessionID' AND FTTmpStatus = 6 AND FTTmpTableKey = 'TCNMSpl'
+                )";
+                    $this->db->query($tSQLDeleteSplCr);
+
+                //เพิ่มข้อมูลที่เป็น BCH Type 6
+                $tSQL   = " INSERT INTO TCNMSpl (
+                                FTSplCode,FTAgnCode,FDSplDob,FTVatCode,FTSplBusiness,FTSplStaBchOrHQ,FTSplStaActive,FTSplStaVATInOrEx,
+                                FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+                            )
+                            SELECT
+                                IMP.FTSplCode,
+                                IMP.FTAgnCode,
+                                '$dDateOn',
+                                IMP.FTVatCode,
+                                '1',
+                                '2',
+                                '1',
+                                IMP.FTSplStaVATInOrEx,
+                                '$dDateOn',
+                                '$tUserBy',
+                                '$dDateOn',
+                                '$tUserBy'
+                            FROM TCNTImpMasTmp IMP WITH(NOLOCK)
+                            WHERE IMP.FTSessionID       = '$tSessionID'
+                            AND IMP.FTTmpTableKey     = '$tTableKey'
+                            AND IMP.FTTmpStatus       = '6'
+                    ";
+                    $this->db->query($tSQL);
+
+                
+
+                //เพิ่มข้อมูลที่เป็น BCH_L Type 6
+                $tSQL   = " INSERT INTO TCNMSpl_L (FTSplCode,FNLngID,FTSplName)
+                            SELECT
+                                IMP.FTSplCode,
+                                $nLngID,
+                                IMP.FTSplName
+                            FROM TCNTImpMasTmp IMP WITH(NOLOCK)
+                            WHERE IMP.FTSessionID       = '$tSessionID'
+                            AND IMP.FTTmpTableKey     = '$tTableKey'
+                            AND IMP.FTTmpStatus       = '6'
+                ";
+                $this->db->query($tSQL);
+
+
+                $tSQL   = " INSERT INTO TCNMSplCredit (
+                    FTSplCode,FNSplCrTerm,FCSplCrLimit,
+                    FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+                )
+                SELECT
+                    IMP.FTSplCode,
+                    IMP.FNSplCrTerm,
+                    IMP.FCSplCrLimit,
+                    '$dDateOn',
+                    '$tUserBy',
+                    '$dDateOn',
+                    '$tUserBy'
+                FROM TCNTImpMasTmp IMP WITH(NOLOCK)
+                WHERE IMP.FTSessionID       = '$tSessionID'
+                  AND IMP.FTTmpTableKey     = '$tTableKey'
+                  AND IMP.FTTmpStatus       = '6'
+                ";
+                $this->db->query($tSQL);
+
+            }
+        }catch(Exception $Error) {
+            return $Error;
+        }
+    }
+
+    //ลบข้อมูลใน Temp
+    public function FSaMSPLImportMove2MasterDeleteTemp($paDataSearch){
+        try{
+            $tSessionID     = $paDataSearch['tSessionID'];
+            $dDateOn        = $paDataSearch['dDateOn'];
+            $tUserBy        = $paDataSearch['tUserBy'];
+            $tTableKey      = $paDataSearch['tTableKey'];
+
+            // ลบรายการใน Temp
+            $this->db->where('FTSessionID', $tSessionID);
+            $this->db->where('FTTmpTableKey', $tTableKey);
+            $this->db->delete('TCNTImpMasTmp');
+        }catch(Exception $Error) {
+            return $Error;
+        }
+
+    }
+
+    //Get ข้อมูลใน Temp ทั้งหมด
+    public function FSaMSPLGetTempDataAtAll(){
+        try{
+            $tSesSessionID = $this->session->userdata("tSesSessionID");
+            $tSQL   = "SELECT TOP 1
+                        (SELECT COUNT(FTTmpTableKey) AS TYPESIX FROM TCNTImpMasTmp IMP
+                        WHERE IMP.FTSessionID     = '$tSesSessionID'
+                        AND IMP.FTTmpTableKey     = 'TCNMSpl'
+                        AND IMP.FTTmpStatus       = '6') AS TYPESIX ,
+
+                        (SELECT COUNT(FTTmpTableKey) AS TYPEONE FROM TCNTImpMasTmp IMP
+                        WHERE IMP.FTSessionID     = '$tSesSessionID'
+                        AND IMP.FTTmpTableKey     = 'TCNMSpl'
+                        AND IMP.FTTmpStatus       = '1') AS TYPEONE ,
+
+                        (SELECT COUNT(FTTmpTableKey) AS TYPEONE FROM TCNTImpMasTmp IMP
+                        WHERE IMP.FTSessionID     = '$tSesSessionID'
+                        AND IMP.FTTmpTableKey     = 'TCNMSpl'
+                        ) AS ITEMALL
+                    FROM TCNTImpMasTmp ";
+            $oQuery = $this->db->query($tSQL);
+            return $oQuery->result_array();
+        }catch(Exception $Error) {
+            return $Error;
+        }
+    }
+
+
 }

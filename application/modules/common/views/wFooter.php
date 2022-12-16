@@ -532,7 +532,7 @@ require_once('././././config_deploy.php');
 <script src="<?php echo base_url(); ?>application/modules/common/assets/src/jTempImage.js"></script>
 
 <!-- Import Excel-->
-<script src="<?php echo base_url(); ?>application/modules/common/assets/src/jImportExcel.js?v=1"></script>
+<script src="<?php echo base_url(); ?>application/modules/common/assets/src/jImportExcel.js?v=2"></script>
 
 <!-- helper import export excel-->
 <script src="<?php echo base_url(); ?>application/modules/common/assets/src/jExcelCenter.js"></script>

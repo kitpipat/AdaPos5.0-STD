@@ -289,6 +289,10 @@ class cHome extends MX_Controller
                 $aTableRefPK = ['TCNTPdtTwoHD'];
                 $tTableRefPK = $aTableRefPK[0];
                 break;
+            case "supplier":
+                $aTableRefPK = ['TCNMSpl'];
+                $tTableRefPK = $aTableRefPK[0];
+                break;
         }
 
         //เงื่อนไข ที่มีผลต่อตาราง
@@ -1345,6 +1349,34 @@ class cHome extends MX_Controller
                                 }
     
                             break;
+                            case "supplier":
+
+                                // Create By : 17/11/2020 Napat(jame)
+                                // ถ้า Login ภายใต้ AD ให้นำ Session AD มา insert auto เพื่อป้องกันการ insert ให้ AD อื่น
+                                if ($tStaUsrAgn == '1') {
+                                    $tAgnCode = $tDefAgnCode;
+                                } else {
+                                    $tAgnCode = $aPackData[$i][2];
+                                }
+    
+                                $aObject = array(
+                                    'FTTmpTableKey'     => $tTableRefPK,
+                                    'FNTmpSeq'          => $i,
+                                    'FTSplCode'         => $aPackData[$i][0],
+                                    'FTSplName'         => (isset($aPackData[$i][1]) == '') ? '' : $aPackData[$i][1],
+                                    'FTAgnCode'         => $tAgnCode,
+                                    'FTVatCode'         => (isset($aPackData[$i][3]) == '') ? '' : $aPackData[$i][3],
+                                    'FTSplStaVATInOrEx' => (isset($aPackData[$i][4]) == '') ? '' : $aPackData[$i][4],
+                                    'FNSplCrTerm'       => intval($aPackData[$i][5])*1,
+                                    'FCSplCrLimit'      => intval($aPackData[$i][6])*1,
+                                    'FTTmpStatus'       => (isset($aPackData[$i][7]) == '') ? '' : $aPackData[$i][7],
+                                    'FTTmpRemark'       => (isset($aPackData[$i][8]) == '') ? '' : $aPackData[$i][8],
+                                    'FTSessionID'       => $this->session->userdata("tSesSessionID"),
+                                    'FDCreateOn'        => date('Y-m-d')
+                                );
+                                // print_r($aObject);
+                                // die();
+                                break;
                     }
 
 
@@ -1753,6 +1785,40 @@ class cHome extends MX_Controller
                     );
                     FCNnDocTmpChkCodeMultiDupInTemp($aValidateData, $aWhereData);
                 break;
+                case "supplier":
+                    //validate ข้อมูลซ้ำในตาราง Tmp
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTSplCode'
+                    );
+                    FCNnMasTmpChkCodeDupInTemp($aValidateData);
+    
+                    //validate มีข้อมูลอยู่เเล้วในตารางจริง
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTSplCode',
+                        'tTableName'        => 'TCNMSpl'
+                    );
+                    FCNnMasTmpChkCodeDupInDB($aValidateData);
+    
+                    //validate ข้อมูลอ้างอิงมีจริงไหม _ FTPplCode
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTVatCode',
+                        'tTableName'        => 'TCNMVatRate',
+                        'tErrMsg'           => 'ไม่พบรหัสภาษีในระบบ'
+                    );
+                    FCNnMasTmpChkCodeInDB($aValidateData);
+    
+                    //validate ข้อมูลอ้างอิงมีจริงไหม
+                    $aValidateData = array(
+                        'tUserSessionID'    => $this->session->userdata("tSesSessionID"),
+                        'tFieldName'        => 'FTAgnCode',
+                        'tTableName'        => 'TCNMAgency',
+                        'tErrMsg'           => 'ไม่พบตัวแทนขายในระบบ'
+                    );
+                    FCNnMasTmpChkCodeInDB($aValidateData);
+                    break;
         }
     }
 }
