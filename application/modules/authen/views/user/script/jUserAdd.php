@@ -189,6 +189,14 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
             let tGetInputBchCode        = poReturnInputShop.tGetInputBchCode;
 
             let tWhere                  = "";
+            
+            // if(tGetInputBchCode != ""){
+            var tBCHCode = tGetInputBchCode.replace(/,/g, "','");
+            tWhere += " AND TCNMShop.FTBchCode IN('"+tBCHCode+"')";
+            // }
+            if(tGetInputMerCode != ""){
+                tWhere += " AND TCNMShop.FTMerCode IN('"+tGetInputMerCode+"')";
+            }
 
             let oShopOptionReturn       = {
                 Title : ['authen/user/user','tBrowseSHPTitle'],
@@ -200,7 +208,7 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
                     ]
                 },
                 Where :{
-                    Condition : []
+                    Condition : [tWhere]
                 },
                 GrideView:{
                     ColumnPathLang	: 'authen/user/user',
@@ -222,7 +230,8 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
                     Text		: [tInputReturnShopName,"TCNMShop_L.FTShpName"]
                 },
                 RouteAddNew : 'shop',
-                BrowseLev : nStaUsrBrowseType
+                BrowseLev : nStaUsrBrowseType,
+                // DebugSQL: true
             };
 
             if(tGetInputBchCode != ""){
@@ -273,6 +282,15 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
             // }else{
             //     $('#oimBrowseShop').attr('disabled',true); // ถ้าไม่เลือก สาขา ให้ปิดปุ่มร้านค้า
             // }
+            if(poDataNextFunc != 'NULL' && $('#oetUsrMerCode').val() != ''){
+                // ถ้าเลือกรายการ
+                // $('#oimBrowseBranch').attr('disabled',false);
+                $('#oimBrowseShop').attr('disabled',false);
+            }else{
+                // ถ้าไม่ได้เลือกรายการใดๆ
+                // $('#oimBrowseBranch').attr('disabled',true);
+                $('#oimBrowseShop').attr('disabled',true);
+            }
 
             // // Clear Input Browse Shop
             // $('#oetShopCode').val('');
@@ -293,12 +311,12 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
                 var tDataNumChk = tNumChk - 1;
 
 
-                // กรณีเลือก 1 สาขา
-                if(tDataNumChk == 1){
-                    $('#oimBrowseShop').prop('disabled', false);
-                }else{
-                    $('#oimBrowseShop').prop('disabled', true);
-                }
+                // // กรณีเลือก 1 สาขา
+                // if(tDataNumChk == 1 && $('#oetUsrMerCode').val() != ''){
+                //     $('#oimBrowseShop').prop('disabled', false);
+                // }else{
+                //     $('#oimBrowseShop').prop('disabled', true);
+                // }
                 $('#odvBranchShow').html(tHtml);
 
             }else{
@@ -307,8 +325,8 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
                 $('#oimBrowseShop').prop('disabled',true);
             }
 
-            $('#oetUsrMerCode').val('');
-            $('#oetUsrMerName').val('');
+            // $('#oetUsrMerCode').val('');
+            // $('#oetUsrMerName').val('');
 
             $('#oetRoleCode').val('');
             $('#oetRoleName').val('');
@@ -483,7 +501,7 @@ var nLangEdits = <?php echo $this->session->userdata("tLangEdit")?>;
         function JSxUSRNextFuncBrowseUsrMerchant(poDataNextFunc){
             console.log('LOG >>> choose merchant');
 
-            if(poDataNextFunc != 'NULL'){
+            if(poDataNextFunc != 'NULL' && $('#oetBranchCode').val() != ''){
                 // ถ้าเลือกรายการ
                 // $('#oimBrowseBranch').attr('disabled',false);
                 $('#oimBrowseShop').attr('disabled',false);

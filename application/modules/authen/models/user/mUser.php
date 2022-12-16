@@ -162,7 +162,7 @@ class mUser extends CI_Model {
         $nLngID     = $paData['FNLngID'];
 
         $aUsrBch    = $this->mLogin->FSaMLOGGetUsrBch($tUsrCode);
-        $tBchCode   = $aUsrBch[0]['FTBchCode'];
+        $tBchCode   = @$aUsrBch[0]['FTBchCode'];
       
 
 
@@ -173,7 +173,9 @@ class mUser extends CI_Model {
                             SHPL.FTShpName
                         FROM [TCNTUsrGroup] USRBCH WITH(NOLOCK)
                         LEFT JOIN [TCNMUser] USR WITH(NOLOCK) ON USR.FTUsrCode = USRBCH.FTUsrCode
-                        LEFT JOIN [TCNMShop_L] SHPL WITH(NOLOCK) ON SHPL.FTShpCode = USRBCH.FTShpCode AND USRBCH.FTBchCode =  SHPL.FTBchCode AND SHPL.FNLngID = $nLngID
+                        LEFT JOIN [TCNMShop_L] SHPL WITH(NOLOCK) ON SHPL.FTShpCode = USRBCH.FTShpCode 
+                        AND USRBCH.FTBchCode =  SHPL.FTBchCode 
+                        AND SHPL.FNLngID = $nLngID
                         WHERE 1 = 1 
                         AND USR.FTUsrCode       = '$tUsrCode'
                         AND USRBCH.FTBchCode    = '$tBchCode'

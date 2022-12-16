@@ -46,37 +46,31 @@ class mInterfaceExport extends CI_Model {
              ";
 
         $oQuery     = $this->db->query($tSQL);
-
-        $aResult    = $oQuery->result_array();
+        if ($oQuery->num_rows() > 0) {
+            $aObject    = $oQuery->result_array();
+            foreach($aObject AS $Value){
+                $aResult[$Value['FTCfgCode']] = $Value;
+            }
+            $aResult['rtCode'] = '1';
+        }else{
+            $aResult = array(
+                'rtCode' => '800',
+                'rtDesc' => 'data not found',
+            );
+        }
         return $aResult;
     }
 
         //19-11-2020 เนลว์เพิ่ม UNION การขายของ Vending
        //Get Data DocNo
-       public function FSaMINMGetDataDocNo($ptDocNoFrom,$ptDocNoTo,$ptBchCode){
-        // $tSQL = " SELECT  FTXshDocNo
-        //             FROM TPSTSalHD WITH(NOLOCK)
-        //             WHERE FTXshDocNo BETWEEN '$ptDocNoFrom' AND '$ptDocNoTo'
-        //          ";
-
-        $tSQL = "SELECT aData.*  FROM
-                    ( SELECT
-                        0 + ROW_NUMBER () OVER (ORDER BY FTXshDocNo ASC) AS rtRowID,
-                        TPSTTaxHD.FTBchCode AS FTBchCode,
-                        TPSTTaxHD.FTXshDocNo AS FTXshDocNo
-                    FROM
-                        TPSTTaxHD WITH (NOLOCK)
-                    ) AS aData
-                    WHERE 1=1
-                    ";
-
-            if($ptBchCode!=''){
-                $tSQL .=" AND aData.FTBchCode = '$ptBchCode' ";
-            }
-
-            $tSQL .=" AND aData.FTXshDocNo BETWEEN '$ptDocNoFrom' AND '$ptDocNoTo' ";
+       public function FSaMINMGetDataDocNo($ptDocNoFrom,$ptDocNoTo){
+        $tSQL = " SELECT  FTXshDocNo
+                    FROM TPSTSalHD WITH(NOLOCK)
+                    WHERE FTXshDocNo BETWEEN '$ptDocNoFrom' AND '$ptDocNoTo'
+                 ";
     
             $oQuery     = $this->db->query($tSQL);
+            echo $this->db->last_query();
         
     
             $aResult    = $oQuery->result_array();

@@ -170,9 +170,16 @@ class cLogin extends MX_Controller {
 					// User Have Agen
 					if(!empty($aDataUsrGroup[0]['FTAgnCode'])){
 						$this->session->set_userdata("bIsHaveAgn", true);
+
+						// ถ้าเป็นตัวแทนขาย ต้องเช็คว่าเแ็นตัวแทนขาย หรือ แฟรนด์ไซส์ 
+						// จะมีผลต่อการมองเห็น และ การซื้อ
+						// 1 : ตัวแทนขาย , 2 : แฟรนด์ไซส์ 
+						$this->session->set_userdata("tAgnType", $aDataUsrGroup[0]['FTAgnType']);
 					}else{
 						$this->session->set_userdata("bIsHaveAgn", false);
+						$this->session->set_userdata("tAgnType", 0);
 					}
+					
 
 					// User level
 					$this->session->set_userdata("tSesUsrLevel", "");

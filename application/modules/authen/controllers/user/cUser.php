@@ -173,7 +173,7 @@ class cUser extends MX_Controller {
                 // 'tImgName'      => $tImgName,
                 'aResult'       => $aResList,
                 'aResActRole'   => $aResActRole,
-                'aResUsrGroup'  => $aResUsrGroup
+                'aResUsrGroup'  => $aResUsrGroup,
                 // 'aResUsrBch'   => $aResUsrBch
                 // 'aResUsrShp'   => $aResUsrShp
             ];
@@ -571,22 +571,24 @@ class cUser extends MX_Controller {
                 // }
 
 
-                if(isset($tBchSpitCode) != empty($tBchSpitCode)){
+                if(isset($tBchCode) != empty($tBchCode)){
                     for($i=0; $i < FCNnHSizeOf($tBchSpitCode); $i++){
                         if($tBchSpitCode[$i] == ''){
                             continue;
                         }
                         $aStaMasterUsrBch  = $this->mUser->FSaMUSRAddUpdateMasterUsrBch($tBchSpitCode[$i], $aDataMasterUsrBch);
                     }
-                }else{
+                }else if($tBchCode != ""){
                     $this->mUser->FSaMUSRAddUpdateMasterUsrBch($tBchCode, $aDataMasterUsrBch);
+                }else{
+                    $this->mUser->FSaMUSRAddUpdateMasterUsrBch('', $aDataMasterUsrBch);
                 }
 
 
             }else{
                 //Update
                 if($tBchCode != '' && $tShpCode == ''){ // Update Usr Bch
-                    if(isset($tBchSpitCode) != empty($tBchSpitCode)){
+                    if(isset($tBchCode) != empty($tBchCode)){
                         for($i=0; $i < FCNnHSizeOf($tBchSpitCode); $i++){
                             if($tBchSpitCode[$i] == ''){
                                 continue;
@@ -595,7 +597,7 @@ class cUser extends MX_Controller {
                         }
                     }
                 }else if($tBchCode != '' && $tShpCode != ''){ // Update Usr Shp
-                    if(isset($tShopSpitCode) != empty($tShopSpitCode)){
+                    if(isset($tShpCode) != empty($tShpCode)){
                         for($i=0; $i < FCNnHSizeOf($tShopSpitCode); $i++){
                             if($tShopSpitCode[$i] == ''){
                                 continue;
@@ -605,6 +607,17 @@ class cUser extends MX_Controller {
                     }
                 }else if($tBchCode == '' && $tShpCode == ''){ // Update Usr HQ
                     $this->mUser->FSaMUSRAddUpdateMasterUsrBch('', $aDataMasterUsrBch);
+                }else{
+                    // $this->mUser->FSaMUSRAddUpdateMasterUsrBch('', $aDataMasterUsrBch);
+                    if(isset($tShpCode) != empty($tShpCode)){
+                        for($i=0; $i < FCNnHSizeOf($tShopSpitCode); $i++){
+                            if($tShopSpitCode[$i] == ''){
+                                continue;
+                            }
+                            $aStaMasterUsrBch  = $this->mUser->FSaMUSRAddUpdateMasterUsrShp($tShopSpitCode[$i], str_replace(',', '', $tBchCode ), $aDataMasterUsrBch);
+                        }
+                    }
+
                 }
             }
 

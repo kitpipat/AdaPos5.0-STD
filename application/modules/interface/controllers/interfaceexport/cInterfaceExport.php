@@ -93,30 +93,35 @@ class cInterfaceExport extends MX_Controller {
             }
 
             $aResult = $this->mInterfaceExport->FSaMINMGetDataConfig();
-            $aConnect = array(
-                'tHost'      => $aResult[0]['FTCfgStaUsrValue'],
-                'tVHost'     => $aResult[2]['FTCfgStaUsrValue'],
-                'tPort'      => $aResult[3]['FTCfgStaUsrValue'],
-                'tUser'      => $aResult[4]['FTCfgStaUsrValue'],
-                'tPassword'  => $aResult[5]['FTCfgStaUsrValue'],
-                'tQueuName'  => array(
-                    0 => $aResult[9]['FTCfgStaUsrValue'],
-                    1 => $aResult[11]['FTCfgStaUsrValue'],
-                    2 => $aResult[10]['FTCfgStaUsrValue'],
-                    3 => $aResult[12]['FTCfgStaUsrValue'],
-                    4 => $aResult[13]['FTCfgStaUsrValue'],
-                ) 
-            );
+            
+            if($aResult['rtCode'] != 1){
+                $aConnect = array(
+                    'tHost'      => '',
+                    'tPort'      => '',
+                    'tPassword'  => '',
+                    'tUser'      => '',
+                    'tVHost'     => '',
+                    
+                );
+            }else{
+                $aConnect = array(
+                    'tHost'      => $aResult['tLK_NotiHost']['FTCfgStaUsrValue'],
+                    'tPort'      => $aResult['tLK_NotiPort']['FTCfgStaUsrValue'],
+                    'tPassword'  => $aResult['tLK_NotiPwd']['FTCfgStaUsrValue'],
+                    'tUser'      => $aResult['tLK_NotiUsr']['FTCfgStaUsrValue'],
+                    'tVHost'     => $aResult['tLK_NotiVHost']['FTCfgStaUsrValue'],
+                    'tQueuName'  => array(
+                        1 => $aResult['tLK_NotiQueueSalABB']['FTCfgStaUsrValue'],
+                    )
+                );
+            }
 
                 if($tTypeEvent == 'getpassword'){
                     echo json_encode($aConnect);
                 }else{
 
-
-                
                     $aIFXExport     = $this->input->post('ocmIFXExport');
                     $tPassword      = $this->input->post('tPassword');
-
                     $aConnStr = array(
                         'ptSAPDBServer' => $this->input->post('oetInterfaceExporttLK_SAPDBSever'),
                         'ptSAPDBName'  => $this->input->post('oetInterfaceExporttLK_SAPDBName'),
@@ -166,12 +171,13 @@ class cInterfaceExport extends MX_Controller {
     }
 
     public function FCNxCallRabbitMQSale($paParams,$pbStaUse = true,$ptPasswordMQ) {
+        echo '3';
 
         $aVal = $this->mInterfaceExport->FSaMINMGetDataConfig();
-        $tHost     = $aVal[0]['FTCfgStaUsrValue'];
-        $tVHost    = $aVal[2]['FTCfgStaUsrValue'];
-        $tPort     = $aVal[3]['FTCfgStaUsrValue'];
-        $tUser     = $aVal[4]['FTCfgStaUsrValue'];
+        $tHost      = $aVal['tLK_NotiHost']['FTCfgStaUsrValue'];
+        $tPort      = $aVal['tLK_NotiPort']['FTCfgStaUsrValue'];
+        $tUser      = $aVal['tLK_NotiUsr']['FTCfgStaUsrValue'];
+        $tVHost     = $aVal['tLK_NotiVHost']['FTCfgStaUsrValue'];
         $tPassword = $ptPasswordMQ;
 
 
@@ -222,6 +228,8 @@ class cInterfaceExport extends MX_Controller {
 
         //ถ้าไม่เลือกเลขที่เอกสารมา จะต้องส่งไปหาแบบช่วง วันที่ ทั้งหมด
         if(($paPackData['tDocNoFrom'] == '' || $paPackData['tDocNoFrom'] == null) && ($paPackData['tDocNoTo'] == '' || $paPackData['tDocNoTo'] == null)){
+            echo '1';
+
             $aMQParams = [
                 "queueName"     => $paPackData['tQueueName'],
                 "exchangname"   => "",
@@ -244,9 +252,35 @@ class cInterfaceExport extends MX_Controller {
                 ]
             ];
             $this->FCNxCallRabbitMQSale($aMQParams,false,$paPackData['tPasswordMQ']);
-        }else{
+        }else if(($paPackData['tDocNoFrom'] != '' || $paPackData['tDocNoFrom'] != null) && ($paPackData['tDocNoTo'] != '' || $paPackData['tDocNoTo'] != null)){
+            //เลือก เอกสาร และเสือกวันที่มา
+                $aMQParams= [
+                    "queueName"     => $paPackData['tQueueName'],
+                    "exchangname"   => "",
+                    "params"        => [
+                        "ptFunction"    =>  "SalePos",//ชื่อ Function
+                        "ptSource"      =>  "AdaStoreBack", //ต้นทาง
+                        "ptDest"        =>  "MQAdaLink",  //ปลายทาง
+                        "ptData"        =>  json_encode([
+                            "ptFilter"      => $paPackData['tBchCodeSale'],
+                            "ptDateFrm"     => $paPackData['dDateFromSale'],
+                            "ptDateTo"      => $paPackData['dDateToSale'],
+                            "ptDocNoFrm"    => $paPackData['tDocNoFrom'],
+                            "ptDocNoTo"     => $paPackData['tDocNoTo'],
+                            "ptWaHouse"     => '',
+                            "ptPosCode"     => '',
+                            "ptRound"       => '1',
+                            "ptManaul"      => $paPackData['nAlwDupFlag']
+                        ]),
+                        "ptConnStr"     => $paPackData['aConnStr'],
+                    ]
+                ];
+                $this->FCNxCallRabbitMQSale($aMQParams,false,$paPackData['tPasswordMQ']);
+            
+        }
+        else{
             //ถ้าไม่เลือกวันที่มา จะต้อส่งไปหาแบบช่วง เลขที่เอกสาร
-            $aGetDataDocNo = $this->mInterfaceExport->FSaMINMGetDataDocNo($paPackData['tDocNoFrom'],$paPackData['tDocNoTo'],$paPackData['tBchCodeSale']);
+            $aGetDataDocNo = $this->mInterfaceExport->FSaMINMGetDataDocNo($paPackData['tDocNoFrom'],$paPackData['tDocNoTo']);
             foreach($aGetDataDocNo as $aValue){
                 $aMQParams[1] = [
                     "queueName"     => $paPackData['tQueueName'],

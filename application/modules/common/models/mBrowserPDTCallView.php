@@ -200,6 +200,7 @@ class mBrowserPDTCallView extends CI_Model
 
                 // $tSesUserCode       = $this->session->userdata('tSesUserCode');
                 $tSesUsrAgnCode     = $this->session->userdata('tSesUsrAgnCode');
+                $tSesUsrAgnType     = $this->session->userdata('tAgnType');
                 $tSesUsrShpCodeMulti        = $this->session->userdata("tSesUsrShpCodeMulti");
                 $tSesUsrBchCodeMulti        = $this->session->userdata("tSesUsrBchCodeMulti");
                 
@@ -235,7 +236,7 @@ class mBrowserPDTCallView extends CI_Model
                 } else {
                     $tWAH   = $paData['tWAH'];
                 }
-            
+
                 $nCheckPage  =  $this->input->cookie("PDTCookie_" . $this->session->userdata("tSesUserCode"), true);
                 $tCookieVal = json_decode($nCheckPage);
                 if (!empty($nCheckPage)) {
@@ -244,11 +245,12 @@ class mBrowserPDTCallView extends CI_Model
                     $nMaxTopPage = 0;
                 }
                 
-                $tCallStore = "{CALL SP_CNoBrowseProduct(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+                $tCallStore = "{CALL SP_CNoBrowseProduct(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
                 $aDataStore = array(
                     'ptUsrCode'           => $tSesUserCode,
                     'ptUsrLevel'          => $tSesRealUsrLevel,  //$tSesUsrLevel
                     'tSesUsrAgnCode'      => $tSesUsrAgnCode,
+                    'tSesUsrAgnType'      => $tSesUsrAgnType,
                     'ptSesBchCodeMulti'   => $tBCH,
                     'ptSesShopCodeMulti'  => $tSHP,
                     'ptSesMerCode'        => $tMER,

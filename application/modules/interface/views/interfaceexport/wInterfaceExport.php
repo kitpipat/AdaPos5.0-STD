@@ -111,6 +111,7 @@
 											</div>
 											<!-- สาขา -->
 
+											<!-- วันที่ -->
 											<div class="row">
 												<div class="col-md-2"><?=language('interface/interfaceexport/interfaceexport','tITFXFilterDate');?></div>
 												<div class="col-md-10">
@@ -159,6 +160,8 @@
 
 												</div>
 											</div>
+											<!-- วันที่ -->
+
 											<?php if($aData['FNApiGrpSeq'] == '1'){ ?>
 											<div class="row">
 												<div class="col-md-2"><?=language('interface/interfaceexport/interfaceexport','tITFXFilterDocSal');?></div>
@@ -353,6 +356,8 @@
 						oITFXBrowseFromSale        = oITFXBrowseSaleOption({
 							'tReturnInputCode'  : 'oetITFXXshDocNoFrom'+pnSeq,
 							'tReturnInputName'  : tValueTo,
+							'tInputDateSale'  	: 'oetITFXDateFromSale'+pnSeq,
+							'tInputBchCode'  	: 'oetIFXBchCodeSale'+pnSeq,
 							'tNextFuncName'     : '',
 							'aArgReturn'        : ['FTXshDocNo']
 						});
@@ -366,6 +371,8 @@
 						oITFXBrowseToSale        = oITFXBrowseSaleOption({
 							'tReturnInputCode'  : 'oetITFXXshDocNoTo'+pnSeq,
 							'tReturnInputName'  : tValueTo,
+							'tInputDateSale'  	: 'oetITFXDateFromSale'+pnSeq,
+							'tInputBchCode'  	: 'oetIFXBchCodeSale'+pnSeq,
 							'tNextFuncName'     : '',
 							'aArgReturn'        : ['FTXshDocNo']
 						});
@@ -395,48 +402,54 @@
         let aArgReturn       = poReturnInput.aArgReturn;
         let tInputReturnCode = poReturnInput.tReturnInputCode;
 		let tInputReturnName = poReturnInput.tReturnInputName;
-		let dDateFrom		 = $('#oetITFXDateFromSale').val();
+		let dDateFrom		 = $('#'+poReturnInput.tInputDateSale).val();
 		let dDateTo			 = $('#oetITFXDateToSale').val();
-		let tIFXBchCodeSale  = $('#oetIFXBchCodeSale').val();
+		let tIFXBchCodeSale	 = $('#'+poReturnInput.tInputBchCode).val();
+
 		let tWhere		     = "";
-		let tSessionUserCode  = '<?=$this->session->userdata('tSesUserCode')?>'
 		
-	
-			tWhere += " AND TCNTBrsBillTmp.FTUsrCode = '"+tSessionUserCode+"' ";
-	
-
-
+		if(dDateFrom != ""){
+			tWhere += " AND CONVERT(VARCHAR(10),TPSTSalHD.FDXshDocDate,121) = CONVERT(VARCHAR(10),CONVERT(datetime,'" + dDateFrom +"',121),121)";
+		}else{
+			tWhere += " ";
+		}
+		if(tIFXBchCodeSale != ""){
+			tWhere += " AND TPSTSalHD.FTBchCode = "+tIFXBchCodeSale;
+		}else{
+			tWhere += " ";
+		}
 
         let oOptionReturn    = {
             Title: ['interface/interfaceexport/interfaceexport','tITFXDataSal'],
-            Table:{Master:'TCNTBrsBillTmp',PK:'FTXshDocNo'},
+            Table:{Master:'TPSTSalHD',PK:'FTXshDocNo'},
 			Where: {
                     Condition: [tWhere]
 			},
-			// Filter:{
-			// 	Selector    : 'oetIFXBchCodeSale',
-			// 	Table       : 'TCNTBrsBillTmp',
-			// 	Key         : 'FTBchCode'
-			// },
+			Filter:{
+				Selector    : 'oetIFXBchCodeSale',
+				Table       : 'TPSTSalHD',
+				Key         : 'FTBchCode'
+			},
             GrideView:{
                 ColumnPathLang	: 'interface/interfaceexport/interfaceexport',
                 ColumnKeyLang	: ['tITFXSalDocNo','tITFXSalDate'],
-                ColumnsSize     : ['30%','50%','20%'],
+                ColumnsSize     : ['30%','70%'],
                 WidthModal      : 50,
-                DataColumns		: ['TCNTBrsBillTmp.FTXshDocNo','TCNTBrsBillTmp.FDXshDocDate'],
-                DataColumnsFormat : ['','',''],
+                DataColumns		: ['TPSTSalHD.FTXshDocNo','TPSTSalHD.FDXshDocDate'],
+                DataColumnsFormat : ['',''],
                 Perpage			: 10,
-                OrderBy			: ['FTXshDocNo ASC'],
+                OrderBy			: ['TPSTSalHD.FTXshDocNo ASC'],
             },
             CallBack:{
                 ReturnType	: 'S',
-                Value		: [tInputReturnCode,"TCNTBrsBillTmp.FTXshDocNo"],
-                Text		: [tInputReturnName,"TCNTBrsBillTmp.FTXshDocNo"]
+                Value		: [tInputReturnCode,"TPSTSalHD.FTXshDocNo"],
+                Text		: [tInputReturnName,"TPSTSalHD.FTXshDocNo"]
 			},
-            NextFunc : {
-                FuncName    : tNextFuncName,
-                ArgReturn   : aArgReturn
-            }
+            // NextFunc : {
+            //     FuncName    : tNextFuncName,
+            //     ArgReturn   : aArgReturn
+            // },
+			// DebugSQL: true,
             // RouteAddNew: 'branch',
             // BrowseLev: 1
         };
