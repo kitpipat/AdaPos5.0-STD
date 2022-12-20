@@ -28,14 +28,20 @@
             <table id="otbSplDataList" class="table table-striped">
                 <thead>
                     <tr>
+                        <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
                         <th nowarp class="text-center xCNTextBold" width="10%"><?php echo  language('supplier/supplier/supplier','tChoose')?></th>
+                        <?php endif; ?>
                         <th nowarp class="text-center xCNTextBold" width="5%"><?php echo  language('supplier/supplier/supplier','tSPLTBImage')?></th>
                         <th nowarp class="text-center xCNTextBold" width="15%"><?php echo  language('supplier/supplier/supplier','tCode')?></th>
                         <th nowarp class="text-center xCNTextBold"><?php echo  language('supplier/supplier/supplier','tName')?></th>
                         <th nowarp class="text-center xCNTextBold"><?php echo  language('supplier/supplier/supplier','tTel')?></th>
                         <th nowarp class="text-center xCNTextBold"><?php echo  language('supplier/supplier/supplier','tEmail')?></th>
+                        <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
                         <th nowarp class="text-center xCNTextBold" width="5%"><?php echo  language('supplier/supplier/supplier','tDelete')?></th>
+                        <?php endif; ?>
+                        <?php if($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaEdit'] == 1 || $aAlwEvent['tAutStaRead'] == 1)) : ?>
                         <th nowarp class="text-center xCNTextBold" width="5%"><?php echo  language('supplier/supplier/supplier','tEdit')?></th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,25 +49,45 @@
                         <?php if(!empty($aSplDataList['raItems'])) { ?>
                         <?php foreach($aSplDataList['raItems'] AS $nKey => $aValue):?>
                             <tr class=" xCNTextDetail2 otrSupplier" id="otrSupplier<?php echo $nKey?>" data-code="<?php echo $aValue['rtSplCode']?>" data-name="<?php echo $aValue['rtSplName']?>">
+                            <?php
+                                    if($aValue['rtSplCodeRef'] != ''){
+                                      $tDisableTD     = "xWTdDisable";
+                                      $tDisableImg    = "xWImgDisable";
+                                      $tDisabledItem  = "disabled ";
+                                      $tDisabledItem2  = "xCNDisabled ";
+                                      $tDisabledcheckrow  = "true";
+                                    }else{
+                                      $tDisableTD     = "";
+                                      $tDisableImg    = "";
+                                      $tDisabledItem  = "";
+                                      $tDisabledItem2  = " ";
+                                      $tDisabledcheckrow  = "false";
+                                    }
+                                ?>
+                                <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
                                 <td  nowarp class="text-center">
                                     <label class="fancy-checkbox">
-                                        <input id="ocbListItem<?=$nKey?>" type="checkbox" class="ocbListItem" name="ocbListItem[]">
-                                        <span>&nbsp;</span>
+                                        <input id="ocbListItem<?=$nKey?>" type="checkbox" class="ocbListItem" <?php echo $tDisabledItem; ?> name="ocbListItem[]">
+                                        <span class="<?php echo $tDisabledItem2; ?>">&nbsp;</span>
                                     </label>
                                 </td>
+                                <?php endif; ?>
                                 <td class="text-center" nowarp><?=FCNtHGetImagePageList($aValue['FTImgObj'],'40px')?></td>
                                 <td nowarp><?php echo $aValue['rtSplCode']?></td>
                                 <td nowarp><?php echo $aValue['rtSplName']?></td>
                                 <td nowarp><?php echo $aValue['rtSplTel']?></td>
                                 <td nowarp><?php echo $aValue['rtSplEmail']?></td>
                                 
-                                
+                                <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) : ?>
                                 <td nowarp class="text-center">
-                                    <img class="xCNIconTable" src="<?php echo  base_url().'/application/modules/common/assets/images/icons/delete.png'?>" onClick="JSoSupplierDel('<?php echo $aValue['rtSplCode']?>','<?php echo $aValue['rtSplName']?>')">
+                                    <img class="xCNIconTable <?php echo $tDisabledItem2; ?> <?php echo $tDisableImg; ?>" src="<?php echo  base_url().'/application/modules/common/assets/images/icons/delete.png'?>" onClick="JSoSupplierDel('<?php echo $aValue['rtSplCode']?>','<?php echo $aValue['rtSplName']?>')">
                                 </td>
+                                <?php endif; ?>
+                                <?php if($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaEdit'] == 1 || $aAlwEvent['tAutStaRead'] == 1)) : ?>
                                 <td nowarp class="text-center">
                                     <img class="xCNIconTable" src="<?php echo  base_url().'/application/modules/common/assets/images/icons/edit.png'?>" onClick="JSvCallPageSupplierEdit('<?php echo $aValue['rtSplCode']?>')">
                                 </td>
+                                <?php endif; ?>
                             </tr>
                            
                         <?php endforeach;?>

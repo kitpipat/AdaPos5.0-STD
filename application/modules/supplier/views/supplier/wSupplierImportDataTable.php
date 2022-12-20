@@ -51,7 +51,7 @@
                         <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo  language('supplier/supplier/supplier','tCode');?></th>
 						<th nowrap class="xCNTextBold" style="text-align:center;"><?php echo language('supplier/supplier/supplier','tName');?></th>
                         <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo language('supplier/supplier/supplier','tAGNName');?></th>
-						<!-- <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อตัวแทนขาย";?></th> -->
+						<th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "ชื่อตัวแทนขาย";?></th>
                         <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "รหัสภาษี";?></th>
                         <th nowrap class="xCNTextBold" style="text-align:center;"><?php echo language('supplier/supplier/supplier','tVat');?></th>
 						<th nowrap class="xCNTextBold" style="text-align:center;"><?php echo "เงื่อนไขภาษ๊";?></th>
@@ -272,7 +272,7 @@ function JSxRenderDataTable(){
                                 FTSplCode , 
                                 FTSplName , 
                                 FTAgnCode , 
-                                // FTAgnName , 
+                                FTAgnName , 
                                 FTVatCode , 
                                 FCVatRate , 
                                 FTSplStaVATInOrExText,
@@ -359,36 +359,46 @@ function JSxSPLImportMoveMaster(){
 //ฟังก์ชั่น Delete
 function JSxSPLDeleteImportList(ptSeq, ptBchCode, ptBchName) {
     var aData = $('#odvModalDeleteImportBranch #ohdConfirmIDDelete').val();
-    $('#odvModalDeleteImportBranch .modal-dialog').css('width','35%')
-    if(aData == ''){
-        if(ptSeq == 'NODATA'){
-            return;
+    $('#odvModalDeleteImportBranch .modal-dialog').css('width','35%');
+    var nCheckedItem = $("#otdTableSPL tbody .ocbListItem:checked").length;
+  
+        if(ptSeq != 'NODATA'){
+            if(ptSeq == 'NODATA'){
+                return;
+            }
+           
+             
+            
+            console.log('Single Del List');
+            $('#odvModalDeleteImportBranch').modal('show');
+            $('#odvModalDeleteImportBranch #ospConfirmDelete').html($('#oetTextComfirmDeleteSingle').val() + ptBchCode + ' (' + ptBchName + ')' + '<?=language("common/main/main","tBCHYesOnNo");?>');
+            aNewIdDelete    = ptSeq;
+            aNewCodeDelete  = ptBchCode;
+        }else{
+           
+                var aTexts = aData.substring(0, aData.length - 2);
+                var aDataSplit = aTexts.split(" , ");
+                var aDataSplitlength = aDataSplit.length;
+            
+                
+                var aDataCode = $('#odvModalDeleteImportBranch #ohdConfirmCodeDelete').val();
+                var aTextsCode = aDataCode.substring(0, aDataCode.length - 2);
+                var aDataCodeSplit = aTextsCode.split(" , ");
+                var aDataCodeSplitLength = aDataCodeSplit.length;
+                if(nCheckedItem>1){
+                //     return;
+                    console.log('Multi Del List');
+                    $('#odvModalDeleteImportBranch').modal('show');
+                }
+                var aNewIdDelete    = [];
+                var aNewCodeDelete  = [];
+                for ($i = 0; $i < aDataSplitlength; $i++) {
+                    aNewIdDelete.push(aDataSplit[$i]);
+                    aNewCodeDelete.push(aDataCodeSplit[$i]);
+                }
+            
+        
         }
-
-        console.log('Single Del List');
-        $('#odvModalDeleteImportBranch').modal('show');
-        $('#odvModalDeleteImportBranch #ospConfirmDelete').html($('#oetTextComfirmDeleteSingle').val() + ptBchCode + ' (' + ptBchName + ')' + '<?=language("common/main/main","tBCHYesOnNo");?>');
-        aNewIdDelete    = ptSeq;
-        aNewCodeDelete  = ptBchCode;
-    }else{
-        var aTexts = aData.substring(0, aData.length - 2);
-        var aDataSplit = aTexts.split(" , ");
-        var aDataSplitlength = aDataSplit.length;
-
-        var aDataCode = $('#odvModalDeleteImportBranch #ohdConfirmCodeDelete').val();
-        var aTextsCode = aDataCode.substring(0, aDataCode.length - 2);
-        var aDataCodeSplit = aTextsCode.split(" , ");
-        var aDataCodeSplitLength = aDataCodeSplit.length;
-
-        console.log('Multi Del List');
-        $('#odvModalDeleteImportBranch').modal('show');
-        var aNewIdDelete    = [];
-        var aNewCodeDelete  = [];
-        for ($i = 0; $i < aDataSplitlength; $i++) {
-            aNewIdDelete.push(aDataSplit[$i]);
-            aNewCodeDelete.push(aDataCodeSplit[$i]);
-        }
-    }
     
     $('#obtSPLImpConfirm').off('click');
     $('#obtSPLImpConfirm').on('click', function(){

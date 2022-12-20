@@ -21,11 +21,12 @@ class mSupplier extends CI_Model {
                                         SPL.FTSplTel AS rtSplTel,
                                         SPL.FTSplEmail AS rtSplEmail,
                                         SPL.FDCreateOn,
-                                        Img.FTImgObj
+                                        Img.FTImgObj,
+                                        PI.FTSplCode   AS rtSplCodeRef
                                     FROM TCNMSpl SPL WITH(NOLOCK)
                                     LEFT JOIN TCNMSpl_L SPL_L WITH(NOLOCK) ON SPL.FTSplCode = SPL_L.FTSplCode AND SPL_L.FNLngID = $nLngID
                                     LEFT JOIN TCNMImgObj Img WITH(NOLOCK) ON Img.FTImgRefID = SPL.FTSplCode AND Img.FTImgTable = 'TCNMSpl'
-
+                                    LEFT JOIN (SELECT DISTINCT FTSplCode FROM TAPTPiHD WITH(NOLOCK) ) PI ON PI.FTSplCode  = SPL.FTSplCode
                                     WHERE 1=1 ";
             if(isset($tSearchList) && !empty($tSearchList)){
                 $tSQL .= " AND (SPL.FTSplCode  COLLATE THAI_BIN LIKE '%$tSearchList%'";

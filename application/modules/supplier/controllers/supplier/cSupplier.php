@@ -18,11 +18,13 @@ class cSupplier extends MX_Controller {
             $this->load->view ( 'common/wMenu', array ('nMsgResp'=>$nMsgResp));
         }
         $vBtnSave = FCNaHBtnSaveActiveHTML('supplier/0/0'); //Load Html ของปุ่ม Save ที่เก็บ Session ปัจจุบัน
+        $aAlwEvent	    = FCNaHCheckAlwFunc('supplier/0/0');
         $this->load->view('supplier/supplier/wSupplier', array (
             'nMsgResp'          => $nMsgResp,
             'vBtnSave'          => $vBtnSave,
             'nSplBrowseType'    => $nSplBrowseType,
-            'tSplBrowseOption'  => $tSplBrowseOption
+            'tSplBrowseOption'  => $tSplBrowseOption,
+            'aAlwEvent'         => $aAlwEvent
         ));
     }
 
@@ -32,7 +34,10 @@ class cSupplier extends MX_Controller {
     //Return : String View
     //Return Type : View
     public function FSvCSPLListPage(){
-        $this->load->view('supplier/supplier/wSupplierList');
+        $aAlwEvent	    = FCNaHCheckAlwFunc('supplier/0/0');
+        $this->load->view('supplier/supplier/wSupplierList', array(
+            'aAlwEvent' => $aAlwEvent
+        ));
     }
 
     //Functionality : Function Call View Data Supplier
@@ -61,10 +66,12 @@ class cSupplier extends MX_Controller {
                 'tSearchAll'    => $tSearchAll
             );
             $aSplDataList   = $this->mSupplier->FSaMSPLList($aData);
+            $aAlwEvent	    = FCNaHCheckAlwFunc('supplier/0/0');
             $aGenTable  = array(
                 'aSplDataList'  => $aSplDataList,
                 'nPage'         => $nPage,
-                'tSearchAll'    => $tSearchAll
+                'tSearchAll'    => $tSearchAll,
+                'aAlwEvent'     => $aAlwEvent
             );
             $this->load->view('supplier/supplier/wSupplierDataTable',$aGenTable);
         }catch(Exception $Error){
