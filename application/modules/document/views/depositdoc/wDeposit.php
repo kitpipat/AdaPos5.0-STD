@@ -26,8 +26,10 @@
                         <div id="odvDPSBtnGrpAddEdit">
                             <div class="demo-button xCNBtngroup" style="width:100%;">
                                 <button id="obtSOCallBackPage"  class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tBack'); ?></button>
-                                <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)): ?>
+                                <?php if ($aAlwEvent['tAutStaPrintMore'] == 1): ?>
                                     <button id="obtDPSPrintDoc" onclick="JSxDPSPrintDoc()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCMNPrint'); ?></button>
+                                <?php endif; ?>
+                                <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)): ?>
                                     <button id="obtDPSCancelDoc" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('document/depositdoc/depositdoc', 'tDPSCancel'); ?></button>
                                     <button id="obtDPSApproveDoc" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('common/main/main', 'tCMNApprove'); ?></button>                                  
                                     <button id="obtDPSApproveDPS" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('document/depositdoc/depositdoc', 'tDPSEventDeposit'); ?></button>                                  
