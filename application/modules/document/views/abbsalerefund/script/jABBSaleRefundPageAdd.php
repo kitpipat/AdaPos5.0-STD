@@ -414,12 +414,13 @@
                         {"DocCode"      : tDocCode },
                         {"DocBchCode"   : $('#ohdABBBchCode').val() }
                     ];
+                    
                     // console.log(aInfor);
                     JCNxOpenLoading();
                     var aRftData = {
                                 tRtfCode    : '00003' ,
-                                tDocBchCode : tDocBCH ,
-                                tIframeNameID : 'oifPrintABB' ,
+                                tDocBchCode : $('#ohdABBBchCode').val() ,
+                                tIframeNameID : 'oifABBPrint' ,
                                 oParameter  : {
                                                 infor : JCNtEnCodeUrlParameter(aInfor),
                                                 Grand : tGrandText,

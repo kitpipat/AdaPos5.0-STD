@@ -187,6 +187,38 @@ class cRptProductADJPriceByGroup extends MX_Controller
             'tRptNotFoundWah'           => language('report/report/report', 'tRptNotFoundWah'),
             'tRptFill'                  => language('report/report/report', 'tRptFill'),
 
+
+            // Filter Text Label
+            'tRptTaxSalePosFilterBchFrom' => language('report/report/report', 'tRptTaxSalePosFilterBchFrom'),
+            'tRptTaxSalePosFilterBchTo' => language('report/report/report', 'tRptTaxSalePosFilterBchTo'),
+            'tRptTaxSalePosFilterShopFrom' => language('report/report/report', 'tRptTaxSalePosFilterShopFrom'),
+            'tRptTaxSalePosFilterShopTo' => language('report/report/report', 'tRptTaxSalePosFilterShopTo'),
+            'tRptTaxSalePosFilterPosFrom' => language('report/report/report', 'tRptTaxSalePosFilterPosFrom'),
+            'tRptTaxSalePosFilterPosTo' => language('report/report/report', 'tRptTaxSalePosFilterPosTo'),
+            'tRptTaxSalePosFilterPayTypeFrom' => language('report/report/report', 'tRptTaxSalePosFilterPayTypeFrom'),
+            'tRptTaxSalePosFilterPayTypeTo' => language('report/report/report', 'tRptTaxSalePosFilterPayTypeTo'),
+            'tRptTaxSalePosFilterDocDateFrom' => language('report/report/report', 'tRptTaxSalePosFilterDocDateFrom'),
+            'tRptTaxSalePosFilterDocDateTo' => language('report/report/report', 'tRptTaxSalePosFilterDocDateTo'),
+            'tRptTaxSalePosTaxId' => language('report/report/report', 'tRptTaxSalePosTaxId'),
+            'tRptTaxSaleMemberDocDateFrom' => language('report/report/report', 'tRptTaxSalePosFilterDocDateFrom'),
+            'tRptTaxSaleMemberDocDateTo'   => language('report/report/report', 'tRptTaxSalePosFilterDocDateTo'),
+            'tRptDateFrom' => language('report/report/report', 'tRptDateFrom'),
+            'tRptDateTo' => language('report/report/report', 'tRptDateTo'),
+            'tRptBchFrom' => language('report/report/report', 'tRptBchFrom'),
+            'tRptBchTo' => language('report/report/report', 'tRptBchTo'),
+            'tRptEffectiveDateFrom' => language('report/report/report', 'tRptEffectiveDateFrom'),
+            'tRptEffectiveDateTo' => language('report/report/report', 'tRptEffectiveDateTo'),
+            'tRptPdtUnitFrom' => language('report/report/report', 'tRptPdtUnitFrom'),
+            'tRptPdtUnitTo' => language('report/report/report', 'tRptPdtUnitTo'),
+            'tRptEffectivePriceGroupFrom' => language('report/report/report', 'tRptEffectivePriceGroupFrom'),
+            'tRptEffectivePriceGroupTo' => language('report/report/report', 'tRptEffectivePriceGroupTo'),
+            'tPdtCodeFrom' => language('report/report/report', 'tPdtCodeFrom'),
+            'tPdtCodeTo' => language('report/report/report', 'tPdtCodeTo'),
+            'tPdtGrpFrom' => language('report/report/report', 'tPdtGrpFrom'),
+            'tPdtGrpTo' => language('report/report/report', 'tPdtGrpTo'),
+            'tPdtTypeFrom' => language('report/report/report', 'tPdtTypeFrom'),
+            'tPdtTypeTo' => language('report/report/report', 'tPdtTypeTo'),
+            
             // Table Report
             'tRptProductRefillBranch'       => language('report/report/report', 'tRptProductRefillBranch'),
             'tRptProductRefillShop'         => language('report/report/report', 'tRptProductRefillShop'),
@@ -209,7 +241,8 @@ class cRptProductADJPriceByGroup extends MX_Controller
             'tRptshop'                      => language('report/report/report', 'tRptshop'),
             'tRptAdjStkNoData'              => language('report/report/report', 'tRptAdjStkNoData'),
 
-
+            'tRptTaxSaleMemberDocDateFrom' => language('report/report/report', 'tRptTaxSalePosFilterDocDateFrom'),
+            'tRptTaxSaleMemberDocDateTo'   => language('report/report/report', 'tRptTaxSalePosFilterDocDateTo'),
             'tRptTitleProductADJPriceByGroup'                    => language('report/report/report', 'tRptTitleProductADJPriceByGroup'),
             'tRptAPBGPriceGroup'        => language('report/report/report', 'tRptAPBGPriceGroup'),
             'tRptAPBGDocCode'         => language('report/report/report', 'tRptAPBGDocCode'),
@@ -947,7 +980,7 @@ class cRptProductADJPriceByGroup extends MX_Controller
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
-                WriterEntityFactory::createCell($this->aText['tRptTaxPointByCstDocDateFrom'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateFrom'])) . ' ' . $this->aText['tRptTaxPointByCstDocDateTo'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateTo']))),
+                WriterEntityFactory::createCell($this->aText['tRptTaxSaleMemberDocDateFrom'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateFrom'])) . ' ' . $this->aText['tRptTaxSaleMemberDocDateTo'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateTo']))),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -1024,9 +1057,55 @@ class cRptProductADJPriceByGroup extends MX_Controller
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
-        if ((isset($this->aRptFilter['tCstCodeFrom']) && !empty($this->aRptFilter['tCstCodeFrom'])) && (isset($this->aRptFilter['tCstCodeTo']) && !empty($this->aRptFilter['tCstCodeTo']))) {
+        if ((isset($this->aRptFilter['tEffectiveDateFrom']) && !empty($this->aRptFilter['tEffectiveDateFrom'])) && (isset($this->aRptFilter['tEffectiveDateTo']) && !empty($this->aRptFilter['tEffectiveDateTo']))) {
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tRptCstFrom'] . ' : ' . $this->aRptFilter['tCstCodeFrom'] . ' ' . $this->aText['tRptCstTo'] . ' : ' . $this->aRptFilter['tCstCodeTo']),
+                WriterEntityFactory::createCell($this->aText['tRptEffectiveDateFrom'] . ' : ' . $this->aRptFilter['tEffectiveDateFrom'] . ' ' . $this->aText['tRptEffectiveDateTo'] . ' : ' . $this->aRptFilter['tEffectiveDateTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        if ((isset($this->aRptFilter['tRptPdtCodeFrom']) && !empty($this->aRptFilter['tRptPdtCodeFrom'])) && (isset($this->aRptFilter['tRptPdtCodeTo']) && !empty($this->aRptFilter['tRptPdtCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tPdtCodeFrom'] . ' : ' . $this->aRptFilter['tRptPdtCodeFrom'] . ' ' . $this->aText['tPdtCodeTo'] . ' : ' . $this->aRptFilter['tRptPdtCodeTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        if ((isset($this->aRptFilter['tRptPdtUnitCodeFrom']) && !empty($this->aRptFilter['tRptPdtUnitCodeFrom'])) && (isset($this->aRptFilter['tRptPdtUnitCodeTo']) && !empty($this->aRptFilter['tRptPdtUnitCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptPdtUnitFrom'] . ' : ' . $this->aRptFilter['tRptPdtUnitCodeFrom'] . ' ' . $this->aText['tRptPdtUnitTo'] . ' : ' . $this->aRptFilter['tRptPdtUnitCodeTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+
+        if ((isset($this->aRptFilter['tRptEffectivePriceGroupCodeFrom']) && !empty($this->aRptFilter['tRptEffectivePriceGroupCodeFrom'])) && (isset($this->aRptFilter['tRptEffectivePriceGroupCodeTo']) && !empty($this->aRptFilter['tRptEffectivePriceGroupCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptEffectivePriceGroupFrom'] . ' : ' . $this->aRptFilter['tRptEffectivePriceGroupCodeFrom'] . ' ' . $this->aText['tRptEffectivePriceGroupTo'] . ' : ' . $this->aRptFilter['tRptEffectivePriceGroupCodeTo']),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),

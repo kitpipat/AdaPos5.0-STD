@@ -186,7 +186,8 @@ class cRptAdjPrice extends MX_Controller
             'tRptTaxSalePosFilterDocDateFrom' => language('report/report/report', 'tRptTaxSalePosFilterDocDateFrom'),
             'tRptTaxSalePosFilterDocDateTo' => language('report/report/report', 'tRptTaxSalePosFilterDocDateTo'),
             'tRptTaxSalePosTaxId' => language('report/report/report', 'tRptTaxSalePosTaxId'),
-
+            'tRptTaxSaleMemberDocDateFrom' => language('report/report/report', 'tRptTaxSalePosFilterDocDateFrom'),
+            'tRptTaxSaleMemberDocDateTo'   => language('report/report/report', 'tRptTaxSalePosFilterDocDateTo'),
             'tRptDateFrom' => language('report/report/report', 'tRptDateFrom'),
             'tRptDateTo' => language('report/report/report', 'tRptDateTo'),
             'tRptBchFrom' => language('report/report/report', 'tRptBchFrom'),
@@ -873,7 +874,7 @@ class cRptAdjPrice extends MX_Controller
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
-                WriterEntityFactory::createCell($this->aText['tRptTaxPointByCstDocDateFrom'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateFrom'])) . ' ' . $this->aText['tRptTaxPointByCstDocDateTo'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateTo']))),
+                WriterEntityFactory::createCell($this->aText['tRptTaxSaleMemberDocDateFrom'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateFrom'])) . ' ' . $this->aText['tRptTaxSaleMemberDocDateTo'] . ' ' . date('d/m/Y', strtotime($this->aRptFilter['tDocDateTo']))),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -955,9 +956,9 @@ class cRptAdjPrice extends MX_Controller
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
-        if ((isset($this->aRptFilter['tCstCodeFrom']) && !empty($this->aRptFilter['tCstCodeFrom'])) && (isset($this->aRptFilter['tCstCodeTo']) && !empty($this->aRptFilter['tCstCodeTo']))) {
+        if ((isset($this->aRptFilter['tEffectiveDateFrom']) && !empty($this->aRptFilter['tEffectiveDateFrom'])) && (isset($this->aRptFilter['tEffectiveDateTo']) && !empty($this->aRptFilter['tEffectiveDateTo']))) {
             $aCells = [
-                WriterEntityFactory::createCell($this->aText['tRptCstFrom'] . ' : ' . $this->aRptFilter['tCstCodeFrom'] . ' ' . $this->aText['tRptCstTo'] . ' : ' . $this->aRptFilter['tCstCodeTo']),
+                WriterEntityFactory::createCell($this->aText['tRptEffectiveDateFrom'] . ' : ' . $this->aRptFilter['tEffectiveDateFrom'] . ' ' . $this->aText['tRptEffectiveDateTo'] . ' : ' . $this->aRptFilter['tEffectiveDateTo']),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
                 WriterEntityFactory::createCell(NULL),
@@ -970,6 +971,51 @@ class cRptAdjPrice extends MX_Controller
             $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
         }
 
+        if ((isset($this->aRptFilter['tRptPdtCodeFrom']) && !empty($this->aRptFilter['tRptPdtCodeFrom'])) && (isset($this->aRptFilter['tRptPdtCodeTo']) && !empty($this->aRptFilter['tRptPdtCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tPdtCodeFrom'] . ' : ' . $this->aRptFilter['tRptPdtCodeFrom'] . ' ' . $this->aText['tPdtCodeTo'] . ' : ' . $this->aRptFilter['tRptPdtCodeTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+        if ((isset($this->aRptFilter['tRptPdtUnitCodeFrom']) && !empty($this->aRptFilter['tRptPdtUnitCodeFrom'])) && (isset($this->aRptFilter['tRptPdtUnitCodeTo']) && !empty($this->aRptFilter['tRptPdtUnitCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptPdtUnitFrom'] . ' : ' . $this->aRptFilter['tRptPdtUnitCodeFrom'] . ' ' . $this->aText['tRptPdtUnitTo'] . ' : ' . $this->aRptFilter['tRptPdtUnitCodeTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
+
+
+        if ((isset($this->aRptFilter['tRptEffectivePriceGroupCodeFrom']) && !empty($this->aRptFilter['tRptEffectivePriceGroupCodeFrom'])) && (isset($this->aRptFilter['tRptEffectivePriceGroupCodeTo']) && !empty($this->aRptFilter['tRptEffectivePriceGroupCodeTo']))) {
+            $aCells = [
+                WriterEntityFactory::createCell($this->aText['tRptEffectivePriceGroupFrom'] . ' : ' . $this->aRptFilter['tRptEffectivePriceGroupCodeFrom'] . ' ' . $this->aText['tRptEffectivePriceGroupTo'] . ' : ' . $this->aRptFilter['tRptEffectivePriceGroupCodeTo']),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+                WriterEntityFactory::createCell(NULL),
+            ];
+            $aMulltiRow[] = WriterEntityFactory::createRow($aCells);
+        }
         return $aMulltiRow;
     }
 }
