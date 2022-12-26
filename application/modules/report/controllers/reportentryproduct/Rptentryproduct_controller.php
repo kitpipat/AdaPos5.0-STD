@@ -225,7 +225,8 @@ class Rptentryproduct_controller extends MX_Controller
             'tRptStaVat'        => language('report/report/report', 'tRptStaVat'),
             'tRptStaVa1'        => language('report/report/report', 'tRptStaVa1'),
             'tRptStaVa2'        => language('report/report/report', 'tRptStaVa2'),
-
+            'tRptAPBGPriceGroup'        => language('report/report/report', 'tRptAPBGPriceGroup'),
+            
 
 
 
@@ -581,6 +582,8 @@ class Rptentryproduct_controller extends MX_Controller
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell('อัตราส่วน/หน่วย'),
             WriterEntityFactory::createCell(NULL),
+            WriterEntityFactory::createCell('กลุ่มราคา'),
+            WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell('ราคาขาย'),
             WriterEntityFactory::createCell(NULL),
             WriterEntityFactory::createCell('ต้นทุน/หน่วย'),
@@ -630,6 +633,7 @@ class Rptentryproduct_controller extends MX_Controller
                 $tFTBarCode = $aValue["FTBarCode"];
                 $tFTPunCode = $aValue["FTPunCode"];
                 $tFTPunName = $aValue["FTPunName"];
+                $tFTPplName = $aValue["FTPplName"];
                 $tFCPdtUnitFact = $aValue["FCPdtUnitFact"];
                 $tFCPdtPriceRET = $aValue["FCPdtPriceRET"];
                 $tFCPdtCostInPerUnit = $aValue["FCPdtCostInPerUnit"];
@@ -656,12 +660,17 @@ class Rptentryproduct_controller extends MX_Controller
                 }else{
                     $tFTPunCode = $tFTPunCode;
                 }
-                if($tFTPunName == '' || $tFTPunName == null){
+                if($tFTPplName == '' || $tFTPunName == null){
                     $tFTPunName = '-';
                 }else{
                     $tFTPunName = $tFTPunName;
                 }
 
+                if($tFTPplName == '' || $tFTPplName == null){
+                    $tFTPplName = '-';
+                }else{
+                    $tFTPplName = $tFTPplName;
+                }
                 // number_format
                 // floatval
                 $values = [
@@ -684,6 +693,8 @@ class Rptentryproduct_controller extends MX_Controller
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell($tFCPdtUnitFact),
+                    WriterEntityFactory::createCell(NULL),
+                    WriterEntityFactory::createCell($tFTPplName),
                     WriterEntityFactory::createCell(NULL),
                     WriterEntityFactory::createCell(number_format($tFCPdtPriceRET,2),$oStyle),
                     WriterEntityFactory::createCell(NULL),
