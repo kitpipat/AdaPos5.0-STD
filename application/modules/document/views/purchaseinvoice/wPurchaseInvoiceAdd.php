@@ -1526,7 +1526,7 @@
             data :{
                 Qualitysearch   : [],
                 ReturnType  : "M",
-                aPriceType  : ["Cost","tCN_Cost","Company","2"],
+                aPriceType  : ["Cost","tCN_Cost","Company","1"],
                 // aPriceType  : ['Price4Cst',tPISplCode],
                 NextFunc    : "",
                 SelectTier  : ["Barcode"],

@@ -114,6 +114,7 @@ function JCNxConfirmSelectedPDT() {
   $("#" + tEleNameReturn).val(aNewReturn);
   $("#" + tEleValueReturn).val(aNewReturn);
 
+  console.log(tNameNextFunc);
   if (tNameNextFunc != "" || tNameNextFunc != null) {
     return window[tNameNextFunc](aNewReturn);
   }

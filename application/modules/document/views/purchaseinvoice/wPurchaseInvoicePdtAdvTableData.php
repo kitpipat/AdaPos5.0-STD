@@ -325,8 +325,9 @@
         for(var i=0;i<aPackData.length;i++){
             var aNewPackData = JSON.stringify(aPackData[i]);
             var aNewPackData = "["+aNewPackData+"]";
-            FSvPIAddPdtIntoDocDTTempScan(aNewPackData);   // Append HMTL
-            FSvPIAddBarcodeIntoDocDTTemp(aNewPackData);   // Insert Database
+            FSvPIAddPdtCheckDocVatInOrEx(aNewPackData);
+            // FSvPIAddPdtIntoDocDTTempScan(aNewPackData);   // Append HMTL
+            // FSvPIAddBarcodeIntoDocDTTemp(aNewPackData);   // Insert Database
 
             if((i+1)==aPackData.length){
                 var oOptionForFashion = {
@@ -342,6 +343,24 @@
          
     }
 
+function FSvPIAddPdtCheckDocVatInOrEx(ptPdtData){
+    JCNxCloseLoading();
+    var aPackData = JSON.parse(ptPdtData);
+    ajax({
+        type:"POST",
+        url:"dcmPIEventCheckDocVatInOrEx",
+        data:{aPackData:aPackData},
+        cache:false,
+        timeout:0,
+        success: function(oResult){
+            var Data = JSON.parse(oResult);
+            console.log(Data);
+        }
+        error: function(jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
+    });
+}  
 
 
 // Create By: Nattakit(Nale) 24/05/2021
@@ -478,7 +497,7 @@ function FSvPIPDTEditPdtIntoTableDT_PDTSerialorFashion(ptPdtDataFhn){
             var nVat            = (parseFloat($('#ohdPIFrmSplVatRate').val())).toFixed(2);                               //ภาษีจากผู้จำหน่าย
             var nQty            = parseInt(oResult.Qty);             //จำนวน
             var nNetAfHD        = (parseFloat(oResult.NetAfHD)).toFixed(2);
-            var cNet            = (parseFloat(oResult.Net)).toFixed(2);
+            var cNet            = (parseFloat(100)).toFixed(2);
             var tDisChgTxt      = oResult.tDisChgTxt;
             var tUnixPdtCodeRow = tProductCode.toString()+tBarCode.toString();
             var tUnixPdtCodeRow = tUnixPdtCodeRow.replace(/\./g,' ').replace(/[ ,]+/g, "").replaceAll("[-+.^:,]","");
