@@ -1290,7 +1290,7 @@
                 url: "BrowseDataPDT",
                 data: {
                     Qualitysearch   : [],
-                    PriceType       : ["Cost", "tCN_Cost", "Company", "1"],
+                    PriceType       : ["Cost", "tCN_Cost", "Company", "3"],
                     SelectTier      : ["Barcode"],
                     ShowCountRecord : 10,
                     NextFunc        : "FSvPDTAddPdtIntoTableDT",

@@ -1702,7 +1702,7 @@
             url : "BrowseDataPDTTableCallView",
             data: {
                 // aPriceType      : ['Price4Cst',tPOPplCode],
-                aPriceType: ["Cost","tCN_Cost","Company","1"],
+                aPriceType: ["Cost","tCN_Cost","Company","2"],
                 NextFunc        : "",
                 SPL             : $("#oetPOFrmSplCode").val(),
                 BCH             : $("#oetPOFrmBchCode").val(),

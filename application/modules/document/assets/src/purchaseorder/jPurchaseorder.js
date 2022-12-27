@@ -574,7 +574,7 @@ function JCNvPOBrowsePdt(){
             url: "BrowseDataPDT",
             data: {
                 Qualitysearch   : [],
-                 PriceType      : ["Cost","tCN_Cost","Company","1"],
+                 PriceType      : ["Cost","tCN_Cost","Company","2"],
                 // 'PriceType' : ['Pricesell'],
                 // 'PriceType' : ['Price4Cst',tPOPplCode],
                 //'SelectTier' : ['PDT'],

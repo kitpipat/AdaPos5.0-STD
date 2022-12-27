@@ -575,7 +575,7 @@ function JCNvPIBrowsePdt() {
         url: "BrowseDataPDT",
         data: {
             Qualitysearch: [],
-            PriceType: ["Cost", "tCN_Cost", "Company", "1"],
+            PriceType: ["Cost", "tCN_Cost", "Company", "2"],
             SelectTier: ["Barcode"],
             ShowCountRecord: 10,
             NextFunc: "FSvPINextFuncB4SelPDT",
