@@ -877,7 +877,7 @@ class mBrowserPDTCallView extends CI_Model
 
 
     //Get หาต้นทุนใช้แบบไหน
-    public function FSnMGetTypePrice($tSyscode, $tSyskey, $tSysseq, $ptAgnCode)
+    public function FSnMGetTypePrice($tSyscode, $tSyskey, $tSysseq)
     {
         $tUsrLevel = $this->session->userdata("tSesUsrLevel");
         $tAgnCode  = $this->session->userdata("tSesUsrAgnCode");
