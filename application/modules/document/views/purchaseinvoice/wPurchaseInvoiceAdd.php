@@ -1526,7 +1526,7 @@
             data :{
                 Qualitysearch   : [],
                 ReturnType  : "M",
-                aPriceType  : ["Cost","tCN_Cost","Company","1"],
+                aPriceType  : ["Cost","tCN_Cost","Company","2"],
                 // aPriceType  : ['Price4Cst',tPISplCode],
                 NextFunc    : "",
                 SelectTier  : ["Barcode"],
@@ -1579,8 +1579,9 @@
                         $('.xCNColumnPDTMoreOne').on('dblclick',function(e){
                             $('#odvPIModalPDTMoreOne').modal('hide');
                             var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
-                            FSvPIAddPdtIntoDocDTTempScan(tJSON); //Client
-                            FSvPIAddBarcodeIntoDocDTTemp(tJSON); //Server
+                            FSvPIAddPdtCheckDocVatInOrEx(tJSON);
+                            // FSvPIAddPdtIntoDocDTTempScan(tJSON); //Client
+                            // FSvPIAddBarcodeIntoDocDTTemp(tJSON); //Server
                             // var oPIObjPdtFhnCallBack =  $('#ohdPIObjPdtFhnCallBack').val();
                             var oJSONPdt = JSON.parse(tJSON);
                             var oOptionForFashion = {
@@ -1607,8 +1608,9 @@
                         //มีตัวเดียว
                         var aNewReturn  = JSON.stringify(oText);
                         console.log('aNewReturn: '+aNewReturn);
-                        FSvPIAddPdtIntoDocDTTempScan(aNewReturn); //Client
-                        FSvPIAddBarcodeIntoDocDTTemp(aNewReturn); //Server
+                        FSvPIAddPdtCheckDocVatInOrEx(aNewReturn);
+                        // FSvPIAddPdtIntoDocDTTempScan(aNewReturn); //Client
+                        // FSvPIAddBarcodeIntoDocDTTemp(aNewReturn); //Server
                
                         var oOptionForFashion = {
                                 'bListItemAll'  : false,
@@ -1632,8 +1634,9 @@
         if($ptType == 1){
             $("#odvPIModalPDTMoreOne .xCNTablePDTMoreOne tbody .xCNActivePDT").each(function( index ) {
                 var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
-                FSvPIAddPdtIntoDocDTTempScan(tJSON);
-                FSvPIAddBarcodeIntoDocDTTemp(tJSON);
+                FSvPIAddPdtCheckDocVatInOrEx(tJSON);
+                // FSvPIAddPdtIntoDocDTTempScan(tJSON);
+                // FSvPIAddBarcodeIntoDocDTTemp(tJSON);
    
                 var oJSONPdt = JSON.parse(tJSON);
                 var oOptionForFashion = {

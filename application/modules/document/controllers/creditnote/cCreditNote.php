@@ -196,6 +196,8 @@ class cCreditNote extends MX_Controller
         $cVatRate = $this->input->post('cVatRate');
         $aPdtData = json_decode($tPdtData);
 
+        $tBchCodeInput = $this->input->post('ptBchCodeInput');
+
         if ($tIsByScanBarCode != '1') { // ทำงานเมื่อไม่ใช่การแสกนบาร์โค้ดมา
 
             if ($tIsRefPI == '1') { // หากนำเข้าจากการอ้างอิงใบ PI ต้องลบรายการสินค้าเดิมก่อน
@@ -208,10 +210,11 @@ class cCreditNote extends MX_Controller
 
             // ทำทีรายการ ตามรายการสินค้าที่เพิ่มเข้ามา
             for ($nI = 0; $nI < FCNnHSizeOf($aPdtData); $nI++) {
-                $pnPdtCode  = $aPdtData[$nI]->pnPdtCode;
-                $ptBarCode  = $aPdtData[$nI]->ptBarCode;
-                $ptPunCode  = $aPdtData[$nI]->ptPunCode;
-                $pcPrice    = $aPdtData[$nI]->packData->Price;
+                $aResult = $this->mCreditNote->FSaMCreditNoteGetDataVatInOrEx($aPdtData[$nI],$tBchCodeInput);
+                $pnPdtCode  = $aResult['raItems']->pnPdtCode;
+                $ptBarCode  = $aResult['raItems']->ptBarCode;
+                $ptPunCode  = $aResult['raItems']->ptPunCode;
+                $pcPrice    = $aResult['raItems']->packData->Price;
                 $pcQty      = 1;
                 $tVatrate   = $cVatRate;
                 $tVatcode   = $tVatCode;

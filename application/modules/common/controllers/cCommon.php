@@ -319,5 +319,14 @@ class cCommon extends MX_Controller {
         echo json_encode($aCustomer);
     }
 
+    public function FNCoCCMMEventCheckDoclastVatInOrEx(){
+   
+        $aPdtData = $this->input->post('aPackData');
+        $tBchCode = $this->input->post('tBchCode');
+        $aResult = $this->mCommon->FSaMGetDataVatInOrEx($aPdtData,$tBchCode);
+        echo json_encode($aResult);
+
+    }
+
 }
 

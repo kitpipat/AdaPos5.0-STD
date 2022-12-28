@@ -595,7 +595,6 @@ $route['docPIEventCallEndOfBill']       = 'document/purchaseinvoice/cPurchaseInv
 $route['dcmPIChangeSPLAffectNewVAT']    = 'document/purchaseinvoice/cPurchaseInvoice/FSoCPIChangeSPLAffectNewVAT';
 $route['dcmPIMovePODTToDocTmp']         = 'document/purchaseinvoice/cPurchaseInvoice/FSoCPIMovePODTToDocTmp';
 $route['dcmPIEventAddPdtIntoDTFhnTemp'] = 'document/purchaseinvoice/cPurchaseInvoice/FSoCPIEventAddPdtIntoDTFhnTemp';
-$route['dcmPIEventCheckDocVatInOrEx']   = 'document/purchaseinvoice/cPurchaseInvoice/FSoCPIEventCheckDoclastVatInOrEx';
 
 //การกำหนดอัตราค่าเช่า (Locker)
 $route['dcmPriRentLocker/(:any)/(:any)']    = 'document/pricerentlocker/cPriceRentLocker/index/$1/$2';

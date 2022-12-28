@@ -101,3 +101,7 @@ $route['cenEventChkStkB4ApvDoc']     = "common/cCommon/FCNaCChkStkB4ApvDoc";
 
 //Get Address Customer
 $route['GetAddressCustomer']            = "common/cCommon/FCNtCCMMGetCustomerAddress";
+
+// เช็ค vat เป็นนอกหรือใน
+$route['EventCheckDocVatInOrEx']   = "common/cCommon/FNCoCCMMEventCheckDoclastVatInOrEx";
+

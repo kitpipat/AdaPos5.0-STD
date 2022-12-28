@@ -1751,8 +1751,9 @@
                         $('.xCNColumnPDTMoreOne').on('dblclick',function(e){
                             $('#odvPOModalPDTMoreOne').modal('hide');
                             var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
-                            FSvPOAddPdtIntoDocDTTemp(tJSON); //Client
-                            FSvPOAddBarcodeIntoDocDTTemp(tJSON);
+                            FSvPOAddPdtCheckDocVatInOrEx(tJSON);
+                            // FSvPOAddPdtIntoDocDTTemp(tJSON); //Client
+                            // FSvPOAddBarcodeIntoDocDTTemp(tJSON);
                         });
 
                         //คลิกได้เลย
@@ -1783,11 +1784,12 @@
                         var aNewReturn  = JSON.stringify(oText);
                         console.log('aNewReturn: '+aNewReturn);
                         // var aNewReturn  = '[{"pnPdtCode":"00009","ptBarCode":"ca2020010003","ptPunCode":"00001","packData":{"SHP":null,"BCH":null,"PDTCode":"00009","PDTName":"ขนม_03","PUNCode":"00001","Barcode":"ca2020010003","PUNName":"ขวด","PriceRet":"17.00","PriceWhs":"0.00","PriceNet":"0.00","IMAGE":"D:/xampp/htdocs/Moshi-Moshi/application/modules/product/assets/systemimg/product/00009/Img200128172902CEHHRSS.jpg","LOCSEQ":"","Remark":"ขนม_03","CookTime":0,"CookHeat":0}}]';
-                        FSvPOAddPdtIntoDocDTTemp(aNewReturn); //Client
+                        FSvPOAddPdtCheckDocVatInOrEx(aNewReturn);
+                        // FSvPOAddPdtIntoDocDTTemp(aNewReturn); //Client
                         // JCNxCloseLoading();
                         // $('#oetPOInsertBarcode').attr('readonly',false);
                         // $('#oetPOInsertBarcode').val('');
-                        FSvPOAddBarcodeIntoDocDTTemp(aNewReturn); //Server
+                        // FSvPOAddBarcodeIntoDocDTTemp(aNewReturn); //Server
                     }
                 }
             },
@@ -1803,8 +1805,9 @@
         if($ptType == 1){
             $("#odvPOModalPDTMoreOne .xCNTablePDTMoreOne tbody .xCNActivePDT").each(function( index ) {
                 var tJSON = decodeURIComponent(escape(window.atob($(this).attr('data-information'))));
-                FSvPOAddPdtIntoDocDTTemp(tJSON);
-                FSvPOAddBarcodeIntoDocDTTemp(tJSON);
+                FSvPOAddPdtCheckDocVatInOrEx(tJSON);
+                // FSvPOAddPdtIntoDocDTTemp(tJSON);
+                // FSvPOAddBarcodeIntoDocDTTemp(tJSON);
             });
         }else{
             $('#oetPOInsertBarcode').attr('readonly',false);

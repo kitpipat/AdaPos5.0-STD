@@ -346,16 +346,20 @@
 function FSvPIAddPdtCheckDocVatInOrEx(ptPdtData){
     JCNxCloseLoading();
     var aPackData = JSON.parse(ptPdtData);
-    ajax({
+    var tBchCode = $('#oetPIFrmBchCode').val();
+    $.ajax({
         type:"POST",
-        url:"dcmPIEventCheckDocVatInOrEx",
-        data:{aPackData:aPackData},
+        url:"EventCheckDocVatInOrEx",
+        data:{aPackData:aPackData,tBchCode:tBchCode},
         cache:false,
         timeout:0,
         success: function(oResult){
-            var Data = JSON.parse(oResult);
-            console.log(Data);
-        }
+            var aData = JSON.parse(oResult);
+            var aNewPackData = JSON.stringify(aData['raItems']);
+            // var aNewPackData = "["+aNewPackData+"]";
+            FSvPIAddPdtIntoDocDTTempScan(aNewPackData);   // Append HMTL
+            FSvPIAddBarcodeIntoDocDTTemp(aNewPackData);   // Insert Database
+        },
         error: function(jqXHR, textStatus, errorThrown) {
             JCNxResponseError(jqXHR, textStatus, errorThrown);
         }
@@ -497,7 +501,7 @@ function FSvPIPDTEditPdtIntoTableDT_PDTSerialorFashion(ptPdtDataFhn){
             var nVat            = (parseFloat($('#ohdPIFrmSplVatRate').val())).toFixed(2);                               //ภาษีจากผู้จำหน่าย
             var nQty            = parseInt(oResult.Qty);             //จำนวน
             var nNetAfHD        = (parseFloat(oResult.NetAfHD)).toFixed(2);
-            var cNet            = (parseFloat(100)).toFixed(2);
+            var cNet            = (parseFloat(oResult.Net)).toFixed(2);
             var tDisChgTxt      = oResult.tDisChgTxt;
             var tUnixPdtCodeRow = tProductCode.toString()+tBarCode.toString();
             var tUnixPdtCodeRow = tUnixPdtCodeRow.replace(/\./g,' ').replace(/[ ,]+/g, "").replaceAll("[-+.^:,]","");

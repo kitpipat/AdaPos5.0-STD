@@ -286,11 +286,34 @@
         for(var i=0;i<aPackData.length;i++){
             var aNewPackData = JSON.stringify(aPackData[i]);
             var aNewPackData = "["+aNewPackData+"]";
-            FSvPOAddPdtIntoDocDTTemp(aNewPackData);         // Append HMTL
-            FSvPOAddBarcodeIntoDocDTTemp(aNewPackData);     // Insert Database
+            FSvPOAddPdtCheckDocVatInOrEx(aNewPackData);
+            // FSvPOAddPdtIntoDocDTTemp(aNewPackData);         // Append HMTL
+            // FSvPOAddBarcodeIntoDocDTTemp(aNewPackData);     // Insert Database
         }
     }
 
+    function FSvPOAddPdtCheckDocVatInOrEx(ptPdtData){
+    var aPackData = JSON.parse(ptPdtData);
+    var tBchCode = $('#oetPOFrmBchCode').val();
+
+    $.ajax({
+        type:"POST",
+        url:"EventCheckDocVatInOrEx",
+        data:{aPackData:aPackData,tBchCode:tBchCode},
+        cache:false,
+        timeout:0,
+        success: function(oResult){
+            var aData = JSON.parse(oResult);
+            var aNewPackData = JSON.stringify(aData['raItems']);
+            // var aNewPackData = "["+aNewPackData+"]";
+            FSvPOAddPdtIntoDocDTTemp(aNewPackData);   // Append HMTL
+            FSvPOAddBarcodeIntoDocDTTemp(aNewPackData);   // Insert Database
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            JCNxResponseError(jqXHR, textStatus, errorThrown);
+        }
+    });
+}  
     // Append PDT
     function FSvPOAddPdtIntoDocDTTemp(ptPdtData){
         JCNxCloseLoading();

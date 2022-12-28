@@ -655,10 +655,7 @@ class cPurchaseInvoice extends MX_Controller {
     // ReturnType       : Object
     public function FSoCPIAddPdtIntoDocDTTemp() {
         try {
-            echo '<pre>';
-            print_r($_POST);
-            echo '</pre>';
-            exit;
+
             $tPIUserLevel       = $this->session->userdata('tSesUsrLevel');
             $tPIDocNo           = $this->input->post('tPIDocNo');
             $tPIVATInOrEx       = $this->input->post('tPIVATInOrEx');
@@ -2049,12 +2046,6 @@ class cPurchaseInvoice extends MX_Controller {
             );
         }
         echo json_encode($aReturnData);
-    }
-
-    public function FSoCPIEventCheckDoclastVatInOrEx(){
-        echo "<pre>";
-        print_r($_POST);
-        echo "</pre>";
     }
 
 }

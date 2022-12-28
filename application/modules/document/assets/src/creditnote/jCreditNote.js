@@ -86,6 +86,7 @@ function JCNxResponseError(jqXHR, textStatus, errorThrown) {
  * Return Type : -
  */
 function FSvPDTAddPdtIntoTableDT(ptPdtData, ptIsRefPI, tIsByScanBarCode) {
+    JCNxCloseLoading();
     var nStaSession = JCNxFuncChkSessionExpired();
     if (typeof nStaSession !== "undefined" && nStaSession == 1) {
         
@@ -98,6 +99,7 @@ function FSvPDTAddPdtIntoTableDT(ptPdtData, ptIsRefPI, tIsByScanBarCode) {
         }
         
         var tSplCode = $('#oetCreditNoteSplCode').val();
+        var ptBchCodeInput = $('#ohdCreditNoteBchCode').val();
         
         $.ajax({
             type: "POST",
@@ -113,6 +115,7 @@ function FSvPDTAddPdtIntoTableDT(ptPdtData, ptIsRefPI, tIsByScanBarCode) {
                 tCreditNoteOptionAddPdt : $("#ocmCreditNoteOptionAddPdt").val(), // เพิ่มแถวใหม่ Default 1 : บวกรายการเดิมในรายการ
                 tVatCode                : $('#ohdCNFrmSplVatCode').val(),
                 cVatRate                : $('#ohdCNFrmSplVatRate').val(),
+                ptBchCodeInput          : ptBchCodeInput
             },
             cache: false,
             success: function (tResult) {

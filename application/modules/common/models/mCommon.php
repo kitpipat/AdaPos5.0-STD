@@ -516,4 +516,52 @@ class mCommon extends CI_Model {
             }
             return $aStatus;
         }
+
+        // Functionality    : CheckVatInorEx
+        // Parameters       : function parameters
+        // Creator          : 27/12/2022 Intouch
+        // Last Modified    : 27/12/2022 Intouch
+        // Return           : array Data 
+        // Return Type      : array
+        public function FSaMGetDataVatInOrEx($paPdtData,$ptBchCode){
+            $tPdtCode = $paPdtData[0]['packData']['PDTCode'];
+            $tBchCode = $ptBchCode;
+            $tSQL   = " SELECT TOP 1
+                            TPHD.FTXphDocNo,
+                            TPDT.FCXpdVatRate,
+                            TPHD.FTXphVATInOrEx,
+                            TPHD.FCXphVatable,
+                            TPDT.FTXpdVatType
+                        FROM [dbo].[TAPTPiHD] TPHD WITH(NOLOCK)
+                        LEFT JOIN TAPTPiDT TPDT WITH(NOLOCK) ON TPDT.FTXphDocNo = TPHD.FTXphDocNo AND TPDT.FTBchCode = TPHD.FTBchCode
+                        WHERE 1=1
+                            AND FTXphStaDoc = 1
+                            AND FTXphStaApv = 1
+                            AND FTPdtCode = '$tPdtCode'
+                            AND TPHD.FTBchCode = '$tBchCode'
+                        ORDER BY
+                        TPDT.FDLastUpdOn DESC";
+
+            $oQuery = $this->db->query($tSQL);
+            if ($oQuery->num_rows() > 0) {
+                $oDataList        = $oQuery->row();
+                if($oDataList->FTXphVATInOrEx == 1 && $oDataList->FTXpdVatType == 1){
+                    $nOptDecimalShow  = FCNxHGetOptionDecimalShow();
+                    $nVatRate = $oDataList->FCXpdVatRate;
+                    $nPrice = $paPdtData[0]['packData']['Price'];
+                    $paPdtData[0]['packData']['Price'] = number_format((($nPrice * $nVatRate)/100) + $nPrice, $nOptDecimalShow);
+                    $paPdtData[0]['packData']['NetAfHD'] = number_format((($nPrice * $nVatRate)/100) + $nPrice, $nOptDecimalShow);
+                }
+            } 
+
+            $aDataReturn    =  array(
+                'raItems'   => $paPdtData,
+                'rtCode'    => '1',
+                'rtDesc'    => 'success',
+            );
+            unset($oQuery);
+            unset($oDataList);
+            return $aDataReturn;
+        }
+
 }
