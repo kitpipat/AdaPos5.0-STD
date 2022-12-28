@@ -877,14 +877,35 @@ class mBrowserPDTCallView extends CI_Model
 
 
     //Get หาต้นทุนใช้แบบไหน
-    public function FSnMGetTypePrice($tSyscode, $tSyskey, $tSysseq)
+    public function FSnMGetTypePrice($tSyscode, $tSyskey, $tSysseq, $ptAgnCode)
     {
-        $tSQL = "SELECT FTSysStaDefValue,FTSysStaUsrValue
-            FROM  TSysConfig 
+        $tUsrLevel = $this->session->userdata("tSesUsrLevel");
+        $tAgnCode  = $this->session->userdata("tSesUsrAgnCode");
+        // ถ้าเป็น HQ ให้ดึงจาก TSysConfig 
+        // ถ้าต่ำกว่า HQ ให้ไปตรวจสอบจาก TCNTConfigSpc
+        if( $tUsrLevel == "HQ" || $tUsrLevel == '' || $tUsrLevel == null ){
+            $tSelect    = " CON.FTSysStaDefValue, CON.FTSysStaUsrValue ";
+            $tLeftJoin  = "";
+        }else{
+            $tSelect    = " CON.FTSysStaDefValue,
+                            CASE 
+                                WHEN ISNULL(CSPC.FTCfgStaUsrValue,'') != '' THEN CSPC.FTCfgStaUsrValue 
+                                ELSE CON.FTSysStaUsrValue
+                            END AS FTSysStaUsrValue 
+                        ";
+            $tLeftJoin  = " LEFT JOIN TCNTConfigSpc CSPC WITH(NOLOCK) ON CON.FTSysCode = CSPC.FTSysCode AND CON.FTSysApp = CSPC.FTSysApp
+                                                                    AND CON.FTSysKey = CSPC.FTSysKey   AND CON.FTSysSeq = CSPC.FTSysSeq
+                                                                    AND CSPC.FTAgnCode = '$tAgnCode'
+                        ";
+        }
+        
+        $tSQL = "SELECT $tSelect
+            FROM  TSysConfig CON WITH(NOLOCK)
+            $tLeftJoin
             WHERE 
-                FTSysCode = '$tSyscode' AND 
-                FTSysKey = '$tSyskey' AND 
-                FTSysSeq = '$tSysseq'
+                CON.FTSysCode = '$tSyscode' AND 
+                CON.FTSysKey = '$tSyskey' AND 
+                CON.FTSysSeq = '$tSysseq'
             ";
 
         $oQuery = $this->db->query($tSQL);

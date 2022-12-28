@@ -2885,12 +2885,12 @@ class mCreditNote extends CI_Model {
                         TPHD.FCXphVatable,
                         TPDT.FTXpdVatType
                     FROM [dbo].[TAPTPiHD] TPHD WITH(NOLOCK)
-                    LEFT JOIN TAPTPiDT TPDT WITH(NOLOCK) ON TPDT.FTXphDocNo = TPHD.FTXphDocNo AND TPDT.FTBchCode = TPHD.FTBchCode
+                    LEFT JOIN TAPTPiDT TPDT WITH(NOLOCK) ON TPDT.FTXphDocNo = TPHD.FTXphDocNo
                     WHERE 1=1
                         AND FTXphStaDoc = 1
                         AND FTXphStaApv = 1
                         AND FTPdtCode = '$tPdtCode'
-                        AND TPHD.FTBchCode = '$tBchCode'
+                        -- AND TPHD.FTBchCode = '$tBchCode'
                     ORDER BY
                     TPDT.FDLastUpdOn DESC";
 
