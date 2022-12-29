@@ -2876,6 +2876,7 @@ class mCreditNote extends CI_Model {
     // Return Type      : array
     public function FSaMCreditNoteGetDataVatInOrEx($paPdtData,$ptBchCode){
         $tPdtCode = $paPdtData->packData->PDTCode;
+        $tConfigType = $paPdtData->packData->tConfigType;
         $tBchCode = $ptBchCode;
 
         $tSQL   = " SELECT TOP 1
@@ -2897,7 +2898,7 @@ class mCreditNote extends CI_Model {
         $oQuery = $this->db->query($tSQL);
         if ($oQuery->num_rows() > 0) {
             $oDataList        = $oQuery->row();
-            if($oDataList->FTXphVATInOrEx == 1 && $oDataList->FTXpdVatType == 1){
+            if($oDataList->FTXphVATInOrEx == 1 && $oDataList->FTXpdVatType == 1 && $tConfigType == 2){
                 $nOptDecimalShow  = FCNxHGetOptionDecimalShow();
                 $nVatRate = $oDataList->FCXpdVatRate;
                 $nPrice = $paPdtData->packData->Price;

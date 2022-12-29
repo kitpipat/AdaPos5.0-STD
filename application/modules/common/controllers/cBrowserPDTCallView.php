@@ -495,7 +495,6 @@ class cBrowserPDTCallView extends MX_Controller
             'nStaTopPdt'            => $nStaTopPdt,
         );
 
-
         if ($tBarcode == '' || $tBarcode  == null) {
             $this->load->view('common/wBrowsePDTTableCallView', $aDataHTML);
         } else {
@@ -560,9 +559,11 @@ class cBrowserPDTCallView extends MX_Controller
                             'nCostSTD'           => $aData[$i]['FCPdtCostStd']
                         );
                         $nCost = $this->GetTotalByConfig($aDataFind); 
-                        $nCost = $nCost * $aData[$i]['FCPdtUnitFact'];
+                        $tConfigType = $nCost['tConfigType'];
+                        $nCost = $nCost['nResultCost'] * $aData[$i]['FCPdtUnitFact'];
                         $aPackData['Price'] = number_format($nCost, $nOptDecimalShow, '.', ',');
                         $aPackData['NetAfHD']   = number_format($nCost, $nOptDecimalShow, '.', ',');
+                        $aPackData['tConfigType']   = $tConfigType;
                     }
                     array_push($aReturn, [
                         "pnPdtCode" => $aData[$i]['FTPdtCode'],
@@ -960,15 +961,20 @@ class cBrowserPDTCallView extends MX_Controller
                     }else if($nVATSPL == 2){
                         $nResultCost = $nCostAvgEX;
                     }
+                    $tConfigType = 1;
                     $t = 'ต้นทุนเฉลี่ย';
                     break;
                 case 2: //ต้นทุนสุดท้าย
                     $nResultCost = $nCostLast;
                     $t = 'ต้นทุนสุดท้าย';
+                    $tConfigType = 2;
+
                     break;
                 case 3: //ต้นทุนมาตราฐาน
                     $nResultCost = $nCostSTD;
                     $t = 'ต้นทุนมาตราฐาน';
+                    $tConfigType = 3;
+
                     break;
                 case 4: //ต้นทุน FiFo
                     if($nVATSPL == 1){
@@ -977,9 +983,12 @@ class cBrowserPDTCallView extends MX_Controller
                         $nResultCost = $nCostFiFoEx;
                     }
                     $t = 'ต้นทุน FiFo';
+                    $tConfigType = 4;
+
                     break;
                 default:
                     $nResultCost = 'EMPTY';
+                    $tConfigType = '';
             }
 
             if($nResultCost == '' || $nResultCost == null){
@@ -988,7 +997,11 @@ class cBrowserPDTCallView extends MX_Controller
                 break;  
             }
         }
-        return $nResultCost;
+        $aDataReturn = array(
+            'nResultCost' => $nResultCost,
+            'tConfigType' => $tConfigType
+        );
+        return $aDataReturn;
     }
 
     ///////////////////////////////////////////// สินค้าแฟชั่น + สินค้าซีเรียล /////////////////////////////////////////////

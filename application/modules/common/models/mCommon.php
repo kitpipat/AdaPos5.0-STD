@@ -525,6 +525,7 @@ class mCommon extends CI_Model {
         // Return Type      : array
         public function FSaMGetDataVatInOrEx($paPdtData,$ptBchCode){
             $tPdtCode = $paPdtData[0]['packData']['PDTCode'];
+            $tConfigType = $paPdtData[0]['packData']['tConfigType'];
             $tBchCode = $ptBchCode;
             $tSQL   = " SELECT TOP 1
                             TPHD.FTXphDocNo,
@@ -545,7 +546,7 @@ class mCommon extends CI_Model {
             $oQuery = $this->db->query($tSQL);
             if ($oQuery->num_rows() > 0) {
                 $oDataList        = $oQuery->row();
-                if($oDataList->FTXphVATInOrEx == 1 && $oDataList->FTXpdVatType == 1){
+                if($oDataList->FTXphVATInOrEx == 1 && $oDataList->FTXpdVatType == 1 && $tConfigType == 2){
                     $nOptDecimalShow  = FCNxHGetOptionDecimalShow();
                     $nVatRate = $oDataList->FCXpdVatRate;
                     $nPrice = $paPdtData[0]['packData']['Price'];

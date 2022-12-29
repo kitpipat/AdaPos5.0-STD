@@ -143,8 +143,8 @@
                 );
 
                 $nCost = GetTotalByConfig($aDataFind); 
-                $nCost = $nCost * $aValue['FCPdtUnitFact']; 
-
+                $tConfigType = $nCost['tConfigType'];
+                $nCost = $nCost['nResultCost'] * $aValue['FCPdtUnitFact']; 
                 $aPackData = array(
                     'SHP'       => $aValue['FTShpCode'],
                     'BCH'       => $aValue['FTPdtSpcBch'],
@@ -160,7 +160,8 @@
                     'AlwVat'    => $aValue['FTPdtStaVat'],
                     'nVat'      => $aValue['FCVatRate'],
                     'NetAfHD'   => $nCost,
-                    'PDTSpc'    => $tPDTFaishion
+                    'PDTSpc'    => $tPDTFaishion,
+                    'tConfigType' => $tConfigType
                 );
                 $aPackData = JSON_encode($aPackData);
                 $tNameFunctionClickPDT      = 'JSxPDTClickData(this,'.$aPackData.')';
@@ -329,7 +330,7 @@
         $nCostFiFoEx        = $aData['nCostFiFoEx'];
         $nCostSTD           = $aData['nCostSTD'];
         $nResultCost        = "";
-
+        $tConfigType        = "";
         for($i=0; $i<FCNnHSizeOf($nINDEXConfig); $i++){
             switch ($nINDEXConfig[$i]) {
                 case 1: //ต้นทุนเฉลี่ย
@@ -338,12 +339,15 @@
                     }else if($nVATSPL == 2){
                         $nResultCost = $nCostAvgEX;
                     }
+                    $tConfigType = 1;
                     break;
                 case 2: //ต้นทุนสุดท้าย
                     $nResultCost = $nCostLast;
+                    $tConfigType = 2;
                     break;
                 case 3: //ต้นทุนมาตราฐาน
                     $nResultCost = $nCostSTD;
+                    $tConfigType = 3;
                     break;
                 case 4: //ต้นทุน FiFo
                     if($nVATSPL == 1){
@@ -351,9 +355,11 @@
                     }else if($nVATSPL == 2){
                         $nResultCost = $nCostFiFoEx;
                     }
+                    $tConfigType = 4;
                     break;
                 default:
                     $nResultCost = 'EMPTY';
+                    $tConfigType = '';
             }
 
             if($nResultCost == '' || $nResultCost == null){
@@ -362,7 +368,11 @@
                 break;  
             }
         }
-        return $nResultCost;
+        $aReturnData = array(
+            'nResultCost' => $nResultCost,
+            'tConfigType' => $tConfigType
+        );
+        return $aReturnData;
     }
 ?>
 
