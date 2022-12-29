@@ -46,6 +46,9 @@ function JCNxInvList(pnPage) {
 
 function JSxInvDataTable(pnPage) {
     var nStaSession = JCNxFuncChkSessionExpired();
+    var typeOfProduct = $('#ocmSearchProductType').val();
+    var keyword = $('#oetInvPdtNameSelect').val();
+    console.log(typeOfProduct,keyword)
     if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
        //ตรวจสอบ Value สาขา
        var ptBchCode   = $('#oetInvBchCodeSelect').val();
@@ -72,7 +75,8 @@ function JSxInvDataTable(pnPage) {
        //set value json
        var tDataFilter = { "tBchCode"   : tBchCode,
                            "tWahCode"   : tWahCode,
-                           "tPdtCode"   : tPdtCode
+                           "tTypeProduct"   : typeOfProduct,
+                           "tKeyword"   : keyword
                          };
         console.log(tDataFilter);
         var nPageCurrent = pnPage;

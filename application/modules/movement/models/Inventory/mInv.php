@@ -18,7 +18,8 @@ class mInv extends CI_Model {
             $nLngID         = $paData['FNLngID'];
             $tBchCode       = $paData['tSearchAll']['tBchCode'];
             $tWahCode       = $paData['tSearchAll']['tWahCode'];
-            $tPdtCode       = $paData['tSearchAll']['tPdtCode'];
+            $tTypeProduct   = $paData['tSearchAll']['tTypeProduct'];
+            $tKeyword   = $paData['tSearchAll']['tKeyword'];
 
             if($tBchCode != ""){
                 $tBchCodeText= str_replace(",","','",$tBchCode);
@@ -33,10 +34,41 @@ class mInv extends CI_Model {
                 }
             }
 
-            if($tPdtCode != ""){
-                $tPdtCodeText= str_replace(",","','",$tPdtCode);
-                $tWherePdt = "AND PDT.FTPdtCode IN ('$tPdtCodeText')";
+            if($tTypeProduct != "" && $tKeyword != ""){
+                switch ($tTypeProduct) {
+                    case '1':
+                        $tPdtCodeText= str_replace(",","','",$tKeyword);
+                        $tWherePdt = "AND PDT.FTPdtCode IN ('$tPdtCodeText')";
+                        break;
+                    case '2':
+                        $tPdtCodeText= str_replace(",","','",$tKeyword);
+                        $tWherePdt = "AND PDT_L.FTPdtName IN ('$tPdtCodeText')";
+                        break;
+                    case '3':
+                        $tBarCodeText= str_replace(",","','",$tKeyword);
+                        $tWherePdt = "AND BAR.FTBarCode IN ('$tBarCodeText')";
+                        break;
+                    case '4':
+                        $tCgCodeText= str_replace(",","','",$tKeyword);
+                        $tWherePdt = "AND PDT.FTPgpChain IN ('$tCgCodeText')";
+                        break;
+                    case '5':
+                        $tPtyCodeText= str_replace(",","','",$tKeyword);
+                        $tWherePdt = "AND PDT.FTPtyCode IN ('$tPtyCodeText')";
+                        break;
+                    case '6':
+                        $tPbnCodeText= str_replace(",","','",$tKeyword);
+                        $tWherePdt = "AND PDT.FTPbnCode IN ('$tPbnCodeText')";
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
             }
+            // if($tPdtCode != ""){
+            //     $tPdtCodeText= str_replace(",","','",$tPdtCode);
+            //     $tWherePdt = "AND PDT.FTPdtCode IN ('$tPdtCodeText')";
+            // }
 
             if($tWahCode != ""){
                 $tWahCodeText= str_replace(",","','",$tWahCode);
@@ -65,6 +97,7 @@ class mInv extends CI_Model {
                                             LEFT JOIN TCNMPdt_L PDT_L WITH(NOLOCK) ON BAL.FTPdtCode = PDT_L.FTPdtCode AND PDT_L.FNLngID = $nLngID 
                                             LEFT JOIN TCNMBranch_L BCH WITH(NOLOCK) ON BAL.FTBchCode = BCH.FTBchCode AND BCH.FNLngID = $nLngID 
                                             LEFT JOIN TCNMWaHouse_L WAH WITH(NOLOCK) ON BAL.FTBchCode = WAH.FTBchCode AND BAL.FTWahCode = WAH.FTWahCode AND WAH.FNLngID = $nLngID 
+                                            LEFT JOIN TCNMPdtBar BAR WITH(NOLOCK) ON BAL.FTPdtCode = BAR.FTPdtCode
                                             LEFT JOIN
                                                 (
                                                     SELECT FTBchCode, 
@@ -145,9 +178,11 @@ class mInv extends CI_Model {
         try{
             $tSQL = "SELECT COUNT (*) AS counts
                         FROM TCNTPdtStkBal BAL
-                        LEFT JOIN TCNMPdt_L PDT WITH(NOLOCK) ON BAL.FTPdtCode = PDT.FTPdtCode AND PDT.FNLngID = $ptLngID
-                        LEFT JOIN TCNMBranch_L BCH WITH(NOLOCK) ON BAL.FTBchCode = BCH.FTBchCode AND PDT.FNLngID = $ptLngID
-                        LEFT JOIN TCNMWaHouse_L WAH WITH(NOLOCK) ON BAL.FTBchCode = WAH.FTBchCode AND BAL.FTWahCode = WAH.FTWahCode AND WAH.FNLngID = $ptLngID
+                        LEFT JOIN TCNMPdt PDT WITH(NOLOCK) ON BAL.FTPdtCode = PDT.FTPdtCode
+                        LEFT JOIN TCNMPdt_L PDT_L WITH(NOLOCK) ON BAL.FTPdtCode = PDT_L.FTPdtCode AND PDT_L.FNLngID = $ptLngID 
+                        LEFT JOIN TCNMBranch_L BCH WITH(NOLOCK) ON BAL.FTBchCode = BCH.FTBchCode AND BCH.FNLngID = $ptLngID 
+                        LEFT JOIN TCNMWaHouse_L WAH WITH(NOLOCK) ON BAL.FTBchCode = WAH.FTBchCode AND BAL.FTWahCode = WAH.FTWahCode AND WAH.FNLngID = $ptLngID 
+                        LEFT JOIN TCNMPdtBar BAR WITH(NOLOCK) ON BAL.FTPdtCode = BAR.FTPdtCode
                         LEFT JOIN
                             (
                                 SELECT FTBchCode, 
