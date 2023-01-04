@@ -903,6 +903,15 @@
             {"DocCode"      : $('#oetCPHDocNo').val()  }, // เลขที่เอกสาร
             {"DocBchCode"   : '<?=$tCPHUsrBchCode;?>'}
         ];
-        window.open('<?=base_url()?>'+"formreport/Frm_SQL_FCCoupon?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open('<?=base_url()?>'+"formreport/Frm_SQL_FCCoupon?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00018' ,
+                tDocBchCode : '<?=$tCPHUsrBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 </script>

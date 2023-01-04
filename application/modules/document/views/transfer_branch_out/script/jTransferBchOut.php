@@ -3,32 +3,12 @@
     var tTransferBchOutCallBackOption = $("#oetTransferBchOutCallBackOption").val();
 
     $("document").ready(function() {
-        localStorage.tCheckBackStage = '';
         localStorage.removeItem("LocalTransferBchOutHDItemData");
         JSxCheckPinMenuClose(); /*Check เปิดปิด Menu ตาม Pin*/
         JSxTransferBchOutNavDefult();
-        $('#oliTransferBchOutTitle').unbind().click(function() {
-            localStorage.tCheckBackStage = '';
-            var nStaSession = JCNxFuncChkSessionExpired();
-            if (typeof(nStaSession) !== "undefined" && nStaSession == 1) {
-                JSvTransferBchOutCallPageList();
-            } else {
-                JCNxShowMsgSessionExpired();
-            }
-        });
 
         if (nTransferBchOutStaBrowseType != 1) {
-            // JSvTransferBchOutCallPageList();
-            switch(nTransferBchOutStaBrowseType){
-            case '2':
-                var tAgnCode = $('#oetTransferBchOutJumpAgnCode').val();
-                var tBchCode = $('#oetTransferBchOutJumpBchCode').val();
-                var tDocNo = $('#oetTransferBchOutJumpDocNo').val();
-                JSvTransferBchOutCallPageEdit(tDocNo);
-            break;
-            default:
-                JSvTransferBchOutCallPageList();
-        }
+            JSvTransferBchOutCallPageList();
         } else {
             JSvTransferBchOutCallPageAdd();
         }
@@ -67,36 +47,21 @@
      * Return Type : View
      */
     function JSvTransferBchOutCallPageList() {
-        if(localStorage.tCheckBackStage = 'monDocTransfer' && localStorage.tCheckBackStage != ''){
-            var tRoute = 'monSDT/1/0';
-        }else{
-            var tRoute = 'docTransferBchOutList';
-        }
-
-
-        //กลับสู่หน้า List
         $.ajax({
             type: "GET",
-            url: tRoute,
+            url: "docTransferBchOutList",
             data: {},
             cache: false,
             timeout: 5000,
             success: function(tResult) {
-                if (tRoute == 'monSDT/1/0') {
-                    $(window).scrollTop(0);
-                    $('.odvMainContent').html(tResult);
-                } else {
-                    $("#odvTransferBchOutContentPage").html(tResult);
-                    JSxTransferBchOutNavDefult();
-                    JSvTransferBchOutCallPageDataTable();
-                }
-                localStorage.tCheckBackStage = '';
+                $("#odvTransferBchOutContentPage").html(tResult);
+                JSxTransferBchOutNavDefult();
+                JSvTransferBchOutCallPageDataTable();
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 JCNxResponseError(jqXHR, textStatus, errorThrown);
             }
         });
-
     }
 
     /**
@@ -177,13 +142,13 @@
         if (typeof nStaSession !== "undefined" && nStaSession == 1) {
             try {
                 var nCountBch = "<?=$this->session->userdata("nSesUsrBchCount"); ?>";
-                if(nCountBch != 1){ //ถ้ามีมากกว่า 1 สาขาต้อง reset
+                if(nCountBch != 1){ //ถ้ามีมากกว่า 1 สาขาต้อง reset 
                     $("#oetBchCodeFrom").val("");
                     $("#oetBchNameFrom").val("");
                     $("#oetBchCodeTo").val("");
                     $("#oetBchNameTo").val("");
                 }
-
+                
                 $("#oetSearchAll").val("");
                 $("#oetSearchDocDateFrom").val("");
                 $("#oetSearchDocDateTo").val("");
@@ -233,7 +198,6 @@
                 }
 
                 $("#odvTransferBchOutContentPage").html(tResult);
-                $(window).scrollTop(0);
                 JCNxCloseLoading();
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -265,6 +229,7 @@
                 timeout: 0,
                 success: function(tResult) {
                     if (tResult != "") {
+                        $("#odvBtnAddEdit").show();
                         $(".xCNTransferBchOutVBrowse").hide();
                         $(".xCNTransferBchOutVMaster").show();
                         $("#oliTransferBchOutTitleEdit").show();
@@ -276,8 +241,6 @@
                         $("#obtTransferBchOutCancel").show();
                         $("#oliTransferBchOutTitleDetail").hide();
                         $("#odvTransferBchOutContentPage").html(tResult);
-
-                        $(window).scrollTop(0);
                     }
 
                     JCNxLayoutControll();

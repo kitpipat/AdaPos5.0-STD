@@ -1687,7 +1687,16 @@
             {"DocCode"      : tDocNo }, // เลขที่เอกสาร
             {"DocBchCode"   : '<?=$tUserBchCode;?>'}
         ];
-        window.open('<?php echo base_url(); ?>' + "formreport/Frm_SQL_FCCardTopUp?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open('<?php echo base_url(); ?>' + "formreport/Frm_SQL_FCCardTopUp?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00016' ,
+                tDocBchCode : '<?=$tUserBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 
     /**

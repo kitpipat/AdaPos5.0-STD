@@ -13,10 +13,9 @@ class mTransferBchOutPdt extends CI_Model
      */
     public function FSaMGetPdtInTmp($paParams = [])
     {
-        $tTBODocNo      = $paParams['tTBODocNo'];
         $tUserSessionID = $paParams['tUserSessionID'];
-        $tDocKey        = $paParams['tDocKey'];
-        $aRowLen        = FCNaHCallLenData($paParams['nRow'], $paParams['nPage']);
+        $tDocKey = $paParams['tDocKey'];
+        $aRowLen = FCNaHCallLenData($paParams['nRow'], $paParams['nPage']);
         // $nLngID = $paParams['FNLngID'];
 
         $tSQL = "
@@ -53,40 +52,14 @@ class mTransferBchOutPdt extends CI_Model
                         TMP.FTXtdPdtStaSet,
                         TMP.FTXtdRmk,
                         TMP.FTSessionID,
-
+                        TMP.FTTmpStatus,
                         TMP.FDLastUpdOn,
                         TMP.FDCreateOn,
                         TMP.FTLastUpdBy,
-                        TMP.FTCreateBy,
-                        ISNULL(PDTPICK.FCXtdQtyOrd,0) AS FCXtdQtyOrd,
-					    ISNULL(PDTPICK.FCXtdQtyPick,0) AS FCXtdQtyPick
+                        TMP.FTCreateBy
                     FROM TCNTDocDTTmp TMP WITH(NOLOCK)
-                    LEFT JOIN (
-                        SELECT 
-                            TBODT.FTPdtCode						AS FTPdtCode
-                            ,SUM(ISNULL(ORDDT.FCXtdQtyOrd,0))	AS FCXtdQtyOrd
-                            ,SUM(ISNULL(PICK.FCXtdQty,0))		AS FCXtdQtyPick
-                        FROM TCNTPdtTboHDDocRef TBO WITH(NOLOCK)
-                        INNER JOIN TCNTPdtTboDT TBODT WITH(NOLOCK) ON TBO.FTXshDocNo = TBODT.FTXthDocNo
-                        LEFT JOIN (
-                            SELECT PICKHD.FTXthDocNo, PICKDT.FTPdtCode, SUM(ISNULL(PICKDT.FCXtdQty,0)) AS FCXtdQty 
-                            FROM TCNTPdtPickHD PICKHD WITH(NOLOCK)
-                            LEFT JOIN TCNTPdtPickDT PICKDT WITH(NOLOCK) ON PICKHD.FTXthDocNo = PICKDT.FTXthDocNo
-                            WHERE PICKHD.FTXthStaApv = '1'
-                            GROUP BY PICKHD.FTXthDocNo, PICKDT.FTPdtCode
-                        ) PICK ON TBO.FTXshRefDocNo = PICK.FTXthDocNo AND TBODT.FTPdtCode = PICK.FTPdtCode
-                        LEFT JOIN (
-                            SELECT FTXthDocNo,FTPdtCode, SUM(ISNULL(FCXtdQtyOrd,0)) AS FCXtdQtyOrd 
-                            FROM TCNTPdtPickDT WITH(NOLOCK)
-                            GROUP BY FTXthDocNo, FTPdtCode
-                        ) ORDDT ON TBO.FTXshRefDocNo = ORDDT.FTXthDocNo AND TBODT.FTPdtCode = ORDDT.FTPdtCode
-                        WHERE TBO.FTXshDocNo	    = '$tTBODocNo'
-                            AND TBO.FTXshRefType	= '2'
-                            AND TBO.FTXshRefKey	    = 'PdtPick'
-                        GROUP BY TBODT.FTPdtCode
-                    ) PDTPICK ON TMP.FTPdtCode = PDTPICK.FTPdtCode
                     WHERE TMP.FTSessionID = '$tUserSessionID'
-                      AND TMP.FTXthDocKey = '$tDocKey'
+                    AND TMP.FTXthDocKey = '$tDocKey'
         ";
 
         $tSearchList = $paParams['tSearchAll'];
@@ -97,7 +70,7 @@ class mTransferBchOutPdt extends CI_Model
         $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
 
         $oQuery = $this->db->query($tSQL);
-        // echo $this->db->last_query();exit;
+
         if ($oQuery->num_rows() > 0) {
             $oList = $oQuery->result();
             $nFoundRow = $this->FSnMTFWGetPdtInTmpPageAll($paParams);
@@ -164,22 +137,74 @@ class mTransferBchOutPdt extends CI_Model
      * Return : Status Update
      * Return Type : Boolean
      */
-    public function FSbUpdatePdtInTmpBySeq($paParams = [])
+    public function FSbUpdatePdtInTmpBySeq($paDataUpdateDT,$paDataWhere)
     {
-        $this->db->set($paParams['tFieldName'], $paParams['tValue']);
-        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->where('FTXthDocNo', $paParams['tDocNo']);
-        $this->db->where('FNXtdSeqNo', $paParams['nSeqNo']);
-        $this->db->where('FTXthDocKey', $paParams['tDocKey']);
-        $this->db->update('TCNTDocDTTmp');
+        // $this->db->set($paParams['tFieldName'], $paParams['tValue']);
+        // $this->db->where('FTSessionID', $paParams['tUserSessionID']);
+        // $this->db->where('FTXthDocNo', $paParams['tDocNo']);
+        // $this->db->where('FNXtdSeqNo', $paParams['nSeqNo']);
+        // $this->db->where('FTXthDocKey', $paParams['tDocKey']);
+        // $this->db->update('TCNTDocDTTmp');
 
-        $bStatus = false;
+        // $bStatus = false;
 
-        if ($this->db->affected_rows() > 0) {
-            $bStatus = true;
+        // if ($this->db->affected_rows() > 0) {
+        //     $bStatus = true;
+        // }
+
+        // return $bStatus;
+        $tSessionID   = $paDataWhere['tSessionID'];
+        $tDocNo       = $paDataWhere['tDocNo'];
+        $tBchCode     = $paDataWhere['tBchCode'];
+        $nSeqNo       = $paDataWhere['nSeqNo'];
+
+        $tSQL ="SELECT
+                PKS.FCPdtUnitFact
+                FROM
+               TCNTDocDTTmp DTTEMP
+            LEFT OUTER JOIN TCNMPdtPackSize PKS WITH (NOLOCK) ON DTTEMP.FTPdtCode = PKS.FTPdtCode AND DTTEMP.FTPunCode = PKS.FTPunCode
+            WHERE
+                FTSessionID = '$tSessionID'
+                AND FTBchCode = '$tBchCode'
+                AND FTXthDocNo = '$tDocNo'
+                AND FNXtdSeqNo = $nSeqNo
+                ";
+        
+        $cPdtUnitFact = $this->db->query($tSQL)->row_array()['FCPdtUnitFact'];
+
+        if($cPdtUnitFact>0){ 
+            $cPdtUnitFact = $cPdtUnitFact;
+        }else{
+            $cPdtUnitFact = 1;
         }
 
-        return $bStatus;
+
+        $this->db->set('FCXtdQty', $paDataUpdateDT['FCXtdQty']);
+        // $this->db->set('FCXtdSetPrice', $paDataUpdateDT['FCXtdSetPrice']);
+        // $this->db->set('FCXtdNet', $paDataUpdateDT['FCXtdNet']);
+        
+        // $this->db->set('FCXtdAmtB4DisChg', $paDataUpdateDT['FCXtdNet']);
+        $this->db->set('FCXtdQtyAll', $paDataUpdateDT['FCXtdQty']*$cPdtUnitFact);
+
+        $this->db->where('FTSessionID',$paDataWhere['tSessionID']);
+        $this->db->where('FTXthDocKey',$paDataWhere['tDocKey']);
+        $this->db->where('FNXtdSeqNo',$paDataWhere['nSeqNo']);
+        $this->db->where('FTXthDocNo',$paDataWhere['tDocNo']);
+        $this->db->where('FTBchCode',$paDataWhere['tBchCode']);
+        $this->db->update('TCNTDocDTTmp');
+        if($this->db->affected_rows() > 0){
+            $aStatus = array(
+                'rtCode'    => '1',
+                'rtDesc'    => 'Update Success',
+            );
+        }else{
+            $aStatus = array(
+                'rtCode'    => '903',
+                'rtDesc'    => 'Update Fail',
+            );
+        }
+        return $aStatus;
+
     }
 
     /**
@@ -197,6 +222,13 @@ class mTransferBchOutPdt extends CI_Model
         $this->db->where('FTXthDocKey', $paParams['tDocKey']);
         $this->db->where('FNXtdSeqNo', $paParams['nSeqNo']);
         $this->db->delete('TCNTDocDTTmp');
+
+        $this->db->where('FTXshDocNo', $paParams['tDocNo']);
+        $this->db->where('FNXsdSeqNo', $paParams['nSeqNo']);
+        $this->db->where('FTXthDocKey', $paParams['tDocKey']);
+        // $this->db->where_in('FTPdtCode',  $paParams['FTPdtCode']);
+        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
+        $this->db->delete('TCNTDocDTFhnTmp');
 
         $bStatus = false;
 
@@ -223,6 +255,11 @@ class mTransferBchOutPdt extends CI_Model
         $this->db->where_in('FNXtdSeqNo', $paParams['aSeqNo']);
         $this->db->delete('TCNTDocDTTmp');
 
+        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
+        $this->db->where('FTXshDocNo', $paParams['tDocNo']);
+        $this->db->where('FTXthDocKey', $paParams['tDocKey']);
+        $this->db->where_in('FNXsdSeqNo', $paParams['aSeqNo']);
+        $this->db->delete('TCNTDocDTFhnTmp');
         $bStatus = false;
 
         if ($this->db->affected_rows() > 0) {
@@ -243,8 +280,12 @@ class mTransferBchOutPdt extends CI_Model
     public function FSbClearPdtInTmp($paParams = [])
     {
         $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->where('FTBddTypeForDeposit', '1');
+        // $this->db->where('FTBddTypeForDeposit', '1');
         $this->db->delete('TCNTDocDTTmp');
+
+        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
+        $this->db->where('FTXthDocKey', 'TCNTPdtTboHD');
+        $this->db->delete('TCNTDocDTFhnTmp');
 
         $bStatus = false;
 
@@ -490,7 +531,8 @@ class mTransferBchOutPdt extends CI_Model
                 $this->db->set('FCXtdQty', 1);  // เพิ่มสินค้าใหม่
                 $this->db->set('FCXtdQtyAll', 1*$paData['FCPdtUnitFact']); // จากสูตร qty * fector
                 $this->db->set('FCXtdSalePrice', $paData['FTPdtSalePrice']);
-
+      
+                $this->db->set('FTTmpStatus', $paData['FTPdtForSystem']);
                 $this->db->set('FTBchCode', $paDataWhere['tBchCode']);
                 $this->db->set('FTXthDocNo', $paDataWhere['tDocNo']);
                 $this->db->set('FNXtdSeqNo', $paDataWhere['nMaxSeqNo']);
@@ -505,7 +547,7 @@ class mTransferBchOutPdt extends CI_Model
                         
                 $this->db->insert('TCNTDocDTTmp');
 
-                $this->db->last_query();  
+                // $this->db->last_query();  
 
                 if($this->db->affected_rows() > 0){
                     $aStatus = array(
@@ -536,6 +578,7 @@ class mTransferBchOutPdt extends CI_Model
             $this->db->set('FCXtdQtyAll', 1*$paData['FCPdtUnitFact']); // จากสูตร qty * fector
             $this->db->set('FCXtdSalePrice', $paData['FTPdtSalePrice']);
 
+            $this->db->set('FTTmpStatus', $paData['FTPdtForSystem']);
             $this->db->set('FTBchCode', $paDataWhere['tBchCode']);
             $this->db->set('FTXthDocNo', $paDataWhere['tDocNo']);
             $this->db->set('FNXtdSeqNo', $paDataWhere['nMaxSeqNo']);
@@ -550,7 +593,7 @@ class mTransferBchOutPdt extends CI_Model
 
             $this->db->insert('TCNTDocDTTmp');
 
-            $this->db->last_query();  
+            // $this->db->last_query();  
 
             if($this->db->affected_rows() > 0){
                 $aStatus = array(
@@ -611,269 +654,4 @@ class mTransferBchOutPdt extends CI_Model
 
         return $aData;
     }
-
-    // Function: Get Data DO HD List
-    public function FSoMTransferBchOutCallRefIntDocDataTable($paDataCondition){
-        $aRowLen                = FCNaHCallLenData($paDataCondition['nRow'],$paDataCondition['nPage']);
-        $nLngID                 = $paDataCondition['FNLngID'];
-        $aAdvanceSearch         = $paDataCondition['aAdvanceSearch'];
-
-        // Advance Search
-        $tTransferBchOutRefIntBchCode        = $aAdvanceSearch['tTransferBchOutRefIntBchCode'];
-        $tTransferBchOutRefIntDocNo          = $aAdvanceSearch['tTransferBchOutRefIntDocNo'];
-        $tTransferBchOutRefIntDocDateFrm     = $aAdvanceSearch['tTransferBchOutRefIntDocDateFrm'];
-        $tTransferBchOutRefIntDocDateTo      = $aAdvanceSearch['tTransferBchOutRefIntDocDateTo'];
-        $tTransferBchOutRefIntStaDoc         = $aAdvanceSearch['tTransferBchOutRefIntStaDoc'];
-
-        $tSQLMain = "   SELECT DISTINCT
-                            RBHD.FTBchCode,
-                            BCHL.FTBchName,
-                            RBHD.FTXthDocNo,
-                            CONVERT(CHAR(10),RBHD.FDXthDocDate,103) AS FDXthDocDate,
-                            CONVERT(CHAR(5), RBHD.FDXthDocDate,108) AS FTXshDocTime,
-                            RBHD.FTXthStaDoc,
-                            RBHD.FTXthStaApv,
-                            RBHD.FNXthStaRef,
-                            RBHD.FTSplCode,
-                            RBHD.FTXthVATInOrEx,
-                            RBHD.FTCreateBy,
-                            RBHD.FDCreateOn,
-                            RBHD.FNXthStaDocAct,
-                            SPL_L.FTSplName,
-                            USRL.FTUsrName      AS FTCreateByName,
-                            RBHD.FTXthApvCode,
-                            SPLCR.FCSplCrLimit,
-                            RBHD.FTXthBchFrm,
-                            FRMBCHL.FTBchName AS FTXthBchNameFrm,
-                            RBHD.FTXthWhFrm,
-                            FRMWAHL.FTWahName AS FTXthWhNameFrm,
-                            RBHD.FTXthBchTo,
-                            TOBCHL.FTBchName AS FTXthBchNameTo,
-                            RBHD.FTXthWhTo,
-                            TOWAHL.FTWahName AS FTXthWhNameTo
-                        FROM TCNTPdtReqBchHD    RBHD    WITH (NOLOCK)
-                        LEFT JOIN TCNMBranch_L  BCHL    WITH (NOLOCK) ON RBHD.FTBchCode         = BCHL.FTBchCode    AND BCHL.FNLngID      = $nLngID 
-                        LEFT JOIN TCNMUser_L    USRL    WITH (NOLOCK) ON RBHD.FTCreateBy        = USRL.FTUsrCode    AND USRL.FNLngID      = $nLngID
-                        LEFT JOIN TCNMSpl       SPL     WITH (NOLOCK) ON RBHD.FTSplCode         = SPL.FTSplCode  
-                        LEFT JOIN TCNMSplCredit SPLCR   WITH (NOLOCK) ON RBHD.FTSplCode         = SPLCR.FTSplCode  
-                        LEFT JOIN TCNMSpl_L     SPL_L   WITH (NOLOCK) ON RBHD.FTSplCode         = SPL_L.FTSplCode   AND SPL_L.FNLngID     = $nLngID
-                        LEFT JOIN TCNTPdtTboHDDocRef RB_R   WITH (NOLOCK) ON RB_R.FTXshRefDocNo = RBHD.FTXthDocNo   AND RB_R.FTXshRefType = 1
-
-                        LEFT JOIN TCNMBranch_L  FRMBCHL WITH (NOLOCK) ON RBHD.FTXthBchFrm = FRMBCHL.FTBchCode AND FRMBCHL.FNLngID = $nLngID
-                        LEFT JOIN TCNMBranch_L  TOBCHL  WITH (NOLOCK) ON RBHD.FTXthBchTo = TOBCHL.FTBchCode  AND TOBCHL.FNLngID = $nLngID
-
-                        LEFT JOIN TCNMWaHouse_L FRMWAHL WITH (NOLOCK) ON RBHD.FTXthWhFrm = FRMWAHL.FTWahCode AND RBHD.FTXthBchFrm = FRMWAHL.FTBchCode AND FRMWAHL.FNLngID = $nLngID
-                        LEFT JOIN TCNMWaHouse_L TOWAHL  WITH (NOLOCK) ON RBHD.FTXthWhTo = TOWAHL.FTWahCode AND RBHD.FTXthBchTo = TOWAHL.FTBchCode AND TOWAHL.FNLngID = $nLngID
-
-                        WHERE RBHD.FTXthStaDoc = 1 
-                          AND RBHD.FTXthStaApv = 1
-                          AND ISNULL(RB_R.FTXshRefType, '') = ''
-                    ";
-
-        if(isset($tTransferBchOutRefIntBchCode) && !empty($tTransferBchOutRefIntBchCode)){
-            $tSQLMain .= "AND (RBHD.FTXthBchFrm = '$tTransferBchOutRefIntBchCode' OR RBHD.FTXthBchTo = '$tTransferBchOutRefIntBchCode')";
-        }
-
-        if(isset($tTransferBchOutRefIntDocNo) && !empty($tTransferBchOutRefIntDocNo)){
-            $tSQLMain .= " AND (RBHD.FTXthDocNo LIKE '%$tTransferBchOutRefIntDocNo%')";
-        }
-
-        // ค้นหาจากวันที่ - ถึงวันที่
-        if(!empty($tTransferBchOutRefIntDocDateFrm) && !empty($tTransferBchOutRefIntDocDateTo)){
-            $tSQLMain .= " AND ((RBHD.FDXthDocDate BETWEEN CONVERT(datetime,'$tTransferBchOutRefIntDocDateFrm 00:00:00') AND CONVERT(datetime,'$tTransferBchOutRefIntDocDateTo 23:59:59')) OR (RBHD.FDXthDocDate BETWEEN CONVERT(datetime,'$tTransferBchOutRefIntDocDateTo 23:00:00') AND CONVERT(datetime,'$tTransferBchOutRefIntDocDateFrm 00:00:00')))";
-        }
-
-        // ค้นหาสถานะเอกสาร
-        if(isset($tTransferBchOutRefIntStaDoc) && !empty($tTransferBchOutRefIntStaDoc)){
-            if ($tTransferBchOutRefIntStaDoc == 3) {
-                $tSQLMain .= " AND RBHD.FTXthStaDoc = '$tTransferBchOutRefIntStaDoc'";
-            } elseif ($tTransferBchOutRefIntStaDoc == 2) {
-                $tSQLMain .= " AND ISNULL(RBHD.FTXthStaApv,'') = '' AND RBHD.FTXthStaDoc != '3'";
-            } elseif ($tTransferBchOutRefIntStaDoc == 1) {
-                $tSQLMain .= " AND RBHD.FTXthStaApv = '$tTransferBchOutRefIntStaDoc'";
-            }
-        }
-
-        $tSQL   =   "SELECT c.* FROM( SELECT  ROW_NUMBER() OVER(ORDER BY FDCreateOn DESC ) AS FNRowID,* FROM ( 
-                        $tSQLMain 
-                     ) Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1] ";
-
-        $oQuery = $this->db->query($tSQL);
-        if($oQuery->num_rows() > 0){
-            $oDataList          = $oQuery->result_array();
-            $oQueryMain         = $this->db->query($tSQLMain);
-            $aDataCountAllRow   = $oQueryMain->num_rows();
-            $nFoundRow          = $aDataCountAllRow;
-            $nPageAll           = ceil($nFoundRow/$paDataCondition['nRow']);
-            $aResult = array(
-                'raItems'       => $oDataList,
-                'rnAllRow'      => $nFoundRow,
-                'rnCurrentPage' => $paDataCondition['nPage'],
-                'rnAllPage'     => $nPageAll,
-                'rtCode'        => '1',
-                'rtDesc'        => 'success',
-            );
-            
-        }else{
-            $aResult = array(
-                'rnAllRow'      => 0,
-                'rnCurrentPage' => $paDataCondition['nPage'],
-                "rnAllPage"     => 0,
-                'rtCode'        => '800',
-                'rtDesc'        => 'data not found',
-            );
-        }
-        unset($oQuery);
-        unset($oDataList);
-        unset($aDataCountAllRow);
-        unset($nFoundRow);
-        unset($nPageAll);
-        return $aResult;
-    }
-
-    // Functionality: Get Data Purchase Order HD List
-    public function FSoMTransferBchOutCallRefIntDocDTDataTable($paData){
-
-        $nLngID    =  $paData['FNLngID'];
-        $tBchCode  =  $paData['tBchCode'];
-        $tDocNo    =  $paData['tDocNo'];
-        
-        $tSQL= "SELECT
-                        DT.FTBchCode,
-                        DT.FTXthDocNo,
-                        DT.FNXtdSeqNo,
-                        DT.FTPdtCode,
-                        DT.FTXtdPdtName,
-                        DT.FTPunCode,
-                        DT.FTPunName,
-                        DT.FCXtdFactor,
-                        DT.FTXtdBarCode,
-                        DT.FCXtdQty,
-                        DT.FCXtdQtyAll,
-                        DT.FTXtdRmk,
-                        DT.FDLastUpdOn,
-                        DT.FTLastUpdBy,
-                        DT.FDCreateOn,
-                        DT.FTCreateBy
-                        FROM TCNTPdtReqBchDT DT WITH(NOLOCK)
-                WHERE   DT.FTBchCode = '$tBchCode' AND  DT.FTXthDocNo ='$tDocNo' ";
-
-        $oQuery = $this->db->query($tSQL);
-        if($oQuery->num_rows() > 0){
-            $oDataList          = $oQuery->result_array();
-            $aResult = array(
-                'raItems'       => $oDataList,
-                'rtCode'        => '1',
-                'rtDesc'        => 'success',
-            );
-        }else{
-            $aResult = array(
-                'rnAllRow'      => 0,
-                'rtCode'        => '800',
-                'rtDesc'        => 'data not found',
-            );
-        }
-        unset($oQuery);
-        return $aResult;
-    }
-
-    // นำข้อมูลจาก Browse ลง DTTemp
-    public function FSoMTransferBchOutCallRefIntDocInsertDTToTemp($paData){
-
-        $tTransferBchOutDocNo        = $paData['tTransferBchOutDocNo'];
-        $tTransferBchOutFrmBchCode   = $paData['tTransferBchOutFrmBchCode'];
-        $tSessionID                  = $this->session->userdata('tSesSessionID');
-
-        // Delect Document DTTemp By Doc No
-        $this->db->where('FTBchCode',$tTransferBchOutFrmBchCode);
-        $this->db->where('FTSessionID',$tSessionID);
-        $this->db->delete('TCNTDocDTTmp');
-
-        $tRefIntDocNo   = $paData['tRefIntDocNo'];
-        $tRefIntBchCode = $paData['tRefIntBchCode'];
-        $aSeqNo         = '(' . implode(',', $paData['aSeqNo']) .')';
-        
-        $tSQL= "INSERT INTO TCNTDocDTTmp (
-                    FTBchCode, FTXthDocNo, FNXtdSeqNo, FTXthDocKey, FTPdtCode, FTXtdPdtName,
-                    FTPunCode, FTPunName, FCXtdFactor, FTXtdBarCode, FTSrnCode,
-                    FTXtdVatType, FTVatCode, FCXtdVatRate, FTXtdSaleType, FCXtdSalePrice,
-                    FCXtdQty, FCXtdQtyAll, FCXtdSetPrice, FCXtdAmtB4DisChg, FTXtdDisChgTxt,
-                    FCXtdQtyLef, FCXtdQtyRfn, FTXtdStaPrcStk, FTXtdStaAlwDis,
-                    FNXtdPdtLevel,FTXtdPdtParent,FCXtdQtySet,
-                    FTXtdPdtStaSet,FTXtdRmk,
-                    FTSessionID,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy 
-                )
-                SELECT
-                    '$tTransferBchOutFrmBchCode' as FTBchCode,
-                    'TBODOCTEMP' as FTXthDocNo,
-                    ROW_NUMBER() OVER(ORDER BY DT.FNXtdSeqNo DESC ) AS FNXtdSeqNo,
-                    'TCNTPdtTboHD' AS FTXthDocKey,
-                    DT.FTPdtCode,
-                    DT.FTXtdPdtName,
-                    DT.FTPunCode,
-                    DT.FTPunName,
-                    DT.FCXtdFactor,
-                    DT.FTXtdBarCode,
-                    '' AS FTSrnCode,
-                    PDT.FTPdtStaVatBuy,
-                    PDT.FTVatCode AS FTVatCode,
-                    DT.FCXtdVatRate,
-                    PDT.FTPdtSaleType AS FTXtdSaleType,
-                    PDT.FCPdtCostStd AS FCXtdSalePrice,
-                    DT.FCXtdQty,
-                    DT.FCXtdQtyAll,
-                    PDT.FCPdtCostStd * DT.FCXtdQty AS FCXtdSetPrice,
-                    0 AS FCXtdAmtB4DisChg,
-                    '' AS FTXtdDisChgTxt,
-                    0 as FCXtdQtyLef,
-                    0 as FCXtdQtyRfn,
-                    '' as FTXtdStaPrcStk,
-                    PDT.FTPdtStaAlwDis,
-                    0 as FNXtdPdtLevel,
-                    '' as FTXtdPdtParent,
-                    0 as FCXtdQtySet,
-                    '' as FTPdtStaSet,
-                    '' as FTXtdRmk,   
-                    CONVERT(VARCHAR,'".$this->session->userdata('tSesSessionID')."') AS FTSessionID,
-                    CONVERT(DATETIME,'".date('Y-m-d H:i:s')."') AS FDLastUpdOn,
-                    CONVERT(DATETIME,'".date('Y-m-d H:i:s')."') AS FDCreateOn,
-                    CONVERT(VARCHAR,'".$this->session->userdata('tSesUsername')."') AS FTLastUpdBy,
-                    CONVERT(VARCHAR,'".$this->session->userdata('tSesUsername')."') AS FTCreateBy
-                FROM
-                TCNTPdtReqBchDT DT WITH (NOLOCK)
-                    LEFT JOIN TCNMPdt PDT WITH (NOLOCK) ON DT.FTPdtCode = PDT.FTPdtCode
-                    WHERE DT.FTBchCode = '$tRefIntBchCode' AND  DT.FTXthDocNo ='$tRefIntDocNo' AND DT.FNXtdSeqNo IN $aSeqNo ";
-
-        $oQuery = $this->db->query($tSQL);
-        if($this->db->affected_rows() > 0){
-            $aResult = array(
-                'rtCode'        => '1',
-                'rtDesc'        => 'success',
-            );
-        }else{
-            $aResult = array(
-                'rnAllRow'      => 0,
-                'rtCode'        => '800',
-                'rtDesc'        => 'data not found',
-            );
-        }
-        unset($oQuery);
-        return $aResult;
-
-    }
-
-
-    
-    // ตรวจสอบว่าใบจ่ายโอน-สาขา มีการสร้างใบจัดสินค้าไหม ?
-    public function FSbMTBOChkHaveHDDocRef($ptTBODocNo){
-        $tTBODocNo  = $ptTBODocNo;
-        $tSQL       = " SELECT FTXshRefDocNo FROM TCNTPdtTboHDDocRef WITH(NOLOCK) WHERE FTXshDocNo = '$tTBODocNo' AND FTXshRefType = '2' AND FTXshRefKey = 'PdtPick' ";
-        $oQuery     = $this->db->query($tSQL);
-        if( $oQuery->num_rows() > 0 ){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
 }

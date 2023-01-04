@@ -1,11 +1,11 @@
 <div class="table-responsive">
     <table class="table table-striped xWPdtTableFont" id="otbPromotionStep4RcvConditionTable">
         <thead>
-            <tr class="xCNPanelHeadColorWhite">
-                <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
-                <th width="30%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tGroup'); ?></th>
-                <th width="60%" class="text-left" style="color: #232C3D !important;"><?php echo language('pos/poschannel/poschannel', 'tRcvLabelChannelName'); ?></th>
-                <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
+            <tr>
+                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
+                <th width="30%" class="text-left"><?php echo language('document/promotion/promotion', 'tGroup'); ?></th>
+                <th width="60%" class="text-left"><?php echo language('pos/poschannel/poschannel', 'tRcvLabelChannelName'); ?></th>
+                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
             </tr>
         </thead>
         <tbody>

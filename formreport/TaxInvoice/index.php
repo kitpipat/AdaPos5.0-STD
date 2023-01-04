@@ -10,9 +10,11 @@ require_once('../../config_deploy.php');
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Frm_PSInvoiceSale.mrt - Viewer</title>
 	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/css/stimulsoft.viewer.office2013.whiteblue.css">
+	<link rel="stylesheet" type="text/css" href="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/css/stimulsoft.designer.office2013.whiteblue.css">
 	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/scripts/stimulsoft.reports.engine.pack.js"></script>
 	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/scripts/stimulsoft.reports.export.pack.js"></script>
 	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/scripts/stimulsoft.viewer.pack.js"></script>
+	<script type="text/javascript" src="<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/scripts/stimulsoft.designer.pack.js"></script> 
 
 	<?php
 		if(isset($_GET["infor"])){
@@ -22,6 +24,16 @@ require_once('../../config_deploy.php');
 			$aDataMQ 		= FSaHDeCodeUrlParameter($_GET["infor"],$aParamiterMap);
 			$tGrandText 	= $_GET["Grand"];
 			$PrintByPage 	= $_GET["PrintByPage"];
+			$tAgncode 	= $_GET["Agncode"];
+			$tFilename 	= $_GET["Filename"];
+			$tPathFile = '';
+			if(!empty($tAgncode)){
+				$tPathFile=$tFilename;
+			}else{
+				$tPathFile='reports/'.$tFilename;
+			}
+
+			$tStaEdit 	= @$_GET["StaEdit"];
 		}else{
 			$aDataMQ = false;
 		}
@@ -29,7 +41,10 @@ require_once('../../config_deploy.php');
 	?>
 
 	<?php
-		StiHelper::init("handler.php", 30);
+		$options = StiHelper::createOptions();
+		$options->handler = "handler.php";
+		$options->timeout = 30;
+		StiHelper::initialize($options);
 	?>
 	<script type="text/javascript">
 		var showAlert = true;
@@ -59,7 +74,7 @@ require_once('../../config_deploy.php');
 				}
 			}
 		}
-
+		
 		function Start(staprint , i) {
 			Stimulsoft.Base.StiLicense.key =
 				"6vJhGtLLLz2GNviWmUTrhSqnOItdDwjBylQzQcAOiHm8ftXz4NowX0TSVFSGC3hzl24Z2GpTfR9S0kss" +
@@ -79,25 +94,23 @@ require_once('../../config_deploy.php');
 
 			Stimulsoft.Base.Localization.StiLocalization.setLocalizationFile("<?=BASE_URL?>/formreport/AdaCoreFrmReportNew/localization/en.xml", true);
 
-			var report = Stimulsoft.Report.StiReport.createNewReport();
-			report.loadFile("reports/Frm_PSInvoiceSale.mrt?V=<?=date('YmdHis')?>");
-
+			// var report = Stimulsoft.Report.StiReport.createNewReport();
+			var report = new Stimulsoft.Report.StiReport();
+			report.loadFile("<?=$tPathFile?>");
+		
 			if(staprint == "Print") {
 				report.onBeginProcessData = function (args, callback) {
 					<?php StiHelper::createHandler(); ?>
 				}
-
-
-			report.dictionary.variables.getByName("SP_nLang").valueObject 		= "<?=$aDataMQ["Lang"];?>";
-			report.dictionary.variables.getByName("nLanguage").valueObject 		= "<?=$aDataMQ["Lang"];?>";
-			report.dictionary.variables.getByName("SP_tCompCode").valueObject 	= "<?=$aDataMQ["ComCode"];?>";
-			report.dictionary.variables.getByName("SP_tCmpBch").valueObject 	= "<?=$aDataMQ["BranchCode"];?>";
-			report.dictionary.variables.getByName("SP_nAddSeq").valueObject 	= 3;
-			report.dictionary.variables.getByName("SP_tDocNo").valueObject 		= "<?=$aDataMQ["DocCode"];?>";
-			report.dictionary.variables.getByName("SP_tStaPrn").valueObject 	= i.toString();
-			report.dictionary.variables.getByName("SP_tGrdStr").valueObject 	= "<?=$tGrandText?>";
-			report.dictionary.variables.getByName("SP_tDocBch").valueObject     = "<?=$aDataMQ['DocBchCode']?>";
-
+				report.dictionary.variables.getByName("SP_nLang").valueObject 		= "<?=$aDataMQ["Lang"];?>";
+				report.dictionary.variables.getByName("nLanguage").valueObject 		= <?=$aDataMQ["Lang"];?>;
+				report.dictionary.variables.getByName("SP_tCompCode").valueObject 	= "<?=$aDataMQ["ComCode"];?>";
+				report.dictionary.variables.getByName("SP_tCmpBch").valueObject 	= "<?=$aDataMQ["BranchCode"];?>";
+				report.dictionary.variables.getByName("SP_nAddSeq").valueObject 	= 3;
+				report.dictionary.variables.getByName("SP_tDocNo").valueObject 		= "<?=$aDataMQ["DocCode"];?>";
+				report.dictionary.variables.getByName("SP_tStaPrn").valueObject 	= i.toString();
+				report.dictionary.variables.getByName("SP_tGrdStr").valueObject 	= "<?=$tGrandText?>";
+				report.dictionary.variables.getByName("SP_tDocBch").valueObject     = "<?=$aDataMQ['DocBchCode']?>";
 				report.renderAsync(function(){
 					if('<?=$PrintByPage?>' == 'ALL'){
 						report.print();
@@ -115,48 +128,73 @@ require_once('../../config_deploy.php');
 						}
 					}
 				});
-
-
 			}else{
+			
+				report.dictionary.variables.getByName("SP_nLang").valueObject 		= "<?=$aDataMQ["Lang"];?>";
+				report.dictionary.variables.getByName("nLanguage").valueObject 		= <?=$aDataMQ["Lang"];?>;
+				report.dictionary.variables.getByName("SP_tCompCode").valueObject 	= "<?=$aDataMQ["ComCode"];?>";
+				report.dictionary.variables.getByName("SP_tCmpBch").valueObject 	= "<?=$aDataMQ["BranchCode"];?>";
+				report.dictionary.variables.getByName("SP_nAddSeq").valueObject 	= 3;
+				report.dictionary.variables.getByName("SP_tDocNo").valueObject 		= "<?=$aDataMQ["DocCode"];?>";
+				report.dictionary.variables.getByName("SP_tStaPrn").valueObject 	= "1";
+				report.dictionary.variables.getByName("SP_tGrdStr").valueObject 	= "<?=$tGrandText?>";
+				report.dictionary.variables.getByName("SP_tDocBch").valueObject     = "<?=$aDataMQ['DocBchCode']?>";
 
+				<?php if($tStaEdit!='1'){ ?>
+					var options = new Stimulsoft.Viewer.StiViewerOptions();
+					options.appearance.fullScreenMode = true;
+					options.toolbar.displayMode = Stimulsoft.Viewer.StiToolbarDisplayMode.Separated;
+					
+					var viewer = new Stimulsoft.Viewer.StiViewer(options, "StiViewer", false);
+
+					viewer.onPrepareVariables = function (args, callback) {
+						Stimulsoft.Helper.process(args, callback);
+					}
+
+					viewer.onBeginProcessData = function (args, callback) {
+						Stimulsoft.Helper.process(args, callback);
+					}
+
+					viewer.report = report;
+					viewer.renderHtml("viewerContent");
+				<?php }else{ ?>
+				var options = new Stimulsoft.Designer.StiDesignerOptions();
+				console.log(options);
+				options.appearance.fullScreenMode = true;
+				options.toolbar.showSaveButton = false;
+				options.toolbar.showFileMenuSave = false;
 				
-			report.dictionary.variables.getByName("SP_nLang").valueObject 		= "<?=$aDataMQ["Lang"];?>";
-			report.dictionary.variables.getByName("nLanguage").valueObject 		= "<?=$aDataMQ["Lang"];?>";
-			report.dictionary.variables.getByName("SP_tCompCode").valueObject 	= "<?=$aDataMQ["ComCode"];?>";
-			report.dictionary.variables.getByName("SP_tCmpBch").valueObject 	= "<?=$aDataMQ["BranchCode"];?>";
-			report.dictionary.variables.getByName("SP_nAddSeq").valueObject 	= 3;
-			report.dictionary.variables.getByName("SP_tDocNo").valueObject 		= "<?=$aDataMQ["DocCode"];?>";
-			report.dictionary.variables.getByName("SP_tStaPrn").valueObject 	=  "1";
-			report.dictionary.variables.getByName("SP_tGrdStr").valueObject 	= "<?=$tGrandText?>";
-			report.dictionary.variables.getByName("SP_tDocBch").valueObject     = "<?=$aDataMQ['DocBchCode']?>";
+				var designer = new Stimulsoft.Designer.StiDesigner(options, "StiDesigner", false);
 
-			var options = new Stimulsoft.Viewer.StiViewerOptions();
-			options.appearance.fullScreenMode = true;
-			options.toolbar.displayMode = Stimulsoft.Viewer.StiToolbarDisplayMode.Separated;
-			options.toolbar.showPrintButton = false;
-			options.toolbar.showSaveButton = false;
-			options.toolbar.showDesignButton = false;
-			options.toolbar.showAboutButton = false;
-			var viewer = new Stimulsoft.Viewer.StiViewer(options, "StiViewer", false);
-
-			viewer.onPrepareVariables = function (args, callback) {
+				designer.onPrepareVariables = function (args, callback) {
 				Stimulsoft.Helper.process(args, callback);
-			}
+				}
 
-			viewer.onBeginProcessData = function (args, callback) {
-				Stimulsoft.Helper.process(args, callback);
-			}
+				designer.onBeginProcessData = function (args, callback) {
+					<?php StiHelper::createHandler(); ?>
+				}
 
-			viewer.report = report;
-			viewer.renderHtml("viewerContent");
+				designer.onSaveReport = function (args) {
+					<?php StiHelper::createHandler(); ?>
+				}
+
+				designer.report = report;
+				designer.renderHtml("designerContent");
+				<?php } ?>
 			}
 		}
 	</script>
-		<?php
+	<?php
 		}
 	?>
 </head>
+<?php if($tStaEdit!='1'){ ?>
 <body onload="ProcessForm()">
 	<div id="viewerContent"></div>
 </body>
+<?php }else{ ?>
+<body onload="Start()">
+	<div id="designerContent"></div>
+</body>
+<?php } ?>
 </html>

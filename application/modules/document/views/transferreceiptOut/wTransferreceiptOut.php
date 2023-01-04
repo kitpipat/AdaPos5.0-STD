@@ -1,12 +1,7 @@
 <!-- ใ บ รั บ เ ข้ า - คลังสินค้า -->
-<?php 
-	$bChkApvDocStkPrd	= (@$aChkApvDocStkPrd['rtCode'] == '1')? @$aChkApvDocStkPrd['raItems']['FTSysStaUsrValue'] : 0;
-?>
-<input id="oetTRNStaBrowse" 			type="hidden" value="<?=$nBrowseType;?>">
-<input id="oetTRNCallBackOption" 		type="hidden" value="<?=$tBrowseOption;?>">
-<input id="oetTRNJumpDocNo" 			type="hidden" value="<?=$aParams['tDocNo'];?>">
-<input id="oetTRNJumpBchCode" 			type="hidden" value="<?=$aParams['tBchCode'];?>">
-<input id="oetTRNJumpAgnCode" 			type="hidden" value="<?=$aParams['tAgnCode'];?>">
+
+<input id="oetTRNStaBrowse" type="hidden" value="<?=$nBrowseType?>">
+<input id="oetTRNCallBackOption" type="hidden" value="<?=$tBrowseOption?>">
 
 <div id="odvTRNMainMenu" class="main-menu">
 	<div class="xCNMrgNavMenu">
@@ -33,9 +28,15 @@
                             <div class="demo-button xCNBtngroup" style="width:100%;">
                                 <button class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button" onclick="JSvTRNCallPageTransferReceipt()"><?=language('common/main/main', 'tBack'); ?></button>
                                 <?php if ($aPermission['tAutStaFull'] == 1 || ($aPermission['tAutStaAdd'] == 1 || $aPermission['tAutStaEdit'] == 1)): ?>
-                                    <button id="obtTrnOutPrintDoc" 	class="btn xCNBTNDefult xCNBTNDefult2Btn" 	type="button" onclick="JSxTRNOutPrint()" > <?=language('common/main/main', 'tCMNPrint'); ?></button>
-                                    <button id="obtTWICancelDoc" 	class="btn xCNBTNDefult xCNBTNDefult2Btn" 	type="button" onclick="JSxTRNTransferReceiptDocCancel(false)"> <?=language('common/main/main', 'tCancel'); ?></button>
-									<button id="obtTWIApproveDoc" 	class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button" onclick="JSxTRNTransferReceiptStaApvDoc(false)"> <?=language('common/main/main', 'tCMNApprove'); ?></button>
+									<?php if($aPermission['tAutStaPrint'] == 1 ) : ?>
+									<button id="obtTrnOutPrintDoc" 	class="btn xCNBTNDefult xCNBTNDefult2Btn" 	type="button" onclick="JSxTRNOutPrint()" > <?=language('common/main/main', 'tCMNPrint'); ?></button>
+                                    <?php endif; ?>
+									<?php if($aPermission['tAutStaCancel'] == 1 ) : ?>
+									<button id="obtTWICancelDoc" 	class="btn xCNBTNDefult xCNBTNDefult2Btn" 	type="button" onclick="JSxTRNTransferReceiptDocCancel(false)"> <?=language('common/main/main', 'tCancel'); ?></button>
+									<?php endif;?>
+									<?php if($aPermission['tAutStaAppv'] == 1 ) : ?>
+									<button id="obtTWIApproveDoc" 	class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button" onclick="JSxTRNTransferReceiptStaApvDoc(false)"> <?=language('common/main/main', 'tCMNApprove'); ?></button>                                  
+									<?php endif;?>
 									<div id="odvTWIBtnGrpSave" 		class="btn-group">
                                         <button id="obtTWISubmitFromDoc" type="button" class="btn xWBtnGrpSaveLeft"><?=language('common/main/main', 'tSave'); ?></button>
                                         <?php echo $vBtnSave ?>

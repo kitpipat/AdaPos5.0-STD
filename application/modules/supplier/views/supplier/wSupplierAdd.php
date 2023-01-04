@@ -176,9 +176,10 @@
                                     <li id="" class="xWDisTab" onclick="JSxSelectTabSpl('Address')">
                                         <a class="xCNMenuTab" role="tab" data-toggle="<?=$tDisabledTab;?>" data-menutype="InfoAddr"  data-target="#odvAddress" aria-expanded="false"><?php echo language('supplier/supplier/supplier','tAddress')?></a>
                                     </li>
-                                    <li id="" class="xWDisTab" onclick="JSxSelectTabSpl('SPLBranchTab')">
+                                    
+                                    <!-- <li id="" class="xWDisTab" onclick="JSxSelectTabSpl('SPLBranchTab')">
                                         <a class="xCNMenuTab" role="tab" data-toggle="<?=$tDisabledTab;?>" data-menutype="InfoSPLBranchTab"  data-target="#odvSPLBranchTab" aria-expanded="false"><?php echo language('supplier/supplier/supplier','tSPLBranchTitle')?></a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </div>
                         </div>

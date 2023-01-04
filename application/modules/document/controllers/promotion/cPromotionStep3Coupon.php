@@ -20,11 +20,11 @@ class cPromotionStep3Coupon extends MX_Controller
      */
     public function FStCPromotionGetCouponInTmp()
     {
-        $nLangEdit          = $this->session->userdata("tLangEdit");
-        $tUserSessionID     = $this->session->userdata("tSesSessionID");
-        $tUserLoginCode     = $this->session->userdata("tSesUsername");
-        $tUserLevel         = $this->session->userdata('tSesUsrLevel');
-        $tBchCodeLogin      = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
+        $nLangEdit = $this->session->userdata("tLangEdit");
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
+        $tUserLoginCode = $this->session->userdata("tSesUsername");
+        $tUserLevel = $this->session->userdata('tSesUsrLevel');
+        $tBchCodeLogin = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
 
         $aGetCouponInTmpParams = [
             'tUserSessionID' => $tUserSessionID
@@ -44,30 +44,29 @@ class cPromotionStep3Coupon extends MX_Controller
      */
     public function FSaCPromotionInsertOrUpdateCouponToTmp()
     {
-        $tCphDocNo          = $this->input->post('tCphDocNo');
-        $tCphDocName        = $this->input->post('tCphDocName');
-        $tPgtCpnText        = $this->input->post('tPgtCpnText');
-        $tPgtStaCoupon      = $this->input->post('tPgtStaCoupon');
-        $nLangEdit          = $this->session->userdata("tLangEdit");
-        $tUserSessionID     = $this->session->userdata("tSesSessionID");
-        $tUserSessionDate   = $this->session->userdata("tSesSessionDate");
-        $tUserLoginCode     = $this->session->userdata("tSesUsername");
-        $tUserLevel         = $this->session->userdata('tSesUsrLevel');
-        $tBchCodeLogin      = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
+        $tCphDocNo = $this->input->post('tCphDocNo');
+        $tCphDocName = $this->input->post('tCphDocName');
+        $tPgtCpnText = $this->input->post('tPgtCpnText');
+        $tPgtStaCoupon = $this->input->post('tPgtStaCoupon');
+        $nLangEdit = $this->session->userdata("tLangEdit");
+        $tUserSessionID = $this->session->userdata("tSesSessionID");
+        $tUserSessionDate = $this->session->userdata("tSesSessionDate");
+        $tUserLoginCode = $this->session->userdata("tSesUsername");
+        $tUserLevel = $this->session->userdata('tSesUsrLevel');
+        $tBchCodeLogin = $tUserLevel == 'HQ' ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCodeDefault");
 
         $this->db->trans_begin();
 
         $aAddUpdateCouponInTempParams = [
-            'tUserSessionID'    => $tUserSessionID,
-            'tUserSessionDate'  => $tUserSessionDate,
-            'tCphDocNo'         => $tCphDocNo,
-            'tCphDocName'       => $tCphDocName,
-            'tPgtCpnText'       => $tPgtCpnText,
-            'tPgtStaCoupon'     => $tPgtStaCoupon,
-            'tBchCodeLogin'     => $tBchCodeLogin,
-            'tDocNo'            => 'PMTDOCTEMP'
+            'tUserSessionID' => $tUserSessionID,
+            'tUserSessionDate' => $tUserSessionDate,
+            'tCphDocNo' => $tCphDocNo,
+            'tCphDocName' => $tCphDocName,
+            'tPgtCpnText' => $tPgtCpnText,
+            'tPgtStaCoupon' => $tPgtStaCoupon,
+            'tBchCodeLogin' => $tBchCodeLogin,
+            'tDocNo' => 'PMTDOCTEMP'
         ];
-        
         $this->mPromotionStep3Coupon->FSaMAddUpdateCouponInTemp($aAddUpdateCouponInTempParams);
 
         if ($this->db->trans_status() === FALSE) {
@@ -80,7 +79,7 @@ class cPromotionStep3Coupon extends MX_Controller
             $this->db->trans_commit();
             $aReturn = array(
                 'nStaEvent'    => '1',
-                'tStaMessg'     => 'Success InsertOrUpdateCouponToTmp'
+                'tStaMessg' => 'Success InsertOrUpdateCouponToTmp'
             );
         }
 
@@ -130,8 +129,8 @@ class cPromotionStep3Coupon extends MX_Controller
         $this->db->trans_begin();
 
         $aDeleteCouponInTmpParams = [
-            'tUserSessionID'    => $tUserSessionID,
-            'tDocNo'            => 'PMTDOCTEMP',
+            'tUserSessionID' => $tUserSessionID,
+            'tDocNo' => 'PMTDOCTEMP',
         ];
         $this->mPromotionStep3Coupon->FSbDeleteCouponInTmp($aDeleteCouponInTmpParams);
 
@@ -145,7 +144,7 @@ class cPromotionStep3Coupon extends MX_Controller
             $this->db->trans_commit();
             $aReturn = array(
                 'nStaEvent'    => '1',
-                'tStaMessg'     => 'Success DeleteCouponInTmp'
+                'tStaMessg' => 'Success DeleteCouponInTmp'
             );
         }
 

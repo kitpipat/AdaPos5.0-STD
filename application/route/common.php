@@ -98,3 +98,7 @@ $route['PackDataToLogClient']           = "common/cCommon/FCNoCCMMPackDataToLogC
 
 
 $route['cenEventChkStkB4ApvDoc']     = "common/cCommon/FCNaCChkStkB4ApvDoc";
+
+$route ['RabbitMQCheckDocHdStaPrc']     = 'common/rabbitmq/cRabbitMQ/FSaCheckDocHdStaPrc';
+
+$route['RFTDataTable']             = "common/Reportformat_controller/FCNaCRFTCallDataTable";

@@ -339,6 +339,8 @@ class mTransferwarehouseout extends CI_Model
                                     DOCTMP.FCXtdNet,
                                     DOCTMP.FCXtdNetAfHD,
                                     DOCTMP.FTXtdStaAlwDis,
+                                    DOCTMP.FTXtdVatType,
+                                    DOCTMP.FCXtdVatRate,
                                     DOCTMP.FDLastUpdOn,
                                     DOCTMP.FDCreateOn,
                                     DOCTMP.FTLastUpdBy,
@@ -675,7 +677,7 @@ class mTransferwarehouseout extends CI_Model
     public function FSaMTWOInsertPDTToTemp($paDataPdtMaster, $paDataPdtParams)
     {
         $paPIDataPdt    = $paDataPdtMaster['raItem'];
-
+        if ($paDataPdtParams['nTWOOptionAddPdt'] == 1) {
         // นำสินค้าเพิ่มจำนวนในแถวแรก
         $tSQL   =   "   SELECT
                             FNXtdSeqNo, 
@@ -690,6 +692,7 @@ class mTransferwarehouseout extends CI_Model
                         AND FTXtdBarCode    = '" . $paPIDataPdt["FTBarCode"] . "'
                         ORDER BY FNXtdSeqNo";
         $oQuery = $this->db->query($tSQL);
+        // echo $this->db->last_query();
         if ($oQuery->num_rows() > 0) {
             // เพิ่มจำนวนให้รายการที่มีอยู่แล้ว
             $aResult    = $oQuery->row_array();
@@ -741,7 +744,7 @@ class mTransferwarehouseout extends CI_Model
             );
             $this->db->insert('TCNTDocDTTmp', $aDataInsert);
 
-            $this->db->last_query();
+            //  $this->db->last_query();
             if ($this->db->affected_rows() > 0) {
                 $aStatus = array(
                     'rtCode'    => '1',
@@ -754,6 +757,52 @@ class mTransferwarehouseout extends CI_Model
                 );
             }
         }
+
+    } else {
+        //เพิ่ม
+        $aDataInsert    = array(
+            'FTBchCode'         => $paDataPdtParams['tBchCode'],
+            'FTXthDocNo'        => $paDataPdtParams['tDocNo'],
+            'FNXtdSeqNo'        => $paDataPdtParams['nMaxSeqNo'],
+            'FTXthDocKey'       => $paDataPdtParams['tDocKey'],
+            'FTPdtCode'         => $paPIDataPdt['FTPdtCode'],
+            'FTXtdPdtName'      => $paPIDataPdt['FTPdtName'],
+            'FCXtdFactor'       => $paPIDataPdt['FCPdtUnitFact'],
+            'FTPunCode'         => $paPIDataPdt['FTPunCode'],
+            'FTPunName'         => $paPIDataPdt['FTPunName'],
+            'FTXtdBarCode'      => $paDataPdtParams['tBarCode'],
+            'FTXtdVatType'      => $paPIDataPdt['FTPdtStaVatBuy'],
+            'FTVatCode'         => $paPIDataPdt['FTVatCode'],
+            'FCXtdVatRate'      => $paPIDataPdt['FCVatRate'],
+            'FTXtdStaAlwDis'    => $paPIDataPdt['FTPdtStaAlwDis'],
+            'FTXtdSaleType'     => $paPIDataPdt['FTPdtSaleType'],
+            'FCXtdSalePrice'    => $paPIDataPdt['FTPdtSalePrice'],
+            'FCXtdQty'          => 1,
+            'FCXtdQtyAll'       => 1 * $paPIDataPdt['FCPdtUnitFact'],
+            'FCXtdSetPrice'     => $paDataPdtParams['cPrice'] * 1,
+
+            'FTSessionID'       => $paDataPdtParams['tSessionID'],
+            'FDLastUpdOn'       => date('Y-m-d h:i:s'),
+            'FTLastUpdBy'       => $this->session->userdata('tSesUsername'),
+            'FDCreateOn'        => date('Y-m-d h:i:s'),
+            'FTCreateBy'        => $this->session->userdata('tSesUsername'),
+            'FTTmpStatus'       => $paPIDataPdt['FTPdtForSystem'],
+        );
+        $this->db->insert('TCNTDocDTTmp', $aDataInsert);
+        // $this->db->last_query();
+        if ($this->db->affected_rows() > 0) {
+            $aStatus = array(
+                'rtCode' => '1',
+                'rtDesc' => 'Add Success.',
+            );
+        } else {
+            $aStatus = array(
+                'rtCode' => '905',
+                'rtDesc' => 'Error Cannot Add.',
+            );
+        }
+    }
+
         return $aStatus;
     }
 
@@ -821,13 +870,21 @@ class mTransferwarehouseout extends CI_Model
         // $this->db->where_in('FTBchCode',$paDataWhere['tBchCode']);
         // $this->db->delete('TCNTDocDTTmp');
 
-        $this->db->set('FTCabNameForTWXVD', 'DELETE_TEMP');
+        // $this->db->set('FTCabNameForTWXVD', 'DELETE_TEMP');
         $this->db->where_in('FTSessionID', $paDataWhere['tSessionID']);
         $this->db->where_in('FTPdtCode', $paDataWhere['tPdtCode']);
         $this->db->where_in('FNXtdSeqNo', $paDataWhere['nSeqNo']);
         $this->db->where_in('FTXthDocNo', $paDataWhere['tDocNo']);
         $this->db->where_in('FTBchCode', $paDataWhere['tBchCode']);
-        $this->db->update('TCNTDocDTTmp');
+        $this->db->delete('TCNTDocDTTmp');
+
+        $this->db->where_in('FTSessionID', $paDataWhere['tSessionID']);
+        $this->db->where_in('FTPdtCode', $paDataWhere['tPdtCode']);
+        $this->db->where_in('FNXsdSeqNo', $paDataWhere['nSeqNo']);
+        $this->db->where_in('FTXshDocNo', $paDataWhere['tDocNo']);
+        $this->db->where_in('FTBchCode', $paDataWhere['tBchCode']);
+        $this->db->delete('TCNTDocDTFhnTmp');
+
         return;
     }
 
@@ -845,14 +902,22 @@ class mTransferwarehouseout extends CI_Model
         // $this->db->where_in('FTBchCode',$paDataWhere['tBchCode']);
         // $this->db->delete('TCNTDocDTTmp');
 
-        $this->db->set('FTCabNameForTWXVD', 'DELETE_TEMP');
+        // $this->db->set('FTCabNameForTWXVD', 'DELETE_TEMP');
         $this->db->where_in('FTSessionID', $tSessionID);
         $this->db->where_in('FTPunCode', $paDataWhere['aDataPunCode']);
         $this->db->where_in('FTPdtCode', $paDataWhere['aDataPdtCode']);
         $this->db->where_in('FNXtdSeqNo', $paDataWhere['aDataSeqNo']);
         $this->db->where_in('FTXthDocNo', $paDataWhere['tDocNo']);
         $this->db->where_in('FTBchCode', $paDataWhere['tBchCode']);
-        $this->db->update('TCNTDocDTTmp');
+        $this->db->delete('TCNTDocDTTmp');
+
+
+        $this->db->where_in('FTSessionID', $tSessionID);
+        $this->db->where_in('FTPdtCode', $paDataWhere['aDataPdtCode']);
+        $this->db->where_in('FNXsdSeqNo', $paDataWhere['aDataSeqNo']);
+        $this->db->where_in('FTXshDocNo', $paDataWhere['tDocNo']);
+        $this->db->where_in('FTBchCode', $paDataWhere['tBchCode']);
+        $this->db->delete('TCNTDocDTFhnTmp');
         return;
     }
 

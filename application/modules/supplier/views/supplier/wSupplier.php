@@ -15,15 +15,19 @@
                 </div>
                 <div class="col-xs-12 col-md-4 col-lg-4 text-right p-r-0">
                     <div id="odvBtnSplInfo">
+                        <?php if($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaAdd'] == 1) : ?>
                         <button class="xCNBTNPrimeryPlus" type="button" onclick="JSvCallPageSupplierAdd()">+</button>
+                        <?php endif;?>
                     </div>
                     <div id="odvBtnAddEdit">
                         <div class="demo-button xCNBtngroup" style="width:100%;">
                             <button onclick="JSvCallPageSupplierList()"  class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tBack')?></button>
+                            <?php if($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)) : ?>
                             <div class="btn-group xWBtnHide">
                                 <button id="odvBtnGroup" type="submit" class="btn xWBtnGrpSaveLeft" onclick="$('#obtSubmitsupplier').click()"> <?php echo language('common/main/main', 'tSave')?></button>
                                 <?php echo $vBtnSave?>
                             </div>
+                            <?php endif;?>
                         </div>
                     </div>
                 </div>

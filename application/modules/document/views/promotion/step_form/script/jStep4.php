@@ -67,6 +67,7 @@
                     tSearchAll: tSearchAll
                 },
                 cache: false,
+                timeout: 5000,
                 success: function(oResult) {
                     $('.xCNPromotionStep4TablePriceGroupCondition').html(oResult.html);
 
@@ -254,6 +255,7 @@
                     tSearchAll: tSearchAll
                 },
                 cache: false,
+                timeout: 5000,
                 success: function(oResult) {
                     $('.xCNPromotionStep4TableBranchCondition').html(oResult.html);
                     JCNxCloseLoading();
@@ -289,7 +291,7 @@
             var tShpCode = $('#oetPromotionStep4ShopCode').val();
             var tShpName = $('#oetPromotionStep4ShopName').val();
 
-
+      
 
             // if (tAgnCode == '' || tAgnCode == undefined) {
             //     var tWarningMessage = '<?php echo language('document/promotion/promotion', 'tWarMsg30'); ?>'; // กรุณาเลือกตัวแทนขายก่อนบันทึก
@@ -471,7 +473,8 @@
                 DataColumnsFormat: ['', ''],
                 WidthModal: 50,
                 Perpage: 10,
-                OrderBy: ['TCNMBranch.FTBchCode DESC']
+                OrderBy: ['TCNMBranch.FTBchCode'],
+                SourceOrder: "ASC"
             },
             CallBack: {
                 ReturnType: 'S',
@@ -747,7 +750,7 @@
 
                         if (tSesUsrLoginLevel != "HQ") {
                             var tSesUsrAgnCode = '<?= $this->session->userdata("tSesUsrAgnCode") ?>';
-                            tSQL += " AND ( TFNMRcvSpc.FTAgnCode = '" + tSesUsrAgnCode + "' OR ISNULL(TFNMRcvSpc.FTAgnCode,'') = '' ) ";
+                            tSQL += " AND ( TFNMRcvSpc.FTAggCode = '" + tSesUsrAgnCode + "' OR ISNULL(TFNMRcvSpc.FTAggCode,'') = '' ) ";
 
                             if (tSesUsrLoginLevel != "AGN") {
                                 var tSesUsrBchCodeMulti = "<?= $this->session->userdata("tSesUsrBchCodeMulti") ?>";
@@ -764,7 +767,6 @@
                 ]
             },
             GrideView: {
-
                 ColumnPathLang: 'pos/poschannel/poschannel',
                 ColumnKeyLang: ['tRcvLabelChannelCode', 'tRcvLabelChannelName'],
                 ColumnsSize: ['15%', '85%'],
@@ -832,6 +834,7 @@
                         // }
                         if (tUserLoginLevel != "HQ") {
                             var tSesUsrAgnCode = '<?= $this->session->userdata("tSesUsrAgnCode") ?>';
+                            // tSQL += " AND TCNMCstLev.FTClvCode IN(<?php echo $this->session->userdata('tSesUsrBchCodeMulti'); ?>) ";
                             tSQL += " AND ( TCNMCstLev.FTAgnCode = '" + tSesUsrAgnCode + "' OR ISNULL(TCNMCstLev.FTAgnCode,'') = '' ) ";
                         }
                         return tSQL;
@@ -869,88 +872,6 @@
 
 
 
-    /**
-     * Functionality : Browse Promotion On Promtoion
-     * Parameters : -
-     * Creator : 01/10/2021 Worakorn
-     * Return : -
-     * Return Type : -
-     */
-    function JSxPromotionStep4AddPnpConditionPanel() {
-        var tBchCode = $('#ohdPromotionBchCode').val();
-        var tAgnCode = $('#ohdPromotionAgnCode').val();
-        // option Brand
-        window.oPromotionBrowsePromotionOnPromotion = {
-            Title: ['pos/poschannel/poschannel', 'tPnpLabelTitle'],
-            Table: {
-                Master: 'TCNTPdtPmtHD',
-                PK: 'FTPmhDocNo'
-            },
-            Join: {
-                Table: ['TCNTPdtPmtHD_L', 'TCNTPdtPmtHDBch'],
-                On: [
-                    'TCNTPdtPmtHD_L.FTPmhDocNo = TCNTPdtPmtHD.FTPmhDocNo  AND TCNTPdtPmtHD_L.FNLngID = ' + nLangEdits,
-                    'TCNTPdtPmtHDBch.FTBchCode = TCNTPdtPmtHD.FTBchCode  AND TCNTPdtPmtHDBch.FTPmhDocNo = TCNTPdtPmtHD.FTPmhDocNo '
-                ]
-            },
-            Where: {
-
-                Condition: [
-                    function() {
-                        // var tSQL = " AND TCNTPdtPmtHD.FTPmhDocNo NOT IN(SELECT FTPmhDocRef FROM TCNTPdtPmtHDSeq_Tmp WHERE FTSessionID = '<?php echo $this->session->userdata("tSesSessionID"); ?>')";
-                        // tSQL += " AND TCNTPdtPmtHDBch.FTPmhDocNo NOT IN(SELECT FTPmhDocRef FROM TCNTPdtPmtHDSeq_Tmp WHERE FTSessionID = '<?php echo $this->session->userdata("tSesSessionID"); ?>')";
-                        // tSQL += " AND TCNTPdtPmtHDBch.FTPmhStaType = 1 AND TCNTPdtPmtHD.FDPmhDStop > '<?php echo date('Y-m-d'); ?>'";
-                        
-
-                        // if (tUserLoginLevel != "HQ") {
-                        //     var tSesUsrBchCodeMulti = "<?= $this->session->userdata("tSesUsrBchCodeMulti") ?>";
-                        //     tSQL += " AND TCNTPdtPmtHDBch.FTPmhBchTo IN(" + tSesUsrBchCodeMulti + " ) OR(TCNTPdtPmtHDBch.FTPmhStaType = 2 AND TCNTPdtPmtHDBch.FTPmhBchTo NOT IN(" + tSesUsrBchCodeMulti + " ))OR(TCNTPdtPmtHD.FTBchCode IN(" + tSesUsrBchCodeMulti + " ))";
-                        // }
-
-                    var tSQL = " AND TCNTPdtPmtHD.FTPmhStaApv = 1 AND TCNTPdtPmtHD.FTPmhStaClosed = 0 AND CONVERT(VARCHAR(10),TCNTPdtPmtHD.FDPmhDStop,121) >= CONVERT(VARCHAR(10),GETDATE(),121) AND CONVERT(VARCHAR, TCNTPdtPmtHD.FDPmhTStop, 24) >= CONVERT(VARCHAR, GETDATE(), 24) ";
-                        tSQL += " AND ((TCNTPdtPmtHDBch.FTPmhAgnTo IN ('"+tAgnCode+"') AND TCNTPdtPmtHDBch.FTPmhBchTo IN ("+tBchCode+") AND TCNTPdtPmtHDBch.FTPmhStaType = 1) ";
-                        tSQL += "  OR ( TCNTPdtPmtHDBch.FTPmhAgnTo NOT IN ('"+tAgnCode+"') AND TCNTPdtPmtHDBch.FTPmhBchTo NOT IN ("+tBchCode+") AND TCNTPdtPmtHDBch.FTPmhStaType = 2)";
-                        tSQL += "  OR (ISNULL(TCNTPdtPmtHDBch.FTPmhAgnTo,'') = '' AND ISNULL(TCNTPdtPmtHDBch.FTPmhBchTo,'') = ''  )";
-                        tSQL += "  OR TCNTPdtPmtHD.FTBchCode IN("+tBchCode+") )";
-                        return tSQL;
-                    }
-                ]
-
-
-
-            },
-            GrideView: {
-                DistinctField: ['TCNTPdtPmtHD.FTPmhDocNo'],
-                ColumnPathLang: 'pos/poschannel/poschannel',
-                ColumnKeyLang: ['tPnpLabelChannelCode', 'tPnpLabelChannelName'],
-                ColumnsSize: ['15%', '85%'],
-                DataColumns: ['TCNTPdtPmtHD.FTPmhDocNo', 'TCNTPdtPmtHD_L.FTPmhName'],
-                DataColumnsFormat: ['', ''],
-                WidthModal: 50,
-                Perpage: 10,
-                OrderBy: ['TCNTPdtPmtHD.FDCreateOn DESC']
-                // SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["oetPromotionStep4RcvCode", "TCNTPdtPmtHD.FTPmhDocNo"],
-                Text: ["oetPromotionStep4RcvName", "TCNTPdtPmtHD_L.FTPmhName"]
-            },
-            NextFunc: {
-                FuncName: 'JSxPromotionStep4CallbackPnp',
-                ArgReturn: ['FTPmhDocNo', 'FTPmhName']
-            },
-            RouteAddNew: 'customerlevel',
-            BrowseLev: 1,
-            // DebugSQL : true
-        };
-        JCNxBrowseData('oPromotionBrowsePromotionOnPromotion');
-
-    }
-
-
-
-
 
     /**
      * Functionality : Get Channel in Temp
@@ -982,6 +903,7 @@
                     tSearchAll: tSearchAll
                 },
                 cache: false,
+                timeout: 5000,
                 success: function(oResult) {
                     $('.xCNPromotionStep4TableChanelCondition').html(oResult.html);
 
@@ -1071,6 +993,7 @@
                     tSearchAll: tSearchAll
                 },
                 cache: false,
+                timeout: 5000,
                 success: function(oResult) {
                     $('.xCNPromotionStep4TablePaymentTypeCondition').html(oResult.html);
 
@@ -1162,6 +1085,7 @@
                     tSearchAll: tSearchAll
                 },
                 cache: false,
+                timeout: 5000,
                 success: function(oResult) {
                     $('.xCNPromotionStep4TableCustomerLevelCondition').html(oResult.html);
 
@@ -1219,281 +1143,5 @@
         } else {
             JCNxShowMsgSessionExpired();
         }
-    }
-
-
-
-
-    /**
-     * Functionality : Get Customer Level in Temp
-     * Parameters : -
-     * Creator : 01/10/2021 Worakorn
-     * Return : -
-     * Return Type : -
-     */
-    function JSxPromotionStep4GetHDPnpInTmp(pnPage, pbUseLoading) {
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
-
-            var tBchCode = $('#oetPromotionBchCode').val();
-
-            var tSearchAll = $('#oetPromotionPdtLayoutSearchAll').val();
-
-            if (pbUseLoading) {
-                JCNxOpenLoading();
-            }
-
-            (pnPage == '' || (typeof pnPage) == 'undefined') ? pnPage = 1: pnPage = pnPage;
-
-            $.ajax({
-                type: "POST",
-                url: "promotionStep4GetPnpConditionInTmp",
-                data: {
-                    tBchCode: tBchCode,
-                    nPageCurrent: pnPage,
-                    tSearchAll: tSearchAll
-                },
-                cache: false,
-                success: function(oResult) {
-                    $('.xCNPromotionStep4TablePromotionOnPromotionCondition').html(oResult.html);
-
-                    JCNxCloseLoading();
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxCloseLoading();
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
-
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
-    }
-
-    /**
-     * Functionality : Insert PdtPmtHDCst to Temp
-     * Parameters : -
-     * Creator : 01/10/2021 Worakorn
-     * Return : -
-     * Return Type : -
-     */
-    function JSxPromotionStep4CallbackPnp(ptParams) {
-        $('#oetPromotionStep4PnpCode').val("");
-        $('#oetPromotionStep4PnpName').val("");
-
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
-
-            var tBchCode = $('#oetPromotionBchCode').val();
-
-            JCNxOpenLoading();
-
-            $.ajax({
-                type: "POST",
-                url: "promotionStep4InsertPnpConditionToTmp",
-                data: {
-                    tBchCode: tBchCode,
-                    tPnpList: ptParams
-                },
-                cache: false,
-                timeout: 5000,
-                success: function(tResult) {
-                    JSxPromotionStep4GetHDPnpInTmp(1, true);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxCloseLoading();
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
-
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
-    }
-
-    /*===== Begin PdtPmtHDCstLev Table Process =========================================*/
-    /**
-     * Functionality : Get PdtPmtHDCstLev in Temp
-     * Parameters : -
-     * Creator : 04/02/2020 Piya
-     * Return : -
-     * Return Type : -
-     */
-    function JSxPromotionStep4GetPdtPmtHDCstLevInTmp(pnPage, pbUseLoading) {
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
-
-            var tBchCode = $('#oetPromotionBchCode').val();
-
-            var tSearchAll = $('#oetPromotionPdtLayoutSearchAll').val();
-
-            if (pbUseLoading) {
-                JCNxOpenLoading();
-            }
-
-            (pnPage == '' || (typeof pnPage) == 'undefined') ? pnPage = 1: pnPage = pnPage;
-
-            $.ajax({
-                type: "POST",
-                url: "promotionStep4GetCstLevConditionInTmp",
-                data: {
-                    tBchCode: tBchCode,
-                    nPageCurrent: pnPage,
-                    tSearchAll: tSearchAll
-                },
-                cache: false,
-                timeout: 0,
-                success: function(oResult) {
-                    $('.xCNPromotionStep4TableCstLevCondition').html(oResult.html);
-
-                    JCNxCloseLoading();
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxCloseLoading();
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
-
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
-    }
-
-    /**
-     * Functionality : Insert PdtPmtHDCstLev to Temp
-     * Parameters : -
-     * Creator : 04/02/2020 Piya
-     * Return : -
-     * Return Type : -
-     */
-    function JSvPromotionStep4InsertPdtPmtHDCstLevToTemp(ptParams) {
-        $('#ohdPromotionStep4CstLevCodeTmp').val("");
-        $('#ohdPromotionStep4CstLevNameTmp').val("");
-
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
-
-            var tBchCode = $('#oetPromotionBchCode').val();
-
-            JCNxOpenLoading();
-
-            $.ajax({
-                type: "POST",
-                url: "promotionStep4InsertCstLevConditionToTmp",
-                data: {
-                    tBchCode: tBchCode,
-                    tPplList: ptParams
-                },
-                cache: false,
-                timeout: 0,
-                success: function(tResult) {
-                    JSxPromotionStep4GetPdtPmtHDCstLevInTmp(1, true);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxCloseLoading();
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
-
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
-    }
-
-    /**
-     * Functionality : Clear PdtPmtHDCstLev in Temp
-     * Parameters : -
-     * Creator : 04/02/2020 Piya
-     * Return : -
-     * Return Type : -
-     */
-    function JSvPromotionStep4ClearPdtPmtHDCstLevInTemp(pbUseLoading) {
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof nStaSession !== "undefined" && nStaSession == 1) {
-
-            var bLoadingGet = false;
-
-            if (pbUseLoading) {
-                JCNxOpenLoading();
-                bLoadingGet = true;
-            }
-
-            var tPmtGroupNameTmp = $('#oetPromotionGroupNameTmp').val();
-            var tPmtGroupNameTmpOld = $('#ohdPromotionGroupNameTmpOld').val();
-
-            $.ajax({
-                type: "POST",
-                url: "promotionStep1ClearPmtDtInTmp",
-                cache: false,
-                data: {
-                    tPmtGroupNameTmp: tPmtGroupNameTmp,
-                    tPmtGroupNameTmpOld: tPmtGroupNameTmpOld
-                },
-                timeout: 0,
-                success: function(tResult) {
-                    JSxPromotionStep1GetPdtPmtHDCstLevInTmp(1, bLoadingGet);
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    JCNxCloseLoading();
-                    JCNxResponseError(jqXHR, textStatus, errorThrown);
-                }
-            });
-
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
-    }
-
-        /**
-     * Functionality : Browse Price Group
-     * Parameters : -
-     * Creator : 04/02/2020 Piya
-     * Return : -
-     * Return Type : -
-     */
-    function JSxPromotionStep4BrowseCstLev() {
-        // option Brand
-        window.oPromotionBrowseBrand = {
-            Title: ['customer/customerlevel/customerlevel', 'tCstLevTitle'],
-            Table: {
-                Master: 'TCNMCstLev',
-                PK: 'FTClvCode',
-                PKName: 'FTClvName'
-            },
-            Join: {
-                Table: ['TCNMCstLev_L'],
-                On: ['TCNMCstLev.FTClvCode = TCNMCstLev_L.FTClvCode AND TCNMCstLev_L.FNLngID = ' + nLangEdits]
-            },
-            Where: {
-                Condition: [
-                    function() {
-                        return " AND TCNMCstLev.FTClvCode NOT IN (SELECT FTClvCode FROM TCNTPdtPmtHDCstLev_Tmp WHERE FTSessionID = '<?php echo $this->session->userdata("tSesSessionID"); ?>')";
-                    }
-                ]
-            },
-            GrideView: {
-                ColumnPathLang: 'customer/customerlevel/customerlevel',
-                ColumnKeyLang: ['tCstLevTBCode', 'tCstLevTBName'],
-                ColumnsSize: ['15%', '75%'],
-                WidthModal: 50,
-                DataColumns: ['TCNMCstLev.FTClvCode', 'TCNMCstLev_L.FTClvName'],
-                DataColumnsFormat: ['', ''],
-                Perpage: 5,
-                OrderBy: ['TCNMCstLev.FTClvCode'],
-                SourceOrder: "ASC"
-            },
-            CallBack: {
-                ReturnType: 'S',
-                Value: ["ohdPromotionStep4CstLevCodeTmp", "TCNMCstLev.FTClvCode"],
-                Text: ["ohdPromotionStep4CstLevNameTmp", "TCNMCstLev_L.FTClvName"],
-            },
-            NextFunc: {
-                FuncName: 'JSvPromotionStep4InsertPdtPmtHDCstLevToTemp',
-                ArgReturn: ['FTClvCode', 'FTClvName']
-            },
-            BrowseLev: 1,
-            // DebugSQL : true
-        }
-        JCNxBrowseData('oPromotionBrowseBrand');
     }
 </script>

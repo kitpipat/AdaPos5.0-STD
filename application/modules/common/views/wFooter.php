@@ -417,6 +417,27 @@ require_once('././././config_deploy.php');
     </div>
 </div>
 
+
+<!-- Modal Report Format-->
+<div class="modal fade" id="odvModalRft" tabindex="-1" role="dialog" style="overflow: hidden auto; z-index: 5000; display: none;">
+    <div class="modal-dialog" id="modal-customsRft" role="document" style="margin: 1.75rem auto;top:20%;">
+        <div class="modal-content" id="">
+            <div class="modal-header xCNModalHead">
+                <h3 style="font-size:20px;color:#ffffff;font-weight: 1000;"> <?php echo language('report/report/report', 'tRPCPrintHtml') ?></h3>
+            </div>
+            <div class="modal-body" id="odvModalbodyRft"></div>
+            <div class="modal-footer">
+                <button class="btn xCNBTNPrimery xCNBTNDefult2Btn xWBtnOK" type="button" id="obtRftConfirmFormat">
+                    <?php echo language('common/main/main', 'tCMNOK') ?>
+                </button>
+                <button class="btn xCNBTNDefult xCNBTNDefult2Btn xWBtnCancel" type="button" data-dismiss="modal">
+                    <?php echo language('common/main/main', 'tCancel') ?>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- END WRAPPER -->
 <input type="hidden" id="ohdMsgSesExpired"          name="ohdSessionLogin" value="<?php echo language('common/main/main', 'tMsgSesExpired'); ?>">
 <input type="hidden" id="ohdSystemIsInProgress"     name="ohdSystemIsInProgress" value="<?php echo language('common/main/main', 'tMainSystemIsInProgress'); ?>">
@@ -511,7 +532,7 @@ require_once('././././config_deploy.php');
 <script src="<?php echo base_url(); ?>application/modules/common/assets/src/jTempImage.js"></script>
 
 <!-- Import Excel-->
-<script src="<?php echo base_url(); ?>application/modules/common/assets/src/jImportExcel.js?v=1"></script>
+<script src="<?php echo base_url(); ?>application/modules/common/assets/src/jImportExcel.js?v=2"></script>
 
 <!-- helper import export excel-->
 <script src="<?php echo base_url(); ?>application/modules/common/assets/src/jExcelCenter.js"></script>
@@ -531,6 +552,9 @@ require_once('././././config_deploy.php');
 
 <!-- Upload File-->
 <script src="<?php echo base_url(); ?>application/modules/common/assets/src/jUploadFile.js?v=1"></script>
+
+<!-- Report Format -->
+<script src="<?php echo base_url('application/modules/common/assets/src/jReportFormat.js');?>"></script>
 
 <!-- Modal browse [สินค้า] -->
 <div class="modal fade" id="odvModalDOCPDT" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" style="overflow: hidden auto; z-index: 5000; display: none;">
@@ -640,6 +664,8 @@ require_once('././././config_deploy.php');
 </div>
 
 <div id="odvAddForiteAppendDiv"></div>
+
+
 
 <script>
     $(document).ready(function () {

@@ -16,44 +16,9 @@ class mPromotionStep1ImportPmtExcel extends CI_Model
         $tPdtCode = $paParams['tPdtCode'];
         $tPunCode = $paParams['tPunCode'];
         $tBarCode = $paParams['tBarCode'];
-        $tLOTCode = $paParams['tLotNo'];
-        $tYear    = $paParams['tYear'];
         $nLngID = $paParams['nLngID'];
         $tUserSessionID = $paParams['tUserSessionID'];
         $tPmtGroupNameTmpOld = $paParams['tPmtGroupNameTmpOld'];
-        
-        if($tPunCode == ''){
-            $tSQLGetPun = "
-            SELECT TOP 1
-                PKS.FTPunCode,
-                PKS.FCPdtUnitFact
-            FROM
-                TCNMPdt PDT
-                LEFT JOIN TCNMPdt_L PDTL ON PDT.FTPdtCode = PDTL.FTPdtCode 
-                AND PDTL.FNLngID = 1
-                LEFT JOIN TCNMPdtPackSize PKS ON PDT.FTPdtCode = PKS.FTPdtCode 
-                WHERE PDT.FTPdtCode = '$tPdtCode'
-                AND PKS.FCPdtUnitFact = 1
-            ORDER BY
-                PKS.FCPdtUnitFact DESC
-            ";
-
-            $oQueryGetpun = $this->db->query($tSQLGetPun);
-            $aResultGetpun =  $oQueryGetpun->row_array();
-            $tPunCode = $aResultGetpun['FTPunCode'];
-
-            if($tBarCode == ''){
-                $tSQLGetBAR = "
-                SELECT TOP 1
-                BAR.FTBarCode
-                FROM TCNMPdtBar BAR WHERE BAR.FTPdtCode = '$tPdtCode' AND BAR.FTPunCode = '$tPunCode'
-                ";
-
-                $oQueryGetBAR = $this->db->query($tSQLGetBAR);
-                $aResultGetBAR =  $oQueryGetBAR->row_array();
-                $tBarCode = $aResultGetBAR['FTBarCode'];
-            }
-        }
 
         $tSQL = "
             SELECT
@@ -89,24 +54,30 @@ class mPromotionStep1ImportPmtExcel extends CI_Model
                 PDT.FTVatCode,
                 PDT.FDPdtSaleStart,
                 PDT.FDPdtSaleStop,
+
                 PDTL.FTPdtName,
                 PDTL.FTPdtNameOth,
                 PDTL.FTPdtNameABB,
                 PDTL.FTPdtRmk,
+
                 PKS.FTPunCode,
                 PKS.FCPdtUnitFact,
+
                 VAT.FCVatRate,
+
                 UNTL.FTPunName,
+
                 BAR.FTBarCode,
                 BAR.FTPlcCode,
                 PDTLOCL.FTPlcName,
+
                 PDTSRL.FTSrnCode,
+
                 PDT.FCPdtCostStd,
                 CAVG.FCPdtCostEx,
                 CAVG.FCPdtCostIn,
-                PDTLOT.FTLotNo,
-                LOTHD.FTLotYear,
                 SPL.FCSplLastPrice
+
             FROM TCNMPdt PDT
             LEFT JOIN TCNMPdt_L PDTL ON PDT.FTPdtCode = PDTL.FTPdtCode AND PDTL.FNLngID = $nLngID
             LEFT JOIN TCNMPdtPackSize  PKS ON PDT.FTPdtCode = PKS.FTPdtCode AND PKS.FTPunCode = '$tPunCode'
@@ -120,42 +91,20 @@ class mPromotionStep1ImportPmtExcel extends CI_Model
             LEFT JOIN TCNTPdtSerial PDTSRL ON PDT.FTPdtCode = PDTSRL.FTPdtCode
             LEFT JOIN TCNMPdtSpl SPL ON PDT.FTPdtCode = SPL.FTPdtCode  AND BAR.FTBarCode = SPL.FTBarCode
             LEFT JOIN TCNMPdtCostAvg CAVG ON PDT.FTPdtCode = CAVG.FTPdtCode
-            LEFT JOIN TCNMPdtLot PDTLOT ON PDTLOT.FTPbnCode = PDT.FTPbnCode AND PDTLOT.FTPmoCode = PDT.FTPmoCode
-            LEFT JOIN TCNMLot LOTHD ON PDTLOT.FTLotNo = LOTHD.FTLotNo
             WHERE 1 = 1
-            AND PDT.FTPdtCode NOT IN(SELECT
-            TPL.FTPmdRefCode
-        FROM
-            TCNTPdtPmtDTLot_Tmp TPL
-        LEFT JOIN TCNTPdtPmtDT_Tmp TPLL ON TPLL.FNPmdSeq = TPL.FNPmdSeq AND TPLL.FTPmdRefCode = TPL.FTPmdRefCode AND TPLL.FTSessionID = '$tUserSessionID'
-        WHERE
-            TPL.FTSessionID = '$tUserSessionID'
-            AND TPL.FTPmdRefCode = '$tPdtCode' 
-            AND TPL.FTPmdLotNo = '$tLOTCode' 
-            AND TPLL.FTPmdSubRef = '$tPunCode' 
-            AND TPLL.FTPmdBarCode = '$tBarCode')
+            AND PDT.FTPdtCode NOT IN(SELECT FTPmdRefCode FROM TCNTPdtPmtDT_Tmp WHERE FTPmdRefCode = '$tPdtCode' AND FTPmdSubRef = '$tPunCode' AND FTPmdBarCode = '$tBarCode' /*AND FTPmdGrpName = '$tPmtGroupNameTmpOld'*/ AND FTSessionID = '$tUserSessionID')
         ";
-        // AND PDT.FTPdtCode NOT IN(SELECT FTPmdRefCode FROM TCNTPdtPmtDT_Tmp WHERE FTPmdRefCode = '$tPdtCode' AND FTPmdSubRef = '$tPunCode' AND FTPmdBarCode = '$tBarCode' /*AND FTPmdGrpName = '$tPmtGroupNameTmpOld'*/ AND FTSessionID = '$tUserSessionID')
         
-        // if($tPdtCode != ""){
+        if($tPdtCode!= ""){
             $tSQL .= "AND PDT.FTPdtCode = '$tPdtCode'";
-        // }
-
-        // if($tBarCode != ""){
-            $tSQL .= "AND BAR.FTBarCode = '$tBarCode'";
-        // }
-
-        if($tLOTCode != ""){
-            // $tSQL .= "AND PDTLOT.FTLotNo = '$tLOTCode'";
         }
-        
-        if($tYear != ""){
-            // $tSQL .= "AND LOTHD.FTLotYear = '$tYear'";
+
+        if($tBarCode!= ""){
+            $tSQL .= "AND BAR.FTBarCode = '$tBarCode'";
         }
         
         $tSQL .= " ORDER BY FDVatStart DESC";
         
-        // echo $tSQL;
         $oQuery = $this->db->query($tSQL);
 
         return $oQuery->row_array();
@@ -175,44 +124,19 @@ class mPromotionStep1ImportPmtExcel extends CI_Model
         $nLngID = $paParams['nLngID'];
         $tUserSessionID = $paParams['tUserSessionID'];
         $tPmtGroupNameTmpOld = $paParams['tPmtGroupNameTmpOld'];
-        $tLOTCode = $paParams['tLotNo'];
-        $tYear    = $paParams['tYear'];
 
         $tSQL = "
-            SELECT DISTINCT
+            SELECT
                 BRDL.FTPbnCode,
-                BRDL.FTPbnName,
-                PDTLOT.FTLotNo,
-                LOTHD.FTLotYear
+                BRDL.FTPbnName
             FROM TCNMPdtBrand_L BRDL WITH (NOLOCK)
-            LEFT JOIN TCNMPdtLot PDTLOT ON PDTLOT.FTPbnCode = BRDL.FTPbnCode
-            LEFT JOIN TCNMLot LOTHD ON PDTLOT.FTLotNo = LOTHD.FTLotNo
             WHERE BRDL.FTPbnCode = '$tBrandCode'
             AND BRDL.FNLngID = $nLngID
-            AND BRDL.FTPbnCode NOT IN(SELECT
-             TPL.FTPmdRefCode 
-             FROM TCNTPdtPmtDT_Tmp TPL 
-             LEFT JOIN TCNTPdtPmtDTLot_Tmp TPLL ON TPLL.FNPmdSeq = TPL.FNPmdSeq AND TPLL.FTPmdRefCode = TPL.FTPmdRefCode AND TPLL.FTSessionID = '$tUserSessionID'
-             WHERE TPL.FTPmdRefCode = '$tBrandCode' 
-             /*AND FTPmdGrpName = '$tPmtGroupNameTmpOld'*/ 
-             AND TPL.FTSessionID = '$tUserSessionID')
+            AND BRDL.FTPbnCode NOT IN(SELECT FTPmdRefCode FROM TCNTPdtPmtDT_Tmp WHERE FTPmdRefCode = '$tBrandCode' /*AND FTPmdGrpName = '$tPmtGroupNameTmpOld'*/ AND FTSessionID = '$tUserSessionID')
         ";
-
-        if($tModelCode != ""){
-            // $tSQL .= "AND PDTLOT.FTPmoCode = '$tLOTCode'";
-        }
-
-        if($tLOTCode != ""){
-            // $tSQL .= "AND PDTLOT.FTLotNo = '$tLOTCode'";
-        }
-        
-        if($tYear != ""){
-            // $tSQL .= "AND LOTHD.FTLotYear = '$tYear'";
-        }
         
         $oQuery = $this->db->query($tSQL);
         $aBrand = $oQuery->row_array();
-
 
         $tSQL = "
             SELECT
@@ -228,51 +152,6 @@ class mPromotionStep1ImportPmtExcel extends CI_Model
         $aModel = $oQuery->row_array();
 
         return array_merge(empty($aBrand)?[]:$aBrand, empty($aModel)?[]:$aModel);
-    }
-
-        /**
-     * Functionality : Get Model Data
-     * Parameters : -
-     * Creator : 04/02/2020 piya
-     * Last Modified : -
-     * Return : Brand Data
-     * Return Type : array
-     */
-    public function FSaMGetDataModel($paParams = []){
-        $tBrandCode = $paParams['tBrandCode'];
-        $tModelCode = $paParams['tModelCode'];
-        $nLngID = $paParams['nLngID'];
-        $tUserSessionID = $paParams['tUserSessionID'];
-        $tPmtGroupNameTmpOld = $paParams['tPmtGroupNameTmpOld'];
-        $tLOTCode = $paParams['tLotNo'];
-        $tYear    = $paParams['tYear'];
-
-        $tSQL = "
-            SELECT DISTINCT
-                MODL.FTPmoCode,
-                MODL.FTPmoName,
-                PDTLOT.FTLotNo,
-                LOTHD.FTLotYear
-            FROM TCNMPdtModel_L MODL WITH (NOLOCK)
-            LEFT JOIN TCNMPdtLot PDTLOT ON PDTLOT.FTPmoCode = MODL.FTPmoCode AND PDTLOT.FTPbnCode = '$tBrandCode'
-            LEFT JOIN TCNMLot LOTHD ON PDTLOT.FTLotNo = LOTHD.FTLotNo
-            WHERE MODL.FTPmoCode = '$tModelCode'
-            AND MODL.FNLngID = $nLngID
-            
-        ";
-
-        if($tLOTCode != ""){
-            // $tSQL .= "AND PDTLOT.FTLotNo = '$tLOTCode'";
-        }
-        
-        if($tYear != ""){
-            // $tSQL .= "AND LOTHD.FTLotYear = '$tYear'";
-        }
-
-        $oQuery = $this->db->query($tSQL);
-        $aModel = $oQuery->row_array();
-
-        return $aModel;
     }
 
     /*===== Begin Create Promotion By Import ========================================== */

@@ -63,19 +63,19 @@
                                     <?php
                                         switch($aValue['FTXshStaDoc']){
                                             case '1':
-                                                $tXshStaDocName = "สมบูรณ์";
+                                                $tXshStaDocName = "<span style='color:green'>ใช้งาน</span>";
                                                 break;
                                             case '2':
-                                                $tXshStaDocName = "ไม่สมบูรณ์";
+                                                $tXshStaDocName = "<span style='color:red'>ยกเลิก</span>";
                                                 break;
                                             case '3':
-                                                $tXshStaDocName = "ยกเลิก(ไม่ใช้งาน)";
+                                                $tXshStaDocName = "<span style='color:red'>ยกเลิก</span>";
                                                 break;
                                             case '4':
-                                                $tXshStaDocName = "ยกเลิก(ใช้งาน)";
+                                                $tXshStaDocName = "<span style='color:green'>ใช้งาน</span>";
                                                 break;
                                             case '5':
-                                                $tXshStaDocName = "แก้ไข";
+                                                $tXshStaDocName = "<span style='color:red'>ยกเลิก</span>";
                                                 break;
                                         }
                                         echo $tXshStaDocName;

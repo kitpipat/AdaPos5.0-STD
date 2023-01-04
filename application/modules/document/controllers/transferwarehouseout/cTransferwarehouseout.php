@@ -93,13 +93,14 @@ class cTransferwarehouseout extends MX_Controller{
             $tMethodReq         = "GET";
             $aCompData          = $this->mCompany->FSaMCMPList($tAPIReq,$tMethodReq,$aDataWhere);  
 
- 
+
             $tCmpCode           = $aCompData['raItems']['rtCmpCode'];
 
             if($aCompData['rtCode'] == '1'){
                 $tBchCode       = $aCompData['raItems']['rtCmpBchCode'];
                 $tCmpRteCode    = $aCompData['raItems']['rtCmpRteCode'];
                 $tVatCode       = $aCompData['raItems']['rtVatCodeUse'];
+                $tCmpRetInOrEx  = $aCompData['raItems']['rtCmpRetInOrEx'];
                 $aVatRate       = FCNoHCallVatlist($tVatCode); 
                 $cVatRate       = $aVatRate['FCVatRate'][0];
                 $aDataRate      = array(
@@ -114,6 +115,7 @@ class cTransferwarehouseout extends MX_Controller{
                 }
             }else{
                 $tBchCode       = FCNtGetBchInComp();
+                $tCmpRetInOrEx  = 1;
                 $tCmpRteCode    = "";
                 $tVatCode       = "";
                 $cVatRate       = "";
@@ -185,6 +187,7 @@ class cTransferwarehouseout extends MX_Controller{
                 'tVatCode'          => $tVatCode,
                 'cVatRate'          => $cVatRate,
                 'cXthRteFac'        => $cXthRteFac,
+                'tCmpRetInOrEx'     => $tCmpRetInOrEx,
                 'tDptCode'          => $tDptCode,
                 'tBchCode'          => $tBchCode,
                 'tBchName'          => $tBchName,
@@ -416,7 +419,7 @@ class cTransferwarehouseout extends MX_Controller{
             $tTWOStaDoc               = $this->input->post('ptTWOStaDoc');
             $nTWOPageCurrent          = $this->input->post('pnTWOPageCurrent');
             $tSearchPdtAdvTable       = $this->input->post('ptSearchPdtAdvTable');
-            $tVat                     = 1;
+            $tVat                     = $this->input->post('nTWOFrmSplInfoVatInOrEx');
             // Edit in line
             $tTWOPdtCode              = '';
             $tTWOPunCode              = '';
@@ -425,7 +428,7 @@ class cTransferwarehouseout extends MX_Controller{
             $nOptDecimalShow            = FCNxHGetOptionDecimalShow();
 
             // Call Advance Table
-            $tTableGetColumeShow        = 'TCNTPdtTwODT';
+            $tTableGetColumeShow        = 'TCNTPdtTwoDT';
             $aColumnShow                = FCNaDCLGetColumnShow($tTableGetColumeShow);
             
             $aDataWhere = array(
@@ -593,9 +596,10 @@ class cTransferwarehouseout extends MX_Controller{
             $tTWOBchCode         = $this->input->post('tBchCode'); //($tTWOUserLevel == 'HQ') ? FCNtGetBchInComp() : $this->session->userdata("tSesUsrBchCode")
             $tTWOPdtData         = $this->input->post('tTWOPdtData');
             $aTWOPdtData         = JSON_decode($tTWOPdtData);
-            $tTWOVATInOrEx       = 1;
+            $tTWOVATInOrEx       = $this->input->post('nTWOFrmSplInfoVatInOrEx');
             $tTypeInsPDT         = $this->input->post('tType');
-
+            $nTWOOptionAddPdt    = $this->input->post('nTWOOptionAddPdt');
+            
             $aDataWhere = array(
                 'FTBchCode'     => $tTWOBchCode,
                 'FTXthDocNo'    => $tTWODocNo,
@@ -638,7 +642,8 @@ class cTransferwarehouseout extends MX_Controller{
                     'nLngID'            => $this->session->userdata("tLangID"),
                     'tSessionID'        => $this->session->userdata('tSesSessionID'),
                     'tDocKey'           => 'TCNTPdtTwoHD',
-                    'tDocRefSO'         => $tDocRefSO
+                    'tDocRefSO'         => $tDocRefSO,
+                    'nTWOOptionAddPdt'  => $nTWOOptionAddPdt
                 );
 
                 // Data Master Pdt ข้อมูลรายการสินค้าที่เพิ่มเข้ามา
@@ -1544,7 +1549,7 @@ class cTransferwarehouseout extends MX_Controller{
                 $tTWOBchCode         = $this->input->post('tTWOBCH');
                 $tTWOPdtData         = $this->input->post('tTWOPdtDataFhn');
                 $aTWOPdtData         = JSON_decode($tTWOPdtData);
-                $tTWOVATInOrEx       = 1;
+                $tTWOVATInOrEx       = $this->input->post('ohdTWOFrmSplInfoVatInOrEx');
                 $tTypeInsPDT         = $this->input->post('tTWOType');
                 $nEvent              = $this->input->post('nEvent');
                 $tOptionAddPdt       = $this->input->post('tOptionAddPdt');
@@ -1662,4 +1667,23 @@ class cTransferwarehouseout extends MX_Controller{
             }
             echo json_encode($aReturnData);
         }
+
+
+
+     /**
+     * Functionality : Clear Pdt in Temp
+     * Parameters : -
+     * Creator : 04/02/2020 piya
+     * Last Modified : -
+     * Return : -
+     * Return Type : -
+     */
+    public function FSoCTWOClearPdtInTemp()
+    {
+            // Clear Product List IN Doc Temp
+            $tTblSelectData = "TCNTPdtTwoHD";
+            $this->mTransferwarehouseout->FSxMTWOClearPdtInTmp($tTblSelectData);
+    }
+
+    
 }

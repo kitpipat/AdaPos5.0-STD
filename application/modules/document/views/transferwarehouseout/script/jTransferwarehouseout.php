@@ -215,7 +215,8 @@
                         'ptTWOStaApv'            : tTWOStaApv,
                         'ptTWOStaDoc'            : tTWOStaDoc,
                         'pnTWOPageCurrent'       : nPageCurrent,
-                        'tBCHCode'               : $('#oetSOFrmBchCode').val()
+                        'tBCHCode'               : $('#oetSOFrmBchCode').val(),
+                        'nTWOFrmSplInfoVatInOrEx' : $('#ohdTWOFrmSplInfoVatInOrEx').val()
                 },
                 cache   : false,
                 Timeout : 0,

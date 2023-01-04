@@ -594,7 +594,16 @@
                 "DocBchCode": '<?= $tBchCode; ?>'
             }
         ];
-        window.open($("#ohdBaseUrl").val() + "formreport/Frm_SQL_ALLMPdtBillAdjustPrice?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open($("#ohdBaseUrl").val() + "formreport/Frm_SQL_ALLMPdtBillAdjustPrice?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                        tRtfCode    : '00004' ,
+                        tDocBchCode : '<?=$tBchCode;?>' ,
+                        tIframeNameID : '' ,
+                        oParameter  : {
+                                        infor : JCNtEnCodeUrlParameter(aInfor),
+                                        }
+                        }
+                JCNxRftDataTable(aRftData);
     }
 
      // Event Click Browse Multi Branch

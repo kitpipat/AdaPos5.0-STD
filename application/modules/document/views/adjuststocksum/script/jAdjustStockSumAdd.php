@@ -944,6 +944,15 @@ function JSxAdjStkSumPrintDoc(){
         { "DocCode"     : $("#oetAdjStkSumAjhDocNo").val() }, // เลขที่เอกสาร
         { "DocBchCode"  : '<?=$tUserBchCode;?>' }
     ];
-    window.open('<?=base_url()?>' + "formreport/Frm_SQL_ALLMPdtBillSumChkStk?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    // window.open('<?=base_url()?>' + "formreport/Frm_SQL_ALLMPdtBillSumChkStk?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    var aRftData = {
+                tRtfCode    : '00008' ,
+                tDocBchCode : '<?=$tUserBchCode;?>' ,
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
 }
 </script>

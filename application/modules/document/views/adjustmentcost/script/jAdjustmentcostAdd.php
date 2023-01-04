@@ -1155,7 +1155,16 @@
             {"DocCode"       : '<?= $tADCDocNo; ?>'},
             {"DocBchCode"    : '<?= $tADCBchCode; ?>'}
         ];
-        window.open("<?= base_url(); ?>formreport/FRM_SQL_ALLMPdtBillAdjustCost?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open("<?= base_url(); ?>formreport/FRM_SQL_ALLMPdtBillAdjustCost?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                        tRtfCode    : '00006' ,
+                        tDocBchCode : '<?= $tADCBchCode; ?>' ,
+                        tIframeNameID : '' ,
+                        oParameter  : {
+                                        infor : JCNtEnCodeUrlParameter(aInfor),
+                                        }
+                        }
+                JCNxRftDataTable(aRftData);
     }
 
     function JSxADCSearch() {

@@ -53,32 +53,9 @@ class mPromotionStep3PmtCG extends CI_Model
         $tSQL .= ") Base) AS c WHERE c.FNRowID > $aRowLen[0] AND c.FNRowID <= $aRowLen[1]";
 
         $oQuery = $this->db->query($tSQL);
-        
 
         if ($oQuery->num_rows() > 0) {
             $oList = $oQuery->result();
-
-            foreach($oList as $nKey => $aValue){
-                if($aValue->FTPgtStaPdtDT == '8'){
-                    $tGroupName = $aValue->FTPmdGrpName;
-                    $tSQL = "
-                        SELECT TOP 1
-                            TMP.FTPmdRefCode
-                        FROM TCNTPdtPmtDT_Tmp TMP WITH(NOLOCK)
-                        WHERE TMP.FTSessionID = ".$this->db->escape($tUserSessionID)."
-                        AND TMP.FTPmdGrpName = ".$this->db->escape($tGroupName)."
-                    ";
-    
-                    $oQuery = $this->db->query($tSQL);
-                    $aResultGroup = $oQuery->result_array();
-    
-    
-                    $oList[$nKey]->tRefdoc = $aResultGroup[0]['FTPmdRefCode'];
-                }else{
-                    $oList[$nKey]->tRefdoc = '';
-                }
-            }
-
             $nFoundRow = $this->FSnMTFWGetPmtCGInTmpPageAll($paParams);
             $nPageAll = ceil($nFoundRow / $paParams['nRow']); // หา Page All จำนวน Rec หาร จำนวนต่อหน้า
             $aResult = array(
@@ -163,15 +140,6 @@ class mPromotionStep3PmtCG extends CI_Model
         /* if($bStaSpcGrpDisIsDisSomeGroup){ // สถานะการให้ส่วนลดเฉพาะกลุ่มทีได้รับ  (1=ให้ส่วนลดเฉพาะกลุ่ม 2=ให้ทั้งหมด รวมไม่เกิน 100%)
             $nPercentDis = 0;
         } */
-
-        //// Update Discount When have a sale
-        $this->db->set('FCPbyPerAvgDis', 0);
-        $this->db->where('FTSessionID', $paParams['tUserSessionID']);
-        $this->db->where("FTPmdGrpName IS NOT NULL");
-        $this->db->where("FTPmdGrpName <> ''");
-        $this->db->update('TCNTPdtPmtCB_Tmp');
-
-
 
         $tSQL = "   
             INSERT TCNTPdtPmtCG_Tmp

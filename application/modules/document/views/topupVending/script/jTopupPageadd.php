@@ -1236,9 +1236,19 @@
             {"Lang"         : '<?=FCNaHGetLangEdit(); ?>'}, // Lang ID
             {"ComCode"      : '<?=FCNtGetCompanyCode(); ?>'}, // Company Code
             {"BranchCode"   : '<?=FCNtGetAddressBranch($tBchCode); ?>' }, // สาขาที่ออกเอกสาร
-            {"DocCode"      : $('#oetTopUpVendingDocNo').val()  } // เลขที่เอกสาร
+            {"DocCode"      : $('#oetTopUpVendingDocNo').val()  }, // เลขที่เอกสาร
+            {"DocBchCode"   : $('#oetTopUpVendingBCHCode').val()  }
         ];
-        window.open("<?=base_url(); ?>formreport/Frm_SQL_SMBillRefill?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open("<?=base_url(); ?>formreport/Frm_SQL_SMBillRefill?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00024' ,
+                tDocBchCode : $('#oetTopUpVendingBCHCode').val(),
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }  
 
     // Create by : 25/11/2020 Napat(Jame)

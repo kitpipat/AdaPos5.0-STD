@@ -1,3 +1,23 @@
+<style>
+    .xCNBTNPrimeryDisChgPlus{
+        border-radius           : 50%;
+        float                   : left;
+        width                   : 20px;
+        height                  : 20px;
+        line-height             : 20px;
+        background-color        : #1eb32a;
+        text-align              : center;
+        margin-top              : 6px;
+        font-size               : 22px;
+        color                   : #ffffff;
+        cursor                  : pointer;
+        -webkit-border-radius   : 50%;
+        -moz-border-radius      : 50%;
+        -ms-border-radius       : 50%;
+        -o-border-radius        : 50%;
+    }
+</style>
+
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
     <div class="table-responsive">
         <input type="text" class="xCNHide" id="ohdBrowseDataPdtCode" value="">
@@ -8,34 +28,28 @@
         <table id="otbTWIDocPdtAdvTableList" class="table xWPdtTableFont">
             <thead>
                 <tr class="xCNCenter">
-                    <th class="text-center xCNPIBeHideMQSS" id="othCheckboxHide">
-                        <label class="fancy-checkbox" style="padding-left:7px">
-                            <input id="ocbCheckAll" type="checkbox" class="ocbListItemAll" name="ocbCheckAll" onclick="FSxDOSelectAll(this)" >
-                            <span class="">&nbsp;</span>
-                        </label>
-                    </th>
+                    <?php if((@$tTWIStaApv == '') && @$tTWIStaDoc != 3) { ?>
+                        <th><?=language('document/purchaseinvoice/purchaseinvoice','tPITBChoose')?></th>
+                    <?php } ?>
                     <th><?=language('document/purchaseinvoice/purchaseinvoice','tPITBNo')?></th>
-                    <th class="xCNTextBold"><?=language('document/transferrequestbranch/transferrequestbranch','tTRBTable_pdtcode')?></th>
-                    <th class="xCNTextBold"><?=language('document/transferrequestbranch/transferrequestbranch','tTRBTable_pdtname')?></th>
-                    <th class="xCNTextBold"><?=language('document/transferrequestbranch/transferrequestbranch','tTRBTable_barcode')?></th>
-                    <th class="xCNTextBold"><?=language('document/transferrequestbranch/transferrequestbranch','tTRBTable_qty')?></th>
-                    <th class="xCNTextBold"><?=language('document/transferrequestbranch/transferrequestbranch','tTRBTable_unit')?></th>
-                    <th class="xCNTextBold xCNPIBeHideMQSS"><?=language('common/main/main','tCMNActionDelete')?></th>
-                    <!-- //xCNPIBeHideMQSS -->
+                    <?php foreach($aColumnShow as $HeaderColKey => $HeaderColVal):?>
+                        <th nowrap title="<?=iconv_substr($HeaderColVal->FTShwNameUsr, 0,30,"UTF-8");?>">
+                            <?=iconv_substr($HeaderColVal->FTShwNameUsr, 0,30, "UTF-8");?>
+                        </th>
+                    <?php endforeach;?>
+                    <?php if((@$tTWIStaApv == '') && @$tTWIStaDoc != 3) { ?>
+                        <th class="xCNTWIBeHideMQSS"><?=language('document/purchaseinvoice/purchaseinvoice', 'tPITBDelete');?></th>
+                        <th class="xCNTWIBeHideMQSS xWTWIDeleteBtnEditButtonPdt"><?php echo language('document/saleorder/saleorder','tSOTBEdit');?></th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody id="odvTBodyTWIPdtAdvTableList">
+                <?php $nNumSeq  = 0;?>
                 <?php if($aDataDocDTTemp['rtCode'] == 1):?>
-                    
-                    <?php $i = 1; ?>
-                    <?php foreach($aDataDocDTTemp['raItems'] as $DataTableKey => $aDataTableVal): 
-                        $nKey = $aDataTableVal['FNXtdSeqNo'];
-                    ?>
+                    <?php foreach($aDataDocDTTemp['raItems'] as $DataTableKey => $aDataTableVal): ?>
                         <tr
-                            class="text-center xCNTextDetail2 nItem<?=$nKey?> xWPdtItem"
+                            class="text-center xCNTextDetail2 nItem<?=$nNumSeq?> xWPdtItem"
                             data-index="<?=$aDataTableVal['rtRowID'];?>"
-                            data-key="<?=$nKey?>" 
-                            data-seqno="<?=$nKey?>" 
                             data-docno="<?=$aDataTableVal['FTXthDocNo'];?>"
                             data-seqno="<?=$aDataTableVal['FNXtdSeqNo']?>"
                             data-pdtcode="<?=$aDataTableVal['FTPdtCode'];?>" 
@@ -46,31 +60,170 @@
                             data-stadis="<?=$aDataTableVal['FTXtdStaAlwDis']?>"
                             data-netafhd="<?=$aDataTableVal['FCXtdNetAfHD'];?>"
                         >   
-                        <?php if((@$tTWIStaApv == '') && @$tTWIStaDoc != 3) { ?>
-                            <td class="otdListItem">
-                                <label class="fancy-checkbox text-center">
-                                    <input id="ocbListItem<?=$nKey?>" type="checkbox" class="ocbListItem" name="ocbListItem[]" onclick="FSxTRBSelectMulDel(this)">
-                                    <span class="ospListItem">&nbsp;</span>
-                                </label>
-                            </td>
-                        <?php } ?>
-                            <td><?=$i;?></td>
-                            <td class="text-left"><?=$aDataTableVal['FTPdtCode'];?></td>
-                            <td class="text-left"><?=$aDataTableVal['FTXtdPdtName'];?></td>
-                            <td class="text-left"><?=$aDataTableVal['FTXtdBarCode'];?></td>
-                            <td class="text-left"><?=$aDataTableVal['FTPunName'];?></td>
-                            <td class="otdQty">
-                                <div class="xWEditInLine<?=$nKey?>">
-                                    <input type="text" class="xCNQty form-control xCNInputNumericWithDecimal xCNPdtEditInLine text-right xWValueEditInLine<?=$nKey?> xWShowInLine<?=$nKey?> " id="ohdQty<?=$nKey?>" name="ohdQty<?=$nKey?>" data-seq="<?=$nKey?>" maxlength="10" value="<?=str_replace(",","",number_format($aDataTableVal['FCXtdQty'],2));?>" autocomplete="off">
-                                </div>
-                            </td>
-                            <td nowrap class="text-center xCNPIBeHideMQSS">
-                                <label class="xCNTextLink">
-                                    <img class="xCNIconTable" src="<?= base_url('application/modules/common/assets/images/icons/delete.png'); ?>" title="Remove" onclick="JSnTWIDelPdtInDTTempSingle(this)">
-                                </label>
-                            </td>
+                            <?php if((@$tTWIStaApv == '') && @$tTWIStaDoc != 3) { ?>
+                                <td class="text-center">
+                                    <label class="fancy-checkbox">
+                                        <input id="ocbListItem<?=$aDataTableVal['rtRowID']?>" type="checkbox" class="ocbListItem" name="ocbListItem[]">
+                                        <span></span>
+                                    </label>
+                                </td>
+                            <?php } ?>
+                            <td><label><?=$aDataTableVal['rtRowID']?></label></td>
+                            <?php foreach($aColumnShow as $DataKey => $DataVal): ?>
+                            <?php
+                                $tColumnName        = $DataVal->FTShwFedShw;
+                                $nColWidth          = $DataVal->FNShwColWidth;
+                                $tColumnDataType    = substr($tColumnName, 0, 2);
+                                if($tColumnDataType == 'FC'){
+                                    $tMaxlength     = '11';
+                                    $tAlignFormat   = 'text-right';
+                                    $tDataCol       =  $aDataTableVal[$tColumnName] != '' ? number_format($aDataTableVal[$tColumnName], $nOptDecimalShow, '.', ',') : number_format(0, $nOptDecimalShow,'.',',');
+                                    $InputType      = 'text';
+                                    $tValidateType  = 'xCNInputNumericWithDecimal';
+                                }
+                                if($tColumnDataType == 'FN'){
+                                    $tMaxlength     = '';
+                                    $tAlignFormat   = 'text-right';
+                                    $tDataCol       = $aDataTableVal[$tColumnName] != '' ? number_format($aDataTableVal[$tColumnName], $nOptDecimalShow, '.', ',') : number_format(0, $nOptDecimalShow,'.',',');
+                                    $InputType      = 'number';
+                                    $tValidateType  = '';
+                                }
+                                if($tColumnDataType == 'FD'){
+                                    $tMaxlength     = '';
+                                    $tAlignFormat   = 'text-left';
+                                    $tDataCol       = date('Y-m-d H:i:s');
+                                    $InputType      = 'text';
+                                    $tValidateType  = '';
+                                }
+                                if($tColumnDataType == 'FT'){
+                                    $tMaxlength     = '';
+                                    $tAlignFormat   = 'text-left';
+                                    $tDataCol       = $aDataTableVal[$tColumnName];
+                                    $InputType      = 'text';
+                                    $tValidateType  = '';
+                                }
+                            ?>
+                                <td nowrap class="<?=$tAlignFormat?>">
+
+                                    <?php if( ($DataVal->FTShwStaAlwEdit == 1 && in_array($tColumnName, ['FCXtdSetPrice','FCXtdQty']) && (empty($tTWIStaApv) && $tTWIStaDoc != 3))):?>
+                                        <?php if($aDataTableVal['FTTmpStatus']==5 && $tColumnName=='FCXtdQty'){
+                                            
+                                            $tClassName = 'xCNTextLink';
+                                            $tIconEdit = " <img class='xCNIconTable' src=".base_url('application/modules/common/assets/images/icons/edit.png')." title='Remove'>";
+                                            ?>
+
+                                            <?php 
+                                                    if($tTWIStaApv=='1' || $tTWIStaDoc == '3'){
+                                                        $tStaEdit = '2';
+                                                    }else{
+                                                        $tStaEdit = '1';
+                                                    }
+
+                                                    $aOptionFashion = array(
+                                                    'tDocumentBranch'     => $aDataTableVal['FTBchCode'],
+                                                    'tDocumentNumber'     => $aDataTableVal['FTXthDocNo'],
+                                                    'tDocumentDocKey'     => 'TCNTPdtTwiHD',
+                                                    'tDocumentProduct'    => $aDataTableVal['FTPdtCode'],
+                                                    'nDTSeq'              => $aDataTableVal['FNXtdSeqNo'],
+                                                    'tDTBarCode'          => $aDataTableVal['FTXtdBarCode'],
+                                                    'tDTPunCode'            => $aDataTableVal['FTPunCode'],
+                                                    'tNextFunc'           => 'FSvTWIAddPdtIntoDocDTTemp',
+                                                    'tSpcControl'         => 0   ,                 //0:จำนวน //1:ตรวจนับครั้งที่หนึ่ง //2:ตรวจนับครั้งที่สอง //3:ตรวจนับย่อย
+                                                    'tStaEdit'            => $tStaEdit
+                                                    );
+                                                    // $aOption = json_encode($aOptionFashion);
+                                            ?>
+                                            <label class="<?=$tClassName?> xCNPdtFont xWShowInLine xWShowValue<?=$tColumnName?><?=$aDataTableVal['rtRowID']?>" 
+                                            tDocumentBranch="<?=$aOptionFashion['tDocumentBranch']?>" 
+                                            tDocumentNumber="<?=$aOptionFashion['tDocumentNumber']?>"  
+                                            tDocumentProduct="<?=$aOptionFashion['tDocumentProduct']?>"  
+                                            tDocumentDocKey="<?=$aOptionFashion['tDocumentDocKey']?>"  
+                                            nDTSeq="<?=$aOptionFashion['nDTSeq']?>"  
+                                            tDTBarCode="<?=$aOptionFashion['tDTBarCode']?>"  
+                                            tDTPunCode="<?=$aOptionFashion['tDTPunCode']?>"  
+                                            tNextFunc="<?=$aOptionFashion['tNextFunc']?>"  
+                                            tSpcControl="<?=$aOptionFashion['tSpcControl']?>"  
+                                            tStaEdit="<?=$aOptionFashion['tStaEdit']?>"  
+                                            onclick='JSxUpdateProductSerialandFashion(this)' ><?=$tDataCol?> <?=$tIconEdit?></label>
+
+                                
+                                            <?php }else{   ?>
+                                          
+                                                <label 
+                                                data-field="<?=$tColumnName?>"
+                                                data-seq="<?= $aDataTableVal['FNXtdSeqNo']?>"
+                                                data-demo="TextDEmo"
+                                                class="xCNPdtFont xWShowInLine<?=$aDataTableVal['rtRowID']?> xWShowValue<?=$tColumnName?><?=$aDataTableVal['rtRowID']?>"
+                                            >
+                                                <?=$tDataCol != '' ? "".$tDataCol : '1'; ?>
+                                            </label>
+                                            <div class="xCNHide xWEditInLine<?=$aDataTableVal['FNXtdSeqNo']?>">
+                                                <input 
+                                                    type="<?=$InputType?>" 
+                                                    class="form-control xCNPdtEditInLine xWValueEditInLine<?=$aDataTableVal['rtRowID']?> <?=$tValidateType?> <?=$tAlignFormat;?>"
+                                                    id="ohd<?=$tColumnName?><?=$aDataTableVal['rtRowID']?>" 
+                                                    name="ohd<?=$tColumnName?><?=$aDataTableVal['rtRowID']?>" 
+                                                    maxlength="<?=$tMaxlength?>" 
+                                                    value="<?=$tDataCol;?>"
+                                                    <?=$tColumnName == 'FTXtdDisChgTxt' ? 'readonly' : '' ?> <?=$tColumnName == 'FCXtdQty'; ?>>
+                                            </div>  
+                                     <?php } ?>
+                                    <?php else: ?>
+                                        <?php if($aDataTableVal['FTTmpStatus']==5){
+                                            
+                                            $tClassName = 'xCNTextLink';
+                                            $tIconEdit = "";
+                                            ?>
+                                            <?php 
+                                                    if($tTWIStaApv=='1' || $tTWIStaDoc == '3'){
+                                                        $tStaEdit = '2';
+                                                    }else{
+                                                        $tStaEdit = '1';
+                                                    }
+
+                                                    $aOptionFashion = array(
+                                                    'tDocumentBranch'     => $aDataTableVal['FTBchCode'],
+                                                    'tDocumentNumber'     => $aDataTableVal['FTXthDocNo'],
+                                                    'tDocumentDocKey'     => 'TCNTPdtTwiHD',
+                                                    'tDocumentProduct'    => $aDataTableVal['FTPdtCode'],
+                                                    'nDTSeq'              => $aDataTableVal['FNXtdSeqNo'],
+                                                    'tDTBarCode'          => $aDataTableVal['FTXtdBarCode'],
+                                                    'tDTPunCode'            => $aDataTableVal['FTPunCode'],
+                                                    'tNextFunc'           => 'FSvTWIAddPdtIntoDocDTTemp',
+                                                    'tSpcControl'         => 0   ,                 //0:จำนวน //1:ตรวจนับครั้งที่หนึ่ง //2:ตรวจนับครั้งที่สอง //3:ตรวจนับย่อย
+                                                    'tStaEdit'            => $tStaEdit
+                                                    );
+                                                    // $aOption = json_encode($aOptionFashion);
+                                            ?>
+                                            <label class="<?=$tClassName?> xCNPdtFont xWShowInLine xWShowValue<?=$tColumnName?><?=$aDataTableVal['rtRowID']?>" 
+                                            tDocumentBranch="<?=$aOptionFashion['tDocumentBranch']?>" 
+                                            tDocumentNumber="<?=$aOptionFashion['tDocumentNumber']?>"  
+                                            tDocumentProduct="<?=$aOptionFashion['tDocumentProduct']?>"  
+                                            tDocumentDocKey="<?=$aOptionFashion['tDocumentDocKey']?>"  
+                                            nDTSeq="<?=$aOptionFashion['nDTSeq']?>"  
+                                            tDTBarCode="<?=$aOptionFashion['tDTBarCode']?>"  
+                                            tDTPunCode="<?=$aOptionFashion['tDTPunCode']?>"  
+                                            tNextFunc="<?=$aOptionFashion['tNextFunc']?>"  
+                                            tSpcControl="<?=$aOptionFashion['tSpcControl']?>"  
+                                            tStaEdit="<?=$aOptionFashion['tStaEdit']?>"  
+                                            onclick='JSxUpdateProductSerialandFashion(this)' ><?=$tDataCol?> <?=$tIconEdit?></label>
+                                            <?php }else{  ?>
+
+                                                <label class="xCNPdtFont xWShowInLine xWShowValue<?=$tColumnName?><?=$aDataTableVal['rtRowID']?>"><?=$tDataCol?></label>
+
+                                            <?php } ?>
+                                    <?php endif;?>                  
+                                </td>
+                            <?php endforeach; ?>
+                            <?php if((@$tTWIStaApv == '') && @$tTWIStaDoc != 3){ ?>
+                                <td nowrap class="text-center xCNTWIBeHideMQSS">
+                                    <label class="xCNTextLink">
+                                        <img class="xCNIconTable" src="<?= base_url('application/modules/common/assets/images/icons/delete.png'); ?>" title="Remove" onclick="JSnTWIDelPdtInDTTempSingle(this)">
+                                    </label>
+                                </td>
+                            <?php } ?>
                         </tr>
-                        <?php $i++;?>
+                        <?php $nNumSeq++; ?>
                     <?php endforeach;?>
                 <?php else:?>
                     <tr><td class="text-center xCNTextDetail2 xWTWITextNotfoundDataPdtTable" colspan="100%"><?=language('common/main/main','tCMNNotFoundData')?></td></tr>
@@ -79,6 +232,35 @@
         </table>
     </div>
 </div>
+<?php if($aDataDocDTTemp['rnAllPage'] > 1) : ?>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+        <p><?php echo language('common/main/main','tResultTotalRecord')?> <?php echo $aDataDocDTTemp['rnAllRow']?> <?php echo language('common/main/main','tRecord')?> <?php echo language('common/main/main','tCurrentPage')?> <?php echo $aDataDocDTTemp['rnCurrentPage']?> / <?php echo $aDataDocDTTemp['rnAllPage']?></p>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+        <div class="xWPageTWIPdt btn-toolbar pull-right">
+            <?php if($nPage == 1){ $tDisabledLeft = 'disabled'; }else{ $tDisabledLeft = '-';} ?>
+            <button onclick="JSvTWIPDTDocDTTempClickPage('previous')" class="btn btn-white btn-sm" <?php echo $tDisabledLeft ?>> 
+                <i class="fa fa-chevron-left f-s-14 t-plus-1"></i>
+            </button>
+            <?php for($i=max($nPage-2, 1); $i<=max(0, min($aDataDocDTTemp['rnAllPage'],$nPage+2)); $i++){?> 
+                <?php 
+                    if($nPage == $i){ 
+                        $tActive = 'active'; 
+                        $tDisPageNumber = 'disabled';
+                    }else{ 
+                        $tActive = '';
+                        $tDisPageNumber = '';
+                    }
+                ?>
+                <button onclick="JSvTWIPDTDocDTTempClickPage('<?php echo $i?>')" type="button" class="btn xCNBTNNumPagenation <?php echo $tActive ?>" <?php echo $tDisPageNumber ?>><?php echo $i?></button>
+            <?php } ?>
+            <?php if($nPage >= $aDataDocDTTemp['rnAllPage']){  $tDisabledRight = 'disabled'; }else{  $tDisabledRight = '-';  } ?>
+            <button onclick="JSvTWIPDTDocDTTempClickPage('next')" class="btn btn-white btn-sm" <?php echo $tDisabledRight ?>> 
+                <i class="fa fa-chevron-right f-s-14 t-plus-1"></i>
+            </button>
+        </div>
+    </div>
+<?php endif;?>
 
 <!-- ============================================ Modal Confirm Delete Documet Detail Dis ============================================ -->
     <div id="odvPIModalConfirmDeleteDTDis" class="modal fade" style="z-index: 7000;">
@@ -158,118 +340,33 @@
         }
         JSxTWIShowButtonDelMutiDtTemp();
     });
-
-     //ลบสินค้าใน Tmp - หลายตัว
-     function FSxDOSelectMulDel(ptElm){
-        var tTWIDocNo    = $('#oetTWIDocNo').val();
-        var tTWISeqNo    = $(ptElm).parents('.xWPdtItem').data('seqno');
-        var tTWIPdtCode  = $(ptElm).parents('.xWPdtItem').data('pdtcode');
-        var tTWIPunCode  = $(ptElm).parents('.xWPdtItem').data('puncode');
-        $(ptElm).prop('checked', true);
-        let oLocalItemDTTemp    = localStorage.getItem("TWI_LocalItemDataDelDtTemp");
-        let oDataObj            = [];
-        if(oLocalItemDTTemp){
-            oDataObj    = JSON.parse(oLocalItemDTTemp);
-        }
-        let aArrayConvert   = [JSON.parse(localStorage.getItem("TWI_LocalItemDataDelDtTemp"))];
-        if(aArrayConvert == '' || aArrayConvert == null){
-            oDataObj.push({
-                'tDocNo'    : tTWIDocNo,
-                'tSeqNo'    : tTWISeqNo,
-                'tPdtCode'  : tTWIPdtCode,
-                'tPunCode'  : tTWIPunCode,
-            });
-            localStorage.setItem("TWI_LocalItemDataDelDtTemp",JSON.stringify(oDataObj));
-            JSxTWITextInModalDelPdtDtTemp();
-        }else{
-            var aReturnRepeat   = JStTWIFindObjectByKey(aArrayConvert[0],'tSeqNo',tTWISeqNo);
-            if(aReturnRepeat == 'None' ){
-                //ยังไม่ถูกเลือก
-                oDataObj.push({
-                    'tDocNo'    : tTWIDocNo,
-                    'tSeqNo'    : tTWISeqNo,
-                    'tPdtCode'  : tTWIPdtCode,
-                    'tPunCode'  : tTWIPunCode,
-                });
-                localStorage.setItem("TWI_LocalItemDataDelDtTemp",JSON.stringify(oDataObj));
-                JSxTWITextInModalDelPdtDtTemp();
-            }else if(aReturnRepeat == 'Dupilcate'){
-                localStorage.removeItem("TWI_LocalItemDataDelDtTemp");
-                $(ptElm).prop('checked', false);
-                var nLength = aArrayConvert[0].length;
-                for($i=0; $i<nLength; $i++){
-                    if(aArrayConvert[0][$i].tSeqNo == tTWISeqNo){
-                        delete aArrayConvert[0][$i];
-                    }
-                }
-                var aNewarraydata   = [];
-                for($i=0; $i<nLength; $i++){
-                    if(aArrayConvert[0][$i] != undefined){
-                        aNewarraydata.push(aArrayConvert[0][$i]);
-                    }
-                }
-                localStorage.setItem("TWI_LocalItemDataDelDtTemp",JSON.stringify(aNewarraydata));
-                JSxTWITextInModalDelPdtDtTemp();
-            }
-        }
-        JSxTWIShowButtonDelMutiDtTemp();
-    
-    }
     
     $(document).ready(function(){
-        JSxEditQtyAndPrice();
-        if((tTWIStaDoc == 3) || (tTWIStaApvDoc == 1 || tTWIStaPrcStkDoc == 1)){
-            $('#otbTWIDocPdtAdvTableList .xCNPIBeHideMQSS').hide();
-            $('.xCNPdtEditInLine ').attr('readonly', true)
+        if((tTWIStaDoc == 3) || (tTWIStaApvDoc == 1 && tTWIStaPrcStkDoc == 1)){
+                $('#otbTWIDocPdtAdvTableList .xCNPIBeHideMQSS').hide();
+        }else{
+            var oParameterEditInLine    = {
+                "DocModules"                    : "",
+                "FunctionName"                  : "JSxTWISaveEditInline",
+                "DataAttribute"                 : ['data-field', 'data-seq'],
+                "TableID"                       : "otbTWIDocPdtAdvTableList",
+                "NotFoundDataRowClass"          : "xWTWITextNotfoundDataPdtTable",
+                "EditInLineButtonDeleteClass"   : "xWTWIDeleteBtnEditButtonPdt",
+                "LabelShowDataClass"            : "xWShowInLine",
+                "DivHiddenDataEditClass"        : "xWEditInLine"
+            }
+            JCNxSetNewEditInline(oParameterEditInLine);
+
+            $(".xWEditInlineElement").eq(nIndexInputEditInline).focus();
+            $(".xWEditInlineElement").eq(nIndexInputEditInline).select();
+            $(".xWEditInlineElement").removeAttr("disabled");
+
+            let oElement = $(".xWEditInlineElement");
+            for(let nI=0;nI<oElement.length;nI++){
+                $(oElement.eq(nI)).val($(oElement.eq(nI)).val().trim());
+            }
         }
     });
-
-    //เเก้ไขจำนวน
-    function JSxEditQtyAndPrice() {
-        $('.xCNPdtEditInLine').click(function() {
-            $(this).focus().select();
-        });
-
-        $('.xCNQty').off().on('change keyup', function(e) {
-            if(e.type === 'change' || e.keyCode === 13){
-                var nSeq    = $(this).attr('data-seq');
-                var nQty        = $('#ohdQty'+nSeq).val();
-                var tFieldName = "FCXtdQty";
-                nNextTab = parseInt(nSeq)+1;
-                $('.xWValueEditInLine'+nNextTab).focus().select();
-                
-                FSvTWIEditPdtIntoTableDT(nSeq, tFieldName, nQty);
-            }
-        });
-
-    }
 
     $('.xWEditInlineElement').css('text-align','right');
-     // Check All
-     $('#ocbCheckAll').click(function(){
-        if($(this).is(':checked')==true){
-            $('.ocbListItem').prop('checked',true);
-            $("#odvTWIMngDelPdtInTableDT #oliTWIBtnDeleteMulti").removeClass("disabled");
-        }else{
-            $('.ocbListItem').prop('checked',false);
-            $("#odvTWIMngDelPdtInTableDT #oliTWIBtnDeleteMulti").addClass("disabled");
-        }
-    });
-
-      function FSxDOSelectAll(){
-    if($('.ocbListItemAll').is(":checked")){
-        $('.ocbListItem').each(function (e) { 
-            if(!$(this).is(":checked")){
-                $(this).on( "click", FSxDOSelectMulDel(this) );
-            }
-    });
-    }else{
-        $('.ocbListItem').each(function (e) { 
-            if($(this).is(":checked")){
-                $(this).on( "click", FSxDOSelectMulDel(this) );
-            }
-    });
-    }
-    
-}
 </script>

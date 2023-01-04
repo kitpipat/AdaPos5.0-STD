@@ -2046,9 +2046,19 @@
             {"Lang"         : '<?= FCNaHGetLangEdit(); ?>'},
             {"ComCode"      : '<?= FCNtGetCompanyCode(); ?>'},
             {"BranchCode"   : '<?= FCNtGetAddressBranch($tUserBchCode); ?>'},
-            {"DocCode"      : tDocNo}
+            {"DocCode"      : tDocNo},
+            {"DockBchCOde"  : $('#oetBCHCode_cardshiftrefund').val()}
         ];
-        window.open('<?php echo base_url(); ?>'+"formreport/Frm_SQL_FCCardRefundCash?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open('<?php echo base_url(); ?>'+"formreport/Frm_SQL_FCCardRefundCash?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00013' ,
+                tDocBchCode : $('#oetBCHCode_cardshiftrefund').val() ,
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 </script>
 <?php include 'jCardShiftRefundDataSourceTable.php'; ?>

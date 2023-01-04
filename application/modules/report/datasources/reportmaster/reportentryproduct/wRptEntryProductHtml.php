@@ -92,6 +92,7 @@
                             <th nowrap class="text-left xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tPunCode'];?></th>
                             <th nowrap class="text-left xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tPunName'];?></th>
                             <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tPdtUnitFact'];?></th>
+                            <th nowrap class="text-left xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tRptAPBGPriceGroup'];?></th>
                             <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tPdtPriceRET'];?></th>
                             <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tPdtCostInPerUnit'];?></th>
                             <th nowrap class="text-right xCNRptColumnHeader" style="width:10%;"><?php echo $aDataTextRef['tPdtCostInTotal'];?></th>
@@ -122,6 +123,7 @@
                                   <td class="xCNRptDetail"><?php echo $aValue["FTPunCode"]; ?></td>
                                   <td class="xCNRptDetail"><?php if($aValue["FTPunName"]==""){ echo "-"; }else{  echo $aValue["FTPunName"]; } ?></td>
                                   <td class="xCNRptDetail text-right"><?php echo number_format($aValue["FCPdtUnitFact"],0); ?></td>
+                                  <td class="xCNRptDetail"><?php if($aValue["FTPplName"]==""){ echo "-"; }else{  echo $aValue["FTPplName"]; } ?></td>
                                   <td class="xCNRptDetail text-right"><?php echo number_format($aValue["FCPdtPriceRET"],$nOptDecimalShow); ?></td>
                                   <td class="xCNRptDetail text-right"><?php echo number_format($aValue["FCPdtCostInPerUnit"],$nOptDecimalShow); ?></td>
                                   <td class="xCNRptDetail text-right"><?php echo number_format($aValue["FCPdtCostInTotal"],$nOptDecimalShow); ?></td>

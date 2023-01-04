@@ -1,10 +1,10 @@
 {
-  "ReportVersion": "2018.2.2.0",
-  "ReportGuid": "24fb315c06004758a9588d6964e6a249",
+  "ReportVersion": "2022.1.4.0",
+  "ReportGuid": "7870caf803a04474bf7a6f2cb7ca1248",
   "ReportName": "Frm_PSInvoiceRefund",
   "ReportAlias": "Frm_PSInvoiceRefund",
   "ReportCreated": "/Date(1582089004000+0700)/",
-  "ReportChanged": "/Date(1635062194079+0700)/",
+  "ReportChanged": "/Date(1670395001848+0700)/",
   "EngineVersion": "EngineV2",
   "CalculationMode": "Interpretation",
   "Script": "using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\nusing System.Data;\r\nusing Stimulsoft.Controls;\r\nusing Stimulsoft.Base.Drawing;\r\nusing Stimulsoft.Report;\r\nusing Stimulsoft.Report.Dialogs;\r\nusing Stimulsoft.Report.Components;\r\n\r\nnamespace Reports\r\n{\r\n    public class __xml_version__1_0__encoding__utf_16__standalone__yes____StiSerializer_version__1_02__type__Net__application__StiReport_Clipboard___Brush_Transparent__Brush__ClientRectangle_0_0_0_0__ClientRectangle__Components_isList__true__count__2___Text30_Ref__1__type__Text__isKey__true___Border_Bottom_Black_1_None_False_4_Black__Border__Brush_Transparent__Brush__ClientRectangle_15_75_33_07_401_57_23_62__ClientRectangle__Conditions_isList__true__count__0_____Font_Tahoma_10_Bold__Font__IsSelected_True__IsSelected__Margins_0_0_0_0__Margins__Name_Text30__Name__Text_บร_ษ_ท_โมซ__โมซ__เจแปน_จำก_ด__สาขาท___00089___Text__TextBrush_Black__TextBrush__Type_Expression__Type__VertAlignment_Center__VertAlignment___Text30__Text31_Ref__2__type__Text__isKey__true___Border_Bottom_Black_1_None_False_4_Black__Border__Brush_Transparent__Brush__CanGrow_True__CanGrow__ClientRectangle_15_75_52_76_409_45_15_74__ClientRectangle__Conditions_isList__true__count__0_____Font_Tahoma_10__Font__IsSelected_True__IsSelected__Margins_0_0_0_0__Margins__Name_Text31__Name__Text_เลขท___34_หม___4_ต_อ_อมใหญ__อ_สามพราน_จ_นครปฐม_73160__เลขประจำต_วผ__เส_ยภาษ__0105543056078__โหร__0_3415_7800__Text__TextBrush_Black__TextBrush__Type_Expression__Type__VertAlignment_Center__VertAlignment___Text31___Components__Conditions_isList__true__count__0_____Name_____StiSerializer_ : Stimulsoft.Report.StiReport\r\n    {\r\n        public __xml_version__1_0__encoding__utf_16__standalone__yes____StiSerializer_version__1_02__type__Net__application__StiReport_Clipboard___Brush_Transparent__Brush__ClientRectangle_0_0_0_0__ClientRectangle__Components_isList__true__count__2___Text30_Ref__1__type__Text__isKey__true___Border_Bottom_Black_1_None_False_4_Black__Border__Brush_Transparent__Brush__ClientRectangle_15_75_33_07_401_57_23_62__ClientRectangle__Conditions_isList__true__count__0_____Font_Tahoma_10_Bold__Font__IsSelected_True__IsSelected__Margins_0_0_0_0__Margins__Name_Text30__Name__Text_บร_ษ_ท_โมซ__โมซ__เจแปน_จำก_ด__สาขาท___00089___Text__TextBrush_Black__TextBrush__Type_Expression__Type__VertAlignment_Center__VertAlignment___Text30__Text31_Ref__2__type__Text__isKey__true___Border_Bottom_Black_1_None_False_4_Black__Border__Brush_Transparent__Brush__CanGrow_True__CanGrow__ClientRectangle_15_75_52_76_409_45_15_74__ClientRectangle__Conditions_isList__true__count__0_____Font_Tahoma_10__Font__IsSelected_True__IsSelected__Margins_0_0_0_0__Margins__Name_Text31__Name__Text_เลขท___34_หม___4_ต_อ_อมใหญ__อ_สามพราน_จ_นครปฐม_73160__เลขประจำต_วผ__เส_ยภาษ__0105543056078__โหร__0_3415_7800__Text__TextBrush_Black__TextBrush__Type_Expression__Type__VertAlignment_Center__VertAlignment___Text31___Components__Conditions_isList__true__count__0_____Name_____StiSerializer_()        {\r\n            this.InitializeComponent();\r\n        }\r\n\r\n        #region StiReport Designer generated code - do not modify\r\n\t\t#endregion StiReport Designer generated code - do not modify\r\n    }\r\n}\r\n",
@@ -25,6 +25,7 @@
         "Name": "SP_nLang",
         "Alias": "SP_nLang",
         "Type": "System.String",
+        "Key": "90cdd7e790bf4226953769f9b50cd0ac",
         "AllowUseAsSqlParameter": true
       },
       "1": {
@@ -32,6 +33,7 @@
         "Name": "nLanguage",
         "Alias": "nLanguage",
         "Type": "System.Int32",
+        "Key": "3aeb3135f8534ae6bd30e7dcb74a4f29",
         "AllowUseAsSqlParameter": true
       },
       "2": {
@@ -39,6 +41,7 @@
         "Name": "SP_tCompCode",
         "Alias": "SP_tCompCode",
         "Type": "System.String",
+        "Key": "bf395e8a797c4ac496a1064a6e8abcaf",
         "AllowUseAsSqlParameter": true
       },
       "3": {
@@ -46,6 +49,7 @@
         "Name": "SP_tCmpBch",
         "Alias": "SP_tCmpBch",
         "Type": "System.String",
+        "Key": "cc8aa8dd87b746869a9b832b2a36b66c",
         "AllowUseAsSqlParameter": true
       },
       "4": {
@@ -53,13 +57,15 @@
         "Name": "SP_nAddSeq",
         "Alias": "SP_nAddSeq",
         "Type": "System.Int32",
+        "Key": "6f1db1e5344449e3ba04cd105da3e818",
         "AllowUseAsSqlParameter": true
       },
       "5": {
-        "Value": "R21000030000001",
+        "Value": "R22000350000006",
         "Name": "SP_tDocNo",
         "Alias": "SP_tDocNo",
         "Type": "System.String",
+        "Key": "39b11057c853483494c951ed451bc1a9",
         "AllowUseAsSqlParameter": true
       },
       "6": {
@@ -67,6 +73,7 @@
         "Name": "SP_tStaPrn",
         "Alias": "SP_tStaPrn",
         "Type": "System.String",
+        "Key": "b47d8dc5d90c447585d9d9da314b23ad",
         "AllowUseAsSqlParameter": true
       },
       "7": {
@@ -74,13 +81,15 @@
         "Name": "SP_tGrdStr",
         "Alias": "SP_tGrdStr",
         "Type": "System.String",
+        "Key": "353225a1013c4a6aa8739cfbdebb30c9",
         "AllowUseAsSqlParameter": true
       },
       "8": {
-        "Value": "00003",
+        "Value": "00035",
         "Name": "SP_tDocBch",
         "Alias": "SP_tDocBch",
         "Type": "System.String",
+        "Key": "ad634565231f4b0ea0a10a21eb2e2a23",
         "AllowUseAsSqlParameter": true
       },
       "9": {
@@ -624,7 +633,7 @@
           }
         },
         "NameInSource": "SaleInv",
-        "SqlCommand": "declare @ptDocNo varchar(20) = '{SP_tDocNo}' \r\n declare @pnLanguage int = '{nLanguage}' \r\n declare @ptDocBch varchar(5) = '{SP_tDocBch}' \r\n SELECT  FCXshLeftCNTotal,FCXsdSeqCN,Ref.FTXshRefIntJoin,HD.FTBchCode,HD.FTXshRefExt,HD_S.FTXshDocNo AS FTXshDocNoSale,FCXshGrandAmtSale,\r\n\tPos.FTPosRegNo,\r\n\tHD.FTXshStaApv, \r\n\tHDAddr.FTAddName ,\r\n\tISNULL(HDAddr.FTAddTaxNo,'')  AS FTCstTaxNo,\t\r\n\tCASE WHEN HDAddr.FTAddStaBusiness = '1' THEN CASE WHEN HDAddr.FTAddStaHQ = '1' THEN 'สำนักงานใหญ่ ' ELSE 'สาขา : ' + HDAddr.FTAddStaBchCode  END ELSE HDAddr.FTAddStaBchCode  END\tAS FTBchName,\r\n\tHDAddr.FTAddTel  ,\r\n\tHDAddr.FTAddFax ,\r\n\tHD.FTXshDocNo,CONVERT(VARCHAR(10),HD.FDXshDocDate,121) AS FDXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,103) AS FTXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,8) AS FTXshDocTime,HD.FTXshRefInt,HD.FTCreateBy,\r\n\tISNULL(HD.FTSpnCode,'') AS FTSpnCode,Spn_L.FTSpnName,\r\n\tISNULL(HD.FTUsrCode,'') AS FTUsrCode,Usr_L.FTUsrName,\r\n    Red_L.FTUsrName AS FTXshRecorder,\r\n\tISNULL(HD.FTXshVATInOrEx,'') AS FTXshVATInOrEx,\r\n\tISNULL(HD.FTXshStaDoc,'') AS FTXshStaDoc,\r\n\tISNULL(HD.FTXshStaApv,'') AS FTXshStaApv,\r\n\tISNULL(HD.FTXshStaPrcStk,'') AS FTXshStaPrcStk,\r\n\tISNULL(HD.FTXshApvCode,'') AS FTXshApvCode,\r\n\tISNULL(HDCst.FTXshCtrName,'') AS FTXshCtrName,\r\n\tISNULL(HD.FTXshRmk,'') AS FTXshRmk,\r\n\r\n\tISNULL(HDAddr.FTAddVersion,'') AS FTAddVersion,\r\n\tHDAddr.FTAddV2Desc1,\r\n\tHDAddr.FTAddV2Desc2,\r\n\r\n\tISNULL(HDAddr.FTAddRefNo,'') AS FTAddRefNo,\r\n\tISNULL(HDAddr.FTAddV1PvnCode,'') AS FTAddV1PvnCode, ISNULL(HDAddr.FTAddV1DstCode,'') AS FTAddV1DstCode,\r\n\tISNULL(HDAddr.FTAddV1SubDist,'') AS FTAddV1SubDist, \r\n\r\n\tISNULL(Pro_L.FTPvnName,'') AS FTPvnName,\r\n\tISNULL(Dis_L.FTDstName,'') AS FTDstName,\r\n\tISNULL(SDis_L.FTSudName,'') AS FTSudName,\r\n\r\n\tISNULL(HDAddr.FTAddV1No, '') AS FTAddV1No,\r\n\tISNULL(HDAddr.FTAddV1Village, '') AS FTAddV1Village,\r\n\tISNULL(HDAddr.FTAddV1Soi, '') AS FTAddV1Soi,\r\n\tISNULL(HDAddr.FTAddV1Road, '') AS FTAddV1Road,\r\n\tISNULL(HDAddr.FTAddV1PostCode, '') AS FTAddV1PostCode,\r\n\r\n\tISNULL(HD.FCXshTotal,0) AS FCXshTotal,ISNULL(HD.FCXshVat,0) AS FCXshVat,ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0) AS FCXshDiscount,\r\n    ISNULL(HD.FCXshVatable,0) + ISNULL(HD.FCXshVat,0) AS FCXshVatAmt,\r\n\tISNULL(HD.FCXshVatable,0) AS FCXshVatable,\r\n\tISNULL(HD.FCXshTotalAfDisChgV,0)+ISNULL(HD.FCXshTotalAfDisChgNV,0) AS FCXshTotalAFDis,\r\n    ISNULL(HD.FCXshGrand,0)-ISNULL(HD.FCXshRnd,0) AS FCXshGrandBFRnd,\r\n\tISNULL(HD.FCXshRnd,0) AS FCXshRnd,\r\n\tISNULL(HD.FCXshGrand,0) AS FCXshGrandAmt,\r\n\tISNULL(HD.FCXshAmtV,0) AS FCXshAmtV,\r\n\tCASE WHEN HD.FTXshVATInOrEx='1' THEN ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)) ELSE (ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)))+HD.FCXshVat END AS FCXshGrand,\r\n    HD.FTXshGndText, \r\n\tHD.FNXshDocPrint,\r\n\tISNULL(HD.FTXshStaETax,'2') AS FTXshStaETax,\r\n\tHDAddr.FTAddStaBusiness ,\r\n\tApver_L.FTUsrName AS FTUsrNameApp,\r\n\tRsnL.FTRsnName,\r\n\tHDMst.FTRsnCode AS FTRsnCodeMst,RanMst.FTRsnName AS FTRsnNameMst,\r\n\tHDMst.FTXshDocNo AS FTXshDocNoMst\r\n\tFROM TPSTTaxHD  HD WITH (NOLOCK)  INNER JOIN \r\n     TPSTTaxHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo LEFT JOIN\r\n\t TCNMPos Pos WITH (NOLOCK) ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode LEFT JOIN \r\n\t TCNMCst Cst WITH (NOLOCK) ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN\r\n\t TCNMCst_L Cst_L WITH (NOLOCK) ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMSpn_L Spn_L WITH (NOLOCK) ON  HD.FTSpnCode = Spn_L.FTSpnCode AND Spn_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Usr_L  WITH (NOLOCK) ON HD.FTUsrCode = Usr_L.FTUsrCode AND Usr_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Red_L   WITH (NOLOCK) ON HD.FTLastUpdBy = Red_L.FTUsrCode AND Red_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Apver_L  WITH (NOLOCK) ON HD.FTXshApvCode = Apver_L.FTUsrCode AND Apver_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMRsn_L RsnL WITH (NOLOCK) ON HD.FTRsnCode = RsnL.FTRsnCode AND RsnL.FNLngID = @pnLanguage LEFT JOIN \r\n\t TPSTTaxHDAddress HDAddr WITH (NoLock) ON  HD.FTBchCode = HDAddr.FTBchCode AND HD.FTXshDocNo = HDAddr.FTXshDocNo LEFT JOIN\r\n\t TPSTTaxHD HDMst WITH (NOLOCK) ON HD.FTBchCode = HDMst.FTBchCode AND HD.FTXshRefAE= HDMst.FTXshDocNo AND HDMst.FTXshStaDoc = '5' LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddrEdit WITH (NoLock) ON  HDMst.FTBchCode = HDAddrEdit.FTBchCode AND HDMst.FTXshDocNo = HDAddrEdit.FTXshDocNo LEFT JOIN\r\n\t TCNMRsn_L RanMst WITH (NOLOCK) ON HDMst.FTRsnCode = RanMst.FTRsnCode AND RanMst.FNLngID = @pnLanguage \r\n\t LEFT JOIN TCNMProvince_L Pro_L WITH (NoLock) ON HDAddr.FTAddV1PvnCode = Pro_L.FTPvnCode AND Pro_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L Dis_L WITH (NoLock) ON HDAddr.FTAddV1DstCode = Dis_L.FTDstCode AND Dis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMSubDistrict_L SDis_L WITH (NoLock) ON HDAddr.FTAddV1SubDist = SDis_L.FTSudCode AND SDis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN \r\n\t\t(SELECT FTBchCode,FTXshDocNo,FTXshRefInt ,COUNT(FTXshDocNO) OVER(PARTITION BY FTXshRefInt ORDER BY FTXshDocNO) AS FCXsdSeqCN ,(ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))-ISNULL(FCXshVat,0) AS FCXshLeftCNTotal,\r\n\t\t SUM((ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))-ISNULL(FCXshVat,0)) OVER(PARTITION BY FTXshRefInt ORDER BY FTXshDocNO) AS FCXshLeftCNRun\r\n\t\t FROM TPSTTaxHD \r\n\t\t WHERE FNXshDocType = 5\r\n\t\t) CnSeq ON HD.FTBchCode = CnSeq.FTBchCode AND HD.FTXshDocNo = CnSeq.FTXshDocNo \r\n\t\tLEFT JOIN\r\n\t\t(SELECT ISNULL(HD.FTXshRefIntJoin,CancelHD.FTXshRefInt) AS FTXshRefIntJoin ,ISNULL(CancelHD.FTXshRefAE,CancelHD.FTXshDocNo) AS FTXshRefAE,CancelHD.FTXshRefInt,CancelHD.FTBchCode,CancelHD.FTXshDocNo\r\n\t\t\tFROM TPSTTaxHD CancelHD WITH (NOLOCK)\r\n\t\t\t\t\t LEFT JOIN \r\n\t\t\t\t\t\t\t(\r\n\t\t\t\t\t\t\t\tSELECT ISNULL(FTXshRefAE,FTXshDocNo) AS FTXshRefAE,FTXshRefInt ,FTXshRefInt AS FTXshRefIntJoin ,FTBchCode,FTXshDocNo\r\n\t\t\t\t\t\t\t\tFROM TPSTTaxHD WITH (NOLOCK)\r\n\t\t\t\t\t\t\t\tWHERE FTXshStaDoc IN ('1','5') AND FNXshDocType = '5' \r\n\t\t\t\t\t\t\t) HD ON CancelHD.FTXshRefAE = HD.FTXshRefAE AND CancelHD.FTBchCode\t=  HD.FTBchCode\r\n\t\t WHERE CancelHD.FNXshDocType = '5'\r\n\t\t) Ref ON HD.FTBchCode = Ref.FTBchCode\t AND HD.FTXshDocNo\t = Ref.FTXshDocNo\r\n\t LEFT JOIN \r\n(SELECT FNXshCNCount,TPSTTaxHD.FTBchCode,TPSTTaxHD.FTXshDocNo,FTXshRefExt,FTXshRefInt,(ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))-ISNULL(FCXshVat,0) AS FCXshGrandAmtSale,\r\n\tISNULL(FCXshLeftCN,0) AS FCXshLeftCN\r\n\tFROM TPSTTaxHD WITH (NOLOCK) \r\n\t\t\t\t INNER JOIN\r\n(SELECT SalHD.FTBchCode ,SalHD.FTXshDocNO,COUNT(CNHD.FTXshDocNo) AS FNXshCNCount  \r\n\tFROM TPSTTaxHD SalHD WITH (NOLOCK) LEFT JOIN\r\n(SELECT FTBchCode,FTXshDocNo,FTXshRefInt \r\n\tFROM TPSTTaxHD \r\n\tWHERE FNXshDocType = 5\r\n\t\t\t\t\t\t\t\t )CNHD ON SalHD.FTBchCode = CnHD.FTBchCode AND SalHD.FTXshDocNo = CnHD.FTXshRefInt\r\n\t\t\t\t\t\t\tWHERE FNXshDocType = 4\r\n\t\t\t\t\t\t\tGROUP BY SalHD.FTBchCode,SalHD.FTXshDocNO\r\n\t\t\t\t\t\t\t) Sale ON TPSTTaxHD.FTBchCode = Sale.FTBchCode AND TPSTTaxHD.FTXshDocNo = Sale.FTXshDocNo\r\n\t\t\t\t WHERE FNXshDocType = 4 \r\n    ) HD_S ON HD.FTBchCode = HD_S.FTBchCode AND Ref.FTXshRefIntJoin = HD_S.FTXshDocNo\r\nWHERE HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch",
+        "SqlCommand": " SELECT  FCXshLeftCNTotal,FCXsdSeqCN,Ref.FTXshRefIntJoin,HD.FTBchCode,HD.FTXshRefExt,HD_S.FTXshDocNo AS FTXshDocNoSale,FCXshGrandAmtSale,\r\n\tPos.FTPosRegNo,\r\n\tHD.FTXshStaApv, \r\n\tHDAddr.FTAddName ,\r\n\tISNULL(HDAddr.FTAddTaxNo,'')  AS FTCstTaxNo,\t\r\n\tCASE WHEN HDAddr.FTAddStaBusiness = '1' THEN CASE WHEN HDAddr.FTAddStaHQ = '1' THEN 'สำนักงานใหญ่ ' ELSE 'สาขา : ' + HDAddr.FTAddStaBchCode  END ELSE HDAddr.FTAddStaBchCode  END\tAS FTBchName,\r\n\tHDAddr.FTAddTel  ,\r\n\tHDAddr.FTAddFax ,\r\n\tHD.FTXshDocNo,CONVERT(VARCHAR(10),HD.FDXshDocDate,121) AS FDXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,103) AS FTXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,8) AS FTXshDocTime,HD.FTXshRefInt,HD.FTCreateBy,\r\n\tISNULL(HD.FTSpnCode,'') AS FTSpnCode,Spn_L.FTSpnName,\r\n\tISNULL(HD.FTUsrCode,'') AS FTUsrCode,Usr_L.FTUsrName,\r\n    Red_L.FTUsrName AS FTXshRecorder,\r\n\tISNULL(HD.FTXshVATInOrEx,'') AS FTXshVATInOrEx,\r\n\tISNULL(HD.FTXshStaDoc,'') AS FTXshStaDoc,\r\n\tISNULL(HD.FTXshStaApv,'') AS FTXshStaApv,\r\n\tISNULL(HD.FTXshStaPrcStk,'') AS FTXshStaPrcStk,\r\n\tISNULL(HD.FTXshApvCode,'') AS FTXshApvCode,\r\n\tISNULL(HDCst.FTXshCtrName,'') AS FTXshCtrName,\r\n\tISNULL(HD.FTXshRmk,'') AS FTXshRmk,\r\n\r\n\tISNULL(HDAddr.FTAddVersion,'') AS FTAddVersion,\r\n\tHDAddr.FTAddV2Desc1,\r\n\tHDAddr.FTAddV2Desc2,\r\n\r\n\tISNULL(HDAddr.FTAddRefNo,'') AS FTAddRefNo,\r\n\tISNULL(HDAddr.FTAddV1PvnCode,'') AS FTAddV1PvnCode, ISNULL(HDAddr.FTAddV1DstCode,'') AS FTAddV1DstCode,\r\n\tISNULL(HDAddr.FTAddV1SubDist,'') AS FTAddV1SubDist, \r\n\r\n\tISNULL(Pro_L.FTPvnName,'') AS FTPvnName,\r\n\tISNULL(Dis_L.FTDstName,'') AS FTDstName,\r\n\tISNULL(SDis_L.FTSudName,'') AS FTSudName,\r\n\r\n\tISNULL(HDAddr.FTAddV1No, '') AS FTAddV1No,\r\n\tISNULL(HDAddr.FTAddV1Village, '') AS FTAddV1Village,\r\n\tISNULL(HDAddr.FTAddV1Soi, '') AS FTAddV1Soi,\r\n\tISNULL(HDAddr.FTAddV1Road, '') AS FTAddV1Road,\r\n\tISNULL(HDAddr.FTAddV1PostCode, '') AS FTAddV1PostCode,\r\n\r\n\tISNULL(HD.FCXshTotal,0) AS FCXshTotal,ISNULL(HD.FCXshVat,0) AS FCXshVat,ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0) AS FCXshDiscount,\r\n    ISNULL(HD.FCXshVatable,0) + ISNULL(HD.FCXshVat,0) AS FCXshVatAmt,\r\n\tISNULL(HD.FCXshVatable,0) AS FCXshVatable,\r\n\tISNULL(HD.FCXshTotalAfDisChgV,0)+ISNULL(HD.FCXshTotalAfDisChgNV,0) AS FCXshTotalAFDis,\r\n    ISNULL(HD.FCXshGrand,0)-ISNULL(HD.FCXshRnd,0) AS FCXshGrandBFRnd,\r\n\tISNULL(HD.FCXshRnd,0) AS FCXshRnd,\r\n\tISNULL(HD.FCXshGrand,0) AS FCXshGrandAmt,\r\n\tISNULL(HD.FCXshAmtV,0) AS FCXshAmtV,\r\n\tCASE WHEN HD.FTXshVATInOrEx='1' THEN ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)) ELSE (ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)))+HD.FCXshVat END AS FCXshGrand,\r\n    HD.FTXshGndText, \r\n\tHD.FNXshDocPrint,\r\n\tISNULL(HD.FTXshStaETax,'2') AS FTXshStaETax,\r\n\tHDAddr.FTAddStaBusiness ,\r\n\tApver_L.FTUsrName AS FTUsrNameApp,\r\n\tRsnL.FTRsnName,\r\n\tHDMst.FTRsnCode AS FTRsnCodeMst,RanMst.FTRsnName AS FTRsnNameMst,\r\n\tHDMst.FTXshDocNo AS FTXshDocNoMst\r\n\tFROM TPSTTaxHD  HD WITH (NOLOCK)  INNER JOIN \r\n     TPSTTaxHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo LEFT JOIN\r\n\t TCNMPos Pos WITH (NOLOCK) ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode LEFT JOIN \r\n\t TCNMCst Cst WITH (NOLOCK) ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN\r\n\t TCNMCst_L Cst_L WITH (NOLOCK) ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMSpn_L Spn_L WITH (NOLOCK) ON  HD.FTSpnCode = Spn_L.FTSpnCode AND Spn_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Usr_L  WITH (NOLOCK) ON HD.FTUsrCode = Usr_L.FTUsrCode AND Usr_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Red_L   WITH (NOLOCK) ON HD.FTLastUpdBy = Red_L.FTUsrCode AND Red_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Apver_L  WITH (NOLOCK) ON HD.FTXshApvCode = Apver_L.FTUsrCode AND Apver_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMRsn_L RsnL WITH (NOLOCK) ON HD.FTRsnCode = RsnL.FTRsnCode AND RsnL.FNLngID = @pnLanguage LEFT JOIN \r\n\t TPSTTaxHDAddress HDAddr WITH (NoLock) ON  HD.FTBchCode = HDAddr.FTBchCode AND HD.FTXshDocNo = HDAddr.FTXshDocNo LEFT JOIN\r\n\t TPSTTaxHD HDMst WITH (NOLOCK) ON HD.FTBchCode = HDMst.FTBchCode AND HD.FTXshRefAE= HDMst.FTXshDocNo AND HDMst.FTXshStaDoc = '5' LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddrEdit WITH (NoLock) ON  HDMst.FTBchCode = HDAddrEdit.FTBchCode AND HDMst.FTXshDocNo = HDAddrEdit.FTXshDocNo LEFT JOIN\r\n\t TCNMRsn_L RanMst WITH (NOLOCK) ON HDMst.FTRsnCode = RanMst.FTRsnCode AND RanMst.FNLngID = @pnLanguage \r\n\t LEFT JOIN TCNMProvince_L Pro_L WITH (NoLock) ON HDAddr.FTAddV1PvnCode = Pro_L.FTPvnCode AND Pro_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L Dis_L WITH (NoLock) ON HDAddr.FTAddV1DstCode = Dis_L.FTDstCode AND Dis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMSubDistrict_L SDis_L WITH (NoLock) ON HDAddr.FTAddV1SubDist = SDis_L.FTSudCode AND SDis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN \r\n\t\t(SELECT FTBchCode,FTXshDocNo,FTXshRefInt ,COUNT(FTXshDocNO) OVER(PARTITION BY FTXshRefInt ORDER BY FTXshDocNO) AS FCXsdSeqCN ,(ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))-ISNULL(FCXshVat,0) AS FCXshLeftCNTotal,\r\n\t\t SUM((ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))-ISNULL(FCXshVat,0)) OVER(PARTITION BY FTXshRefInt ORDER BY FTXshDocNO) AS FCXshLeftCNRun\r\n\t\t FROM TPSTTaxHD \r\n\t\t WHERE FNXshDocType = 5\r\n\t\t) CnSeq ON HD.FTBchCode = CnSeq.FTBchCode AND HD.FTXshDocNo = CnSeq.FTXshDocNo \r\n\t\tLEFT JOIN\r\n\t\t(SELECT ISNULL(HD.FTXshRefIntJoin,CancelHD.FTXshRefInt) AS FTXshRefIntJoin ,ISNULL(CancelHD.FTXshRefAE,CancelHD.FTXshDocNo) AS FTXshRefAE,CancelHD.FTXshRefInt,CancelHD.FTBchCode,CancelHD.FTXshDocNo\r\n\t\t\tFROM TPSTTaxHD CancelHD WITH (NOLOCK)\r\n\t\t\t\t\t LEFT JOIN \r\n\t\t\t\t\t\t\t(\r\n\t\t\t\t\t\t\t\tSELECT ISNULL(FTXshRefAE,FTXshDocNo) AS FTXshRefAE,FTXshRefInt ,FTXshRefInt AS FTXshRefIntJoin ,FTBchCode,FTXshDocNo\r\n\t\t\t\t\t\t\t\tFROM TPSTTaxHD WITH (NOLOCK)\r\n\t\t\t\t\t\t\t\tWHERE FTXshStaDoc IN ('1','5') AND FNXshDocType = '5' \r\n\t\t\t\t\t\t\t) HD ON CancelHD.FTXshRefAE = HD.FTXshRefAE AND CancelHD.FTBchCode\t=  HD.FTBchCode\r\n\t\t WHERE CancelHD.FNXshDocType = '5'\r\n\t\t) Ref ON HD.FTBchCode = Ref.FTBchCode\t AND HD.FTXshDocNo\t = Ref.FTXshDocNo\r\n\t LEFT JOIN \r\n(SELECT FNXshCNCount,TPSTTaxHD.FTBchCode,TPSTTaxHD.FTXshDocNo,FTXshRefExt,FTXshRefInt,(ISNULL(FCXshGrand,0)-ISNULL(FCXshRnd,0))-ISNULL(FCXshVat,0) AS FCXshGrandAmtSale,\r\n\tISNULL(FCXshLeftCN,0) AS FCXshLeftCN\r\n\tFROM TPSTTaxHD WITH (NOLOCK) \r\n\t\t\t\t INNER JOIN\r\n(SELECT SalHD.FTBchCode ,SalHD.FTXshDocNO,COUNT(CNHD.FTXshDocNo) AS FNXshCNCount  \r\n\tFROM TPSTTaxHD SalHD WITH (NOLOCK) LEFT JOIN\r\n(SELECT FTBchCode,FTXshDocNo,FTXshRefInt \r\n\tFROM TPSTTaxHD \r\n\tWHERE FNXshDocType = 5\r\n\t\t\t\t\t\t\t\t )CNHD ON SalHD.FTBchCode = CnHD.FTBchCode AND SalHD.FTXshDocNo = CnHD.FTXshRefInt\r\n\t\t\t\t\t\t\tWHERE FNXshDocType = 4\r\n\t\t\t\t\t\t\tGROUP BY SalHD.FTBchCode,SalHD.FTXshDocNO\r\n\t\t\t\t\t\t\t) Sale ON TPSTTaxHD.FTBchCode = Sale.FTBchCode AND TPSTTaxHD.FTXshDocNo = Sale.FTXshDocNo\r\n\t\t\t\t WHERE FNXshDocType = 4 \r\n    ) HD_S ON HD.FTBchCode = HD_S.FTBchCode AND Ref.FTXshRefIntJoin = HD_S.FTXshDocNo\r\nWHERE HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -801,7 +810,7 @@
           }
         },
         "NameInSource": "SaleInv",
-        "SqlCommand": "declare @pnLanguage int = '{nLanguage}' \r\n declare @ptCompCode VarChar(5) = '{SP_tCompCode}' \r\n  declare @pnAddSeq int = '{SP_nAddSeq}' \r\n declare @ptCmpBch VarChar(5) = '{SP_tCmpBch}' \r\n SELECT \r\n\tCASE WHEN FTAddRefCode = ISNULL(FTAddRefCodeMer,'') THEN FTMerName ELSE \r\n\tCASE WHEN FTAddRefCode = ISNULL(FTAddRefCodeAgn,'') THEN FTAgnName ELSE  \r\n\t\tCASE WHEN FTAddRefCode = ISNULL(FTAddRefCodeBch,'') THEN FTCmpName ELSE \r\n\t\t\tCASE WHEN FTAddRefCode = ISNULL(FTAddRefCodeCmp,'') THEN FTCmpName ELSE \r\n\t\t\t\t''\r\n\t\t\tEND\r\n\t\tEND\r\n\tEND\r\nEND\r\nAS \tFTCompName,\r\nFTAddrType,FTAddName,(SELECT FTBchName FROM TCNMBranch_L WHERE  FTBchCode = @ptCmpBch AND FNLngID = @pnLanguage ) AS FTBchName,\r\nFTAddV1No,FTAddV1Soi,FTAddV1Village,FTAddV1Road,FTAddV1SubDist,FTSudName,FTAddV1DstCode,FTDstName,FTAddV1PvnCode,FTPvnName,FTAddV1PostCode,FTAddV2Desc1,FTAddV2Desc2,\r\nFTAddTel,FTAddFax,FTAddWebsite  ,FTAddTaxNo\r\nFROM\r\n(SELECT AddrL.FTAddRefCode,FTAddRefCodeMer,Mer.FTMerName,Agn.FTAddRefCodeAgn,Agn.FTAgnName,Bch.FTAddRefCodeBch,Bch.FTCmpName AS FTCmpNameBch,FTAddRefCodeCmp,Cmp.FTCmpName,\r\n\tFTAddVersion AS FTAddrType,AddrL.FTAddName,\r\n\tFTAddV1No,FTAddV1Soi,FTAddV1Village,FTAddV1Road,FTAddV1SubDist,SDstL.FTSudName,FTAddV1DstCode,DstL.FTDstName,FTAddV1PvnCode,PvnL.FTPvnName,FTAddV1PostCode,FTAddV2Desc1,FTAddV2Desc2,\r\n\tAddrL.FTAddTel,AddrL.FTAddFax,AddrL.FTAddWebsite  ,FTAddTaxNo\r\n\tFROM TCNMAddress_L AddrL\r\n\t LEFT JOIN\r\n\t\t\t (\r\nSELECT FTBchCode,Bch.FTMerCode,FTMerName,FTAddRefCode AS FTAddRefCodeMer\r\n\tFROM  TCNMBranch Bch WITH (NOLOCK) \r\n\t\t\t\tINNER JOIN TCNMAddress_L AddrL WITH (NOLOCK) ON Bch.FTMerCode = AddrL.FTAddRefCode \r\n\t\t\t\tLEFT JOIN TCNMMerChant_L MerL WITH (NOLOCK) ON Bch.FTMerCode = MerL.FTMerCode AND MerL.FNLngID = @pnLanguage\r\n\t\t\t\tWHERE FTBchCode = @ptCmpBch  AND AddrL.FTAddGrpType = '7' AND AddrL.FTAddRefNo = '1'\r\n\t\t\t ) Mer ON AddrL.FTAddRefCode  = Mer.FTAddRefCodeMer \r\n\r\n\t LEFT JOIN\r\n\t\t\t\r\n(SELECT FTBchCode,Agn.FTAgnCode,AgnL.FTAgnName,FTAddRefCode AS FTAddRefCodeAgn\r\n\tFROM  TCNMAgency Agn WITH (NOLOCK) \r\n\t\t\t INNER JOIN TCNMAddress_L AddrL WITH (NOLOCK) ON Agn.FTBchCode = AddrL.FTAddRefCode \r\n\t\t\t LEFT JOIN TCNMAgency_L AgnL WITH (NOLOCK) ON Agn.FTAgnCode = AgnL.FTAgnCode AND AgnL.FNLngID = @pnLanguage\r\n\t\t\t WHERE Agn.FTBchCode = @ptCmpBch  AND AddrL.FTAddRefNo = '1'\r\n\t\t\t) Agn  ON AddrL.FTAddRefCode  = Agn.FTAddRefCodeAgn\r\n\r\n\t LEFT JOIN\r\n\t\t\r\n(SELECT Bch.FTBchCode,CmpL.FTCmpName,FTAddRefCode AS FTAddRefCodeBch\r\n\tFROM  TCNMBranch Bch WITH (NOLOCK) \r\n\t\t\t LEFT JOIN TCNMComp Cmp WITH (NOLOCK) ON Cmp.FTBchCode = Bch.FTBchCode \r\n\t\t\t INNER JOIN TCNMAddress_L AddrL WITH (NOLOCK) ON Bch.FTBchCode = AddrL.FTAddRefCode \r\n\t\t\t LEFT JOIN TCNMComp_L CmpL WITH (NOLOCK) ON Cmp.FTCmpCode = CmpL.FTCmpCode AND CmpL.FNLngID = @pnLanguage\r\n\t\t\t WHERE Bch.FTBchCode = @ptCmpBch  AND AddrL.FTAddRefNo = '1'\r\n\t\t\t) Bch ON  AddrL.FTAddRefCode  = Bch.FTAddRefCodeBch\r\n\t LEFT JOIN\r\n\t\t\r\n(SELECT Cmp.FTBchCode,CmpL.FTCmpName,FTAddRefCode AS FTAddRefCodeCmp\r\n\tFROM  TCNMComp Cmp WITH (NOLOCK) \r\n\t\t\t INNER JOIN TCNMAddress_L AddrL WITH (NOLOCK) ON Cmp.FTBchCode = AddrL.FTAddRefCode \r\n\t\t\t LEFT JOIN TCNMComp_L CmpL WITH (NOLOCK) ON Cmp.FTCmpCode = CmpL.FTCmpCode AND CmpL.FNLngID = @pnLanguage\r\n\t\t\t WHERE Cmp.FTBchCode = @ptCmpBch  AND AddrL.FTAddRefNo = '1'\r\n\t\t\t) Cmp ON  AddrL.FTAddRefCode  = Cmp.FTAddRefCodeCmp\r\n\t LEFT JOIN TCNMProvince_L PvnL WITH (NoLock) ON  AddrL.FTAddV1PvnCode = PvnL.FTPvnCode AND PvnL.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L DstL WITH (NoLock) ON  AddrL.FTAddV1DstCode = DstL.FTDstCode AND DstL.FNLngID = @pnLanguage\t\t\r\n\t LEFT JOIN TCNMSubDistrict_L SDstL WITH (NoLock) ON  AddrL.FTAddV1SubDist = SDstL.FTSudCode AND SDstL.FNLngID = @pnLanguage\t\t\r\n\t WHERE AddrL.FTAddRefNo = '1' AND (AddrL.FTAddRefCode = FTAddRefCodeMer OR (AddrL.FTAddRefCode = FTAddRefCodeAgn OR AddrL.FTAddRefCode = FTAddRefCodeBch OR AddrL.FTAddRefCode = FTAddRefCodeCmp))\r\n) AddrSum\r\n\r\n",
+        "SqlCommand": "\r\n SELECT \r\n\tCASE WHEN FTAddRefCode = ISNULL(FTAddRefCodeMer,'') THEN FTMerName ELSE \r\n\tCASE WHEN FTAddRefCode = ISNULL(FTAddRefCodeAgn,'') THEN FTAgnName ELSE  \r\n\t\tCASE WHEN FTAddRefCode = ISNULL(FTAddRefCodeBch,'') THEN FTCmpName ELSE \r\n\t\t\tCASE WHEN FTAddRefCode = ISNULL(FTAddRefCodeCmp,'') THEN FTCmpName ELSE \r\n\t\t\t\t''\r\n\t\t\tEND\r\n\t\tEND\r\n\tEND\r\nEND\r\nAS \tFTCompName,\r\nFTAddrType,FTAddName,(SELECT FTBchName FROM TCNMBranch_L WHERE  FTBchCode = @ptCmpBch AND FNLngID = @pnLanguage ) AS FTBchName,\r\nFTAddV1No,FTAddV1Soi,FTAddV1Village,FTAddV1Road,FTAddV1SubDist,FTSudName,FTAddV1DstCode,FTDstName,FTAddV1PvnCode,FTPvnName,FTAddV1PostCode,FTAddV2Desc1,FTAddV2Desc2,\r\nFTAddTel,FTAddFax,FTAddWebsite  ,FTAddTaxNo\r\nFROM\r\n(SELECT AddrL.FTAddRefCode,FTAddRefCodeMer,Mer.FTMerName,Agn.FTAddRefCodeAgn,Agn.FTAgnName,Bch.FTAddRefCodeBch,Bch.FTCmpName AS FTCmpNameBch,FTAddRefCodeCmp,Cmp.FTCmpName,\r\n\tFTAddVersion AS FTAddrType,AddrL.FTAddName,\r\n\tFTAddV1No,FTAddV1Soi,FTAddV1Village,FTAddV1Road,FTAddV1SubDist,SDstL.FTSudName,FTAddV1DstCode,DstL.FTDstName,FTAddV1PvnCode,PvnL.FTPvnName,FTAddV1PostCode,FTAddV2Desc1,FTAddV2Desc2,\r\n\tAddrL.FTAddTel,AddrL.FTAddFax,AddrL.FTAddWebsite  ,FTAddTaxNo\r\n\tFROM TCNMAddress_L AddrL\r\n\t LEFT JOIN\r\n\t\t\t (\r\nSELECT FTBchCode,Bch.FTMerCode,FTMerName,FTAddRefCode AS FTAddRefCodeMer\r\n\tFROM  TCNMBranch Bch WITH (NOLOCK) \r\n\t\t\t\tINNER JOIN TCNMAddress_L AddrL WITH (NOLOCK) ON Bch.FTMerCode = AddrL.FTAddRefCode \r\n\t\t\t\tLEFT JOIN TCNMMerChant_L MerL WITH (NOLOCK) ON Bch.FTMerCode = MerL.FTMerCode AND MerL.FNLngID = @pnLanguage\r\n\t\t\t\tWHERE FTBchCode = @ptCmpBch  AND AddrL.FTAddGrpType = '7' AND AddrL.FTAddRefNo = '1'\r\n\t\t\t ) Mer ON AddrL.FTAddRefCode  = Mer.FTAddRefCodeMer \r\n\r\n\t LEFT JOIN\r\n\t\t\t\r\n(SELECT FTBchCode,Agn.FTAgnCode,AgnL.FTAgnName,FTAddRefCode AS FTAddRefCodeAgn\r\n\tFROM  TCNMAgency Agn WITH (NOLOCK) \r\n\t\t\t INNER JOIN TCNMAddress_L AddrL WITH (NOLOCK) ON Agn.FTBchCode = AddrL.FTAddRefCode \r\n\t\t\t LEFT JOIN TCNMAgency_L AgnL WITH (NOLOCK) ON Agn.FTAgnCode = AgnL.FTAgnCode AND AgnL.FNLngID = @pnLanguage\r\n\t\t\t WHERE Agn.FTBchCode = @ptCmpBch  AND AddrL.FTAddRefNo = '1'\r\n\t\t\t) Agn  ON AddrL.FTAddRefCode  = Agn.FTAddRefCodeAgn\r\n\r\n\t LEFT JOIN\r\n\t\t\r\n(SELECT Bch.FTBchCode,CmpL.FTCmpName,FTAddRefCode AS FTAddRefCodeBch\r\n\tFROM  TCNMBranch Bch WITH (NOLOCK) \r\n\t\t\t LEFT JOIN TCNMComp Cmp WITH (NOLOCK) ON Cmp.FTBchCode = Bch.FTBchCode \r\n\t\t\t INNER JOIN TCNMAddress_L AddrL WITH (NOLOCK) ON Bch.FTBchCode = AddrL.FTAddRefCode \r\n\t\t\t LEFT JOIN TCNMComp_L CmpL WITH (NOLOCK) ON Cmp.FTCmpCode = CmpL.FTCmpCode AND CmpL.FNLngID = @pnLanguage\r\n\t\t\t WHERE Bch.FTBchCode = @ptCmpBch  AND AddrL.FTAddRefNo = '1'\r\n\t\t\t) Bch ON  AddrL.FTAddRefCode  = Bch.FTAddRefCodeBch\r\n\t LEFT JOIN\r\n\t\t\r\n(SELECT Cmp.FTBchCode,CmpL.FTCmpName,FTAddRefCode AS FTAddRefCodeCmp\r\n\tFROM  TCNMComp Cmp WITH (NOLOCK) \r\n\t\t\t INNER JOIN TCNMAddress_L AddrL WITH (NOLOCK) ON Cmp.FTBchCode = AddrL.FTAddRefCode \r\n\t\t\t LEFT JOIN TCNMComp_L CmpL WITH (NOLOCK) ON Cmp.FTCmpCode = CmpL.FTCmpCode AND CmpL.FNLngID = @pnLanguage\r\n\t\t\t WHERE Cmp.FTBchCode = @ptCmpBch  AND AddrL.FTAddRefNo = '1'\r\n\t\t\t) Cmp ON  AddrL.FTAddRefCode  = Cmp.FTAddRefCodeCmp\r\n\t LEFT JOIN TCNMProvince_L PvnL WITH (NoLock) ON  AddrL.FTAddV1PvnCode = PvnL.FTPvnCode AND PvnL.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L DstL WITH (NoLock) ON  AddrL.FTAddV1DstCode = DstL.FTDstCode AND DstL.FNLngID = @pnLanguage\t\t\r\n\t LEFT JOIN TCNMSubDistrict_L SDstL WITH (NoLock) ON  AddrL.FTAddV1SubDist = SDstL.FTSudCode AND SDstL.FNLngID = @pnLanguage\t\t\r\n\t WHERE AddrL.FTAddRefNo = '1' AND (AddrL.FTAddRefCode = FTAddRefCodeMer OR (AddrL.FTAddRefCode = FTAddRefCodeAgn OR AddrL.FTAddRefCode = FTAddRefCodeBch OR AddrL.FTAddRefCode = FTAddRefCodeCmp))\r\n) AddrSum\r\n\r\n",
         "Parameters": {
           "0": {
             "Name": "ptCompCode",
@@ -984,7 +993,7 @@
           }
         },
         "NameInSource": "SaleInv",
-        "SqlCommand": "declare @ptDocNo varchar(20) = '{SP_tDocNo}' \r\n declare @pnLanguage int = '{nLanguage}' \r\n declare @ptDocBch varchar(5) = '{SP_tDocBch}' \r\n SELECT  FTBchCode,FTXshDocNo,FTPdtCode,FTXsdBarCode,FTPdtName, FTPunCode,FTPunName,\r\n\tSUM(FCXsdQty) AS FCXsdQty,\r\n\tFCXsdSetPrice,FTXsdDCText,\r\n\tSUM(FCXsdDiscount) AS FCXsdDiscount,SUM(FCXddDisPmt) AS FCXddDisPmt ,\r\n\tSUM(FCXsdNet) AS FCXsdNet,\r\n\tFCXsdSetPricePD  ,SUM(FCXsdNetPD) AS FCXsdNetPD,\r\n\tFCXsdSetPriceUse  ,\r\n\tSUM(FCXsdNetUse) AS FCXsdNetUse,\t\r\n\tFVXsdSumNet,\r\n\tFVXsdSumGrand,\r\n\tFNXsdSeqNo,\r\n\t(SELECT SUM(\r\n\t\t\tCASE FTXddDisChgType\r\n\t\t\tWHEN '1' THEN ISNULL(FCXddValue,0)*-1 \r\n\t\t\tWHEN '2' THEN ISNULL(FCXddValue,0)*-1 \r\n\t\t\tELSE ISNULL(FCXddValue,0)\r\n\t\t\tEND\r\n\t\t\t) AS FCXddValue\r\n     FROM TPSTTaxDTDis WHERE FTXshDocNo = @ptDocNo AND FTBchCode = @ptDocBch  \r\n\t) AS FCDisTotal\r\nFROM\r\n  (\r\nSELECT DT.FTBchCode, DT.FTXshDocNo,\r\n\tDT.FTPdtCode,DT.FTXsdBarCode, Pdt_L.FTPdtName, DT.FTPunCode,\r\n\tPun_L.FTPunName,\r\n\tDT.FCXsdQty,\r\n\tDT.FCXsdSetPrice,ISNULL(FTXsdDCText,'') AS FTXsdDCText,\r\n\tISNULL(DisDT.FCXddValue,0) AS FCXsdDiscount,ISNULL(DTDis.FCXddValue,0)*-1 AS FCXddDisPmt,\r\n\t(DT.FCXsdNet) AS FCXsdNet,\r\n\tISNULL(PD.FCXsdSetPrice,0) AS FCXsdSetPricePD  ,ISNULL(PD.FCXsdNet,0) AS FCXsdNetPD,\r\n\tCASE WHEN ISNULL(PD.FCXsdSetPrice,0) = 0 THEN DT.FCXsdSetPrice ELSE ISNULL(PD.FCXsdSetPrice,0) END AS FCXsdSetPriceUse  ,\r\n\tCASE WHEN ISNULL(PD.FCXsdNet,0) = 0 THEN DT.FCXsdNet ELSE ISNULL(PD.FCXsdNet,0) END AS FCXsdNetUse,\t\r\n\tDT.FNXsdSeqNo,\r\n\tFVXsdSumNet,\r\n\tFVXsdSumGrand\r\n\tFROM TPSTTaxDT DT WITH (NoLock)\r\n\tLEFT JOIN\r\n\t(\r\nSELECT D2.FTBchCode,D2.FTXshDocNo, D2.FNXsdSeqNo,\r\n\tSUM(\r\n\tCASE FTXddDisChgType\r\n\t\t\tWHEN '1' THEN ISNULL(FCXddValue,0)*-1 \r\n\t\t\tWHEN '2' THEN ISNULL(FCXddValue,0)*-1 \r\n\t\t\tELSE ISNULL(FCXddValue,0)\r\n\t\t\tEND\r\n\t\t\t) AS FCXddValue,\r\n\t\tFTXsdDCText = STUFF(\r\n(SELECT ',' + CASE FTXddDisChgType \r\n\t\t\t\t\t\t\t\t              WHEN '1' THEN '-' + FTXddDisChgTxt \r\n\t\t\t\t\t\t\t\t\t\t\t  WHEN '2' THEN '-' + FTXddDisChgTxt \r\n\t\t\t\t\t\t\t\t\t\t\t  ELSE FTXddDisChgTxt \r\n\t\t\t\t\t\t\t\t\t\t\t  END\r\n\t\t\t\t\t\t\t\t FROM TPSTTaxDTDis D1\r\n\t\t\t\t\t\t\t\t\t\t\tWHERE D1.FTBchCode = D2.FTBchCode AND D1.FTXshDocNo = D2.FTXshDocNo AND D1.FNXsdSeqNo = D2.FNXsdSeqNo\r\n\t\t\t\t\t\t\t\t\t\t\tFOR XML PATH ('')\t\t\t\r\n\t\t\t\t\t\t\t\t), 1, 1, ''\r\n\t\t\t\t\t\t   ) \r\n\t\tFROM TPSTTaxDTDis D2\r\n\t\tWHERE FNXddStaDis = 1\r\n\t\tGROUP BY D2.FTBchCode,D2.FTXshDocNo,D2.FNXsdSeqNo\t\r\n\t) DisDT  ON DT.FTBchCode = DisDT.FTBchCode AND DT.FTXshDocNo = DisDT.FTXshDocNo AND DT.FNXsdSeqNo = DisDT.FNXsdSeqNo\r\n\tLEFT JOIN \r\n\t(\r\nSELECT FTBchCode,FTXshDocNo,FNXsdSeqNo,\r\n\tISNULL(FCXddNet,0) AS FCXddNet, \r\n\tSUM(ISNULL(FCXddValue,0)) AS FCXddValue\r\n\tFROM TPSTTaxDTDis  WITH (NoLock) \r\n\t\tWHERE FNXddStaDis = 0 AND FTXddDisChgType IN ('1','2') \r\n\t\tGROUP BY  FTBchCode,FTXshDocNo,FNXsdSeqNo,\r\n\t\tISNULL(FCXddNet,0)\r\n\t) DTDis ON DT.FTBchCode = DTDis.FTBchCode AND DT.FTXshDocNo = DTDis.FTXshDocNo AND DT.FNXsdSeqNo = DTDis.FNXsdSeqNo\r\n\t\r\n\tLEFT JOIN\r\n\t( \r\nSELECT FTBchCode,FTXshDocNo,SUM(FCXsdNet)  AS FVXsdSumNet \r\n\tFROM TPSTTaxDT DT WITH (NOLOCK)\r\n\t WHERE DT.FTXsdStaPdt <> '4' AND DT.FTXshDocNo = @ptDocNo AND DT.FTBchCode = @ptDocBch\r\n\t GROUP BY FTBchCode,FTXshDocNo\r\n\t) SumDT ON  DT.FTBchCode = SumDT.FTBchCode AND DT.FTXshDocNo = SumDT.FTXshDocNo\r\n\tLEFT JOIN\r\n\t(\r\nSELECT FTBchCode,FTXshDocNo,SUM((FCXshGrand-FCXshRnd)+FCXshDis-FCXshChg)  AS FVXsdSumGrand \r\n\tFROM TPSTTaxHD HD WITH (NOLOCK)\r\n\t WHERE HD.FTXshStaDoc = '1' AND HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch\r\n\t GROUP BY FTBchCode,FTXshDocNo\r\n\t   ) SumHD ON DT.FTBchCode = SumHD.FTBchCode AND DT.FTXshDocNo = SumHD.FTXshDocNo\r\n\t\r\n\tLEFT JOIN\r\n\t(\r\nSELECT PD.FTBchCode,PD.FTXshDocNo,PD.FNXsdSeqNo,PD.FCXsdSetPrice ,PD.FCXsdNet\r\n\tFROM TPSTTaxPD PD WITH (NOLOCK) \r\n\t  WHERE FTXpdGetType = '4' AND  PD.FTXshDocNo = @ptDocNo AND PD.FTBchCode = @ptDocBch\r\n\t) PD ON DT.FTBchCode = PD.FTBchCode AND DT.FTXshDocNo = PD.FTXshDocNo AND Dt.FNXsdSeqNo = PD.FNXsdSeqNo\r\n\tLEFT JOIN TCNMPdt_L Pdt_L WITH (NoLock) ON DT.FTPdtCode = Pdt_L.FTPdtCode AND Pdt_L.FNLngID = @pnLanguage\r\n\tLEFT JOIN TCNMPdtUnit_L Pun_L WITH (NoLock) ON DT.FTPunCode = Pun_L.FTPunCode AND Pun_L.FNLngID = @pnLanguage\r\n\tWHERE DT.FTXsdStaPdt <> '4' AND DT.FTXshDocNo = @ptDocNo AND DT.FTBchCode = @ptDocBch\r\n   ) SumAll\r\nGROUP BY FNXsdSeqNo,FTBchCode,FTXshDocNo,FTPdtCode,FTXsdBarCode,FTPdtName, FTPunCode,FTPunName,FCXsdSetPrice,FTXsdDCText,FCXsdSetPricePD,FCXsdSetPriceUse,\r\nFVXsdSumNet,FVXsdSumGrand",
+        "SqlCommand": "\r\n SELECT  FTBchCode,FTXshDocNo,FTPdtCode,FTXsdBarCode,FTPdtName, FTPunCode,FTPunName,\r\n\tSUM(FCXsdQty) AS FCXsdQty,\r\n\tFCXsdSetPrice,FTXsdDCText,\r\n\tSUM(FCXsdDiscount) AS FCXsdDiscount,SUM(FCXddDisPmt) AS FCXddDisPmt ,\r\n\tSUM(FCXsdNet) AS FCXsdNet,\r\n\tFCXsdSetPricePD  ,SUM(FCXsdNetPD) AS FCXsdNetPD,\r\n\tFCXsdSetPriceUse  ,\r\n\tSUM(FCXsdNetUse) AS FCXsdNetUse,\t\r\n\tFVXsdSumNet,\r\n\tFVXsdSumGrand,\r\n\tFNXsdSeqNo,\r\n\t(SELECT SUM(\r\n\t\t\tCASE FTXddDisChgType\r\n\t\t\tWHEN '1' THEN ISNULL(FCXddValue,0)*-1 \r\n\t\t\tWHEN '2' THEN ISNULL(FCXddValue,0)*-1 \r\n\t\t\tELSE ISNULL(FCXddValue,0)\r\n\t\t\tEND\r\n\t\t\t) AS FCXddValue\r\n     FROM TPSTTaxDTDis WHERE FTXshDocNo = @ptDocNo AND FTBchCode = @ptDocBch  \r\n\t) AS FCDisTotal\r\nFROM\r\n  (\r\nSELECT DT.FTBchCode, DT.FTXshDocNo,\r\n\tDT.FTPdtCode,DT.FTXsdBarCode, Pdt_L.FTPdtName, DT.FTPunCode,\r\n\tPun_L.FTPunName,\r\n\tDT.FCXsdQty,\r\n\tDT.FCXsdSetPrice,ISNULL(FTXsdDCText,'') AS FTXsdDCText,\r\n\tISNULL(DisDT.FCXddValue,0) AS FCXsdDiscount,ISNULL(DTDis.FCXddValue,0)*-1 AS FCXddDisPmt,\r\n\t(DT.FCXsdNet) AS FCXsdNet,\r\n\tISNULL(PD.FCXsdSetPrice,0) AS FCXsdSetPricePD  ,ISNULL(PD.FCXsdNet,0) AS FCXsdNetPD,\r\n\tCASE WHEN ISNULL(PD.FCXsdSetPrice,0) = 0 THEN DT.FCXsdSetPrice ELSE ISNULL(PD.FCXsdSetPrice,0) END AS FCXsdSetPriceUse  ,\r\n\tCASE WHEN ISNULL(PD.FCXsdNet,0) = 0 THEN DT.FCXsdNet ELSE ISNULL(PD.FCXsdNet,0) END AS FCXsdNetUse,\t\r\n\tDT.FNXsdSeqNo,\r\n\tFVXsdSumNet,\r\n\tFVXsdSumGrand\r\n\tFROM TPSTTaxDT DT WITH (NoLock)\r\n\tLEFT JOIN\r\n\t(\r\nSELECT D2.FTBchCode,D2.FTXshDocNo, D2.FNXsdSeqNo,\r\n\tSUM(\r\n\tCASE FTXddDisChgType\r\n\t\t\tWHEN '1' THEN ISNULL(FCXddValue,0)*-1 \r\n\t\t\tWHEN '2' THEN ISNULL(FCXddValue,0)*-1 \r\n\t\t\tELSE ISNULL(FCXddValue,0)\r\n\t\t\tEND\r\n\t\t\t) AS FCXddValue,\r\n\t\tFTXsdDCText = STUFF(\r\n(SELECT ',' + CASE FTXddDisChgType \r\n\t\t\t\t\t\t\t\t              WHEN '1' THEN '-' + FTXddDisChgTxt \r\n\t\t\t\t\t\t\t\t\t\t\t  WHEN '2' THEN '-' + FTXddDisChgTxt \r\n\t\t\t\t\t\t\t\t\t\t\t  ELSE FTXddDisChgTxt \r\n\t\t\t\t\t\t\t\t\t\t\t  END\r\n\t\t\t\t\t\t\t\t FROM TPSTTaxDTDis D1\r\n\t\t\t\t\t\t\t\t\t\t\tWHERE D1.FTBchCode = D2.FTBchCode AND D1.FTXshDocNo = D2.FTXshDocNo AND D1.FNXsdSeqNo = D2.FNXsdSeqNo\r\n\t\t\t\t\t\t\t\t\t\t\tFOR XML PATH ('')\t\t\t\r\n\t\t\t\t\t\t\t\t), 1, 1, ''\r\n\t\t\t\t\t\t   ) \r\n\t\tFROM TPSTTaxDTDis D2\r\n\t\tWHERE FNXddStaDis = 1\r\n\t\tGROUP BY D2.FTBchCode,D2.FTXshDocNo,D2.FNXsdSeqNo\t\r\n\t) DisDT  ON DT.FTBchCode = DisDT.FTBchCode AND DT.FTXshDocNo = DisDT.FTXshDocNo AND DT.FNXsdSeqNo = DisDT.FNXsdSeqNo\r\n\tLEFT JOIN \r\n\t(\r\nSELECT FTBchCode,FTXshDocNo,FNXsdSeqNo,\r\n\tISNULL(FCXddNet,0) AS FCXddNet, \r\n\tSUM(ISNULL(FCXddValue,0)) AS FCXddValue\r\n\tFROM TPSTTaxDTDis  WITH (NoLock) \r\n\t\tWHERE FNXddStaDis = 0 AND FTXddDisChgType IN ('1','2') \r\n\t\tGROUP BY  FTBchCode,FTXshDocNo,FNXsdSeqNo,\r\n\t\tISNULL(FCXddNet,0)\r\n\t) DTDis ON DT.FTBchCode = DTDis.FTBchCode AND DT.FTXshDocNo = DTDis.FTXshDocNo AND DT.FNXsdSeqNo = DTDis.FNXsdSeqNo\r\n\t\r\n\tLEFT JOIN\r\n\t( \r\nSELECT FTBchCode,FTXshDocNo,SUM(FCXsdNet)  AS FVXsdSumNet \r\n\tFROM TPSTTaxDT DT WITH (NOLOCK)\r\n\t WHERE DT.FTXsdStaPdt <> '4' AND DT.FTXshDocNo = @ptDocNo AND DT.FTBchCode = @ptDocBch\r\n\t GROUP BY FTBchCode,FTXshDocNo\r\n\t) SumDT ON  DT.FTBchCode = SumDT.FTBchCode AND DT.FTXshDocNo = SumDT.FTXshDocNo\r\n\tLEFT JOIN\r\n\t(\r\nSELECT FTBchCode,FTXshDocNo,SUM((FCXshGrand-FCXshRnd)+FCXshDis-FCXshChg)  AS FVXsdSumGrand \r\n\tFROM TPSTTaxHD HD WITH (NOLOCK)\r\n\t WHERE HD.FTXshStaDoc = '1' AND HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch\r\n\t GROUP BY FTBchCode,FTXshDocNo\r\n\t   ) SumHD ON DT.FTBchCode = SumHD.FTBchCode AND DT.FTXshDocNo = SumHD.FTXshDocNo\r\n\t\r\n\tLEFT JOIN\r\n\t(\r\nSELECT PD.FTBchCode,PD.FTXshDocNo,PD.FNXsdSeqNo,PD.FCXsdSetPrice ,PD.FCXsdNet\r\n\tFROM TPSTTaxPD PD WITH (NOLOCK) \r\n\t  WHERE FTXpdGetType = '4' AND  PD.FTXshDocNo = @ptDocNo AND PD.FTBchCode = @ptDocBch\r\n\t) PD ON DT.FTBchCode = PD.FTBchCode AND DT.FTXshDocNo = PD.FTXshDocNo AND Dt.FNXsdSeqNo = PD.FNXsdSeqNo\r\n\tLEFT JOIN TCNMPdt_L Pdt_L WITH (NoLock) ON DT.FTPdtCode = Pdt_L.FTPdtCode AND Pdt_L.FNLngID = @pnLanguage\r\n\tLEFT JOIN TCNMPdtUnit_L Pun_L WITH (NoLock) ON DT.FTPunCode = Pun_L.FTPunCode AND Pun_L.FNLngID = @pnLanguage\r\n\tWHERE DT.FTXsdStaPdt <> '4' AND DT.FTXshDocNo = @ptDocNo AND DT.FTBchCode = @ptDocBch\r\n   ) SumAll\r\nGROUP BY FNXsdSeqNo,FTBchCode,FTXshDocNo,FTPdtCode,FTXsdBarCode,FTPdtName, FTPunCode,FTPunName,FCXsdSetPrice,FTXsdDCText,FCXsdSetPricePD,FCXsdSetPriceUse,\r\nFVXsdSumNet,FVXsdSumGrand",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -1043,7 +1052,7 @@
         },
         "NameInSource": "SaleInv",
         "CommandTimeout": 5000,
-        "SqlCommand": "declare @ptDocNo varchar(20) = '{SP_tDocNo}' \r\n declare @ptDocBch varchar(5) = '{SP_tDocBch}' \r\n SELECT HD.FTBchCode,HD.FTXshDocNo,CAST(FCXsdVatRate AS DECIMAL(18,2))  AS FCXsdVatRate,\r\nSUM(CAST(FCXsdVat AS DECIMAL(18,2))) AS FCXsdVat \r\nFROM TPSTTaxDT DT INNER JOIN TPSTTaxHD HD ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo\r\nWHERE HD.FTXshDocNo = \t@ptDocNo AND FTXsdStaPdt <> '4' AND HD.FTBchCode = @ptDocBch\r\nGROUP BY HD.FTBchCode,HD.FTXshDocNo,CAST(FCXsdVatRate AS DECIMAL(18,2))",
+        "SqlCommand": "\r\n SELECT HD.FTBchCode,HD.FTXshDocNo,CAST(FCXsdVatRate AS DECIMAL(18,2))  AS FCXsdVatRate,\r\nSUM(CAST(FCXsdVat AS DECIMAL(18,2))) AS FCXsdVat \r\nFROM TPSTTaxDT DT INNER JOIN TPSTTaxHD HD ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo\r\nWHERE HD.FTXshDocNo = \t@ptDocNo AND FTXsdStaPdt <> '4' AND HD.FTBchCode = @ptDocBch\r\nGROUP BY HD.FTBchCode,HD.FTXshDocNo,CAST(FCXsdVatRate AS DECIMAL(18,2))",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -1130,7 +1139,7 @@
           }
         },
         "NameInSource": "SaleInv",
-        "SqlCommand": "declare @ptDocNo varchar(20) = '{SP_tDocNo}' \r\n declare @pnLanguage int = '{nLanguage}' \r\n declare @ptDocBch varchar(5) = '{SP_tDocBch}' \r\n SELECT FTBchCode,FTXshDocNo,RC.FTRcvCode,RC.FTRcvName,Rcv.FTFmtCode,RvlL.FTFmtName,RC.FCXrcNet,RC.FTXrcRefNo1,RC.FTXrcRefNo2 \r\nFROM TPSTTaxRC RC\r\nLEFT JOIN TFNMRcv Rcv WITH (NOLOCK) ON RC.FTRcvCode = Rcv.FTRcvCode\r\nLEFT JOIN TSysRcvFmt_L RvlL WITH (NOLOCK) ON Rcv.FTFmtCode = RvlL.FTFmtCode AND RvlL.FNLngID = @pnLanguage\r\nWHERE FTXshDocNo = @ptDocNo AND RC.FTBchCode = @ptDocBch\r\nORDER BY FTRcvCode",
+        "SqlCommand": "\r\n SELECT FTBchCode,FTXshDocNo,RC.FTRcvCode,RC.FTRcvName,Rcv.FTFmtCode,RvlL.FTFmtName,RC.FCXrcNet,RC.FTXrcRefNo1,RC.FTXrcRefNo2 \r\nFROM TPSTTaxRC RC\r\nLEFT JOIN TFNMRcv Rcv WITH (NOLOCK) ON RC.FTRcvCode = Rcv.FTRcvCode\r\nLEFT JOIN TSysRcvFmt_L RvlL WITH (NOLOCK) ON Rcv.FTFmtCode = RvlL.FTFmtCode AND RvlL.FNLngID = @pnLanguage\r\nWHERE FTXshDocNo = @ptDocNo AND RC.FTBchCode = @ptDocBch\r\nORDER BY FTRcvCode",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -1156,6 +1165,7 @@
         "Ident": "StiSqlSource",
         "Name": "TPSTTaxDTSN",
         "Alias": "TPSTTaxDTSN",
+        "Key": "0dd07a02a31840a0aed21ba23c8564f0",
         "Columns": {
           "0": {
             "Name": "FTBchCode",
@@ -1194,7 +1204,7 @@
           }
         },
         "NameInSource": "SaleInv",
-        "SqlCommand": "declare @ptDocNo varchar(20) = '{SP_tDocNo}' \r\n declare @ptDocBch varchar(5) = '{SP_tDocBch}' \r\n SELECT  FTBchCode, FTXshDocNo, FNXsdSeqNo, FTPdtSerial, FTXsdStaRet\r\n\tFROM TPSTTaxDTSN \r\n\tWHERE FTBchCode = @ptDocBch AND FTXshDocNo = @ptDocNo",
+        "SqlCommand": "\r\n SELECT  FTBchCode, FTXshDocNo, FNXsdSeqNo, FTPdtSerial, FTXsdStaRet\r\n\tFROM TPSTTaxDTSN \r\n\tWHERE FTBchCode = @ptDocBch AND FTXshDocNo = @ptDocNo",
         "Parameters": {
           "0": {
             "Name": "ptDocBch",
@@ -1215,7 +1225,8 @@
       "0": {
         "Ident": "StiSqlDatabase",
         "Name": "SaleInv",
-        "Alias": "SaleInv"
+        "Alias": "SaleInv",
+        "Key": "17d02fc4ee6140288339a368bbf3edf0"
       }
     },
     "Relations": {
@@ -1276,8 +1287,6 @@
               "Ident": "StiPanel",
               "Name": "Container3",
               "CanGrow": true,
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.2,0,10.45,2",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1290,8 +1299,6 @@
                   "Ident": "StiText",
                   "Name": "Text31",
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.15,0.58,10.2,0.4",
                   "Enabled": false,
                   "Interaction": {
@@ -1305,13 +1312,13 @@
                   "Border": "Bottom;;;None;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "1": {
                   "Ident": "StiText",
@@ -1319,8 +1326,6 @@
                   "Guid": "26feeac82375420ba87f805a87e67b58",
                   "CanShrink": true,
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.15,0.62,10.2,0.4",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1338,19 +1343,17 @@
                   "TextOptions": {
                     "WordWrap": true
                   },
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "2": {
                   "Ident": "StiText",
                   "Name": "Text32",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.15,0.13,10.2,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1363,21 +1366,19 @@
                   "Border": "Bottom;;;None;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 }
               }
             },
             "1": {
               "Ident": "StiPanel",
               "Name": "Container2",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "10.8,0,9.49,1.98",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1389,8 +1390,6 @@
                   "Ident": "StiText",
                   "Name": "TotalPage",
                   "Guid": "3c56f809ff73400199a937fdb95b1555",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "7.6,1,1.5,0.4",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1414,8 +1413,6 @@
                   "Name": "tdBarcodeDoc",
                   "ShiftMode": "IncreasingSize, OnlyInWidthOfComponent",
                   "Guid": "e6e6baf3abf8440698accac9550ce301",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,1.44,8.9,0.45",
                   "Alias": "[Barcode]",
                   "Interaction": {
@@ -1435,8 +1432,6 @@
                   "Ident": "StiText",
                   "Name": "tDatePrint",
                   "Guid": "4b0da77d823948cbab136bfe1f9c07f9",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.08,1,7.5,0.4",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1448,20 +1443,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "3": {
                   "Ident": "StiText",
                   "Name": "Header",
                   "Guid": "910ace6d2a1045b7a304fc0cefa5ecea",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "1.06,0.19,7.54,0.66",
                   "Alias": "Header",
                   "Interaction": {
@@ -1476,19 +1469,17 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "4": {
                   "Ident": "StiStartPointPrimitive",
                   "Name": "StartPointPrimitive1",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.32,0.12,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1498,8 +1489,6 @@
                 "5": {
                   "Ident": "StiEndPointPrimitive",
                   "Name": "EndPointPrimitive1",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "9.22,0.91,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1512,8 +1501,6 @@
               "Ident": "StiPanel",
               "Name": "Panel1",
               "CanGrow": true,
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.2,2.01,10.8,4.22",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1528,16 +1515,14 @@
                   "Guid": "64ec8a97df72484da7d1418d4f7e5389",
                   "CanShrink": true,
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
-                  "ClientRectangle": "1.68,0.84,8.9,2.29",
+                  "ClientRectangle": "0.24,0.84,10.34,2.29",
                   "Interaction": {
                     "Ident": "StiInteraction"
                   },
                   "MaxNumberOfLines": 5,
                   "Editable": true,
                   "Text": {
-                    "Value": "{TPSTSalHD.FTAddV2Desc1 + \" \" + TPSTSalHD.FTAddV2Desc2}"
+                    "Value": "{IIF(SP_nLang==\"1\",\"ที่อยู่ :\",\"Address :\")} {IIF(TPSTSalHD.FTAddVersion==\"1\",\r\nIIF(SP_nLang==\"1\",\"เลขที่ \",\"No. \") + TPSTSalHD.FTAddV1No +\r\nIIF(TPSTSalHD.FTAddV1Village ==\"\",\"\",\" \" + TPSTSalHD.FTAddV1Village + \" \") +\r\nIIF(TPSTSalHD.FTAddV1Soi==\"\",\"\",IIF(SP_nLang==\"1\",\"ซอย\",\"Soi \") + TPSTSalHD.FTAddV1Soi + \" \") +\r\nIIF(TPSTSalHD.FTAddV1Road==\"\",\"\",IIF(SP_nLang==\"1\",\"ถนน\",\"\") + TPSTSalHD.FTAddV1Road + IIF(SP_nLang==\"1\",\"\",\" Rd.\")+ \" \")+ \r\nIIF(TPSTSalHD.FTSudName==\"\",\"\", TPSTSalHD.FTSudName + \" \") +\r\nIIF(TPSTSalHD.FTDstName==\"\",\"\", TPSTSalHD.FTDstName + \" \") +\r\nIIF(TPSTSalHD.FTPvnName==\"\",\"\",IIF(SP_nLang==\"1\",\"จังหวัด\",\"\") +  TPSTSalHD.FTPvnName + IIF(SP_nLang==\"1\",\"\",\" Province \") +\" \") +\r\nIIF(TPSTSalHD.FTAddV1PostCode==\"\",\"\",TPSTSalHD.FTAddV1PostCode)\r\n,TPSTSalHD.FTAddV2Desc1) + \"  \" + TPSTSalHD.FTAddV2Desc2\r\n}"
                   },
                   "CanBreak": true,
                   "Font": "Tahoma;10;;",
@@ -1552,33 +1537,8 @@
                 },
                 "1": {
                   "Ident": "StiText",
-                  "Name": "tSplAddress",
-                  "Guid": "3850b64c6015408bae521c04937821f8",
-                  "CanShrink": true,
-                  "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
-                  "ClientRectangle": "0.24,0.84,1.44,0.5",
-                  "Interaction": {
-                    "Ident": "StiInteraction"
-                  },
-                  "Editable": true,
-                  "Text": {
-                    "Value": "{IIF(SP_nLang==\"1\",\"ที่อยู่ :\",\"Address :\")}"
-                  },
-                  "CanBreak": true,
-                  "Font": "Tahoma;10;;",
-                  "Border": ";;;;;;;solid:Black",
-                  "Brush": "solid:",
-                  "TextBrush": "solid:Black",
-                  "Type": "Expression"
-                },
-                "2": {
-                  "Ident": "StiText",
                   "Name": "tTel",
                   "Guid": "206c821f142a4db2b0bdd8b213c90ffe",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.22,3.14,5.29,0.52",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1591,20 +1551,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
-                "3": {
+                "2": {
                   "Ident": "StiText",
                   "Name": "Text3",
                   "Guid": "38ff78c118634f399eeef60285fb0e6f",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.22,3.65,10.24,0.44",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1617,20 +1575,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
-                "4": {
+                "3": {
                   "Ident": "StiText",
                   "Name": "tFax",
                   "Guid": "2dcc034cbaca4490886acb9aeea757f5",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "5.54,3.14,4.94,0.42",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1643,20 +1599,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
-                "5": {
+                "4": {
                   "Ident": "StiPanel",
                   "Name": "Panel6",
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0,0.14,10.8,0.7",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1671,8 +1625,6 @@
                       "Guid": "f54ada72565f40f2883174240915354d",
                       "CanShrink": true,
                       "CanGrow": true,
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "0.24,0.1,10.3,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -1689,22 +1641,20 @@
                       "TextOptions": {
                         "WordWrap": true
                       },
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
                         "Top": 2.0,
                         "Bottom": 0.0
                       },
-                      "ShrinkFontToFit": true
+                      "ShrinkFontToFit": true,
+                      "Type": "Expression"
                     }
                   }
                 },
-                "6": {
+                "5": {
                   "Ident": "StiStartPointPrimitive",
                   "Name": "StartPointPrimitive2",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.12,0.09,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1717,8 +1667,6 @@
               "Ident": "StiText",
               "Name": "tPdtName",
               "Guid": "f83ec2057ea54d4286c78d53267e6593",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "4.9,6.45,5.85,0.5",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1731,20 +1679,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "4": {
               "Ident": "StiText",
               "Name": "tPdtCode",
               "Guid": "e72f660cd3844e249552e03fa57e9a51",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "1.45,6.45,3.47,0.5",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1757,20 +1703,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "5": {
               "Ident": "StiText",
               "Name": "tNo",
               "Guid": "c5b8b173ea47462da04f4d0bbb831e0d",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.4,6.45,0.9,0.5",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1784,20 +1728,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "6": {
               "Ident": "StiText",
               "Name": "tUnit",
               "Guid": "b7c05d2556864573933560d3c7f4a94c",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "10.78,6.45,1.3,0.5",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1810,20 +1752,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "7": {
               "Ident": "StiText",
               "Name": "tQty",
               "Guid": "1a23894b57ac45f09c3b41aa233cdc9c",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "12.28,6.45,1.6,0.5",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1837,20 +1777,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "8": {
               "Ident": "StiText",
               "Name": "tUnitPrice",
               "Guid": "0b1da0dc857d4a4e806ef8674e7ad74e",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "14,6.45,1.86,0.5",
               "Alias": "Price : Unit",
               "Interaction": {
@@ -1865,20 +1803,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "9": {
               "Ident": "StiText",
               "Name": "tDisc",
               "Guid": "b934791d76b44b5fb47e3cfb94520ed7",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "15.98,6.45,1.6,0.5",
               "Alias": "Discount",
               "Interaction": {
@@ -1893,20 +1829,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "10": {
               "Ident": "StiText",
               "Name": "tAmount",
               "Guid": "af0890d51b604ba58398a749762ee5d2",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "17.58,6.45,2.22,0.5",
               "Alias": "Amount",
               "Interaction": {
@@ -1921,13 +1855,13 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "11": {
               "Ident": "StiPanel",
@@ -1935,8 +1869,6 @@
               "ShiftMode": "IncreasingSize, DecreasingSize",
               "CanGrow": true,
               "Printable": false,
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "11.05,2.01,9.24,4.22",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -1949,8 +1881,6 @@
                   "Ident": "StiText",
                   "Name": "tDocNo",
                   "Guid": "2cf00abe04fb4666b7519f6288695163",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,0.74,8.4,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1963,20 +1893,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "1": {
                   "Ident": "StiText",
                   "Name": "tDocDate",
                   "Guid": "0999c02d149a4b01aa7e48b2448224dd",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,1.24,8.4,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -1989,20 +1917,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "2": {
                   "Ident": "StiText",
                   "Name": "tDpt",
                   "Guid": "a6ed577b4aad449d84a56d07d7b645b9",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,2.24,8.45,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2015,20 +1941,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "3": {
                   "Ident": "StiText",
                   "Name": "tOperator",
                   "Guid": "0a586064e9e54a3987a60620528c3fa3",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,3.69,8.45,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2040,20 +1964,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "4": {
                   "Ident": "StiText",
                   "Name": "tRef.PO",
                   "Guid": "4f4968b57bb24133b90d39bc7c7f426d",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,2.69,8.45,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2066,20 +1988,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "5": {
                   "Ident": "StiText",
                   "Name": "Text2",
                   "Guid": "ddffc862864f4d1b92d45db7d01496dd",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,0.24,8.4,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2092,20 +2012,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "6": {
                   "Ident": "StiText",
                   "Name": "Text5",
                   "Guid": "e7c517b964ed442fb5ea0b3f78845bff",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,1.74,8.45,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2118,20 +2036,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "7": {
                   "Ident": "StiText",
                   "Name": "Text20",
                   "Guid": "d623eddbe6f44051b5025d180a39c086",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.25,3.19,8.45,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2143,20 +2059,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
                   },
-                  "ShrinkFontToFit": true
+                  "ShrinkFontToFit": true,
+                  "Type": "Expression"
                 },
                 "8": {
                   "Ident": "StiStartPointPrimitive",
                   "Name": "StartPointPrimitive3",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.05,0.09,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2169,8 +2083,6 @@
               "Ident": "StiHorizontalLinePrimitive",
               "Name": "HorizontalLine2",
               "Guid": "61bca70f740247c69f3af2a6507fb926",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.3,7.08,19.72,0.0254",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -2181,8 +2093,6 @@
             "13": {
               "Ident": "StiStartPointPrimitive",
               "Name": "StartPointPrimitive4",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.3,6.34,0,0",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -2192,8 +2102,6 @@
             "14": {
               "Ident": "StiEndPointPrimitive",
               "Name": "EndPointPrimitive2",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "10.89,6.27,0,0",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -2203,8 +2111,6 @@
             "15": {
               "Ident": "StiEndPointPrimitive",
               "Name": "EndPointPrimitive3",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "20.02,6.27,0,0",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -2227,8 +2133,6 @@
               "Ident": "StiPanel",
               "Name": "Panel2",
               "CanGrow": true,
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.2,0.08,20.1,3.75",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -2243,15 +2147,13 @@
                   "Guid": "c3a36f2ba02d414f9125dd9b2422f73f",
                   "CanShrink": true,
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.2,0.09,10.15,0.5",
                   "Interaction": {
                     "Ident": "StiInteraction"
                   },
                   "Editable": true,
                   "Text": {
-                    "Value": "{IIF(SP_nLang==\"1\",\"เหตุผลการลดหนี้ : \",\"Reason : \")}  {IIF(SP_tRsnName==\"\",TPSTSalHD.FTRsnName,SP_tRsnName)}"
+                    "Value": "{IIF(SP_nLang==\"1\",\"เหตุผลการลดหนี้ : \",\"Reason : \")}  {IIF(TPSTSalHD.FTRsnName!=\"\",TPSTSalHD.FTRsnName,SP_tRsnName)}"
                   },
                   "CanBreak": true,
                   "Font": "Tahoma;9;;",
@@ -2261,20 +2163,18 @@
                   "TextOptions": {
                     "WordWrap": true
                   },
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "1": {
                   "Ident": "StiPanel",
                   "Name": "Panel4",
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0,0.65,10.35,3.1",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2288,8 +2188,6 @@
                       "Name": "SubReport5",
                       "Guid": "2cfbf37df3a74da2802ccc7573f34668",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "5.55,0.1,4.74,0.29",
                       "UseParentStyles": true,
                       "Interaction": {
@@ -2306,8 +2204,6 @@
                   "Ident": "StiPanel",
                   "Name": "Panel7",
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "10.5,0,9.6,3.75",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2321,8 +2217,6 @@
                       "Name": "GrossTotal",
                       "Guid": "3140c5e7739d4a88b03186994b2bda1a",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "6.35,0.05,2.75,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2336,7 +2230,6 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
@@ -2348,15 +2241,14 @@
                         "NegativePattern": 1,
                         "GroupSeparator": ",",
                         "UseLocalSetting": false
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "1": {
                       "Ident": "StiText",
                       "Name": "NetAmt",
                       "Guid": "98afe466336e43579c2b21e8653faaa9",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "6.35,0.65,2.75,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2370,7 +2262,6 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
@@ -2382,15 +2273,14 @@
                         "NegativePattern": 1,
                         "GroupSeparator": ",",
                         "UseLocalSetting": false
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "2": {
                       "Ident": "StiText",
                       "Name": "Text8",
                       "Guid": "9f7b5fb108ed44abbe8188a5e99e4b6b",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "6.35,1.25,2.75,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2404,7 +2294,6 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
@@ -2416,15 +2305,14 @@
                         "NegativePattern": 1,
                         "GroupSeparator": ",",
                         "UseLocalSetting": false
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "3": {
                       "Ident": "StiSubReport",
                       "Name": "SubReport1",
                       "Guid": "7a1b7e73f9a24a19a7a0e4135588abdd",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "5.6,1.95,3.5,0.55",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2438,8 +2326,6 @@
                       "Name": "Text37",
                       "Guid": "f052be3356ef41328a888def18cf011b",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "6.35,3.15,2.75,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2453,7 +2339,6 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
@@ -2465,15 +2350,14 @@
                         "NegativePattern": 1,
                         "GroupSeparator": ",",
                         "UseLocalSetting": false
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "5": {
                       "Ident": "StiText",
                       "Name": "Text36",
                       "Guid": "467426daf48c43fe9652239d13f2963a",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "6.35,2.55,2.75,0.45",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2487,7 +2371,6 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
@@ -2499,15 +2382,14 @@
                         "NegativePattern": 1,
                         "GroupSeparator": ",",
                         "UseLocalSetting": false
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "6": {
                       "Ident": "StiText",
                       "Name": "tNetAmt",
                       "Guid": "e3da73b834cc4edcadaa58bce8d66d70",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "0.05,1.25,5.5,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2520,21 +2402,19 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
                         "Top": 2.0,
                         "Bottom": 0.0
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "7": {
                       "Ident": "StiText",
                       "Name": "Text9",
                       "Guid": "4b55fa269be2438bacf25a11fec1668c",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "0.05,0.65,5.5,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2547,21 +2427,19 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
                         "Top": 2.0,
                         "Bottom": 0.0
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "8": {
                       "Ident": "StiText",
                       "Name": "tVat",
                       "Guid": "9f135beaa10741559d991554b4d83daa",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "0.05,1.9,5.35,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2574,21 +2452,19 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
                         "Top": 2.0,
                         "Bottom": 0.0
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "9": {
                       "Ident": "StiText",
                       "Name": "tGrossTotal",
                       "Guid": "8a0c85387c904f7297dd55f26e23882c",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "0.05,0.05,6.2,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2601,21 +2477,19 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
                         "Top": 2.0,
                         "Bottom": 0.0
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "10": {
                       "Ident": "StiText",
                       "Name": "Text35",
                       "Guid": "53a7d6a075cb4f7e8c2f73055724dc48",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "0.05,3.15,4.8,0.5",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2628,21 +2502,19 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
                         "Top": 2.0,
                         "Bottom": 0.0
-                      }
+                      },
+                      "Type": "Expression"
                     },
                     "11": {
                       "Ident": "StiText",
                       "Name": "Text34",
                       "Guid": "3040fdb9814b4101a707d7fc7c21de27",
                       "PrintOn": "OnlyLastPage",
-                      "MinSize": "0,0",
-                      "MaxSize": "0,0",
                       "ClientRectangle": "0.05,2.55,5.55,0.45",
                       "Interaction": {
                         "Ident": "StiInteraction"
@@ -2655,13 +2527,13 @@
                       "Border": ";;;;;;;solid:Black",
                       "Brush": "solid:",
                       "TextBrush": "solid:Black",
-                      "Type": "Expression",
                       "Margins": {
                         "Left": 0.0,
                         "Right": 0.0,
                         "Top": 2.0,
                         "Bottom": 0.0
-                      }
+                      },
+                      "Type": "Expression"
                     }
                   }
                 },
@@ -2669,8 +2541,6 @@
                   "Ident": "StiHorizontalLinePrimitive",
                   "Name": "HorizontalLine3",
                   "Guid": "96f5c8e573bd45049ef9502f668e32c4",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.1,0,19.72,0.0254",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2686,8 +2556,6 @@
               "CanShrink": true,
               "CanGrow": true,
               "GrowToHeight": true,
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.2,3.86,20.1,5.17",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -2701,8 +2569,6 @@
                   "Name": "tGrandTxt",
                   "Guid": "19e7c30f43cd4e03bfe016652255f0bb",
                   "PrintOn": "OnlyLastPage",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.38,0.02,9.92,0.56",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2715,20 +2581,18 @@
                   "Border": ";Gray;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "1": {
                   "Ident": "StiText",
                   "Name": "Text14",
                   "Guid": "5666251dbc5a41fb90814ef7611cd65c",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "9.52,2.9,5.14,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2741,20 +2605,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "2": {
                   "Ident": "StiText",
                   "Name": "Text15",
                   "Guid": "b3aba6ba4263499ea5f0523f30e29fed",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "9.75,2.18,0.2,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2778,8 +2640,6 @@
                   "Ident": "StiText",
                   "Name": "Text16",
                   "Guid": "c47f2aa6497b474ab11edace2725652a",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "9.7,1.06,4.7,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2792,20 +2652,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "4": {
                   "Ident": "StiText",
                   "Name": "Text17",
                   "Guid": "aa5eb772bdea462f9d898ea90e500c25",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "9.52,3.58,5.14,0.52",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2817,20 +2675,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "5": {
                   "Ident": "StiText",
                   "Name": "Text18",
                   "Guid": "bfaaa28f596c4a728717b2df6b97a597",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "9.77,1.86,4.74,0.4",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2843,20 +2699,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "6": {
                   "Ident": "StiText",
                   "Name": "Text12",
                   "Guid": "92711757fb184f9080fed31fc7f4fbe6",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "14.46,2.18,0.2,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2869,20 +2723,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "7": {
                   "Ident": "StiText",
                   "Name": "tReceive",
                   "Guid": "30db4a8cb61c4354a0e431077737ec61",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "15,2.66,4.56,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2894,20 +2746,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "8": {
                   "Ident": "StiText",
                   "Name": "tDelivered",
                   "Guid": "9527b45a89f347faae0ed892a3e8b166",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "15,1.06,4.56,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2919,20 +2769,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "9": {
                   "Ident": "StiText",
                   "Name": "tDate1",
                   "Guid": "76bb63eec396481f942ababa47ba141e",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "15,1.86,4.56,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2944,20 +2792,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "10": {
                   "Ident": "StiText",
                   "Name": "tDate2",
                   "Guid": "bfc0d9e924ad4e02b668193da8102208",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "15,3.5,4.56,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -2969,21 +2815,19 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "11": {
                   "Ident": "StiText",
                   "Name": "tRemark",
                   "Guid": "9c6c41c2129644f3bed69482019ed80e",
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.18,1.07,2.2,0.6",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3005,8 +2849,6 @@
                   "Name": "GranTotal",
                   "Guid": "1272872e45bb42479da6bb738b084527",
                   "PrintOn": "OnlyLastPage",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "16.86,0,2.74,0.56",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3020,7 +2862,6 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
@@ -3032,15 +2873,14 @@
                     "NegativePattern": 1,
                     "GroupSeparator": ",",
                     "UseLocalSetting": false
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "13": {
                   "Ident": "StiText",
                   "Name": "tGranTotal",
                   "Guid": "7dcfb4759f624e509a0cba2ca90ac4bf",
                   "PrintOn": "OnlyLastPage",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "10.56,0,5.35,0.56",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3053,20 +2893,18 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Black",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "14": {
                   "Ident": "StiText",
                   "Name": "Text30",
                   "Guid": "d48776306de34820bbc801dc93c0d775",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.2,4.37,19.65,0.55",
                   "Conditions": {
                     "0": {
@@ -3089,21 +2927,19 @@
                   "Border": ";;;;;;;solid:Black",
                   "Brush": "solid:",
                   "TextBrush": "solid:Red",
-                  "Type": "Expression",
                   "Margins": {
                     "Left": 0.0,
                     "Right": 0.0,
                     "Top": 2.0,
                     "Bottom": 0.0
-                  }
+                  },
+                  "Type": "Expression"
                 },
                 "15": {
                   "Ident": "StiText",
                   "Name": "Text33",
                   "Guid": "c0eb92a2d4de45b6b08aeeaf6b0d155d",
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "2,1.07,7.3,2.5",
                   "Conditions": {
                     "0": {
@@ -3142,8 +2978,6 @@
                   "Guid": "a115d76097774a089f18e9cf08a0b733",
                   "CanShrink": true,
                   "CanGrow": true,
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "2,1.07,7.3,1.45",
                   "Conditions": {
                     "0": {
@@ -3181,8 +3015,6 @@
                 "17": {
                   "Ident": "StiEndPointPrimitive",
                   "Name": "EndPointPrimitive6",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "19.82,0.78,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3192,8 +3024,6 @@
                 "18": {
                   "Ident": "StiEndPointPrimitive",
                   "Name": "EndPointPrimitive7",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "14.76,4.26,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3203,8 +3033,6 @@
                 "19": {
                   "Ident": "StiStartPointPrimitive",
                   "Name": "StartPointPrimitive7",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "9.5,0.96,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3214,8 +3042,6 @@
                 "20": {
                   "Ident": "StiEndPointPrimitive",
                   "Name": "EndPointPrimitive8",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "9.5,4.26,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3225,8 +3051,6 @@
                 "21": {
                   "Ident": "StiStartPointPrimitive",
                   "Name": "StartPointPrimitive8",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "14.88,0.96,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3236,8 +3060,6 @@
                 "22": {
                   "Ident": "StiEndPointPrimitive",
                   "Name": "EndPointPrimitive9",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "19.82,4.26,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3247,8 +3069,6 @@
                 "23": {
                   "Ident": "StiStartPointPrimitive",
                   "Name": "StartPointPrimitive6",
-                  "MinSize": "0,0",
-                  "MaxSize": "0,0",
                   "ClientRectangle": "0.1,0.96,0,0",
                   "Interaction": {
                     "Ident": "StiInteraction"
@@ -3292,8 +3112,6 @@
               "Ident": "StiText",
               "Name": "tdPdtCode",
               "Guid": "ad804afbb57d4a2a8b0fcf689e7e9bcb",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "1.45,0,3.47,0.54",
               "Alias": "[Product Code]",
               "Interaction": {
@@ -3306,20 +3124,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "DataColumn",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 5.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "DataColumn"
             },
             "1": {
               "Ident": "StiText",
               "Name": "LineNo",
               "Guid": "b272d5b147064a43b16dbe220b1984c7",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.37,0,0.9,0.54",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3343,8 +3159,6 @@
               "Ident": "StiText",
               "Name": "PdtUnit",
               "Guid": "127c1a3b05264cce8011a9efa35c900c",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "10.78,0,1.3,0.54",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3356,20 +3170,18 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "DataColumn",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 5.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "DataColumn"
             },
             "3": {
               "Ident": "StiText",
               "Name": "Qty",
               "Guid": "2ba85fcc1e0045dba626a139ec49a8aa",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "12.28,0,1.6,0.54",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3382,7 +3194,6 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
@@ -3392,14 +3203,13 @@
               "TextFormat": {
                 "Ident": "StiCustomFormatService",
                 "StringFormat": "#,#.00"
-              }
+              },
+              "Type": "Expression"
             },
             "4": {
               "Ident": "StiText",
               "Name": "nSetPrice",
               "Guid": "e8f20998ff34443b97bfd137187dec72",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "14,0,1.86,0.54",
               "Alias": "SetPrice",
               "Interaction": {
@@ -3413,7 +3223,6 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
@@ -3426,14 +3235,13 @@
                 "GroupSeparator": ",",
                 "UseLocalSetting": false,
                 "State": "DecimalDigits"
-              }
+              },
+              "Type": "Expression"
             },
             "5": {
               "Ident": "StiText",
               "Name": "nDiscount",
               "Guid": "acbc0968d0d64e4dbc5c727aa5699da3",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "15.98,0,1.6,0.54",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3446,7 +3254,6 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
@@ -3459,14 +3266,13 @@
                 "GroupSeparator": ",",
                 "UseLocalSetting": false,
                 "State": "DecimalDigits"
-              }
+              },
+              "Type": "Expression"
             },
             "6": {
               "Ident": "StiText",
               "Name": "nAmount",
               "Guid": "879b960110314275a9fd3e404c35aef0",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "17.58,0,2.22,0.54",
               "Alias": "Amount",
               "Interaction": {
@@ -3480,7 +3286,6 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
@@ -3493,14 +3298,13 @@
                 "GroupSeparator": ",",
                 "UseLocalSetting": false,
                 "State": "DecimalDigits, GroupSeparator, GroupSize"
-              }
+              },
+              "Type": "Expression"
             },
             "7": {
               "Ident": "StiSubReport",
               "Name": "subDTSerial",
               "Guid": "76f573b9caf448edb79eedeb15489e7f",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "1.8,0.51,6.5,0.4",
               "UseParentStyles": true,
               "Interaction": {
@@ -3517,8 +3321,6 @@
               "Guid": "89700baafbb2417ca096527fd6f441ad",
               "CanShrink": true,
               "CanGrow": true,
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "4.9,0,5.85,0.55",
               "Alias": "[Product Code]",
               "Interaction": {
@@ -3536,13 +3338,13 @@
               "TextOptions": {
                 "WordWrap": true
               },
-              "Type": "DataColumn",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 4.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "DataColumn"
             }
           },
           "KeepHeaderTogether": false,
@@ -3577,8 +3379,6 @@
               "Ident": "StiText",
               "Name": "Text21",
               "Guid": "39c17a4d81f841b19579d790fb447359",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "10.75,0,4.8,0.5",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3597,8 +3397,6 @@
               "Ident": "StiText",
               "Name": "Text22",
               "Guid": "9b9ca3a827624d4c9f546f2c81a4b7f4",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "16.85,0,2.95,0.5",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3612,7 +3410,6 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "DataColumn",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
@@ -3624,7 +3421,8 @@
                 "NegativePattern": 1,
                 "GroupSeparator": ",",
                 "UseLocalSetting": false
-              }
+              },
+              "Type": "DataColumn"
             }
           },
           "PrintAtBottom": true
@@ -3633,8 +3431,6 @@
           "Ident": "StiRoundedRectanglePrimitive",
           "Name": "RoundedRectanglePrimitive1",
           "Guid": "342185224828433bb4ebf4fa70bbd65d",
-          "MinSize": "0,0",
-          "MaxSize": "0,0",
           "ClientRectangle": "11.12,0.52,8.9,0.79",
           "Interaction": {
             "Ident": "StiInteraction"
@@ -3645,8 +3441,6 @@
           "Ident": "StiRoundedRectanglePrimitive",
           "Name": "RoundedRectangle2",
           "Guid": "4766f49a4b044495b8127163ef82645a",
-          "MinSize": "0,0",
-          "MaxSize": "0,0",
           "ClientRectangle": "0.32,2.5,10.57,4.17",
           "Interaction": {
             "Ident": "StiInteraction"
@@ -3657,8 +3451,6 @@
           "Ident": "StiRoundedRectanglePrimitive",
           "Name": "RoundedRectangle1",
           "Guid": "f0995d634c2140b0b760906527e9feb0",
-          "MinSize": "0,0",
-          "MaxSize": "0,0",
           "ClientRectangle": "0.3,6.74,19.72,17.72",
           "Interaction": {
             "Ident": "StiInteraction"
@@ -3669,8 +3461,6 @@
           "Ident": "StiRoundedRectanglePrimitive",
           "Name": "RoundedRectangle4",
           "Guid": "e943b26050e149abb9b01800ade8b53a",
-          "MinSize": "0,0",
-          "MaxSize": "0,0",
           "ClientRectangle": "0.3,24.64,14.66,3.3",
           "Interaction": {
             "Ident": "StiInteraction"
@@ -3681,8 +3471,6 @@
           "Ident": "StiVerticalLinePrimitive",
           "Name": "VerticalLine1",
           "Guid": "d1ed73d07e0842819e39b53c6d1824cc",
-          "MinSize": "0,0",
-          "MaxSize": "0,0",
           "ClientRectangle": "9.7,24.64,0.0254,3.3",
           "Interaction": {
             "Ident": "StiInteraction"
@@ -3694,8 +3482,6 @@
           "Ident": "StiRoundedRectanglePrimitive",
           "Name": "RoundedRectangle5",
           "Guid": "5deb0b13d54b43469066663345568ed8",
-          "MinSize": "0,0",
-          "MaxSize": "0,0",
           "ClientRectangle": "15.08,24.64,4.94,3.3",
           "Interaction": {
             "Ident": "StiInteraction"
@@ -3706,8 +3492,6 @@
           "Ident": "StiRoundedRectanglePrimitive",
           "Name": "RoundedRectangle3",
           "Guid": "a6e13eaebf874dfdba6073ac9a00c379",
-          "MinSize": "0,0",
-          "MaxSize": "0,0",
           "ClientRectangle": "11.1,2.5,8.92,4.17",
           "Interaction": {
             "Ident": "StiInteraction"
@@ -3769,8 +3553,6 @@
             "0": {
               "Ident": "StiText",
               "Name": "Text10",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.12,0,1.52,0.4",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3783,19 +3565,17 @@
               "Border": "Bottom;;;None;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "1": {
               "Ident": "StiText",
               "Name": "Text11",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "1.68,0,1.82,0.4",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3809,7 +3589,6 @@
               "Border": "Bottom;;;None;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
@@ -3821,7 +3600,8 @@
                 "NegativePattern": 1,
                 "GroupSeparator": ",",
                 "UseLocalSetting": false
-              }
+              },
+              "Type": "Expression"
             }
           },
           "DataSourceName": "TPSTSalVat"
@@ -3840,8 +3620,6 @@
               "Ident": "StiText",
               "Name": "Text4",
               "Guid": "cc47fc89f677496b9a0917d8036412f6",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "1.48,0,2.02,0.4",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3855,13 +3633,13 @@
               "Border": "Bottom;;;None;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Totals",
               "TextFormat": {
                 "Ident": "StiNumberFormatService",
                 "NegativePattern": 1,
                 "GroupSeparator": ",",
                 "UseLocalSetting": false
-              }
+              },
+              "Type": "Totals"
             }
           }
         }
@@ -3906,8 +3684,6 @@
               "Name": "Text24",
               "Guid": "56aea20b7c2c4b66af677275671b39d2",
               "PrintOn": "OnlyLastPage",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.12,0,2.07,0.35",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3928,8 +3704,6 @@
               "Name": "Text25",
               "Guid": "8c224c58fa2443d9b28319539fbefd63",
               "PrintOn": "OnlyLastPage",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "2.28,0,2.42,0.35",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3963,8 +3737,6 @@
             "0": {
               "Ident": "StiText",
               "Name": "Text6",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.12,0.02,2.07,0.4",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -3978,19 +3750,17 @@
               "Border": "Bottom;;;None;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             },
             "1": {
               "Ident": "StiText",
               "Name": "Text7",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "2.28,0.02,2.42,0.4",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -4004,7 +3774,6 @@
               "Border": "Bottom;;;None;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
@@ -4016,7 +3785,8 @@
                 "NegativePattern": 1,
                 "GroupSeparator": ",",
                 "UseLocalSetting": false
-              }
+              },
+              "Type": "Expression"
             }
           },
           "DataSourceName": "TPSTSalVat"
@@ -4035,8 +3805,6 @@
               "Ident": "StiText",
               "Name": "Text13",
               "Guid": "cc47fc89f677496b9a0917d8036412f6",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "2.28,0,2.42,0.4",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -4050,21 +3818,19 @@
               "Border": "Bottom;;;None;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Totals",
               "TextFormat": {
                 "Ident": "StiNumberFormatService",
                 "NegativePattern": 1,
                 "GroupSeparator": ",",
                 "UseLocalSetting": false
-              }
+              },
+              "Type": "Totals"
             },
             "1": {
               "Ident": "StiText",
               "Name": "Text26",
               "Guid": "4c0c4d497b484939a52598f40a663cf3",
               "PrintOn": "OnlyLastPage",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.42,0,1.77,0.4",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -4123,8 +3889,6 @@
               "Ident": "StiText",
               "Name": "Text39",
               "Guid": "0c57bd958a754de8a1ce6d8a6cd70a44",
-              "MinSize": "0,0",
-              "MaxSize": "0,0",
               "ClientRectangle": "0.15,0,6.3,0.35",
               "Interaction": {
                 "Ident": "StiInteraction"
@@ -4137,13 +3901,13 @@
               "Border": ";;;;;;;solid:Black",
               "Brush": "solid:",
               "TextBrush": "solid:Black",
-              "Type": "Expression",
               "Margins": {
                 "Left": 0.0,
                 "Right": 0.0,
                 "Top": 2.0,
                 "Bottom": 0.0
-              }
+              },
+              "Type": "Expression"
             }
           },
           "DataSourceName": "TPSTTaxDTSN",

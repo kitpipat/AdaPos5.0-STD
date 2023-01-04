@@ -1510,7 +1510,16 @@ function JSnASTPrintDoc(){
         { "DocCode"     : $("#oetASTDocNo").val() }, // เลขที่เอกสาร
         { "DocBchCode"  : '<?=$tASTBchCode;?>'}
     ];
-    window.open($("#ohdBaseUrl").val() + "formreport/ALLMPdtBillChkStk?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    // window.open($("#ohdBaseUrl").val() + "formreport/ALLMPdtBillChkStk?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    var aRftData = {
+                tRtfCode    : '00033' ,
+                tDocBchCode : '<?= $tASTBchCode?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
 }
 
 </script>

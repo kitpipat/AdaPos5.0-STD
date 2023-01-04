@@ -24,12 +24,10 @@ if ($aDataList['rtCode'] == '1') {
                         <th class="xCNTextBold" style="width:10%;"><?= language('document/promotion/promotion', 'tTBDocNo') ?></th>
                         <th class="xCNTextBold" style="width:5%;"><?= language('document/promotion/promotion', 'tTBDocDate') ?></th>
                         <th class="xCNTextBold" style="width:20%;"><?= language('document/promotion/promotion', 'tPromotionName') ?></th>
-                        <th class="xCNTextBold text-center"><?= language('document/promotion/promotion', 'tTBStaApv') ?></th>
-                        <th class="xCNTextBold text-center"><?= language('document/promotion/promotion', 'tLabel17') ?></th>
+                        <th class="xCNTextBold" style="width:5%;"><?= language('document/promotion/promotion', 'tTBStaDoc') ?></th>
                         <!-- <th nowrap class="xCNTextBold" style="width:10%;"><?php echo language('common/main/main', 'tStaPrcDocTitle'); ?></th> -->
                         <!-- <th class="xCNTextBold"><?= language('document/promotion/promotion', 'tTBStaPrc') ?></th> -->
                         <!-- <th class="xCNTextBold"><?= language('document/promotion/promotion', 'tLabel18') ?></th> -->
-                        <!-- <th class="xCNTextBold" style="width:5%;"><?= language('document/promotion/promotion', 'tTBStaDoc') ?></th> -->
                         <th class="xCNTextBold"><?= language('document/promotion/promotion', 'tTBCreateBy') ?></th>
                         <th class="xCNTextBold"><?= language('document/promotion/promotion', 'tTBApvBy') ?></th>
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) { ?>
@@ -69,16 +67,6 @@ if ($aDataList['rtCode'] == '1') {
                                 $tStaDoc = language('common/main/main', 'tStaDoc');
                             }
 
-                            // FTPmhStaApv
-                            if ($aValue['FTPmhStaApv'] == 1) {
-                                $tClassStaApv = 'text-success';
-                            } else if ($aValue['FTPmhStaApv'] == 2) {
-                                $tClassStaApv = 'text-warning';
-                            } else if ($aValue['FTPmhStaApv'] == '') {
-                                $tClassStaApv = 'text-danger';
-                            }
-
-
                             //StaPrcDoc
                             // if ($aValue['FTPmhStaPrcDoc'] == 1) {
                             //     $tClassPrcStk = 'text-success';
@@ -99,11 +87,8 @@ if ($aDataList['rtCode'] == '1') {
 
                             if (in_array($aValue['UsedStatus'], ["2","3"])) {
                                 $tClassStaUse = 'text-success';
-                                if($aValue['UsedStatus'] == "2"  && $aValue['FTPmhStaApv'] == '1'){
+                                if($aValue['UsedStatus'] == "2"){
                                     $tPmtUsedStatusShow = language('document/promotion/promotion', 'tActive');
-                                }elseif($aValue['UsedStatus'] == "2" ){
-                                    $tClassStaUse = 'text-warning';
-                                    $tPmtUsedStatusShow = language('document/promotion/promotion', 'tStaApvnotyet');
                                 }else{
                                     $tPmtUsedStatusShow = language('document/promotion/promotion', 'tLabel12');
                                 }  
@@ -111,10 +96,8 @@ if ($aDataList['rtCode'] == '1') {
 
                             if (in_array($aValue['UsedStatus'], ["4","5"])) {
                                 $tClassStaUse = 'text-danger';
-                                if($aValue['UsedStatus'] == "4" && $aValue['FTPmhStaApv'] == '1'){
+                                if($aValue['UsedStatus'] == "4"){
                                     $tPmtUsedStatusShow = language('document/promotion/promotion', 'tPmhDateExp');
-                                }elseif($aValue['UsedStatus'] == "4" ){
-                                    $tPmtUsedStatusShow = language('document/promotion/promotion', 'tNotActive');
                                 }else{
                                     $tPmtUsedStatusShow = language('document/promotion/promotion', 'tStaDoc3');
                                 }
@@ -163,22 +146,16 @@ if ($aDataList['rtCode'] == '1') {
                                 <td class="text-left"><?= $aValue['FTPmhDocNo'] != '' ? $aValue['FTPmhDocNo'] : '-' ?></td>
                                 <td class="text-center"><?= $aValue['FDCreateOn'] != '' ? date('d/m/Y', strtotime($aValue['FDCreateOn'])) : '-' ?></td>
                                 <td class="text-left"><?= $aValue['FTPmhName'] != '' ? $aValue['FTPmhName'] : '-' ?></td>
-                                <td class="text-left">
-                                    <label class="xCNTDTextStatus <?= $tClassStaApv ?>">
-                                    <?= language('document/promotion/promotion', 'tStaApv' . $aValue['FTPmhStaApv']) ?>
-                                    </label>
-                                </td>
-                                <td class="text-left"><label class="xCNTDTextStatus <?= $tClassStaUse ?>"><?php echo $tPmtUsedStatusShow; ?></label></td>
                                 <!-- <td class="text-left">
                                     <label class="xCNTDTextStatus <?= $tClassStaDoc ?>">
                                         <?php echo language('document/promotion/promotion', 'tStaDoc' . $aValue['FTPmhStaDoc']) ?>
                                     </label>
                                 </td> -->
-                                <!-- <td class="text-left">
+                                <td class="text-left">
                                     <label class="xCNTDTextStatus <?= $tClassStaDoc ?>">
                                     <?php echo $tStaDoc ?>
                                     </label>
-                                </td> -->
+                                </td>
                                 <!-- <td class="text-left">
                                     <label class="xCNTDTextStatus <?= $tClassPrcStk ?>">
                                         <?php echo language('document/promotion/promotion', 'tStaPrcStk' . $aValue['FTPmhStaApv']) ?>

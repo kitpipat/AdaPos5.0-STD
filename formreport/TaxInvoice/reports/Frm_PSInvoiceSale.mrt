@@ -1,10 +1,10 @@
 {
   "ReportVersion": "2022.1.4.0",
-  "ReportGuid": "9c5d745b1a294ca8942d28ce83fc4fd3",
+  "ReportGuid": "99be689e1beb41a2852f3cc60f2f2629",
   "ReportName": "Frm_PSInvoiceSale",
   "ReportAlias": "Frm_PSInvoiceSale",
   "ReportCreated": "/Date(1582089004000+0700)/",
-  "ReportChanged": "/Date(1663388147561+0700)/",
+  "ReportChanged": "/Date(1670389611661+0700)/",
   "EngineVersion": "EngineV2",
   "CalculationMode": "Interpretation",
   "Script": "using System;\r\nusing System.Drawing;\r\nusing System.Windows.Forms;\r\nusing System.Data;\r\nusing Stimulsoft.Controls;\r\nusing Stimulsoft.Base.Drawing;\r\nusing Stimulsoft.Report;\r\nusing Stimulsoft.Report.Dialogs;\r\nusing Stimulsoft.Report.Components;\r\n\r\nnamespace Reports\r\n{\r\n    public class Frm_PSInvoiceSale : Stimulsoft.Report.StiReport\r\n    {\r\n        public Frm_PSInvoiceSale()        {\r\n            this.InitializeComponent();\r\n        }\r\n\r\n        #region StiReport Designer generated code - do not modify\r\n\t\t#endregion StiReport Designer generated code - do not modify\r\n    }\r\n}\r\n",
@@ -61,7 +61,7 @@
         "AllowUseAsSqlParameter": true
       },
       "5": {
-        "Value": "S22000010000006",
+        "Value": "S22000350000013",
         "Name": "SP_tDocNo",
         "Alias": "SP_tDocNo",
         "Type": "System.String",
@@ -84,7 +84,7 @@
         "AllowUseAsSqlParameter": true
       },
       "8": {
-        "Value": "00001",
+        "Value": "00035",
         "Name": "SP_tDocBch",
         "Alias": "SP_tDocBch",
         "Type": "System.String",
@@ -99,471 +99,509 @@
         "Key": "b12c4828c5e244d98b59516764e0c488",
         "Columns": {
           "0": {
+            "Name": "FTXshRefDoc",
+            "Index": -1,
+            "NameInSource": "FTXshRefDoc",
+            "Alias": "FTXshRefDoc",
+            "Type": "System.String",
+            "Key": "85e1b2308aac477a883848c78b1f3483"
+          },
+          "1": {
             "Name": "FTBchCode",
             "Index": -1,
             "NameInSource": "FTBchCode",
             "Alias": "FTBchCode",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "6fb17d9c08784b6d9c162de55b059332"
           },
-          "1": {
+          "2": {
             "Name": "FTXshRefExt",
             "Index": -1,
             "NameInSource": "FTXshRefExt",
             "Alias": "FTXshRefExt",
             "Type": "System.String"
           },
-          "2": {
+          "3": {
             "Name": "FTPosRegNo",
             "Index": -1,
             "NameInSource": "FTPosRegNo",
             "Alias": "FTPosRegNo",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "70095653fdc541aab7765ffdda034a44"
           },
-          "3": {
+          "4": {
             "Name": "FTXshStaApv",
             "Index": -1,
             "NameInSource": "FTXshStaApv",
             "Alias": "FTXshStaApv",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "34734a0b221f42209fb54ed603bd3e80"
           },
-          "4": {
+          "5": {
             "Name": "FTUsrApp",
             "Index": -1,
             "NameInSource": "FTUsrApp",
             "Alias": "FTUsrApp",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "f3b501fbcc7543afb44781fc11e1c7a3"
           },
-          "5": {
+          "6": {
             "Name": "FTCstCode",
             "Index": -1,
             "NameInSource": "FTCstCode",
             "Alias": "FTCstCode",
             "Type": "System.String"
           },
-          "6": {
+          "7": {
             "Name": "FTAddName",
             "Index": -1,
             "NameInSource": "FTAddName",
             "Alias": "FTAddName",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "a7b55f3eb2064453afcda5b66d51e9d3"
           },
-          "7": {
+          "8": {
             "Name": "FTCstTaxNo",
             "Index": -1,
             "NameInSource": "FTCstTaxNo",
             "Alias": "FTCstTaxNo",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "033eeebb538a431db3a24dbdfe9d1998"
           },
-          "8": {
+          "9": {
             "Name": "FTBchName",
             "Index": -1,
             "NameInSource": "FTBchName",
             "Alias": "FTBchName",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "cb70acedbd7b4820bdd9903235b2499b"
           },
-          "9": {
+          "10": {
             "Name": "FTAddTel",
             "Index": -1,
             "NameInSource": "FTAddTel",
             "Alias": "FTAddTel",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "6982441f5dae4f55b00b639aa809e96f"
           },
-          "10": {
+          "11": {
             "Name": "FTAddFax",
             "Index": -1,
             "NameInSource": "FTAddFax",
             "Alias": "FTAddFax",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "10f33029175b43afbc48a0492c5b343a"
           },
-          "11": {
+          "12": {
             "Name": "FTXshDocNo",
             "Index": -1,
             "NameInSource": "FTXshDocNo",
             "Alias": "FTXshDocNo",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "870ca1f35a4946e2915db380975858dc"
           },
-          "12": {
+          "13": {
             "Name": "FDXshDocDate",
             "Index": -1,
             "NameInSource": "FDXshDocDate",
             "Alias": "FDXshDocDate",
             "Type": "System.String"
           },
-          "13": {
+          "14": {
             "Name": "FTXshDocDate",
             "Index": -1,
             "NameInSource": "FTXshDocDate",
             "Alias": "FTXshDocDate",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "69ec10a01a474f03b8ab024cba5b86a6"
           },
-          "14": {
+          "15": {
             "Name": "FTXshDocTime",
             "Index": -1,
             "NameInSource": "FTXshDocTime",
             "Alias": "FTXshDocTime",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "d0067526158f42f9a4cfc465932c8e6c"
           },
-          "15": {
+          "16": {
             "Name": "FTXshRefInt",
             "Index": -1,
             "NameInSource": "FTXshRefInt",
             "Alias": "FTXshRefInt",
             "Type": "System.String"
           },
-          "16": {
+          "17": {
             "Name": "FTCreateBy",
             "Index": -1,
             "NameInSource": "FTCreateBy",
             "Alias": "FTCreateBy",
             "Type": "System.String"
           },
-          "17": {
+          "18": {
             "Name": "FTSpnCode",
             "Index": -1,
             "NameInSource": "FTSpnCode",
             "Alias": "FTSpnCode",
             "Type": "System.String"
           },
-          "18": {
+          "19": {
             "Name": "FTSpnName",
             "Index": -1,
             "NameInSource": "FTSpnName",
             "Alias": "FTSpnName",
             "Type": "System.String"
           },
-          "19": {
+          "20": {
             "Name": "FTUsrCode",
             "Index": -1,
             "NameInSource": "FTUsrCode",
             "Alias": "FTUsrCode",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "a30f540bdb3c4442a74d45ba339de5fd"
           },
-          "20": {
+          "21": {
             "Name": "FTUsrName",
             "Index": -1,
             "NameInSource": "FTUsrName",
             "Alias": "FTUsrName",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "d8fbb8469c6841fc8a70efdc1421ace8"
           },
-          "21": {
+          "22": {
             "Name": "FTXshRecorder",
             "Index": -1,
             "NameInSource": "FTXshRecorder",
             "Alias": "FTXshRecorder",
             "Type": "System.String"
           },
-          "22": {
+          "23": {
             "Name": "FTXshVATInOrEx",
             "Index": -1,
             "NameInSource": "FTXshVATInOrEx",
             "Alias": "FTXshVATInOrEx",
             "Type": "System.String"
           },
-          "23": {
+          "24": {
             "Name": "FTXshStaDoc",
             "Index": -1,
             "NameInSource": "FTXshStaDoc",
             "Alias": "FTXshStaDoc",
-            "Type": "System.String"
-          },
-          "24": {
-            "Name": "FTXshStaApv",
-            "Index": -1,
-            "NameInSource": "FTXshStaApv",
-            "Alias": "FTXshStaApv",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "1010d9ffc772470fbd2171f7380fcba4"
           },
           "25": {
+            "Name": "FTXshStaApv1",
+            "Index": -1,
+            "NameInSource": "FTXshStaApv",
+            "Alias": "FTXshStaApv1",
+            "Type": "System.String"
+          },
+          "26": {
             "Name": "FTXshStaPrcStk",
             "Index": -1,
             "NameInSource": "FTXshStaPrcStk",
             "Alias": "FTXshStaPrcStk",
             "Type": "System.String"
           },
-          "26": {
+          "27": {
             "Name": "FTXshApvCode",
             "Index": -1,
             "NameInSource": "FTXshApvCode",
             "Alias": "FTXshApvCode",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "bf88532b224c4b78966612e761520367"
           },
-          "27": {
+          "28": {
             "Name": "FTXshCtrName",
             "Index": -1,
             "NameInSource": "FTXshCtrName",
             "Alias": "FTXshCtrName",
             "Type": "System.String"
           },
-          "28": {
+          "29": {
             "Name": "FTXshRmk",
             "Index": -1,
             "NameInSource": "FTXshRmk",
             "Alias": "FTXshRmk",
             "Type": "System.String"
           },
-          "29": {
+          "30": {
             "Name": "FTAddVersion",
             "Index": -1,
             "NameInSource": "FTAddVersion",
             "Alias": "FTAddVersion",
             "Type": "System.String"
           },
-          "30": {
+          "31": {
             "Name": "FTAddV2Desc1",
             "Index": -1,
             "NameInSource": "FTAddV2Desc1",
             "Alias": "FTAddV2Desc1",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "76934bb4acaa4081b804ab808269d8b5"
           },
-          "31": {
+          "32": {
             "Name": "FTAddV2Desc2",
             "Index": -1,
             "NameInSource": "FTAddV2Desc2",
             "Alias": "FTAddV2Desc2",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "f1c0510648d04993ba44170b13d86c2c"
           },
-          "32": {
+          "33": {
             "Name": "FTAddRefNo",
             "Index": -1,
             "NameInSource": "FTAddRefNo",
             "Alias": "FTAddRefNo",
             "Type": "System.String"
           },
-          "33": {
+          "34": {
             "Name": "FTAddV1PvnCode",
             "Index": -1,
             "NameInSource": "FTAddV1PvnCode",
             "Alias": "FTAddV1PvnCode",
             "Type": "System.String"
           },
-          "34": {
+          "35": {
             "Name": "FTAddV1DstCode",
             "Index": -1,
             "NameInSource": "FTAddV1DstCode",
             "Alias": "FTAddV1DstCode",
             "Type": "System.String"
           },
-          "35": {
+          "36": {
             "Name": "FTAddV1SubDist",
             "Index": -1,
             "NameInSource": "FTAddV1SubDist",
             "Alias": "FTAddV1SubDist",
             "Type": "System.String"
           },
-          "36": {
+          "37": {
             "Name": "FTPvnName",
             "Index": -1,
             "NameInSource": "FTPvnName",
             "Alias": "FTPvnName",
             "Type": "System.String"
           },
-          "37": {
+          "38": {
             "Name": "FTDstName",
             "Index": -1,
             "NameInSource": "FTDstName",
             "Alias": "FTDstName",
             "Type": "System.String"
           },
-          "38": {
+          "39": {
             "Name": "FTSudName",
             "Index": -1,
             "NameInSource": "FTSudName",
             "Alias": "FTSudName",
             "Type": "System.String"
           },
-          "39": {
-            "Name": "FTAddName",
+          "40": {
+            "Name": "FTAddName1",
             "Index": -1,
             "NameInSource": "FTAddName",
-            "Alias": "FTAddName",
+            "Alias": "FTAddName1",
             "Type": "System.String"
           },
-          "40": {
+          "41": {
             "Name": "FTAddV1No",
             "Index": -1,
             "NameInSource": "FTAddV1No",
             "Alias": "FTAddV1No",
             "Type": "System.String"
           },
-          "41": {
+          "42": {
             "Name": "FTAddV1Village",
             "Index": -1,
             "NameInSource": "FTAddV1Village",
             "Alias": "FTAddV1Village",
             "Type": "System.String"
           },
-          "42": {
+          "43": {
             "Name": "FTAddV1Soi",
             "Index": -1,
             "NameInSource": "FTAddV1Soi",
             "Alias": "FTAddV1Soi",
             "Type": "System.String"
           },
-          "43": {
+          "44": {
             "Name": "FTAddV1Road",
             "Index": -1,
             "NameInSource": "FTAddV1Road",
             "Alias": "FTAddV1Road",
             "Type": "System.String"
           },
-          "44": {
+          "45": {
             "Name": "FTAddV1PostCode",
             "Index": -1,
             "NameInSource": "FTAddV1PostCode",
             "Alias": "FTAddV1PostCode",
             "Type": "System.String"
           },
-          "45": {
+          "46": {
             "Name": "FCXshTotal",
             "Index": -1,
             "NameInSource": "FCXshTotal",
             "Alias": "FCXshTotal",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "3815e6860e834228a187a6a5780d545b"
           },
-          "46": {
+          "47": {
             "Name": "FCXshVat",
             "Index": -1,
             "NameInSource": "FCXshVat",
             "Alias": "FCXshVat",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "73b5180b1f6d46b5b39644359dc635e9"
           },
-          "47": {
+          "48": {
+            "Name": "FCXshVat1",
+            "Index": -1,
+            "NameInSource": "FCXshVat1",
+            "Alias": "FCXshVat1",
+            "Type": "System.Decimal",
+            "Key": "bb023228c6934ff29103200c59aada66"
+          },
+          "49": {
             "Name": "FCXshDiscount",
             "Index": -1,
             "NameInSource": "FCXshDiscount",
             "Alias": "FCXshDiscount",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "4f1491ef29814c999b96ea5079e66115"
           },
-          "48": {
+          "50": {
             "Name": "FCXshVatAmt",
             "Index": -1,
             "NameInSource": "FCXshVatAmt",
             "Alias": "FCXshVatAmt",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "5f3dc8e90a8442c7afa6b4df70fc0825"
           },
-          "49": {
+          "51": {
             "Name": "FCXshVatable",
             "Index": -1,
             "NameInSource": "FCXshVatable",
             "Alias": "FCXshVatable",
             "Type": "System.Decimal"
           },
-          "50": {
+          "52": {
             "Name": "FCXshTotalAFDis",
             "Index": -1,
             "NameInSource": "FCXshTotalAFDis",
             "Alias": "FCXshTotalAFDis",
             "Type": "System.Decimal"
           },
-          "51": {
+          "53": {
             "Name": "FCXshGrandBFRnd",
             "Index": -1,
             "NameInSource": "FCXshGrandBFRnd",
             "Alias": "FCXshGrandBFRnd",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "5270dc5c52174b65bc568b7afe59f128"
           },
-          "52": {
+          "54": {
             "Name": "FCXshRnd",
             "Index": -1,
             "NameInSource": "FCXshRnd",
             "Alias": "FCXshRnd",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "6d52af1ef77e4cccba2e35df20e2f074"
           },
-          "53": {
+          "55": {
             "Name": "FCXshGrandAmt",
             "Index": -1,
             "NameInSource": "FCXshGrandAmt",
             "Alias": "FCXshGrandAmt",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "6e920f40060e4bc9afbf151cdef80ef0"
           },
-          "54": {
+          "56": {
             "Name": "FCXshAmtV",
             "Index": -1,
             "NameInSource": "FCXshAmtV",
             "Alias": "FCXshAmtV",
             "Type": "System.Decimal"
           },
-          "55": {
+          "57": {
             "Name": "FCXshGrand",
             "Index": -1,
             "NameInSource": "FCXshGrand",
             "Alias": "FCXshGrand",
             "Type": "System.Decimal"
           },
-          "56": {
+          "58": {
             "Name": "FTXshGndText",
             "Index": -1,
             "NameInSource": "FTXshGndText",
             "Alias": "FTXshGndText",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "a710134492944de3b619675e4e7fdbd7"
           },
-          "57": {
+          "59": {
             "Name": "FNXshDocPrint",
             "Index": -1,
             "NameInSource": "FNXshDocPrint",
             "Alias": "FNXshDocPrint",
             "Type": "System.Int32"
           },
-          "58": {
+          "60": {
             "Name": "FTXshStaETax",
             "Index": -1,
             "NameInSource": "FTXshStaETax",
             "Alias": "FTXshStaETax",
             "Type": "System.String"
           },
-          "59": {
+          "61": {
             "Name": "FTAddStaBusiness",
             "Index": -1,
             "NameInSource": "FTAddStaBusiness",
             "Alias": "FTAddStaBusiness",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "34edf1c330d94dc3adcfb922548b8bc9"
           },
-          "60": {
+          "62": {
             "Name": "FTUsrNameApp",
             "Index": -1,
             "NameInSource": "FTUsrNameApp",
             "Alias": "FTUsrNameApp",
             "Type": "System.String"
           },
-          "61": {
+          "63": {
             "Name": "FTRsnCodeMst",
             "Index": -1,
             "NameInSource": "FTRsnCodeMst",
             "Alias": "FTRsnCodeMst",
             "Type": "System.String"
           },
-          "62": {
+          "64": {
             "Name": "FTRsnNameMst",
             "Index": -1,
             "NameInSource": "FTRsnNameMst",
             "Alias": "FTRsnNameMst",
             "Type": "System.String"
           },
-          "63": {
+          "65": {
             "Name": "FTXshDocNoMst",
             "Index": -1,
             "NameInSource": "FTXshDocNoMst",
             "Alias": "FTXshDocNoMst",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "eefab25a7ca84f7ab35cf4d2b51a4c75"
           },
-          "64": {
-            "Name": "FTXshRefDoc",
-            "Index": -1,
-            "NameInSource": "FTXshRefDoc",
-            "Alias": "FTXshRefDoc",
-            "Type": "System.String"
-          },
-          "65": {
+          "66": {
             "Name": "FCXshAmtNV",
             "Index": -1,
             "NameInSource": "FCXshAmtNV",
             "Alias": "FCXshAmtNV",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "770cbd4bbd5f4a53802ae4cd71062dde"
           }
         },
         "NameInSource": "SaleInv",
         "CommandTimeout": 5000,
-        "SqlCommand": " SELECT  CASE WHEN ISNULL(HD.FTXshStaDoc,'') IN ('1','5') THEN HD.FTXshRefExt ELSE HD.FTXshRefInt\r\n\t\tEND AS FTXshRefDoc,\r\n\tHD.FTBchCode,HD.FTXshRefExt,\r\n\tPos.FTPosRegNo,\r\n\tHD.FTXshStaApv, \r\n\tApp_L.FTUsrName AS FTUsrApp,\r\n\tHD.FTCstCode,\r\n\tHDAddr.FTAddName,\r\n\tISNULL(HDAddr.FTAddTaxNo,'')  AS FTCstTaxNo,\t\t\r\n\tCASE WHEN HDAddr.FTAddStaBusiness = '1' THEN CASE WHEN HDAddr.FTAddStaHQ = '1' THEN 'สำนักงานใหญ่ ' ELSE 'สาขา : ' + HDAddr.FTAddStaBchCode  END ELSE HDAddr.FTAddStaBchCode  END \tAS FTBchName,\r\n\tHDAddr.FTAddTel,\r\n\tHDAddr.FTAddFax,\r\n\tHD.FTXshDocNo,CONVERT(VARCHAR(10),HD.FDXshDocDate,121) AS FDXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,103) AS FTXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,8) AS FTXshDocTime,HD.FTXshRefInt,HD.FTCreateBy,\r\n\tISNULL(HD.FTSpnCode,'') AS FTSpnCode,Spn_L.FTSpnName,\r\n\tISNULL(HD.FTUsrCode,'') AS FTUsrCode,Usr_L.FTUsrName,\r\n    Red_L.FTUsrName AS FTXshRecorder,\r\n\tISNULL(HD.FTXshVATInOrEx,'') AS FTXshVATInOrEx,\r\n\tISNULL(HD.FTXshStaDoc,'') AS FTXshStaDoc,\r\n\tISNULL(HD.FTXshStaApv,'') AS FTXshStaApv,\r\n\tISNULL(HD.FTXshStaPrcStk,'') AS FTXshStaPrcStk,\r\n\tISNULL(HD.FTXshApvCode,'') AS FTXshApvCode,\r\n\tISNULL(HDCst.FTXshCtrName,'') AS FTXshCtrName,\r\n\tISNULL(HD.FTXshRmk,'') AS FTXshRmk,\r\n\tISNULL(HDAddr.FTAddVersion,'') AS FTAddVersion,\r\n\tHDAddr.FTAddV2Desc1,\r\n\tHDAddr.FTAddV2Desc2,\r\n\tISNULL(HDAddr.FTAddRefNo,'') AS FTAddRefNo,\r\n\tISNULL(HDAddr.FTAddV1PvnCode,'') AS FTAddV1PvnCode, ISNULL(HDAddr.FTAddV1DstCode,'') AS FTAddV1DstCode,\r\n\tISNULL(HDAddr.FTAddV1SubDist,'') AS FTAddV1SubDist, \r\n\tISNULL(Pro_L.FTPvnName,'') AS FTPvnName,\r\n\tISNULL(Dis_L.FTDstName,'') AS FTDstName,\r\n\tISNULL(SDis_L.FTSudName,'') AS FTSudName,\r\n\tHDAddr.FTAddName, \r\n\tISNULL(HDAddr.FTAddV1No, '') AS FTAddV1No,\r\n\tISNULL(HDAddr.FTAddV1Village, '') AS FTAddV1Village,\r\n\tISNULL(HDAddr.FTAddV1Soi, '') AS FTAddV1Soi,\r\n\tISNULL(HDAddr.FTAddV1Road, '') AS FTAddV1Road,\r\n\tISNULL(HDAddr.FTAddV1PostCode, '') AS FTAddV1PostCode,\r\n\tISNULL(HD.FCXshTotal,0) AS FCXshTotal,ISNULL(HD.FCXshVat,0) AS FCXshVat,ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0) AS FCXshDiscount,\r\n    ISNULL(HD.FCXshAmtV,0) AS FCXshVatAmt,\r\n\tISNULL(HD.FCXshVatable,0) AS FCXshVatable,\r\n\tISNULL(HD.FCXshTotalAfDisChgV,0)+ISNULL(HD.FCXshTotalAfDisChgNV,0) AS FCXshTotalAFDis,\r\n    ISNULL(HD.FCXshGrand,0)-ISNULL(HD.FCXshRnd,0) AS FCXshGrandBFRnd,\r\n\tISNULL(HD.FCXshRnd,0) AS FCXshRnd,\r\n\tISNULL(HD.FCXshGrand,0) AS FCXshGrandAmt,\r\n\tISNULL(HD.FCXshAmtV,0) AS FCXshAmtV,\r\n\tCASE WHEN HD.FTXshVATInOrEx='1' THEN ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)) ELSE (ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)))+HD.FCXshVat END AS FCXshGrand,\r\n    HD.FTXshGndText, \r\n\tHD.FNXshDocPrint,\r\n\tISNULL(HD.FTXshStaETax,'2') AS FTXshStaETax,\r\n\tHDAddr.FTAddStaBusiness,\r\n\tApver_L.FTUsrName AS FTUsrNameApp,\r\n\tHDMst.FTRsnCode AS FTRsnCodeMst,RanMst.FTRsnName AS FTRsnNameMst,\r\n\tHDMst.FTXshDocNo AS FTXshDocNoMst,HD.FCXshAmtNV\r\n\tFROM TPSTTaxHD  HD WITH (NOLOCK)  INNER JOIN \r\n     TPSTTaxHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo LEFT JOIN\r\n\t TCNMPos Pos WITH (NOLOCK) ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN \r\n\t TCNMCst Cst WITH (NOLOCK) ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN\r\n\t TCNMCst_L Cst_L WITH (NOLOCK) ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMSpn_L Spn_L WITH (NOLOCK) ON  HD.FTSpnCode = Spn_L.FTSpnCode AND Spn_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Usr_L  WITH (NOLOCK) ON HD.FTUsrCode = Usr_L.FTUsrCode AND Usr_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Red_L   WITH (NOLOCK) ON HD.FTLastUpdBy = Red_L.FTUsrCode AND Red_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Apver_L  WITH (NOLOCK) ON HD.FTXshApvCode = Apver_L.FTUsrCode AND Apver_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMUser_L App_L  WITH (NOLOCK) ON HD.FTXshApvCode = App_L.FTUsrCode AND App_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddr WITH (NoLock) ON  HD.FTBchCode = HDAddr.FTBchCode AND HD.FTXshDocNo = HDAddr.FTXshDocNo LEFT JOIN\r\n\t TPSTTaxHD HDMst WITH (NOLOCK) ON HD.FTBchCode = HDMst.FTBchCode AND HD.FTXshRefAE= HDMst.FTXshDocNo AND HDMst.FTXshStaDoc = '5' LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddrEdit WITH (NoLock) ON  HDMst.FTBchCode = HDAddrEdit.FTBchCode AND HDMst.FTXshDocNo = HDAddrEdit.FTXshDocNo LEFT JOIN\r\n\t TCNMRsn_L RanMst WITH (NOLOCK) ON HDMst.FTRsnCode = RanMst.FTRsnCode AND RanMst.FNLngID = @pnLanguage \r\n\t LEFT JOIN TCNMProvince_L Pro_L WITH (NoLock) ON HDAddr.FTAddV1PvnCode = Pro_L.FTPvnCode AND Pro_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L Dis_L WITH (NoLock) ON HDAddr.FTAddV1DstCode = Dis_L.FTDstCode AND Dis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMSubDistrict_L SDis_L WITH (NoLock) ON HDAddr.FTAddV1SubDist = SDis_L.FTSudCode AND SDis_L.FNLngID = @pnLanguage\r\nWHERE HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch",
+        "SqlCommand": " SELECT  CASE WHEN ISNULL(HD.FTXshStaDoc,'') IN ('1','5') THEN HD.FTXshRefExt ELSE HD.FTXshRefInt\r\n\t\tEND AS FTXshRefDoc,\r\n\tHD.FTBchCode,HD.FTXshRefExt,\r\n\tPos.FTPosRegNo,\r\n\tHD.FTXshStaApv, \r\n\tApp_L.FTUsrName AS FTUsrApp,\r\n\tHD.FTCstCode,\r\n\tHDAddr.FTAddName,\r\n\tISNULL(HDAddr.FTAddTaxNo,'')  AS FTCstTaxNo,\t\t\r\n\tCASE WHEN HDAddr.FTAddStaBusiness = '1' THEN CASE WHEN HDAddr.FTAddStaHQ = '1' THEN 'สำนักงานใหญ่ ' ELSE 'สาขา : ' + HDAddr.FTAddStaBchCode  END ELSE HDAddr.FTAddStaBchCode  END \tAS FTBchName,\r\n\tHDAddr.FTAddTel,\r\n\tHDAddr.FTAddFax,\r\n\tHD.FTXshDocNo,CONVERT(VARCHAR(10),HD.FDXshDocDate,121) AS FDXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,103) AS FTXshDocDate,CONVERT(VARCHAR(10),HD.FDXshDocDate,8) AS FTXshDocTime,HD.FTXshRefInt,HD.FTCreateBy,\r\n\tISNULL(HD.FTSpnCode,'') AS FTSpnCode,Spn_L.FTSpnName,\r\n\tISNULL(HD.FTUsrCode,'') AS FTUsrCode,Usr_L.FTUsrName,\r\n    Red_L.FTUsrName AS FTXshRecorder,\r\n\tISNULL(HD.FTXshVATInOrEx,'') AS FTXshVATInOrEx,\r\n\tISNULL(HD.FTXshStaDoc,'') AS FTXshStaDoc,\r\n\tISNULL(HD.FTXshStaApv,'') AS FTXshStaApv,\r\n\tISNULL(HD.FTXshStaPrcStk,'') AS FTXshStaPrcStk,\r\n\tISNULL(HD.FTXshApvCode,'') AS FTXshApvCode,\r\n\tISNULL(HDCst.FTXshCtrName,'') AS FTXshCtrName,\r\n\tISNULL(HD.FTXshRmk,'') AS FTXshRmk,\r\n\tISNULL(HDAddr.FTAddVersion,'') AS FTAddVersion,\r\n\tHDAddr.FTAddV2Desc1,\r\n\tHDAddr.FTAddV2Desc2,\r\n\tISNULL(HDAddr.FTAddRefNo,'') AS FTAddRefNo,\r\n\tISNULL(HDAddr.FTAddV1PvnCode,'') AS FTAddV1PvnCode, ISNULL(HDAddr.FTAddV1DstCode,'') AS FTAddV1DstCode,\r\n\tISNULL(HDAddr.FTAddV1SubDist,'') AS FTAddV1SubDist, \r\n\tISNULL(Pro_L.FTPvnName,'') AS FTPvnName,\r\n\tISNULL(Dis_L.FTDstName,'') AS FTDstName,\r\n\tISNULL(SDis_L.FTSudName,'') AS FTSudName,\r\n\tHDAddr.FTAddName, \r\n\tISNULL(HDAddr.FTAddV1No, '') AS FTAddV1No,\r\n\tISNULL(HDAddr.FTAddV1Village, '') AS FTAddV1Village,\r\n\tISNULL(HDAddr.FTAddV1Soi, '') AS FTAddV1Soi,\r\n\tISNULL(HDAddr.FTAddV1Road, '') AS FTAddV1Road,\r\n\tISNULL(HDAddr.FTAddV1PostCode, '') AS FTAddV1PostCode,\r\n\tISNULL(HD.FCXshTotal,0) AS FCXshTotal,\r\n    ISNULL(HD.FCXshVat,0) AS FCXshVat,\r\n    ISNULL(HD.FCXshAmtV,0) - ROUND(ISNULL(HD.FCXshVatable,0),2) AS FCXshVat1,\r\n    ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0) AS FCXshDiscount,\r\n    ISNULL(HD.FCXshAmtV,0) AS FCXshVatAmt,\r\n\tISNULL(HD.FCXshVatable,0) AS FCXshVatable,\r\n\tISNULL(HD.FCXshTotalAfDisChgV,0)+ISNULL(HD.FCXshTotalAfDisChgNV,0) AS FCXshTotalAFDis,\r\n    ISNULL(HD.FCXshGrand,0)-ISNULL(HD.FCXshRnd,0) AS FCXshGrandBFRnd,\r\n\tISNULL(HD.FCXshRnd,0) AS FCXshRnd,\r\n\tISNULL(HD.FCXshGrand,0) AS FCXshGrandAmt,\r\n\tISNULL(HD.FCXshAmtV,0) AS FCXshAmtV,\r\n\tCASE WHEN HD.FTXshVATInOrEx='1' THEN ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)) ELSE (ISNULL(HD.FCXshTotal,0)+(ISNULL(HD.FCXshChg,0) - ISNULL(HD.FCXshDis,0)))+ ISNULL(HD.FCXshVat,0) END AS FCXshGrand,\r\n    HD.FTXshGndText, \r\n\tHD.FNXshDocPrint,\r\n\tISNULL(HD.FTXshStaETax,'2') AS FTXshStaETax,\r\n\tHDAddr.FTAddStaBusiness,\r\n\tApver_L.FTUsrName AS FTUsrNameApp,\r\n\tHDMst.FTRsnCode AS FTRsnCodeMst,RanMst.FTRsnName AS FTRsnNameMst,\r\n\tHDMst.FTXshDocNo AS FTXshDocNoMst,\r\n\tISNULL(HD.FCXshAmtNV,0) AS FCXshAmtNV\r\n\tFROM TPSTTaxHD  HD WITH (NOLOCK)  INNER JOIN \r\n     TPSTTaxHDCst HDCst WITH (NOLOCK) ON HD.FTBchCode = HDCst.FTBchCode AND HD.FTXshDocNo = HDCst.FTXshDocNo LEFT JOIN\r\n\t TCNMPos Pos WITH (NOLOCK) ON HD.FTPosCode = Pos.FTPosCode AND HD.FTBchCode = Pos.FTBchCode  LEFT JOIN \r\n\t TCNMCst Cst WITH (NOLOCK) ON HD.FTCstCode = Cst.FTCstCode LEFT JOIN\r\n\t TCNMCst_L Cst_L WITH (NOLOCK) ON HD.FTCstCode = Cst_L.FTCstCode AND Cst_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMSpn_L Spn_L WITH (NOLOCK) ON  HD.FTSpnCode = Spn_L.FTSpnCode AND Spn_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Usr_L  WITH (NOLOCK) ON HD.FTUsrCode = Usr_L.FTUsrCode AND Usr_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Red_L   WITH (NOLOCK) ON HD.FTLastUpdBy = Red_L.FTUsrCode AND Red_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TCNMUser_L Apver_L  WITH (NOLOCK) ON HD.FTXshApvCode = Apver_L.FTUsrCode AND Apver_L.FNLngID = @pnLanguage LEFT JOIN\r\n     TCNMUser_L App_L  WITH (NOLOCK) ON HD.FTXshApvCode = App_L.FTUsrCode AND App_L.FNLngID = @pnLanguage LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddr WITH (NoLock) ON  HD.FTBchCode = HDAddr.FTBchCode AND HD.FTXshDocNo = HDAddr.FTXshDocNo LEFT JOIN\r\n\t TPSTTaxHD HDMst WITH (NOLOCK) ON HD.FTBchCode = HDMst.FTBchCode AND HD.FTXshRefAE= HDMst.FTXshDocNo AND HDMst.FTXshStaDoc = '5' LEFT JOIN\r\n\t TPSTTaxHDAddress HDAddrEdit WITH (NoLock) ON  HDMst.FTBchCode = HDAddrEdit.FTBchCode AND HDMst.FTXshDocNo = HDAddrEdit.FTXshDocNo LEFT JOIN\r\n\t TCNMRsn_L RanMst WITH (NOLOCK) ON HDMst.FTRsnCode = RanMst.FTRsnCode AND RanMst.FNLngID = @pnLanguage \r\n\t LEFT JOIN TCNMProvince_L Pro_L WITH (NoLock) ON HDAddr.FTAddV1PvnCode = Pro_L.FTPvnCode AND Pro_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMDistrict_L Dis_L WITH (NoLock) ON HDAddr.FTAddV1DstCode = Dis_L.FTDstCode AND Dis_L.FNLngID = @pnLanguage\r\n\t LEFT JOIN TCNMSubDistrict_L SDis_L WITH (NoLock) ON HDAddr.FTAddV1SubDist = SDis_L.FTSudCode AND SDis_L.FNLngID = @pnLanguage\r\nWHERE HD.FTXshDocNo = @ptDocNo AND HD.FTBchCode = @ptDocBch",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -958,33 +996,37 @@
             "Index": -1,
             "NameInSource": "FTBchCode",
             "Alias": "FTBchCode",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "c043db673be149158d3cb927c9f98933"
           },
           "1": {
             "Name": "FTXshDocNo",
             "Index": -1,
             "NameInSource": "FTXshDocNo",
             "Alias": "FTXshDocNo",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "d9b1e6dd6a714f27adf3a4bee682ce6e"
           },
           "2": {
             "Name": "FCXsdVatRate",
             "Index": -1,
             "NameInSource": "FCXsdVatRate",
             "Alias": "FCXsdVatRate",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "a4c4930e0345457ba2d5e9a846ef5694"
           },
           "3": {
             "Name": "FCXsdVat",
             "Index": -1,
             "NameInSource": "FCXsdVat",
             "Alias": "FCXsdVat",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "0c2cdac0debc44deaeda00108b4fc1de"
           }
         },
         "NameInSource": "SaleInv",
         "CommandTimeout": 5000,
-        "SqlCommand": " SELECT FTBchCode,FTXshDocNo,FCXsdVatRate,CAST(FCXsdVat AS DECIMAL(18,2)) AS FCXsdVat \r\nFROM\r\n(SELECT HD.FTBchCode,HD.FTXshDocNo,CAST(FCXsdVatRate AS DECIMAL(18,2))  AS FCXsdVatRate,\r\n\t SUM(FCXsdVat) AS FCXsdVat \r\n\t FROM TPSTTaxDT DT INNER JOIN TPSTTaxHD HD ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo\r\n\t WHERE HD.FTXshDocNo = \t@ptDocNo AND FTXsdStaPdt <> '4' AND HD.FTBchCode = @ptDocBch\r\n\t GROUP BY HD.FTBchCode,HD.FTXshDocNo,CAST(FCXsdVatRate AS DECIMAL(18,2))\r\n    ) Vat",
+        "SqlCommand": " SELECT FTBchCode,FTXshDocNo,FCXsdVatRate,CAST(FCXsdVat AS DECIMAL(18,2)) AS FCXsdVat \r\nFROM\r\n(SELECT HD.FTBchCode,HD.FTXshDocNo,CAST(FCXsdVatRate AS DECIMAL(18,2))  AS FCXsdVatRate,\r\n\t SUM(CAST(FCXsdVat AS DECIMAL(18,2))) AS FCXsdVat \r\n\t FROM TPSTTaxDT DT INNER JOIN TPSTTaxHD HD ON DT.FTBchCode = HD.FTBchCode AND DT.FTXshDocNo = HD.FTXshDocNo\r\n\t WHERE HD.FTXshDocNo = \t@ptDocNo AND FTXsdStaPdt <> '4' AND HD.FTBchCode = @ptDocBch\r\n\t GROUP BY HD.FTBchCode,HD.FTXshDocNo,CAST(FCXsdVatRate AS DECIMAL(18,2))\r\n    ) Vat",
         "Parameters": {
           "0": {
             "Name": "ptDocNo",
@@ -1011,56 +1053,64 @@
             "Index": -1,
             "NameInSource": "FTBchCode",
             "Alias": "FTBchCode",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "a470ee2a91534145a6514821decbba4a"
           },
           "1": {
             "Name": "FTXshDocNo",
             "Index": -1,
             "NameInSource": "FTXshDocNo",
             "Alias": "FTXshDocNo",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "8ca5b8e14b3e4cacb9bd1aa4834da396"
           },
           "2": {
             "Name": "FTRcvCode",
             "Index": -1,
             "NameInSource": "FTRcvCode",
             "Alias": "FTRcvCode",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "fd291699d97e47ac9e50a3403933fbd9"
           },
           "3": {
             "Name": "FTFmtCode",
             "Index": -1,
             "NameInSource": "FTFmtCode",
             "Alias": "FTFmtCode",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "14dbfa8d2d014ac391548a2a16e9993c"
           },
           "4": {
             "Name": "FTFmtName",
             "Index": -1,
             "NameInSource": "FTFmtName",
             "Alias": "FTFmtName",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "b6d8a1f362374405ae99acd674650d21"
           },
           "5": {
             "Name": "FCXrcNet",
             "Index": -1,
             "NameInSource": "FCXrcNet",
             "Alias": "FCXrcNet",
-            "Type": "System.Decimal"
+            "Type": "System.Decimal",
+            "Key": "8f5dd10714834c07b510a7d7e70e8b04"
           },
           "6": {
             "Name": "FTRcvName",
             "Index": -1,
             "NameInSource": "FTRcvName",
             "Alias": "FTRcvName",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "5fc3a046e8434023a99e4d31b9680fe8"
           },
           "7": {
             "Name": "FTXrcRefNo1",
             "Index": -1,
             "NameInSource": "FTXrcRefNo1",
             "Alias": "FTXrcRefNo1",
-            "Type": "System.String"
+            "Type": "System.String",
+            "Key": "8fc7109967a6491ea7fb6bbfea7026d0"
           }
         },
         "NameInSource": "SaleInv",
@@ -1183,6 +1233,7 @@
         },
         "NameInSource": "Rc",
         "Alias": "Rc",
+        "Key": "f841859d48224f12a911f1188a66de76",
         "ParentSource": "TPSTSalRC",
         "ChildSource": "TPSTSalHD"
       }
@@ -1238,30 +1289,10 @@
                   "Components": {
                     "0": {
                       "Ident": "StiText",
-                      "Name": "Text31",
-                      "Guid": "5f3c638bd9a741c9b8ca2f31bcdfb988",
-                      "CanGrow": true,
-                      "ClientRectangle": "0.1,0.78,10.3,0.4",
-                      "Enabled": false,
-                      "Interaction": {
-                        "Ident": "StiInteraction"
-                      },
-                      "Text": {
-                        "Value": "303 ถนนวานิช 1 แขวงจักรวรรดิ เขตสัมพันธวงศ์ กรุงเทพมหานคร 10100\r\nเลขประจำตัวผู้เสียภาษีอากร 0105543056078\r\nโทร. -"
-                      },
-                      "VertAlignment": "Center",
-                      "Font": "Tahoma;10;;",
-                      "Border": "Bottom;;;None;;;;solid:Black",
-                      "Brush": "solid:",
-                      "TextBrush": "solid:Black",
-                      "Type": "Expression"
-                    },
-                    "1": {
-                      "Ident": "StiText",
                       "Name": "CmpAddr",
                       "Guid": "0eed0aacfe9a45f394ae5141b241b125",
                       "CanGrow": true,
-                      "ClientRectangle": "0.05,0.63,10.29,1.74",
+                      "ClientRectangle": "0.05,0.63,10.29,1.66",
                       "Interaction": {
                         "Ident": "StiInteraction"
                       },
@@ -1287,7 +1318,7 @@
                       "LineSpacing": 1.1000000238418579,
                       "Type": "Expression"
                     },
-                    "2": {
+                    "1": {
                       "Ident": "StiText",
                       "Name": "Text32",
                       "Guid": "e9166e1073b74e9d85e748bf3eaaceed",
@@ -1296,7 +1327,7 @@
                         "Ident": "StiInteraction"
                       },
                       "Text": {
-                        "Value": "{Company.FTCompName}"
+                        "Value": "{Company.FTAddName}"
                       },
                       "VertAlignment": "Center",
                       "Font": "Tahoma;9;Bold;",
@@ -1309,7 +1340,7 @@
                         "Top": 3.0,
                         "Bottom": 0.0
                       },
-                      "Type": "Expression"
+                      "Type": "DataColumn"
                     }
                   }
                 },
@@ -1430,23 +1461,6 @@
                   "Components": {
                     "0": {
                       "Ident": "StiText",
-                      "Name": "tSplAddress",
-                      "Guid": "785e8cf6ed3c466cb6d3e40558c17b96",
-                      "ClientRectangle": "0.25,0.8,1.39,0.65",
-                      "Interaction": {
-                        "Ident": "StiInteraction"
-                      },
-                      "Text": {
-                        "Value": "{IIF(SP_nLang==\"1\",\"ที่อยู่ :\",\"Address :\")}"
-                      },
-                      "Font": "Tahoma;9;;",
-                      "Border": ";;;;;;;solid:Black",
-                      "Brush": "solid:",
-                      "TextBrush": "solid:Black",
-                      "Type": "Expression"
-                    },
-                    "1": {
-                      "Ident": "StiText",
                       "Name": "tTel",
                       "Guid": "b7cd495dc16d4382941cc237ef45bf20",
                       "ClientRectangle": "0.25,3.3,5.24,0.62",
@@ -1462,7 +1476,7 @@
                       "TextBrush": "solid:Black",
                       "Type": "Expression"
                     },
-                    "2": {
+                    "1": {
                       "Ident": "StiText",
                       "Name": "Text3",
                       "Guid": "996594f54599463386da695d14192595",
@@ -1479,7 +1493,7 @@
                       "TextBrush": "solid:Black",
                       "Type": "Expression"
                     },
-                    "3": {
+                    "2": {
                       "Ident": "StiText",
                       "Name": "tFax",
                       "Guid": "ea19e40b57b84ea98d3c5ccfa30cf5bf",
@@ -1496,7 +1510,7 @@
                       "TextBrush": "solid:Black",
                       "Type": "Expression"
                     },
-                    "4": {
+                    "3": {
                       "Ident": "StiPanel",
                       "Name": "Panel7",
                       "Guid": "f52a8b10254549b9ad9c604a91683da0",
@@ -1537,18 +1551,18 @@
                         }
                       }
                     },
-                    "5": {
+                    "4": {
                       "Ident": "StiText",
                       "Name": "SplAddr",
                       "Guid": "026b08060db9474cbdccedb313ea0700",
                       "CanGrow": true,
-                      "ClientRectangle": "1.65,0.8,8.92,2.35",
+                      "ClientRectangle": "0.25,0.84,10.32,2.31",
                       "Interaction": {
                         "Ident": "StiInteraction"
                       },
                       "MaxNumberOfLines": 5,
                       "Text": {
-                        "Value": "{TPSTSalHD.FTAddV2Desc1 + \" \" + TPSTSalHD.FTAddV2Desc2}"
+                        "Value": "{IIF(SP_nLang==\"1\",\"ที่อยู่ :\",\"Address :\")} {IIF(TPSTSalHD.FTAddVersion==\"1\",\r\nIIF(SP_nLang==\"1\",\"เลขที่ \",\"No. \") + TPSTSalHD.FTAddV1No +\r\nIIF(TPSTSalHD.FTAddV1Village ==\"\",\"\",\" \" + TPSTSalHD.FTAddV1Village + \" \") +\r\nIIF(TPSTSalHD.FTAddV1Soi==\"\",\"\",IIF(SP_nLang==\"1\",\"ซอย\",\"Soi \") + TPSTSalHD.FTAddV1Soi + \" \") +\r\nIIF(TPSTSalHD.FTAddV1Road==\"\",\"\",IIF(SP_nLang==\"1\",\"ถนน\",\"\") + TPSTSalHD.FTAddV1Road + IIF(SP_nLang==\"1\",\"\",\" Rd.\")+ \" \")+ \r\nIIF(TPSTSalHD.FTSudName==\"\",\"\", TPSTSalHD.FTSudName + \" \") +\r\nIIF(TPSTSalHD.FTDstName==\"\",\"\", TPSTSalHD.FTDstName + \" \") +\r\nIIF(TPSTSalHD.FTPvnName==\"\",\"\",IIF(SP_nLang==\"1\",\"จังหวัด\",\"\") +  TPSTSalHD.FTPvnName + IIF(SP_nLang==\"1\",\"\",\" Province \") +\" \") +\r\nIIF(TPSTSalHD.FTAddV1PostCode==\"\",\"\",TPSTSalHD.FTAddV1PostCode)\r\n,TPSTSalHD.FTAddV2Desc1) + \"  \" + TPSTSalHD.FTAddV2Desc2\r\n}"
                       },
                       "CanBreak": true,
                       "Font": "Tahoma;9;;",
@@ -1561,7 +1575,7 @@
                       "TextQuality": "Wysiwyg",
                       "Type": "Expression"
                     },
-                    "6": {
+                    "5": {
                       "Ident": "StiStartPointPrimitive",
                       "Name": "StartPointPrimitive2",
                       "Guid": "c61c3f1efd8947d2b43728c0f83ebe96",
@@ -1655,7 +1669,7 @@
                         "Ident": "StiInteraction"
                       },
                       "Text": {
-                        "Value": "{IIF(SP_nLang==\"1\",\"สถานะเอกสาร :\",\"Document Sta. :\")}  {IIF(TPSTSalHD.FTXshStaDoc==\"3\",IIF(SP_nLang==\"1\",\"ยกเลิก\",\"Cancel\"), IIF(TPSTSalHD.FTXshStaApv ==\"1\",IIF(SP_nLang==\"1\",\"อนุมัติ\",\"Approve\") ,IIF(SP_nLang==\"1\",\"รออนุมัติ\",\"Waiting for apprive\")))}"
+                        "Value": "{IIF(SP_nLang==\"1\",\"สถานะเอกสาร :\",\"Document Sta. :\")}  {IIF(TPSTSalHD.FTXshStaDoc!=\"1\" && TPSTSalHD.FTXshStaDoc!=\"4\",IIF(SP_nLang==\"1\",\"ยกเลิก\",\"Cancel\"), IIF(TPSTSalHD.FTXshStaApv ==\"1\",IIF(SP_nLang==\"1\",\"อนุมัติ\",\"Approve\") ,IIF(SP_nLang==\"1\",\"รออนุมัติ\",\"Waiting for apprive\")))}"
                       },
                       "VertAlignment": "Center",
                       "Font": "Tahoma;9;;",
@@ -2477,7 +2491,7 @@
             "3": {
               "Ident": "StiPanel",
               "Name": "Panel5",
-              "ClientRectangle": "8.33,0.53,4.65,0.6",
+              "ClientRectangle": "8.33,0.53,4.65,2.88",
               "Interaction": {
                 "Ident": "StiInteraction"
               },
@@ -2603,32 +2617,6 @@
                 },
                 "2": {
                   "Ident": "StiText",
-                  "Name": "NetAmt",
-                  "Guid": "def3e40f93dd4d078381c0865126206f",
-                  "PrintOn": "OnlyLastPage",
-                  "ClientRectangle": "4,1.98,2.75,0.55",
-                  "Interaction": {
-                    "Ident": "StiInteraction"
-                  },
-                  "Text": {
-                    "Value": "{(TPSTSalHD.FCXshGrandAmt-TPSTSalHD.FCXshRnd-TPSTSalHD.FCXshAmtNV)-TPSTSalHD.FCXshVat}"
-                  },
-                  "HorAlignment": "Right",
-                  "VertAlignment": "Center",
-                  "Font": "Tahoma;9;;",
-                  "Border": ";;;;;;;solid:Black",
-                  "Brush": "solid:",
-                  "TextBrush": "solid:Black",
-                  "TextFormat": {
-                    "Ident": "StiNumberFormatService",
-                    "NegativePattern": 1,
-                    "GroupSeparator": ",",
-                    "UseLocalSetting": false
-                  },
-                  "Type": "Expression"
-                },
-                "3": {
-                  "Ident": "StiText",
                   "Name": "tDiscountHD",
                   "Guid": "0e76e4f17d52450f9a48aa79cf13ea87",
                   "PrintOn": "OnlyLastPage",
@@ -2646,7 +2634,7 @@
                   "TextBrush": "solid:Black",
                   "Type": "Expression"
                 },
-                "4": {
+                "3": {
                   "Ident": "StiText",
                   "Name": "tGrossTotal",
                   "Guid": "9871bde9b56543dc958715b4834fc966",
@@ -2665,7 +2653,7 @@
                   "TextBrush": "solid:Black",
                   "Type": "Expression"
                 },
-                "5": {
+                "4": {
                   "Ident": "StiText",
                   "Name": "tNetAmt",
                   "Guid": "04f47ad4ebe04af4bebee13739bbc43c",
@@ -2684,7 +2672,7 @@
                   "TextBrush": "solid:Black",
                   "Type": "Expression"
                 },
-                "6": {
+                "5": {
                   "Ident": "StiText",
                   "Name": "Text8",
                   "Guid": "5a3d02bf7a284b3c9d78030cd6b22d08",
@@ -2710,7 +2698,7 @@
                   },
                   "Type": "DataColumn"
                 },
-                "7": {
+                "6": {
                   "Ident": "StiText",
                   "Name": "Text9",
                   "Guid": "8572047fc0574a2fa2b8d349c8db7e0d",
@@ -2729,7 +2717,7 @@
                   "TextBrush": "solid:Black",
                   "Type": "Expression"
                 },
-                "8": {
+                "7": {
                   "Ident": "StiText",
                   "Name": "tVat",
                   "Guid": "5097fef821dc4779ab1fa64aee74b466",
@@ -2748,7 +2736,7 @@
                   "TextBrush": "solid:Black",
                   "Type": "Expression"
                 },
-                "9": {
+                "8": {
                   "Ident": "StiText",
                   "Name": "Text35",
                   "Guid": "3b2b16efa4ef487097ff35d272f4cb79",
@@ -2767,7 +2755,7 @@
                   "TextBrush": "solid:Black",
                   "Type": "Expression"
                 },
-                "10": {
+                "9": {
                   "Ident": "StiText",
                   "Name": "Text34",
                   "Guid": "57f6ff59ebd1407f957814725b5f7443",
@@ -2786,7 +2774,7 @@
                   "TextBrush": "solid:Black",
                   "Type": "Expression"
                 },
-                "11": {
+                "10": {
                   "Ident": "StiText",
                   "Name": "Text36",
                   "Guid": "a31764e0af354111b30327fbce308806",
@@ -2812,7 +2800,7 @@
                   },
                   "Type": "Expression"
                 },
-                "12": {
+                "11": {
                   "Ident": "StiText",
                   "Name": "Text37",
                   "Guid": "eae07e35d28345688c07e9ebe3e7309d",
@@ -2838,7 +2826,7 @@
                   },
                   "Type": "DataColumn"
                 },
-                "13": {
+                "12": {
                   "Ident": "StiText",
                   "Name": "Text40",
                   "Guid": "eb7d3c6974b140818cbbf4131e32e35d",
@@ -2848,7 +2836,7 @@
                     "Ident": "StiInteraction"
                   },
                   "Text": {
-                    "Value": "{TPSTSalHD.FCXshVat}"
+                    "Value": "{TPSTSalHD.FCXshVat1}"
                   },
                   "HorAlignment": "Right",
                   "VertAlignment": "Center",
@@ -2860,11 +2848,11 @@
                     "Ident": "StiNumberFormatService",
                     "NegativePattern": 1,
                     "GroupSeparator": ",",
-                    "UseLocalSetting": false
+                    "State": "DecimalDigits, DecimalSeparator, GroupSeparator"
                   },
-                  "Type": "Expression"
+                  "Type": "DataColumn"
                 },
-                "14": {
+                "13": {
                   "Ident": "StiText",
                   "Name": "Text4",
                   "Guid": "d3aef398371b4264b7b10b6f54746d8e",
@@ -2883,7 +2871,7 @@
                   "TextBrush": "solid:Black",
                   "Type": "Expression"
                 },
-                "15": {
+                "14": {
                   "Ident": "StiText",
                   "Name": "Text10",
                   "Guid": "08fd64c220074211b80cf9d9f06823c7",
@@ -2908,6 +2896,32 @@
                     "UseLocalSetting": false
                   },
                   "Type": "DataColumn"
+                },
+                "15": {
+                  "Ident": "StiText",
+                  "Name": "Text41",
+                  "Guid": "63ada1c700d14fc9982d3eabef884d5f",
+                  "PrintOn": "OnlyLastPage",
+                  "ClientRectangle": "4,1.98,2.75,0.5",
+                  "Interaction": {
+                    "Ident": "StiInteraction"
+                  },
+                  "Text": {
+                    "Value": "{((TPSTSalHD.FCXshGrandAmt-TPSTSalHD.FCXshRnd-TPSTSalHD.FCXshAmtNV)-TPSTSalHD.FCXshVat)}"
+                  },
+                  "HorAlignment": "Right",
+                  "VertAlignment": "Center",
+                  "Font": "Tahoma;9;;",
+                  "Border": "Bottom;;;None;;;;solid:Black",
+                  "Brush": "solid:",
+                  "TextBrush": "solid:Black",
+                  "TextFormat": {
+                    "Ident": "StiNumberFormatService",
+                    "NegativePattern": 1,
+                    "GroupSeparator": ",",
+                    "State": "DecimalDigits, DecimalSeparator, GroupSeparator"
+                  },
+                  "Type": "Expression"
                 }
               }
             },

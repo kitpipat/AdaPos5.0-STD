@@ -1,16 +1,16 @@
 <div class="table-responsive">
     <table class="table table-striped xWPdtTableFont" id="otbPromotionStep4BchConditionTable">
         <thead>
-            <tr class="xCNPanelHeadColorWhite">
-                <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
-                <th width="15%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tGroup'); ?></th>
-                <th width="20%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tLabel20'); ?></th>
-                <th width="20%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tBranch'); ?></th>
+            <tr>
+                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBNo'); ?></th>
+                <th width="15%" class="text-left"><?php echo language('document/promotion/promotion', 'tGroup'); ?></th>
+                <th width="20%" class="text-left"><?php echo language('document/promotion/promotion', 'tLabel20'); ?></th>
+                <th width="20%" class="text-left"><?php echo language('document/promotion/promotion', 'tBranch'); ?></th>
                 <?php if($bIsShpEnabled) { ?>
-                <th width="20%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tBusinessGroup'); ?></th>
-                <th width="20%" class="text-left" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tShop'); ?></th>
+                <th width="20%" class="text-left"><?php echo language('document/promotion/promotion', 'tBusinessGroup'); ?></th>
+                <th width="20%" class="text-left"><?php echo language('document/promotion/promotion', 'tShop'); ?></th>
                 <?php } ?>
-                <th width="5%" class="text-center" style="color: #232C3D !important;"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
+                <th width="5%" class="text-center"><?php echo language('document/promotion/promotion', 'tTBDelete'); ?></th>
             </tr>
         </thead>
         <tbody>

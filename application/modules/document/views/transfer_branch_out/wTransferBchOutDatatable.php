@@ -12,12 +12,7 @@ if ($aDataList['rtCode'] == '1') {
                 <thead>
                     <tr class="xCNCenter">
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) { ?>
-                            <th nowrap class="xCNTextBold text-center" style="width:5%;">
-                                <label class="fancy-checkbox">
-                                    <input type="checkbox" class="ocmCENCheckDeleteAll" id="ocmCENCheckDeleteAll" >
-                                    <span class="ospListItem">&nbsp;</span>
-                                </label>
-                            </th>
+                            <th class="xCNTextBold" style="width:5%;"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTBChoose') ?></th>
                         <?php } ?>
                         <th class="xCNTextBold"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTBBchCreate') ?></th>
                         <th class="xCNTextBold"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTBDocNo') ?></th>
@@ -26,22 +21,21 @@ if ($aDataList['rtCode'] == '1') {
                         <!-- <th class="xCNTextBold"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTBStaApv') ?></th> -->
                         <th class="xCNTextBold"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTBStaPrc') ?></th>
                         <th class="xCNTextBold"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTBCreateBy') ?></th>
+                        <th class="xCNTextBold"><?= language('document/transfer_branch_out/transfer_branch_out', 'tTBApvBy') ?></th>
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) { ?>
                             <th class="xCNTextBold" style="width:5%;"><?= language('common/main/main', 'tCMNActionDelete') ?></th>
                         <?php } ?>
                         <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaRead'] == 1) { ?>
-                            <th class="xCNTextBold" style="width:5%;"><?= language('common/main/main', 'tCMNActionEdit') ?></th>
+                            <th class="xCNTextBold" style="width:5%;"><?= language('common/main/main', 'tCMNActionEdit/View') ?></th>
                         <?php } ?>
                     </tr>
                 </thead>
                 <tbody id="odvRGPList">
-                    <?php if ($aDataList['rtCode'] == 1) { 
-                        ?>
+                    <?php if ($aDataList['rtCode'] == 1) { ?>
                         <?php foreach ($aDataList['raItems'] as $key => $aValue) { ?>
                             <?php
                             $tDocNo = $aValue['FTXthDocNo'];
-                            
-                            if ($aValue['FTXthStaApv'] == 1 || $aValue['FTXthStaApv'] == 2 || $aValue['FTXthStaDoc'] == 3 || $aValue['FTRefAlwDel'] == 2) {
+                            if ($aValue['FTXthStaApv'] == 1 || $aValue['FTXthStaApv'] == 2 || $aValue['FTXthStaDoc'] == 3) {
                                 $CheckboxDisabled = "disabled";
                                 $ClassDisabled = 'xCNDocDisabled';
                                 $Title = language('document/document/document', 'tDOCMsgCanNotDel');
@@ -53,55 +47,17 @@ if ($aDataList['rtCode'] == '1') {
                                 $Onclick = "onclick=JSxTransferBchOutDocDel('" . $nCurrentPage . "','" . $tDocNo . "')";
                             }
 
-                            $tStaDocDisplay = "";
-                            $tStaDoc        = $aValue['FTXthStaDoc']; 
-                            $tStaApv        = $aValue['FTXthStaApv'];
-                            $tStaPrcDoc     = $aValue['FTXthStaPrcDoc']; 
-
-                            if( $tStaPrcDoc == "" ){
-                                if ( $tStaDoc == '3' ) {
-                                    $tClassStaDoc   = 'text-danger';
-                                    $tStaDocDisplay = language('common/main/main', 'tStaDoc3');
-                                } else if ( $tStaApv == '1' ) {
-                                    $tClassStaDoc   = 'text-success';
-                                    $tStaDocDisplay = language('common/main/main', 'tStaDoc1');
-                                } else {
-                                    $tClassStaDoc   = 'text-warning';
-                                    $tStaDocDisplay = language('common/main/main', 'tStaDoc');
-                                }
-                            }else{
-                                if ( $tStaDoc == '3' ) {
-                                    $tClassStaDoc   = 'text-danger';
-                                    $tStaDocDisplay = language('common/main/main', 'tStaDoc3');
-                                } else if ( $tStaApv == '1' && $tStaPrcDoc == '5' ) {
-                                    $tClassStaDoc   = 'text-success';
-                                    $tStaDocDisplay = language('common/main/main', 'tStaDoc1');
-                                } else if ( $tStaPrcDoc == '4' ) {
-                                    $tClassStaDoc   = 'text-warning';
-                                    $tStaDocDisplay = language('common/main/main', 'tStaDoc');
-                                } else if ( $tStaPrcDoc == '3' ) {
-                                    $tClassStaDoc   = 'text-warning';
-                                    $tStaDocDisplay = language('document/transfer_branch_out/transfer_branch_out', 'tTBOIsPackingPdt');
-                                } else if ( $tStaPrcDoc == '2' ) {
-                                    $tClassStaDoc   = 'text-warning';
-                                    $tStaDocDisplay = language('document/transfer_branch_out/transfer_branch_out', 'tTBOIsWaitPackPdt');
-                                } else if ( $tStaPrcDoc == '1' ) {
-                                    $tClassStaDoc   = 'text-warning';
-                                    $tStaDocDisplay = language('document/transfer_branch_out/transfer_branch_out', 'tTBOIsWaitGenDocPack');
-                                }
-                            }
-
                             //FTXthStaDoc
-                            // if ($aValue['FTXthStaDoc'] == 3) {
-                            //     $tClassStaDoc = 'text-danger';
-                            //     $tStaDoc = language('common/main/main', 'tStaDoc3');
-                            // } else if ($aValue['FTXthStaApv'] == 1) {
-                            //     $tClassStaDoc = 'text-success';
-                            //     $tStaDoc = language('common/main/main', 'tStaDoc1');
-                            // } else {
-                            //     $tClassStaDoc = 'text-warning';
-                            //     $tStaDoc = language('common/main/main', 'tStaDoc');
-                            // }
+                            if ($aValue['FTXthStaDoc'] == 3) {
+                                $tClassStaDoc = 'text-danger';
+                                $tStaDoc = language('common/main/main', 'tStaDoc3');
+                            } else if ($aValue['FTXthStaApv'] == 1) {
+                                $tClassStaDoc = 'text-success';
+                                $tStaDoc = language('common/main/main', 'tStaDoc1');
+                            } else {
+                                $tClassStaDoc = 'text-warning';
+                                $tStaDoc = language('common/main/main', 'tStaDoc');
+                            }
 
                             if ($aValue['FTXthStaPrcStk'] == 1) {
                                 $tClassPrcStk = 'text-success';
@@ -120,7 +76,7 @@ if ($aDataList['rtCode'] == '1') {
                                 <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) { ?>
                                     <td class="text-center">
                                         <label class="fancy-checkbox ">
-                                            <input id="ocbTransferBchOutHDListItem<?= $key ?>" type="checkbox" class="ocbListItem ocbTransferBchOutHDListItem" name="ocbTransferBchOutHDListItem[]" <?= $CheckboxDisabled ?>>
+                                            <input id="ocbTransferBchOutHDListItem<?= $key ?>" type="checkbox" class="ocbTransferBchOutHDListItem" name="ocbTransferBchOutHDListItem[]" <?= $CheckboxDisabled ?>>
                                             <span class="<?= $ClassDisabled ?>">&nbsp;</span>
                                         </label>
                                     </td>
@@ -128,10 +84,17 @@ if ($aDataList['rtCode'] == '1') {
                                 <td class="text-left"><?= $aValue['FTBchName'] != '' ? $aValue['FTBchName'] : '-' ?></td>
                                 <td class="text-left"><?= $aValue['FTXthDocNo'] != '' ? $aValue['FTXthDocNo'] : '-' ?></td>
                                 <td class="text-center"><?= $aValue['FDXthDocDate'] != '' ? date('d/m/Y', strtotime($aValue['FDXthDocDate'])) : '-' ?></td>
-                                <td class="text-left"><label class="xCNTDTextStatus <?= $tClassStaDoc ?>"><?php echo $tStaDocDisplay ?></label></td>
+                                <td class="text-left"><label class="xCNTDTextStatus <?= $tClassStaDoc ?>"><?php echo $tStaDoc ?></label></td>
                                 <!-- <td class="text-left"><label class="xCNTDTextStatus <?= $tClassStaApv ?>"><?= language('document/transfer_branch_out/transfer_branch_out', 'tStaApv' . $aValue['FTXthStaApv']) ?></label></td> -->
                                 <td class="text-left"><label class="xCNTDTextStatus <?= $tClassPrcStk ?>"><?php echo $tStaPrcDoc ?></label></td>
                                 <td class="text-left"><?= $aValue['FTCreateByName'] != '' ? $aValue['FTCreateByName'] : '-' ?></td>
+                                <?php
+                                $tApvName = language('document/transfer_branch_out/transfer_branch_out', 'tNotFound');
+                                if ($aValue['FTXthApvCode'] != "") {
+                                    $tApvName = $aValue['FTXthApvName'];
+                                }
+                                ?>
+                                <td class="text-left"><?php echo $tApvName; ?></td>
                                 <?php if ($aAlwEvent['tAutStaFull'] == 1 || $aAlwEvent['tAutStaDelete'] == 1) { ?>
                                     <td>
                                         <img class="xCNIconTable xCNIconDel <?= $ClassDisabled ?>" src="<?= base_url('application/modules/common/assets/images/icons/delete.png') ?>" <?= $Onclick ?> title="<?= $Title ?>">

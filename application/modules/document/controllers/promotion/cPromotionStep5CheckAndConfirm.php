@@ -44,8 +44,6 @@ class cPromotionStep5CheckAndConfirm extends MX_Controller
         $aPdtPmtHDChnInTmp = $this->mPromotionStep5CheckAndConfirm->FSaMGetPdtPmtHDChnInTmp($aGetInTmpParams);
         $aPdtPmtHDPytInTmp = $this->mPromotionStep5CheckAndConfirm->FSaMGetPdtPmtHDPytInTmp($aGetInTmpParams);
         $aPdtPmtHDCstInTmp = $this->mPromotionStep5CheckAndConfirm->FSaMGetPdtPmtHDCstInTmp($aGetInTmpParams);
-        $aPdtPmtHDPnpInTmp = $this->mPromotionStep5CheckAndConfirm->FSaMGetPdtPmtHDPnpInTmp($aGetInTmpParams);
-        $aPdtPmtHDCstLevInTmp = $this->mPromotionStep5CheckAndConfirm->FSaMGetPdtPmtHDCstLevInTmp($aGetInTmpParams);
 
        
 
@@ -62,8 +60,6 @@ class cPromotionStep5CheckAndConfirm extends MX_Controller
             'aPdtPmtHDChnInTmp' => $aPdtPmtHDChnInTmp,
             'aPdtPmtHDRcvInTmp' => $aPdtPmtHDPytInTmp,
             'aPdtPmtHDCstInTmp' => $aPdtPmtHDCstInTmp,
-            'aPdtPmtHDCstLevInTmp' => $aPdtPmtHDCstLevInTmp,
-            'aPdtPmtHDPnpInTmp' => $aPdtPmtHDPnpInTmp,
             'tPbyStaCalSum' => isset($aPmtCBInTmp[0]['FTPbyStaCalSum'])?$aPmtCBInTmp[0]['FTPbyStaCalSum']:'1',
             'tPgtStaGetEffect' => isset($aPmtCGInTmp[0]['FTPgtStaGetEffect'])?$aPmtCGInTmp[0]['FTPgtStaGetEffect']:'1',
             'tPgtStaGetType' => isset($aPmtCGInTmp[0]['FTPgtStaGetType'])?$aPmtCGInTmp[0]['FTPgtStaGetType']:'1',

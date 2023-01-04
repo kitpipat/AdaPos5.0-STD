@@ -300,6 +300,8 @@ class cAdjustStock extends MX_Controller {
             $nASTApvSeqChk      = $this->input->post('pnASTApvSeqChk');
             $nASTPageCurrent    = $this->input->post('pnASTPageCurrent');
 
+            // Page Current 
+            if($nASTPageCurrent == '' || $nASTPageCurrent == null){$nASTPageCurrent = 1;}else{$nASTPageCurrent = $this->input->post('pnASTPageCurrent');}
             // Get Option Show Decimal
             $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
 
@@ -316,10 +318,10 @@ class cAdjustStock extends MX_Controller {
                 (object) array('FNShwSeq' => 2,  'FTShwFedShw' => 'FTXtdPdtName',       'FTShwNameUsr' => 'ชื่อสินค้า',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
                 (object) array('FNShwSeq' => 3,  'FTShwFedShw' => 'FTXtdBarCode',       'FTShwNameUsr' => 'รหัสบาร์โค้ด',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
                 (object) array('FNShwSeq' => 4,  'FTShwFedShw' => 'FCPdtUnitFact',      'FTShwNameUsr' => 'อัตราส่วน',    'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
-    
-                (object) array('FNShwSeq' => 5,  'FTShwFedShw' => 'FCAjdWahB4Adj',      'FTShwNameUsr' => 'ก่อนตรวจนับ',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 0),
-                (object) array('FNShwSeq' => 6,  'FTShwFedShw' => 'FCAjdUnitQtyC1',     'FTShwNameUsr' => 'ตรวจนับ',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 1),
-                (object) array('FNShwSeq' => 7,  'FTShwFedShw' => 'FCAfterCount',       'FTShwNameUsr' => 'หลังตรวจนับ',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 0)
+                (object) array('FNShwSeq' => 5,  'FTShwFedShw' => 'FTPunName',          'FTShwNameUsr' => 'หน่วย',       'FTShwFedStaUsed' => '1','FNShwColWidth' => 0,'FTShwStaAlwEdit' => 0),
+                (object) array('FNShwSeq' => 6,  'FTShwFedShw' => 'FCAjdWahB4Adj',      'FTShwNameUsr' => 'ก่อนตรวจนับ',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 0),
+                (object) array('FNShwSeq' => 7,  'FTShwFedShw' => 'FCAjdUnitQtyC1',     'FTShwNameUsr' => 'ตรวจนับ',     'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 1),
+                (object) array('FNShwSeq' => 8,  'FTShwFedShw' => 'FCAfterCount',       'FTShwNameUsr' => 'หลังตรวจนับ',  'FTShwFedStaUsed' => '1','FNShwColWidth' => 0, 'FTShwStaAlwEdit' => 0)
             );
 
             $aDataWhere         = array(
@@ -1103,5 +1105,108 @@ class cAdjustStock extends MX_Controller {
             echo $Error;
         }
     }
+
+    /**
+     * Functionality : Insert Pdt to Temp
+     * Parameters : -
+     * Creator : 25/11/2022 Nale
+     * Last Modified : -
+     * Return : Status
+     * Return Type : Array
+     */
+    public function FSaCASTInsertPdtToTmp(){
+
+
+        $tDocNo             = $this->input->post('ptXthDocNo');
+        $tDocKey            = 'TCNTPdtAdjStkHD';
+        $nLngID             = $this->session->userdata("tLangID");
+        $tUserSessionID     = $this->session->userdata('tSesSessionID');
+        $tUserLevel         = $this->session->userdata('tSesUsrLevel');
+        $tBchCode           = $this->input->post('ptBchCode');
+
+        $nOptionAddPdt = $this->input->post('pnOptionAddPdt');
+        $tIsByScanBarCode = $this->input->post('tIsByScanBarCode');
+        $tBarCodeByScan = $this->input->post('tBarCodeByScan');
+        $tPdtData = $this->input->post('tPdtData');
+        $aPdtData = array_values(json_decode($tPdtData,true))[0];
+    // echo '<pre>';
+    //     print_r($aPdtData);
+    // echo '</pre>';
+        // die();
+
+    // INSERT INTO TCNTDocDTTmp (
+    //     FTBchCode,FTXthDocNo,FNXtdSeqNo,FTXthDocKey,FTPdtCode,
+    //     FTXtdPdtName,FTPunCode,FTPunName,FTXtdBarCode,FCPdtUnitFact,
+    //     FTAjdPlcCode,FCAjdUnitQtyC1,FCAjdQtyAllC1,
+    //     FTSessionID,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy
+    // )
+        $this->db->trans_begin();
+        // 00000114
+
+        // นำเข้ารายการสินค้าจากการแสกนบาร์โค้ด
+  
+        
+
+            if ($aPdtData['pnPdtCode'] != '') {
+
+                $aDataWhere = array(
+                    'tDocNo'    => $tDocNo,
+                    'tDocKey'   => 'TCNTPdtAdjStkHD',
+                    'tUserSessionID' => $this->session->userdata('tSesSessionID')
+                );
+                $nMaxSeqNo = $this->mAdjustStock->FSnMASTGetMaxSeqDTTemp($aDataWhere);
+                $aPdtPack = $aPdtData['packData'];
+                // Loop
+                $aDataPdtMaster = array(
+                    'FTBchCode'     => $tBchCode,
+                    'FTXthDocNo'    => $tDocNo,
+                    'FNXtdSeqNo'    => $nMaxSeqNo+1,
+                    'FTXthDocKey'   => 'TCNTPdtAdjStkHD',   
+                    'FTPdtCode'     => $aPdtPack['PDTCode'],  
+                    'FTXtdPdtName'  => $aPdtPack['PDTName'],  
+                    'FTPunCode'     => $aPdtPack['PUNCode'],  
+                    'FTPunName'     => $aPdtPack['PUNName'],
+                    'FTXtdBarCode'  => $aPdtPack['Barcode'],
+                    'FCPdtUnitFact' => $aPdtPack['UnitFact'],
+                    'FTAjdPlcCode'  => '',
+                    'FCAjdUnitQtyC1' => 1,
+                    'FCAjdQtyAllC1' => 1*$aPdtPack['UnitFact'],
+                    'FTSessionID' => $this->session->userdata('tSesSessionID'),
+                    'FDLastUpdOn' => date('Y-m-d'),
+                    'FDCreateOn' => date('Y-m-d'),
+                    'FTLastUpdBy' => $this->session->userdata('tSesUsername'),
+                    'FTCreateBy' => $this->session->userdata('tSesUsername'),
+                );
+                
+   
+                    $nStaInsPdtToTmp = $this->mAdjustStock->FSaMASTInsertPDTToTemp($aDataPdtMaster, $aDataWhere); // นำรายการสินค้าเข้า DT Temp
+           
+            } else {
+                $aStatus = array(
+                    'rtCode' => '800',
+                    'rtDesc' => 'Data not found.',
+                );
+                $this->output->set_status_header(200)->set_content_type('application/json')->set_output(json_encode($aStatus));
+            }
+        
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            $aReturn = array(
+                'nStaEvent'    => '900',
+                'tStaMessg'    => "Unsucess InsertPdtToTmp"
+            );
+        } else {
+            $this->db->trans_commit();
+            $aReturn = array(
+                'nStaEvent'    => '1',
+                'tStaMessg' => 'Success InsertPdtToTmp'
+            );
+        }
+
+        $this->output->set_content_type('application/json')->set_output(json_encode($aReturn));
+    
+    }
+
 
 }

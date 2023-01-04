@@ -1500,3 +1500,70 @@ function FCNConvert($num)
         return $aResult;
     }
 
+
+
+
+     /**
+     * Functionality : FCNaGetConfigData
+     * Parameters : $ptAgnCode,$nSeq,$ptSysCode,$ptSysApp
+     * Creator : 07/12/2022 Nale
+     * Last Modified : -
+     * Return : status
+     * Return Type : array
+     */
+    function FCNaGetConfigData($ptSysCode,$ptSysApp,$ptSysKey,$pnSeq,$ptAgnCode){
+        $ci = &get_instance();
+        $ci->load->database();
+        $nLangID = FCNaHGetLangEdit();
+        $tSQL ="SELECT CONF.*,CGP.FTCgpName FROM (
+            SELECT
+            CON.FTSysCode,
+            CON.FTSysApp,
+            CON.FTSysKey,
+            CON.FTSysSeq,
+            CONSPC.FTAgnCode,
+            CON.FTSysStaDataType,
+            CASE WHEN CONSPC.FTCfgStaUsrValue <> '' THEN
+                CONSPC.FTCfgStaUsrValue 
+            ELSE
+                CON.FTSysStaUsrValue 
+            END AS  FTCfgStaUsrValue,
+            CASE WHEN CONSPC.FTCfgStaUsrRef <> '' THEN
+                CONSPC.FTCfgStaUsrRef 
+            ELSE
+                CON.FTSysStaUsrRef
+            END AS  FTCfgStaUsrRef
+            FROM
+                TSysConfig CON WITH (NOLOCK)
+            LEFT JOIN TCNTConfigSpc CONSPC WITH (NOLOCK) ON  CON.FTSysCode = CONSPC.FTSysCode AND CON.FTSysApp = CON.FTSysApp AND CON.FTSysKey = CONSPC.FTSysKey AND  CON.FTSysSeq = CONSPC.FTSysSeq AND  CONSPC.FTAgnCode = '$ptAgnCode'
+            WHERE
+                CON.FTSysCode = '$ptSysCode'
+            AND CON.FTSysApp = '$ptSysApp'
+            AND CON.FTSysKey = '$ptSysKey'
+            AND CON.FTSysSeq IN ('$pnSeq')
+            ) AS CONF
+            LEFT JOIN TCNMCstGrp_L CGP WITH (NoLOCK) ON CONF.FTCfgStaUsrValue = CGP.FTCgpCode AND CGP.FNLngID = $nLangID
+        ";
+      
+        $oQuery = $ci->db->query($tSQL);
+
+        if ($oQuery->num_rows() > 0){
+            //Found
+            $oDetail = $oQuery->row_array();
+            $aResult = array(
+                'raItem'    => $oDetail,
+                'rtCode'    => '1',
+                'rtDesc'    => 'success',
+            );
+        }else{
+            //Not Found
+            $aResult = array(
+                'rtCode' => '800',
+                'rtDesc' => 'data not found.',
+            );
+        }
+        $oResult = json_encode($aResult);
+        $aResult = json_decode($oResult, true);
+        return $aResult;
+
+      }

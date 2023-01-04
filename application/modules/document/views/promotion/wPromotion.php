@@ -24,13 +24,18 @@
                         <div id="odvBtnAddEdit">
                             <div class="demo-button xCNBtngroup" style="width:100%;">
                                 <button onclick="JSvPromotionCallPageList()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tBack') ?></button>
-                                <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)) : ?>
-                                    <button id="obtPromotionCopy" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?=language('document/couponsetup/couponsetup', 'tCPHTabCouponHDCopy')?></button>
+                                    <?php if($aAlwEvent['tAutStaPrint'] == 1 ) : ?>
                                     <button id="obtPromotionPrint" onclick="JSxPromotionPrintDoc()" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCMNPrint') ?></button>
+                                    <?php endif; ?>
+                                    <?php if($aAlwEvent['tAutStaCancel'] == 1 ) : ?>
                                     <button id="obtPromotionCancel" onclick="JSvPromotionCancel(false)" class="btn xCNBTNDefult xCNBTNDefult2Btn" type="button"> <?php echo language('common/main/main', 'tCancel') ?></button>
+                                    <?php endif;?>
+                                    <?php if($aAlwEvent['tAutStaAppv'] == 1 ) : ?>
                                     <button id="obtPromotionApprove" onclick="JSvPromotionApprove(false)" class="btn xCNBTNPrimery xCNBTNPrimery2Btn" type="button"> <?php echo language('common/main/main', 'tCMNApprove') ?></button>                                 
+                                    <?php endif; ?>
+                                    <?php if ($aAlwEvent['tAutStaFull'] == 1 || ($aAlwEvent['tAutStaAdd'] == 1 || $aAlwEvent['tAutStaEdit'] == 1)) : ?>
                                     <div class="btn-group">
-                                        <button id="obtPromotionSave" type="button" class="btn xWBtnGrpSaveLeft" onclick="$('#obtPromotionSubmit').click()"> <?php echo language('common/main/main', 'tSave') ?></button>
+                                        <button type="button" class="btn xWBtnGrpSaveLeft" onclick="$('#obtPromotionSubmit').click()"> <?php echo language('common/main/main', 'tSave') ?></button>
                                         <?php echo $vBtnSave ?>
                                     </div>
                                 <?php endif; ?>

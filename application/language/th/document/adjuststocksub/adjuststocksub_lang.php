@@ -196,4 +196,5 @@ $lang['tASTFilterTitleUserPI']          = "ผู้จัดซื้อ";
 $lang['tASTFilterTitleSpl']             = "ผู้จำหน่าย";
 $lang['tASTFilterTitleProduct']         = "สินค้า";
 
+$lang['tASTErrorPdtCodeNotMatch']        = "ไม่พบรายการสินค้ารหัส ";
 

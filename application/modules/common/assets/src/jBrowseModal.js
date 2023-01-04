@@ -221,6 +221,8 @@ function JCNxBrowseData(ptOptions) {
             tOldCallVal = tCallVal;
             tOldCallText = tCallText;
         } else if (tCallBackType == 'M') {
+            tCallVal = ''
+            tCallText = ''
             tOldCallVal = tCallVal.split(',');
             tOldCallText = tCallText.split(',');
             if (tOldCallVal.length > 0) {

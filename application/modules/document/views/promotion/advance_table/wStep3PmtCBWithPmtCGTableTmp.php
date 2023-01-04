@@ -57,11 +57,9 @@
         </thead>
         <tbody class="xCNPromotionStep3RangeTbody">
             <?php if ($aDataList['rtCode'] == 1) { ?>
-                <?php foreach ($aDataList['raItems'] as $key => $aValue) { 
-                    $tGrpNameClass = str_replace("%","",$aValue['FTPmdGrpName'])
-                    ?>
+                <?php foreach ($aDataList['raItems'] as $key => $aValue) { ?>
                     <tr 
-                    class="xCNTextDetail2 xCNPromotionStep3PmtCBWithPmtCGRow <?php echo str_replace(" ","",$tGrpNameClass); ?>" 
+                    class="xCNTextDetail2 xCNPromotionStep3PmtCBWithPmtCGRow <?php echo str_replace(" ","",$aValue['FTPmdGrpName']); ?>" 
                     data-cb-seq-no="<?php echo $aValue['FNPbySeq']; ?>" 
                     data-cg-seq-no="<?php echo $aValue['FNPgtSeq']; ?>"
                     data-grp-name="<?php echo $aValue['FTPmdGrpName']; ?>">
@@ -71,7 +69,7 @@
 
                         <?php if($tPbyStaBuyCond == "5" || $tPbyStaBuyCond == "6"){ // 5:ตามช่วงเวลา ครบจำนวน 6:ตามช่วงเวลา ครบมูลค่า ?>
                             <td class="text-left">
-                                <div class="xCNPromotionStep3TimeContainer input-group">
+                                <div class="xCNPromotionStep3TimeContainer">
                                     <?php 
                                         // $aTime = explode(':', $aValue['FTPbyMinTime']);
                                         // $tHr = isset($aTime[0]) && !empty($aTime[0])?$aTime[0]:"";
@@ -122,7 +120,7 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="xCNPromotionStep3TimeContainer input-group">
+                                <div class="xCNPromotionStep3TimeContainer">
                                     <?php 
                                         // $aTime = explode(':', $aValue['FTPbyMaxTime']);
                                         // $tHr = isset($aTime[0]) && !empty($aTime[0])?$aTime[0]:"";

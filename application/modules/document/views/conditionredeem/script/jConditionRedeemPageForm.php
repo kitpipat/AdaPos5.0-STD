@@ -1231,7 +1231,16 @@
             {"DocCode"      : $('#oetRDHDocNo').val()  }, // เลขที่เอกสาร
             {"DocBchCode" : '<?=$tRDHUsrBchCode;?>'}
         ];
-        window.open('<?=base_url()?>'+"formreport/Frm_SQL_PSSRdPoint?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        // window.open('<?=base_url()?>'+"formreport/Frm_SQL_PSSRdPoint?infor="+JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00017' ,
+                tDocBchCode : '<?=$tRDHUsrBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 
 </script>

@@ -106,7 +106,7 @@ class mPromotionStep4CstCondition extends CI_Model
         $this->db->set('FTBchCode', $tBchCodeLogin);
         $this->db->set('FTPmhDocNo', $paParams['tDocNo']);
         $this->db->set('FTClvCode', $paParams['tCstCode']);
-        // $this->db->set('FTCstName', $paParams['tCstName']);
+        $this->db->set('FTClvName', $paParams['tCstName']);
         $this->db->set('FTPmhStaType', '1'); // ประเภทกลุ่ม 1:กลุ่มร่วมรายการ 2:กลุ่มยกเว้น
 
         $this->db->set('FDCreateOn', $tUserSessionDate);

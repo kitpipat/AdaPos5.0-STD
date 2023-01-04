@@ -1086,7 +1086,16 @@ function JSxAdjStkSubPrintDoc(){
         { "DocCode"     : $("#oetAdjStkSubAjhDocNo").val() }, // เลขที่เอกสาร
         { "DocBchCode"  : '<?=$tBchCode;?>'}
     ];
-    window.open($("#ohdBaseUrl").val() + "formreport/Frm_SQL_ALLMPdtBillSubChkStk?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    // window.open($("#ohdBaseUrl").val() + "formreport/Frm_SQL_ALLMPdtBillSubChkStk?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+    var aRftData = {
+                tRtfCode    : '00007' ,
+                tDocBchCode : '<?=$tBchCode;?>' ,
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
 }
 
 </script>

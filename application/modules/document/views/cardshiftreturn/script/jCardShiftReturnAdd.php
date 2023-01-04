@@ -1619,7 +1619,16 @@
 			{"DocCode"      : tDocNo }, // เลขที่เอกสาร
             {"DocBchCode"   : tUsrBchCode}
 		];
-		window.open("<?php echo base_url(); ?>formreport/Frm_SQL_FCCardReturnCash?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+		// window.open("<?php echo base_url(); ?>formreport/Frm_SQL_FCCardReturnCash?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+        var aRftData = {
+                tRtfCode    : '00014' ,
+                tDocBchCode : tUsrBchCode,
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 </script>
 <?php include 'jCardShiftReturnDataSourceTable.php'; ?>

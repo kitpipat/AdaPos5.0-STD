@@ -14,7 +14,7 @@ class mPromotionStep3Coupon extends CI_Model
     public function FSaMGetCouponInTmp($paParams = [])
     {
         $tUserSessionID = $paParams['tUserSessionID'];
-        
+
         $tSQL = "
             SELECT
                 TMP.FTBchCode,
@@ -38,10 +38,8 @@ class mPromotionStep3Coupon extends CI_Model
                 TMP.FTPgtCpnText,
                 TMP.FTCphDocNo,
                 TMP.FTCphDocName,
-                TMP.FTSessionID,
-                TPL.FTMshName
+                TMP.FTSessionID
             FROM TCNTPdtPmtCG_Tmp TMP WITH(NOLOCK)
-            LEFT JOIN TCNMMsgHD_L  TPL ON TPL.FTMshCode = TMP.FTPgtCpnText
             WHERE TMP.FTSessionID = '$tUserSessionID'
             AND (TMP.FTPgtStaCoupon IS NOT NULL OR TMP.FTPgtStaCoupon <> '')
             AND (TMP.FTPmdGrpName IS NULL OR TMP.FTPmdGrpName = '')

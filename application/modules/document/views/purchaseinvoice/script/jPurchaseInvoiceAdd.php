@@ -1510,7 +1510,17 @@
         ];
 
         var tGrandText = $('#odvPIDataTextBath').text();
-        window.open("<?=base_url(); ?>formreport/Frm_SQL_SMBillPi?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText, '_blank');
+        // window.open("<?=base_url(); ?>formreport/Frm_SQL_SMBillPi?infor=" + JCNtEnCodeUrlParameter(aInfor) + "&Grand="+tGrandText, '_blank');
+        var aRftData = {
+                tRtfCode    : '00021' ,
+                tDocBchCode : '<?=$tPIBchCode;?>',
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor),
+                                Grand : tGrandText
+                                }
+                }
+        JCNxRftDataTable(aRftData);
     }
 
     tUsrLevel = "<?=$this->session->userdata('tSesUsrLevel')?>";

@@ -844,9 +844,19 @@
 			{"Lang"         : '<?=FCNaHGetLangEdit(); ?>'}, // Lang ID
 			{"ComCode"      : '<?=FCNtGetCompanyCode(); ?>'}, // Company Code
 			{"BranchCode"   : '<?=FCNtGetAddressBranch($tBchCode); ?>'  }, // สาขาที่ออกเอกสาร
-			{"DocCode"      : $('#oetXthDocNo').val()  } // เลขที่เอกสาร
+			{"DocCode"      : $('#oetXthDocNo').val()  }, // เลขที่เอกสาร
+			{"DocBchCode"   : '<?=$tBchCode?>'  } // เลขที่เอกสาร
 		];
-		window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillChkStkVD?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+		// window.open("<?=base_url(); ?>formreport/Frm_SQL_ALLMPdtBillChkStkVD?infor=" + JCNtEnCodeUrlParameter(aInfor), '_blank');
+		var aRftData = {
+                tRtfCode    : '00009' ,
+                tDocBchCode : $("#oetBchCode").val(),
+                tIframeNameID : '' ,
+                oParameter  : {
+                                infor : JCNtEnCodeUrlParameter(aInfor)
+                                }
+                }
+        JCNxRftDataTable(aRftData);
 	}
 
 
