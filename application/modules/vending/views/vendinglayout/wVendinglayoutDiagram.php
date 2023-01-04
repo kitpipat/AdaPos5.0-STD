@@ -340,7 +340,7 @@
                         <span id="ospDetailPDTName" style="font-size: 22px !important;"> <?= language('vending/vendingshoplayout/vendingmanage', 'tNamePDFLayout') ?> </span><br>
                         <span id="ospDetailPDTDescription" style="font-size: 18px !important;"> <?= language('vending/vendingshoplayout/vendingmanage', 'tDetailPDFLayout') ?> </span><br>
 
-                        <div class="row">
+                        <div class="row xCNHide">
                             <!--อุณหภูมิ-->
                             <div class="col-lg-6">
                                 <div class="form-group">
@@ -380,7 +380,7 @@
 
                         <!--เลือกประเภทคลัง-->
                         <div class="form-group">
-                            <label><?= language('vending/vendingshoplayout/vendingmanage', 'tWahhouse') ?></label>
+                            <label><?=language('vending/vendingshoplayout/vendingmanage', 'tWahhouse')?> <span class="text-danger"><?=language('vending/vendingshoplayout/vendingmanage', 'tWahhouseDT')?></span></label>
                             <div class="validate-input">
                                 <?php if ($aGetWahhouse['rtCode'] == 800) { ?>
                                     <span style="color:red;"> * <?= language('vending/vendingshoplayout/vendingmanage', 'tWahhouseNotFound') ?> <span>
@@ -904,9 +904,10 @@
         } else if (tImg == '#') {
             var tPathImage = tPDTImage;
         } else {
-            var aImgObj = tPDTImage.split("application");
-            var tFullPatch = './application' + aImgObj[1];
-            var tPathImage = '<?= base_url() ?>' + 'application' + aImgObj[1];
+            // var aImgObj = tPDTImage.split("application");
+            // var tFullPatch = './application' + aImgObj[1];
+            // var tPathImage = '<?= base_url() ?>' + 'application' + aImgObj[1];
+            var tPathImage = tPDTImage;
         }
         
         var tRowISLayout = '<?= language('vending/vendingshoplayout/vendingmanage', 'tRowISLayout') ?>';
@@ -970,13 +971,13 @@
             //ถ้ารูปภาพเป็นค่าว่าง
             if (tPDTImage == '' || tPDTImage == null) {
                 var tPDTImage   = '<?= base_url() ?>' + 'application/modules/common/assets/images/imageItemVending.png';
-
-            } else if (tImg == '#') {
-                var tPDTImage   = tPDTImage;
+            // } else if (tImg == '#') {
+            //     var tPDTImage   = tPDTImage;
             } else {
-                var aImgObj     = tPDTImage.split("application");
-                var tFullPatch  = './application' + aImgObj[1];
-                var tPDTImage   = '<?= base_url() ?>' + 'application' + aImgObj[1];
+                // var aImgObj     = tPDTImage.split("application");
+                // var tFullPatch  = './application' + aImgObj[1];
+                // var tPDTImage   = '<?= base_url() ?>' + 'application' + aImgObj[1];
+                var tPDTImage   = tPDTImage;
             }
 
             //ถ้าความลึกเป็นค่าว่าง
@@ -1450,11 +1451,12 @@
                 if (nDBPdtCode != '' || nDBPdtCode == 'IMPORTFAIL') {
                     if (tDBImage == '' || tDBImage == null) {
                         var tPathImg = '<?= base_url() ?>' + 'application/modules/common/assets/images/imageItemVending.png';
-                    } else if (tImg == '#') {
-                        var tPathImg = tDBImage;
+                    // } else if (tImg == '#') {
+                    //     var tPathImg = tDBImage;
                     } else {
-                        var aPathImg = tDBImage.split("/application/modules/");
-                        var tPathImg = '<?= base_url() ?>' + '/application/modules/' + aPathImg[1];
+                        // var aPathImg = tDBImage.split("/application/modules/");
+                        // var tPathImg = '<?= base_url() ?>' + '/application/modules/' + aPathImg[1];
+                        var tPathImg = tDBImage;
                     }
 
                     //STK Bal 

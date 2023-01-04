@@ -836,7 +836,7 @@ $bIsApvOrCanCel = ($bIsApv || $bIsCanCel);
 				<label class="xCNTextModalHeard"><?=language('document/document/document','tDocStawarning'); ?></label>
 			</div>
 			<div class="modal-body">
-				<p id="obpMsgApv"><?=language('document/adjuststockvd/adjuststockvd','เอกสารการเติมสินค้าครั้งนี้มีสินค้า ที่เติมเป็น 0 ยืนยันที่จะลบสินค้า ?'); ?>
+				<p id="obpMsgApv"><?=language('document/adjuststockvd/adjuststockvd','ระบบจะบันทึกเฉพาะรายการที่ต้องเติม รายการที่เติมครบแล้ว หรือเติม 0 จะไม่ถูกบันทึก'); ?>
 			</div>
 			<div class="modal-footer">
                 <button type="button" class="btn xCNBTNPrimery xCNConfrimCheckItemHaveTopUpZero">

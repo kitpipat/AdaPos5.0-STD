@@ -69,6 +69,7 @@ $lang['tCancelLayoutDetail']        = 'Cancel Shop layout confirm or cancel';
 $lang['tControlXY']                 = 'Status spring';
 
 $lang['tWahhouse']                 = 'Wahhouse';
+$lang['tWahhouseDT']               = '(for cutting stock into the cabinet)';
 
 $lang['tVendingPleaseInsertPanelLeft'] = 'Please Insert Panel Left';
 $lang['tWahhouseNotFound'] = 'Wahhouse Not Found';

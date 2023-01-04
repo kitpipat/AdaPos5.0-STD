@@ -314,15 +314,15 @@
     $("#obtBrowseTopUpVendingPos").click(function() {
         var nStaChkDataDT   = $('#otbDOCPdtTable #odvTBodyTUVPdtAdvTableList .xCNTopUpVendingPdtLayoutRow').length;
         if(nStaChkDataDT == 0){
-            var bIsShopEnabled  = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
+            // var bIsShopEnabled  = '<?= FCNbGetIsShpEnabled() ? '1' : '0' ?>';
             var tWahMasterTable = 'TVDMPosShop';
             var tPK             = "FTPosCode"; 
             var oJoinCondition  = {
-                    Table: ['TCNMPos', 'TCNMPos_L', 'TCNMWaHouse', 'TCNMWaHouse_L'],
+                    Table: ['TCNMPos', 'TCNMPos_L'/*, 'TCNMWaHouse', 'TCNMWaHouse_L'*/],
                     On: ['TVDMPosShop.FTPosCode = TCNMPos.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos.FTBchCode',
-                        'TVDMPosShop.FTPosCode = TCNMPos_L.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos_L.FTBchCode',
-                        'TVDMPosShop.FTPosCode = TCNMWaHouse.FTWahRefCode AND TCNMWaHouse.FTWahStaType = 6 AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
-                        'TCNMWaHouse.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits
+                        'TVDMPosShop.FTPosCode = TCNMPos_L.FTPosCode AND TVDMPosShop.FTBchCode = TCNMPos_L.FTBchCode AND TCNMPos_L.FNLngID = ' + nLangEdits
+                        /*'TVDMPosShop.FTPosCode = TCNMWaHouse.FTWahRefCode AND TCNMWaHouse.FTWahStaType = 6 AND TCNMPos.FTBchCode = TCNMWaHouse.FTBchCode',
+                        'TCNMWaHouse.FTWahCode = TCNMWaHouse_L.FTWahCode AND TCNMWaHouse_L.FTBchCode = TCNMWaHouse.FTBchCode AND TCNMWaHouse_L.FNLngID = ' + nLangEdits*/
                     ]
                 };
             var aCondition  = [
@@ -332,10 +332,10 @@
                     return tSQL;
                 }
             ];
-            var aDataColumns        = ['TVDMPosShop.FTPosCode', 'TCNMPos_L.FTPosName', 'TVDMPosShop.FTShpCode', 'TVDMPosShop.FTBchCode', 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'];
+            var aDataColumns        = ['TVDMPosShop.FTPosCode', 'TCNMPos_L.FTPosName', 'TVDMPosShop.FTShpCode', 'TVDMPosShop.FTBchCode'/*, 'TCNMWaHouse.FTWahCode', 'TCNMWaHouse_L.FTWahName'*/];
             var aDataColumnsFormat  = ['', '', '', '', '', ''];
-            var aDisabledColumns    = [2, 3, 4, 5];
-            var aArgReturn          = ['FTBchCode', 'FTShpCode', 'FTPosCode', 'FTWahCode', 'FTWahName'];
+            var aDisabledColumns    = [2, 3/*, 4, 5*/];
+            var aArgReturn          = ['FTBchCode', 'FTShpCode', 'FTPosCode'/*, 'FTWahCode', 'FTWahName'*/];
             window.oBrowseTopUpVendingPos = {
                 Title   : ['pos/posshop/posshop', 'tPshTBPosCode'],
                 Table   : {
@@ -367,6 +367,7 @@
                     FuncName    : 'JSxTopUpVendingCallbackPos',
                     ArgReturn   : aArgReturn
                 },
+                // DebugSQL: true
                 /*BrowseLev: 1*/
 
             }
@@ -713,7 +714,7 @@
                 cache: false,
                 timeout: 0,
                 success: function(oResult) {
-                    console.log(oResult);
+                    // console.log(oResult);
                     JSxTopUpVendingGetPdtLayoutDataTableInTmp(1);
                     // JCNxCloseLoading();
                 },
@@ -908,8 +909,8 @@
                 }
             });
 
-            console.log('Total: '+nTotal);
-            console.log('nCountZero: '+nCountZero);
+            // console.log('Total: '+nTotal);
+            // console.log('nCountZero: '+nCountZero);
 
             if(tCheckAfterSave == false){
                 $('#odvTOPUPVDCheckItemHaveTopUpZero').modal('show');
@@ -1087,7 +1088,7 @@
                             cache: false,
                             timeout: 0,
                             success: function(oResult) {
-                                console.log(oResult);
+                                // console.log(oResult);
                                 try {
                                     if (oResult.nStaEvent == "900") {
                                         FSvCMNSetMsgErrorDialog(oResult.tStaMessg);
