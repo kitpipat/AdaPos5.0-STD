@@ -17,6 +17,8 @@ class mMovement extends CI_Model
         $tWhereDate = "";
         $SqlWhere = "";
         $tWhereProductActive = "";
+        $tTypeProduct   = $paData['tSearchAll']['tTypeProduct'];
+        $tKeyword   = $paData['tSearchAll']['tKeyword'];
 
         $nLngID = $paData['FNLngID'];
         $tSearchList = $paData['tSearchAll'];
@@ -35,26 +37,37 @@ class mMovement extends CI_Model
             $tWhereBch = " AND StkCrd.FTBchCode IN ('$tBchCodeText')";
         }
         // (String)
-        if ($tPdtCode != "") {
-            // echo $tPdtCode;
-            // $aPdtCode = explode(',',$tPdtCode);
-            // $nCount = FCNnHSizeOf($aPdtCode);
 
-            // if(!empty($aPdtCode)){
-            //     // print_r($aPdtCode);
-            //     $nCheck = 1;
-            //     $tWherePdt = " AND (";
-            //         foreach($aPdtCode as $aData){
-            //             $tWherePdt .= " StkCrd.FTPdtCode = '$aData' ";
-            //             if($nCheck!=$nCount){
-            //                 $tWherePdt .= " OR ";
-            //             }
-            //             $nCheck++;
-            //         }
-            //     $tWherePdt .= " )";
-            // }
-            $tPdtCodeText = str_replace(",", "','", $tPdtCode);
-            $tWherePdt = " AND StkCrd.FTPdtCode IN ('$tPdtCodeText')";
+        if($tTypeProduct != "" && $tKeyword != ""){
+            switch ($tTypeProduct) {
+                case '1':
+                    $tPdtCodeText= str_replace(",","','",$tKeyword);
+                    $tWherePdt = "AND StkCrd.FTPdtCode IN ('$tPdtCodeText')";
+                    break;
+                case '2':
+                    $tPdtCodeText= str_replace(",","','",$tKeyword);
+                    $tWherePdt = "AND PDT.FTPdtName IN ('$tPdtCodeText')";
+                    break;
+                case '3':
+                    $tBarCodeText= str_replace(",","','",$tKeyword);
+                    $tWherePdt = "AND BAR.FTBarCode IN ('$tBarCodeText')";
+                    break;
+                case '4':
+                    $tCgCodeText= str_replace(",","','",$tKeyword);
+                    $tWherePdt = "AND PDTM.FTPgpChain IN ('$tCgCodeText')";
+                    break;
+                case '5':
+                    $tPtyCodeText= str_replace(",","','",$tKeyword);
+                    $tWherePdt = "AND PDTM.FTPtyCode IN ('$tPtyCodeText')";
+                    break;
+                case '6':
+                    $tPbnCodeText= str_replace(",","','",$tKeyword);
+                    $tWherePdt = "AND PDTM.FTPbnCode IN ('$tPbnCodeText')";
+                    break;
+                default:
+                    # code...
+                    break;
+            }
         }
 
         if ($tWahCode != "") {
@@ -187,6 +200,7 @@ class mMovement extends CI_Model
 
                         LEFT JOIN TCNMPdt PDTM WITH(NOLOCK) ON StkCrd.FTPdtCode = PDTM.FTPdtCode
                         LEFT JOIN TCNMPdt_L PDT WITH(NOLOCK) ON StkCrd.FTPdtCode = PDT.FTPdtCode AND PDT.FNLngID = $nLngID
+                        LEFT JOIN TCNMPdtBar BAR WITH(NOLOCK) ON StkCrd.FTPdtCode = BAR.FTPdtCode
                         LEFT JOIN TCNMWaHouse_L WAH WITH(NOLOCK) ON StkCrd.FTBchCode = WAH.FTBchCode AND StkCrd.FTWahCode = WAH.FTWahCode AND WAH.FNLngID = $nLngID
                 WHERE 1=1 
             ";
@@ -276,7 +290,8 @@ class mMovement extends CI_Model
                 ) StkCrd
 
                 LEFT JOIN TCNMPdt PDTM WITH(NOLOCK) ON StkCrd.FTPdtCode = PDTM.FTPdtCode
-                LEFT JOIN TCNMPdt_L PDTL WITH(NOLOCK) ON StkCrd.FTPdtCode = PDTL.FTPdtCode AND PDTL.FNLngID = $ptLngID
+                LEFT JOIN TCNMPdt_L PDT WITH(NOLOCK) ON StkCrd.FTPdtCode = PDT.FTPdtCode AND PDT.FNLngID = $ptLngID
+                LEFT JOIN TCNMPdtBar BAR WITH(NOLOCK) ON StkCrd.FTPdtCode = BAR.FTPdtCode
                 LEFT JOIN TCNMWaHouse_L WAH WITH(NOLOCK) ON StkCrd.FTBchCode = WAH.FTBchCode AND StkCrd.FTWahCode = WAH.FTWahCode AND WAH.FNLngID = $ptLngID
             WHERE 1=1 
             $SqlWhere 

@@ -7,7 +7,32 @@
     });
 
     $('.xCNDatePicker').selectpicker();
-
+    $('.selectpicker').selectpicker();
+    $('#ocmSearchProductType').on('change',function(){
+        $('#oetMmtPdtNameSelect').val('');
+        switch ($('#ocmSearchProductType').val()) {
+            case '1':
+                $('#oetMmtPdtNameSelect').attr('placeholder','รหัสสินค้า');
+                break;
+            case '2':
+                $('#oetMmtPdtNameSelect').attr('placeholder','ชื่อสินค้า');
+                break;
+            case '3':
+                $('#oetMmtPdtNameSelect').attr('placeholder','บาร์โค้ด');
+                break;
+            case '4':
+                $('#oetMmtPdtNameSelect').attr('placeholder','กลุ่มสินค้า');
+                break; 
+            case '5':
+                $('#oetMmtPdtNameSelect').attr('placeholder','ประเภทสินค้า');
+                break; 
+            case '6':
+                $('#oetMmtPdtNameSelect').attr('placeholder','ยี่ห้อ');
+                break; 
+            default:
+                break;
+        }
+    });
     // Click Button Date
     $('#obtMmtBrowseDateStart').unbind().click(function() {
         $('#oetMmtDateStart').datepicker('show');
@@ -262,110 +287,436 @@
     // =========================================== Event Browse Multi WaHouse ===========================================
 
     // =========================================== Event Browse Multi Branch ===========================================
-    $('#obtMmtMultiBrowseProduct').unbind().click(function() {
-        // ปิดปุ่ม
-        // $('#obtMmtMultiBrowseProduct').attr("disabled", true);
-        var nStaSession = JCNxFuncChkSessionExpired();
-        if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
-            JSxCheckPinMenuClose(); // Hidden Pin Menu
-            window.oProductBrowseMultiOption = undefined;
-            let tSessionUsrLev = '<?=$this->session->userdata('tSesUsrLevel')?>';
-            let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
+    // $('#obtMmtMultiBrowseProduct').unbind().click(function() {
+    //     // ปิดปุ่ม
+    //     // $('#obtMmtMultiBrowseProduct').attr("disabled", true);
+    //     var nStaSession = JCNxFuncChkSessionExpired();
+    //     if (typeof(nStaSession) !== 'undefined' && nStaSession == 1) {
+    //         JSxCheckPinMenuClose(); // Hidden Pin Menu
+    //         window.oProductBrowseMultiOption = undefined;
+    //         let tSessionUsrLev = '<?=$this->session->userdata('tSesUsrLevel')?>';
+    //         let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
 
-            var oBrowsePdtSettings = {
-                Qualitysearch: [
-                    "NAMEPDT",
-                    "CODEPDT"
-                ],
-                PriceType: ["Cost", "tCN_Cost", "Company", "1"],
-                //'PriceType'       : ['Pricesell'],
-                //'SelectTier'      : ['PDT'],
-                SelectTier: ["Barcode"],
-                //'Elementreturn'   : ['oetInputTestValue','oetInputTestName'],
-                ShowCountRecord: 10,
-                NextFunc: "FSvMNTNextFuncB4SelPDT",
-                ReturnType: "M",
-                SPL: ["", ""],
-                BCH: [tBchCodeSess, tBchCodeSess],
-                MER: ["", ""],
-                SHP: ["", ""],
-            }
+    //         var oBrowsePdtSettings = {
+    //             Qualitysearch: [
+    //                 "NAMEPDT",
+    //                 "CODEPDT"
+    //             ],
+    //             PriceType: ["Cost", "tCN_Cost", "Company", "1"],
+    //             //'PriceType'       : ['Pricesell'],
+    //             //'SelectTier'      : ['PDT'],
+    //             SelectTier: ["Barcode"],
+    //             //'Elementreturn'   : ['oetInputTestValue','oetInputTestName'],
+    //             ShowCountRecord: 10,
+    //             NextFunc: "FSvMNTNextFuncB4SelPDT",
+    //             ReturnType: "M",
+    //             SPL: ["", ""],
+    //             BCH: [tBchCodeSess, tBchCodeSess],
+    //             MER: ["", ""],
+    //             SHP: ["", ""],
+    //         }
 
-            $.ajax({
-                type: "POST",
-                url: "BrowseDataPDT",
-                data: oBrowsePdtSettings,
-                cache: false,
-                timeout: 5000,
-                success: function (tResult) {
-                    // $(".modal.fade:not(#odvTBBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTBPopupApv,#odvModalDelPdtTB)").remove();
-                    $("#odvModalDOCPDT").modal({ backdrop: "static", keyboard: false });
-                    $("#odvModalDOCPDT").modal({ show: true });
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "BrowseDataPDT",
+    //             data: oBrowsePdtSettings,
+    //             cache: false,
+    //             timeout: 5000,
+    //             success: function (tResult) {
+    //                 // $(".modal.fade:not(#odvTBBrowseShipAdd,#odvModalDOCPDT,#odvModalWanning,#odvModalInfoMessage,#odvShowOrderColumn,#odvTBPopupApv,#odvModalDelPdtTB)").remove();
+    //                 $("#odvModalDOCPDT").modal({ backdrop: "static", keyboard: false });
+    //                 $("#odvModalDOCPDT").modal({ show: true });
 
-                    //remove localstorage
-                    localStorage.removeItem("LocalItemDataPDT");
-                    $("#odvModalsectionBodyPDT").html(tResult);
-                },
-                error: function (data) {
-                    console.log(data);
-                }
-            });
+    //                 //remove localstorage
+    //                 localStorage.removeItem("LocalItemDataPDT");
+    //                 $("#odvModalsectionBodyPDT").html(tResult);
+    //             },
+    //             error: function (data) {
+    //                 console.log(data);
+    //             }
+    //         });
 
-            // let tCondition = '';
-            // if (tBchCodeSess != '' && tSessionUsrLev!= 'HQ') {
-            //     tCondition += " AND ( TCNMPdtSpcBch.FTBchCode = '" + tBchCodeSess + "' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
-            // }
+    //         // let tCondition = '';
+    //         // if (tBchCodeSess != '' && tSessionUsrLev!= 'HQ') {
+    //         //     tCondition += " AND ( TCNMPdtSpcBch.FTBchCode = '" + tBchCodeSess + "' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+    //         // }
 
-            // let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
-            // if( tAgnCode != '' ){
-            //     tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
-            // }
-
-
-            // oProductBrowseMultiOption = {
-            //     Title: ['product/product/product', 'tPDTTitle'],
-            //     Table: {
-            //         Master: 'TCNMPdt',
-            //         PK: 'FTPdtCode'
-            //     },
-            //     Join: {
-            //         Table: ['TCNMPdt_L', 'TCNMPdtSpcBch'],
-            //         On: [
-            //             'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = ' + nLangEdits,
-            //             'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
-            //         ]
-            //     },
-            //     Where: {
-            //         Condition: [tCondition]
-            //     },
-            //     GrideView: {
-            //         ColumnPathLang: 'product/product/product',
-            //         ColumnKeyLang: ['tPDTCode', 'tPDTName'],
-            //         ColumnsSize: ['10%', '75%'],
-            //         WidthModal: 50,
-            //         DataColumns: ['TCNMPdt.FTPdtCode', 'TCNMPdt_L.FTPdtName'],
-            //         DataColumnsFormat: ['', ''],
-            //         Perpage: 10,
-            //         OrderBy: ['TCNMPdt.FDCreateOn DESC'],
-            //         SourceOrder: "ASC"
-            //     },
-            //     CallBack: {
-            //         StaSingItem: '1',
-            //         ReturnType: 'M',
-            //         Value: ['oetMmtPdtCodeSelect', "TCNMPdt.FTPdtCode"],
-            //         Text: ['oetMmtPdtNameSelect', "TCNMPdt_L.FTPdtName"],
-            //     },
-            //     // RouteAddNew : 'saleperson',
-            //     BrowseLev: 1,
-            //     //DebugSQL : true
-            // }
-            // JCNxBrowseData('oProductBrowseMultiOption');
+    //         // let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+    //         // if( tAgnCode != '' ){
+    //         //     tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
+    //         // }
 
 
-            $('#obtMmtMultiBrowseProduct').attr("disabled", false);
-        } else {
-            JCNxShowMsgSessionExpired();
-        }
+    //         // oProductBrowseMultiOption = {
+    //         //     Title: ['product/product/product', 'tPDTTitle'],
+    //         //     Table: {
+    //         //         Master: 'TCNMPdt',
+    //         //         PK: 'FTPdtCode'
+    //         //     },
+    //         //     Join: {
+    //         //         Table: ['TCNMPdt_L', 'TCNMPdtSpcBch'],
+    //         //         On: [
+    //         //             'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = ' + nLangEdits,
+    //         //             'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
+    //         //         ]
+    //         //     },
+    //         //     Where: {
+    //         //         Condition: [tCondition]
+    //         //     },
+    //         //     GrideView: {
+    //         //         ColumnPathLang: 'product/product/product',
+    //         //         ColumnKeyLang: ['tPDTCode', 'tPDTName'],
+    //         //         ColumnsSize: ['10%', '75%'],
+    //         //         WidthModal: 50,
+    //         //         DataColumns: ['TCNMPdt.FTPdtCode', 'TCNMPdt_L.FTPdtName'],
+    //         //         DataColumnsFormat: ['', ''],
+    //         //         Perpage: 10,
+    //         //         OrderBy: ['TCNMPdt.FDCreateOn DESC'],
+    //         //         SourceOrder: "ASC"
+    //         //     },
+    //         //     CallBack: {
+    //         //         StaSingItem: '1',
+    //         //         ReturnType: 'M',
+    //         //         Value: ['oetMmtPdtCodeSelect', "TCNMPdt.FTPdtCode"],
+    //         //         Text: ['oetMmtPdtNameSelect', "TCNMPdt_L.FTPdtName"],
+    //         //     },
+    //         //     // RouteAddNew : 'saleperson',
+    //         //     BrowseLev: 1,
+    //         //     //DebugSQL : true
+    //         // }
+    //         // JCNxBrowseData('oProductBrowseMultiOption');
+
+
+    //         $('#obtMmtMultiBrowseProduct').attr("disabled", false);
+    //     } else {
+    //         JCNxShowMsgSessionExpired();
+    //     }
+    // });
+
+    $('#obtMmtMultiBrowseProduct').unbind().click(function(){
+        // $('#oetInvWahStaSelectAll').val('');
+        // $('#oetInvWahCodeSelect').val('');
+        // $('#oetInvWahNameSelect').val('');
+        var tTypeProduct = $('#ocmSearchProductType').val();
+        console.log(tTypeProduct)
+
+        switch (tTypeProduct) {
+            case '1':
+                var nStaSession = JCNxFuncChkSessionExpired();
+                if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+                    JSxCheckPinMenuClose(); // Hidden Pin Menu
+                    window.oProductBrowseMultiOption = undefined;
+
+                    let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
+                    let tCondition ='';
+                    if(tBchCodeSess!=''){
+                        tCondition +=  " AND ( TCNMPdtSpcBch.FTBchCode = '"+tBchCodeSess+"' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+                    }
+
+                    let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+                    if( tAgnCode != '' ){
+                        tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
+                    }
+
+                    oProductBrowseMultiOption         = {
+                        Title : ['product/product/product','tPDTTitle'],
+                        Table:{Master:'TCNMPdt',PK:'FTPdtCode'},
+                        Join :{
+                            Table:	['TCNMPdt_L','TCNMPdtSpcBch'],
+                            On:[
+                                'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = '+nLangEdits,
+                                'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
+                                ]
+                        }, 
+                        Where:{
+                                Condition : [tCondition]
+                        },
+                        GrideView:{
+                            ColumnPathLang	: 'product/product/product',
+                            ColumnKeyLang	: ['tPDTCode','tPDTName'],
+                            ColumnsSize     : ['10%','75%'],
+                            WidthModal      : 50,
+                            DataColumns		: ['TCNMPdt.FTPdtCode','TCNMPdt_L.FTPdtName'],
+                            DataColumnsFormat : ['',''],
+                            Perpage			: 10,
+                            OrderBy			: ['TCNMPdt.FDCreateOn DESC'],
+                            // SourceOrder		: "ASC"
+                        },
+                        CallBack:{
+                            StaSingItem : '1',
+                            ReturnType	: 'M',
+                            Value		: ['oetInvPdtCodeSelect',"TCNMPdt.FTPdtCode"],
+                            Text		: ['oetMmtPdtNameSelect',"TCNMPdt.FTPdtCode"],
+                        },
+                        BrowseLev : 1
+                    }
+                    JCNxBrowseData('oProductBrowseMultiOption');
+
+
+                    $('#obtMmtMultiBrowseProduct').attr("disabled", false);
+                }else{
+                    JCNxShowMsgSessionExpired();
+                }    
+                break;
+            case '2':
+                var nStaSession = JCNxFuncChkSessionExpired();
+                if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+                    JSxCheckPinMenuClose(); // Hidden Pin Menu
+                    window.oProductBrowseMultiOption = undefined;
+
+                    let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
+                    let tCondition ='';
+                    if(tBchCodeSess!=''){
+                        tCondition +=  " AND ( TCNMPdtSpcBch.FTBchCode = '"+tBchCodeSess+"' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+                    }
+
+                    let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+                    if( tAgnCode != '' ){
+                        tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
+                    }
+
+                    oProductBrowseMultiOption         = {
+                        Title : ['product/product/product','tPDTTitle'],
+                        Table:{Master:'TCNMPdt',PK:'FTPdtCode'},
+                        Join :{
+                            Table:	['TCNMPdt_L','TCNMPdtSpcBch'],
+                            On:[
+                                'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = '+nLangEdits,
+                                'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode'
+                                ]
+                        }, 
+                        Where:{
+                                Condition : [tCondition]
+                        },
+                        GrideView:{
+                            ColumnPathLang	: 'product/product/product',
+                            ColumnKeyLang	: ['tPDTCode','tPDTName'],
+                            ColumnsSize     : ['10%','75%'],
+                            WidthModal      : 50,
+                            DataColumns		: ['TCNMPdt.FTPdtCode','TCNMPdt_L.FTPdtName'],
+                            DataColumnsFormat : ['',''],
+                            Perpage			: 10,
+                            OrderBy			: ['TCNMPdt.FDCreateOn DESC'],
+                            // SourceOrder		: "ASC"
+                        },
+                        CallBack:{
+                            StaSingItem : '1',
+                            ReturnType	: 'M',
+                            Value		: ['oetInvPdtCodeSelect',"TCNMPdt.FTPdtCode"],
+                            Text		: ['oetMmtPdtNameSelect',"TCNMPdt.FTPdtName"],
+                        },
+                        BrowseLev : 1
+                    }
+                    JCNxBrowseData('oProductBrowseMultiOption');
+
+
+                    $('#obtMmtMultiBrowseProduct').attr("disabled", false);
+                }else{
+                    JCNxShowMsgSessionExpired();
+                }        
+                break;
+            case '3':
+                var nStaSession = JCNxFuncChkSessionExpired();
+                if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+                    JSxCheckPinMenuClose(); // Hidden Pin Menu
+                    window.oProductBrowseMultiOption = undefined;
+
+                    let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
+                    let tCondition ='';
+                    if(tBchCodeSess!=''){
+                        tCondition +=  " AND ( TCNMPdtSpcBch.FTBchCode = '"+tBchCodeSess+"' OR ( TCNMPdtSpcBch.FTBchCode IS NULL OR TCNMPdtSpcBch.FTBchCode ='' ) )";
+                    }
+
+                    let tAgnCode        = '<?php echo $this->session->userdata("tSesUsrAgnCode"); ?>';
+                    if( tAgnCode != '' ){
+                        tCondition += " AND TCNMPdtSpcBch.FTAgnCode = '"+tAgnCode+"' ";
+                    }
+
+                    oProductBrowseMultiOption         = {
+                        Title : ['product/product/product','tPDTTitle'],
+                        Table:{Master:'TCNMPdt',PK:'FTPdtCode'},
+                        Join :{
+                            Table:	['TCNMPdt_L','TCNMPdtSpcBch','TCNMPdtBar'],
+                            On:[
+                                'TCNMPdt_L.FTPdtCode = TCNMPdt.FTPdtCode AND TCNMPdt_L.FNLngID = '+nLangEdits,
+                                'TCNMPdtSpcBch.FTPdtCode = TCNMPdt.FTPdtCode',
+                                'TCNMPdtSpcBch.FTPdtCode = TCNMPdtBar.FTPdtCode'
+                                ]
+                        }, 
+                        Where:{
+                                Condition : [tCondition]
+                        },
+                        GrideView:{
+                            ColumnPathLang	: 'product/product/product',
+                            ColumnKeyLang	: ['tPDTCode','tPDTName','บาร์โค้ด'],
+                            ColumnsSize     : ['10%','50%','25%'],
+                            WidthModal      : 50,
+                            DataColumns		: ['TCNMPdt.FTPdtCode','TCNMPdt_L.FTPdtName','TCNMPdtBar.FTBarCode'],
+                            DataColumnsFormat : ['','',''],
+                            Perpage			: 10,
+                            OrderBy			: ['TCNMPdt.FDCreateOn DESC'],
+                            // SourceOrder		: "ASC"
+                        },
+                        CallBack:{
+                            StaSingItem : '1',
+                            ReturnType	: 'M',
+                            Value		: ['oetInvPdtCodeSelect',"TCNMPdt.FTPdtCode"],
+                            Text		: ['oetMmtPdtNameSelect',"TCNMPdtBar.FTBarCode"],
+                        },
+                        BrowseLev : 1
+                    }
+                    JCNxBrowseData('oProductBrowseMultiOption');
+
+
+                    $('#obtMmtMultiBrowseProduct').attr("disabled", false);
+                }else{
+                    JCNxShowMsgSessionExpired();
+                }    
+                break;
+            case '4':
+                var nStaSession = JCNxFuncChkSessionExpired();
+                if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+                    JSxCheckPinMenuClose(); // Hidden Pin Menu
+                    window.oProductBrowseMultiOption = undefined;
+                    let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
+                    let tCondition ='';
+
+                    oProductBrowseMultiOption         = {
+                        Title : ['product/product/product','กลุ่มสินค้า'],
+                        Table:{Master:'TCNMPdtGrp',PK:'FTPgpChain'},
+                        Join :{
+                            Table:	['TCNMPdtGrp_L'],
+                            On:[
+                                'TCNMPdtGrp_L.FTPgpChain = TCNMPdtGrp.FTPgpChain AND TCNMPdtGrp_L.FNLngID = '+nLangEdits
+                                ]
+                        }, 
+                        Where:{
+                                Condition : [tCondition]
+                        },
+                        GrideView:{
+                            ColumnPathLang	: 'product/product/product',
+                            ColumnKeyLang	: ['รหัสกลุ่มสินค้า','กลุ่มสินค้า'],
+                            ColumnsSize     : ['10%','75%'],
+                            WidthModal      : 50,
+                            DataColumns		: ['TCNMPdtGrp.FTPgpChain','TCNMPdtGrp_L.FTPgpName'],
+                            DataColumnsFormat : ['','',''],
+                            Perpage			: 10,
+                            OrderBy			: ['TCNMPdtGrp.FDCreateOn DESC'],
+                            // SourceOrder		: "ASC"
+                        },
+                        CallBack:{
+                            StaSingItem : '1',
+                            ReturnType	: 'M',
+                            Value		: ['oetInvPdtCodeSelect',"TCNMPdtGrp.FTPgpChain"],
+                            Text		: ['oetMmtPdtNameSelect',"TCNMPdtGrp.FTPgpChain"],
+                        },
+                        BrowseLev : 1
+                    }
+                    JCNxBrowseData('oProductBrowseMultiOption');
+
+
+                    $('#obtMmtMultiBrowseProduct').attr("disabled", false);
+                }else{
+                    JCNxShowMsgSessionExpired();
+                }    
+                break;
+            case '5':
+                var nStaSession = JCNxFuncChkSessionExpired();
+                if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+                    JSxCheckPinMenuClose(); // Hidden Pin Menu
+                    window.oProductBrowseMultiOption = undefined;
+                    let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
+                    let tCondition ='';
+
+                    oProductBrowseMultiOption         = {
+                        Title : ['product/product/product','ประเภทสินค้า'],
+                        Table:{Master:'TCNMPdtType',PK:'FTPtyCode'},
+                        Join :{
+                            Table:	['TCNMPdtType_L'],
+                            On:[
+                                'TCNMPdtType_L.FTPtyCode = TCNMPdtType.FTPtyCode AND TCNMPdtType_L.FNLngID = '+nLangEdits
+                                ]
+                        }, 
+                        Where:{
+                                Condition : [tCondition]
+                        },
+                        GrideView:{
+                            ColumnPathLang	: 'product/product/product',
+                            ColumnKeyLang	: ['รหัสประเภทสินค้า','ประเภทสินค้า'],
+                            ColumnsSize     : ['10%','75%'],
+                            WidthModal      : 50,
+                            DataColumns		: ['TCNMPdtType.FTPtyCode','TCNMPdtType_L.FTPtyName'],
+                            DataColumnsFormat : ['','',''],
+                            Perpage			: 10,
+                            OrderBy			: ['TCNMPdtType.FDCreateOn DESC'],
+                            // SourceOrder		: "ASC"
+                        },
+                        CallBack:{
+                            StaSingItem : '1',
+                            ReturnType	: 'M',
+                            Value		: ['oetInvPdtCodeSelect',"TCNMPdtType.FTPtyCode"],
+                            Text		: ['oetMmtPdtNameSelect',"TCNMPdtType.FTPtyCode"],
+                        },
+                        BrowseLev : 1
+                    }
+                    JCNxBrowseData('oProductBrowseMultiOption');
+
+
+                    $('#obtMmtMultiBrowseProduct').attr("disabled", false);
+                }else{
+                    JCNxShowMsgSessionExpired();
+                }    
+                break;
+            case '6':
+                var nStaSession = JCNxFuncChkSessionExpired();
+                if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+                    JSxCheckPinMenuClose(); // Hidden Pin Menu
+                    window.oProductBrowseMultiOption = undefined;
+                    let tBchCodeSess = $('#oetMmtBchCodeSelect').val();
+                    let tCondition ='';
+
+                    oProductBrowseMultiOption         = {
+                        Title : ['product/product/product','ยี่ห้อ'],
+                        Table:{Master:'TCNMPdtBrand',PK:'FTPbnCode'},
+                        Join :{
+                            Table:	['TCNMPdtBrand_L'],
+                            On:[
+                                'TCNMPdtBrand_L.FTPbnCode = TCNMPdtBrand.FTPbnCode AND TCNMPdtBrand_L.FNLngID = '+nLangEdits
+                                ]
+                        }, 
+                        Where:{
+                                Condition : [tCondition]
+                        },
+                        GrideView:{
+                            ColumnPathLang	: 'product/product/product',
+                            ColumnKeyLang	: ['รหัสยี่ห้อ','ยี่ห้อ'],
+                            ColumnsSize     : ['10%','75%'],
+                            WidthModal      : 50,
+                            DataColumns		: ['TCNMPdtBrand.FTPbnCode','TCNMPdtBrand_L.FTPbnName'],
+                            DataColumnsFormat : ['','',''],
+                            Perpage			: 10,
+                            OrderBy			: ['TCNMPdtBrand.FDCreateOn DESC'],
+                            // SourceOrder		: "ASC"
+                        },
+                        CallBack:{
+                            StaSingItem : '1',
+                            ReturnType	: 'M',
+                            Value		: ['oetInvPdtCodeSelect',"TCNMPdtBrand.FTPbnCode"],
+                            Text		: ['oetMmtPdtNameSelect',"TCNMPdtBrand.FTPbnCode"],
+                        },
+                        BrowseLev : 1
+                    }
+                    JCNxBrowseData('oProductBrowseMultiOption');
+
+
+                    $('#obtMmtMultiBrowseProduct').attr("disabled", false);
+                }else{
+                    JCNxShowMsgSessionExpired();
+                }    
+                break;
+            default:
+                break;
+        }          
     });
 
     //เปิดปุ่ม

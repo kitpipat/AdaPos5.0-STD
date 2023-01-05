@@ -55,6 +55,8 @@ function JSvCallPageMevementList(pnPage) {
 //Return Type : View
 function JSvMevementDataTable(pnPage) {
     var nStaSession = JCNxFuncChkSessionExpired();
+    var typeOfProduct = $('#ocmSearchProductType').val();
+    var keyword = $('#oetMmtPdtNameSelect').val();
     if (typeof (nStaSession) !== 'undefined' && nStaSession == 1) {
         // ตรวจสอบ Value สาขา
         var ptBchCode = $('#oetMmtBchCodeSelect').val();
@@ -128,7 +130,9 @@ function JSvMevementDataTable(pnPage) {
             "dDateTo": dDateTo,
             "nPdtActive": tPdtActive,
             "tMmtMonth" : tMmtMonth,
-            "tMmtYear" : tMmtYear
+            "tMmtYear" : tMmtYear,
+            "tTypeProduct"   : typeOfProduct,
+            "tKeyword"   : keyword
         };
         // var tSearchAll = $('#oetSearchAll').val();
         var nPageCurrent = pnPage;
