@@ -27,7 +27,7 @@ $(function () {
             if ( typeof(oDOVEventChkNewData) !== 'undefined' ){
                 clearInterval(oDOVEventChkNewData);
             }
-            
+            JCNxOpenLoading(); // Added by : Napat(Jame) 04/01/2023 ดักไม่ให้คลิกก่อนโหลดหน้าจอเสร็จ ป้องกันเคสคลิกเร็วจาก automate
             $.ajax({
                 url: tURL,
                 type: "POST",
@@ -38,6 +38,7 @@ $(function () {
                 },
                 success: function (tView) {
 
+                    
                     //console.log(tView);
                     $(window).scrollTop(0);
                     $('.odvMainContent').html(tView);

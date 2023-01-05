@@ -45,13 +45,30 @@
                         <td class="text-center"><?php echo number_format($aValue['FNLayColForTWXVD']); ?></td>
                         <td class="text-right xCNTopUpVendingPdtLayoutStkQty othShowChkbox"><?php echo number_format($aValue['FCStkQty']); ?></td>
                         <td class="text-right xCNTopUpVendingPdtLayoutMaxQty"><?php echo number_format($aValue['FCLayColQtyMaxForTWXVD']); ?></td>
-                        <td class="text-right">
+                        
+                        <?php 
+                            if( $aValue['FCStkQty'] == $aValue['FCLayColQtyMaxForTWXVD'] ){
+                                // คงเหลือล่าสุด เท่ากับ จำนวนเติมสูงสุด แสดง label เติมครบแล้ว
+                                $tClassShowLabel    = "";
+                                $tClassShowInput    = "xCNHide";
+                                $tClassTD           = "text-left";
+                            }else{ 
+                                // คงเหลือล่าสุด ไม่เท่ากับ จำนวนเติมสูงสุด แสดง input ให้กรอกจำนวนที่ต้องการเติม
+                                $tClassShowLabel    = "xCNHide";
+                                $tClassShowInput    = "";
+                                $tClassTD           = "text-right";
+                            }
+                        ?>
+
+                        <td class="<?=$tClassTD?>">
+                            <span class="text-danger <?=$tClassShowLabel?>">เติมครบแล้ว</span>
                             <input 
                             type="text" 
-                            class="text-right xCNTopUpVendingQty xCNInputNumericWithoutDecimal xCNInputLength xCNApvOrCanCelDisabledQty xCNApvOrCanCelDisabled" 
+                            class="text-right <?=$tClassShowInput?> xCNTopUpVendingQty xCNInputNumericWithoutDecimal xCNInputLength xCNApvOrCanCelDisabledQty xCNApvOrCanCelDisabled" 
                             data-length="3"
                             value="<?php echo number_format($aValue['FCXtdQty']); ?>">
                         </td>
+                        
                         <td class="text-center othShowChkbox">
                             <img class="xCNIconTable xCNIconDel xCNApvOrCanCelDisabled" src="<?= base_url('application/modules/common/assets/images/icons/delete.png') ?>">
                         </td>
