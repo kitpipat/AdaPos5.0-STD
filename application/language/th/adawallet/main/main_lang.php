@@ -9,7 +9,10 @@ $lang['tCheckBal'] = 'เช็คยอดเงิน';
 $lang['tProgram'] = 'รายการ';
 $lang['tConfirm'] = 'ยืนยัน';
 $lang['tOK'] = 'ตกลง';
-
+$lang['tCardExpire'] = 'บัตรหมดอายุ';
+$lang['tRegisAgain'] = 'กรุณาลงทะเบียนใหม่';
+$lang['tNotRegis'] = 'คุณยังไม่ได้ลงทะเบียน';
+$lang['tPleaseRegis'] = 'กรุณาลงทะเบียน';
 ////////////////////register////////////////////
 $lang['tRegis'] = 'ลงทะเบียน';
 $lang['tUserId'] = 'ID ผู้ใช้งาน';
@@ -31,8 +34,8 @@ $lang['tTopup'] = 'เติมเงิน';
 $lang['tNext'] = 'ถัดไป';
 $lang['tFinish'] = 'เสร็จสิ้น';
 $lang['tTopupNoti'] = 'กรุณานำ QR Code ไปสแกนเพื่อชำระเงินในแอปพลิเคชันธนาคาร';
-$lang['tDownloadQrcode'] = 'ดาวน์โหลด QR Code';
-$lang['tCapture'] = 'หรือแคปภาพหน้าจอ เพื่อทำรายการชำระเงินในแอปพลิเคชันธนาคาร';
+// $lang['tDownloadQrcode'] = 'ดาวน์โหลด QR Code';
+$lang['tCapture'] = 'แคปภาพหน้าจอ เพื่อทำรายการชำระเงินในแอปพลิเคชันธนาคาร';
 $lang['tCancel'] = 'ยกเลิก';
 $lang['tCancelTopupSuccess'] = 'รายการถูกยกเลิก';
 $lang['tTopupTrans'] = 'รายการเติมเงินจำนวน';

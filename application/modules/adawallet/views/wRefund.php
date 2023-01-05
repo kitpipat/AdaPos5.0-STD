@@ -32,6 +32,7 @@
         </div>
 
         <div class="container" id="odvCheck">
+            <!-- เช็คยอดเงิน -->
             <div class="row justify-content-center">
                 <div class="col-md-12 mb-2" id="odvCheckbalance">
                     <div class="card mt-2">
@@ -45,13 +46,20 @@
                                 </div>
                             </div>
                             <p id="obpNoti"><?php echo language('adawallet/main/main', 'tNoti') ?></p>
-                            <p id="obpCardno" class="card-subtitle mb-1 text-muted"><?php echo language('adawallet/main/main', 'tRefNo') ?></p>
-                            <p id="obpBal" class="card-subtitle mt-1 text-muted"><?php echo language('adawallet/main/main', 'tBalance') ?> (<?php echo language('adawallet/main/main', 'tTHB') ?>) </p>
-                            <h3 id="obpBalance" class="card-text"></h3>
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-auto align-bottom">
+                                    <p id="obpCardno" class="card-subtitle my-1 text-muted"><?php echo language('adawallet/main/main', 'tRefNo') ?></p>
+                                </div>
+                                <div class="col-auto "> 
+                                    <p id="obpBal" class="card-subtitle my-1 text-muted"><?php echo language('adawallet/main/main', 'tBalance') ?> (<?php echo language('adawallet/main/main', 'tTHB') ?>) </p>
+                                </div>
+                            </div>
+                            <h3 id="obpBalance" class="card-text text-right"></h3>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- end เช็คยอดเงิน -->
 
             <!-- ธนาคาร -->
             <div id="odvBank">
@@ -59,7 +67,7 @@
                     <p class="mb-0"><b><?php echo language('adawallet/main/main', 'tRefundBank') ?></b></p>
                 </div>
 
-                <!-- เลือกจำนวนเงิน -->
+                <!-- เลือกจำนวนธนาคารและกรอกเลขที่บัญชี -->
                 <div class="row justify-content-center my-2 mx-1 p-0">
                     <div class="col mx-1 p-0">
                         <select name="ocmBank" id="ocmBank" class="custom-select xWInput mb-1" aria-label="Default select example">
@@ -83,9 +91,9 @@
                         <input type="text" class="form-control mt-0 mb-1 xWInput" name="oetAccount" id="oetAccount" placeholder="0" onkeyup="JSxCheckAccount();">
                     </div>
                 </div>
-                <!-- end เลือกจำนวนเงิน -->
+                <!-- end เลือกจำนวนธนาคารและกรอกเลขที่บัญชี -->
 
-                <!-- เงื่อนไขการเติมเงิน -->
+                <!-- เงื่อนไขการคืนเงิน -->
                 <div class="row my-2 mx-1 p-0">
                     <div class="col mx-1 p-0">
                         <p class="mb-0"><b><?php echo language('adawallet/main/main', 'tRequireRefund') ?></b></p>
@@ -119,7 +127,7 @@
                     </div>
                 </div>
             </div>
-                <!-- end เงื่อนไขการเติมเงิน -->
+                <!-- end เงื่อนไขการคืนเงิน -->
 
                 <div class="row my-2 mx-1 p-0">
                     <input type="submit" class="btn xWBtnMain mb-3" name="osmConfirm" id="osmConfirm" data-toggle="modal" data-target="#odvRefundConfirmModal" value="<?php echo language('adawallet/main/main', 'tConfirmRefund') ?>" disabled>
@@ -128,6 +136,7 @@
             <!-- end ธนาคาร -->
         </div>
 
+        <!-- ผลลัพธ์หลังกดคืนเงิน -->
         <div class="container" id="odvResult">
             <div class="row justify-content-center">
                 <div class="col-10 text-center">
@@ -143,8 +152,9 @@
                 </div>
             </div>
         </div>
+        <!-- end ผลลัพธ์หลังกดคืนเงิน -->
 
-         <!-- Modal -->
+        <!-- Modal -->
         <div class="modal fade" id="odvRefundConfirmModal" tabindex="-1" aria-labelledby="RefundConfirmModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -170,7 +180,7 @@
                 </div>
             </div>
         </div>
-
+        <!-- end Modal -->
 
         <script>
 
@@ -192,7 +202,6 @@
             async function JSaADWCheckBalance() {
                 const profile = await liff.getProfile()
                 tUserid = profile.userId;
-                // tUserid = "Ua8123e603500c93fc05b40ae4fc5f58a";
 
                 $.ajax({
                     url: "<?php echo base_url('adwADWCheckBalance/') ?>",
@@ -213,25 +222,45 @@
                             nDecimal = data['pnDecimal'][0].FNShowDecimal;
                             tBalance = data['roInfo']['rcCardTotal'].toFixed(nDecimal);
 
-                            document.getElementById('obpCardno').innerHTML = "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " : " + data['roInfo']['rtCrdCode']; 
-                            document.getElementById('obpCardtype').innerHTML = data['roInfo']['rtCtyName'];     
-                            document.getElementById('obpBalance').innerHTML = tBalance;    
-                            document.getElementById('obpNoti').style.display = "none";
-                            
-                            document.getElementById('obpCardResult').innerHTML =  data['roInfo']['rtCtyName'] + " : " + "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " " + data['roInfo']['rtCrdCode']; 
+                            if(data['rtCode'] == "04"){
+                                document.getElementById('obpNoti').innerHTML = "<b><?php echo language('adawallet/main/main', 'tNotRegis') . " " . language('adawallet/main/main', 'tPleaseRegis')?></b>"; 
+                                document.getElementById('obpCardno').style.display = "none";
+                                document.getElementById('obpCardtype').style.display = "none";
+                                document.getElementById('obpBalance').style.display = "none";
+                                document.getElementById('obpBal').style.display = "none";     
+                                $("#odvBank *").attr("disabled", "disabled").off('click');
+                            }else{
+                                tBalance = data['roInfo']['rcCardTotal'].toFixed(nDecimal);
+                                
+                                document.getElementById('obpCardno').innerHTML = "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " : " + data['roInfo']['rtCrdCode']; 
+                                document.getElementById('obpCardtype').innerHTML = data['roInfo']['rtCtyName'];
+                                document.getElementById('obpBalance').innerHTML = tBalance;    
+                                
+                                document.getElementById('obpCardResult').innerHTML =  data['roInfo']['rtCtyName'] + " : " + "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " " + data['roInfo']['rtCrdCode']; 
+
+                                if(data['rtCode'] == "05") {
+                                    document.getElementById('obpNoti').style.display = "inline";
+                                    document.getElementById('obpNoti').innerHTML = "<b><?php echo language('adawallet/main/main', 'tCardExpire') . " " . language('adawallet/main/main', 'tRegisAgain')?></b>"; 
+                                    $("#odvBank *").attr("disabled", "disabled").off('click');
+                                }else{
+                                    document.getElementById('obpNoti').style.display = "none";
+                                }
+                            }
                             
                         }else{
                             document.getElementById('obpCardno').style.display = "none";
                             document.getElementById('obpCardtype').style.display = "none";
                             document.getElementById('obpBalance').style.display = "none";
-                            document.getElementById('obpBal').style.display = "none";                           
+                            document.getElementById('obpBal').style.display = "none";  
+                            $("#odvBank *").attr("disabled", "disabled").off('click');                         
                         }
                     }
                 });
             }
 
             async function main() {
-                await liff.init({liffId: "1657332267-K55Av9A4", withLoginOnExternalBrower: true})
+                // await liff.init({liffId: "1657332267-K55Av9A4", withLoginOnExternalBrower: true})
+                await liff.init({liffId: "1657787973-qogWBzNn", withLoginOnExternalBrower: true})
                 if(liff.isLoggedIn()) {
                     JSaADWCheckBalance()
                 }else {

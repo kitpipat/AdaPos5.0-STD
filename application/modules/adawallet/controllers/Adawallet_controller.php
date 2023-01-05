@@ -13,13 +13,12 @@ class Adawallet_controller extends MX_Controller
      * @var int
      */
     public $nLngID;
-    public $tPublicAPI       = 'https://sit.ada-soft.com:44340/API/StorebackSTD/API2Wallet/V5/Card';
-    // public $tPublicAPI       = 'https://dev.ada-soft.com:44340/API/AdaWallet/API2Wallet/V5/Card';
     public $tPaymentAPI      = 'https://dev.ada-soft.com:44340/AdaPayment/AdaQR/v1/ada_genqr';
-    public $tKeyAPI          = 'X-Api-Key'; //Key ของ API บน 94
-    public $tValueAPI        = '12345678-1111-1111-1111-123456789410'; //Value ของ API บน 94
-    public $tLineOA          = '@677trvja';
-    // public $tQrcode          = '';
+    public $tPublicAPI       = '';
+    public $tKeyAPI          = ''; //Key ของ API บน 94
+    public $tValueAPI        = ''; //Value ของ API บน 94
+    // public $tLineOA          = '@677trvja';
+    public $tLineOA          = '@212nzotl';
 
     public function __construct()
     {
@@ -35,6 +34,11 @@ class Adawallet_controller extends MX_Controller
         $this->load->helper('date');
         $this->load->model('Adawallet_model');
         date_default_timezone_set('Asia/Bangkok');
+
+        $aAPI = $this->Adawallet_model->FSaMADWAPI();
+        $this->tPublicAPI   = $aAPI['rtAPI'][0]->FTUrlAddress;
+        $this->tKeyAPI      = $aAPI['rtSysStaUsr'][0]->FTSysStaUsrRef;
+        $this->tValueAPI    = $aAPI['rtSysStaUsr'][0]->FTSysStaUsrValue;
         
     }
 
@@ -64,9 +68,7 @@ class Adawallet_controller extends MX_Controller
             $nProgress='';
             do{
                 $tQname     = $paData['tQname'];
-                // $connection = new AMQPStreamConnection(HOST, PORT, USER, PASS, VHOST,false,'AMQPLAIN', null, 'en_US', 30, 30);
-                $connection = new AMQPStreamConnection(HOST, PORT, USER, PASS, 'AdaPos5.0STD_Wallet',false,'AMQPLAIN', null, 'en_US', 30, 30);
-                // $connection = new AMQPStreamConnection(HOST, PORT, USER, PASS, 'AdaPos5.0AdaWallet_Wallet',false,'AMQPLAIN', null, 'en_US', 30, 30);
+                $connection = new AMQPStreamConnection(MQ_CRD_HOST, MQ_CRD_PORT, MQ_CRD_USER, MQ_CRD_PASS, MQ_CRD_VHOST,false,'AMQPLAIN', null, 'en_US', 30, 30);
                 $oChannel    = $connection->channel();
                 $oChannel->queue_declare($tQname, false, true, false, false);
                 $message    = $oChannel->basic_get($tQname);
@@ -100,45 +102,40 @@ class Adawallet_controller extends MX_Controller
     */
     public function FSaCADWRegister() {
 
-        $dformat = "%Y-%m-%d";
-        $this->nLngID = FCNaHGetLangEdit();
+        $dformat        = "%Y-%m-%d";
+        $this->nLngID   = FCNaHGetLangEdit();
 
-        $tUrlCheckRegis = $this->tPublicAPI.'/Register';
-        $tUrlCheckBalance = $this->tPublicAPI.'/CardSpotCheck';
+        $tUrlCheckRegis     = $this->tPublicAPI.'/Card/Register';
+        $tUrlCheckBalance   = $this->tPublicAPI.'/Card/CardSpotCheck';
 
         $aAPIKey    = array(
             'tKey'      => $this->tKeyAPI,
             'tValue'    => $this->tValueAPI
         );
 
-        $adata  = array (
-            'ptCstLineID' => $_POST['ptCstLineID'],
-            'ptCstTel' => $_POST['ptCstTel'],
-            'ptOAID' => $this->tLineOA,
-            'ptBchCode'=> '00001'
+        $adata      = array (
+            'ptCstLineID'   => $_POST['ptCstLineID'],
+            'ptCstTel'      => $_POST['ptCstTel'],
+            'ptOAID'        => $this->tLineOA,
+            'ptBchCode'     => '00001'
         );
 
-        // print_r($adata);
         $aResultRegis  = FCNaHCallAPIBasic($tUrlCheckRegis,'POST',$adata,$aAPIKey);
-        // print_r($aResultRegis);
 
-        $adatacheck = array (
-            'ptCrdCode' => '',
-            'ptCstLineID' => $_POST['ptCstLineID'],
-            'ptOAID' => $this->tLineOA,
-            'ptDocDate' => @mdate($dformat) , 
-            'pnTop' => '1',
-            'pnLngID' => $this->nLngID,
+        $adatacheck     = array (
+            'ptCrdCode'     => '',
+            'ptCstLineID'   => $_POST['ptCstLineID'],
+            'ptOAID'        => $this->tLineOA,
+            'ptDocDate'     => @mdate($dformat) , 
+            'pnTop'         => '1',
+            'pnLngID'       => $this->nLngID,
         );
-
-        // print_r($adatacheck);
 
         if($aResultRegis['rtCode'] == "1"){
             $aResultCheckInfo = FCNaHCallAPIBasic($tUrlCheckBalance,'POST',$adatacheck,$aAPIKey);
         }
 
         echo json_encode($aResultCheckInfo);
-        // print_r($aResultCheckInfo);
     }
 
 
@@ -153,21 +150,21 @@ class Adawallet_controller extends MX_Controller
         $this->load->view('adawallet/wHeader.php');
         $this->load->view('adawallet/wCheckBalance.php');
     }
-
-
+    
+    
     /** 
-        *Functionality : Event Check balance (Call API)
-        *Parameters : Ajax Event
-        *Creator : 16/08/2022 (IcePHP)
-        *Return : Data Check balance 
-        *Return Type : String
-    */
+     *Functionality : Event Check balance (Call API)
+     *Parameters : Ajax Event
+     *Creator : 16/08/2022 (IcePHP)
+     *Return : Data Check balance 
+     *Return Type : String
+     */
     public function FSaCADWCheckBalance() {
-
-        $dformat = "%Y-%m-%d";
-        $this->nLngID = FCNaHGetLangEdit();
-        $tUrlCheckBalance = $this->tPublicAPI.'/CardSpotCheck';
-        $nDecimal = $this->Adawallet_model->FSnMMADWDecimal();
+        
+        $dformat            = "%Y-%m-%d";
+        $this->nLngID       = FCNaHGetLangEdit();
+        $tUrlCheckBalance   = $this->tPublicAPI.'/Card/CardSpotCheck';
+        $nDecimal           = $this->Adawallet_model->FSaMADWDecimal();
 
         $aAPIKey    = array(
             'tKey'      => $this->tKeyAPI,
@@ -175,18 +172,16 @@ class Adawallet_controller extends MX_Controller
         );
 
         $adatacheck = array (
-            'ptCrdCode' => '',
-            'ptCstLineID' => $_POST['ptCstLineID'],
-            'ptOAID' => $this->tLineOA,
-            'ptDocDate' => @mdate($dformat) , 
-            'pnTop' => '1',
-            'pnLngID' => $this->nLngID,
+            'ptCrdCode'     => '',
+            'ptCstLineID'   => $_POST['ptCstLineID'],
+            'ptOAID'        => $this->tLineOA,
+            'ptDocDate'     => @mdate($dformat) , 
+            'pnTop'         => '1',
+            'pnLngID'       => $this->nLngID,
         );
 
-        $aResultCheckInfo  = FCNaHCallAPIBasic($tUrlCheckBalance,'POST',$adatacheck,$aAPIKey);
-        $aResultCheckInfo['pnDecimal'] = $nDecimal;
-        // print_r($aResultCheckInfo);
-        // echo(gettype($aResultCheckInfo));
+        $aResultCheckInfo   = FCNaHCallAPIBasic($tUrlCheckBalance,'POST',$adatacheck,$aAPIKey);
+        $aResultCheckInfo['pnDecimal']  = $nDecimal;
         echo json_encode($aResultCheckInfo);
         
     }
@@ -200,58 +195,60 @@ class Adawallet_controller extends MX_Controller
         *Return Type : String
     */
     public function FSaCADWGenQR() {
-        $aQuery = $this->Adawallet_model->FSxMADWRcvSpc();
-        $dformat = "YmdHis";
-        $tUrlGenQRCode = $this->tPaymentAPI;
+        $aQuery         = $this->Adawallet_model->FSaMADWRcvSpc();
+        $dformat        = "YmdHis";
+        $tUrlGenQRCode  = $this->tPaymentAPI;
 
-        $tQRMode = '';
-        $tBillerID = '';
-        $tMerchantID = '';
-        $tMerchantRef = '';
-        $tPrefix = '';
+        $tQRMode        = '';
+        $tBillerID      = '';
+        $tMerchantID    = '';
+        $tMerchantRef   = '';
+        $tPrefix        = '';
+        $tSuffix        = '';
 
         for($pnIndex = 0; $pnIndex < count($aQuery); $pnIndex++) {
             switch ($aQuery[$pnIndex]->FTSysKey) {
                 case "Tag" :
-                    $tQRMode = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tQRMode        = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break;
                 case "BillerID" :
-                    $tBillerID = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tBillerID      = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break;
                 case "MerchantID" :
-                    $tMerchantID = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tMerchantID    = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break; 
                 case "MerchantRef" :
-                    $tMerchantRef = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tMerchantRef   = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break; 
                 case "Prefix" :
-                    $tPrefix = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tPrefix        = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    break; 
+                case "Suffix" : 
+                    $tSuffix        = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break; 
                 default:
                     break;
             }
         }
 
-        $adata  = array (
-            'QRMode' => $tQRMode,
-            'PromptPayID' => $tBillerID,
-            'REF2' => $_POST['pnREF2'],
-            'QR_Width' => '200',
-            'QR_Height' => '200',
-            'Resp_Lang' => 'THA',
-            'MerchantID' => $tMerchantID,
-            'MerchantRef' => $tMerchantRef,
-            'InvoiceID' => $_POST['ptInvoiceID'],
-            'InvoiceDate' => date($dformat),
-            'InvoiceAmt' => $_POST['ptAmount'],
-            'TerminalID' => '00001',
-            'BranchID' => '00001',
-            'StoreID' => '00001',
-            'Prefix' => $tPrefix,
-            'Suffix' => ''
+        $adata      = array (
+            'QRMode'        => $tQRMode,
+            'PromptPayID'   => $tBillerID,
+            'REF2'          => $_POST['pnREF2'],
+            'QR_Width'      => '200',
+            'QR_Height'     => '200',
+            'Resp_Lang'     => 'THA',
+            'MerchantID'    => $tMerchantID,
+            'MerchantRef'   => $tMerchantRef,
+            'InvoiceID'     => $_POST['ptInvoiceID'],
+            'InvoiceDate'   => date($dformat),
+            'InvoiceAmt'    => $_POST['ptAmount'],
+            'TerminalID'    => '00001',
+            'BranchID'      => '00001',
+            'StoreID'       => '00001',
+            'Prefix'        => $tPrefix,
+            'Suffix'        => $tSuffix
         );
-
-        // print_r($adata); 
 
         $aResultQRCode  = FCNaHCallAPIBasic($tUrlGenQRCode,'POST',$adata);
         $aResultQRCode['ptInvoiceDate'] = $adata['InvoiceDate'];
@@ -267,34 +264,41 @@ class Adawallet_controller extends MX_Controller
         *Return Type : String
     */
     public function FSaCADWTopup(){
-        $aQuery = $this->Adawallet_model->FSxMADWRcvSpc();
-        $tUrlTopup = $this->tPublicAPI.'/CardTopup';
-        $tMerchantID = '';
-        $tMerchantRef = '';
-        $tPrefix = '';
-        $tURL = '';
-        $tTimeout = '';
-        $tTimeQuery = '';
+        $aQuery         = $this->Adawallet_model->FSaMADWRcvSpc();
+        $tUrlTopup      = $this->tPublicAPI.'/Card/CardTopup';
+
+        $tMerchantID    = '';
+        $tMerchantRef   = '';
+        $tPrefix        = '';
+        $tURL           = '';
+        $tTimeout       = '';
+        $tTimeQuery     = '';
+        $tSuffix        = '';
+
+        print_r($aQuery);
 
         for($pnIndex = 0; $pnIndex < count($aQuery); $pnIndex++) {
             switch ($aQuery[$pnIndex]->FTSysKey) {
                 case "URL" :
-                    $tURL = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tURL           = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break;
                 case "MerchantID" :
-                    $tMerchantID = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tMerchantID    = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break; 
                 case "MerchantRef" :
-                    $tMerchantRef = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tMerchantRef   = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break; 
                 case "Prefix" :
-                    $tPrefix = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tPrefix        = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break; 
+                case "Suffix" : 
+                    $tSuffix        = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    break;
                 case "Timeout" :
-                    $tTimeout = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tTimeout       = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break; 
                 case "TimeQuery" :
-                    $tTimeQuery = $aQuery[$pnIndex]->FTSysStaUsrValue;
+                    $tTimeQuery     = $aQuery[$pnIndex]->FTSysStaUsrValue;
                     break; 
                 default:
                     break;
@@ -306,25 +310,23 @@ class Adawallet_controller extends MX_Controller
             'tValue'    => $this->tValueAPI
         );
 
-        $adata = array(
-            'ptCstLineID'=> $_POST['ptCstLineID'],
-            'ptOAID'=> $this->tLineOA,
-            'ptAmount'=> $_POST['ptAmount'],
-            'ptPosCode'=> '00001',
-            'ptBchCode'=> '00001',
-            'ptInvoiceID'=> $_POST['ptInvoiceID'],
-            'ptInvoiceDate'=> $_POST['ptInvoiceDate'],
-            'ptMerchantID'=> $tMerchantID,
-            'ptMerchantRef'=> $tMerchantRef,
-            'ptPrefix'=> $tPrefix,
-            'ptSuffix'=> '',
-            'ptLanguage'=> 'THA',
-            'ptURL'=> $tURL,
-            'pnTimeout'=> $tTimeout,
-            'pnTimeQuery'=> $tTimeQuery,
+        $adata      = array(
+            'ptCstLineID'       => $_POST['ptCstLineID'],
+            'ptOAID'            => $this->tLineOA,
+            'ptAmount'          => $_POST['ptAmount'],
+            'ptPosCode'         => '00001',
+            'ptBchCode'         => '00001',
+            'ptInvoiceID'       => $_POST['ptInvoiceID'],
+            'ptInvoiceDate'     => $_POST['ptInvoiceDate'],
+            'ptMerchantID'      => $tMerchantID,
+            'ptMerchantRef'     => $tMerchantRef,
+            'ptPrefix'          => $tPrefix,
+            'ptSuffix'          => $tSuffix,
+            'ptLanguage'        => 'THA',
+            'ptURL'             => $tURL,
+            'pnTimeout'         => $tTimeout,
+            'pnTimeQuery'       => $tTimeQuery,
         );
-
-        // print_r($adata); 
 
         $aResultTopup  = FCNaHCallAPIBasic($tUrlTopup,'POST',$adata,$aAPIKey);
         $aResultTopup['ptAmount'] = $adata['ptAmount'];
@@ -355,31 +357,26 @@ class Adawallet_controller extends MX_Controller
         *Return Type : String   
     */
     public function FSaCADWRequestOTP() {
-        $dformat = "Y-m-d H:i:s";
-        $tDate = date($dformat);
+        $dformat        = "Y-m-d H:i:s";
+        $tDate          = date($dformat);
 
-        $tUrlRequest = $this->tPublicAPI.'/GenOTP';
-        $aOTP = '';
+        $tUrlRequest    = $this->tPublicAPI.'/Card/GenOTP';
+        $aOTP           = '';
 
         $aAPIKey    = array(
             'tKey'      => $this->tKeyAPI,
             'tValue'    => $this->tValueAPI
         );
 
-        $adata = array (
-            'ptCrdCode' => $_POST['ptCrdCode'],
-            'ptCstLineID' => $_POST['ptCstLineID'],
-            'ptOAID' => $this->tLineOA,
-            'ptAgnCode' => $_POST['ptAgnCode'],
-            'ptRefDate' =>  $tDate
+        $adata      = array (
+            'ptCrdCode'     => $_POST['ptCrdCode'],
+            'ptCstLineID'   => $_POST['ptCstLineID'],
+            'ptOAID'        => $this->tLineOA,
+            'ptAgnCode'     => $_POST['ptAgnCode'],
+            'ptRefDate'     =>  $tDate
         );
 
-        // echo($tDate);
-
         $aResultInfo  = FCNaHCallAPIBasic($tUrlRequest,'POST',$adata,$aAPIKey);
-
-        // print_r($aResultInfo);
-
         
         if($aResultInfo['rtCode'] == "1"){
 
@@ -390,27 +387,27 @@ class Adawallet_controller extends MX_Controller
         }
        
         if($aOTP == ""){
-            $adataReturn = array (
-                'ptStatus' => "Fail_null"
+            $adataReturn    = array (
+                'ptStatus'  => "Fail_null"
             );
         }else {
             $aOTPencode = json_decode(json_decode($aOTP)->ptData);
             $tRefDate = $aOTPencode->paoItem[0]->ptRefDate;
 
             if($tRefDate != $tDate) {
-                $adataReturn = array (
-                    'ptStatus' => "Fail_Dateref"
+                $adataReturn    = array (
+                    'ptStatus'     => "Fail_Dateref"
                 );
             }else {
-                $adataReturn = array (
-                    'ptStatus' => "Success",
-                    'ptCrdCode' => $aOTPencode->paoItem[0]->ptCrdCode,
-                    'ptCstLineID' => $aOTPencode->paoItem[0]->ptCstLineID,
-                    'ptOAID' => $aOTPencode->paoItem[0]->ptOAID,
-                    'ptAgnCode' => $aOTPencode->paoItem[0]->ptAgnCode,
-                    'ptRefDate' => $aOTPencode->paoItem[0]->ptRefDate,
-                    'ptOTP' => $aOTPencode->paoItem[0]->ptOTP,
-                    'ptOTPExipred' => $aOTPencode->paoItem[0]->ptOTPExipred
+                $adataReturn    = array (
+                    'ptStatus'      => "Success",
+                    'ptCrdCode'     => $aOTPencode->paoItem[0]->ptCrdCode,
+                    'ptCstLineID'   => $aOTPencode->paoItem[0]->ptCstLineID,
+                    'ptOAID'        => $aOTPencode->paoItem[0]->ptOAID,
+                    'ptAgnCode'     => $aOTPencode->paoItem[0]->ptAgnCode,
+                    'ptRefDate'     => $aOTPencode->paoItem[0]->ptRefDate,
+                    'ptOTP'         => $aOTPencode->paoItem[0]->ptOTP,
+                    'ptOTPExipred'  => $aOTPencode->paoItem[0]->ptOTPExipred
 
                 );
             }
@@ -441,8 +438,8 @@ class Adawallet_controller extends MX_Controller
     */
     public function FSaCADWEventRefund() {
 
-        $tUrlCheckBalance = $this->tPublicAPI.'/ReturnTopup';
-        $nDecimal = $this->Adawallet_model->FSnMMADWDecimal();
+        $tUrlCheckBalance   = $this->tPublicAPI.'/Card/ReturnTopup';
+        $nDecimal           = $this->Adawallet_model->FSaMADWDecimal();
         
 
         $aAPIKey    = array(
@@ -450,77 +447,21 @@ class Adawallet_controller extends MX_Controller
             'tValue'    => $this->tValueAPI
         );
 
-        $adata = array (
-            'ptCstLineID'=> $_POST['ptCstLineID'],
-            'ptOAID'=> $this->tLineOA,
-            'ptAmount'=> $_POST['ptAmount'],
-            'ptPosCode'=> '00001',
-            'ptBchCode'=> '00001',
-            'ptInvoiceID'=> $_POST['ptInvoiceID'],
-            'ptBankCode' => $_POST['ptBankCode'] ,
-            'ptBankAccount' => $_POST['ptBankAccount'] 
+        $adata     = array (
+            'ptCstLineID'       => $_POST['ptCstLineID'],
+            'ptOAID'            => $this->tLineOA,
+            'ptAmount'          => $_POST['ptAmount'],
+            'ptPosCode'         => '00001',
+            'ptBchCode'         => '00001',
+            'ptInvoiceID'       => $_POST['ptInvoiceID'],
+            'ptBankCode'        => $_POST['ptBankCode'] ,
+            'ptBankAccount'     => $_POST['ptBankAccount'] 
         );
-
-        // print_r($adata);
 
         $aResultRefund  = FCNaHCallAPIBasic($tUrlCheckBalance,'POST',$adata,$aAPIKey);
         $aResultRefund['pnDecimal'] = $nDecimal;
         echo json_encode($aResultRefund);
 
-    }
-
-
-    /**
-        *Functionality : Event Save Image to server
-        *Parameters : Ajax Event
-        *Creator : 17/08/2022 (IcePHP)
-        *Return : Status success 
-        *Return Type : String 
-    */
-    public function FSaCADWEventSaveImage() {
-        // print_r($_POST);
-
-        $timage = $_POST['ptDataURL'];
-
-        $timage = str_replace("data:image/jpeg;base64,", "", $timage);
-
-        $image = base64_decode($timage);
-        // print_r($image);
-        // decoding base64 string value
-        $image_name = 'Qr_' . $_POST['ptAmount'] .'_' .$_POST['ptInvoiceID'];// image name generating with random number with 32 characters
-        $filename = $image_name . '.jpeg';
-        file_put_contents('./application/modules/adawallet/assets/images/qrcode/' . $filename, $image);
-
-        echo json_encode("success");
-    }
-
-
-    /**
-        *Functionality : Function Call Download Qrcode Page (external browser) 
-        *Parameters : Ajax and Function Parameter
-        *Creator : 17/08/2022 (IcePHP)
-        *Return : String and View
-        *Return Type : View
-    */
-    public function FSaCADWEventDonwloadImage($ptAmount=null, $ptInvID=null) {
-
-        $adata['ptAmount'] = $ptAmount;
-        $adata['ptInvID'] = $ptInvID;
-        $this->load->view('adawallet/wHeader.php', $adata);
-        $this->load->view('adawallet/wQrcode.php', $adata);
-    }
-
-
-    /**
-        *Functionality : Event unlink image from server
-        *Parameters : Ajax Event
-        *Creator : 17/08/2022 (IcePHP)
-        *Return : Status success 
-        *Return Type : String 
-    */
-    public function FSaCADWEventUnlinkImage() {
-        unlink("./application/modules/adawallet/assets/images/qrcode/". $_POST['ptImgName']);
-        echo json_encode("success");
     }
 
 }

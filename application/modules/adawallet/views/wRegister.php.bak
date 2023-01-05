@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo language('adawallet/main/main', 'tRegis') . " " . language('adawallet/main/main', 'tAdw') ?> - 216</title>
+    <title><?php echo language('adawallet/main/main', 'tRegis') . " " . language('adawallet/main/main', 'tAdw') ?></title>
 
     <style>
       #opictureUrl {
@@ -189,8 +189,7 @@
       }
 
       async function main() {
-        // await liff.init({liffId: "1657332267-RQLWjEW6", withLoginOnExternalBrower: true})
-        await liff.init({liffId: "1657787973-MADpWA6r", withLoginOnExternalBrower: true})
+        await liff.init({liffId: "1657332267-RQLWjEW6", withLoginOnExternalBrower: true})
         if(liff.isLoggedIn()) {
           JSaADWRegister()
         }else {

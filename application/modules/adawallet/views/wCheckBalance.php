@@ -48,9 +48,17 @@
                 </div>
               </div>
               <p id="obpNoti"><?php echo language('adawallet/main/main', 'tNoti') ?></p>
-              <p id="obpCardno" class="card-subtitle mb-1 text-muted"><?php echo language('adawallet/main/main', 'tRefNo') ?></p>
-              <p id="obpBal" class="card-subtitle mt-1 text-muted"><?php echo language('adawallet/main/main', 'tBalance') ?> (<?php echo language('adawallet/main/main', 'tTHB') ?>) </p>
-              <h3 id="obpBalance" class="card-text"></h3>
+
+              <div class="row align-items-center justify-content-between">
+                <div class="col-auto align-bottom">
+                  <p id="obpCardno" class="card-subtitle my-1 text-muted"><?php echo language('adawallet/main/main', 'tRefNo') ?></p>
+                </div>
+                <div class="col-auto "> 
+                  <p id="obpBal" class="card-subtitle my-1 text-muted"><?php echo language('adawallet/main/main', 'tBalance') ?> (<?php echo language('adawallet/main/main', 'tTHB') ?>) </p>
+                </div>
+              </div>
+
+              <h3 id="obpBalance" class="card-text text-right"></h3>
             </div>
           </div>
         </div>
@@ -66,37 +74,37 @@
         <!-- เลือกจำนวนเงิน -->
         <div class="row justify-content-center my-2 mx-1 p-0">
           <div class="col mx-1 p-0">
-            <input type="submit" name="oetMoney" id="oetMoney" class="btn xWBtnMoney" value="20" onclick="JStADWMoney(this.value)"/>
+            <input type="submit" name="osmMoney20" id="osmMoney20" class="btn xWBtnMoney" value="20" onclick="JStADWMoney(this.value)"/>
           </div>
 
           <div class="col mx-1 p-0">
-            <input type="submit" name="oetMoney" id="oetMoney" class="btn xWBtnMoney" value="50" onclick="JStADWMoney(this.value)" />
+            <input type="submit" name="osmMoney50" id="osmMoney50" class="btn xWBtnMoney" value="50" onclick="JStADWMoney(this.value)"/>
           </div>
 
           <div class="col mx-1 p-0">
-            <input type="submit" name="oetMoney" id="oetMoney" class="btn xWBtnMoney" value="100" onclick="JStADWMoney(this.value)"/>
+            <input type="submit" name="osmMoney100" id="osmMoney100" class="btn xWBtnMoney" value="100" onclick="JStADWMoney(this.value)"/>
           </div>
 
           <div class="col mx-1 p-0">
-            <input type="button" name="oetMoney" id="oetMoney" class="btn xWBtnMoney" value="150" onclick="JStADWMoney(this.value)"/>
+            <input type="submit" name="osmMoney150" id="osmMoney150" class="btn xWBtnMoney" value="150" onclick="JStADWMoney(this.value)"/>
           </div>
         </div>
 
         <div class="row justify-content-center my-2 mx-1 p-0">
           <div class="col mx-1 p-0">
-            <input type="submit" name="oetMoney" id="oetMoney" class="btn xWBtnMoney" value="200" onclick="JStADWMoney(this.value)"/>
+            <input type="submit" name="osmMoney200" id="osmMoney200" class="btn xWBtnMoney" value="200" onclick="JStADWMoney(this.value)"/>
           </div>
           
           <div class="col mx-1 p-0">
-            <input type="submit" name="oetMoney" id="oetMoney" class="btn xWBtnMoney" value="300" onclick="JStADWMoney(this.value)" />
+            <input type="submit" name="osmMoney300" id="osmMoney300" class="btn xWBtnMoney" value="300" onclick="JStADWMoney(this.value)" />
           </div>
 
           <div class="col mx-1 p-0">
-            <input type="submit" name="oetMoney" id="oetMoney" class="btn xWBtnMoney" value="500" onclick="JStADWMoney(this.value)"/>
+            <input type="submit" name="osmMoney500" id="osmMoney500" class="btn xWBtnMoney" value="500" onclick="JStADWMoney(this.value)"/>
           </div>
 
           <div class="col mx-1 p-0">
-            <input type="button" name="oetMoney" id="oetMoney" class="btn xWBtnMoney" value="1000" onclick="JStADWMoney(this.value)"/>
+            <input type="button" name="osmMoney1000" id="osmMoney1000" class="btn xWBtnMoney" value="1000" onclick="JStADWMoney(this.value)"/>
           </div>
         </div>
         <!-- end เลือกจำนวนเงิน -->
@@ -156,6 +164,7 @@
       <!-- end เติมเงิน -->
     </div>
 
+    <!-- qr code สำหรับเติมเงิน -->
     <div class="container" id="odvGenqr">
 
       <div class="container" id="odvQrCode">
@@ -178,27 +187,30 @@
         </div>
       </div>
  
+      
       <div class="row justify-content-center xWBorder">
-        <div class="col-8 text-center xWBorder">
-          <input type="submit" name="osmFinish" id="osmFinish" value="<?php echo language('adawallet/main/main', 'tDownloadQrcode') ?>" class="btn xWBtnMain mx-auto mt-5 mb-0" onclick="JSxADWScreenshot();">
+        <div class="col-10 pb-0 mt-5 text-center">
+          <p id="obpTopupNoti" class="mb-1"><?php echo language('adawallet/main/main', 'tCapture') ?></p>
         </div>
       </div>
-
+      
       <div class="row justify-content-center xWBorder">
-        <div class="col-10 pb-0 mt-2 text-center">
-          <p id="obpTopupNoti" class="mb-3"><?php echo language('adawallet/main/main', 'tCapture') ?></p>
+        <div class="col-8 text-center xWBorder">
+          <input type="submit" name="osmFinish" id="osmFinish" value="<?php echo language('adawallet/main/main', 'tFinish') ?>" class="btn xWBtnMain mx-auto mb-3" onclick="liff.closeWindow();">
         </div>
       </div>
 
       <div class="row justify-content-center xWBorder">
         <div class="col-8 xWBorder">
-          <!-- <input type="submit" name="osmFinish" id="osmFinish" value="<?php echo language('adawallet/main/main', 'tFinish') ?>" class="btn xWBtnMain mx-auto" onclick="liff.closeWindow();"> -->
           <input type="submit" name="osmCancel" id="osmCancel" value="<?php echo language('adawallet/main/main', 'tCancel') ?>" class="btn xWBtnCancel mx-auto">
         </div>
       </div>
+      
 
     </div>
+    <!-- end qr code สำหรับเติมเงิน -->
 
+    <!-- ยกเลิกเติมเงิน -->
     <div class="container" id="odvCancelTopup">
 
       <div class="row justify-content-center p-0 xWBorder">
@@ -222,12 +234,12 @@
 
       <div class="row justify-content-center xWBorder">
         <div class="col-8 xWBorder">
-          <!-- <input type="submit" name="osmFinish" id="osmFinish" value="<?php echo language('adawallet/main/main', 'tFinish') ?>" class="btn xWBtnMain mx-auto" onclick="liff.closeWindow();"> -->
           <input type="submit" name="osmBack" id="osmBack" value="<?php echo language('adawallet/main/main', 'tBack') ?>" class="btn xWBtnMain mx-auto" onclick="location.reload();">
         </div>
       </div>
 
     </div>
+    <!-- end ยกเลิกเติมเงิน -->
 
     <!-- Modal -->
     <div class="modal fade" id="odvTopupConfirmModal" tabindex="-1" aria-labelledby="TopupConfirmModalLabel" aria-hidden="true">
@@ -253,6 +265,7 @@
         </div>
       </div>
     </div>
+    <!-- end Modal -->
 
 
     <!-- Include from the CDN -->
@@ -278,7 +291,6 @@
       async function JSaADWCheckBalance() {
         const profile = await liff.getProfile()
         tUserid = profile.userId;
-        // tUserid = "Ua8123e603500c93fc05b40ae4fc5f58a";
 
         $.ajax({
           url: "<?php echo base_url('adwADWCheckBalance/') ?>",
@@ -293,28 +305,46 @@
             document.getElementById('odvTopup').style.display = "inline";
 
             if(data['rtDesc'] == "Success") {
-
               console.log(data);
               nDecimal = data['pnDecimal'][0].FNShowDecimal;
-              tBalance = data['roInfo']['rcCardTotal'].toFixed(nDecimal);
+              
+              if(data['rtCode'] == "04"){
+                document.getElementById('obpNoti').innerHTML = "<b><?php echo language('adawallet/main/main', 'tNotRegis') . " " . language('adawallet/main/main', 'tPleaseRegis')?></b>"; 
+                document.getElementById('obpCardno').style.display = "none";
+                document.getElementById('obpCardtype').style.display = "none";
+                document.getElementById('obpBalance').style.display = "none";
+                document.getElementById('obpBal').style.display = "none";        
+                $("#odvTopup *").attr("disabled", "disabled").off('click');
+              }else{
+                tBalance = data['roInfo']['rcCardTotal'].toFixed(nDecimal);
+                
+                document.getElementById('obpCardno').innerHTML = "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " : " + data['roInfo']['rtCrdCode']; 
+                document.getElementById('obpCardtype').innerHTML = data['roInfo']['rtCtyName'];
+                document.getElementById('obpBalance').innerHTML = tBalance;    
 
-              document.getElementById('obpCardno').innerHTML = "<?php echo language('adawallet/main/main', 'tRefNo') ?>" + " : " + data['roInfo']['rtCrdCode']; 
-              document.getElementById('obpCardtype').innerHTML = data['roInfo']['rtCtyName'];     
-              document.getElementById('obpBalance').innerHTML = tBalance;    
-              document.getElementById('obpNoti').style.display = "none";
+                if(data['rtCode'] == "05") {
+                  document.getElementById('obpNoti').style.display = "inline";
+                  document.getElementById('obpNoti').innerHTML = "<b><?php echo language('adawallet/main/main', 'tCardExpire') . " " . language('adawallet/main/main', 'tRegisAgain')?></b>"; 
+                  $("#odvTopup *").attr("disabled", "disabled").off('click');
+                }else{
+                  document.getElementById('obpNoti').style.display = "none";
+                }
+              }
               
             }else{
               document.getElementById('obpCardno').style.display = "none";
               document.getElementById('obpCardtype').style.display = "none";
               document.getElementById('obpBalance').style.display = "none";
-              document.getElementById('obpBal').style.display = "none";
+              document.getElementById('obpBal').style.display = "none";    
+              $("#odvTopup *").attr("disabled", "disabled").off('click');
             }
           }
         });
       }
 
       async function main() {
-        await liff.init({liffId: "1657332267-Wyargqr8", withLoginOnExternalBrower: true})
+        // await liff.init({liffId: "1657332267-Wyargqr8", withLoginOnExternalBrower: true})
+        await liff.init({liffId: "1657787973-39Dp7qP9", withLoginOnExternalBrower: true})
         if(liff.isLoggedIn()) {
           JSaADWCheckBalance()
         }else {
@@ -330,6 +360,7 @@
       }
 
       function JStCheckMoney() {
+        $('.xWBtnMoney').removeClass('xWBtnMoneyClick');
         if (document.getElementById("onbMoney").value == "" || document.getElementById("onbMoney").value <= "0") {
           document.getElementById("osmNext").disabled = true;
         }else{
@@ -338,6 +369,13 @@
       }
 
       $(document).ready(function() {
+
+        $('.xWBtnMoney').on('click', function(event) {
+          $('.xWBtnMoney').removeClass('xWBtnMoneyClick');
+          $(this).addClass('xWBtnMoneyClick');
+        });
+
+
         $('#osmNext').on('click', function(event) {
           if($('#ocbRequireDetailBank').prop('checked') == true && $('#ocbRequireDetailAmount').prop('checked') == true && $('#ocbRequireDetailQrcode').prop('checked') == true && $('#ocbRequireDetailExpire').prop('checked') == true){
             console.log("checked1")
@@ -425,36 +463,6 @@
             }
           }
         });
-      }
-
-      function JSxADWScreenshot() {
-        let ocvQr = document.getElementById('odvQrCode');
-  
-        // Use the html2canvas
-        // function to take a screenshot
-        // and append it
-        // to the output div
-        html2canvas(ocvQr).then(
-          function (canvas) {
-            var tdataURL = canvas.toDataURL("image/jpeg");
-            $.ajax({
-              url: "<?php echo base_url('adwADWEventSaveImage/') ?>",
-              type: "POST",
-              data: {
-                "ptCstLineID": tUserid,
-                "ptAmount": tMoney,
-                "ptInvoiceID": tInvoiceID,
-                "ptDataURL": tdataURL
-              },
-              dataType: "json",
-              cache: false,
-              success: function(data) {
-                console.log("success1");
-                window.open('adwADWEventDonwloadImage/'+tMoney+'/'+tInvoiceID+'/?openExternalBrowser=1');
-              }
-            });
-          })
-
       }
 
     </script>
