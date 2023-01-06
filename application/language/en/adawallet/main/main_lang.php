@@ -10,6 +10,10 @@ $lang['tCheckBal'] = 'Check Current Balance';
 $lang['tProgram'] = 'Program';
 $lang['tConfirm'] = 'Confirm';
 $lang['tOK'] = 'OK';
+$lang['tCardExpire'] = 'Your Card Expire';
+$lang['tRegisAgain'] = 'Please register again';
+$lang['tNotRegis'] = 'You are not registered';
+$lang['tPleaseRegis'] = 'Please register';
 
 ////////////////////register////////////////////
 $lang['tUserId'] = 'UserId';
@@ -31,8 +35,8 @@ $lang['tTopup'] = 'Top Up';
 $lang['tNext'] = 'Next';
 $lang['tFinish'] = 'Finish';
 $lang['tTopupNoti'] = 'Bring the QR Code to scan and pay in your mobile banking';
-$lang['tDownloadQrcode'] = 'Download QR Code';
-$lang['tCapture'] = 'Or screenshot to make a payment transaction in the mobile banking';
+// $lang['tDownloadQrcode'] = 'Download QR Code';
+$lang['tCapture'] = 'Screenshot to make a payment transaction in the mobile banking';
 $lang['tCancel'] = 'Cancel';
 $lang['tCancelTopupSuccess'] = 'The transaction was canceled';
 $lang['tTopupTrans'] = 'top up transaction';
