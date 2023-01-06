@@ -189,7 +189,11 @@ function JSvCallPageCardTypeEdit(ptCtyCode){
 //Return Type : object
 function JSoAddEditCardType(ptRoute){
     var nStaSession = JCNxFuncChkSessionExpired();
+    // console.log($('#ofmAddCardType').serialize())
+    // console.log(ptRoute)
     if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+        $('#ofmAddCardType').validate().destroy();
+
         $('#ofmAddCardType').validate({
             rules: {
                 ocmCtyExpireType : {

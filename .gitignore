@@ -94,3 +94,7 @@ $RECYCLE.BIN/
 /application/modules/sale/assets/sysdshtemp/
 
 /application/logs/
+
+application/modules/authen/assets/SQLScript/AdaStoreBack-Full/Script-StoreBack-Data-Wallet-00.01.00.sql
+application/modules/authen/assets/SQLScript/AdaStoreBack-Full/Script-StoreBack-Stored-Wallet-00.01.00.sql
+application/modules/authen/assets/SQLScript/AdaStoreBack-Full/Script-StoreBack-Structure-Wallet-00.01.00.sql

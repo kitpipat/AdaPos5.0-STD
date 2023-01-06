@@ -66,7 +66,7 @@
       <!-- end เช็คยอดเงิน -->
 
       <!-- เติมเงิน -->
-      <div id="odvTopup">
+      <div id="odvTopup" >
         <div class="row my-2 mx-1 p-0">
               <h5><?php echo language('adawallet/main/main', 'tTopup') ?></h5>
         </div>
@@ -291,9 +291,10 @@
       async function JSaADWCheckBalance() {
         const profile = await liff.getProfile()
         tUserid = profile.userId;
+        // tUserid = "U40aa431a8032bdf4b501d1b2cb36e56e";
 
         $.ajax({
-          url: "<?php echo base_url('adwADWCheckBalance/') ?>",
+          url: "adwADWCheckBalance",
           type: "POST",
           data: {
             "ptCstLineID": tUserid,
@@ -307,6 +308,8 @@
             if(data['rtDesc'] == "Success") {
               console.log(data);
               nDecimal = data['pnDecimal'][0].FNShowDecimal;
+              tDataQr = data['paDataQr']['rtCode'];
+              console.log(tDataQr);
               
               if(data['rtCode'] == "04"){
                 document.getElementById('obpNoti').innerHTML = "<b><?php echo language('adawallet/main/main', 'tNotRegis') . " " . language('adawallet/main/main', 'tPleaseRegis')?></b>"; 
@@ -329,6 +332,10 @@
                 }else{
                   document.getElementById('obpNoti').style.display = "none";
                 }
+              }
+
+              if(tDataQr == '800') {
+                $("#odvTopup *").attr("disabled", "disabled").off('click');
               }
               
             }else{

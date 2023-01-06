@@ -8872,3 +8872,157 @@ BEGIN CATCH
 	--PRINT @tSql
 END CATCH
 GO
+
+/* ------------------ Script Stored AdaWallet 00.01.00 --------------------- */
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_REGxCardRegister')
+AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+BEGIN
+ DROP PROCEDURE dbo.STP_REGxCardRegister
+END
+GO
+
+CREATE PROCEDURE [dbo].[STP_REGxCardRegister]
+  @ptCstLineID varchar(50)
+, @ptCstTel varchar(50)
+, @ptOAID varchar(50)
+, @FNResult INT OUTPUT AS
+DECLARE @tTrans VARCHAR(20)
+
+
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+00.01.00	29/07/2022		JK		create
+00.02.00	18/08/2022		JK		เปลี่ยน Line + OAID เคยลงทะเบียนแล้ว แต่บัตรหมดอายุ ให้ลงทะเบียนได้
+00.03.00	05/01/2023		JK		เพิ่มเช็คบัตรที่ผูกกับ OAID
+----------------------------------------------------------------------*/
+SET @tTrans = 'REGxCardRegister'
+BEGIN TRY
+	BEGIN TRANSACTION @tTrans  
+
+	DECLARE @tCrdID VARCHAR(20)
+	DECLARE @tCrdID_Old VARCHAR(20)
+
+	--Check OAID
+	IF EXISTS (SELECT FTCtyCode FROM .dbo.TFNMCardType WHERE FTCtyCode = @ptOAID)
+	BEGIN
+		--Check LineID
+		IF EXISTS (SELECT FTCtyCode FROM .dbo.TFNMCard WHERE FTCrdRefID = @ptCstLineID)
+		BEGIN
+			--Check LineID & OAID
+			IF EXISTS (SELECT COUNT(FTCrdCode) FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE FTCrdRefID = @ptCstLineID AND FTCtyCode = @ptOAID)
+			BEGIN
+				--Check LineID & OAID & ExpireDate
+				IF ((SELECT COUNT(FTCrdCode) FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE FTCrdRefID = @ptCstLineID AND FTCtyCode = @ptOAID AND GETDATE() BETWEEN FDCrdStartDate AND FDCrdExpireDate) > 0)
+				BEGIN
+					--Duplicate LineID & OAID Then Nothing
+					SET @tCrdID = NULL
+				END ELSE
+				BEGIN
+					--Duplicate LineID & OAID & CardExpire
+					SET @tCrdID_Old = (SELECT Top(1) FTCrdCode FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE FTCrdRefID = @ptCstLineID AND FTCtyCode = @ptOAID AND GETDATE() NOT BETWEEN FDCrdStartDate AND FDCrdExpireDate ORDER BY FTCrdCode DESC)
+					--SET @tCrdID = (SELECT Top(1) FTCrdCode FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE ISNULL(FTCrdRefID, '') = '' AND GETDATE() BETWEEN FDCrdStartDate AND FDCrdExpireDate AND FTCrdStaActive = 1 ORDER BY FTCrdCode ASC)	-- Comment 00.03.00 --
+					SET @tCrdID = (SELECT Top(1) FTCrdCode FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE ISNULL(FTCrdRefID, '') = '' AND FTCtyCode = @ptOAID AND GETDATE() BETWEEN FDCrdStartDate AND FDCrdExpireDate AND FTCrdStaActive = 1 ORDER BY FTCrdCode ASC) -- 00.03.00 --
+					SELECT @tCrdID_Old AS OLDCARD, @tCrdID AS NEWCARD
+				END
+			END ELSE
+			BEGIN
+				--Duplicate Line
+				--SET @tCrdID = (SELECT Top(1) FTCrdCode FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE ISNULL(FTCrdRefID, '') = '' AND GETDATE() BETWEEN FDCrdStartDate AND FDCrdExpireDate AND FTCrdStaActive = 1 ORDER BY FTCrdCode ASC)	-- Comment 00.03.00 --
+				SET @tCrdID = (SELECT Top(1) FTCrdCode FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE ISNULL(FTCrdRefID, '') = '' AND FTCtyCode = @ptOAID AND GETDATE() BETWEEN FDCrdStartDate AND FDCrdExpireDate AND FTCrdStaActive = 1 ORDER BY FTCrdCode ASC)	-- 00.03.00 --
+			END
+		END ELSE
+		BEGIN
+			--No Duplicate LineID
+			--SET @tCrdID = (SELECT Top(1) FTCrdCode FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE ISNULL(FTCrdRefID, '') = '' AND GETDATE() BETWEEN FDCrdStartDate AND FDCrdExpireDate AND FTCrdStaActive = 1 ORDER BY FTCrdCode ASC)	-- Comment 00.03.00 --
+			SET @tCrdID = (SELECT Top(1) FTCrdCode FROM .dbo.TFNMCard WITH(ROWLOCK) WHERE ISNULL(FTCrdRefID, '') = '' AND FTCtyCode = @ptOAID AND GETDATE() BETWEEN FDCrdStartDate AND FDCrdExpireDate AND FTCrdStaActive = 1 ORDER BY FTCrdCode ASC)	-- 00.03.00 --
+		END
+
+		IF ((SELECT COUNT(@tCrdID)) > 0)
+		BEGIN
+			UPDATE .dbo.TFNMCard WITH (ROWLOCK) SET FTCtyCode = @ptOAID, FTCrdRefID = @ptCstLineID WHERE FTCrdCode = @tCrdID AND ISNULL(FTCrdRefID, '') = '' AND GETDATE() BETWEEN FDCrdStartDate AND FDCrdExpireDate AND FTCrdStaActive = 1
+		END
+	END ELSE
+	BEGIN
+		--No OAID Then Nothing
+		SET @tCrdID = NULL
+	END
+
+	COMMIT TRANSACTION @tTrans  
+	SET @FNResult= 0
+	RETURN @FNResult
+END TRY
+BEGIN CATCH
+	ROLLBACK TRANSACTION @tTrans  
+    SET @FNResult= -1
+	SELECT ERROR_MESSAGE()
+	RETURN @FNResult
+END CATCH
+GO
+
+IF EXISTS(SELECT * FROM dbo.sysobjects WHERE id = object_id(N'STP_PRCnCardNew')and OBJECTPROPERTY(id, N'IsProcedure') = 1) BEGIN
+	DROP PROCEDURE [dbo].STP_PRCnCardNew
+END
+GO
+CREATE PROCEDURE [dbo].[STP_PRCnCardNew] 
+   @pnLngID INT NULL,              --รหัสภาษา 
+   @ptAgnCode VARCHAR(5) NULL,
+   @ptBchCode  VARCHAR(5) NULL,    --รหัสสาขา 
+   @ptCrdCode VARCHAR(30) NULL,    --รหัสบัตร 
+   --@ptCtyCode VARCHAR(5) NULL,    --รหัสประเภทบัตร	-- Comment 05.03.00 --
+   @ptCtyCode VARCHAR(50) NULL,    --รหัสประเภทบัตร	-- 05.03.00 --
+   @ptCrdHolderID VARCHAR(30) NULL,--รหัสผู้ถือบัตร 
+   @ptDptCode VARCHAR(5) NULL,    --รหัสแผนก 
+   @ptCrdName VARCHAR(200) NULL,     --ชื่อผู้ถือบัตร
+   @ptWho VARCHAR(20) NULL 
+AS
+/*---------------------------------------------------------------------
+Document History
+Version		Date			User	Remark
+05.01.00	23/11/2020		Em		create 
+05.02.00	17/12/2020		Em		เพิ่ม AgnCode 
+05.03.00	05/01/2023		JK		ปรับขนาดฟิลด์
+----------------------------------------------------------------------*/
+DECLARE @tTrans varchar(20)
+DECLARE @tExpCrd VARCHAR(10) 
+SET @tTrans = 'CardNew'  
+SET @tExpCrd = '9999-12-31'
+BEGIN TRY  
+	BEGIN TRANSACTION @tTrans
+	-- Insert TFNMCard
+	INSERT INTO TFNMCard WITH(ROWLOCK) 
+	(
+		FTCrdCode,FDCrdStartDate,FDCrdExpireDate,FTCtyCode 
+		,FTCrdHolderID,FTCrdRefID 
+		,FTDptCode,FTCrdStaShift,FTCrdStaActive
+		,FDLastUpdOn,FTLastUpdBy,FDCreateOn,FTCreateBy
+		,FTAgnCode	-- 05.02.00 --
+	) VALUES (
+		@ptCrdCode,GETDATE(),@tExpCrd,@ptCtyCode 
+		,@ptCrdHolderID,''
+		,@ptDptCode,1,1
+		,GETDATE(),@ptWho,GETDATE(),@ptWho
+		,@ptAgnCode	-- 05.02.00 --
+	)  
+
+	-- Insert TFNMCard_L
+	INSERT INTO TFNMCard_L WITH (ROWLOCK) 
+	(
+		FTCrdCode,FNLngID,FTCrdName,FTCrdRmk
+	) VALUES (
+		@ptCrdCode,@pnLngID,@ptCrdName,''
+	) 
+
+	IF NOT EXISTS(SELECT FTCrdCode FROM TFNMCardBal WITH(NOLOCK) WHERE FTCrdCode = @ptCrdCode)
+	BEGIN
+		INSERT INTO TFNMCardBal(FTCrdCode,FTCrdTxnCode,FCCrdValue,FDLastUpdOn)
+		SELECT @ptCrdCode,FTCrdTxnCode,0,GETDATE() FROM TFNSCrdBalType
+	END 
+	-- Commit Command
+	COMMIT TRANSACTION @tTrans 
+END TRY 
+BEGIN CATCH 
+	ROLLBACK TRANSACTION @tTrans 
+	SELECT ERROR_MESSAGE() AS Error_Description
+END CATCH 

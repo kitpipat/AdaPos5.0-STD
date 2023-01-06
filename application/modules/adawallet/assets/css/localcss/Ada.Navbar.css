@@ -154,17 +154,17 @@ a:active {
     background-color:#02a598 !important;
 }
 
-.xWBtnMoney:visited{
+.xWBtnMoney:visited:enabled{
     color: white !important;
     background-color:#02a598 !important; 
 }
 
-.xWBtnMoney:hover{
+.xWBtnMoney:hover:enabled{
     color: white !important;
     background-color:#02a598 !important;
 }
 
-.xWBtnMoney:active{
+.xWBtnMoney:active:enabled{
     color: white !important;
     background-color:#02a598 !important;
 }

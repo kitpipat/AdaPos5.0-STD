@@ -1,6 +1,6 @@
 <?php
 
-$lang['tAdw'] = 'Ada Wallet';
+$lang['tAdw'] = 'AdaLinePay';
 $lang['tLang'] = 'My language : English';
 $lang['tSelectlan'] = 'Select language';
 $lang['tthai'] = 'thai';

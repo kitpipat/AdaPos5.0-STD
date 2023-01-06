@@ -369,22 +369,22 @@ class cCardShiftNewCard extends MX_Controller
     public function FSaCardShiftNewCardAddEvent()
     {
         $aDataMaster = array(
-            'tIsAutoGenCode' => $this->input->post('ocbCardShiftNewCardAutoGenCode'),
-            'FTCihDocNo' => $this->input->post('oetCardShiftNewCardCode'),
-            'FDCihDocDate' => $this->input->post('oetCardShiftNewCardDocDate') . ' ' . date('H:i:s'),
-            'FTCihDocType' => "7", // Take new card
-            'FNCihStaDocAct' => 1, // Doc moment status(1:active)
-            'FTBchCode' => $this->input->post('ohdCardShiftNewCardUsrBchCode'),
-            'FTUsrCode' => $this->session->userdata("tSesUsername"),
-            'FNCshCardQty' => FSnSelectCountResult('TFNTCrdImpTmp'),
-            'aNewCard' => json_decode($this->input->post('aNewCard')),
-            'FTCihApvCode' => $this->input->post('ohdCardShiftNewCardApvCode'),
-            'FTCihStaPrcDoc' => $this->input->post('ohdCardShiftNewCardCardStaPrcDoc'),
-            'FTCihStaDoc' => empty($this->input->post('hdCardShiftNewCardCardStaDoc')) ? "1" : $this->input->post('hdCardShiftNewCardCardStaDoc'),
-            'FNCihStaDocAct' => empty($this->input->post('hdCardShiftNewCardCardStaDoc')) ? 1 : $this->input->post('hdCardShiftNewCardCardStaDoc'),
-            'FTCreateBy' => $this->session->userdata('tSesUsername'),
-            'FDCreateOn' => date('Y-m-d H:i:s'),
-            'FNLngID' => $this->session->userdata("tLangEdit"),
+            'tIsAutoGenCode'        => $this->input->post('ocbCardShiftNewCardAutoGenCode'),
+            'FTCihDocNo'            => $this->input->post('oetCardShiftNewCardCode'),
+            'FDCihDocDate'          => $this->input->post('oetCardShiftNewCardDocDate') . ' ' . date('H:i:s'),
+            'FTCihDocType'          => "7", // Take new card
+            'FNCihStaDocAct'        => 1, // Doc moment status(1:active)
+            'FTBchCode'             => $this->input->post('ohdCardShiftNewCardUsrBchCode'),
+            'FTUsrCode'             => $this->session->userdata("tSesUsername"),
+            'FNCshCardQty'          => FSnSelectCountResult('TFNTCrdImpTmp'),
+            'aNewCard'              => json_decode($this->input->post('aNewCard')),
+            'FTCihApvCode'          => $this->input->post('ohdCardShiftNewCardApvCode'),
+            'FTCihStaPrcDoc'        => $this->input->post('ohdCardShiftNewCardCardStaPrcDoc'),
+            'FTCihStaDoc'           => empty($this->input->post('hdCardShiftNewCardCardStaDoc')) ? "1" : $this->input->post('hdCardShiftNewCardCardStaDoc'),
+            'FNCihStaDocAct'        => empty($this->input->post('hdCardShiftNewCardCardStaDoc')) ? 1 : $this->input->post('hdCardShiftNewCardCardStaDoc'),
+            'FTCreateBy'            => $this->session->userdata('tSesUsername'),
+            'FDCreateOn'            => date('Y-m-d H:i:s'),
+            'FNLngID'               => $this->session->userdata("tLangEdit"),
         );
 
         // Setup DocNo
@@ -636,6 +636,7 @@ class cCardShiftNewCard extends MX_Controller
                             "ptData" => json_encode($aCardItems)
                         ]
                     ];
+                    print_r($aMQParams);
                     FCNxCallRabbitMQ($aMQParams);
                 } catch (\ErrorException $err) {
                     $this->db->trans_rollback();

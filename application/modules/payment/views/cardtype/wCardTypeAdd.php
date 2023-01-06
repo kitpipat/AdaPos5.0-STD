@@ -70,7 +70,7 @@
                                 <input 
                                     type="text"
                                     class="form-control xCNInputWithoutSpcNotThai"
-                                    maxlength="5"
+                                    maxlength="50"
                                     id="oetCtyCode"
                                     name="oetCtyCode"
                                     placeholder="<?php echo language('payment/cardtype/cardtype','tCTYFrmCtyCode')?>"

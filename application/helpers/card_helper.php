@@ -290,9 +290,9 @@ function FSaCCARTypeExcel($ptDocType, $ptDataSetType, $paDataExcel)
                                                 $tData_CtyCode  = '';
                                             } else {
                                                 $nLenghtCtyCode = strlen($tCtyCode);
-                                                if ($nLenghtCtyCode > 5 && $nLenghtCtyCode != 0) {
+                                                if ($nLenghtCtyCode > 50 && $nLenghtCtyCode != 0) {
                                                     $tError         = language('document/card/main', 'tMainCardTypeMaxOverLenght');
-                                                    $tData_CtyCode  = substr($tCellData, 0, 5);
+                                                    $tData_CtyCode  = substr($tCellData, 0, 50);
                                                 } else {
                                                     $tData_CtyCode  = $tCellData;
                                                 }

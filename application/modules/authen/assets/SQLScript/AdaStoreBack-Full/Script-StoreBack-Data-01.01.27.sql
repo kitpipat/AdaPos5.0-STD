@@ -987,3 +987,27 @@ UPDATE TSysRsnGrp_L SET FTRsgName = 'ใบลดหนี้' WHERE FTRsgCode =
 INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.26', getdate() , 'แก้ไขชื่อหตุผลใหม่สำหรับยกเลิกใบกำกับภาษี', 'Nale')
 END
 GO
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.27') BEGIN
+
+    IF NOT EXISTS(SELECT * FROM TSysConfig WHERE FTSysCode =  'tPS_VirtualRcvDef') BEGIN
+        INSERT INTO TSysConfig (FTSysCode, FTSysApp, FTSysKey, FTSysSeq, FTGmnCode, FTSysStaAlwEdit, FTSysStaDataType, FNSysMaxLength, FTSysStaDefValue, FTSysStaDefRef, FTSysStaUsrValue, FTSysStaUsrRef, FDLastUpdOn, FTLastUpdBy, FDCreateOn, FTCreateBy)
+        VALUES ('tPS_VirtualRcvDef', 'CN', 'VirtualPosRcvDef', '1', 'XPAY', '1', '1', '1', '00001', '00001', '053', '', getdate(), '00002', getdate(), NULL)
+    END
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.27', getdate() , 'เพิ่มconfigพร้อมเพย์', 'Nale')
+END
+GO
+
+IF NOT EXISTS(SELECT FTUphVersion FROM TCNTUpgradeHisTmp WHERE FTUphVersion=  '01.01.28') BEGIN
+
+    IF NOT EXISTS(SELECT * FROM TSysEdc WHERE FTSedCode =  '011' AND FTSedModel = 'Line Wallet') BEGIN
+        INSERT INTO TSysEdc (FTSedCode, FTSedModel, FNSedAck, FTSedDllVer, FNSedTimeOut, FDLastUpdOn, FTLastUpdBy, FDCreateOn, FTCreateBy, FTSedFmt)
+        VALUES ('011', 'Line Wallet', 2, 2, 60, '2021-02-25 00:00:00.000', NULL, '2021-02-25 00:00:00.000', NULL, 'CardId;AgencyCode')
+    END
+
+--ทุกครั้งที่รันสคริปใหม่
+INSERT INTO [TCNTUpgradeHisTmp] ([FTUphVersion], [FDCreateOn], [FTUphRemark], [FTCreateBy]) VALUES ( '01.01.28', getdate() , 'เพิ่มconfigเครื่องedc', 'Nale')
+END
+GO

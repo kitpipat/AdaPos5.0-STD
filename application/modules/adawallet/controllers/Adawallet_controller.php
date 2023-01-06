@@ -180,8 +180,12 @@ class Adawallet_controller extends MX_Controller
             'pnLngID'       => $this->nLngID,
         );
 
+        $aQuery         = $this->Adawallet_model->FSaMADWRcvSpc();
+
         $aResultCheckInfo   = FCNaHCallAPIBasic($tUrlCheckBalance,'POST',$adatacheck,$aAPIKey);
         $aResultCheckInfo['pnDecimal']  = $nDecimal;
+        $aResultCheckInfo['paDataQr']   = $aQuery;
+
         echo json_encode($aResultCheckInfo);
         
     }

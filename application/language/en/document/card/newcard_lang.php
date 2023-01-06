@@ -9,6 +9,7 @@ $lang['tCardShiftNewCardTitleEdit']  = "Edit";
 $lang['tCardShiftNewCardTBHolderID'] = "Employee ID";
 $lang['tCardShiftNewCardTBChoose']   = "Choose";
 $lang['tCardShiftNewCardTBCode']     = "Card Code";
+$lang['tCardShiftNewCardTBAgnCode']         = "Agency";
 $lang['tCardShiftNewCardTBName']     = "Card Name";
 $lang['tCardShiftNewCardTBCardType']            = "Card Type";
 $lang['tCardShiftNewCardTBDepartmentCode']      = "Department Code";

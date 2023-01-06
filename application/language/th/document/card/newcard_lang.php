@@ -7,6 +7,7 @@ $lang['tCardShiftNewCardSearch']    = "ค้นหา";
 //Table Recive
 $lang['tCardShiftNewCardTBChoose']          = "เลือก";
 $lang['tCardShiftNewCardTBCode']            = "เลขหลังบัตร";
+$lang['tCardShiftNewCardTBAgnCode']         = "ตัวแทนขาย";
 $lang['tCardShiftNewCardTBHolderID']        = "รหัสพนักงาน";
 $lang['tCardShiftNewCardTBName']            = "ชื่อพนักงาน";
 $lang['tCardShiftNewCardTBCardType']        = "ประเภทบัตร";

@@ -148,8 +148,20 @@ function JCNxBrowseProductData(ptOptions) {
                 }
 
                 setTimeout(function() {
-                    var tSelectionID = $('#oetCallBackVal').val();
-                    $('#obtSelector' + tSelectionID).addClass("active");
+                    // var tSelectionID = $('#oetCallBackVal').val();
+                    // $('#obtSelector' + tSelectionID).addClass("active");
+                    
+                    //แก้จากใช้ JQuery เป็นใช้ Javascript แทน เพื่อรองรับรหัสประเภทบัตรที่มีอักขระพิเศษ (รหัสแบบ LineOA)
+                    //edit by Punyisa(Ice) : 29/08/2022
+                    var tSelectionID = '';
+                    if($(document.getElementById('oetCallBackVal')).val() !== null) {
+                        tSelectionID = $(document.getElementById('oetCallBackVal')).val();
+                    }
+                    var oElement = $(document.getElementById('obtSelector' + tSelectionID)).val();
+
+                    if(oElement !== null) {
+                        oElement.classList.add("active");
+                    }
                 }, 100);
             },
             timeout: 0,
@@ -267,8 +279,20 @@ function JCNxBrowseData(ptOptions) {
                 $('.xCNBody').css("padding-right", "0px");
 
                 setTimeout(function() {
-                    var tSelectionID = $('#oetCallBackVal').val();
-                    $('#obtSelector' + tSelectionID).addClass("active");
+                    // var tSelectionID = $('#oetCallBackVal').val();
+                    // $('#obtSelector' + tSelectionID).addClass("active");
+
+                    //แก้จากใช้ JQuery เป็นใช้ Javascript แทน เพื่อรองรับรหัสประเภทบัตรที่มีอักขระพิเศษ (รหัสแบบ LineOA)
+                    //edit by Punyisa(Ice) : 29/08/2022
+                    var tSelectionID = '';
+                    if($(document.getElementById('oetCallBackVal')).val() !== null) {
+                        tSelectionID = $(document.getElementById('oetCallBackVal')).val();
+                    }
+                    var oElement = $(document.getElementById('obtSelector' + tSelectionID)).val();
+
+                    if(oElement !== null) {
+                        oElement.classList.add("active");
+                    }
                 }, 100);
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -352,8 +376,20 @@ function JCNxSearchBrowse(pnCurentPage, ptOptions) {
                 }
 
                 setTimeout(function() {
-                    var tSelectionID = $('#oetCallBackVal').val();
-                    $('#obtSelector' + tSelectionID).addClass("active");
+                    // var tSelectionID = $('#oetCallBackVal').val();
+                    // $('#obtSelector' + tSelectionID).addClass("active");
+
+                    //แก้จากใช้ JQuery เป็นใช้ Javascript แทน เพื่อรองรับรหัสประเภทบัตรที่มีอักขระพิเศษ (รหัสแบบ LineOA)
+                    //edit by Punyisa(Ice) : 29/08/2022
+                    var tSelectionID = '';
+                    if($(document.getElementById('oetCallBackVal')).val() !== null) {
+                        tSelectionID = $(document.getElementById('oetCallBackVal')).val();
+                    }
+                    var oElement = $(document.getElementById('obtSelector' + tSelectionID)).val();
+
+                    if(oElement !== null) {
+                        oElement.classList.add("active");
+                    }
                 }, 100);
             },
             timeout: 0,
@@ -397,7 +433,12 @@ function JCNxConfirmSelected(ptOptions) {
         if (window[ptOptions].NextFunc != undefined || window[ptOptions].NextFunc != null) {
             var tMaster = window[ptOptions].Table.Master;
             tGotoFunction = (window[ptOptions].NextFunc.FuncName);
-            tAgrRet = $('#ohdCallBackArg' + $('#oetCallBackVal').val() + tMaster).val();
+            // tAgrRet = $('#ohdCallBackArg' + $('#oetCallBackVal').val() + tMaster).val();
+
+            //แก้จากใช้ JQuery เป็นใช้ Javascript แทน เพื่อรองรับรหัสประเภทบัตรที่มีอักขระพิเศษ (รหัสแบบ LineOA)
+            //edit by Punyisa(Ice) : 29/08/2022
+            tgetCallBackValue = $(document.getElementById('oetCallBackVal')).val();
+            tAgrRet = $(document.getElementById('ohdCallBackArg' + tgetCallBackValue + tMaster)).val();
 
             if (window[ptOptions].BrowseLev == '1') {
                 $('#myModal2').modal('hide');
@@ -468,7 +509,11 @@ function JCNxPushSelection(pnVal, elem, ptMasterTable) {
         $('#oetCallBackText').val('');
     } else {
         $('#oetCallBackVal').val(pnVal);
-        $('#oetCallBackText').val($('#ohdCallBackText' + pnVal + ptMasterTable).val());
+        // $('#oetCallBackText').val($('#ohdCallBackText' + pnVal + ptMasterTable).val());
+        
+        //แก้จากใช้ JQuery เป็นใช้ Javascript แทน เพื่อรองรับรหัสประเภทบัตรที่มีอักขระพิเศษ (รหัสแบบ LineOA)
+        //edit by Punyisa(Ice) : 29/08/2022
+        $(document.getElementById('oetCallBackText')).val($(document.getElementById('ohdCallBackText' + pnVal + ptMasterTable)).val());
         $(elem).addClass('active');
     }
 }
@@ -637,8 +682,20 @@ function JCNxBrowseDataChain(ptOptions) {
                 $('.xCNBody').css("padding-right", "0px");
 
                 setTimeout(function() {
-                    var tSelectionID = $('#oetCallBackVal').val();
-                    $('#obtSelector' + tSelectionID).addClass("active");
+                    // var tSelectionID = $('#oetCallBackVal').val();
+                    // $('#obtSelector' + tSelectionID).addClass("active");
+
+                    //แก้จากใช้ JQuery เป็นใช้ Javascript แทน เพื่อรองรับรหัสประเภทบัตรที่มีอักขระพิเศษ (รหัสแบบ LineOA)
+                    //edit by Punyisa(Ice) : 29/08/2022
+                    var tSelectionID = '';
+                    if($(document.getElementById('oetCallBackVal')).val() !== null) {
+                        tSelectionID = $(document.getElementById('oetCallBackVal')).val();
+                    }
+                    var oElement = $(document.getElementById('obtSelector' + tSelectionID)).val();
+
+                    if(oElement !== null) {
+                        oElement.classList.add("active");
+                    }
                 }, 100);
             },
             error: function(jqXHR, textStatus, errorThrown) {

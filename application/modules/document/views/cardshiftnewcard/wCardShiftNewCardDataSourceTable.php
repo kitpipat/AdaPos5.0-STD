@@ -12,6 +12,7 @@
                         <tr>
                             <th nowrap class="xCNTextBold text-center"><?php echo language('common/main/main', 'tCMNSequence'); ?></th>
                             <th nowrap class="xCNTextBold text-center"><?php echo language('document/card/newcard', 'tCardShiftNewCardTBCode'); ?></th>
+                            <!-- <th nowrap class="xCNTextBold text-center" style="width: 180px;"><?php echo language('document/card/newcard', 'tCardShiftNewCardTBAgnCode'); ?></th> -->
                             <th nowrap class="xCNTextBold text-center"><?php echo language('document/card/newcard', 'tCardShiftNewCardTBHolderID'); ?></th>
                             <th nowrap class="xCNTextBold text-center" style="width: 180px;"><?php echo language('document/card/newcard', 'tCardShiftNewCardTBName'); ?></th>
                             <th nowrap class="xCNTextBold text-center" style="width: 180px;"><?php echo language('document/card/newcard', 'tCardShiftNewCardTBCardType'); ?></th>
@@ -114,6 +115,19 @@
                                 <td nowrap class="xWCardShiftNewCardCardCode text-left xWNextInput">
                                     <input <?php echo $tDisabledApvOrCancel; ?> data-seq="<?php echo $tFNSeq; ?>" <?php echo $tColorInput; ?> class="form-control  xCNPdtEditInLine xWValueEditInLine<?php echo $aValue['rtRowID']; ?>" id="oetCardShiftNewCardCode<?php echo $aValue['rtRowID']; ?>" name="oetCardShiftNewCardCode<?php echo $aValue['rtRowID']; ?>" type="text" value="<?php echo $aValue['FTCidCrdCode']; ?>" maxlength="10">
                                 </td>
+
+                                <!-- <td nowrap class="xWCardShiftNewCardCty text-left">
+                                    <div class="input-group">
+                                        <input data-seq="<?php echo $tFNSeq; ?>" class="form-control  xCNPdtEditInLine xWValueEditInLine<?php echo $aValue['rtRowID']; ?> " id="oetCardShiftNewCardAgnName<?php echo $aValue['rtRowID']; ?>" name="oetCardShiftNewCardAgnName<?php echo $aValue['rtRowID']; ?>" type="text" disabled="true" value="<?php echo $aValue['FTCtyName']; ?>" style="width: 100%;">
+                                        <input data-seq="<?php echo $tFNSeq; ?>" id="ohdCardShiftNewCardAgnCode<?php echo $aValue['rtRowID']; ?>" class="form-control xCNPdtEditInLine xWValueEditInLine<?php echo $aValue['rtRowID']; ?>" name="ohdCardShiftNewCardAgnCode<?php echo $aValue['rtRowID']; ?>" type="hidden" value="<?php echo $aValue['FTCtyCode']; ?>">
+                                        <span class="input-group-btn">
+                                            <button <?php echo $tDisabledApvOrCancel; ?> id="obtCardShiftNewCardAgnName<?php echo $aValue['rtRowID']; ?>" type="button" class="btn xCNBtnBrowseAddOn">
+                                                <img src="<?php echo base_url('/application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td> -->
+
                                 <td nowrap class="xWCardShiftNewCardHolderID text-left xWNextInput">
                                     <input <?php echo $tDisabledApvOrCancel; ?> data-seq="<?php echo $tFNSeq; ?>" <?php echo $tColorInput; ?> class="form-control  xCNPdtEditInLine xWValueEditInLine<?php echo $aValue['rtRowID']; ?> " id="oetCardShiftNewCardHolderID<?php echo $aValue['rtRowID']; ?>" name="oetCardShiftNewCardHolderID<?php echo $aValue['rtRowID']; ?>" type="text" value="<?php echo $aValue['FTCidCrdHolderID']; ?>" maxlength="30">
                                 </td>
@@ -178,6 +192,10 @@
                                             window.oCardShiftNewCardBrowseNewCardDptOption<?php echo $aValue['rtRowID']; ?> = oCardShiftNewCardBrowseNewCardDpt<?php echo $aValue['rtRowID']; ?>();
                                             JCNxBrowseData('oCardShiftNewCardBrowseNewCardDptOption<?php echo $aValue['rtRowID']; ?>');
                                         });
+                                        // $('#obtCardShiftNewCardAgnName<?php echo $aValue['rtRowID']; ?>').click(function() {
+                                        //     window.oCardShiftNewCardBrowseNewCardAgnOption<?php echo $aValue['rtRowID']; ?> = oCardShiftNewCardBrowseNewCardAgn<?php echo $aValue['rtRowID']; ?>();
+                                        //     JCNxBrowseData('oCardShiftNewCardBrowseNewCardAgnOption<?php echo $aValue['rtRowID']; ?>');
+                                        // });
                                     });
                                     var oCardShiftNewCardBrowseNewCardCty<?php echo $aValue['rtRowID']; ?> = function() {
                                         let oOptions = {
@@ -256,6 +274,37 @@
                                         };
                                         return oOptions;
                                     };
+                                    // var oCardShiftNewCardBrowseNewCardAgn<?php echo $aValue['rtRowID']; ?> = function() {
+                                    //     let oOptions = {
+                                    //         Title: ['ticket/agency/agency', 'tAggTitle'],
+                                    //         Table: {
+                                    //             Master: 'TCNMAgency',
+                                    //             PK: 'FTAgnCode'
+                                    //         },
+                                    //         Join: {
+                                    //             Table: ['TCNMAgency_L'],
+                                    //             On: ['TCNMAgency_L.FTAgnCode = TCNMAgency.FTAgnCode AND TCNMAgency_L.FNLngID = ' + nLangEdits]
+                                    //         },
+                                    //         GrideView: {
+                                    //             ColumnPathLang: 'ticket/agency/agency',
+                                    //             ColumnKeyLang: ['tAggCode', 'tAggName'],
+                                    //             ColumnsSize: ['15%', '85%'],
+                                    //             WidthModal: 50,
+                                    //             DataColumns: ['TCNMAgency.FTAgnCode', 'TCNMAgency_L.FTAgnName'],
+                                    //             DataColumnsFormat: ['', ''],
+                                    //             Perpage: 10,
+                                    //             OrderBy: ['TCNMAgency.FDCreateOn DESC'],
+                                    //         },
+                                    //         CallBack: {
+                                    //             ReturnType: 'S',
+                                    //             Value: ["ohdCardShiftNewCardAgnCode<?php echo $aValue['rtRowID']; ?>", "TCNMAgency.FTAgnCode"],
+                                    //             Text: ["oetCardShiftNewCardAgnName<?php echo $aValue['rtRowID']; ?>", "TCNMAgency_L.FTAgnName"],
+                                    //         },
+                                    //         RouteAddNew: 'agency',
+                                    //         BrowseLev: 1,
+                                    //     };
+                                    //     return oOptions;
+                                    // };
                                 </script>
                             </tr>
                         <?php endforeach; ?>
