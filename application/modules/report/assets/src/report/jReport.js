@@ -82,6 +82,7 @@ function JSvCallPageReportCondition(){
             }
             JCNxLayoutControll();
             $('.xCNOverlayReport').hide();
+            JCNxCloseLoading();
         },
         error: function (jqXHR, textStatus, errorThrown) {
             JCNxResponseError(jqXHR, textStatus, errorThrown);

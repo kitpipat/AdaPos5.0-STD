@@ -250,6 +250,7 @@
       $("#obtAUDback").hide();
       $("#obtAUDSave").hide();
       JSxCheckPinMenuClose(); /*Check เปิดปิด Menu ตาม Pin*/
+      JCNxCloseLoading();
 
   });
   $("#oetAUDSearchAll").on("keyup", function() {
@@ -265,6 +266,7 @@
           timeout: 0,
           success: function(wResult){
               $("#odvAUDContentPage").html(wResult);
+              JCNxCloseLoading();
           },
           error: function(jqXHR, textStatus, errorThrown) {
               JCNxResponseError(jqXHR, textStatus, errorThrown);
@@ -391,6 +393,7 @@
         timeout: 0,
         success: function(wResult){
             $("#odvAUDContentPage").html(wResult);
+            JCNxCloseLoading();
         },
         error: function(jqXHR, textStatus, errorThrown) {
             JCNxResponseError(jqXHR, textStatus, errorThrown);

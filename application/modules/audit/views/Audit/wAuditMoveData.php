@@ -296,6 +296,7 @@
           stopDate: new Date(),
       });
       JSxCheckPinMenuClose();
+      JCNxCloseLoading();
       var tStatus = $("#oetAudtStatus").val();
       if (tStatus==false) {
         //$("#odvModalDelAre").modal("show");

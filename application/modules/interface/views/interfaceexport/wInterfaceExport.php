@@ -269,6 +269,7 @@
 		}).on('changeDate',function(ev){
 			JSxIFXAfterChangeDateClearBrowse();
 		});
+		JCNxCloseLoading();
 	});
 
 

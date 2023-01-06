@@ -141,6 +141,11 @@
 
 <script src="<?php echo base_url('application/modules/interface/assets/src/interfaceimport/jInterfaceImport.js')?>"></script>
 <script>
+
+	$('ducument').ready(function() {
+		JCNxCloseLoading();
+	});
+
 	// Create By : Napat(Jame) 17/08/2020 เมื่อกดปุ่มยืนยันให้วิ่งไปที่หน้า ประวัตินำเข้า-ส่งออก
 	$('#obtIFIModalMsgConfirm').off('click');
 	$('#obtIFIModalMsgConfirm').on('click',function(){
