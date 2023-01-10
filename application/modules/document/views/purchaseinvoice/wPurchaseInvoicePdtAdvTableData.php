@@ -500,8 +500,8 @@ function FSvPIPDTEditPdtIntoTableDT_PDTSerialorFashion(ptPdtDataFhn){
             var nAlwVat         = (oResult.AlwVat == '' || oResult.AlwVat === undefined ? 0 : oResult.AlwVat);           //อนุญาติคำนวณภาษี
             var nVat            = (parseFloat($('#ohdPIFrmSplVatRate').val())).toFixed(2);                               //ภาษีจากผู้จำหน่าย
             var nQty            = parseInt(oResult.Qty);             //จำนวน
-            var nNetAfHD        = (parseFloat(oResult.NetAfHD)).toFixed(2);
-            var cNet            = (parseFloat(oResult.Net)).toFixed(2);
+            var nNetAfHD        = (parseFloat(accounting.unformat(oResult.NetAfHD))).toFixed(2);
+            var cNet            = (parseFloat(accounting.unformat(oResult.Net))).toFixed(2);
             var tDisChgTxt      = oResult.tDisChgTxt;
             var tUnixPdtCodeRow = tProductCode.toString()+tBarCode.toString();
             var tUnixPdtCodeRow = tUnixPdtCodeRow.replace(/\./g,' ').replace(/[ ,]+/g, "").replaceAll("[-+.^:,]","");
@@ -543,7 +543,7 @@ function FSvPIPDTEditPdtIntoTableDT_PDTSerialorFashion(ptPdtDataFhn){
                     oPrice += 'maxlength="10" ';
                     oPrice += 'data-alwdis='+nAlwDiscount+' ';
                     oPrice += 'data-seq='+nKey+' ';
-                    oPrice += 'value="'+nPrice+'"';
+                    oPrice += 'value="'+numberWithCommas(parseFloat(nPrice).toFixed(2))+'"';
                     oPrice += 'autocomplete="off" >';
                     oPrice += '</div>';
 
@@ -635,7 +635,7 @@ function FSvPIPDTEditPdtIntoTableDT_PDTSerialorFashion(ptPdtDataFhn){
                 tHTML += '<td class="otdQty text-right">'+oQty+'</td>';
                 tHTML += '<td class="otdPrice">'+oPrice+'</td>';
                 tHTML += '<td>'+oAlwDis+'</td>';
-                tHTML += '<td class="text-right"><span id="ospGrandTotal'+nKey+'">'+cNet+'</span>';
+                tHTML += '<td class="text-right"><span id="ospGrandTotal'+nKey+'">'+numberWithCommas(parseFloat(cNet).toFixed(2))+'</span>';
                 tHTML += '    <span id="ospnetAfterHD'+nKey+'" style="display: none;">'+nNetAfHD+'</span>';
                 tHTML += '</td>';
                 if($('#ohdPIStaImport').val()==1){

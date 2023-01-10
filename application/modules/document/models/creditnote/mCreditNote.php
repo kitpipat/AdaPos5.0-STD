@@ -1209,6 +1209,8 @@ class mCreditNote extends CI_Model {
 
                 $nQty = ($paDataWhere['nQty'] == '') ? 1 : $paDataWhere['nQty'];
 
+                $nPrice = str_replace(",","",$paDataWhere['pcPrice']);
+
                 // เพิ่มรายการใหม่
                 $this->db->set('FTPdtCode'      , $paData['FTPdtCode']);
                 $this->db->set('FTXtdPdtName'   , $paData['FTPdtName']);
@@ -1229,7 +1231,7 @@ class mCreditNote extends CI_Model {
                 $this->db->set('FNXtdSeqNo'     , $paDataWhere['nMaxSeqNo']);
                 $this->db->set('FTXthDocKey'    , $paDataWhere['tDocKey']);
                 $this->db->set('FTXtdBarCode'   , $paDataWhere['tBarCode']);
-                $this->db->set('FCXtdSetPrice'  , $paDataWhere['pcPrice'] * 1); // pcPrice มาจากข้อมูลใน modal คือ (ต้อทุนต่อหน่วยเล็กสุด * fector) จะได้จากสูตร  pcPrice * rate  (rate ต้องนำมาจากสกุลเงินของ company)
+                $this->db->set('FCXtdSetPrice'  , $nPrice * 1); // pcPrice มาจากข้อมูลใน modal คือ (ต้อทุนต่อหน่วยเล็กสุด * fector) จะได้จากสูตร  pcPrice * rate  (rate ต้องนำมาจากสกุลเงินของ company)
                 $this->db->set('FTSessionID'    , $paDataWhere['tSessionID']);
                 $this->db->set('FDLastUpdOn'    , date('Y-m-d h:i:s'));
                 $this->db->set('FTLastUpdBy'    , $this->session->userdata('tSesUsername'));
@@ -1252,6 +1254,8 @@ class mCreditNote extends CI_Model {
                 }
             }
         }else{
+            $nPrice = str_replace(",","",$paDataWhere['pcPrice']);
+
             // เพิ่มแถวใหม่
             $this->db->set('FTPdtCode', $paData['FTPdtCode']);
             $this->db->set('FTXtdPdtName', $paData['FTPdtName']);
@@ -1273,7 +1277,7 @@ class mCreditNote extends CI_Model {
             $this->db->set('FNXtdSeqNo', $paDataWhere['nMaxSeqNo']);
             $this->db->set('FTXthDocKey', $paDataWhere['tDocKey']);
             $this->db->set('FTXtdBarCode', $paDataWhere['tBarCode']);
-            $this->db->set('FCXtdSetPrice', $paDataWhere['pcPrice'] * 1); // pcPrice มาจากข้อมูลใน modal คือ (ต้อทุนต่อหน่วยเล็กสุด * fector) จะได้จากสูตร  pcPrice * rate  (rate ต้องนำมาจากสกุลเงินของ company)
+            $this->db->set('FCXtdSetPrice', $nPrice * 1); // pcPrice มาจากข้อมูลใน modal คือ (ต้อทุนต่อหน่วยเล็กสุด * fector) จะได้จากสูตร  pcPrice * rate  (rate ต้องนำมาจากสกุลเงินของ company)
             $this->db->set('FTSessionID', $paDataWhere['tSessionID']);
             $this->db->set('FDLastUpdOn', date('Y-m-d h:i:s'));
             $this->db->set('FTLastUpdBy', $this->session->userdata('tSesUsername'));

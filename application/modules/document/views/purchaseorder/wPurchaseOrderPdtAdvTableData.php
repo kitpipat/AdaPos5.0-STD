@@ -349,14 +349,14 @@
             var tProductCode    = oResult.PDTCode;          //รหัสสินค้า
             var tProductName    = oResult.PDTName;          //ชื่อสินค้า
             var tUnitName       = oResult.PUNName;          //ชื่อหน่วยสินค้า
-            var nPrice          = (parseFloat(oResult.Price)).toFixed(nPOODecimalShow);            //ราคา
+            var nPrice          = (parseFloat(accounting.unformat(oResult.Price))).toFixed(nPOODecimalShow);            //ราคา
             // var nGrandTotal     = (nPrice * 1).toFixed(nPOODecimalShow);  //ราคารวม
             var nAlwDiscount    = (oResult.AlwDis == '' || oResult.AlwDis === undefined ? 2 : oResult.AlwDis);           //อนุญาติคำนวณลด
             var nAlwVat         = (oResult.AlwVat == '' || oResult.AlwVat === undefined ? 0 : oResult.AlwVat);           //อนุญาติคำนวณภาษี
             var nVat            = (parseFloat($('#ohdPOFrmSplVatRate').val())).toFixed(nPOODecimalShow);              //ภาษี
             var nQty            = parseInt(oResult.Qty);             //จำนวน
-            var nNetAfHD        = (parseFloat(oResult.NetAfHD)).toFixed(nPOODecimalShow);
-            var cNet            = (parseFloat(oResult.Net)).toFixed(nPOODecimalShow);
+            var nNetAfHD        = (parseFloat(accounting.unformat(oResult.NetAfHD))).toFixed(nPOODecimalShow);
+            var cNet            = (parseFloat(accounting.unformat(oResult.Net))).toFixed(nPOODecimalShow);
             var tDisChgTxt      = oResult.tDisChgTxt;
 
             // console.log(oData);
@@ -394,7 +394,7 @@
                     oPrice += 'maxlength="10" '; 
                     oPrice += 'data-alwdis='+nAlwDiscount+' ';
                     oPrice += 'data-seq='+nKey+' ';
-                    oPrice += 'value="'+nPrice+'"';
+                    oPrice += 'value="'+numberWithCommas(parseFloat(nPrice).toFixed(nPOODecimalShow))+'"';
                     oPrice += 'autocomplete="off" >';
                     oPrice += '</div>';  
 
@@ -439,7 +439,7 @@
                 tHTML += '<td class="otdQty">'+oQty+'</td>';
                 tHTML += '<td class="otdPrice">'+oPrice+'</td>';
                 tHTML += '<td>'+oAlwDis+'</td>';
-                tHTML += '<td class="text-right"><span id="ospGrandTotal'+nKey+'">'+cNet+'</span>';
+                tHTML += '<td class="text-right"><span id="ospGrandTotal'+nKey+'">'+numberWithCommas(parseFloat(cNet).toFixed(nPOODecimalShow))+'</span>';
                 tHTML += '    <span id="ospnetAfterHD'+nKey+'" style="display: none;">'+nNetAfHD+'</span>';
                 tHTML += '</td>';    
                 if($('#ohdPOStaImport').val()==1){
@@ -879,17 +879,33 @@ function JSxAddScollBarInTablePdt(){
         
  
         
-                //เอา VAT ไปทำในตาราง
-        var cSumFCXtdVat = parseFloat($('#ohdSumFCXtdVat').val());
+        //         //เอา VAT ไปทำในตาราง
+        // var cSumFCXtdVat = parseFloat($('#ohdSumFCXtdVat').val());
+        // var nSumVat = 0;
+        // var nCount = 1;
+        // for(var j=0; j<aSumVat.length; j++){
+        //     var tVatRate    = aSumVat[j].VAT;
+        //           if(nCount!=aSumVat.length){
+        //             var tSumVat     = parseFloat(aSumVat[j].VALUE) == 0 ? '0.00' : parseFloat(aSumVat[j].VALUE);
+        //             }else{
+        //             var tSumVat     = (cSumFCXtdVat - nSumVat);
+        //             }
+        //     tVatList    += '<li class="list-group-item"><label class="pull-left">'+ tVatRate + '%</label><label class="pull-right">' + numberWithCommas(parseFloat(tSumVat).toFixed(nPOODecimalShow)) + '</label><div class="clearfix"></div></li>';
+        //     nSumVat += parseFloat(aSumVat[j].VALUE);
+        //     nCount++;
+        // }
+
+        //เอา VAT ไปทำในตาราง
+        var nSumVatHD = parseFloat($('#ohdSumFCXtdVat').val());
         var nSumVat = 0;
-        var nCount = 1;
+        var nCount  = 1;
         for(var j=0; j<aSumVat.length; j++){
             var tVatRate    = aSumVat[j].VAT;
-                  if(nCount!=aSumVat.length){
-                    var tSumVat     = parseFloat(aSumVat[j].VALUE) == 0 ? '0.00' : parseFloat(aSumVat[j].VALUE);
-                    }else{
-                    var tSumVat     = (cSumFCXtdVat - nSumVat);
-                    }
+            if(nCount != aSumVat.length){
+                var tSumVat     = parseFloat(aSumVat[j].VALUE).toFixed(nPOODecimalShow) == 0 ? '0.00' : parseFloat(aSumVat[j].VALUE).toFixed(nPOODecimalShow);
+            }else{
+                var tSumVat     = (aSumVat[j].VALUE - nSumVat).toFixed(nPOODecimalShow);
+            }
             tVatList    += '<li class="list-group-item"><label class="pull-left">'+ tVatRate + '%</label><label class="pull-right">' + numberWithCommas(parseFloat(tSumVat).toFixed(nPOODecimalShow)) + '</label><div class="clearfix"></div></li>';
             nSumVat += parseFloat(aSumVat[j].VALUE);
             nCount++;
