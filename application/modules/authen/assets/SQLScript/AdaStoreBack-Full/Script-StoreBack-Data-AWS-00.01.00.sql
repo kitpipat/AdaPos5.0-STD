@@ -1,0 +1,78 @@
+-- Create By : Napat(Jame) 10/01/2565
+--ตั้งต้นข้อมูลตาราง API
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI WHERE FTApiCode = '00001') BEGIN
+    INSERT INTO TCNMTxnAPI (FTApiCode,FTApiTxnType,FTApiPrcType,FTApiGrpPrc,FNApiGrpSeq,FTApiFmtCode,FTApiURL,FTApiLoginUsr,FTApiLoginPwd,FTApiToken,FDCreateOn,FTCreateBy,FDLastUpdOn,FTLastUpdBy)
+    VALUES ('00001','4','2','AWS','1','00001','https://smartschool.advws.com/api/wallet/checkbalance','','','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYXhjYXJkSWQiOiI1NDQ1MTU0ODQ4ZjU1NWEiLCJleHAiOjQzMzE0ODQ4NzgxMTIwMCwiY2hhbm5lbCI6Im93bmVyIiwiZGIiOiJzbWFydHNjaG9vbCIsImlhdCI6MTY3MTA5NzU2MX0.HeyzDxCEVKO2mFQUWRQ19yxo31E2ZvohMoAWBkYsHI0','2022-11-16 00:00:00.000','Chaiya Boontem','2022-12-15 04:46:46.000','00002')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI WHERE FTApiCode = '00002') BEGIN
+    INSERT INTO TCNMTxnAPI (FTApiCode,FTApiTxnType,FTApiPrcType,FTApiGrpPrc,FNApiGrpSeq,FTApiFmtCode,FTApiURL,FTApiLoginUsr,FTApiLoginPwd,FTApiToken,FDCreateOn,FTCreateBy,FDLastUpdOn,FTLastUpdBy)
+    VALUES ('00002','4','2','AWS','2','00001','https://smartschool.advws.com/api/wallet/transfer','','','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYXhjYXJkSWQiOiI1NDQ1MTU0ODQ4ZjU1NWEiLCJleHAiOjQzMzE0ODQ4NzgxMTIwMCwiY2hhbm5lbCI6Im93bmVyIiwiZGIiOiJzbWFydHNjaG9vbCIsImlhdCI6MTY3MTA5NzU2MX0.HeyzDxCEVKO2mFQUWRQ19yxo31E2ZvohMoAWBkYsHI0','2022-10-03 00:00:00.000','Chaiya Boontem','2022-12-15 04:46:46.000','00002')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI WHERE FTApiCode = '00003') BEGIN
+    INSERT INTO TCNMTxnAPI (FTApiCode,FTApiTxnType,FTApiPrcType,FTApiGrpPrc,FNApiGrpSeq,FTApiFmtCode,FTApiURL,FTApiLoginUsr,FTApiLoginPwd,FTApiToken,FDCreateOn,FTCreateBy,FDLastUpdOn,FTLastUpdBy)
+    VALUES ('00003','4','2','AWS','3','00001','https://smartschool.advws.com/api/order/inquiry','','','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYXhjYXJkSWQiOiI1NDQ1MTU0ODQ4ZjU1NWEiLCJleHAiOjQzMzE0ODQ4NzgxMTIwMCwiY2hhbm5lbCI6Im93bmVyIiwiZGIiOiJzbWFydHNjaG9vbCIsImlhdCI6MTY3MTA5NzU2MX0.HeyzDxCEVKO2mFQUWRQ19yxo31E2ZvohMoAWBkYsHI0','2022-10-03 00:00:00.000','Chaiya Boontem','2022-12-15 04:46:46.000','00002')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI WHERE FTApiCode = '00004') BEGIN
+    INSERT INTO TCNMTxnAPI (FTApiCode,FTApiTxnType,FTApiPrcType,FTApiGrpPrc,FNApiGrpSeq,FTApiFmtCode,FTApiURL,FTApiLoginUsr,FTApiLoginPwd,FTApiToken,FDCreateOn,FTCreateBy,FDLastUpdOn,FTLastUpdBy)
+    VALUES ('00004','4','2','AWS','4','00001','https://smartschool.advws.com/api/order/void','','','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYXhjYXJkSWQiOiI1NDQ1MTU0ODQ4ZjU1NWEiLCJleHAiOjQzMzE0ODQ4NzgxMTIwMCwiY2hhbm5lbCI6Im93bmVyIiwiZGIiOiJzbWFydHNjaG9vbCIsImlhdCI6MTY3MTA5NzU2MX0.HeyzDxCEVKO2mFQUWRQ19yxo31E2ZvohMoAWBkYsHI0','2022-10-03 00:00:00.000','Chaiya Boontem','2022-12-15 04:46:46.000','00002')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI WHERE FTApiCode = '00005') BEGIN
+    INSERT INTO TCNMTxnAPI (FTApiCode,FTApiTxnType,FTApiPrcType,FTApiGrpPrc,FNApiGrpSeq,FTApiFmtCode,FTApiURL,FTApiLoginUsr,FTApiLoginPwd,FTApiToken,FDCreateOn,FTCreateBy,FDLastUpdOn,FTLastUpdBy)
+    VALUES ('00005','2','1','EXPT','1','00001','','','','','2022-10-03 00:00:00.000','Chaiya Boontem','2022-10-03 00:00:00.000','Chaiya Boontem')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI WHERE FTApiCode = '00006') BEGIN
+    INSERT INTO TCNMTxnAPI (FTApiCode,FTApiTxnType,FTApiPrcType,FTApiGrpPrc,FNApiGrpSeq,FTApiFmtCode,FTApiURL,FTApiLoginUsr,FTApiLoginPwd,FTApiToken,FDCreateOn,FTCreateBy,FDLastUpdOn,FTLastUpdBy)
+    VALUES ('00006','4','2','AWS','6','00001','https://smartschool.advws.com/api/order/makeorder','','','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYXhjYXJkSWQiOiI1NDQ1MTU0ODQ4ZjU1NWEiLCJleHAiOjQzMzE0ODQ4NzgxMTIwMCwiY2hhbm5lbCI6Im93bmVyIiwiZGIiOiJzbWFydHNjaG9vbCIsImlhdCI6MTY3MTA5NzU2MX0.HeyzDxCEVKO2mFQUWRQ19yxo31E2ZvohMoAWBkYsHI0','2022-10-03 00:00:00.000','Chaiya Boontem','2022-12-15 04:46:46.000','00002')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI_L WHERE FTApiCode = '00001' AND FNLngID = 1) BEGIN
+    INSERT INTO TCNMTxnAPI_L (FTApiCode,FNLngID,FTApiName,FTApiRmk)
+    VALUES ('00001','1','Get Profile','')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI_L WHERE FTApiCode = '00002' AND FNLngID = 1) BEGIN
+    INSERT INTO TCNMTxnAPI_L (FTApiCode,FNLngID,FTApiName,FTApiRmk)
+    VALUES ('00002','1','Payment','')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI_L WHERE FTApiCode = '00003' AND FNLngID = 1) BEGIN
+    INSERT INTO TCNMTxnAPI_L (FTApiCode,FNLngID,FTApiName,FTApiRmk)
+    VALUES ('00003','1','Inquiry','')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI_L WHERE FTApiCode = '00004' AND FNLngID = 1) BEGIN
+    INSERT INTO TCNMTxnAPI_L (FTApiCode,FNLngID,FTApiName,FTApiRmk)
+    VALUES ('00004','1','Void','')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI_L WHERE FTApiCode = '00005' AND FNLngID = 1) BEGIN
+    INSERT INTO TCNMTxnAPI_L (FTApiCode,FNLngID,FTApiName,FTApiRmk)
+    VALUES ('00005','1','ส่งออกรายการขาย','')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiCode FROM TCNMTxnAPI_L WHERE FTApiCode = '00006' AND FNLngID = 1) BEGIN
+    INSERT INTO TCNMTxnAPI_L (FTApiCode,FNLngID,FTApiName,FTApiRmk)
+    VALUES ('00006','1','ส่งออกรายการขาย','')
+END
+GO
+
+IF NOT EXISTS(SELECT FTApiFmtCode FROM TSysFormatAPI_L WHERE FTApiFmtCode = '00001' AND FNLngID = 1) BEGIN
+    INSERT INTO TSysFormatAPI_L (FTApiFmtCode,FNLngID,FTApiFmtName,FTApiRmk)
+    VALUES ('00001','1','AWS','')
+END
