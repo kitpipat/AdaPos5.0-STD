@@ -81,6 +81,9 @@
                                 <?php else:?>
                                     <td nowrap class="<?php echo $tAlignFormat?>">
                                         <?php if($DataVal->FTShwStaAlwEdit == 1 && (empty($tASTStaApv) && $tASTStaDoc != 3)):?>
+
+                                            <?php if($DataVal->FTShwStaAlwEdit == 1 && ($aDataTableVal['FTXtdBchRef']!='FH')){ ?>
+
                                             <label class="xCNHide xCNPdtFont xWShowInLine<?php echo $aDataTableVal['FNXtdSeqNo'];?> xWShowValue<?php echo $tColumnName;?><?php echo $aDataTableVal['FNXtdSeqNo'];?>">
                                                 <?php echo  $tDataCol != '' ? "".$tDataCol : '-'; ?>
                                             </label>
@@ -103,6 +106,56 @@
                                                     autocomplete="off"
                                                 >
                                             </div>
+                                            <?php }else{   ?>
+                                                <?php if($aDataTableVal['FTXtdBchRef']!='FH'){ ?>
+                                <label class="xCNPdtFont xWShowValue<?=$tColumnName?><?=$aDataTableVal['FNXtdSeqNo']?>"><?=$tDataCol?></label>
+                                <?php }else{
+                                        if($tColumnName=='FCAjdUnitQtyC1' || $tColumnName=='FCAjdUnitQtyC2'){
+                                            $tClassName = 'xCNTextLink';
+                                            $tIconEdit = " <img class='xCNIconTable' src=".base_url('application/modules/common/assets/images/icons/edit.png')." title='Edit'>";
+                                        }else{
+                                            $tClassName = 'xCNTextLink';
+                                            $tIconEdit = "";
+                                        }
+                                    ?>
+                                    <?php 
+                                   
+                                            $nSpcControl = 1;
+                                            $tNextFunc = 'JSvASTEventEditPdtIntoDTFhnTemp';
+                                          
+                                          if($tASTStaApv=='1' || $tASTStaDoc=='3'){
+                                            $tStaEdit = 2;
+                                          }else{
+                                            $tStaEdit = 1;
+                                          }
+                                            $aOptionFashion = array(
+                                            'tDocumentBranch'     => $aDataTableVal['FTBchCode'],
+                                            'tDocumentNumber'     => $aDataTableVal['FTXthDocNo'],
+                                            'tDocumentDocKey'     => 'TCNTPdtAdjStkHD',
+                                            'tDocumentProduct'    => $aDataTableVal['FTPdtCode'],
+                                            'nDTSeq'              => $aDataTableVal['FNXtdSeqNo'],
+                                            'tDTBarCode'          => $aDataTableVal['FTXtdBarCode'],
+                                            'tDTPunCode'          => $aDataTableVal['FTPunCode'],
+                                            'tNextFunc'           => $tNextFunc,
+                                            'tSpcControl'         => $nSpcControl  ,                 //0:จำนวน //1:ตรวจนับครั้งที่หนึ่ง //2:ตรวจนับครั้งที่สอง //3:ตรวจนับย่อย
+                                            'tStaEdit'            => $tStaEdit,
+                                            );
+                                            // $aOption = json_encode($aOptionFashion);
+                                        ?>
+                                        <label class="<?=$tClassName?> xCNPdtFont xWShowInLine xWShowValue<?=$tColumnName?><?=$aDataTableVal['rtRowID']?>"
+                                        tDocumentBranch="<?=$aOptionFashion['tDocumentBranch']?>" 
+                                        tDocumentNumber="<?=$aOptionFashion['tDocumentNumber']?>"  
+                                        tDocumentProduct="<?=$aOptionFashion['tDocumentProduct']?>"  
+                                        tDocumentDocKey="<?=$aOptionFashion['tDocumentDocKey']?>"  
+                                        nDTSeq="<?=$aOptionFashion['nDTSeq']?>"  
+                                        tDTBarCode="<?=$aOptionFashion['tDTBarCode']?>"  
+                                        tDTPunCode="<?=$aOptionFashion['tDTPunCode']?>"  
+                                        tNextFunc="<?=$aOptionFashion['tNextFunc']?>"  
+                                        tSpcControl="<?=$aOptionFashion['tSpcControl']?>"  
+                                        tStaEdit="<?=$aOptionFashion['tStaEdit']?>"  
+                                         onclick='JSxUpdateProductSerialandFashion(this)' ><?=$tDataCol?> <?=$tIconEdit?></label>
+                                        <?php } ?>
+                                        <?php } ?>
                                         <?php else:?>
                                             <label class="xCNPdtFont xWShowInLine xWShowValue<?php echo $tColumnName?><?php echo $aDataTableVal['rtRowID']?>"><?php echo $tDataCol?></label>
                                         <?php endif;?>

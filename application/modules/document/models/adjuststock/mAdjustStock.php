@@ -383,6 +383,15 @@ class mAdjustStock extends CI_Model
         $this->db->where_in('FTXthDocKey', 'TCNTPdtAdjStkHD');
         $this->db->delete('TCNTDocDTTmp');
 
+        // Document Temp
+        $this->db->where_in('FTXthDocNo', $tASTDocNo);
+        $this->db->where_in('FTXthDocKey', 'TCNTPdtAdjStkHD');
+        $this->db->delete('TCNTPdtAdjStkDTFhn');
+
+        // Document Temp
+        $this->db->where_in('FTXshDocNo', $tASTDocNo);
+        $this->db->where_in('FTXthDocKey', 'TCNTPdtAdjStkHD');
+        $this->db->delete('TCNTDocDTFhnTmp');
         //Document Temp
         $this->db->where_in('FTXthDocNo', $tASTDocNo);
         $this->db->delete('TCNTDocHDDisTmp');
@@ -460,6 +469,10 @@ class mAdjustStock extends CI_Model
         $this->db->where_in('FTXthDocKey', $tXthDocKey);
         $this->db->where_in('FTSessionID', $tSessionID);
         $this->db->delete('TCNTDocDTTmp');
+
+        $this->db->where_in('FTXthDocKey', $tXthDocKey);
+        $this->db->where_in('FTSessionID', $tSessionID);
+        $this->db->delete('TCNTDocDTFhnTmp');
     }
 
     //Functionality : Function Get Pdt From Temp List Page
@@ -873,6 +886,13 @@ class mAdjustStock extends CI_Model
             $this->db->where('FTXthDocKey', $paDataWhere['FTXthDocKey']);
             $this->db->update('TCNTDocDTTmp');
 
+            $this->db->set('FTXshDocNo', $paDataWhere['FTAjhDocNo']);
+            $this->db->set('FTBchCode', $paDataWhere['FTBchCode']);
+            $this->db->where('FTXshDocNo', '');
+            $this->db->where('FTSessionID', $this->session->userdata('tSesSessionID'));
+            $this->db->where('FTXthDocKey', $paDataWhere['FTXthDocKey']);
+            $this->db->update('TCNTDocDTFhnTmp');
+            
             if ($this->db->affected_rows() > 0) {
                 $aStatus = array(
                     'rtCode' => '1',
@@ -900,7 +920,10 @@ class mAdjustStock extends CI_Model
     public function FSxMClearPdtInTmp()
     {
         $tSQL = "DELETE FROM TCNTDocDTTmp WHERE FTSessionID = '" . $this->session->userdata('tSesSessionID') . "' AND FTXthDocKey = 'TCNTPdtAdjStkHD'";
-        $this->db->query();
+        $this->db->query($tSQL);
+
+        $tSQLFhn = "DELETE FROM TCNTDocDTFhnTmp WHERE FTSessionID = '" . $this->session->userdata('tSesSessionID') . "' AND FTXthDocKey = 'TCNTPdtAdjStkHD'";
+        $this->db->query($tSQLFhn);
     }
 
 
@@ -987,6 +1010,88 @@ class mAdjustStock extends CI_Model
         }
         return $aStatus;
     }
+
+
+
+        /**
+     * Functionality : Function Add DT To Temp
+     * Parameters : function parameters
+     * Creator : 29/05/2019 Piya
+     * Last Modified : -
+     * Return : Status Add
+     * Return Type : array
+     */
+    public function FSaMAdjASTInsertTmpToDTFhn($paDataWhere)
+    {
+
+        // ทำการลบ ใน DT ก่อนการย้าย Tmp ไป DT
+        if ($paDataWhere['FTAjhDocNo'] != '') {
+            $this->db->where_in('FTAjhDocNo', $paDataWhere['FTAjhDocNo']);
+            $this->db->delete('TCNTPdtAdjStkDTFhn');
+        }
+
+        $tSQL = "INSERT TCNTPdtAdjStkDTFhn
+                            (FTBchCode, FTAjhDocNo, FNAjdSeqNo, FTPdtCode,FTFhnRefCode, FTPdtName, FTAjdBarcode,FTAjdPlcCode,
+                            FDAjdDateTimeC1, FCAjdQtyC1,  FDAjdDateTimeC2, FCAjdQtyC2,
+                            FCAjdQtyAll, FDLastUpdOn, FTLastUpdBy, FDCreateOn, FTCreateBy) ";
+
+        $tSQL .= "SELECT
+                            DOCTMP.FTBchCode,
+                            DOCTMP.FTXshDocNo AS FTAjhDocNo,
+                            DOCTMP.FNXsdSeqNo AS FNAjdSeqNo,
+                            DOCTMP.FTPdtCode,
+                            DOCTMP.FTFhnRefCode,
+                            DOCTMP.FTXtdPdtName,
+                            DOCTMP.FTXtdBarCode,
+                            (SELECT TOP 1 FTAjdPlcCode FROM TCNTPdtAdjStkDT STKDT WITH (NOLOCK) WHERE STKDT.FTBchCode =DOCTMP.FTBchCode AND STKDT.FTAjhDocNo = DOCTMP.FTXshDocNo AND STKDT.FTPdtCode = DOCTMP.FTPdtCode)  AS FTAjdPlcCode,
+                            DOCTMP.FDAjdDateTimeC1,
+                            DOCTMP.FCAjdUnitQtyC1,
+                        
+                            DOCTMP.FDAjdDateTimeC2,
+                            DOCTMP.FCAjdUnitQtyC2,
+
+                            DOCTMP.FCAjdQtyAll,
+                      
+                            DOCTMP.FDCreateOn,
+                            DOCTMP.FTCreateBy,
+                            DOCTMP.FDCreateOn,
+                            DOCTMP.FTCreateBy
+
+                    FROM TCNTDocDTFhnTmp DOCTMP WITH (NOLOCK)
+                    WHERE 1 = 1
+                    ";
+
+        $tAjhDocNo      = $paDataWhere['FTAjhDocNo'];
+        $tXthDocKey     = $paDataWhere['FTXthDocKey'];
+        $tSesSessionID  = $paDataWhere['FTSessionID'];
+
+
+        $tSQL .= " AND DOCTMP.FTSessionID = '$tSesSessionID'";
+
+        $tSQL .= " AND DOCTMP.FTXshDocNo = '$tAjhDocNo'";
+
+        $tSQL .= " AND DOCTMP.FTXthDocKey = '$tXthDocKey'";
+
+        $tSQL .= " ORDER BY DOCTMP.FNXsdSeqNo ASC";
+
+
+        $oQuery = $this->db->query($tSQL);
+  
+        if ($oQuery > 0) {
+            $aStatus = array(
+                'rtCode' => '1',
+                'rtDesc' => 'Add Success.',
+            );
+        } else {
+            $aStatus = array(
+                'rtCode' => '905',
+                'rtDesc' => 'Error Cannot Add.',
+            );
+        }
+        return $aStatus;
+    }
+
+
 
     //Functionality : Function Update InlineDT Temp 
     //Parameters : function parameters
@@ -1076,6 +1181,13 @@ class mAdjustStock extends CI_Model
             $this->db->where_in('FTSessionID', $paData['FTSessionID']);
             $this->db->delete('TCNTDocDTTmp');
 
+            $this->db->where_in('FTXshDocNo', $paData['FTXthDocNo']);
+            $this->db->where_in('FNXsdSeqNo', $paData['FNXtdSeqNo']);
+            $this->db->where_in('FTPdtCode',  $paData['FTPdtCode']);
+            $this->db->where_in('FTXthDocKey', $paData['FTXthDocKey']);
+            $this->db->where_in('FTSessionID', $paData['FTSessionID']);
+            $this->db->delete('TCNTDocDTFhnTmp');
+
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
                 $aStatus    = array(
@@ -1115,6 +1227,13 @@ class mAdjustStock extends CI_Model
             $this->db->delete('TCNTDocDTTmp');
 
 
+            //Del DTTmp
+            $this->db->where('FTXshDocNo', $paData['FTXthDocNo']);
+            $this->db->where('FNXsdSeqNo', $paData['FNXtdSeqNo']);
+            $this->db->where('FTXthDocKey', $paData['FTXthDocKey']);
+            $this->db->delete('TCNTDocDTFhnTmp');
+
+                        
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
                 $aStatus = array(
@@ -1531,6 +1650,8 @@ class mAdjustStock extends CI_Model
                         ,FTXtdPdtName,FTPunCode,FTPunName,FTXtdBarCode
                         ,FCPdtUnitFact,FTPgpChain,FTAjdPlcCode
                         ,FCAjdUnitQtyC1,FCAjdQtyAllC1,FCAjdQtyAllDiff,FCAjdWahB4Adj
+                        ,FTXtdBchRef
+                        ,FTTmpStatus
                         ,FTSessionID,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy
                     )
                     SELECT 
@@ -1550,12 +1671,15 @@ class mAdjustStock extends CI_Model
                         ,DT.FCAjdQtyAllC1
                         ,DT.FCAjdQtyAllDiff
                         ,DT.FCAjdWahB4Adj
+                        ,CASE WHEN PDT.FTPdtForSystem = 5 THEN 'FH' ELSE 'GN' END AS PDTSpc 
+                        ,PDT.FTPdtForSystem
                         ,'$tSessionID'		AS FTSessionID
                         ,DT.FDLastUpdOn
                         ,DT.FDCreateOn
                         ,DT.FTLastUpdBy
                         ,DT.FTCreateBy
                     FROM TCNTPdtAdjStkDT DT WITH(NOLOCK)
+                    LEFT JOIN TCNMPdt PDT WITH(NOLOCK) ON DT.FTPdtCode = PDT.FTPdtCode
                     WHERE 1=1
                     AND DT.FTAjhDocNo = '$tDocNo'
         ";
@@ -1726,6 +1850,26 @@ class mAdjustStock extends CI_Model
         $this->db->delete('TCNTDocDTTmp');
     }
 
+    // Create By Nattakit(Nale) 2021/05/13
+    // Parameter : SessionLogin, DocKey, DocNo ,
+    //   TypeDelete 1 = clear temp , 2 delete by id
+    public function FSxMAdjStkClearDTFhnTmp($paDataWhere)
+    {
+
+        $this->db->where_in('FTSessionID', $paDataWhere['FTSessionID']);
+        // $this->db->where_in('FTXthDocKey', $paDataWhere['FTXthDocKey']);
+
+        // กรณีเคลียร์ temp ให้ลบทุกเลขที่เอกสาร
+        // กรณีลบบางรายการให้ where ด้วยเลขที่เอกสาร และ Seq
+        if ($paDataWhere['tDeleteType'] != '1') {
+            $this->db->where_in('FTXshDocNo', $paDataWhere['FTAjhDocNo']);
+            $this->db->where_in('FNXsdSeqNo', $paDataWhere['FNXtdSeqNo']);
+        }
+
+        $this->db->delete('TCNTDocDTFhnTmp');
+    }
+
+
     // Create By : Napat(Jame) 2020/07/29
     public function FSaMAdjStkEventAddProducts($paDataCondition, $paDataInsert)
     {
@@ -1814,11 +1958,45 @@ class mAdjustStock extends CI_Model
             }
         }
 
+        
+        // Condition Product Group
+        if (isset($paDataCondition['oetASTFilterWahCode']) && !empty($paDataCondition['oetASTFilterWahCode'])) {
+            $tASTFilterWahCode = $paDataCondition['oetASTFilterWahCode'];
+            $tQueryJoin  .= " INNER JOIN TCNTPdtStkBal STKBAL WITH(NOLOCK) ON STKBAL.FTPdtCode = PDT.FTPdtCode AND STKBAL.FTBchCode = '$tBchCode' AND STKBAL.FTWahCode = '$tASTFilterWahCode' ";
+            // $tCondition .= " AND GRP.FTPgpChain = '" . $paDataCondition['oetASTFilterPgpCode'] . "' ";
+        }
+        
+
+        if (isset($paDataCondition['ocbASTUseExStock']) && !empty($paDataCondition['ocbASTUseExStock'])) {
+
+
+            $tCondition .= " AND PDT.FTPdtCode NOT IN (SELECT DT.FTPdtCode ";
+            $tCondition .= " FROM TCNTPdtAdjStkHD HD WITH(NOLOCK) ";
+            $tCondition .= " LEFT JOIN TCNTPdtAdjStkDT DT WITH(NOLOCK) ON  HD.FTBchCode = DT.FTBchCode AND HD.FTAjhDocNo = DT.FTAjhDocNo ";
+            $tCondition .= " LEFT JOIN TCNTPdtStkBal STKBAL WITH(NOLOCK)  ON DT.FTPdtCode = STKBAL.FTPdtCode AND HD.FTAjhBchTo = STKBAL.FTBchCode AND HD.FTAjhWhTo = STKBAL.FTWahCode ";
+            $tCondition .= " WHERE ISNULL(DT.FTPdtCode,'') != '' AND HD.FTAjhStaApv = '1' ";
+            if (isset($paDataCondition['oetASTFilterExDateFrm']) && isset($paDataCondition['oetASTFilterExDateTo'])) {
+                $tCondition .= " AND CONVERT(CHAR(10),HD.FDAjhDocDate,121) BETWEEN '".$paDataCondition['oetASTFilterExDateFrm']."' AND '".$paDataCondition['oetASTFilterExDateTo']."'  ";
+            }
+            if (isset($paDataCondition['oetASTFilterExWahCode']) && !empty($paDataCondition['oetASTFilterExWahCode'])) {
+                $tCondition .= " AND HD.FTAjhWhTo = '".$paDataCondition['oetASTFilterExWahCode']."' ";
+            }
+            if (isset($paDataCondition['ocmASTFilterExCon']) && !empty($paDataCondition['ocmASTFilterExCon'])) {
+                  $tCondition .= " AND STKBAL.FCStkQty ".$paDataCondition['ocmASTFilterExCon']." ".$paDataCondition['oetASTFilterExStkBal']." ";
+                // $tCondition .= " AND (ISNULl(DT.FCAjdWahB4Adj,0)+ISNULL(DT.FCAjdQtyAllDiff,0)) ".$paDataCondition['ocmASTFilterExCon']." ".$paDataCondition['oetASTFilterExStkBal']." ";
+            }
+            $tCondition .= " GROUP BY DT.FTPdtCode) ";
+
+
+        }
+
         // Insert Production
         $tSQL = "   INSERT INTO TCNTDocDTTmp (
                         FTBchCode,FTXthDocNo,FNXtdSeqNo,FTXthDocKey,FTPdtCode,
                         FTXtdPdtName,FTPunCode,FTPunName,FTXtdBarCode,FCPdtUnitFact,
-                        FTAjdPlcCode,FCAjdUnitQtyC1,FCAjdQtyAllC1,
+                        FTAjdPlcCode,FCAjdUnitQtyC1,FCAjdQtyAllC1,         
+                        FTXtdBchRef,
+                        FTTmpStatus,
                         FTSessionID,FDLastUpdOn,FDCreateOn,FTLastUpdBy,FTCreateBy
                     )
                 ";
@@ -1836,6 +2014,8 @@ class mAdjustStock extends CI_Model
                         PBAR.FTPlcCode      AS FTAjdPlcCode,
                         0                   AS FCAjdUnitQtyC1,
                         0                   AS FCAjdQtyAllC1,
+                        CASE WHEN PDT.FTPdtForSystem = 5 THEN 'FH' ELSE 'GN' END AS PDTSpc ,
+                        PDT.FTPdtForSystem,
                         '$tSession'			AS FTSessionID,
                         GETDATE()			AS FDLastUpdOn,
                         GETDATE()			AS FDCreateOn,
@@ -1846,13 +2026,14 @@ class mAdjustStock extends CI_Model
                         LEFT JOIN TCNMPdtPackSize PPS WITH(NOLOCK) ON PDT.FTPdtCode = PPS.FTPdtCode
                         LEFT JOIN TCNMPdtUnit_L PUN_L WITH(NOLOCK) ON PPS.FTPunCode = PUN_L.FTPunCode AND PUN_L.FNLngID = 1
                         LEFT JOIN TCNMPdtBar PBAR WITH(NOLOCK) ON PDT.FTPdtCode = PBAR.FTPdtCode AND PPS.FTPunCode = PBAR.FTPunCode AND PBAR.FTBarStaUse = 1
-                        LEFT JOIN TCNMPdtSpcBch SpcBch ON PDT.FTPdtCode = SpcBch.FTPdtCode
+                        LEFT JOIN TCNMPdtSpcBch SpcBch WITH(NOLOCK) ON PDT.FTPdtCode = SpcBch.FTPdtCode
                         $tQueryJoin
                     WHERE 1 = 1
                     $tCondition
                  ";
 
         $this->db->query($tSQL);
+        // echo $this->db->last_query();die();
         if ($this->db->trans_status() === FALSE) {
             $aReturn = array(
                 'tSQL'      => $tSQL,
@@ -2011,6 +2192,634 @@ class mAdjustStock extends CI_Model
         
         return $aStatus;
         
+    }
+
+
+
+
+    
+    
+    // Create By Nattakit(Nale) 2021/05/13
+    // Insert PdtFhn To DTfhnTemp
+    public function FSaMASTEventInsertProductsFashionByTemplate($paInsertData,$paGetDataInsert){
+        try {
+            // Update Master
+            $tSessionID = $paInsertData['FTSessionID'];
+            $tXthDocKey = $paInsertData['FTXthDocKey'];
+            $tUser      = $paInsertData['tUser'];
+            $tBchCode   = $paGetDataInsert['tBchCode'];
+            $tDocNo     = $paGetDataInsert['tDocNo'];
+            $nLngID = $this->session->userdata("tLangEdit");
+
+
+            $tSQL = "INSERT INTO TCNTDocDTTmp (
+                FTBchCode,
+                FTXthDocNo,
+                FTXthDocKey,
+                FNXtdSeqNo,
+                FTPdtCode,
+                FTXtdPdtName,
+                FTPunCode,
+                FTPunName,
+                FTXtdBchRef,
+                FCPdtUnitFact,
+                FDAjdDateTimeC1,
+                FCAjdUnitQtyC1,
+                FCAjdQtyAllC1,
+                FTTmpStatus,
+                FTSessionID,
+                FDLastUpdOn,
+                FDCreateOn,
+                FTLastUpdBy,
+                FTCreateBy
+            ) 
+            
+            SELECT
+                DT1.FTBchCode,
+                DT1.FTXthDocNo,
+                DT1.FTXthDocKey,
+                ROW_NUMBER () OVER ( ORDER BY DT1.FTPdtCode, DT1.FTPunCode) AS FNXsdSeqNo,
+                DT1.FTPdtCode,
+                DT1.FTXtdPdtName,
+                DT1.FTPunCode,
+                DT1.FTPunName,
+                'GN' AS FTXtdBchRef,
+                DT1.FCPdtUnitFact,
+                GETDATE() AS FDAjdDateTimeC1,
+                DT1.FCAjdUnitQtyC1,
+                DT1.FCAjdQtyAllC1,
+                '1' AS FTTmpStatus,
+                '$tSessionID' AS FTSessionID,
+                GETDATE() AS FDLastUpdOn,
+                GETDATE() AS FDCreateOn,
+                '$tUser' AS FTLastUpdBy,
+                '$tUser' AS FTCreateBy
+            FROM
+                (
+                    SELECT
+                        DT.FTBchCode,
+                        DT.FTXthDocNo,
+                        DT.FTXthDocKey,
+                        DT.FTPdtCode,
+                        DT.FTXtdPdtName,
+                        DT.FTPunCode,
+                        DT.FTPunName,
+                        DT.FCPdtUnitFact,
+                        SUM (DT.FCAjdUnitQtyC1) AS FCAjdUnitQtyC1,
+                        SUM (DT.FCAjdQtyAllC1) AS FCAjdQtyAllC1
+                    FROM
+                        TCNTDocDTTmp DT WITH (NOLOCK)
+                    WHERE
+                        DT.FTSessionID = '$tSessionID'
+                    AND DT.FTBchCode = '$tBchCode'
+                    AND DT.FTXthDocNo = '$tDocNo'
+                    AND DT.FTXthDocKey = '$tXthDocKey'
+                    GROUP BY
+                        DT.FTBchCode,
+                        DT.FTXthDocNo,
+                        DT.FTXthDocKey,
+                        DT.FTPdtCode,
+                        DT.FTXtdPdtName,
+                        DT.FTPunCode,
+                        DT.FTPunName,
+                        DT.FCPdtUnitFact
+                ) AS DT1
+            ";
+
+            $this->db->query($tSQL);
+
+            $this->db->where('FTSessionID', $tSessionID);
+            $this->db->where('FTXthDocKey', $tXthDocKey);
+            $this->db->where('FTBchCode', $tBchCode);
+            $this->db->where('FTXthDocNo', $tDocNo);
+            $this->db->where('FTXtdBchRef', 'GN');
+            $this->db->where("ISNULL(FTXtdBarCode,'')!=", '');
+            $this->db->delete('TCNTDocDTTmp');
+
+
+            $tSQL = "INSERT INTO TCNTDocDTFhnTmp (
+                FTBchCode,
+                FTXshDocNo,
+                FTXthDocKey,
+                FTPdtCode,
+                FTFhnRefCode,
+                FDAjdDateTimeC1,
+                FCAjdUnitQtyC1,
+                FCAjdQtyAllC1,
+                FTSessionID,
+                FDCreateOn,
+                FTCreateBy
+            ) 
+                SELECT
+                        FHN.FTBchCode,
+                        FHN.FTXshDocNo,
+                        FHN.FTXthDocKey,
+                        FHN.FTPdtCode,
+                        FHN.FTFhnRefCode,
+                        GETDATE() AS FDAjdDateTimeC1,
+                        SUM (FHN.FCAjdQtyAllC1) AS FCAjdUnitQtyC1,
+                        SUM (FHN.FCAjdQtyAllC1) AS FCAjdQtyAllC1,
+                        '$tSessionID' AS FTSessionID,
+                        '' AS FDCreateOn,
+                        '' AS FTCreateBy
+                FROM
+                        TCNTDocDTFhnTmp FHN WITH(NOLOCK)
+                WHERE
+                        FHN.FTSessionID = '$tSessionID'
+                    AND FHN.FTBchCode = '$tBchCode'
+                    AND FHN.FTXshDocNo = '$tDocNo'
+                    AND FHN.FTXthDocKey = '$tXthDocKey'
+                    GROUP BY
+                        FHN.FTBchCode,
+                        FHN.FTXshDocNo,
+                        FHN.FTXthDocKey,
+                        FHN.FTPdtCode,
+                        FHN.FTFhnRefCode";
+            
+            $this->db->query($tSQL);
+
+
+            $this->db->where('FTSessionID', $tSessionID);
+            $this->db->where('FTXthDocKey', $tXthDocKey);
+            $this->db->where('FTBchCode', $tBchCode);
+            $this->db->where('FTXshDocNo', $tDocNo);
+            $this->db->where("ISNULL(FTXtdBarCode,'')!=", '');
+            $this->db->delete('TCNTDocDTFhnTmp');
+
+
+            //หาจำนวนของสินค้าปกติ
+            $nNumRows = $this->db->where('FTSessionID',$tSessionID)
+            ->where('FTBchCode',$tBchCode)
+            ->where('FTXthDocNo',$tDocNo)
+            ->where('FTXthDocKey',$tXthDocKey)
+            ->get('TCNTDocDTTmp')
+            ->num_rows();
+
+            $tSQL = "INSERT INTO TCNTDocDTTmp 
+                        (
+                        FTBchCode,
+                        FTXthDocNo,
+                        FTXthDocKey,
+                        FNXtdSeqNo,
+                        FTPdtCode,
+                        FTXtdPdtName,
+                        FTPunCode,
+                        FTPunName,
+                        FTXtdBchRef,
+                        FCPdtUnitFact,
+                        FDAjdDateTimeC1,
+                        FCAjdUnitQtyC1,
+                        FCAjdQtyAllC1,
+                        FTTmpStatus,
+                        FTSessionID,
+                        FDLastUpdOn,
+                        FDCreateOn,
+                        FTLastUpdBy,
+                        FTCreateBy
+                        )
+                        SELECT 
+                            DT1.FTBchCode,
+                            DT1.FTXshDocNo,
+                            DT1.FTXthDocKey,
+                            (ROW_NUMBER() OVER(ORDER BY DT1.FTPdtCode,PZS.FTPunCode) + $nNumRows ) AS FNXsdSeqNo,
+                            DT1.FTPdtCode,
+                            PDT_L.FTPdtName,
+                            PZS.FTPunCode,
+                            PUN_L.FTPunName,
+                            'FH' AS FTXtdBchRef,
+                            1   AS FCPdtUnitFact,
+                            GETDATE() AS FDAjdDateTimeC1,
+                            DT1.FCAjdUnitQtyC1,
+                            DT1.FCAjdQtyAllC1,
+                            '5' AS FTTmpStatus,
+                            '$tSessionID' AS FTSessionID,
+                            GETDATE() AS FDLastUpdOn,
+                            GETDATE() AS FDCreateOn,
+                            '$tUser' AS FTLastUpdBy,
+                            '$tUser' AS FTCreateBy
+                        FROM (
+                        SELECT
+                            FHN.FTBchCode,
+                            FHN.FTXshDocNo,
+                            FHN.FTXthDocKey,
+                            FHN.FTPdtCode,
+                            SUM (FHN.FCAjdQtyAllC1) AS FCAjdUnitQtyC1,
+                            SUM (FHN.FCAjdQtyAllC1) AS FCAjdQtyAllC1
+                        FROM
+                            TCNTDocDTFhnTmp FHN WITH(NOLOCK)
+                        WHERE
+                            FHN.FTSessionID = '$tSessionID'
+                        AND FHN.FTBchCode = '$tBchCode'
+                        AND FHN.FTXshDocNo = '$tDocNo'
+                        AND FHN.FTXthDocKey = '$tXthDocKey'
+                        GROUP BY
+                            FHN.FTBchCode,
+                            FHN.FTXshDocNo,
+                            FHN.FTXthDocKey,
+                            FHN.FTPdtCode
+                        ) AS DT1
+                        LEFT JOIN TCNMPdt_L PDT_L WITH(NOLOCK) ON  DT1.FTPdtCode = PDT_L.FTPdtCode AND PDT_L.FNLngID =$nLngID
+                        LEFT JOIN TCNMPdtPackSize PZS WITH(NOLOCK) ON DT1.FTPdtCode = PZS.FTPdtCode AND PZS.FCPdtUnitFact = $nLngID
+                        LEFT JOIN TCNMPdtUnit_L PUN_L WITH(NOLOCK) ON PZS.FTPunCode = PUN_L.FTPunCode AND PUN_L.FNLngID = $nLngID";
+        
+            $this->db->query($tSQL);
+
+
+            $tSQL = "UPDATE FHN 
+                        SET FHN.FNXsdSeqNo = DT.FNXtdSeqNo
+                        FROM TCNTDocDTFhnTmp FHN
+                        LEFT JOIN TCNTDocDTTmp DT ON FHN.FTPdtCode = DT.FTPdtCode AND FHN.FTSessionID = DT.FTSessionID AND FHN.FTBchCode = DT.FTBchCode AND FHN.FTXshDocNo = DT.FTXthDocNo AND FHN.FTXthDocKey = DT.FTXthDocKey
+                        WHERE FHN.FTSessionID = '$tSessionID'
+                        AND FHN.FTBchCode = '$tBchCode'
+                        AND FHN.FTXshDocNo = '$tDocNo'
+                        AND FHN.FTXthDocKey = '$tXthDocKey'";
+
+
+             $this->db->query($tSQL);
+
+            if ($this->db->trans_status() === FALSE) {
+                    $aStatus = array(
+                        'rtCode' => '905',
+                        'rtDesc' => 'Error Cannot Add/Edit Master.',
+                    );
+                } else {
+                    $aStatus = array(
+                        'rtCode' => '1',
+                        'rtDesc' => 'Add Master Success',
+                    );
+                }
+            
+            return $aStatus;
+        } catch (Exception $Error) {
+            return $Error;
+        }
+
+
+
+    }
+
+
+
+    
+    // Create By Nattakit(Nale) 2021/05/13
+    // Insert PdtFhn To DTfhnTemp
+    public function FSaMASTEventInsertProductsFashion($paInsertData,$paGetDataInsert){
+        try {
+            // Update Master
+            $tSessionID = $paInsertData['FTSessionID'];
+            $tXthDocKey = $paInsertData['FTXthDocKey'];
+            $tBchCode   = $paGetDataInsert['tBchCode'];
+            $tDocNo     = $paGetDataInsert['tDocNo'];
+            $nLngID = $this->session->userdata("tLangEdit");
+            $tSQL = "INSERT INTO TCNTDocDTFhnTmp 
+            (
+                FTBchCode,
+                FTXshDocNo,
+                FNXsdSeqNo,
+                FTXthDocKey,
+                FTPdtCode,
+                FTXtdPdtName,
+                FCXtdQty,
+                FTFhnRefCode,
+                FDAjdDateTimeC1,
+                FCAjdUnitQtyC1,
+                FCAjdQtyAllC1,
+                FDAjdDateTimeC2,
+                FCAjdUnitQtyC2,
+                FCAjdQtyAllC2,
+                FTSessionID,
+                FDCreateOn,
+                FTCreateBy
+            )
+            SELECT DISTINCT
+                PDT.FTBchCode,
+                '$tDocNo' AS FTXshDocNo,
+                PDT.FNXtdSeqNo,
+                PDT.FTXthDocKey,
+                PDT.FTPdtCode,
+                PDT.FTXtdPdtName,
+                0 AS FCXtdQty,
+                ISNULL(CLSIZE.FTFhnRefCode,'') AS FTFhnRefCode,
+                GETDATE() AS FDAjdDateTimeC1,
+                0					AS FCAjdUnitQtyC1,
+                0					AS FCAjdQtyAllC1,
+                GETDATE() AS FDAjdDateTimeC2,
+                0					AS FCAjdUnitQtyC2,
+                0					AS FCAjdQtyAllC2,
+              '$tSessionID' AS FTSessionID,
+              GETDATE() AS FDCreateOn,   
+              'Nale' AS FTCreateBy
+            FROM
+                TCNTDocDTTmp PDT WITH(NOLOCK)
+            INNER JOIN TCNMPdtBar PDTBAR  WITH(NOLOCK) ON PDT.FTPdtCode = PDTBAR.FTPdtCode AND PDT.FTPunCode = PDTBAR.FTPunCode 
+            LEFT JOIN TFHMPdtColorSize CLSIZE WITH(NOLOCK) ON PDT.FTPdtCode = CLSIZE.FTPdtCode AND PDTBAR.FTFhnRefCode = CLSIZE.FTFhnRefCode  
+            WHERE
+                PDT.FTSessionID = '$tSessionID'
+                AND PDT.FTXthDocKey = '$tXthDocKey'
+                AND PDT.FTBchCode = '$tBchCode'
+                AND PDT.FTXthDocNo = '$tDocNo'
+                AND PDT.FTXtdBchRef = 'FH'
+                AND CLSIZE.FTFhnStaActive = '1'
+            ORDER BY 
+                PDT.FNXtdSeqNo ASC";
+        
+                // echo $tSQL;die();
+            $this->db->query($tSQL);
+            if ($this->db->trans_status() === FALSE) {
+                    $aStatus = array(
+                        'rtCode' => '905',
+                        'rtDesc' => 'Error Cannot Add/Edit Master.',
+                    );
+                } else {
+                    $aStatus = array(
+                        'rtCode' => '1',
+                        'rtDesc' => 'Add Master Success',
+                    );
+                }
+            
+            return $aStatus;
+        } catch (Exception $Error) {
+            return $Error;
+        }
+
+
+
+    }
+
+    // Create By Nattakit(Nale) 2022/05/11
+    // Parameter : SessionLogin, DocKey, DocNo ,
+    //             TypeDelete 1 = clear temp , 2 delete by id
+    public function FSxMASTClearDTForFnTmp($paDataWhere)
+    {
+
+        $this->db->where('FTSessionID', $paDataWhere['FTSessionID']);
+        $this->db->where('FTXthDocKey', $paDataWhere['FTXthDocKey']);
+        $this->db->where('FTXtdBchRef', 'FH');
+        $this->db->delete('TCNTDocDTTmp');
+
+    }
+
+
+    
+    // Create By Nattakit(Nale) 2021/05/13
+    // Insert PdtFhn To DTfhnTemp
+    public function FSnMASTGetSeqDTTemp($paInsertData){
+        $FTBchCode = $paInsertData['FTBchCode'];
+        $FTXthDocNo = $paInsertData['FTXshDocNo'];
+        $FTXthDocKey = $paInsertData['FTXthDocKey']; 
+        $FTPdtCode = $paInsertData['FTPdtCode']; 
+        $FTXtdBarCode = $paInsertData['FTXtdBarCode']; 
+        $FTPunCode = $paInsertData['FTPunCode']; 
+        $FTSessionID = $paInsertData['FTSessionID'];    
+        $tSQL = "   SELECT
+                        FNXtdSeqNo
+                    FROM TCNTDocDTTmp WITH(NOLOCK)
+                    WHERE 
+                            FTBchCode     = '$FTBchCode'
+                        AND FTXthDocKey    = 'TCNTPdtAdjStkDT'
+                        AND FTXthDocNo     = '$FTXthDocNo'
+                        AND FTPdtCode     = '$FTPdtCode'
+                        AND ISNULL(FTXtdBarCode,'')   = '$FTXtdBarCode'
+                        AND FTPunCode     = '$FTPunCode'
+                        AND FTSessionID    = '$FTSessionID'
+        ";
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $nXtdSeqNo = $oQuery->result_array()[0]['FNXtdSeqNo'];
+        } else {
+            $nXtdSeqNo = 1;
+        }
+        return $nXtdSeqNo;
+    }
+
+    // Create By Nattakit(Nale) 2021/05/13
+    // Insert PdtFhn To DTfhnTemp
+    public function FSnMASTGetPdtUnitFactDTTemp($paInsertData){
+        $FTBchCode = $paInsertData['FTBchCode'];
+        $FTXthDocNo = $paInsertData['FTXshDocNo'];
+        $FTXthDocKey = $paInsertData['FTXthDocKey']; 
+        $FTPdtCode = $paInsertData['FTPdtCode']; 
+        $FTXtdBarCode = $paInsertData['FTXtdBarCode']; 
+        $FNXsdSeqNo = $paInsertData['FNXsdSeqNo']; 
+        $FTSessionID = $paInsertData['FTSessionID'];    
+        $tSQL = "   SELECT
+                        FCPdtUnitFact
+                    FROM TCNTDocDTTmp WITH(NOLOCK)
+                    WHERE 
+                            FTBchCode     = '$FTBchCode'
+                        AND FTXthDocKey    = 'TCNTPdtAdjStkDT'
+                        AND FTXthDocNo     = '$FTXthDocNo'
+                        AND FTPdtCode     = '$FTPdtCode'
+                        AND FTXtdBarCode   = '$FTXtdBarCode'
+                        AND FNXtdSeqNo     = '$FNXsdSeqNo'
+                        AND FTSessionID    = '$FTSessionID'
+        ";
+        $oQuery = $this->db->query($tSQL);
+        if ($oQuery->num_rows() > 0) {
+            $nXtdFact = $oQuery->result_array()[0]['FCPdtUnitFact'];
+        } else {
+            $nXtdFact = 1;
+        }
+        return $nXtdFact;
+    }
+
+    // Create By Nattakit(Nale) 2021/05/13
+    // Insert PdtFhn To DTfhnTemp
+    public function FSaMASTEventUpdateDTTmp($paInsertData){
+        try {
+
+            // นำสินค้าเพิ่มจำนวนในแถวแรก
+                    $tSQL   =   "   SELECT
+                            FNXtdSeqNo, 
+                            FCAjdUnitQtyC1,
+                            FCAjdQtyAllC1
+                        FROM TCNTDocDTTmp
+                        WHERE 1=1 
+                        AND FTBchCode       = '" . $paInsertData['FTBchCode'] . "'
+                        AND FTXthDocNo      = '" . $paInsertData['FTXshDocNo'] . "'
+                        AND FTXthDocKey     = '" . $paInsertData['FTXthDocKey'] . "'
+                        AND FTSessionID     = '" . $paInsertData['FTSessionID'] . "'
+                        AND FTPdtCode       = '" . $paInsertData["FTPdtCode"] . "'
+                        AND FNXtdSeqNo      = '" . $paInsertData["FNXsdSeqNo"] . "'
+                        ORDER BY FNXtdSeqNo";
+                    $oQuery = $this->db->query($tSQL);
+                    if ($oQuery->num_rows() > 0) {
+                    // เพิ่มจำนวนให้รายการที่มีอยู่แล้ว
+                    $aResult    = $oQuery->row_array();
+                    $tSQL       =   "   UPDATE TCNTDocDTTmp
+                                SET FCAjdUnitQtyC1 =  (SELECT
+                                SUM(FCAjdUnitQtyC1) As FCAjdUnitQtyC1
+                                        FROM TCNTDocDTFhnTmp
+                                        WHERE 1=1 
+                                        AND FTBchCode       = '" . $paInsertData['FTBchCode'] . "'
+                                        AND FTXshDocNo      = '" . $paInsertData['FTXshDocNo'] . "'
+                                        AND FTXthDocKey     = '" . $paInsertData['FTXthDocKey'] . "'
+                                        AND FTSessionID     = '" . $paInsertData['FTSessionID'] . "'
+                                        AND FTPdtCode       = '" . $paInsertData["FTPdtCode"] . "'
+                                        AND FNXsdSeqNo      = '" . $paInsertData["FNXsdSeqNo"] . "'
+                                        GROUP BY FTBchCode,FTXshDocNo,FTXthDocKey,FTPdtCode,FNXsdSeqNo ) ,
+                                    FCAjdQtyAllC1 = (SELECT  
+                                                        SUM(FCAjdQtyAllC1) As FCAjdQtyAllC1
+                                                        FROM TCNTDocDTFhnTmp
+                                                        WHERE 1=1 
+                                                        AND FTBchCode       = '" . $paInsertData['FTBchCode'] . "'
+                                                        AND FTXshDocNo      = '" . $paInsertData['FTXshDocNo'] . "'
+                                                        AND FTXthDocKey     = '" . $paInsertData['FTXthDocKey'] . "'
+                                                        AND FTSessionID     = '" . $paInsertData['FTSessionID'] . "'
+                                                        AND FTPdtCode       = '" . $paInsertData["FTPdtCode"] . "'
+                                                        AND FNXsdSeqNo      = '" . $paInsertData["FNXsdSeqNo"] . "'
+                                                        GROUP BY FTBchCode,FTXshDocNo,FTXthDocKey,FTPdtCode,FNXsdSeqNo )  
+                                WHERE 1=1
+                                AND FTBchCode       = '" . $paInsertData['FTBchCode'] . "'
+                                AND FTXthDocNo      = '" . $paInsertData['FTXshDocNo'] . "'
+                                AND FTXthDocKey     = '" . $paInsertData['FTXthDocKey'] . "'
+                                AND FTSessionID     = '" . $paInsertData['FTSessionID'] . "'
+                                AND FTPdtCode       = '" . $paInsertData["FTPdtCode"] . "'
+                                AND FNXtdSeqNo      = '" . $paInsertData["FNXsdSeqNo"] . "'
+                                ";
+                    $this->db->query($tSQL);
+                    // echo $this->db->last_query();die();
+                    $aStatus = array(
+                    'rtCode'    => '1',
+                    'rtDesc'    => 'Add Success.',
+                    );
+                    } else {
+                        $this->db->insert('TCNTDocDTTmp', $paInsertData);
+
+                    }
+
+
+                    if ($this->db->affected_rows() > 0) {
+                        $aStatus = array(
+                            'rtCode' => '1',
+                            'rtDesc' => 'Add Master Success',
+                        );
+                    } else {
+                        $aStatus = array(
+                            'rtCode' => '905',
+                            'rtDesc' => 'Error Cannot Add/Edit Master.',
+                        );
+                    }
+
+                return $aStatus;
+                } catch (Exception $Error) {
+                return $Error;
+                }
+    }
+
+
+    // Create By Nattakit(Nale) 2021/05/13
+    // Insert PdtFhn To DTfhnTemp
+    public function FSaMASTEventAddProductsFashion($paInsertData){
+        try {
+
+                       // นำสินค้าเพิ่มจำนวนในแถวแรก
+                 $tSQL   =   "   SELECT
+                        FNXsdSeqNo, 
+                        FCAjdUnitQtyC1,
+                        FCAjdQtyAllC1
+                    FROM TCNTDocDTFhnTmp
+                    WHERE 1=1 
+                    AND FTBchCode       = '" . $paInsertData['FTBchCode'] . "'
+                    AND FTXshDocNo      = '" . $paInsertData['FTXshDocNo'] . "'
+                    AND FTXthDocKey     = '" . $paInsertData['FTXthDocKey'] . "'
+                    AND FTSessionID     = '" . $paInsertData['FTSessionID'] . "'
+                    AND FTPdtCode       = '" . $paInsertData["FTPdtCode"] . "'
+                    AND FTFhnRefCode    = '" . $paInsertData["FTFhnRefCode"] . "'
+                    AND FNXsdSeqNo      = '" . $paInsertData["FNXsdSeqNo"] . "'
+                    ORDER BY FNXsdSeqNo";
+                $oQuery = $this->db->query($tSQL);
+                if ($oQuery->num_rows() > 0) {
+                // เพิ่มจำนวนให้รายการที่มีอยู่แล้ว
+                $aResult    = $oQuery->row_array();
+                $tSQL       =   "   UPDATE TCNTDocDTFhnTmp
+                            SET FCAjdUnitQtyC1 =  ISNULL(FCAjdUnitQtyC1,0) + '" . ($paInsertData["FCAjdUnitQtyC1"]) . "' ,
+                                FCAjdQtyAllC1 =  ISNULL(FCAjdQtyAllC1,0) + '" . ($paInsertData["FCAjdQtyAllC1"]) . "' 
+                            WHERE 1=1
+                            AND FTBchCode       = '" . $paInsertData['FTBchCode'] . "'
+                            AND FTXshDocNo      = '" . $paInsertData['FTXshDocNo'] . "'
+                            AND FTXthDocKey     = '" . $paInsertData['FTXthDocKey'] . "'
+                            AND FTSessionID     = '" . $paInsertData['FTSessionID'] . "'
+                            AND FTPdtCode       = '" . $paInsertData["FTPdtCode"] . "'
+                            AND FTFhnRefCode    = '" . $paInsertData["FTFhnRefCode"] . "' 
+                            AND FNXsdSeqNo      = '" . $paInsertData["FNXsdSeqNo"] . "'
+                            ";
+                $this->db->query($tSQL);
+                $aStatus = array(
+                'rtCode'    => '1',
+                'rtDesc'    => 'Add Success.',
+                );
+                } else {
+                    $this->db->insert('TCNTDocDTFhnTmp', $paInsertData);
+
+                }
+
+
+                if ($this->db->affected_rows() > 0) {
+                    $aStatus = array(
+                        'rtCode' => '1',
+                        'rtDesc' => 'Add Master Success',
+                    );
+                } else {
+                    $aStatus = array(
+                        'rtCode' => '905',
+                        'rtDesc' => 'Error Cannot Add/Edit Master.',
+                    );
+                }
+
+            return $aStatus;
+        } catch (Exception $Error) {
+            return $Error;
+        }
+
+
+
+    }
+
+
+
+    
+    // Create By Nattakit(Nale) 2021/05/13
+    // Insert PdtFhn To DTfhnTemp
+    public function FSaMASTEventEditProductsFashion($paInsertData){
+        try {
+            // Update Master
+            $this->db->where('FTBchCode', $paInsertData['FTBchCode']);
+            $this->db->where('FTXshDocNo', $paInsertData['FTXshDocNo']);
+            $this->db->where('FTXthDocKey', $paInsertData['FTXthDocKey']);
+            $this->db->where('FTPdtCode', $paInsertData['FTPdtCode']);
+            $this->db->where('FNXsdSeqNo', $paInsertData['FNXsdSeqNo']);
+            $this->db->where('FTFhnRefCode', $paInsertData['FTFhnRefCode']);
+            $this->db->where('FTSessionID', $paInsertData['FTSessionID']);
+            $this->db->update('TCNTDocDTFhnTmp',$paInsertData);
+            if ($this->db->affected_rows() > 0) {
+                $aStatus = array(
+                    'rtCode' => '1',
+                    'rtDesc' => 'Update Master Success',
+                );
+            } else {
+                // Add Master
+                $this->db->insert('TCNTDocDTFhnTmp', $paInsertData);
+
+                if ($this->db->affected_rows() > 0) {
+                    $aStatus = array(
+                        'rtCode' => '1',
+                        'rtDesc' => 'Add Master Success',
+                    );
+                } else {
+                    $aStatus = array(
+                        'rtCode' => '905',
+                        'rtDesc' => 'Error Cannot Add/Edit Master.',
+                    );
+                }
+            }
+            return $aStatus;
+        } catch (Exception $Error) {
+            return $Error;
+        }
+
+
+
     }
 
 }

@@ -103,6 +103,14 @@
             $('#obtASTDocTime').unbind().click(function(){
                 $('#oetASTDocTime').datetimepicker('show');
             });
+
+            $('#obtASTFilterExDateFrm').unbind().click(function(){
+                $('#oetASTFilterExDateFrm').datepicker('show');
+            });
+
+            $('#obtASTFilterExDateTo').unbind().click(function(){
+                $('#oetASTFilterExDateTo').datepicker('show');
+            });
         // =====================================================================================
         
         // ================================== Set Date Default =================================
@@ -139,6 +147,14 @@
             });
         // =====================================================================================
         
+        $('#ocmASTFilterExCon').on('change',function(){
+            if($(this).val()==''){
+                $('#oetASTFilterExStkBal').prop('disabled',true);
+            }else{
+                $('#oetASTFilterExStkBal').prop('disabled',false);
+            }
+        });
+
     }); 
 
     // ======================================= Option Browse Modal ========================================
@@ -653,6 +669,90 @@
                         'tReturnInputCode'  : "oetASTWahCode",
                         'tReturnInputName'  : "oetASTWahName",
                         'tNextFuncName'     : "JSxASTSetConditionWah",
+                        'aArgReturn'        : []
+                    });
+                    JCNxBrowseData('oASTBrowseWahOption');
+                }
+                
+            }else{
+                JCNxShowMsgSessionExpired();
+            }
+        });
+
+
+        
+        // Event Browse Modal คลังสินค้า
+        $('#obtASTBrowseFilterWahouse').unbind().click(function(){
+            var nStaSession = JCNxFuncChkSessionExpired();
+            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+                JSxCheckPinMenuClose(); // Hidden Pin Menu
+
+                var tShpCode = $('#oetASTShopCode').val();
+                var tPosCode = $('#oetASTPosCode').val();
+                if(typeof(tShpCode) != undefined && tShpCode != "" && tPosCode == ""){
+                    //คล้งร้านค้า ShopWah  Where ShpCode
+                    window.oASTBrowseShpWahOption = undefined;
+                    oASTBrowseShpWahOption     = oASTBrowseShpWah({
+                        'tASTBchCode'        : $('#oetASTBchCode').val(),
+                        'tASTShpCode'        : $('#oetASTShopCode').val(),
+                        'tReturnInputCode'   : 'oetASTFilterWahCode',
+                        'tReturnInputName'   : 'oetASTFilterWahName',
+                        'tNextFuncName'      : "",
+                        'aArgReturn'         : []
+                    });
+                    JCNxBrowseData('oASTBrowseShpWahOption');
+                }else{
+                    //คลังสาขา Wahouse   Where RefCode
+                    window.oASTBrowseWahOption  = undefined;
+                    oASTBrowseWahOption         = oASTBrowseWah({
+                        'tASTBchCode'       : $('#oetASTBchCode').val(),
+                        'tASTShpCode'       : $('#oetASTShopCode').val(),
+                        'tASTPosCode'       : $('#oetASTPosCode').val(),
+                        'tReturnInputCode'  : "oetASTFilterWahCode",
+                        'tReturnInputName'  : "oetASTFilterWahName",
+                        'tNextFuncName'     : "",
+                        'aArgReturn'        : []
+                    });
+                    JCNxBrowseData('oASTBrowseWahOption');
+                }
+                
+            }else{
+                JCNxShowMsgSessionExpired();
+            }
+        });
+
+
+        
+        // Event Browse Modal คลังสินค้า
+        $('#obtASTBrowseFilterExWahouse').unbind().click(function(){
+            var nStaSession = JCNxFuncChkSessionExpired();
+            if(typeof(nStaSession) !== 'undefined' && nStaSession == 1){
+                JSxCheckPinMenuClose(); // Hidden Pin Menu
+
+                var tShpCode = $('#oetASTShopCode').val();
+                var tPosCode = $('#oetASTPosCode').val();
+                if(typeof(tShpCode) != undefined && tShpCode != "" && tPosCode == ""){
+                    //คล้งร้านค้า ShopWah  Where ShpCode
+                    window.oASTBrowseShpWahOption = undefined;
+                    oASTBrowseShpWahOption     = oASTBrowseShpWah({
+                        'tASTBchCode'        : $('#oetASTBchCode').val(),
+                        'tASTShpCode'        : $('#oetASTShopCode').val(),
+                        'tReturnInputCode'   : 'oetASTFilterExWahCode',
+                        'tReturnInputName'   : 'oetASTFilterExWahName',
+                        'tNextFuncName'      : "",
+                        'aArgReturn'         : []
+                    });
+                    JCNxBrowseData('oASTBrowseShpWahOption');
+                }else{
+                    //คลังสาขา Wahouse   Where RefCode
+                    window.oASTBrowseWahOption  = undefined;
+                    oASTBrowseWahOption         = oASTBrowseWah({
+                        'tASTBchCode'       : $('#oetASTBchCode').val(),
+                        'tASTShpCode'       : $('#oetASTShopCode').val(),
+                        'tASTPosCode'       : $('#oetASTPosCode').val(),
+                        'tReturnInputCode'  : "oetASTFilterExWahCode",
+                        'tReturnInputName'  : "oetASTFilterExWahName",
+                        'tNextFuncName'     : "",
                         'aArgReturn'        : []
                     });
                     JCNxBrowseData('oASTBrowseWahOption');
@@ -1520,6 +1620,57 @@ function JSnASTPrintDoc(){
                                 }
                 }
         JCNxRftDataTable(aRftData);
+}
+
+
+
+
+function JSxAdjStkOpenImportForm(){
+        if($('#oetASTWahCode').val()!=""){
+            var tNameModule     = 'adjstock';
+            var tTypeModule     = 'document';
+            var tAfterRoute     = 'JSxAdjStkAfterImportForm'; // call func
+            var tFlagClearTmp   = '1' // null = ไม่สนใจ 1 = ลบหมดเเล้วเพิ่มใหม่ 2 = เพิ่มต่อเนื่อง
+            var tDocumentNo = $("#oetASTDocNo").val();
+            var tPIFrmBchCode = $("#oetASTBchCode").val();
+            var nSplVatRate = '';
+            var tSplVatCode = '';
+            var aPackdata = {
+                'tNameModule'   : tNameModule,
+                'tTypeModule'   : tTypeModule,
+                'tAfterRoute'   : tAfterRoute,
+                'tFlagClearTmp' : tFlagClearTmp,
+                'tDocumentNo' : tDocumentNo,
+                'tFrmBchCode' : tPIFrmBchCode,
+                'nSplVatRate' : nSplVatRate,
+                'tSplVatCode' : tSplVatCode,
+            };
+
+                JSxImportPopUp(aPackdata);
+        }else{
+            FSvCMNSetMsgWarningDialog('<?php echo language('document/adjuststocksub/adjuststocksub', 'tASTPlsEnterWahCode'); ?>');
+        }
+    }
+    
+
+function JSxAdjStkAfterImportForm(paData){
+
+    console.log(paData);
+    var aData = JSON.parse(paData);
+    if(aData['rtCode']=='99'){
+        FSvCMNSetMsgWarningDialog(aData['rtMassage']);
+    }else{
+        if(aData.aInsFhnPackdata.length>0){
+            var aDataInsert = {
+                    tBchCode    : $('#oetASTBchCode').val(),
+                    tDocNo      : $('#oetASTDocNo').val()
+                };
+                JSvASTInsertPdtToTemp_PDTSerialorFashion(aDataInsert);
+        }else{
+            JSvASTLoadPdtDataTableHtml(1);
+        }
+    }
+    // JSvAdjStkSubLoadPdtDataTableHtml(1);
 }
 
 </script>

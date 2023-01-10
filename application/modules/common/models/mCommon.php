@@ -117,6 +117,7 @@ class mCommon extends CI_Model {
            
             //เพิ่มข้อมูล
             $this->db->insert_batch($tTableNameTmp, $poIns);
+            // echo $this->db->last_query();
             /*เพิ่มข้อมูล
              $tNameProject   = explode('/', $_SERVER['REQUEST_URI'])[1];
              $tPathFileBulk  = $_SERVER['DOCUMENT_ROOT'].'/'.$tNameProject.'/application/modules/common/assets/writeFileImport/FileImport_Branch.txt';
@@ -521,4 +522,42 @@ class mCommon extends CI_Model {
             }
             return $aStatus;
         }
+
+
+
+
+            /**
+     * Functionality: ตรวจสอบรหัสควบคุมสต็อก
+     * Parameters: Array เงื่อนไขการเช็คค่า [$paParams]
+     * Creator: 11/05/2022 Nale
+     * Last Modified: -
+     * Return: Statuss
+     * Return Type: Number
+    */
+    public function FCNaMCMMICheckRefCodePdtFashion($paData){
+        $tPdtCode = $paData['FTPdtCode'];
+        $tBarCode = $paData['FTBarCode'];
+        $tFhnRefCode = $paData['FTFhnRefCode'];
+        $nLngID = $paData['FNLngID'];
+        $tSQL = "SELECT FHN.FTFhnRefCode FROM TFHMPdtColorSize FHN WITH(NOLOCk) WHERE FHN.FTPdtCode = '$tPdtCode' AND FHN.FTFhnRefCode = '$tFhnRefCode' 
+                ";
+            $oQuery = $this->db->query($tSQL);
+
+            if ($oQuery->num_rows() > 0) {
+                $oDetail = $oQuery->row_array();
+                $aResult = array(
+                    'raItem'   => $oDetail,
+                    'rtCode'    => '1',
+                    'rtDesc'    => 'success',
+                );
+            } else {
+                $aResult = array(
+                    'rtCode' => '800',
+                    'rtDesc' => 'data not found.',
+                );
+            }
+            return $aResult;
+    }
+
+    
 }

@@ -471,6 +471,8 @@ $route['docASTEventUpdateDateTime']        = 'document/adjuststocksub/cAdjustSto
 $route['docASTEventAddProductsFashion']    = 'document/adjuststocksub/cAdjustStockSub/FSaCASTEventAddProductsFashion';
 $route['docASTEventEditProductsFashion']   = 'document/adjuststocksub/cAdjustStockSub/FSaCASTEventEditProductsFashion';
 
+
+
 //Credit Note (ใบลดหนี้)
 $route['creditNote/(:any)/(:any)']         = 'document/creditnote/cCreditNote/index/$1/$2';
 $route['creditNoteFormSearchList']         = 'document/creditnote/cCreditNote/FSxCCreditNoteFormSearchList';
@@ -563,6 +565,9 @@ $route['dcmASTApprove']                 = 'document/adjuststock/cAdjustStock/FSv
 $route['dcmASTGetPdtBarCode']           = 'document/adjuststock/cAdjustStock/FSvCASTGetPdtBarCode';
 $route['docAdjStkEventAddProducts']     = 'document/adjuststock/cAdjustStock/FSvCAdjStkEventAddProducts';
 $route['docASTInsertPdtToTmp']          = 'document/adjuststock/cAdjustStock/FSaCASTInsertPdtToTmp';
+$route['docASTAdjEventAddProductsFashion']    = 'document/adjuststock/cAdjustStock/FSaCASTEventAddProductsFashion';
+$route['docASTAdjEventEditProductsFashion']   = 'document/adjuststock/cAdjustStock/FSaCASTEventEditProductsFashion';
+$route['docASTEventAddPdtIntoDTFhnTemp']   = 'document/adjuststock/cAdjustStock/FSoCASTEventAddPdtIntoDTFhnTemp';
 
 //ใบรับของ-ใบซื้อสินค้า/บริการ
 $route['dcmPI/(:any)/(:any)']           = 'document/purchaseinvoice/cPurchaseInvoice/index/$1/$2';

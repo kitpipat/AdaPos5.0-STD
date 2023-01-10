@@ -114,3 +114,18 @@ $lang['tASTStaDocAct']          = "Active";
 $lang['tASTClearData']          = "Clear Data";
 $lang['tASTSearchProduct']      = "Search Products";
 
+$lang['tASTCanDoc']      = "Cancel Document";
+
+$lang['tASTDocRemoveCantEdit']      = "This document has been processed or cancelled. Can't fix it.";
+
+$lang['tASTCancel']      = "Do you want to cancel this document?";
+
+
+$lang['tASTFillterExclude']        = "Exclude";
+$lang['tASTFillterExcludeStock']   = "Check unaccounted items";
+$lang['tASTFillterExcludeStockDate']   = "Date range of counting documents";
+$lang['tASTFillterExcludeStockDateFrm']   = "From Date";
+$lang['tASTFillterExcludeStockDateTo']   = "To Date";
+$lang['tASTFillterExcludeStockWah']   = "Wahouse";
+$lang['tASTFillterExcludeStockCon']   = "Condition";
+$lang['tASTFillterExcludeStockStkBal']   = "Balance";

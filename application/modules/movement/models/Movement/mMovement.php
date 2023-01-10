@@ -50,7 +50,8 @@ class mMovement extends CI_Model
                     break;
                 case '3':
                     $tBarCodeText= str_replace(",","','",$tKeyword);
-                    $tWherePdt = "AND BAR.FTBarCode IN ('$tBarCodeText')";
+                    // $tWherePdt = "AND BAR.FTBarCode IN ('$tBarCodeText')";
+                    $tWherePdt = "AND PDT.FTPdtCode IN (SELECT FTPdtCode FROM TCNMPdtBar WITH(NOLOCK) WHERE FTBarCode IN('$tBarCodeText') GROUP BY FTPdtCode)";
                     break;
                 case '4':
                     $tCgCodeText= str_replace(",","','",$tKeyword);
@@ -200,7 +201,7 @@ class mMovement extends CI_Model
 
                         LEFT JOIN TCNMPdt PDTM WITH(NOLOCK) ON StkCrd.FTPdtCode = PDTM.FTPdtCode
                         LEFT JOIN TCNMPdt_L PDT WITH(NOLOCK) ON StkCrd.FTPdtCode = PDT.FTPdtCode AND PDT.FNLngID = $nLngID
-                        LEFT JOIN TCNMPdtBar BAR WITH(NOLOCK) ON StkCrd.FTPdtCode = BAR.FTPdtCode
+                      
                         LEFT JOIN TCNMWaHouse_L WAH WITH(NOLOCK) ON StkCrd.FTBchCode = WAH.FTBchCode AND StkCrd.FTWahCode = WAH.FTWahCode AND WAH.FNLngID = $nLngID
                 WHERE 1=1 
             ";

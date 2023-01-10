@@ -46,7 +46,7 @@ class mInv extends CI_Model {
                         break;
                     case '3':
                         $tBarCodeText= str_replace(",","','",$tKeyword);
-                        $tWherePdt = "AND BAR.FTBarCode IN ('$tBarCodeText')";
+                        $tWherePdt = "AND PDT.FTPdtCode IN (SELECT FTPdtCode FROM TCNMPdtBar WITH(NOLOCK) WHERE FTBarCode IN('$tBarCodeText') GROUP BY FTPdtCode)";
                         break;
                     case '4':
                         $tCgCodeText= str_replace(",","','",$tKeyword);
@@ -97,7 +97,7 @@ class mInv extends CI_Model {
                                             LEFT JOIN TCNMPdt_L PDT_L WITH(NOLOCK) ON BAL.FTPdtCode = PDT_L.FTPdtCode AND PDT_L.FNLngID = $nLngID 
                                             LEFT JOIN TCNMBranch_L BCH WITH(NOLOCK) ON BAL.FTBchCode = BCH.FTBchCode AND BCH.FNLngID = $nLngID 
                                             LEFT JOIN TCNMWaHouse_L WAH WITH(NOLOCK) ON BAL.FTBchCode = WAH.FTBchCode AND BAL.FTWahCode = WAH.FTWahCode AND WAH.FNLngID = $nLngID 
-                                            LEFT JOIN TCNMPdtBar BAR WITH(NOLOCK) ON BAL.FTPdtCode = BAR.FTPdtCode
+                                           -- LEFT JOIN TCNMPdtBar BAR WITH(NOLOCK) ON BAL.FTPdtCode = BAR.FTPdtCode
                                             LEFT JOIN
                                                 (
                                                     SELECT FTBchCode, 

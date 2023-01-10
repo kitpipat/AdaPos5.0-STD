@@ -306,7 +306,7 @@ class cAdjustStock extends MX_Controller {
             $nOptDecimalShow    = FCNxHGetOptionDecimalShow();
 
             // Call Advance Table
-            // $tTableTransferOut  = "TCNTPdtAdjStkDT";
+            // $tTableTransferOut  = "TCNTPdtAdjStkHD";
             // $aColumnShow        = FCNaDCLGetColumnShow($tTableTransferOut);
 
             // print_r($aColumnShow);
@@ -375,7 +375,7 @@ class cAdjustStock extends MX_Controller {
     // ReturnType: Object
     public function FSoCASTAdvTblShowColList(){
         try{
-            $tTableShowColums   = "TCNTPdtAdjStkDT";
+            $tTableShowColums   = "TCNTPdtAdjStkHD";
             $aAvailableColumn   = FCNaDCLAvailableColumn($tTableShowColums);
             $aDataViewAdvTbl    = array(
                 'aAvailableColumn'  => $aAvailableColumn
@@ -412,7 +412,7 @@ class cAdjustStock extends MX_Controller {
             $nASTStaSetDef          = $this->input->post('nASTStaSetDef');
 
             // Table Set Show Colums
-            $tTableShowColums   = "TCNTPdtAdjStkDT";
+            $tTableShowColums   = "TCNTPdtAdjStkHD";
             FCNaDCLSetShowCol($tTableShowColums,'','');
             if($nASTStaSetDef == '1'){
                 FCNaDCLSetDefShowCol($tTableShowColums);
@@ -601,7 +601,7 @@ class cAdjustStock extends MX_Controller {
 
             $this->mAdjustStock->FSaMASTAddUpdateDocNoInDocTemp($aDataWhere);   // Update DocNo ในตาราง Doctemp
             $this->mAdjustStock->FSaMASTAddUpdateHD($aDataMaster);  // ยังไม่ได้ update
-            $this->FSaMASTAddTmpToDT($aDataMaster['FTAjhDocNo']);  // Temp to DT and Clear Temp       
+            $this->FSaMASTAddTmpToDT($aDataMaster['FTAjhDocNo'],$aDataMaster); // Temp to DT and Clear Temp       
 
             if($this->db->trans_status() === FALSE){
                 $this->db->trans_rollback();
@@ -679,7 +679,7 @@ class cAdjustStock extends MX_Controller {
 
             $this->mAdjustStock->FSaMASTAddUpdateDocNoInDocTemp($aDataWhere);   // Update DocNo ในตาราง Doctemp 
             $this->mAdjustStock->FSaMASTAddUpdateHD($aDataMaster);  // ยังไม่ได้ update
-            $this->FSaMASTAddTmpToDT($aDataMaster['FTAjhDocNo']);  // Temp to DT and Clear Temp       
+            $this->FSaMASTAddTmpToDT($aDataMaster['FTAjhDocNo'],$aDataMaster);  // Temp to DT and Clear Temp       
             if($this->db->trans_status() === FALSE){
                 $this->db->trans_rollback();
                 $aReturn = array(
@@ -703,14 +703,22 @@ class cAdjustStock extends MX_Controller {
 
     
     // Function : Add Temp to DT
-    public function FSaMASTAddTmpToDT($ptAjhDocNo = ''){
+    public function FSaMASTAddTmpToDT($ptAjhDocNo = '',$paDataDoc){
         $aDataWhere = array(
             'FTAjhDocNo'    => $ptAjhDocNo,
             'FTXthDocKey'   => 'TCNTPdtAdjStkHD',
+            'FTSessionID'   => $this->session->userdata('tSesSessionID'),
+            'tDeleteType'   => '1'
         );
 
         // Insert Temp ลง DT
         $aResInsDT = $this->mAdjustStock->FSaMASTInsertTmpToDT($aDataWhere);
+
+        $aResInsDTFhn = $this->mAdjustStock->FSaMAdjASTInsertTmpToDTFhn($aDataWhere);
+        // if($aResInsDTFhn['rtCode'] == '1'){
+        //     $this->mAdjustStock->FSxMAdjStkClearDTFhnTmp($aDataWhere);
+        // }
+
     }
 
     // Function : แก้ไข Pdt DT
@@ -916,7 +924,7 @@ class cAdjustStock extends MX_Controller {
         $aResult    = $this->mAdjustStock->FSaMASTGetHD($aDataWhere);  //TCNTPdtAdjStkHD
 
 
-        // $aDataDT    = $this->mAdjustStock->FSaMASTGetDT($aDataWhere);   //TCNTPdtAdjStkDT
+        // $aDataDT    = $this->mAdjustStock->FSaMASTGetDT($aDataWhere);   //TCNTPdtAdjStkHD
         $this->mAdjustStock->FSaMASTInsertDTToTemp($aDataWhere); //MoveDT to Temp
         
         // ========================= Create By Witsarut 27/08/2019 =========================
@@ -986,7 +994,7 @@ class cAdjustStock extends MX_Controller {
             // );
             
             // $aResult    = $this->mAdjustStock->FSaMASTGetHD($aDataWhere);  //TCNTPdtAdjStkHD
-            // $aDataDT    = $this->mAdjustStock->FSaMASTGetDT($aDataWhere);   //TCNTPdtAdjStkDT
+            // $aDataDT    = $this->mAdjustStock->FSaMASTGetDT($aDataWhere);   //TCNTPdtAdjStkHD
             
             $tXthDocNo          = $this->input->post('tXthDocNo');
             $tUsrBchCode        = $this->input->post('tBchCode');
@@ -1092,7 +1100,13 @@ class cAdjustStock extends MX_Controller {
             );
             $aResultPDT = $this->mAdjustStock->FSaMAdjStkEventAddProducts($aDataCondition,$aDataInsert);
             
-
+            $aDataClear = array(
+                'FTXthDocKey'   => 'TCNTPdtAdjStkHD',
+                'FTSessionID'   => $this->session->userdata('tSesSessionID'),
+                'tDeleteType'   => '1'
+            );
+            $this->mAdjustStock->FSxMAdjStkClearDTFhnTmp($aDataClear);
+            $aResultPDT2 = $this->mAdjustStock->FSaMASTEventInsertProductsFashion($aDataClear,$aGetDataInsert);
             // tCode = 1 insert สำเร็จ
             if($aResultPDT['tCode'] == '1'){
                 $this->db->trans_commit();
@@ -1133,7 +1147,7 @@ class cAdjustStock extends MX_Controller {
     //     print_r($aPdtData);
     // echo '</pre>';
         // die();
-
+        $aPdtPack['PDTSpc'] = 'GN';
     // INSERT INTO TCNTDocDTTmp (
     //     FTBchCode,FTXthDocNo,FNXtdSeqNo,FTXthDocKey,FTPdtCode,
     //     FTXtdPdtName,FTPunCode,FTPunName,FTXtdBarCode,FCPdtUnitFact,
@@ -1156,6 +1170,11 @@ class cAdjustStock extends MX_Controller {
                 );
                 $nMaxSeqNo = $this->mAdjustStock->FSnMASTGetMaxSeqDTTemp($aDataWhere);
                 $aPdtPack = $aPdtData['packData'];
+                if($aPdtPack['PDTSpc']=='FH'){
+                    $nTmpStatus = 5;
+                }else{
+                    $nTmpStatus = 1;  
+                }
                 // Loop
                 $aDataPdtMaster = array(
                     'FTBchCode'     => $tBchCode,
@@ -1171,6 +1190,8 @@ class cAdjustStock extends MX_Controller {
                     'FTAjdPlcCode'  => '',
                     'FCAjdUnitQtyC1' => 1,
                     'FCAjdQtyAllC1' => 1*$aPdtPack['UnitFact'],
+                    'FTXtdBchRef'  => $aPdtPack['PDTSpc'],
+                    'FTTmpStatus' => $nTmpStatus,
                     'FTSessionID' => $this->session->userdata('tSesSessionID'),
                     'FDLastUpdOn' => date('Y-m-d'),
                     'FDCreateOn' => date('Y-m-d'),
@@ -1200,6 +1221,7 @@ class cAdjustStock extends MX_Controller {
             $this->db->trans_commit();
             $aReturn = array(
                 'nStaEvent'    => '1',
+                'tPDTSpc' => $aPdtPack['PDTSpc'],
                 'tStaMessg' => 'Success InsertPdtToTmp'
             );
         }
@@ -1207,6 +1229,272 @@ class cAdjustStock extends MX_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode($aReturn));
     
     }
+
+
+
+    
+    // Create By Nattakit(Nale) 2021/05/13
+    // นำสินค้าจาก Filter Condition เพิ่มลงตาราง TCNTDocDTTmpFhn
+    public function FSaCASTEventAddProductsFashion(){
+        try{
+
+            // $this->db->trans_begin();
+
+            // Clear Temp Before Insert
+            $aDataClear = array(
+                'FTXthDocKey'   => 'TCNTPdtAdjStkHD',
+                'FTSessionID'   => $this->session->userdata('tSesSessionID'),
+                'tDeleteType'   => '1',
+                'tUser'         => $this->session->userdata('tSesUsername'),
+            );
+            // $this->mAdjustStock->FSxMAdjStkSubClearDTFhnTmp($aDataClear);
+            $this->mAdjustStock->FSxMASTClearDTForFnTmp($aDataClear);
+      
+            $aGetDataInsert = $this->input->post('paDataInsert');
+            $aResultPDT2 = $this->mAdjustStock->FSaMASTEventInsertProductsFashionByTemplate($aDataClear,$aGetDataInsert);
+            // echo $this->db
+            // tCode = 1 insert สำเร็จ
+            // tCode = 2 insert สำเร็จ และเคลียร์ checkbox location condition ซ้ายมือ
+            if($aResultPDT2['rtCode'] == '1'){
+                $this->db->trans_commit();
+                // echo 1;
+            }else{
+                // echo 2;
+                $this->db->trans_rollback();
+            }
+            echo json_encode($aResultPDT2);
+
+        }catch(Exception $Error){
+            echo $Error;
+        }
+    }
+
+ // Create By Nattakit(Nale) 2021/05/14
+    public function FSaCASTEventEditProductsFashion(){
+
+            // settings variable
+            $aDataDTFhn  = $this->input->post('paDataDTFhn');
+            $aGetDataInsert = $this->input->post('paDataInsert');
+            $nCout = $this->input->post('pnCout');
+
+
+            $nSumQty = 0;
+            if($aDataDTFhn['tType']=='confirm'){
+                if(!empty($aDataDTFhn['aResult'])){
+                        foreach($aDataDTFhn['aResult'] as $aDataPdtFhn){
+
+                            $aData = array(
+                                'FTBchCode' => $aGetDataInsert['tBchCode'],
+                                'FTXshDocNo' => $aGetDataInsert['tDocNo'],
+                                'FTXthDocKey' => 'TCNTPdtAdjStkHD',
+                                'FTPdtCode' => $aDataPdtFhn['tPDTCode'],
+                                'FTXtdBarCode' => $aDataPdtFhn['tBarCode'],
+                                'FTPunCode' => $aDataPdtFhn['tPunCode'],
+                                'FTSessionID' => $this->session->userdata('tSesSessionID')
+                            );    
+                            $nSeq = $this->mAdjustStock->FSnMASTGetSeqDTTemp($aData);
+
+                            $aDataInsert = array(
+                                'FTBchCode'     => $aGetDataInsert['tBchCode'],
+                                'FTXshDocNo'    => $aGetDataInsert['tDocNo'],
+                                'FTXthDocKey'   => 'TCNTPdtAdjStkHD',
+                                'FTPdtCode'     => $aDataPdtFhn['tPDTCode'],
+                                'FNXsdSeqNo'    => $nSeq,
+                                'FTFhnRefCode'  => $aDataPdtFhn['tRefCode'],
+                                'FTXtdBarCode'  => $aDataPdtFhn['tBarCode'],
+                                'FTSessionID'   => $this->session->userdata('tSesSessionID'),
+                                'FDCreateOn'    => date('Y-m-d H:i:s'),
+                                'FTCreateBy'    => $this->session->userdata('tSesUsername'),
+                            );
+                                //หา factor ของ DT
+                             $nPdtUnitFact =  $this->mAdjustStock->FSnMASTGetPdtUnitFactDTTemp($aDataInsert);
+
+                              $nSumQty = $nSumQty + $aDataPdtFhn['nQtyAdj'];
+                      
+                              $aDataInsert['FDAjdDateTimeC1'] = $aDataPdtFhn['tDateAdj'].' '.$aDataPdtFhn['tTimeAdj'];
+                              $aDataInsert['FCAjdUnitQtyC1']  = $aDataPdtFhn['nQtyAdj'];
+                              $aDataInsert['FCAjdQtyAllC1']   = $aDataPdtFhn['nQtyAdj'] * $nPdtUnitFact;
+                      
+                
+                            $aResultPDT = $this->mAdjustStock->FSaMASTEventEditProductsFashion($aDataInsert);
+                        }
+
+                        $aDataUpdateDTTmp = array(
+                            'FTBchCode'     => $aGetDataInsert['tBchCode'],
+                            'FTXthDocNo'    => $aGetDataInsert['tDocNo'],
+                            'FTXthDocKey'   => 'TCNTPdtAdjStkHD',
+                            'FTPdtCode'     => $aDataInsert['FTPdtCode'],
+                            'FNXtdSeqNo'    => $aDataInsert['FNXsdSeqNo'],
+                            'FTSessionID'   => $this->session->userdata('tSesSessionID'),
+                            'FDCreateOn'    => date('Y-m-d H:i:s'),
+                            'FTCreateBy'    => $this->session->userdata('tSesUsername'),
+                        );
+                        if($nCout==1){
+                            $aDataUpdateDTTmp['FDAjdDateTimeC1'] = $aDataInsert['FDAjdDateTimeC1'];
+                            $aDataUpdateDTTmp['FCAjdUnitQtyC1']  = $nSumQty;
+                            $aDataUpdateDTTmp['FCAjdQtyAllC1']   = $nSumQty * $nPdtUnitFact;
+                          }else if($nCout==2){
+                            $aDataUpdateDTTmp['FDAjdDateTimeC2'] = $aDataInsert['FDAjdDateTimeC2'];
+                            $aDataUpdateDTTmp['FCAjdUnitQtyC2']  = $nSumQty;
+                            $aDataUpdateDTTmp['FCAjdQtyAllC2']   = $nSumQty * $nPdtUnitFact;
+                          }
+                        $aResultPDT = $this->mAdjustStock->FSaMASTEventUpdateDTTmp($aDataUpdateDTTmp);
+                }
+            }
+    }
+
+
+       
+        //เพิ่มสินค้าลงตาราง Tmp
+        public function FSoCASTEventAddPdtIntoDTFhnTemp(){
+            try {
+                $tASTUserLevel       = $this->session->userdata('tSesUsrLevel');
+                $tASTDocNo           = $this->input->post('tASTDocNo');
+                $tASTBchCode         = $this->input->post('tASTBCH');
+                $tASTPdtData         = $this->input->post('tASTPdtDataFhn');
+                $aASTPdtData         = JSON_decode($tASTPdtData);
+                $nEvent              = $this->input->post('nEvent');
+                $tOptionAddPdt       = $this->input->post('tOptionAddPdt');
+
+                $aDataWhere = array(
+                    'tBchCode'  => $tASTBchCode,
+                    'tDocNo'    => $tASTDocNo,
+                    'tDocKey'   => 'TCNTPdtAdjStkHD',
+                );
+                $this->db->trans_begin();
+                $nSumQty = 0;
+                if($aASTPdtData->tType=='confirm'){
+                    // $aDataWhere['tPdtCode'] = $aASTPdtData->aResult[0]->tPDTCode;
+                    // FCNxClearDTFhnTmp($aDataWhere);
+                    // ทำทีรายการ ตามรายการสินค้าที่เพิ่มเข้ามา
+                    $nPdtParentQty = 0;
+                    for ($nI = 0; $nI < FCNnHSizeOf($aASTPdtData->aResult); $nI++) {
+    
+                        $aItem          = $aASTPdtData->aResult[$nI];
+                        $tASTPdtCode    = $aItem->tPDTCode;
+                        $tASTtRefCode   = $aItem->tRefCode;
+                        $tASTtBarCode   = $aItem->tBarCode;
+                        $tASTtPunCode   = $aItem->tPunCode;
+    
+             
+    
+                        $aDataWhere['tPdtCode'] = $tASTPdtCode;
+                        $aDataWhere['tBarCode'] = $tASTtBarCode;
+                        $aDataWhere['tPunCode'] = $tASTtPunCode;
+    
+                        $nASTSeqNo = FCNnGetMaxSeqDTFhnTmp($aDataWhere);
+
+                        if($nEvent==1){
+                            $nASTSeqNo = FCNnGetMaxSeqDTFhnTmp($aDataWhere);
+                        }else{
+                            $nDTSeq         = $aItem->nDTSeq;
+                            $nASTSeqNo      =  $nDTSeq;
+                        }
+
+                        // นำรายการสินค้าเข้า DT Temp
+                     
+
+                            $aDataInsert = array(
+                                'FTBchCode'     => $tASTBchCode,
+                                'FTXshDocNo'    => $tASTDocNo,
+                                'FTXthDocKey'   => 'TCNTPdtAdjStkHD',
+                                'FTPdtCode'     => $tASTPdtCode,
+                                'FNXsdSeqNo'    => $nASTSeqNo,
+                                'FTFhnRefCode'  => $tASTtRefCode,
+                                'FTXtdBarCode'  => $tASTtBarCode,
+                                'FTSessionID'   => $this->session->userdata('tSesSessionID'),
+                                'FDCreateOn'    => date('Y-m-d H:i:s'),
+                                'FTCreateBy'    => $this->session->userdata('tSesUsername'),
+                            );
+                                //หา factor ของ DT
+                             $nPdtUnitFact =  $this->mAdjustStock->FSnMASTGetPdtUnitFactDTTemp($aDataInsert);
+
+                      
+                            if($nEvent==1){
+                                $nSumQty = $nSumQty + $aItem->nQty;
+                                $nASTnQty       = $aItem->nQty;
+                                $nPdtParentQty  = $nPdtParentQty + $nASTnQty;
+                                $aDataInsert['FDAjdDateTimeC1'] = date('Y-m-d H:i:s');
+                                $aDataInsert['FCAjdUnitQtyC1']  = $nASTnQty;
+                                $aDataInsert['FCAjdQtyAllC1']   = $nASTnQty * $nPdtUnitFact;
+                                $aResultPDT = $this->mAdjustStock->FSaMASTEventAddProductsFashion($aDataInsert);
+                            }else{
+                                $nSumQty = $nSumQty + $aItem->nQtyAdj;
+                                $nASTnQty       = $aItem->nQtyAdj;
+                                $nPdtParentQty  = $nPdtParentQty + $nASTnQty;
+                                $aDataInsert['FDAjdDateTimeC1'] = $aItem->tDateAdj.' '.$aItem->tTimeAdj;
+                                $aDataInsert['FCAjdUnitQtyC1']  = $aItem->nQtyAdj;
+                                $aDataInsert['FCAjdQtyAllC1']   = $aItem->nQtyAdj * $nPdtUnitFact;
+                                $aResultPDT = $this->mAdjustStock->FSaMASTEventEditProductsFashion($aDataInsert); 
+                            }
+                       
+                    }
+    
+                    // $aDataUpdateQtyParent = array(
+                    //     'tDocNo'        => $tASTDocNo,
+                    //     'nXtdSeq'       => $nASTSeqNo,
+                    //     'tSessionID'    => $this->session->userdata('tSesSessionID'),
+                    //     'tDocKey'       => 'TCNTPdtAdjStkHD',
+                    //     'tValue'        => $nPdtParentQty
+                    // );
+                    // FCNaUpdateInlineDTTmp($aDataUpdateQtyParent);
+
+                    $aDataUpdateDTTmp = array(
+                        'FTBchCode'     => $tASTBchCode,
+                        'FTXshDocNo'    => $tASTDocNo,
+                        'FTXthDocKey'   => 'TCNTPdtAdjStkHD',
+                        'FTPdtCode'     => $aDataInsert['FTPdtCode'],
+                        'FNXsdSeqNo'    => $aDataInsert['FNXsdSeqNo'],
+                        'FTSessionID'   => $this->session->userdata('tSesSessionID'),
+                        'FDCreateOn'    => date('Y-m-d H:i:s'),
+                        'FTCreateBy'    => $this->session->userdata('tSesUsername'),
+                    );
+              
+                        $aDataUpdateDTTmp['FDAjdDateTimeC1'] = $aDataInsert['FDAjdDateTimeC1'];
+                        $aDataUpdateDTTmp['FCAjdUnitQtyC1']  = $nSumQty;
+                        $aDataUpdateDTTmp['FCAjdQtyAllC1']   = $nSumQty * $nPdtUnitFact;
+                    // print_r($aDataUpdateDTTmp);die();
+                    $aResultPDT = $this->mAdjustStock->FSaMASTEventUpdateDTTmp($aDataUpdateDTTmp);
+                    
+
+                }else{
+                    $tASTPdtCode = $aASTPdtData->aResult->tPDTCode;
+                    $aDataPdtParams = array(
+                        'tDocNo'            => $tASTDocNo,
+                        'tBchCode'          => $tASTBchCode,
+                        'tPdtCode'          => $tASTPdtCode,
+                        'tSessionID'        => $this->session->userdata('tSesSessionID'),
+                        'tDocKey'           => 'TCNTPdtAdjStkHD',
+                    );
+                    $nStaInsPdtToTmp    = FCNxDeletePDTInTmp($aDataPdtParams);
+                }
+    
+                if ($this->db->trans_status() === FALSE) {
+                    $this->db->trans_rollback();
+                    $aReturnData = array(
+                        'nStaEvent' => '500',
+                        'tStaMessg' => 'Error Insert Product Error Please Contact Admin.'
+                    );
+                } else {
+                    $this->db->trans_commit();
+                    // Calcurate Document DT Temp Array Parameter
+        
+                  
+        
+                        $aReturnData = array(
+                            'nStaEvent' => '1',
+                            'tStaMessg' => 'Success Add Product Into Document DT Temp.'
+                        );
+               
+                }
+            } catch (Exception $Error) {
+                $aReturnData = array(
+                    'nStaEvent' => '500',
+                    'tStaMessg' => $Error->getMessage()
+                );
+            }
+            echo json_encode($aReturnData);
+        }
 
 
 }

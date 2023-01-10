@@ -1602,7 +1602,7 @@ function JSxWirteImportFile(evt) {
                     if(typeof(aJSON['Adjust Stock']) == 'undefined'){
                         alert('รูปแบบเอกสารไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง');
                         return;
-                    }
+                    } 
 
                     var aJSONData           = aJSON["Adjust Stock"];
                     var nCount              = aJSONData.length;
@@ -1623,19 +1623,19 @@ function JSxWirteImportFile(evt) {
                         var tValueOld = '';
 
                         //Template_Filed_ราคา
-                        if(typeof(aJSONData[j][2]) != 'undefined' || null){
-                            if(aJSONData[j][2] == null){
-                                aJSONData[j][2] = '0';
+                        if(typeof(aJSONData[j][3]) != 'undefined' || null){
+                            if(aJSONData[j][3] == null){
+                                aJSONData[j][3] = '0';
                             }else{
                                 var Letters = /^[ก-๛A-Za-z]+$/;
-                                var nValue = aJSONData[j][2].toString();
+                                var nValue = aJSONData[j][3].toString();
                                 var nValue = nValue.replace(" ", "");
                                 if(nValue.match(Letters)){
                                     //เอาตัวที่ผิดออก
-                                    var tValueOld  = aJSONData[j][2];
+                                    var tValueOld  = aJSONData[j][3];
                                     aJSONData[j].pop();
-                                    aJSONData[j].push(2);
-                                    aError.push('3','[2]'+'รูปแบบจำนวนผิด'+tValueOld);
+                                    aJSONData[j].push(3);
+                                    aError.push('3','[3]'+'รูปแบบจำนวนผิด'+tValueOld);
                                 }
                             }
                         }else{
@@ -1675,6 +1675,23 @@ function JSxWirteImportFile(evt) {
                         }else{
                             aJSONData[j][1] = 'N/A';
                             aError.push('4','[1]'+'รหัสบาร์โคดยาวเกินกำหนด'+tValueOld);
+                        }
+
+                        //Template_Filed_รหัสควบคุมสต็อก
+                        if(typeof(aJSONData[j][3]) != 'undefined' || null){
+                            if(aJSONData[j][3] == null){
+                                aJSONData[j][3] = 'N/A';
+                                aError.push('7','[3]'+'รหัสควบคุมสต็อกไม่ได้ระบุข้อมูล'+'N/A');
+                            }else{
+                                if(aJSONData[j][3].length > 50){
+                                    var tValueOld   = aJSONData[j][3];
+                                    aJSONData[j][3] = aJSONData[j][3].substring(0, 50);
+                                    aError.push('4','[3]'+'รหัสควบคุมสต็อกยาวเกินกำหนด'+tValueOld);
+                                }
+                            }
+                        }else{
+                            aJSONData[j][3] = 'N/A';
+                            aError.push('4','[3]'+'รหัสควบคุมสต็อกยาวเกินกำหนด'+tValueOld);
                         }
 
                         //ถ้าผ่านทุกอัน

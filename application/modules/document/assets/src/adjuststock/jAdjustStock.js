@@ -2007,3 +2007,162 @@ function JSxAdjStkEditInLine(poElm) {
 
     }
 }
+
+
+
+// Create By : Nattakit(Nale) 2021/05/21
+function JSvASTInsertPdtToTemp_PDTSerialorFashion(paData){
+    try{
+        // console.log(paData);
+        //  var paDataDTFhn = JSON.parse(paData);
+         var aDataInsert = {
+            tBchCode    : $('#oetASTBchCode').val(),
+            tDocNo      : $('#oetASTDocNo').val()
+        };
+        // JSvASTLoadPdtDataTableHtml(1);
+        // JCNxCloseLoading();
+        JCNxOpenLoading();
+        $.ajax({
+            type: "POST",
+            url: "docASTAdjEventAddProductsFashion",
+            data: {
+                paDataInsert    : aDataInsert
+            },
+            cache: false,
+            Timeout: 0,
+            success: function (oResult) {
+                JSvASTLoadPdtDataTableHtml(1);
+                // JCNxCloseLoading();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+
+
+    }catch(err){
+        console.log('JSxASTEventAddProducts Error: ', err);
+    }
+}
+
+// Create By : Nattakit(Nale) 2021/05/21
+function JSvASTEventAddPdtIntoDTFhnTemp_PDTSerialorFashion(paData){
+    try{
+
+   
+        // console.log(paData);
+         var paDataDTFhn = JSON.parse(paData);
+
+        // JSvASTLoadPdtDataTableHtml(1);
+        // JCNxCloseLoading();
+        JCNxOpenLoading();
+        $.ajax({
+            type: "POST",
+            url: "docASTEventAddPdtIntoDTFhnTemp",
+            data: {
+                tASTDocNo    : $('#oetASTDocNo').val(),
+                tASTBCH    : $('#oetASTBchCode').val(),
+                tASTPdtDataFhn : paData,
+                nEvent : 1,
+                tOptionAddPdt : 1
+            },
+            cache: false,
+            Timeout: 0,
+            success: function (oResult) {
+                JSvASTLoadPdtDataTableHtml(1);
+                // JCNxCloseLoading();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+
+
+    }catch(err){
+        console.log('JSxASTEventAddProducts Error: ', err);
+    }
+}
+
+// Create By : Nattakit(Nale) 2021/05/21
+function JSvASTEventEditPdtIntoDTFhnTemp_PDTSerialorFashion(paData){
+    try{
+
+   
+        // console.log(paData);
+         var paDataDTFhn = JSON.parse(paData);
+
+        // JSvASTLoadPdtDataTableHtml(1);
+        // JCNxCloseLoading();
+        JCNxOpenLoading();
+        $.ajax({
+            type: "POST",
+            url: "docASTEventAddPdtIntoDTFhnTemp",
+            data: {
+                tASTDocNo    : $('#oetASTDocNo').val(),
+                tASTBCH    : $('#oetASTBchCode').val(),
+                tASTPdtDataFhn : paData,
+                nEvent : 2,
+                tOptionAddPdt : 1
+            },
+            cache: false,
+            Timeout: 0,
+            success: function (oResult) {
+                JSvASTLoadPdtDataTableHtml(1);
+                // JCNxCloseLoading();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+
+
+    }catch(err){
+        console.log('JSxASTEventAddProducts Error: ', err);
+    }
+}
+
+
+function FSvStkAddPdtIntoDocDTTempC1_PDTSerialorFashion(paData){
+    FSvStkAddPdtIntoDocDTTemp(paData,1);
+}
+
+function FSvStkAddPdtIntoDocDTTempC2_PDTSerialorFashion(paData){
+    FSvStkAddPdtIntoDocDTTemp(paData,2);
+}
+
+function FSvStkAddPdtIntoDocDTTemp(paData,pnCout){
+
+    console.log(paData);
+
+    try{
+        // console.log(paData);
+         var paDataDTFhn = JSON.parse(paData);
+         var aDataInsert = {
+            tBchCode    : $('#oetASTBchCode').val(),
+            tDocNo      : $('#oetASTDocNo').val()
+        };
+        $.ajax({
+            type: "POST",
+            url: "docASTAdjEventEditProductsFashion",
+            data: {
+                paDataDTFhn     : paDataDTFhn,
+                paDataInsert    : aDataInsert,
+                pnCout          : pnCout
+            },
+            cache: false,
+            Timeout: 0,
+            success: function (oResult) {
+                JSvASTLoadPdtDataTableHtml(1);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                JCNxResponseError(jqXHR, textStatus, errorThrown);
+            }
+        });
+
+
+    }catch(err){
+        console.log('JSxASTEventAddProducts Error: ', err);
+    }
+
+
+}

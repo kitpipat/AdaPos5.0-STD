@@ -120,3 +120,13 @@ $lang['tASTCancel']      = "คุณต้องการที่จะยก�
 
 
 
+
+$lang['tASTFillterExclude']        = "ยกเว้น";
+$lang['tASTFillterExcludeStock']   = "ตรวจสอบสินค้าที่ยังไม่ได้ตรวจนับ";
+$lang['tASTFillterExcludeStockDate']   = "ช่วงวันที่เอกสารตรวจนับ";
+$lang['tASTFillterExcludeStockDateFrm']   = "จากวันที่เอกสารตรวจนับ";
+$lang['tASTFillterExcludeStockDateTo']   = "ถึงวันที่เอกสารตรวจนับ";
+$lang['tASTFillterExcludeStockWah']   = "คลัง";
+$lang['tASTFillterExcludeStockCon']   = "เงื่อนไข";
+$lang['tASTFillterExcludeStockStkBal']   = "ยอดคงเหลือ";
+$lang['tASTFillterExcludeStockAll']   = "ทั้งหมด";

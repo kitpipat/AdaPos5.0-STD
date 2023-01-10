@@ -300,12 +300,17 @@
                                             // }else{
                                                 $tASTDataInputMerCode   = $tASTMerCode;
                                                 $tASTDataInputMerName   = $tASTMerName;
-                                                $tASTDataInputShpCode   = $tASTShpCode;
-                                                $tASTDataInputShpName   = $tASTShpName;
+                                         
                                                 $tASTDataInputWahCode   = $tASTWahCode;
                                                 $tASTDataInputWahName   = $tASTWahName;
                                             // }
-
+                                            if($tASTRoute != "dcmASTEventEdit"){
+                                                $tASTDataInputShpName = '';
+                                                $tASTDataInputShpCode = '';
+                                            }else{
+                                                $tASTDataInputShpCode   = $tASTShpCode;
+                                                $tASTDataInputShpName   = $tASTShpName;
+                                            }
                                         ?>
                                         <input class="form-control xCNHide" id="oetASTMerCode" name="oetASTMerCode" maxlength="5" value="<?php echo $tASTDataInputMerCode;?>">
                                         <input
@@ -544,7 +549,11 @@
 
                                     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 text-right">
                                         <div class="right">
-                                   
+                                            <div id="odvADJMngAdvTableList" class="btn-group xCNDropDrownGroup" >
+                                                <button type="button" class="btn xCNBTNMngTable xCNImportBtn"  onclick="JSxAdjStkOpenImportForm()">
+                                                    <?= language('common/main/main', 'tImport') ?>
+                                                </button>
+                                            </div>
 
 
                                             <div class="btn-group xCNDropDrownGroup">
@@ -686,222 +695,384 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header xCNModalHead"><label class="xCNTextModalHeard"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterTitle'); ?></label></div>
-            <div class="modal-body" style="height: 450px;overflow-y: auto;">
+            <div class="modal-body" style="overflow-y: auto;">
                 
                 <form id="ofmASTFilterDataCondition">
+                 <!-- Section Tab -->
+                <div class="row" >
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li  class="active" >
+                                        <a class="xCNMenuTab" role="tab" data-toggle="tab"   href="#odvASTFilterTitleProduct" aria-expanded="true"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleProduct'); ?></a>
+                                    </li>
+                                    <li  class="xWDisTab" >
+                                        <a class="xCNMenuTab" role="tab" data-toggle="tab"   href="#odvASTFilterTitleSpl" aria-expanded="false"><?php echo language('document/adjuststocksub/adjuststocksub','tASTFilterTitleSpl')?></a>
+                                    </li>
+                                    <li  class="xWDisTab"  style="display:none;">
+                                        <a class="xCNMenuTab" role="tab" data-toggle="tab"   href="#odvASTFilterTitleUserPI" aria-expanded="false"><?php echo language('document/adjuststocksub/adjuststocksub','tASTFilterTitleUserPI')?></a>
+                                    </li>
+                                    <li  class="xWDisTab" >
+                                        <a class="xCNMenuTab" role="tab" data-toggle="tab"  href="#odvAdjStkSubWarehouse" aria-expanded="false"><?php echo language('document/adjuststocksub/adjuststocksub','tAdjStkSubWarehouse')?></a>
+                                    </li>
+                                    <li  class="xWDisTab" >
+                                        <a class="xCNMenuTab" role="tab" data-toggle="tab"  href="#odvASTFilterTitlePdtGroup" aria-expanded="false"><?php echo language('document/adjuststocksub/adjuststocksub','tASTFilterTitlePdtGroup')?></a>
+                                    </li>
+                                    <li  class="xWDisTab" >
+                                        <a class="xCNMenuTab" role="tab" data-toggle="tab"   href="#odvASTFilterTitleLocation" aria-expanded="false"><?php echo language('document/adjuststocksub/adjuststocksub','tASTFilterTitleLocation')?></a>
+                                    </li>
+                                    <li  class="xWDisTab" >
+                                        <a class="xCNMenuTab" role="tab" data-toggle="tab"   href="#odvASTFilterTitlePdtStkCard" aria-expanded="false"><?php echo language('document/adjuststocksub/adjuststocksub','tASTFilterTitlePdtStkCard')?></a>
+                                    </li>
+                                    <li  class="xWDisTab" >
+                                        <a class="xCNMenuTab" role="tab" data-toggle="tab"   href="#odvASTFilterTitlePdtExclude" aria-expanded="false"><?php echo language('document/adjuststock/adjuststock','tASTFillterExclude')?></a>
+                                    </li>
+                                </ul>
+                </div>
+                <!-- Close Section Tab -->
+                <!-- Section Tab Content-->
+                <div class="row">
+                    <div class="tab-content">
 
-                    <div class="xCNTabCondition">
-                        <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleProduct'); ?></label>
-                        <!-- Browse Pdt -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- จากรหัสสินค้า -->
-                                <div class="form-group">
-                                    <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeFrom'); ?></label>
-                                    <div class="input-group">
-                                        <input type="text" class="input100 xCNHide" id="oetASTFilterPdtCodeFrom" name="oetASTFilterPdtCodeFrom" value="">
-                                        <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterPdtNameFrom" name="oetASTFilterPdtNameFrom" value="" readonly="">
-                                        <span class="input-group-btn xWConditionSearchPdt">
-                                            <button id="obtASTBrowseFilterProductFrom" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
-                                                <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                            </button>
-                                        </span>
+                    <div id="odvASTFilterTitleProduct" class="tab-pane fade active in">
+
+                            <div class="">
+                                <!-- <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleProduct'); ?></label> -->
+                                <!-- Browse Pdt -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- จากรหัสสินค้า -->
+                                        <div class="form-group">
+                                            <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeFrom'); ?></label>
+                                            <div class="input-group">
+                                                <input type="text" class="input100 xCNHide" id="oetASTFilterPdtCodeFrom" name="oetASTFilterPdtCodeFrom" value="">
+                                                <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterPdtNameFrom" name="oetASTFilterPdtNameFrom" value="" readonly="">
+                                                <span class="input-group-btn xWConditionSearchPdt">
+                                                    <button id="obtASTBrowseFilterProductFrom" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                        <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- จากรหัสสินค้า -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <!-- ถึงรหัสสินค้า -->
+                                        <div class="form-group">
+                                            <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeTo'); ?></label>
+                                            <div class="input-group">
+                                                <input type="text" class="input100 xCNHide" id="oetASTFilterPdtCodeTo" name="oetASTFilterPdtCodeTo" value="">
+                                                <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterPdtNameTo" name="oetASTFilterPdtNameTo" value="" readonly="">
+                                                <span class="input-group-btn xWConditionSearchPdt">
+                                                    <button id="obtASTBrowseFilterProductTo" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                        <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- ถึงรหัสสินค้า -->
                                     </div>
                                 </div>
-                                <!-- จากรหัสสินค้า -->
+                                <!-- Browse Pdt -->
                             </div>
-                            <div class="col-md-6">
-                                <!-- ถึงรหัสสินค้า -->
-                                <div class="form-group">
-                                    <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeTo'); ?></label>
-                                    <div class="input-group">
-                                        <input type="text" class="input100 xCNHide" id="oetASTFilterPdtCodeTo" name="oetASTFilterPdtCodeTo" value="">
-                                        <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterPdtNameTo" name="oetASTFilterPdtNameTo" value="" readonly="">
-                                        <span class="input-group-btn xWConditionSearchPdt">
-                                            <button id="obtASTBrowseFilterProductTo" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
-                                                <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                                <!-- ถึงรหัสสินค้า -->
-                            </div>
-                        </div>
-                        <!-- Browse Pdt -->
+
                     </div>
 
-                    <div class="xCNTabCondition">
-                        <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleSpl'); ?></label>
-                        <!-- Browse Supplier -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- จากรหัส -->
-                                <div class="form-group">
-                                    <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeFrom'); ?></label>
-                                    <div class="input-group">
-                                        <input type="text" class="input100 xCNHide" id="oetASTFilterSplCodeFrom" name="oetASTFilterSplCodeFrom" value="">
-                                        <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterSplNameFrom" name="oetASTFilterSplNameFrom" value="" readonly="">
-                                        <span class="input-group-btn xWConditionSearchPdt">
-                                            <button id="obtASTBrowseFilterSupplierFrom" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
-                                                <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                            </button>
-                                        </span>
+                    <div id="odvASTFilterTitleSpl" class="tab-pane" role="tabpanel">
+
+                            <div class="">
+                                <!-- <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleSpl'); ?></label> -->
+                                <!-- Browse Supplier -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- จากรหัส -->
+                                        <div class="form-group">
+                                            <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeFrom'); ?></label>
+                                            <div class="input-group">
+                                                <input type="text" class="input100 xCNHide" id="oetASTFilterSplCodeFrom" name="oetASTFilterSplCodeFrom" value="">
+                                                <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterSplNameFrom" name="oetASTFilterSplNameFrom" value="" readonly="">
+                                                <span class="input-group-btn xWConditionSearchPdt">
+                                                    <button id="obtASTBrowseFilterSupplierFrom" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                        <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- จากรหัส -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <!-- ถึงรหัส -->
+                                        <div class="form-group">
+                                            <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeTo'); ?></label>
+                                            <div class="input-group">
+                                                <input type="text" class="input100 xCNHide" id="oetASTFilterSplCodeTo" name="oetASTFilterSplCodeTo" value="">
+                                                <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterSplNameTo" name="oetASTFilterSplNameTo" value="" readonly="">
+                                                <span class="input-group-btn xWConditionSearchPdt">
+                                                    <button id="obtASTBrowseFilterSupplierTo" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                        <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- ถึงรหัส -->
                                     </div>
                                 </div>
-                                <!-- จากรหัส -->
+                                <!-- Browse Supplier -->
                             </div>
-                            <div class="col-md-6">
-                                <!-- ถึงรหัส -->
-                                <div class="form-group">
-                                    <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeTo'); ?></label>
-                                    <div class="input-group">
-                                        <input type="text" class="input100 xCNHide" id="oetASTFilterSplCodeTo" name="oetASTFilterSplCodeTo" value="">
-                                        <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterSplNameTo" name="oetASTFilterSplNameTo" value="" readonly="">
-                                        <span class="input-group-btn xWConditionSearchPdt">
-                                            <button id="obtASTBrowseFilterSupplierTo" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
-                                                <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
-                                <!-- ถึงรหัส -->
-                            </div>
-                        </div>
-                        <!-- Browse Supplier -->
                     </div>
 
-                    <div class="xCNTabCondition" style="display:none;">
-                        <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleUserPI'); ?></label>
-                        <!-- Browse User -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- จากรหัส -->
-                                <div class="form-group">
-                                    <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeFrom'); ?></label>
-                                    <div class="input-group">
-                                        <input type="text" class="input100 xCNHide" id="oetASTFilterUsrCodeFrom" name="oetASTFilterUsrCodeFrom" value="">
-                                        <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterUsrNameFrom" name="oetASTFilterUsrNameFrom" value="" readonly="">
-                                        <span class="input-group-btn xWConditionSearchPdt">
-                                            <button id="obtASTBrowseFilterUserFrom" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
-                                                <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                            </button>
-                                        </span>
+                    <div id="odvASTFilterTitleUserPI" class="tab-pane" role="tabpanel">
+
+                        <div class="" style="display:none;">
+                            <!-- <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleUserPI'); ?></label> -->
+                            <!-- Browse User -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!-- จากรหัส -->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeFrom'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="input100 xCNHide" id="oetASTFilterUsrCodeFrom" name="oetASTFilterUsrCodeFrom" value="">
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterUsrNameFrom" name="oetASTFilterUsrNameFrom" value="" readonly="">
+                                            <span class="input-group-btn xWConditionSearchPdt">
+                                                <button id="obtASTBrowseFilterUserFrom" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                    <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
+                                    <!-- จากรหัส -->
                                 </div>
-                                <!-- จากรหัส -->
-                            </div>
-                            <div class="col-md-6">
-                                <!-- ถึงรหัส -->
-                                <div class="form-group">
-                                    <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeTo'); ?></label>
-                                    <div class="input-group">
-                                        <input type="text" class="input100 xCNHide" id="oetASTFilterUsrCodeTo" name="oetASTFilterUsrCodeTo" value="">
-                                        <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterUsrNameTo" name="oetASTFilterUsrNameTo" value="" readonly="">
-                                        <span class="input-group-btn xWConditionSearchPdt">
-                                            <button id="obtASTBrowseFilterUserTo" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
-                                                <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                            </button>
-                                        </span>
+                                <div class="col-md-6">
+                                    <!-- ถึงรหัส -->
+                                    <div class="form-group">
+                                        <label class="xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubFilterCodeTo'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="input100 xCNHide" id="oetASTFilterUsrCodeTo" name="oetASTFilterUsrCodeTo" value="">
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterUsrNameTo" name="oetASTFilterUsrNameTo" value="" readonly="">
+                                            <span class="input-group-btn xWConditionSearchPdt">
+                                                <button id="obtASTBrowseFilterUserTo" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                    <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
+                                    <!-- ถึงรหัส -->
                                 </div>
-                                <!-- ถึงรหัส -->
                             </div>
+                            <!-- Browse User -->
                         </div>
-                        <!-- Browse User -->
                     </div>
 
-                    <div class="xCNTabCondition">
-                        <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitlePdtGroup'); ?></label>
-                        <!-- Browse Product Group -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- จากรหัส -->
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <input type="text" class="input100 xCNHide" id="oetASTFilterPgpCode" name="oetASTFilterPgpCode" value="">
-                                        <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterPgpName" name="oetASTFilterPgpName" value="" readonly="">
-                                        <span class="input-group-btn xWConditionSearchPdt">
-                                            <button id="obtASTBrowseFilterProductGroup" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
-                                                <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                            </button>
-                                        </span>
+
+                    <div id="odvAdjStkSubWarehouse" class="tab-pane" role="tabpanel">
+                        <div class="">
+                            <!-- <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubWarehouse'); ?></label> -->
+                            <!-- Browse Product Group -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!-- จากรหัส -->
+                                    <div class="form-group">
+                                    <label class=" xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tAdjStkSubWarehouse'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="input100 xCNHide" id="oetASTFilterWahCode" name="oetASTFilterWahCode" value="">
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterWahName" name="oetASTFilterWahName" value="" readonly="">
+                                            <span class="input-group-btn xWConditionSearchPdt">
+                                                <button id="obtASTBrowseFilterWahouse" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                    <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                </button>
+                                            </span>
+                                        </div>
                                     </div>
+                                    <!-- จากรหัส -->
                                 </div>
-                                <!-- จากรหัส -->
+                                <div class="col-md-6"></div>
                             </div>
-                            <div class="col-md-6"></div>
+                            <!-- Browse Product Group -->
                         </div>
-                        <!-- Browse Product Group -->
+                    </div>
+
+
+                    <div id="odvASTFilterTitlePdtGroup" class="tab-pane" role="tabpanel">
+                        <div class="">
+                            <!-- <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitlePdtGroup'); ?></label> -->
+                            <!-- Browse Product Group -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <!-- จากรหัส -->
+                                    <div class="form-group">
+                                    <label class=" xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitlePdtGroup'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="input100 xCNHide" id="oetASTFilterPgpCode" name="oetASTFilterPgpCode" value="">
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterPgpName" name="oetASTFilterPgpName" value="" readonly="">
+                                            <span class="input-group-btn xWConditionSearchPdt">
+                                                <button id="obtASTBrowseFilterProductGroup" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                    <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!-- จากรหัส -->
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <!-- Browse Product Group -->
+                        </div>
                     </div>
 
                     <!-- Browse Product Location Seq -->
-                    <div class="xCNTabCondition">
-                        <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleLocation'); ?></label>
-                        <div class="row">
+                    <div id="odvASTFilterTitleLocation" class="tab-pane" role="tabpanel">
+                        <div class="">
+                            <!-- <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleLocation'); ?></label> -->
+                            <div class="row">
 
-                            <div class="col-md-6">
-                                <!-- จากรหัส -->
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <input type="text" class="input100 xCNHide" id="oetASTFilterPlcCode" name="oetASTFilterPlcCode" value="">
-                                        <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterPlcName" name="oetASTFilterPlcName" value="" readonly="">
-                                        <span class="input-group-btn xWConditionSearchPdt">
-                                            <button id="obtASTBrowseFilterProductLocation" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
-                                                <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
-                                            </button>
-                                        </span>
+                                <div class="col-md-6">
+                                    <!-- จากรหัส -->
+                                    <div class="form-group">
+                                    <label class=" xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitleLocation'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="input100 xCNHide" id="oetASTFilterPlcCode" name="oetASTFilterPlcCode" value="">
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterPlcName" name="oetASTFilterPlcName" value="" readonly="">
+                                            <span class="input-group-btn xWConditionSearchPdt">
+                                                <button id="obtASTBrowseFilterProductLocation" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                    <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!-- จากรหัส -->
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <input name="ocbASTPdtLocChkSeq" class="form-check-input xWASTDisabledOnApv" type="checkbox" value="1" id="ocbASTPdtLocChkSeq">
+                                            <label class="form-check-label" for="ocbASTPdtLocChkSeq"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextPdtLocSeqOnly'); ?></label>
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- จากรหัส -->
-                            </div>
 
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <input name="ocbASTPdtLocChkSeq" class="form-check-input xWASTDisabledOnApv" type="checkbox" value="1" id="ocbASTPdtLocChkSeq">
-                                        <label class="form-check-label" for="ocbASTPdtLocChkSeq"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextPdtLocSeqOnly'); ?></label>
-                                    </div>
-                                </div>
+                                <div class="col-md-6"></div>
                             </div>
-
-                            <div class="col-md-6"></div>
                         </div>
                     </div>
                     <!-- Browse Product Location Seq -->
 
                     <!-- Product StockCard -->
-                    <div class="xCNTabCondition">
-                        <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitlePdtStkCard'); ?></label>
-                        <div class="row">
+                    <div id="odvASTFilterTitlePdtStkCard" class="tab-pane" role="tabpanel">
+                        <div class="">
+                            <!-- <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTitlePdtStkCard'); ?></label> -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <input name="ocbASTUsePdtStkCard" class="form-check-input xWASTDisabledOnApv" type="checkbox" id="ocbASTUsePdtStkCard">
+                                            <label class="form-check-label" for="ocbASTUsePdtStkCard"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextUsePdtStkCard'); ?></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-left: 20px;margin-top: -10px;">
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input xWASTDisabledOnCheckUsePdtStkCard" id="orbASTPdtStkCard_1" name="orbASTPdtStkCard" value="1" disabled>
+                                            <label class="custom-control-label" for="orbASTPdtStkCard_1"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextPdtNotMove'); ?></label>
+                                        </div>
+                                        <div class="custom-control custom-radio">
+                                            <input type="radio" class="custom-control-input xWASTDisabledOnCheckUsePdtStkCard" id="orbASTPdtStkCard_2" name="orbASTPdtStkCard" value="2" disabled>
+                                            <label class="custom-control-label" for="orbASTPdtStkCard_2">
+                                                <?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextPrePdtMove'); ?> 
+                                                <input class="form-control xWASTDisabledOnCheckUsePdtStkCard" type="number" id="onbASTPdtStkCardBack" name="onbASTPdtStkCardBack" min="1" style="width: 60px;display: inline;" disabled>
+                                                <?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextMonth'); ?>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product Exclude Adjust -->
+                    <div id="odvASTFilterTitlePdtExclude" class="tab-pane" role="tabpanel">
+                        <div class="">
+                            <!-- <label class="xCNTabConditionHeader xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTFillterExclude'); ?></label> -->
+                            <div class="row">
+
                             <div class="col-md-12">
-                            
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <input name="ocbASTUsePdtStkCard" class="form-check-input xWASTDisabledOnApv" type="checkbox" id="ocbASTUsePdtStkCard">
-                                        <label class="form-check-label" for="ocbASTUsePdtStkCard"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextUsePdtStkCard'); ?></label>
+                                    <div class="form-group">
+                                            <input name="ocbASTUseExStock" class="form-check-input xWASTDisabledOnApv" type="checkbox" id="ocbASTUseExStock">
+                                            <label class="form-check-label" for="ocbASTUseExStock"><?php echo language('document/adjuststock/adjuststock', 'tASTFillterExcludeStock'); ?></label>
+                                    </div>
+                            </div>
+
+
+                            <div class="col-md-6">
+                                    <div class="form-group">
+                                    <label class=" xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTFillterExcludeStockDateFrm'); ?></label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetASTFilterExDateFrm" name="oetASTFilterExDateFrm" value="<?=date('Y-m-d')?>" data-validate-required="กรุณากรอกวันที่เอกสาร" maxlength="10">
+                                        <span class="input-group-btn">
+                                            <button id="obtASTFilterExDateFrm" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                                        </span>
+                                    </div>
                                     </div>
                                 </div>
 
-                                <div class="form-group" style="margin-left: 20px;margin-top: -10px;">
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input xWASTDisabledOnCheckUsePdtStkCard" id="orbASTPdtStkCard_1" name="orbASTPdtStkCard" value="1" disabled>
-                                        <label class="custom-control-label" for="orbASTPdtStkCard_1"><?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextPdtNotMove'); ?></label>
-                                    </div>
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" class="custom-control-input xWASTDisabledOnCheckUsePdtStkCard" id="orbASTPdtStkCard_2" name="orbASTPdtStkCard" value="2" disabled>
-                                        <label class="custom-control-label" for="orbASTPdtStkCard_2">
-                                            <?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextPrePdtMove'); ?> 
-                                            <input class="form-control xWASTDisabledOnCheckUsePdtStkCard" type="number" id="onbASTPdtStkCardBack" name="onbASTPdtStkCardBack" min="1" style="width: 60px;display: inline;" disabled>
-                                            <?php echo language('document/adjuststocksub/adjuststocksub', 'tASTFilterTextMonth'); ?>
-                                        </label>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                    <label class=" xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTFillterExcludeStockDateTo'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control xCNDatePicker xCNInputMaskDate" id="oetASTFilterExDateTo" name="oetASTFilterExDateTo" value="<?=date('Y-m-d')?>" data-validate-required="กรุณากรอกวันที่เอกสาร" maxlength="10">
+                                            <span class="input-group-btn">
+                                                <button id="obtASTFilterExDateTo" type="button" class="btn xCNBtnDateTime"><img class="xCNIconCalendar"></button>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
+
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                    <label class=" xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTFillterExcludeStockWah'); ?></label>
+                                        <div class="input-group">
+                                            <input type="text" class="input100 xCNHide" id="oetASTFilterExWahCode" name="oetASTFilterExWahCode" value="">
+                                            <input class="form-control xWPointerEventNone" type="text" id="oetASTFilterExWahName" name="oetASTFilterExWahName" value="" readonly="">
+                                            <span class="input-group-btn xWConditionSearchPdt">
+                                                <button id="obtASTBrowseFilterExWahouse" type="button" class="btn xCNBtnBrowseAddOn xWConditionSearchPdt">
+                                                    <img src="<?php echo base_url('application/modules/common/assets/images/icons/find-24.png'); ?>">
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                    <label class=" xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTFillterExcludeStockCon'); ?></label>
+                                            <select class="form-control" name="ocmASTFilterExCon" id="ocmASTFilterExCon">
+                                                <option value=""><?php echo language('document/adjuststock/adjuststock', 'tASTFillterExcludeStockAll'); ?></option>
+                                                <option value=">" selected>></option>
+                                                <option value="<"><</option>
+                                                <option value="=">=</option>
+                                                <option value="<>"><></option>
+                                            </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                    <label class=" xCNLabelFrm"><?php echo language('document/adjuststock/adjuststock', 'tASTFillterExcludeStockStkBal'); ?></label>
+                                    <input type="number" class="form-control " id="oetASTFilterExStkBal" name="oetASTFilterExStkBal" value="0">
+                                    </div>
+                                </div>
+
 
                             </div>
                         </div>
                     </div>
-                    <!-- Product StockCard -->
-                
+                    <!-- Product Exclude Adjust -->
+
+                    
+                    </div>
+                    </div>
+                    <!-- Close Section Tab Content-->
                 </form>
 
             </div>
@@ -1002,7 +1173,7 @@
 	//ค้นหาบาร์โค๊ด
 	function JCNSearchBarcodePdt(ptTextScan){
 
-        var tWhereCondition = "";
+        var tWhereCondition = " ";
 
         $.ajax({
             type : "POST",
@@ -1018,7 +1189,7 @@
                 BCH: $("#oetASTBchCode").val(),
                 MER: $('#oetASTMerCode').val(),
                 SHP: $('#oetASTShopCode').val(),
-                Where       : [tWhereCondition],
+                tWhere       : [tWhereCondition],
                 tTextScan   : ptTextScan,
             },
             catch : false,
@@ -1062,13 +1233,13 @@
                             // FSvTBXAddPdtIntoDocDTTempScan(tJSON); //Client
                             JSvASTInsertPdtToTemp(tJSON); //Server
                             // var oPIObjPdtFhnCallBack =  $('#ohdTbxObjPdtFhnCallBack').val();
-                            // var oJSONPdt = JSON.parse(tJSON);
-                            // var oOptionForFashion = {
-                            //         'bListItemAll'  : false,
-                            //         'tSpcControl'  : 0,
-                            //         'tNextFunc' : 'JSvASTInsertPdtToTemp'
-                            //     }
-                            //     JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
+                            var oJSONPdt = JSON.parse(tJSON);
+                            var oOptionForFashion = {
+                                    'bListItemAll'  : false,
+                                    'tSpcControl'  : 1,
+                                    'tNextFunc' : 'JSvASTEventAddPdtIntoDTFhnTemp'
+                                }
+                                JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
 
                         });
 
@@ -1090,12 +1261,12 @@
                         // FSvTBXAddPdtIntoDocDTTempScan(aNewReturn); //Client
                         JSvASTInsertPdtToTemp(aNewReturn); //Server
                
-                    //     var oOptionForFashion = {
-                    //             'bListItemAll'  : false,
-                    //             'tSpcControl'  : 0,
-                    //             'tNextFunc' : 'JSvASTInsertPdtToTemp'
-                    //         }
-                    // JSxCheckProductSerialandFashion(oText,oOptionForFashion,'insert');
+                        var oOptionForFashion = {
+                                'bListItemAll'  : false,
+                                'tSpcControl'  : 1,
+                                'tNextFunc' : 'JSvASTEventAddPdtIntoDTFhnTemp'
+                            }
+                    JSxCheckProductSerialandFashion(oText,oOptionForFashion,'insert');
                     }
                 }
             },
@@ -1115,13 +1286,13 @@
                 // FSvTBXAddPdtIntoDocDTTempScan(tJSON);
                 JSvASTInsertPdtToTemp(tJSON);
    
-            //     var oJSONPdt = JSON.parse(tJSON);
-            //     var oOptionForFashion = {
-            //                         'bListItemAll'  : false,
-            //                         'tSpcControl'  : 0,
-            //                         'tNextFunc' : 'JSvASTInsertPdtToTemp'
-            //                     }
-            //  JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
+                var oJSONPdt = JSON.parse(tJSON);
+                var oOptionForFashion = {
+                                    'bListItemAll'  : false,
+                                    'tSpcControl'  : 1,
+                                    'tNextFunc' : 'JSvASTEventAddPdtIntoDTFhnTemp'
+                                }
+             JSxCheckProductSerialandFashion(oJSONPdt,oOptionForFashion,'insert');
             });
         }else{
             $('#oetASTInsertBarcode').attr('readonly',false);
@@ -1166,7 +1337,9 @@
 
 					// var aResult = JSON.parse(oResult);
                     if(oResult['nStaEvent']==1){
-                        JSvASTLoadPdtDataTableHtml();
+                            if(oResult['tPDTSpc']=='GN'){
+                                JSvASTLoadPdtDataTableHtml();
+                            }
                         JCNxCloseLoading();
                     }
 
